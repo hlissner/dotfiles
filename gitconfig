@@ -1,0 +1,80 @@
+[user]
+    name = Henrik Lissner
+    email = henrik@lissner.net
+
+[alias]
+    # common commands
+    a = add
+    s = status -s
+    c = commit
+    ca = commit --amend
+    br = branch
+    cl = clone
+    co = checkout
+    co- = checkout --
+
+    # reset commands
+    r = reset
+    r1 = reset HEAD^ --soft
+    r2 = reset HEAD^^ --soft
+    rh = reset --hard
+    rh1 = reset HEAD^ --hard
+    rh2 = reset HEAD^^ --hard
+
+    # search commadns
+    f = "!git ls-files | grep -i"
+    grep = grep -Ii
+    lasttag = describe --tags --abbrev=0
+
+    # Diff commands
+    d = difftool
+    dl = "!git ll -1"
+    
+    # Ways to show the log
+    l = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate
+    ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
+    lnc = log --pretty=format:"%h\\ %s\\ [%cn]"
+    lds = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
+    ld = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=relative
+    le = log --oneline --decorate
+
+    # Ignoring files the elegant way
+    assume = update-index --assume-unchanged
+    unassume = update-index --no-assume-unchanged
+    assumed = "!git ls-files -v | grep ^h | cut -c 3-"
+    unassumeall = "!git assumed | xargs git update-index --no-assume-unchanged"
+    assumeall = "!git st -s | awk {'print $2'} | xargs git assume"
+
+[core]
+    excludesfile = ~/.gitignore
+    quotepath = false
+    whitespace = trailing-space
+
+[color]
+    ui = auto
+
+[diff]
+    tool = gvimdiff
+
+[difftool]
+    prompt = false
+
+[merge]
+    # Include summaries of merged commits in newly created merge commit messages
+    log = true
+
+[push]
+    default = simple
+
+[url "git@github.com:"]
+    insteadOf = "gh:"
+    pushInsteadOf = "github:"
+    pushInsteadOf = "git://github.com/"
+[url "git://github.com/"]
+	insteadOf = "github:"
+[url "git@gist.github.com:"]
+	insteadOf = "gst:"
+	pushInsteadOf = "gist:"
+	pushInsteadOf = "git://gist.github.com/"
+[url "git://gist.github.com/"]
+	insteadOf = "gist:"

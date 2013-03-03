@@ -1,0 +1,24 @@
+# Logs and databases #
+######################
+*.log
+*.cache
+
+# OS generated files #
+######################
+.DS_Store?
+.DS_Store
+thumbs.db
+Icon?
+Thumbs.db
+
+# Code stuffs #
+##############
+.svn
+.git
+.swp
+.*.swp
+*~
+.tags
+tags
+.sass-cache
+tmp
