@@ -1,0 +1,18 @@
+
+if [ -d ~/Dropbox ]; then
+    PATH=$PATH:~/Dropbox/dev/bin
+fi
+
+if [ "`command -v brew 2>&1`" ]; then
+    BREWDIR=`brew --prefix`
+
+    PATH=$PATH:$BREWDIR/bin
+    PATH=$PATH:$BREWDIR/sbin
+
+    COREUTIL=`brew --prefix coreutils`
+    if [ -d "$COREUTIL" ]; then
+        PATH=$PATH:`brew --prefix coreutils`
+    fi
+fi
+
+PATH=$PATH:$HOME/.rvm/bin

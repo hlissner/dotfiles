@@ -1,0 +1,25 @@
+ 
+# HISTORY
+HISTFILE=~/.histfile
+HISTSIZE=10000
+SAVEHIST=10000
+setopt share_history
+setopt hist_ignore_dups
+setopt hist_ignore_space
+setopt extended_history
+setopt no_beep
+setopt extendedglob
+setopt prompt_subst
+setopt complete_in_word
+setopt no_auto_menu
+setopt no_always_last_prompt
+setopt promptsubst
+setopt autopushd
+setopt pushdignoredups
+
+export EDITOR='vim'
+export RUBYOPT=rubygems
+export CPPFLAGS=-I/opt/X11/include
+# export CC=gcc-4.2
+
+COMPLETION_WAITING_DOTS="true"

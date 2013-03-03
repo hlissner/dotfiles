@@ -1,0 +1,32 @@
+#######################
+# Aliases
+
+alias ll='ls -l'
+alias la='ls -la'
+
+alias zrc='vim ~/.zshrc'
+
+# Directories
+alias dev='cd /usr/local/dev'
+alias w='cd ~/Work/'
+alias wd='cd ~/Work/Dev'
+alias wp='cd ~/Work/Projects/'
+
+# Vim
+alias v='mvim'
+
+# Git
+alias g='git'
+alias ga='g a'
+alias gap='g a -p'
+alias gc='g c'
+alias gs='g s'
+alias gd='g d'
+
+# Laravel (provided in zsh plugin)
+# alias artisan='php artisan'
+# alias bob='php artisan bob::build'
+
+function quick-look() {
+  (( $# > 0 )) && qlmanage -p $* &>/dev/null &
+}
