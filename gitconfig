@@ -1,6 +1,6 @@
 [user]
-    name = Henrik Lissner
-    email = henrik@lissner.net
+	name = Henrik Lissner
+	email = henrik@lissner.net
 
 [alias]
     # common commands
@@ -62,9 +62,6 @@
 [merge]
     # Include summaries of merged commits in newly created merge commit messages
     log = true
-
-[push]
-    default = simple
 
 [url "git@github.com:"]
     insteadOf = "gh:"
