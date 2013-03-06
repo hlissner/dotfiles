@@ -9,7 +9,7 @@ alias zrc='vim ~/.zshrc'
 # Directories
 alias dev='cd /usr/local/dev'
 alias w='cd ~/Work/'
-alias wd='cd ~/Work/Dev'
+alias wd='cd ~/Work/Dev/'
 alias wp='cd ~/Work/Projects/'
 
 # Vim
