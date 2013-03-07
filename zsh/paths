@@ -1,3 +1,4 @@
+#!/bin/bash
 
 if [ -d ~/Dropbox ]; then
     PATH=$PATH:~/Dropbox/dev/bin
