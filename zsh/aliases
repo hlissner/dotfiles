@@ -32,3 +32,25 @@ alias gbr='g br'
 function quick-look() {
   (( $# > 0 )) && qlmanage -p $* &>/dev/null &
 }
+
+function update() {
+    # Update homebrew
+    brew update
+    brew upgrade
+    
+    # Make sure rvm is sourced properly
+    if [ -f ~/.rvm/scripts/rvm ]; then
+        [ "$(type -t rvm)" = "function" ] || source ~/.rvm/scripts/rvm
+    fi
+
+    # Update all rubies and rubygems
+    for v in 1.9.3 1.8.7 system; do
+        rvm use $v
+        gem update --system
+        gem update
+    done
+
+    # Update vim
+    echo "[NOTICE] Updating vim..."
+    screen -d -m vim +BundleInstall! +BundleClean! +q +q
+}
