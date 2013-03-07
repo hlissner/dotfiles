@@ -29,9 +29,10 @@ brew install rename
 brew install tree
 
 # vim
-brew install macvim
-brew install php54 php54-imagick php54-mcrypt php54-xdebug readline 
+brew install python ruby
 brew install node nginx ctags
+brew install php54 php54-imagick php54-mcrypt php54-xdebug readline 
+brew install macvim
 
 # Remove outdated versions from the cellar
 brew cleanup
