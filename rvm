@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Ask for the administrator password upfront
+sudo -v
+
+# Keep sudo alive
+while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+
+# Install rubies and update rubygems
+rvm install 1.9.3
+rvm use 1.9.3
+gem update --system
+gem update
+
+rvm install 1.8.7-p371
+rvm use 1.8.7
+gem update --system
+gem update
+
+# But ultimately, the system should be the default
+rvm --default use system
+
+# A few prerequisites
+gem install bluecloth capistrano bundler
