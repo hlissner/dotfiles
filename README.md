@@ -3,8 +3,9 @@
 The magicks!
 
     ./install-deps.sh
-    ./.osx
-    ./.brew
+    ./osx
+    ./brew
+    ./rvm
 
 And if you want vim too:
 
