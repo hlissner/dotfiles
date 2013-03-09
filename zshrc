@@ -2,8 +2,8 @@
 ZSH=$HOME/.oh-my-zsh
 plugins=(laravel ruby python brew)
 source $ZSH/oh-my-zsh.sh
-unsetopt correct_all
 
+# Source component rcfiles
 . ~/.zsh/paths
 . ~/.zsh/aliases
 . ~/.zsh/completion

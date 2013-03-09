@@ -1,5 +1,8 @@
 #!/bin/bash
  
+# Disable autocorrect behavior
+unsetopt correct_all
+
 # HISTORY
 HISTFILE=~/.histfile
 HISTSIZE=10000
