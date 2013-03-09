@@ -10,7 +10,7 @@ WWW  = "#{PREFIX}/dev/www"
 SERVICES = {
     :php => {
         :bin  => `which php-fpm`.strip,
-        :opts => "-D -c '#{CONF}/php/php.ini' --fpm-config '#{CONF}/php/php-fpm.conf' --pid = '#{PID}/php-fpm-pid'",
+        :opts => "-p '/usr/local/var' -c '#{CONF}/php/php.ini' --fpm-config '#{CONF}/php/php-fpm.conf' --pid '#{PID}/php-fpm-pid'",
         :pid  => "#{PID}/php-fpm.pid"
     },
     :nginx => {
@@ -26,11 +26,10 @@ SERVICES = {
 def start
     SERVICES.each_pair do |key,opts|
         if File.exist?(opts[:pid])
-            puts "[NOTICE] Stopping #{key} ..."
-            `kill #{`cat #{opts[:pid]}`.strip}`
-            `rm #{opts[:pid]} >/dev/null 2>&1`
+            puts "[WARNING] #{key} is already running."
         else
-            puts "[WARNING] #{key} is not running."
+            puts "[NOTICE] Starting #{key} ..."
+            `#{opts[:bin]} #{opts[:opts]}`
         end
     end
 end
@@ -38,7 +37,7 @@ end
 def stop
     SERVICES.each_pair do |key,opts|
         if File.exist?(opts[:pid])
-            puts "[NOTICE] Stopping #{serv} ..."
+            puts "[NOTICE] Stopping #{key} ..."
             `kill #{`cat #{opts[:pid]}`.strip}`
             `rm #{opts[:pid]} >/dev/null 2>&1`
         else
@@ -57,7 +56,7 @@ def chdir
     if File.directory?(WWW)
         `rm -r #{WWW}`
     end
-    `ln -s "#{`pwd`.strip}" "#{WWW}"`
+    `ln -sf "#{`pwd`.strip}" "#{WWW}"`
     
     restart
 end
