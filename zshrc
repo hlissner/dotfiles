@@ -11,6 +11,7 @@ source $ZSH/oh-my-zsh.sh
 . ~/.zsh/prompt
 . ~/.zsh/welcome
 
+# Have a system specific rcfile? Source it!
 if [ -f ~/.localrc ]; then
     . ~/.localrc
 fi
