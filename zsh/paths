@@ -1,19 +1,19 @@
 #!/bin/bash
 
 if [ -d ~/Dropbox ]; then
-    PATH=$PATH:~/Dropbox/dev/bin
+    PATH=~/Dropbox/dev/bin:$PATH
 fi
 
 if [ "`command -v brew 2>&1`" ]; then
     BREWDIR=`brew --prefix`
 
-    PATH=$PATH:$BREWDIR/bin
-    PATH=$PATH:$BREWDIR/sbin
+    PATH=$BREWDIR/sbin:$PATH
+    PATH=$BREWDIR/bin:$PATH
 
     COREUTIL=`brew --prefix coreutils`
     if [ -d "$COREUTIL" ]; then
-        PATH=$PATH:`brew --prefix coreutils`
+        PATH=`brew --prefix coreutils`:$PATH
     fi
 fi
 
-PATH=$PATH:$HOME/.rvm/bin
+PATH=$HOME/.rvm/bin:$PATH
