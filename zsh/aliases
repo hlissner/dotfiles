@@ -32,7 +32,7 @@ alias gbr='g br'
 # alias bob='php artisan bob::build'
 
 function quick-look() {
-  (( $# > 0 )) && qlmanage -p $* &>/dev/null &
+    (( $# > 0 )) && qlmanage -p $* &>/dev/null &
 }
 
 function update() {
