@@ -16,5 +16,6 @@ curl -L https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh | 
 src=$(cd "$(dirname "$0")"; pwd)
 
 ln -sf $src/zshrc ~/.zshrc
+ln -sf $src/zsh ~/.zsh
 ln -sf $src/gitignore ~/.gitignore
 ln -sf $src/gitconfig ~/.gitconfig
