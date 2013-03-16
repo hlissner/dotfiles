@@ -21,9 +21,7 @@ setopt promptsubst
 setopt autopushd
 setopt pushdignoredups
 
-export EDITOR='vim'
+export EDITOR=vim
 export RUBYOPT=rubygems
-export CPPFLAGS=-I/opt/X11/include
-# export CC=gcc-4.2
 
 COMPLETION_WAITING_DOTS="true"
