@@ -6,6 +6,8 @@
 
 alias ll='ls -l'
 alias la='ls -la'
+alias l.='ls -Ad .*'
+alias du='du -h -d 1'
 
 # Directories ##################
 alias dev='cd /usr/local/dev'
@@ -18,15 +20,22 @@ alias v='mvim'
 
 # Git ##########################
 # I know the git oh-my-zsh plugin has most of these, but 
-# I prefer to specify my own
+# I prefer to specify my own. Check gitconfig to see what
+# the shorthand commands do.
 alias g='git'
-alias ga='g a'
-alias gap='g a -p'
-alias gc='g c'
-alias gs='g s'
-alias gd='g d'
-alias gr='g r'
-alias gbr='g br'
+alias ga='git add'
+alias gap='git add -p'
+alias gc='git commit'
+alias gs='git s'
+alias gl='git ll'
+alias gf='git f'
+alias gg='git grep -Ii'
+
+alias gd='git difftool'
+alias gdl="git ll -1"
+
+alias gr='git reset'
+alias gbr='git br'
 
 # Laravel ######################
 # (already provided in zsh plugin)
