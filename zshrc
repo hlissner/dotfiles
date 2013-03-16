@@ -7,8 +7,8 @@ source $ZSH/oh-my-zsh.sh
 source ~/.zsh/functions
 source ~/.zsh/paths
 source ~/.zsh/aliases
-source ~/.zsh/completion
 source ~/.zsh/config
+source ~/.zsh/completion
 source ~/.zsh/prompt
 source ~/.zsh/welcome
 
