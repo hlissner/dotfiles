@@ -42,7 +42,3 @@ alias gbr='git br'
 #alias artisan='php artisan'
 #alias bob='php artisan bob::build'
 
-# Open a file in Mac OS's quick-look
-function quick-look() {
-    (( $# > 0 )) && qlmanage -p $* &>/dev/null &
-}

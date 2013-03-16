@@ -3,3 +3,8 @@
 function command_exists() {
     command -v "$1" &> /dev/null;
 }
+
+# Open a file in Mac OS's quick-look
+function quick-look() {
+    (( $# > 0 )) && qlmanage -p $* &>/dev/null &
+}
