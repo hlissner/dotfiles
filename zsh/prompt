@@ -1,8 +1,38 @@
 #!/bin/bash
 
-PROMPT="
-%{$FX[bold]%}%{$fg[cyan]%}%{$BG[234]%}> "
-RPROMPT="%~$(git_prompt_info) @ %{$fg[white]%}$(hostname)%{$reset_color%}"
+function short_pwd() {
+    SHORTPWD=`print -Pn "%4~"`
+    [[ "${SHORT_PWD:0:1}" =~ "[^/~]" ]] && SHORT_PWD=".../$SHORT_PWD"
 
-ZSH_THEME_GIT_PROMPT_PREFIX="["
-ZSH_THEME_GIT_PROMPT_SUFFIX="]"
+    echo $SHORTPWD
+}
+
+# GIT Stuff
+ZSH_THEME_GIT_PROMPT_PREFIX=" %{$fg[white]%}"
+ZSH_THEME_GIT_PROMPT_SUFFIX=""
+ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[red]%}+%{$fg[white]%}"
+ZSH_THEME_GIT_PROMPT_CLEAN=""
+
+
+##################
+#  Build Prompt  #
+##################
+
+# Left side
+PROMPT="
+"
+if [[ -n $SSH_CLIENT ]]; then
+    PROMPT+="%{$fg[white]%}$(hostname)%{$reset_color%} "
+fi
+
+PROMPT+="%{$FX[bold]%}"
+PROMPT+="%{$fg[cyan]%}"
+PROMPT+="%{$BG[234]%}"
+PROMPT+="$ "
+PROMPT+="%{$fg[white]%}"
+
+# Right side
+RPROMPT="%{$fg[cyan]%}"
+RPROMPT+='$(short_pwd)'
+RPROMPT+='$(git_prompt_info)'
+RPROMPT+='%{$reset_color%}'
