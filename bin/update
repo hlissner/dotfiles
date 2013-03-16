@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# Homebrew #####################
+brew update
+brew upgrade
+
+
+# RUBY #########################
+
+# Make sure rvm is sourced properly
+if [ -f ~/.rvm/scripts/rvm ]; then
+    [ "$(type -t rvm)" = "function" ] || source ~/.rvm/scripts/rvm
+fi
+
+# Update all rubies and rubygems
+for v in 1.9.3 1.8.7; do
+    rvm use $v
+    gem update --system
+    gem update
+done
+
+# Update system ruby
+rvm use system
+sudo gem update --system
+sudo gem update
+
+
+# Vim ##########################
+echo "[NOTICE] Updating vim..."
+vim +BundleInstall! +BundleClean! +q +q

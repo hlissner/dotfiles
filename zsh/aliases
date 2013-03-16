@@ -1,23 +1,24 @@
 #!/bin/bash
 
-#######################
-# Aliases
+#############
+#  Aliases  #
+#############
 
 alias ll='ls -l'
 alias la='ls -la'
 
-alias zrc='vim ~/.zshrc'
-
-# Directories
+# Directories ##################
 alias dev='cd /usr/local/dev'
 alias w='cd ~/Work/'
 alias wd='cd ~/Work/Dev/'
 alias wp='cd ~/Work/Projects/'
 
-# Vim
+# Vim ##########################
 alias v='mvim'
 
-# Git
+# Git ##########################
+# I know the git oh-my-zsh plugin has most of these, but 
+# I prefer to specify my own
 alias g='git'
 alias ga='g a'
 alias gap='g a -p'
@@ -27,36 +28,12 @@ alias gd='g d'
 alias gr='g r'
 alias gbr='g br'
 
-# Laravel (already provided in zsh plugin)
-# alias artisan='php artisan'
-# alias bob='php artisan bob::build'
+# Laravel ######################
+# (already provided in zsh plugin)
+#alias artisan='php artisan'
+#alias bob='php artisan bob::build'
 
+# Open a file in Mac OS's quick-look
 function quick-look() {
     (( $# > 0 )) && qlmanage -p $* &>/dev/null &
-}
-
-function update() {
-    # Update homebrew
-    brew update
-    brew upgrade
-    
-    # Keep sudo alive
-    sudo -v
-    while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
-
-    # Make sure rvm is sourced properly
-    if [ -f ~/.rvm/scripts/rvm ]; then
-        [ "$(type -t rvm)" = "function" ] || source ~/.rvm/scripts/rvm
-    fi
-
-    # Update all rubies and rubygems
-    for v in 1.9.3 1.8.7 system; do
-        rvm use $v
-        gem update --system
-        gem update
-    done
-
-    # Update vim
-    echo "[NOTICE] Updating vim..."
-    screen -d -m vim +BundleInstall! +BundleClean! +q +q
 }
