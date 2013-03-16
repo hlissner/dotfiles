@@ -62,7 +62,7 @@ def chdir
 end
 
 def help
-    puts "Usage: www (start|stop|restart)"
+    puts "Usage: web (start|stop|restart)"
     exit
 end
 
