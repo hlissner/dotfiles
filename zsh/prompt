@@ -21,13 +21,14 @@ ZSH_THEME_GIT_PROMPT_CLEAN=""
 # Left side
 PROMPT="
 "
-if [[ -n $SSH_CLIENT ]]; then
-    PROMPT+="%{$fg[white]%}$(hostname)%{$reset_color%} "
-fi
-
 PROMPT+="%{$FX[bold]%}"
+if [[ -n $SSH_CLIENT ]]; then
+    PROMPT+="%{$BG[236]%}"
+    PROMPT+="%{$fg[white]%}$(hostname)%{$reset_color%} "
+else
+    PROMPT+="%{$BG[234]%}"
+fi
 PROMPT+="%{$fg[cyan]%}"
-PROMPT+="%{$BG[234]%}"
 PROMPT+="$ "
 PROMPT+="%{$fg[white]%}"
 
