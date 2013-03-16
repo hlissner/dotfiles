@@ -24,7 +24,7 @@ PROMPT="
 PROMPT+="%{$FX[bold]%}"
 if [[ -n $SSH_CLIENT ]]; then
     PROMPT+="%{$BG[236]%}"
-    PROMPT+="%{$fg[white]%}$(hostname)%{$reset_color%} "
+    PROMPT+="%{$fg[white]%}$(hostname) "
 else
     PROMPT+="%{$BG[234]%}"
 fi
