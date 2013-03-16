@@ -4,16 +4,17 @@ plugins=(laravel ruby python brew)
 source $ZSH/oh-my-zsh.sh
 
 # Source component rcfiles
-. ~/.zsh/paths
-. ~/.zsh/aliases
-. ~/.zsh/completion
-. ~/.zsh/config
-. ~/.zsh/prompt
-. ~/.zsh/welcome
+source ~/.zsh/functions
+source ~/.zsh/paths
+source ~/.zsh/aliases
+source ~/.zsh/completion
+source ~/.zsh/config
+source ~/.zsh/prompt
+source ~/.zsh/welcome
 
 # Have a system specific rcfile? Source it!
 if [ -f ~/.localrc ]; then
-    . ~/.localrc
+    source ~/.localrc
 fi
 
 # Load RVM into a shell session *as a function*
