@@ -2,8 +2,8 @@
 
 src=$(cd "$(dirname "$0")"; pwd)
 
-$src/install/brew
-$src/install/rvm
-$src/install/vim
+$src/../install/brew
+$src/../install/rvm
+$src/../install/vim
 
 echo "\nAll done!"
