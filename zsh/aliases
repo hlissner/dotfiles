@@ -15,8 +15,11 @@ alias w='cd ~/Work/'
 alias wd='cd ~/Work/Dev/'
 alias wp='cd ~/Work/Projects/'
 
-# Vim ##########################
+# Apps #########################
 alias v='mvim'
+alias rb='ruby'
+alias py='python'
+alias js='node'
 
 # Git ##########################
 # I know the git oh-my-zsh plugin has most of these, but 
