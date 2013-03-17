@@ -10,7 +10,7 @@ if [ ! `command -v "mvim"` ]; then
     brew install macvim --with-cscope --override-system-vim
 fi
 
-if [ ! -d ~/.vimrc ]; then
+if [ ! -e ~/.vimrc ]; then
     echo "\n* Installing vim rcfiles"
 
     if [ -d ~/.vim ]; then
