@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/bin/zsh
 
 function command_exists() {
-    command -v "$1" &> /dev/null;
+    command -v "$1" &> /dev/null
 }
 
 # Open a file in Mac OS's quick-look
