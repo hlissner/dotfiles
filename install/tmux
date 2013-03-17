@@ -1,0 +1,21 @@
+#!/bin/bash
+
+echo "[TMUX]"
+if [ ! `command -v "brew"` ]; then
+    echo "Requires homebrew"
+    exit
+fi
+
+echo
+if [ ! `command -v "tmux"` ]; then
+    echo "* Installing tmux & reattach-to-user-namespace"
+    brew install tmux reattach-to-user-namespace
+else
+    echo "* Tmux is already installed!"
+fi
+
+echo
+echo "* Setting up symlinks"
+src=$(cd "$(dirname "$0")"; pwd)
+
+ln -sf $src/tmux.conf ~/.tmux.conf
