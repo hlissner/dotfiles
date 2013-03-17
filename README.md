@@ -1,18 +1,10 @@
 # Dotfiles of a spaghetti code warrior
 
-The magicks!
+My mac dotfiles.
 
 ## Installation
-### Mac
 
-    ./installdeps-mac.sh
-    ./osx
-    ./brew
-    ./rvm
-
-### Ubuntu
-
-    ./installdeps-ubuntu.sh
+    sh <(curl https://raw.github.com/hlissner/dotfiles/master/install.sh -L)
 
 ## And if you want vim...
 

@@ -5,10 +5,21 @@ if [ ! `command -v "brew"` ]; then
     exit
 fi
 
-echo "\n* Installing macvim"
-brew install macvim --with-cscope --override-system-vim
+if [ ! `command -v "mvim"` ]; then
+    echo "\n* Installing macvim"
+    brew install macvim --with-cscope --override-system-vim
+fi
 
-echo "\n* Installing vim rcfiles"
-sh <(curl https://raw.github.com/hlissner/mlvim/master/install.sh -L)
+if [ ! -d ~/.vimrc ]; then
+    echo "\n* Installing vim rcfiles"
+
+    if [ -d ~/.vim ]; then
+        rm -rf ~/.vim
+    fi
+    sh <(curl https://raw.github.com/hlissner/mlvim/master/install.sh -L)
+fi
+
+echo "\n* Updating vim..."
+vim +BundleInstall! +BundleClean! +q +q
 
 echo "\nDone!"

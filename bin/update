@@ -1,35 +1,9 @@
 #!/bin/zsh
 
-# Homebrew #####################
-echo "\n* Updating homebrew"
-brew update
-brew upgrade
+src=$(cd "$(dirname "$0")"; pwd)
 
+$src/install/brew
+$src/install/rvm
+$src/install/vim
 
-# RUBY #########################
-
-# Make sure rvm is sourced properly
-if [ -f ~/.rvm/scripts/rvm ]; then
-    [[ "$(type rvm)" =~ "function$" ]] || source ~/.rvm/scripts/rvm
-fi
-
-# Update all rubies and rubygems
-for v in 1.9.3 1.8.7; do
-    echo "\n* Updating ruby $v"
-    rvm use $v
-    gem update --system
-    gem update
-done
-
-# Update system ruby
-echo "\n* Updating system ruby"
-rvm use system
-sudo gem update --system
-sudo gem update
-
-
-# Vim ##########################
-echo "\n* Updating vim..."
-vim +BundleInstall! +BundleClean! +q +q
-
-echo "\nDone!"
+echo "\nAll done!"
