@@ -1,0 +1,14 @@
+#!/bin/zsh
+
+if [ ! `command -v "brew"` ]; then
+    echo "Homebrew is required!"
+    exit
+fi
+
+echo "\n* Installing macvim"
+brew install macvim --with-cscope --override-system-vim
+
+echo "\n* Installing vim rcfiles"
+sh <(curl https://raw.github.com/hlissner/mlvim/master/install.sh -L)
+
+echo "\nDone!"

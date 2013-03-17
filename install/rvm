@@ -1,10 +1,21 @@
 #!/bin/bash
 
+echo "[RVM]"
+
+if [ ! `command -v "rvm"` ]; then
+    echo "\n* Installing RVM"
+
+    # https://rvm.io
+    curl -L https://get.rvm.io | bash -s stable --ruby
+fi
+
 # Ask for the administrator password upfront
 sudo -v
 
 # Keep sudo alive
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+
+echo "\n* Install rubies"
 
 # Install rubies and update rubygems
 rvm install 1.9.3
@@ -22,3 +33,5 @@ rvm --default use system
 
 # A few prerequisites
 gem install bluecloth capistrano bundler
+
+echo "\nDone!"
