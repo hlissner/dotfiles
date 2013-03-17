@@ -22,7 +22,7 @@ fi
 echo "\n* Updating vim..."
 vim +BundleInstall! +BundleClean! +q +q
 
-if [ ! -e ~/.vim/bundle/YouCompleteMe/python/ycm_core.so ]; then
+if [ -d ~/.vim/bundle/YouCompleteMe ] && [ ! -e ~/.vim/bundle/YouCompleteMe/python/ycm_core.so ]; then
     echo "\n* Trying to compile YCM"
     brew install cmake
     cd ~/.vim/bundle/YouCompleteMe
