@@ -4,19 +4,23 @@ echo "[ZSH]"
 
 if [ ! -d ~/.oh-my-zsh ]; then
     # https://github.com/robbyrussell/oh-my-zsh
-    echo "\n* Installing oh-my-zsh"
+    echo
+    echo "* Installing oh-my-zsh"
     curl -L https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh | sh
     
     # Set new shell
-    echo "\n* Changing shell"
+    echo
+    echo "* Changing shell"
     chsh -s /bin/zsh
 fi
 
 # Create links
-echo "\n* Setting up symlinks"
+echo
+echo "* Setting up symlinks"
 src=$(cd "$(dirname "$0")"; pwd)
 
 ln -sf $src/zshrc ~/.zshrc
 ln -sf $src/zsh ~/.zsh
 
-echo "\nDone!"
+echo
+echo "Done!"

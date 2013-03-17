@@ -2,14 +2,16 @@
 
 echo "[HOMEBREW]"
 if [ ! `command -v "brew"` ]; then
-    echo "\n* Installing homebrew"
+    echo
+    echo "* Installing homebrew"
     # http://mxcl.github.com/homebrew/
     ruby <(curl -fsSkL raw.github.com/mxcl/homebrew/go)
 
-    echo "\n* Setting up homebrew"
+    echo
+    echo "* Setting up homebrew"
     # Install GNU core utilities (those that come with OS X are outdated)
     brew install coreutils
-    echo "Don’t forget to add $(brew --prefix coreutils)/libexec/gnubin to \$PATH."
+    # echo "Don’t forget to add $(brew --prefix coreutils)/libexec/gnubin to \$PATH."
     # Install GNU `find`, `locate`, `updatedb`, and `xargs`, g-prefixed
     brew install findutils
     # Install Bash 4
@@ -37,7 +39,8 @@ if [ ! `command -v "brew"` ]; then
     brew install php54-intl
     brew install macvim
 else
-    echo "\n* Updating homebrew"
+    echo
+    echo "* Updating homebrew"
     # Make sure we’re using the latest Homebrew
     brew update
 
@@ -45,8 +48,10 @@ else
     brew upgrade
 fi
 
-echo "\n* Cleaning up homebrew"
+echo
+echo "* Cleaning up homebrew"
 # Remove outdated versions from the cellar
 brew cleanup
 
-echo "\nDone!"
+echo
+echo "Done!"

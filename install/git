@@ -8,22 +8,26 @@ if [ ! `command -v "git"` ]; then
         exit
     fi
 
-    echo "\n* Installing git"
+    echo
+    echo "* Installing git"
     brew install git
 fi
 
 if [ ! -e /usr/local/bin/branch ]; then
-    echo "\n* Install git-friendly"
+    echo
+    echo "* Install git-friendly"
 
     # https://github.com/jamiew/git-friendly
     bash < <(curl https://raw.github.com/jamiew/git-friendly/master/install.sh)
 fi
 
 # Create links
-echo "\n* Setting up symlinks"
+echo
+echo "* Setting up symlinks"
 src=$(cd "$(dirname "$0")"; pwd)
 
 ln -sf $src/gitignore ~/.gitignore
 ln -sf $src/gitconfig ~/.gitconfig
 
-echo "\nDone!"
+echo
+echo "Done!"

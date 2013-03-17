@@ -6,12 +6,14 @@ if [ ! `command -v "brew"` ]; then
 fi
 
 if [ ! `command -v "mvim"` ]; then
-    echo "\n* Installing macvim"
+    echo
+    echo "* Installing macvim"
     brew install macvim --with-cscope --override-system-vim
 fi
 
 if [ ! -e ~/.vimrc ]; then
-    echo "\n* Installing vim rcfiles"
+    echo
+    echo "* Installing vim rcfiles"
 
     if [ -d ~/.vim ]; then
         rm -rf ~/.vim
@@ -19,14 +21,17 @@ if [ ! -e ~/.vimrc ]; then
     sh <(curl https://raw.github.com/hlissner/mlvim/master/install.sh -L)
 fi
 
-echo "\n* Updating vim..."
+echo
+echo "* Updating vim..."
 vim +BundleInstall! +BundleClean! +q +q
 
 if [ -d ~/.vim/bundle/YouCompleteMe ] && [ ! -e ~/.vim/bundle/YouCompleteMe/python/ycm_core.so ]; then
-    echo "\n* Trying to compile YCM"
+    echo
+    echo "* Trying to compile YCM"
     brew install cmake
     cd ~/.vim/bundle/YouCompleteMe
     ./install.sh --clang-completer
 fi
 
-echo "\nDone!"
+echo
+echo "Done!"
