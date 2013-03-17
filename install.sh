@@ -7,6 +7,7 @@ $src/install/zsh
 $src/install/brew
 $src/install/git
 $src/install/rvm
+$src/install/tmux
 
 echo "\nDone!"
 echo "\nAnd if you want to install vim, run:"
