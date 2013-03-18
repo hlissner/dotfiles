@@ -17,7 +17,11 @@ alias wd='cd ~/Work/Dev/'
 alias wp='cd ~/Work/Projects/'
 
 # Apps #########################
-alias v='mvim'
+if [ `command -v "mvim"` ]; then
+    alias v='mvim'
+else
+    alias v='vim'
+fi
 alias rb='ruby'
 alias py='python'
 alias js='node'
