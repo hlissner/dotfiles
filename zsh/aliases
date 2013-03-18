@@ -21,6 +21,13 @@ alias rb='ruby'
 alias py='python'
 alias js='node'
 
+# Tmux #########################
+alias t='tmux'
+alias tn='tmux new -s'
+alias ta='tmux attach -t'
+alias tl='tmux list-sessions'
+alias td='tmux detach'
+
 # Git ##########################
 # I know the git oh-my-zsh plugin has most of these, but 
 # I prefer to specify my own. Check gitconfig to see what
