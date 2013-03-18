@@ -30,7 +30,6 @@ if [ ! `command -v "brew"` ]; then
     brew install git
     brew install rename
     brew install tree
-    brew install daemon
 
     # vim
     brew install python ruby

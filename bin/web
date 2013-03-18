@@ -2,23 +2,45 @@
 
 # A start-script for my local webserver. Mac-only and requires Homebrew
 
+BASE = File.expand_path(File.dirname(File.dirname(__FILE__)))
 PREFIX = `brew --prefix`.strip
 
-CONF = "#{PREFIX}/dev/conf"
+CONF = "#{BASE}/conf"
 PID  = "#{PREFIX}/var/run"
 WWW  = "#{PREFIX}/dev/www"
-SERVICES = {
-    :php => {
+
+
+## Services ###
+
+SERVICES = {}
+if system("which php-fpm 2>&1 >/dev/null")
+    SERVICES[:php] = {
         :bin  => `which php-fpm`.strip,
         :opts => "-p '/usr/local/var' -c '#{CONF}/php/php.ini' --fpm-config '#{CONF}/php/php-fpm.conf' --pid '#{PID}/php-fpm-pid'",
         :pid  => "#{PID}/php-fpm.pid"
-    },
-    :nginx => {
+    }
+end
+if system("which nginx 2>&1 >/dev/null")
+    SERVICES[:nginx] = {
         :bin  => `which nginx`.strip,
         :opts => "-c '#{CONF}/nginx/nginx.conf'",
         :pid  => "#{PID}/nginx.pid"
     }
-}
+end
+if system("which memcached 2>&1 >/dev/null")
+    SERVICES[:memcached] = {
+        :bin  => `which memcached`.strip,
+        :opts => "-d -P '#{PID}/memcached.pid' -u #{`whoami`.strip}",
+        :pid  => "#{PID}/memcached.pid"
+    }
+end
+if system("which mysql.server 2>&1 >/dev/null")
+    SERVICES[:db] = {
+        :bin  => "su #{`whoami`.strip} -c #{`which mysql.server`.strip} start",
+        :opts => "",
+        :pid  => "#{PREFIX}/var/mysql/#{`hostname`}.pid"
+    }
+end
 
 
 ## Functions ##
@@ -62,7 +84,7 @@ def chdir
 end
 
 def help
-    puts "Usage: web (start|stop|restart)"
+    puts "Usage: web (start|stop|restart|chdir)"
     exit
 end
 
