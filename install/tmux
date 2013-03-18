@@ -9,7 +9,7 @@ fi
 echo
 if [ ! `command -v "tmux"` ]; then
     echo "* Installing tmux & reattach-to-user-namespace"
-    brew install tmux reattach-to-user-namespace
+    brew install tmux reattach-to-user-namespace libevent
 else
     echo "* Tmux is already installed!"
 fi
