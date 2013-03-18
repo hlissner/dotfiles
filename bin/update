@@ -1,5 +1,8 @@
 #!/bin/zsh
 
+echo "* Updating Mac OS"
+sudo softwareupdate -i -a
+
 src=$(cd "$(dirname "$0")"; pwd)
 
 $src/../install/brew
