@@ -16,6 +16,6 @@ fi
 
 echo
 echo "* Setting up symlinks"
-src=$(cd "$(dirname "$0")"; pwd)
+src=$(cd "$(dirname "$0")/.."; pwd)
 
 ln -sf $src/tmux.conf ~/.tmux.conf
