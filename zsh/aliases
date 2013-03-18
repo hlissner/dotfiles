@@ -8,6 +8,7 @@ alias ll='ls -l'
 alias la='ls -la'
 alias l.='ls -Ad .*'
 alias du='du -h -d 1'
+alias q='exit'
 
 # Directories ##################
 alias dev='cd /usr/local/dev'
@@ -40,6 +41,7 @@ alias gs='git s'
 alias gl='git ll'
 alias gf='git f'
 alias gg='git grep -Ii'
+alias gt='git tag'
 
 alias gd='git difftool'
 alias gdl="git ll -1"
