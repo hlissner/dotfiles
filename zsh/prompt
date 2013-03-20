@@ -3,37 +3,50 @@
 function short_pwd() {
     SHORTPWD=`print -Pn "%4~"`
     [[ "${SHORT_PWD:0:1}" =~ "[^/~]" ]] && SHORT_PWD=".../$SHORT_PWD"
+    echo -n $SHORTPWD
+}
 
-    echo $SHORTPWD
+function git_prompt() {
+    if [ "`git_prompt_info`" ]; then
+        echo -n "$(git_prompt_info)"
+    fi
 }
 
 # GIT Stuff
-ZSH_THEME_GIT_PROMPT_PREFIX=" %{$fg[white]%}"
+ZSH_THEME_GIT_PROMPT_PREFIX=" :%{$fg[white]%}"
 ZSH_THEME_GIT_PROMPT_SUFFIX=""
 ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[red]%}+%{$fg[white]%}"
-ZSH_THEME_GIT_PROMPT_CLEAN=""
+# ZSH_THEME_GIT_PROMPT_CLEAN=""
 
 
 ##################
 #  Build Prompt  #
 ##################
 
-# Left side
-PROMPT="
-"
-PROMPT+="%{$FX[bold]%}"
-if [[ -n $SSH_CLIENT ]]; then
-    PROMPT+="%{$BG[236]%}"
-    PROMPT+="%{$fg[white]%}$(hostname) "
-else
-    PROMPT+="%{$BG[234]%}"
-fi
-PROMPT+="%{$fg[cyan]%}"
-PROMPT+="$ "
-PROMPT+="%{$fg[white]%}"
+prompt() {
+    echo -n "%{$fg[red]%}"
+    echo -n "%{$FX[bold]%}"
 
-# Right side
-RPROMPT="%{$fg[cyan]%}"
-RPROMPT+='$(short_pwd)'
-RPROMPT+='$(git_prompt_info)'
-RPROMPT+='%{$reset_color%}'
+    # Show the hostname if this is an SSH session
+    if [[ -n $SSH_CLIENT ]]; then
+        echo -n "$(hostname) "
+    fi
+
+    # The prompt
+    echo -n "\$ %{$FX[no-bold]%}"
+}
+
+rprompt() {
+    # Make the rprompt a bright grey to set it apart
+    echo -n "%{$FG[245]%}"
+    echo -n '$(short_pwd)'
+
+    # Show the branch/status if in a git repo
+    echo -n '$(git_prompt)'
+
+    # Reset formatting for command output
+    echo -n "%{$reset_color%}"
+}
+
+PROMPT="$(prompt)"
+RPROMPT="$(rprompt)"
