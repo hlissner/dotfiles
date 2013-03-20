@@ -1,12 +1,12 @@
 #!/bin/bash
 
-function short_pwd() {
+prompt_pwd() {
     SHORTPWD=`print -Pn "%4~"`
     [[ "${SHORT_PWD:0:1}" =~ "[^/~]" ]] && SHORT_PWD=".../$SHORT_PWD"
     echo -n $SHORTPWD
 }
 
-function git_prompt() {
+prompt_git() {
     if [ "`git_prompt_info`" ]; then
         echo -n "$(git_prompt_info)"
     fi
@@ -39,10 +39,10 @@ prompt() {
 rprompt() {
     # Make the rprompt a bright grey to set it apart
     echo -n "%{$FG[245]%}"
-    echo -n '$(short_pwd)'
+    echo -n '$(prompt_pwd)'
 
     # Show the branch/status if in a git repo
-    echo -n '$(git_prompt)'
+    echo -n '$(prompt_git)'
 
     # Reset formatting for command output
     echo -n "%{$reset_color%}"
