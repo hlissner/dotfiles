@@ -43,13 +43,11 @@ function update {
     echoh "Updating EVERYTHING!"
     sudo -v
 
-    {
-        $SRC/../install/brew
-        echo
-        $SRC/../install/rvm
-        echo
-        $SRC/../install/vim
-    } | indent
+    $SRC/../install/brew
+    echo
+    $SRC/../install/rvm
+    echo
+    $SRC/../install/vim
 
     echoh "All done!"
 }
