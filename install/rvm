@@ -1,5 +1,7 @@
 #!/bin/zsh
 
+sudo -v
+
 if ! command-exists "rvm"; then
     # If RVM's not installed, install it and the rubies
     echoh "==> Rvm: Installing"
