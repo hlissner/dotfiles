@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+require 'colorize'
+
 # A start-script for my local webserver. Mac-only and requires Homebrew
 
 BASE = File.expand_path(File.dirname(File.dirname(__FILE__)))
@@ -7,34 +9,38 @@ PREFIX = `brew --prefix`.strip
 
 CONF = "#{BASE}/conf"
 PID  = "#{PREFIX}/var/run"
-WWW  = "#{PREFIX}/dev/www"
+WWW  = "#{PREFIX}/www"
 
 
 ## Services ###
 
+def cmd_exists(cmd)
+    return system("which #{cmd} 2>&1 >/dev/null")
+end
+
 SERVICES = {}
-if system("which php-fpm 2>&1 >/dev/null")
+if cmd_exists("php-fpm")
     SERVICES[:php] = {
         :bin  => `which php-fpm`.strip,
         :opts => "-p '/usr/local/var' -c '#{CONF}/php/php.ini' --fpm-config '#{CONF}/php/php-fpm.conf' --pid '#{PID}/php-fpm-pid'",
         :pid  => "#{PID}/php-fpm.pid"
     }
 end
-if system("which nginx 2>&1 >/dev/null")
+if cmd_exists("nginx")
     SERVICES[:nginx] = {
-        :bin  => `which nginx`.strip,
+        :bin  => "sudo #{`which nginx`.strip}",
         :opts => "-c '#{CONF}/nginx/nginx.conf'",
         :pid  => "#{PID}/nginx.pid"
     }
 end
-if system("which memcached 2>&1 >/dev/null")
+if cmd_exists("memcached")
     SERVICES[:memcached] = {
         :bin  => `which memcached`.strip,
         :opts => "-d -P '#{PID}/memcached.pid' -u #{`whoami`.strip}",
         :pid  => "#{PID}/memcached.pid"
     }
 end
-if system("which mysql.server 2>&1 >/dev/null")
+if cmd_exists("mysql.server")
     SERVICES[:db] = {
         :bin  => "su #{`whoami`.strip} -c #{`which mysql.server`.strip} start",
         :opts => "",
@@ -48,9 +54,9 @@ end
 def start
     SERVICES.each_pair do |key,opts|
         if File.exist?(opts[:pid])
-            puts "[WARNING] #{key} is already running."
+            puts " * #{key} is already running".red
         else
-            puts "[NOTICE] Starting #{key} ..."
+            puts " * Starting #{key}".green
             `#{opts[:bin]} #{opts[:opts]}`
         end
     end
@@ -59,11 +65,11 @@ end
 def stop
     SERVICES.each_pair do |key,opts|
         if File.exist?(opts[:pid])
-            puts "[NOTICE] Stopping #{key} ..."
-            `kill #{`cat #{opts[:pid]}`.strip}`
-            `rm #{opts[:pid]} >/dev/null 2>&1`
+            puts " * Stopping #{key}".green
+            `sudo kill #{`cat #{opts[:pid]}`.strip}`
+            `sudo rm #{opts[:pid]} >/dev/null 2>&1`
         else
-            puts "[WARNING] #{key} is not running."
+            puts " * #{key} is not running".red
         end
     end
 end
@@ -75,15 +81,13 @@ end
 
 # Change the local webserver's root to the current directory
 def chdir
-    if File.directory?(WWW)
-        `rm -r #{WWW}`
-    end
+    `rm -f #{WWW}`
     `ln -sf "#{`pwd`.strip}" "#{WWW}"`
     
     restart
 end
 
-def help
+def usage
     puts "Usage: web (start|stop|restart|chdir)"
     exit
 end
@@ -91,13 +95,8 @@ end
 
 ## Bootstrap ##
 
-if `id -u` != "0\n"
-    puts "Must be run as root!"
-    exit
-end
-
 if ARGV.length == 0
-    help
+    usage
 else
     case ARGV[0]
     when "start"
@@ -111,6 +110,6 @@ else
     when "chdir"
         chdir
     else
-        help
+        usage
     end
 end
