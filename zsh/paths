@@ -1,9 +1,5 @@
 #!/bin/bash
 
-if [ -d ~/Dropbox ]; then
-    PATH=~/Dropbox/dev/bin:$PATH
-fi
-
 if command-exists brew; then
     BREWDIR=`brew --prefix`
 
@@ -17,3 +13,7 @@ if command-exists brew; then
 fi
 
 PATH=$HOME/.rvm/bin:$PATH
+
+if [ -d ~/.dotfiles ]; then
+    PATH=~/.dotfiles/bin:$PATH
+fi
