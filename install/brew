@@ -5,7 +5,12 @@ if ! command-exists brew ; then
     
     # http://mxcl.github.com/homebrew/
     ruby <(curl -fsSkL raw.github.com/mxcl/homebrew/go) | indent
+    FORCE=1
+elif [ "$1" = "--force" ]; then
+    FORCE=1
+fi
 
+if [ $FORCE ]; then
     echoh "==> Homebrew: Installing essential brews"
     {
         # Install GNU core utilities (those that come with OS X are outdated)
