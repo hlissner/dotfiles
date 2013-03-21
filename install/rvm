@@ -17,7 +17,7 @@ if ! command-exists "rvm"; then
         rvm --default use system
 
         # A few prerequisites
-        sudo gem install bluecloth capistrano bundler
+        sudo gem install bluecloth capistrano bundler colorize
     } | indent
 
 else
