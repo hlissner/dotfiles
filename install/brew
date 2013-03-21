@@ -29,7 +29,6 @@ if ! command-exists brew ; then
         brew install php54 --with-fpm --with-imap --with-mysql --with-pgsql --without-apache
         brew install php54-imagick php54-mcrypt php54-xdebug readline
     } | indent
-
 else
     echoh "==> Homebrew: Updating"
     {

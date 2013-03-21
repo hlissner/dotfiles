@@ -1,7 +1,5 @@
 #!/bin/zsh
 
-source $(cd "$(dirname "$0")/.."; pwd)/zshrc
-
 if ! command-exists "brew"; then
     echo "Homebrew is required!"
     exit
@@ -17,6 +15,9 @@ if [ ! -e ~/.vimrc ]; then
 
     if [ -d ~/.vim ]; then
         rm -rf ~/.vim
+        rm ~/.vimrc
+        rm ~/.vimrc.bundles
+        rm ~/.gvimrc
     fi
     sh <(curl https://raw.github.com/hlissner/mlvim/master/install.sh -L) | indent
 fi
@@ -28,7 +29,8 @@ echoh "==> Vim: Updating..."
     | while read line; do cd $line && echo -n "$(basename $line): " && git pull; done
 } | indent
 
-if [ -d ~/.vim/bundle/YouCompleteMe ] && [ ! -e ~/.vim/bundle/YouCompleteMe/python/ycm_core.so ]; then
+YVM_DIR="~/.vim/bundle/YouCompleteMe"
+if [ -d $YVM_DIR ] && [ ! -e $YVM_DIR/python/ycm_core.so ]; then
     echoh "==> Vim: Trying to compile YCM"
     {
         brew install cmake
