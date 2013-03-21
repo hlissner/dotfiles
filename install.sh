@@ -1,22 +1,24 @@
 #!/bin/bash
 
-src=$(cd "$(dirname "$0")"; pwd)
+GREEN=$(tput setaf 2)
+RS=$(tput sgr0)
 
+src=$(cd "$(dirname "$0")"; pwd)
 if [ ! -d $src/install ]; then
-    echo
-    echo "* Cloning dotfiles repo"
-    git clone https://github.com/hlissner/dotfiles.git ~/.dotfiles
+    echo -e "$GREEN==> Cloning dotfiles repo"
+    git clone https://github.com/hlissner/dotfiles.git ~/.dotfiles | sed "s/^/  /"
     src="~/.dotfiles"
 fi
 
-$src/install/osx
-$src/install/zsh
-$src/install/brew
-$src/install/git
-$src/install/rvm
-$src/install/tmux
+{
+    $src/install/osx
+    $src/install/zsh
+    $src/install/brew
+    $src/install/git
+    $src/install/rvm
+    $src/install/tmux
+} | sed "s/^/  /"
 
-echo
 echo "Done!"
 echo "And if you want to install vim, run:"
 echo "   sh <(curl https://raw.github.com/hlissner/mlvim/master/install.sh -L)"

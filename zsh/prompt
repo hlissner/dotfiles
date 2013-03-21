@@ -1,5 +1,3 @@
-#!/bin/bash
-
 prompt_pwd() {
     SHORTPWD=`print -Pn "%4~"`
     [[ "${SHORT_PWD:0:1}" =~ "[^/~]" ]] && SHORT_PWD=".../$SHORT_PWD"

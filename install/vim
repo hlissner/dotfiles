@@ -1,37 +1,40 @@
 #!/bin/zsh
 
-if [ ! `command -v "brew"` ]; then
+source $(cd "$(dirname "$0")/.."; pwd)/zshrc
+
+if ! command-exists "brew"; then
     echo "Homebrew is required!"
     exit
 fi
 
-if [ ! `command -v "mvim"` ]; then
-    echo
-    echo "* Installing macvim"
-    brew install macvim --with-cscope --override-system-vim
+if ! command-exists "mvim"; then
+    echoh "==> Vim: Installing macvim"
+    brew install macvim --with-cscope --override-system-vim | indent
 fi
 
 if [ ! -e ~/.vimrc ]; then
-    echo
-    echo "* Installing vim rcfiles"
+    echoh "==> Vim: Installing vim rcfiles"
 
     if [ -d ~/.vim ]; then
         rm -rf ~/.vim
     fi
-    sh <(curl https://raw.github.com/hlissner/mlvim/master/install.sh -L)
+    sh <(curl https://raw.github.com/hlissner/mlvim/master/install.sh -L) | indent
 fi
 
-echo
-echo "* Updating vim..."
-vim +BundleInstall! +BundleClean! +q +q
+echoh "==> Vim: Updating..."
+{
+    find ~/.vim/bundle/ -type d -name .git \
+    | xargs -n 1 dirname \
+    | while read line; do cd $line && echo -n "$(basename $line): " && git pull; done
+} | indent
 
 if [ -d ~/.vim/bundle/YouCompleteMe ] && [ ! -e ~/.vim/bundle/YouCompleteMe/python/ycm_core.so ]; then
-    echo
-    echo "* Trying to compile YCM"
-    brew install cmake
-    cd ~/.vim/bundle/YouCompleteMe
-    ./install.sh --clang-completer
+    echoh "==> Vim: Trying to compile YCM"
+    {
+        brew install cmake
+        cd ~/.vim/bundle/YouCompleteMe
+        ./install.sh --clang-completer
+    } | indent
 fi
 
-echo
-echo "Done!"
+echoh "==> Vim: DONE!"

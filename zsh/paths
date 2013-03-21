@@ -4,7 +4,7 @@ if [ -d ~/Dropbox ]; then
     PATH=~/Dropbox/dev/bin:$PATH
 fi
 
-if command_exists brew; then
+if command-exists brew; then
     BREWDIR=`brew --prefix`
 
     PATH=$BREWDIR/sbin:$PATH

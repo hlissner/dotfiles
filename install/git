@@ -1,33 +1,27 @@
-#!/bin/bash
+#!/bin/zsh
 
-echo "[GIT]"
-
-if [ ! `command -v "git"` ]; then
-    if [ ! `command -v "brew"` ]; then
+if ! command-exists git; then
+    if ! command-exists brew; then
         echo "Homebrew is required!"
         exit
     fi
 
-    echo
-    echo "* Installing git"
-    brew install git
+    echoh "==> Git: Installing"
+    brew install git | indent
 fi
 
 if [ ! -e /usr/local/bin/branch ]; then
-    echo
-    echo "* Installing git-friendly"
+    echoh "==> Git: Installing git-friendly"
 
     # https://github.com/jamiew/git-friendly
     bash < <(curl https://raw.github.com/jamiew/git-friendly/master/install.sh)
 fi
 
 # Create links
-echo
-echo "* Setting up symlinks"
-src=$(cd "$(dirname "$0")/.."; pwd)
+echoh "==> Git: Setting up symlinks"
 
+src=$(cd "$(dirname "$0")/.."; pwd)
 ln -sf $src/gitignore ~/.gitignore
 ln -sf $src/gitconfig ~/.gitconfig
 
-echo
-echo "Done!"
+echoh "==> Git: DONE!"

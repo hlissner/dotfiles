@@ -4,8 +4,6 @@ plugins=(laravel ruby python brew)
 source $ZSH/oh-my-zsh.sh
 
 # Source component rcfiles
-source ~/.zsh/functions
-source ~/.zsh/paths
 source ~/.zsh/aliases
 source ~/.zsh/config
 source ~/.zsh/completion

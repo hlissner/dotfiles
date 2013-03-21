@@ -1,21 +1,19 @@
-#!/bin/bash
+#!/bin/zsh
 
-echo "[TMUX]"
-if [ ! `command -v "brew"` ]; then
+if ! command-exists brew; then
     echo "Requires homebrew"
     exit
 fi
 
-echo
 if [ ! `command -v "tmux"` ]; then
-    echo "* Installing tmux & reattach-to-user-namespace"
-    brew install tmux reattach-to-user-namespace libevent
+    echoh "==> Tmux: Installing tmux & reattach-to-user-namespace"
+    brew install tmux reattach-to-user-namespace libevent | indent
 else
-    echo "* Tmux is already installed!"
+    echoh "==> Tmux: already installed!"
 fi
 
-echo
-echo "* Setting up symlinks"
+echoh "==> Tmux: Setting up symlinks"
 src=$(cd "$(dirname "$0")/.."; pwd)
-
 ln -sf $src/tmux.conf ~/.tmux.conf
+
+echoh "==> Tmux: DONE!"

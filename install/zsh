@@ -1,26 +1,27 @@
 #!/bin/bash
 
-echo "[ZSH]"
+echoh() {
+    echo -e "\033[01;38;5;2m$1\033[39m"
+}
 
 if [ ! -d ~/.oh-my-zsh ]; then
     # https://github.com/robbyrussell/oh-my-zsh
-    echo
-    echo "* Installing oh-my-zsh"
+    echoh "==> ZSH: Installing oh-my-zsh"
     curl -L https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh | sh
     
     # Set new shell
-    echo
-    echo "* Changing shell"
+    echoh "==> ZSH: Changing shell"
     chsh -s /bin/zsh
 fi
 
 # Create links
-echo
-echo "* Setting up symlinks"
+echoh "==> ZSH: Setting up symlinks"
+
 src=$(cd "$(dirname "$0")/.."; pwd)
-
-ln -sf $src/zshrc ~/.zshrc
+[ -d ~/.zsh ] && rm ~/.zsh
 ln -sf $src/zsh ~/.zsh
+ln -sf $src/zshrc ~/.zshrc
+ln -sf $src/zshenv ~/.zshenv
+ln -sf $src/bashrc ~/.bashrc
 
-echo
-echo "Done!"
+echoh "==> ZSH: DONE!"
