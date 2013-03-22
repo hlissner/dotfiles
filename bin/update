@@ -1,9 +1,9 @@
 #!/bin/zsh
 
 echo "Updating everything!"
-sudo -v
 
-~/.dotfiles/install/brew
+pkg-update
+
 echo
 ~/.dotfiles/install/rvm
 echo
