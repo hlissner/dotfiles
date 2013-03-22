@@ -46,8 +46,12 @@ alias gdl="git ll -1"
 alias gr='git reset'
 alias gbr='git br'
 
+# Moving around ################
+if command_exists "brew"; then
+    alias brewp='cd `brew --prefix`'
+fi
+
 # Laravel ######################
-# (already provided in zsh plugin)
-#alias artisan='php artisan'
-#alias bob='php artisan bob::build'
+alias artisan='php artisan'
+alias bob='php artisan bob::build'
 
