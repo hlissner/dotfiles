@@ -2,7 +2,7 @@
 
 GREEN=$(tput setaf 2)
 RS=$(tput sgr0)
-src=$BASH_SOURCE
+src=$(dirname "$BASH_SOURCE")
 
 source $src/zsh/functions
 
