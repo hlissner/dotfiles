@@ -1,6 +1,6 @@
 # Dotfiles of a spaghetti code warrior
 
-My mac dotfiles.
+My mac and debian/ubuntu dotfiles.
 
 ## Installation
 
