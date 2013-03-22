@@ -5,19 +5,37 @@ unsetopt correct_all
 HISTFILE=~/.histfile
 HISTSIZE=10000
 SAVEHIST=10000
-setopt share_history
-setopt hist_ignore_dups
-setopt hist_ignore_space
-setopt extended_history
-setopt no_beep
-setopt extendedglob
-setopt prompt_subst
-setopt complete_in_word
-setopt no_auto_menu
-setopt no_always_last_prompt
-setopt promptsubst
-setopt autopushd
-setopt pushdignoredups
+
+# Don't overwrite, append!
+setopt APPEND_HISTORY
+
+# Sharing history between shell instances
+setopt SHARE_HISTORY
+
+# If I type cd and then cd again, only save the last one
+setopt HIST_IGNORE_DUPS
+
+# Don't save lines that are just whitespace
+setopt HIST_IGNORE_SPACE
+setopt HIST_NO_STORE
+
+# Reduce     extra    whitespace
+setopt HIST_REDUCE_BLANKS
+
+# Save time and how long a command ran
+setopt EXTENDED_HISTORY
+
+# Beep boop
+setopt NO_BEEP
+
+setopt EXTENDED_GLOB
+setopt PROMPT_SUBST
+setopt COMPLETE_IN_WORD
+setopt NO_AUTO_MENU
+setopt NO_ALWAYS_LAST_PROMPT
+setopt PROMPTSUBST
+setopt AUTO_PUSHD
+setopt PUSHD_IGNORE_DUPS
 
 export EDITOR=vim
 export RUBYOPT=rubygems
