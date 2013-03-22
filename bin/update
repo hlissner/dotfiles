@@ -6,15 +6,16 @@ sudo -v
 cd ~/.dotfiles
 echo "Updating ALL the things!"
 
+# Update these scripts!
 echo "==> Updating dotfiles"
 git pull
 
-echo "==> Updating installed packages"
 # Updating the system with it's package manager (brew, apt-get, etc.)
+echo "==> Updating installed packages"
 pkg-update
 
+# Then the rest
 echo
 install/rvm
-
 echo
 install/vim
