@@ -24,7 +24,7 @@ end
 SERVICES = {}
 if cmd_exists("php-fpm")
     SERVICES[:php] = {
-        :bin  => "sudo #{`which php-fpm`.strip}",
+        :bin  => `which php-fpm`.strip,
         :opts => "-p '/usr/local/var' -c '#{CONF}/php/php.ini' --fpm-config '#{CONF}/php/php-fpm.conf' --pid '#{PID}/php-fpm-pid'",
         :pid  => "#{PID}/php-fpm.pid"
     }
