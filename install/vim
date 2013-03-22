@@ -30,7 +30,7 @@ fi
 if [ ! -e ~/.vimrc ]; then
     echo-g "==> Installing vim rcfiles"
 
-    if [ -h ~/.vim ]; then
+    if [ -d ~/.vim ]; then
         rm -rf ~/.vim
         rm ~/.vimrc
         rm ~/.vimrc.bundles
