@@ -1,5 +1,3 @@
-#!/bin/bash
-
 if command-exists brew; then
     BREWDIR=`brew --prefix`
 

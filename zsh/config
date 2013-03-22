@@ -1,6 +1,4 @@
-#!/bin/bash
- 
-# Disable autocorrect behavior
+# Disable autocorrect behavior, very annoying!
 unsetopt correct_all
 
 # HISTORY

@@ -1,7 +1,4 @@
-#!/bin/zsh
-
-SRC=$(cd "$(dirname "$0")"; pwd)
-
+# Check to see if a command exists
 function command-exists {
     command -v "$1" &> /dev/null
 }
