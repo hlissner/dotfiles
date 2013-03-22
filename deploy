@@ -2,12 +2,11 @@
 
 GREEN=$(tput setaf 2)
 RS=$(tput sgr0)
-src=$(dirname "$BASH_SOURCE")
 INSTALL_DIR="~/.dotfiles"
 
 ##### GIT & DOTFILES ######
 # If the install folder doesn't exist, you bash < <(curl ...)'d this script!
-if [ ! -d $src/install ]; then
+if [ ! -d $INSTALL_DIR ]; then
     # Check for git and install it if necessary
     if ! command_exists git; then
         echo "==> GIT isn't installed!"
@@ -22,8 +21,8 @@ if [ ! -d $src/install ]; then
     echo "==> Cloning dotfiles repo"
     git clone https://github.com/hlissner/dotfiles.git "$INSTALL_DIR"
 
-    do_link "$INSTALL_DIR/gitconfig" ~/.gitconfig
-    do_link "$INSTALL_DIR/gitignore" ~/.gitignore
+    ln -sf "$INSTALL_DIR/gitconfig" ~/.gitconfig
+    ln -sf "$INSTALL_DIR/gitignore" ~/.gitignore
 fi
 
 source "$INSTALL_DIR/zsh/functions"
@@ -31,7 +30,7 @@ source "$INSTALL_DIR/zsh/functions"
 ###### DEPENDENCIES #######
 if is_mac; then
     # Set up the OSX options
-    $src/install/osx
+    $INSTALL_DIR/install/osx
 
     # Detect homebrew; install it if necessary
     if ! command_exists brew; then
@@ -74,7 +73,7 @@ if is_mac; then
         echo-r "==> Homebrew is already installed!"
     fi
 elif is_linux; then
-    ehco-g "==> Installing dependencies"
+    echo-g "==> Installing dependencies"
     pkg-install curl python ruby wget zsh
 
     echo-g "==> Aptitude: Updating"
@@ -85,16 +84,16 @@ elif is_linux; then
 fi
 
 # Install & setup ZSH shell
-$src/install/zsh
+$INSTALL_DIR/install/zsh
 
 # Install RVM & setup 1.8.7, 1.9.2 rubies
-$src/install/rvm
+$INSTALL_DIR/install/rvm
 
 # Install & setup TMUX
-$src/install/tmux
+$INSTALL_DIR/install/tmux
 
 # Install & setup VIM
-$src/install/vim
+$INSTALL_DIR/install/vim
 
 # Wrap things up
 echo
