@@ -3,29 +3,30 @@
 GREEN=$(tput setaf 2)
 RS=$(tput sgr0)
 src=$(dirname "$BASH_SOURCE")
-
-source $src/zsh/functions
+INSTALL_DIR="~/.dotfiles"
 
 ##### GIT & DOTFILES ######
 # If the install folder doesn't exist, you bash < <(curl ...)'d this script!
 if [ ! -d $src/install ]; then
     # Check for git and install it if necessary
     if ! command_exists git; then
-        echo-r "==> GIT isn't installed!"
-        echo-g "==> Installing GIT"
+        echo "==> GIT isn't installed!"
+        echo "==> Installing GIT"
         pkg-install git
-
-        do_link $src/gitconfig ~/.gitconfig
-        do_link $src/gitignore ~/.gitignore
 
         # https://github.com/jamiew/git-friendly
         bash < <(curl https://raw.github.com/jamiew/git-friendly/master/install.sh)
     fi
 
     # Get the dotfiles
-    echo-g "==> Cloning dotfiles repo"
-    git clone https://github.com/hlissner/dotfiles.git ~/.dotfiles
+    echo "==> Cloning dotfiles repo"
+    git clone https://github.com/hlissner/dotfiles.git "$INSTALL_DIR"
+
+    do_link "$INSTALL_DIR/gitconfig" ~/.gitconfig
+    do_link "$INSTALL_DIR/gitignore" ~/.gitignore
 fi
+
+source "$INSTALL_DIR/zsh/functions"
 
 ###### DEPENDENCIES #######
 if is_mac; then
