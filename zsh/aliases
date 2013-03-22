@@ -47,6 +47,7 @@ alias gr='git reset'
 alias gbr='git br'
 
 # Moving around ################
+alias dot='cd ~/.dotfiles'
 if command_exists "brew"; then
     alias brewp='cd `brew --prefix`'
 fi
