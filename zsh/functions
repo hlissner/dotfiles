@@ -8,14 +8,7 @@ function quick-look {
     (( $# > 0 )) && qlmanage -p $* &>/dev/null &
 }
 
-function echoh {
-    echo -e "\e[0;01m\e[0;32m$1\e[00m"
-}
-
-function indent {
-    sed 's/^/  /'
-}
-
+# Extract a compressed file with the appropriate command
 function extract {
     if [ -f $1 ] ; then
         case $1 in
@@ -34,17 +27,4 @@ function extract {
     else
         echo "'$1' is not a valid file"
     fi
-}
-
-function update {
-    echoh "Updating EVERYTHING!"
-    sudo -v
-
-    $SRC/../install/brew
-    echo
-    $SRC/../install/rvm
-    echo
-    $SRC/../install/vim
-
-    echoh "All done!"
 }
