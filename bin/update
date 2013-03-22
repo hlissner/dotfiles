@@ -1,0 +1,10 @@
+#!/bin/zsh
+
+echo "Updating everything!"
+sudo -v
+
+~/.dotfiles/install/brew
+echo
+~/.dotfiles/install/rvm
+echo
+~/.dotfiles/install/vim
