@@ -3,13 +3,18 @@
 # Ask for the password up front
 sudo -v
 
-echo "Updating everything!"
+cd ~/.dotfiles
+echo "Updating ALL the things!"
 
+echo "==> Updating dotfiles"
+git pull
+
+echo "==> Updating installed packages"
 # Updating the system with it's package manager (brew, apt-get, etc.)
 pkg-update
 
 echo
-~/.dotfiles/install/rvm
+install/rvm
 
 echo
-~/.dotfiles/install/vim
+install/vim
