@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
 
-require 'colorize'
+if ENV['USER'] == "root"
+    puts "Must not be run as root!"
+    exit 1
+end
 
 # A start-script for my local webserver. Mac-only and requires Homebrew
 
@@ -21,7 +24,7 @@ end
 SERVICES = {}
 if cmd_exists("php-fpm")
     SERVICES[:php] = {
-        :bin  => `which php-fpm`.strip,
+        :bin  => "sudo #{`which php-fpm`.strip}",
         :opts => "-p '/usr/local/var' -c '#{CONF}/php/php.ini' --fpm-config '#{CONF}/php/php-fpm.conf' --pid '#{PID}/php-fpm-pid'",
         :pid  => "#{PID}/php-fpm.pid"
     }
@@ -42,7 +45,7 @@ if cmd_exists("memcached")
 end
 if cmd_exists("mysql.server")
     SERVICES[:db] = {
-        :bin  => "su #{`whoami`.strip} -c #{`which mysql.server`.strip} start",
+        :bin  => "#{`which mysql.server`.strip} start",
         :opts => "",
         :pid  => "#{PREFIX}/var/mysql/#{`hostname`}.pid"
     }
@@ -54,9 +57,9 @@ end
 def start
     SERVICES.each_pair do |key,opts|
         if File.exist?(opts[:pid])
-            puts " * #{key} is already running".red
+            puts " * #{key} is already running"
         else
-            puts " * Starting #{key}".green
+            puts " * Starting #{key}"
             `#{opts[:bin]} #{opts[:opts]}`
         end
     end
@@ -65,11 +68,11 @@ end
 def stop
     SERVICES.each_pair do |key,opts|
         if File.exist?(opts[:pid])
-            puts " * Stopping #{key}".green
+            puts " * Stopping #{key}"
             `sudo kill #{`cat #{opts[:pid]}`.strip}`
             `sudo rm #{opts[:pid]} >/dev/null 2>&1`
         else
-            puts " * #{key} is not running".red
+            puts " * #{key} is not running"
         end
     end
 end
