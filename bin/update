@@ -1,10 +1,15 @@
 #!/bin/zsh
 
+# Ask for the password up front
+sudo -v
+
 echo "Updating everything!"
 
+# Updating the system with it's package manager (brew, apt-get, etc.)
 pkg-update
 
 echo
 ~/.dotfiles/install/rvm
+
 echo
 ~/.dotfiles/install/vim
