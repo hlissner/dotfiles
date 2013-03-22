@@ -1,0 +1,42 @@
+function is_deb {
+    command_exists apt-get
+}
+
+function is_mac {
+    [[ $(uname) == 'Darwin' ]]
+}
+
+function is_linux {
+    [[ $(uname) == 'Linux' ]]
+}
+
+if is_mac; then
+
+    function pkg-install() {
+        brew install $1
+    }
+
+    function pkg-remove() {
+        brew remove $1
+    }
+
+    function pkg-update() {
+        brew update && brew upgrade
+    }
+
+elif is_deb; then
+
+    function pkg-install() {
+        sudo apt-get install $1
+    }
+
+    function pkg-remove() {
+        sudo apt-get remove $1
+    }
+
+    function pkg-update() {
+        sudo apt-get update && sudo apt-get upgrade
+    }
+    
+fi
+

@@ -4,8 +4,8 @@ My mac dotfiles.
 
 ## Installation
 
-    sh <(curl https://raw.github.com/hlissner/dotfiles/master/install.sh -L)
+    bash <(curl https://raw.github.com/hlissner/dotfiles/master/deploy -L)
 
 ## And if you want vim...
 
-    sh <(curl https://raw.github.com/hlissner/mlvim/master/install.sh -L)
+    bash <(curl https://raw.github.com/hlissner/mlvim/master/install.sh -L)

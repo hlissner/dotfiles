@@ -1,18 +1,16 @@
 #!/bin/zsh
 
-if ! command-exists brew; then
-    echo "Requires homebrew"
-    exit
-fi
-
-if [ ! `command -v "tmux"` ]; then
-    echo "==> Tmux: Installing tmux & reattach-to-user-namespace"
-    brew install tmux reattach-to-user-namespace libevent | indent
+if ! command_exists "tmux"; then
+    echo-g "==> Installing tmux"
+    pkg-install tmux
+    if is_mac; then
+        brew install reattach-to-user-namespace libevent
+    fi
 else
-    echo "==> Tmux: already installed!"
+    echo-r "==> Tmux is already installed!"
 fi
 
-echo "==> Tmux: Setting up symlinks"
-ln -sf ~/.dotfiles/tmux.conf ~/.tmux.conf
+echo-g "==> Setting up symlinks"
+do_link ~/.dotfiles/tmux.conf ~/.tmux.conf
 
-echo "==> Tmux: DONE!"
+echo-g "==> DONE!"

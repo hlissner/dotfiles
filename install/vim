@@ -1,19 +1,36 @@
 #!/bin/zsh
 
-if ! command-exists "brew"; then
-    echo "Homebrew is required!"
-    exit 1
+# Installing macvim/compiling vim
+if is_mac && ! command_exists "mvim"; then
+    echo-g "==> Installing macvim"
+    brew install macvim --with-cscope --override-system-vim
+elif is_deb; then
+    echo-g "==> Preparing to compile vim from source"
+    pkg-install libncurses5-dev libgnome2-dev libgnomeui-dev \
+        libgtk2.0-dev libatk1.0-dev libbonoboui2-dev \
+        libcairo2-dev libx11-dev libxpm-dev libxt-dev python-dev ruby-dev mercurial
+    pkg-remove vim vim-runtime gvim
+
+    cd ~
+    hg clone https://code.google.com/p/vim/
+    cd vim
+    echo-g "==> Compiling vim from source"
+    ./configure --with-features=huge \
+        --enable-rubyinterp \
+        --enable-pythoninterp \
+        --enable-perlinterp \
+echo
+        --enable-gui=gtk2 --enable-cscope --prefix=/usr
+    make VIMRUNTIMEDIR=/usr/share/vim/vim73
+    sudo make install
+    rm -rf ~/vim
 fi
 
-if ! command-exists "mvim"; then
-    echo "==> Vim: Installing macvim"
-    brew install macvim --with-cscope --override-system-vim | indent
-fi
-
+# Installing vim rcfiles
 if [ ! -e ~/.vimrc ]; then
-    echo "==> Vim: Installing vim rcfiles"
+    echo-g "==> Installing vim rcfiles"
 
-    if [ -d ~/.vim ]; then
+    if [ -h ~/.vim ]; then
         rm -rf ~/.vim
         rm ~/.vimrc
         rm ~/.vimrc.bundles
@@ -22,17 +39,19 @@ if [ ! -e ~/.vimrc ]; then
     sh <(curl https://raw.github.com/hlissner/mlvim/master/install.sh -L) | indent
 fi
 
-echo "==> Vim: Updating..."
+# Installing/updating vim bundles
+echo-g "==> Vim: Updating..."
 find ~/.vim/bundle/ -type d -name .git \
 | xargs -n 1 dirname \
 | while read line; do cd $line && echo -n "$(basename $line): " && git pull; done
 
+# Compiling YouCompleteMe
 YVM_DIR="~/.vim/bundle/YouCompleteMe"
 if [ -d $YVM_DIR ] && [ ! -e $YVM_DIR/python/ycm_core.so ]; then
-    echo "==> Vim: Trying to compile YCM"
-    brew install cmake
+    echo-g "==> Vim: Trying to compile YCM"
+    pkg-install cmake
     cd ~/.vim/bundle/YouCompleteMe
     ./install.sh --clang-completer
 fi
 
-echo "==> Vim: DONE!"
+echo-g "==> Vim: DONE!"

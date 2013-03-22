@@ -1,12 +1,12 @@
-if command-exists brew; then
-    BREWDIR=`brew --prefix`
+if command_exists brew; then
+    local BREWDIR=`brew --prefix`
 
     PATH=$BREWDIR/sbin:$PATH
     PATH=$BREWDIR/bin:$PATH
 
     COREUTIL=`brew --prefix coreutils`
     if [ -d "$COREUTIL" ]; then
-        PATH=`brew --prefix coreutils`:$PATH
+        PATH=$COREUTIL/libexec/bin/gnubin:$PATH
     fi
 fi
 

@@ -1,0 +1,17 @@
+
+RED=$bg[red]
+red=$fg[red]
+GREEN=$bg[green]
+green=$fg[green]
+YELLOW=$bg[yellow]
+yellow=$fg[yellow]
+BOLD=$FX[bold]
+NC=$reset_color
+
+function echo-g {
+    echo -e "$green$1$NC"
+}
+
+function echo-r {
+    echo -e "$red$1$NC"
+}

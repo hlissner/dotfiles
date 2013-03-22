@@ -1,7 +1,3 @@
-# Check to see if a command exists
-function command-exists {
-    command -v "$1" &> /dev/null
-}
 
 # Open a file in Mac OS's quick-look
 function quick-look {
@@ -28,3 +24,8 @@ function extract {
         echo "'$1' is not a valid file"
     fi
 }
+
+# Source library
+source ~/.dotfiles/zsh/lib/util
+source ~/.dotfiles/zsh/lib/output
+source ~/.dotfiles/zsh/lib/os

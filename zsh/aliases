@@ -9,14 +9,8 @@ alias l.='ls -Ad .*'
 alias du='du -h -d 1'
 alias q='exit'
 
-# Directories ##################
-alias dev='cd /usr/local/dev'
-alias w='cd ~/Work/'
-alias wd='cd ~/Work/Dev/'
-alias wp='cd ~/Work/Projects/'
-
 # Apps #########################
-if command-exists mvim; then
+if command_exists mvim; then
     alias v='mvim'
 else
     alias v='vim'

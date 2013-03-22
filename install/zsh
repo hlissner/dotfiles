@@ -2,20 +2,19 @@
 
 if [ ! -d ~/.oh-my-zsh ]; then
     # https://github.com/robbyrussell/oh-my-zsh
-    echo "==> ZSH: Installing oh-my-zsh"
+    echo-g "==> ZSH: Installing oh-my-zsh"
     curl -L https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh | sh
     
     # Set new shell
-    echo "==> ZSH: Changing shell"
+    echo-g "==> ZSH: Changing shell"
     chsh -s /bin/zsh
 fi
 
 # Create links
-echo "==> ZSH: Setting up symlinks"
-[ -d ~/.zsh ] && rm ~/.zsh
-ln -sf ~/.dotfiles/zsh ~/.zsh
-ln -sf ~/.dotfiles/zshrc ~/.zshrc
-ln -sf ~/.dotfiles/zshenv ~/.zshenv
-ln -sf ~/.dotfiles/bashrc ~/.bashrc
+echo-g "==> ZSH: Setting up symlinks"
+do_link ~/.dotfiles/zsh ~/.zsh
+do_link ~/.dotfiles/zshrc ~/.zshrc
+do_link ~/.dotfiles/zshenv ~/.zshenv
+do_link ~/.dotfiles/bashrc ~/.bashrc
 
-echo "==> ZSH: DONE!"
+echo-g "==> ZSH: DONE!"

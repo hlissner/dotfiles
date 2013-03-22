@@ -1,0 +1,16 @@
+
+# Check to see if a command exists
+function command_exists {
+    command -v "$1" &> /dev/null
+}
+
+function do_log {
+    printf "[%s] %s: %s" "$(`basename $BASH_SOURCE`)" "`date`" "$1" >> $logfile
+}
+
+function do_link {
+    if [ -h "$2" ]; then
+        rm "$2"
+    fi
+    ln -sf "$1" "$2"
+}
