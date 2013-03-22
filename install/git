@@ -6,22 +6,20 @@ if ! command-exists git; then
         exit
     fi
 
-    echoh "==> Git: Installing"
+    echo "==> Git: Installing"
     brew install git | indent
 fi
 
 if [ ! -e /usr/local/bin/branch ]; then
-    echoh "==> Git: Installing git-friendly"
+    echo "==> Git: Installing git-friendly"
 
     # https://github.com/jamiew/git-friendly
     bash < <(curl https://raw.github.com/jamiew/git-friendly/master/install.sh)
 fi
 
 # Create links
-echoh "==> Git: Setting up symlinks"
+echo "==> Git: Setting up symlinks"
+ln -sf ~/.dotfiles/gitignore ~/.gitignore
+ln -sf ~/.dotfiles/gitconfig ~/.gitconfig
 
-src=$(cd "$(dirname "$0")/.."; pwd)
-ln -sf $src/gitignore ~/.gitignore
-ln -sf $src/gitconfig ~/.gitconfig
-
-echoh "==> Git: DONE!"
+echo "==> Git: DONE!"

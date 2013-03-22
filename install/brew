@@ -1,7 +1,7 @@
 #!/bin/zsh
 
-if ! command-exists brew ; then
-    echoh "==> Homebrew: Installing"
+if ! command-exists brew; then
+    echo "==> Homebrew: Installing"
     
     # http://mxcl.github.com/homebrew/
     ruby <(curl -fsSkL raw.github.com/mxcl/homebrew/go) | indent
@@ -10,43 +10,41 @@ elif [ "$1" = "--force" ]; then
     FORCE=1
 fi
 
+echo "==> Homebrew: Updating"
+# Make sure we’re using the latest Homebrew
+brew update
+
 if [ $FORCE ]; then
-    echoh "==> Homebrew: Installing essential brews"
-    {
-        # Install GNU core utilities (those that come with OS X are outdated)
-        brew install coreutils
-        # echo "Don’t forget to add $(brew --prefix coreutils)/libexec/gnubin to \$PATH."
-        # Install GNU `find`, `locate`, `updatedb`, and `xargs`, g-prefixed
-        brew install findutils
-        # Install Bash 4
-        brew install bash
+    echo "==> Homebrew: Installing essential brews"
 
-        # Install wget with IRI support
-        brew install wget --enable-iri
+    # Install GNU core utilities (those that come with OS X are outdated)
+    brew install coreutils
+    # echo "Don’t forget to add $(brew --prefix coreutils)/libexec/gnubin to \$PATH."
+    # Install GNU `find`, `locate`, `updatedb`, and `xargs`, g-prefixed
+    brew install findutils
+    # Install Bash 4
+    brew install bash
 
-        # Install more recent versions of some OS X tools
-        brew tap homebrew/dupes
-        brew install homebrew/dupes/grep
-        brew tap josegonzalez/homebrew-php
+    # Install wget with IRI support
+    brew install wget --enable-iri
 
-        # Install everything else
-        brew install ack git rename tree python ruby node nginx memcached ctags macvim
-        brew install php54 --with-fpm --with-imap --with-mysql --with-pgsql --without-apache
-        brew install php54-imagick php54-mcrypt php54-xdebug readline
-    } | indent
+    # Install more recent versions of some OS X tools
+    brew tap homebrew/dupes
+    brew install homebrew/dupes/grep
+    brew tap josegonzalez/homebrew-php
+
+    # Install everything else
+    brew install ack git rename tree python node nginx memcached ctags macvim
+    brew install php54 --with-fpm --with-imap --with-mysql --with-pgsql --without-apache
+    brew install php54-imagick php54-mcrypt php54-xdebug readline
 else
-    echoh "==> Homebrew: Updating"
-    {
-        # Make sure we’re using the latest Homebrew
-        brew update
-
-        # Upgrade any already-installed formulae
-        brew upgrade
-    } | indent
+    echo "==> Homebrew: Upgrading"
+    # Upgrade any already-installed formulae
+    brew upgrade
 fi
 
-echoh "==> Homebrew: Cleaning up"
+echo "==> Homebrew: Cleaning up"
 # Remove outdated versions from the cellar
-brew cleanup | indent
+brew cleanup
 
-echoh "==> Homebrew: DONE!"
+echo "==> Homebrew: DONE!"

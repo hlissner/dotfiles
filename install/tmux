@@ -6,14 +6,13 @@ if ! command-exists brew; then
 fi
 
 if [ ! `command -v "tmux"` ]; then
-    echoh "==> Tmux: Installing tmux & reattach-to-user-namespace"
+    echo "==> Tmux: Installing tmux & reattach-to-user-namespace"
     brew install tmux reattach-to-user-namespace libevent | indent
 else
-    echoh "==> Tmux: already installed!"
+    echo "==> Tmux: already installed!"
 fi
 
-echoh "==> Tmux: Setting up symlinks"
-src=$(cd "$(dirname "$0")/.."; pwd)
-ln -sf $src/tmux.conf ~/.tmux.conf
+echo "==> Tmux: Setting up symlinks"
+ln -sf ~/.dotfiles/tmux.conf ~/.tmux.conf
 
-echoh "==> Tmux: DONE!"
+echo "==> Tmux: DONE!"
