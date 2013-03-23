@@ -19,7 +19,6 @@ elif is_deb; then
         --enable-rubyinterp \
         --enable-pythoninterp \
         --enable-perlinterp \
-echo
         --enable-gui=gtk2 --enable-cscope --prefix=/usr
     make VIMRUNTIMEDIR=/usr/share/vim/vim73
     sudo make install
