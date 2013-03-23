@@ -79,6 +79,12 @@ elif is_linux; then
     pkg-clean
 fi
 
+# https://github.com/jamiew/git-friendly
+if ! command_exists "branch"; then
+    echo-g "==> Installing git-friendly"
+    bash < <(curl https://raw.github.com/jamiew/git-friendly/master/install.sh)
+fi
+
 # Install & setup ZSH shell
 $INSTALL_DIR/install/zsh
 
