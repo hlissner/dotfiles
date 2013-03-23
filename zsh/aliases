@@ -8,8 +8,23 @@ alias la='ls -la'
 alias l.='ls -Ad .*'
 alias du='du -h -d 1'
 alias q='exit'
+alias sha1='openssl sha1'
+alias mkdir='mkdir -pv'
+# Resume download if possible
+alias wget='wget -c'
 
-# Apps #########################
+# Safety nets
+alias mv='mv -i'
+alias cp='cp -i'
+alias ln='ln -i'
+# do not delete / or prompt if deleting more than 3 files at a time #
+alias rm='rm -I --preserve-root'
+
+alias chown='chown --preserve-root'
+alias chmod='chmod --preserve-root'
+alias chgrp='chgrp --preserve-root'
+
+# vim
 if command_exists mvim; then
     alias v='mvim'
 else
