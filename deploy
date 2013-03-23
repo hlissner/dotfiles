@@ -1,33 +1,29 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-GREEN=$(tput setaf 2)
-RS=$(tput sgr0)
-INSTALL_DIR="~/.dotfiles"
+INSTALL_DIR="$HOME/.dotfiles"
 
 ##### GIT & DOTFILES ######
 # If the install folder doesn't exist, you bash < <(curl ...)'d this script!
-if [ ! -d $INSTALL_DIR ]; then
+if [ ! -d "$INSTALL_DIR" ]; then
     # Check for git and install it if necessary
-    if ! command_exists git; then
-        echo "==> GIT isn't installed!"
-        echo "==> Installing GIT"
-        pkg-install git
-
-        # https://github.com/jamiew/git-friendly
-        bash < <(curl https://raw.github.com/jamiew/git-friendly/master/install.sh)
+    if ! command -v "git" 2>&1 >/dev/null; then
+        echo "GIT isn't installed! Please install it."
+        exit 1
     fi
 
     # Get the dotfiles
-    echo "==> Cloning dotfiles repo"
+    echo "$(tput setaf 2)==> Cloning dotfiles repo$(tput sgr0)"
     git clone https://github.com/hlissner/dotfiles.git "$INSTALL_DIR"
 
     ln -sf "$INSTALL_DIR/gitconfig" ~/.gitconfig
     ln -sf "$INSTALL_DIR/gitignore" ~/.gitignore
+else
+    echo "$(tput setaf 1)==> Dotfiles are already installed$(tput sgr0)"
 fi
 
+###### DEPENDENCIES #######
 source "$INSTALL_DIR/zsh/functions"
 
-###### DEPENDENCIES #######
 if is_mac; then
     # Set up the OSX options
     $INSTALL_DIR/install/osx
@@ -60,7 +56,7 @@ if is_mac; then
         # Install everything else
         brew install macvim --override-system-vim --with-cscope
         brew install vim --with-ruby --with-python
-        brew install ack git rename tree node nginx memcached ctags
+        brew install ack rename tree node nginx memcached ctags
         brew install php54 --with-fpm --with-imap --with-mysql --with-pgsql --without-apache
         brew install php54-imagick php54-mcrypt php54-xdebug readline
 
