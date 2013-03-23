@@ -32,3 +32,5 @@ function echo-r {
 function indent {
     sed "s/^/  /"
 }
+
+# vim:set ft=zsh:
