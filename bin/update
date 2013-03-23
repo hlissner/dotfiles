@@ -19,12 +19,10 @@ pkg-update | indent
 
 echo-g "==> Updating zsh, rvm and vim"
 # Then the rest
-{
-    install/zsh
-    echo
-    install/rvm
-    echo
-    install/vim
-} | indent
+install/zsh
+echo
+install/rvm
+echo
+install/vim
 
 echo-g "==> All done!"
