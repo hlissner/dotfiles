@@ -39,10 +39,8 @@ alias gl='git ll'
 alias gf='git f'
 alias gg='git grep -Ii'
 alias gt='git tag'
-
 alias gd='git difftool'
 alias gdl="git ll -1"
-
 alias gr='git reset'
 alias gbr='git br'
 
@@ -52,7 +50,4 @@ if command_exists "brew"; then
     alias brewp='cd `brew --prefix`'
 fi
 
-# Laravel ######################
-alias artisan='php artisan'
-alias bob='php artisan bob::build'
-
+# vim:set ft=zsh:

@@ -15,3 +15,5 @@ PATH=$HOME/.rvm/bin:$PATH
 if [ -d ~/.dotfiles ]; then
     PATH=~/.dotfiles/bin:$PATH
 fi
+
+# vim:set ft=zsh:

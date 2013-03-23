@@ -14,3 +14,5 @@ function do_link {
     fi
     ln -sf "$1" "$2"
 }
+
+# vim:set ft=zsh:

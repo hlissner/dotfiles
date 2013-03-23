@@ -48,3 +48,5 @@ rprompt() {
 
 PROMPT="$(prompt)"
 RPROMPT="$(rprompt)"
+
+# vim:set ft=zsh:

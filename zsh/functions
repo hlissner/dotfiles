@@ -29,3 +29,5 @@ function extract {
 source ~/.dotfiles/zsh/lib/util
 source ~/.dotfiles/zsh/lib/output
 source ~/.dotfiles/zsh/lib/os
+
+# vim:set ft=zsh:

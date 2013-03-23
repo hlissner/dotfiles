@@ -41,3 +41,5 @@ export EDITOR=vim
 export RUBYOPT=rubygems
 
 COMPLETION_WAITING_DOTS="true"
+
+# vim:set ft=zsh:

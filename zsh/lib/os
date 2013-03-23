@@ -40,3 +40,4 @@ elif is_deb; then
     
 fi
 
+# vim:set ft=zsh:
