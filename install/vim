@@ -43,7 +43,7 @@ fi
 echo-g "==> Vim: Updating..."
 find ~/.vim/bundle/ -type d -name .git \
 | xargs -n 1 dirname \
-| while read line; do cd $line && echo -n "$(basename $line): " && git pull; done
+| while read line; do cd $line && echo -n "* $(basename $line): " && git pull; done
 
 # Compiling YouCompleteMe
 YVM_DIR="~/.vim/bundle/YouCompleteMe"
