@@ -48,7 +48,4 @@ if is_mac; then
     sudo gem update
 fi
 
-echo-g "==> Rvm: Cleaning up"
-rvm cleanup all
-
 echo-g "==> Rvm: DONE!"
