@@ -72,9 +72,6 @@ elif is_linux; then
 
     echo-g "==> Aptitude: Updating"
     pkg-update
-
-    echo-g "==> Aptitude: Cleaning up"
-    pkg-clean
 fi
 
 # https://github.com/jamiew/git-friendly
