@@ -25,7 +25,7 @@ alias chmod='chmod --preserve-root'
 alias chgrp='chgrp --preserve-root'
 
 # vim
-if command_exists mvim; then
+if [[ -n $SSH_CLIENT ]]; then
     alias v='mvim'
 else
     alias v='vim'
