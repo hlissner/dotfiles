@@ -30,18 +30,24 @@ if command_exists mvim; then
 else
     alias v='vim'
 fi
+
+# iptables
+if command_exists iptables; then
+    alias ipt='sudo iptables'
+fi
+
 alias rb='ruby'
 alias py='python'
 alias js='node'
 
-# Tmux #########################
+# tmux
 alias t='tmux'
 alias tn='tmux new -s'
 alias ta='tmux attach -t'
 alias tl='tmux list-sessions'
 alias td='tmux detach'
 
-# Git ##########################
+# git
 # I know the git oh-my-zsh plugin has most of these, but 
 # I prefer to specify my own. Check gitconfig to see what
 # the shorthand commands do.
@@ -57,9 +63,17 @@ alias gt='git tag'
 alias gd='git difftool'
 alias gdl="git ll -1"
 alias gr='git reset'
+alias ghr='git reset --hard'
 alias gbr='git br'
 
-# Moving around ################
+# Laravel
+alias artisan='php artisan'
+alias bob='php artisan bob::build'
+
+# debug
+alias header='curl -I'
+
+# directory shortcuts
 alias dot='cd ~/.dotfiles'
 if command_exists "brew"; then
     alias brewp='cd `brew --prefix`'
