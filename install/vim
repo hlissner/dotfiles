@@ -38,7 +38,7 @@ if [ ! -e ~/.vimrc ]; then
     if is_deb; then
         pkg-install cmake
     fi
-    sh <(curl https://raw.github.com/hlissner/mlvim/master/install.sh -L)
+    bash <(curl https://raw.github.com/hlissner/mlvim/master/install.sh -L)
 else
     # Installing/updating vim bundles
     echo-g "==> Vim: Updating..."
