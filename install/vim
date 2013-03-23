@@ -4,7 +4,7 @@
 if is_mac && ! command_exists "mvim"; then
     echo-g "==> Installing macvim"
     brew install macvim --with-cscope --override-system-vim
-elif is_deb; then
+elif is_deb && ! vim --version | grep "Compiled by $(whoami)@$(hostname)" 2>&1 >/dev/null; then
     echo-g "==> Preparing to compile vim from source"
     pkg-install libncurses5-dev libgnome2-dev libgnomeui-dev \
         libgtk2.0-dev libatk1.0-dev libbonoboui2-dev \
