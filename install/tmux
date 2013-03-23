@@ -10,7 +10,7 @@ else
     echo-r "==> Tmux is already installed!"
 fi
 
-echo-g "==> Setting up symlinks"
+echo-g "==> Tmux: Setting up symlinks"
 do_link ~/.dotfiles/tmux.conf ~/.tmux.conf
 
 echo-g "==> DONE!"
