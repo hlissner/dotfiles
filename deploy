@@ -54,8 +54,6 @@ if is_mac; then
         brew tap josegonzalez/homebrew-php
 
         # Install everything else
-        brew install macvim --override-system-vim --with-cscope
-        brew install vim --with-ruby --with-python
         brew install ack rename tree node nginx memcached ctags
         brew install php54 --with-fpm --with-imap --with-mysql --with-pgsql --without-apache
         brew install php54-imagick php54-mcrypt php54-xdebug readline
