@@ -4,15 +4,19 @@ function command_exists {
     command -v "$1" &> /dev/null
 }
 
+# log to a central logfile (specified by its caller globally)
 function do_log {
     printf "[%s] %s: %s" "$(`basename $BASH_SOURCE`)" "`date`" "$1" >> $logfile
 }
 
+# Check if a symlink exists before trying to create it
 function do_link {
     if [ -h "$2" ]; then
         rm "$2"
     fi
-    ln -sf "$1" "$2"
+    if [ ! -e "$2" ]; then
+        ln -sf "$1" "$2"
+    fi
 }
 
 # vim:set ft=zsh:
