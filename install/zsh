@@ -10,6 +10,10 @@ if [ ! -d ~/.oh-my-zsh ]; then
     # Set new shell
     echo-g "==> ZSH: Changing shell"
     chsh -s /bin/zsh
+else
+    echo-g "==> ZSH: Updating"
+    cd ~/.oh-my-zsh
+    git pull
 fi
 
 # Create links
