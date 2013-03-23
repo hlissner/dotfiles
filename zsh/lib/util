@@ -11,8 +11,8 @@ function do_log {
 
 # Check if a symlink exists before trying to create it
 function do_link {
-    if [ -h "$2" ]; then
-        rm "$2"
+    if [ -e "$2" ]; then
+        rm -rf "$2"
     fi
     if [ ! -e "$2" ]; then
         ln -sf "$1" "$2"
