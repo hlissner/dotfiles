@@ -26,9 +26,9 @@ alias chgrp='chgrp --preserve-root'
 
 # vim
 if [[ -n $SSH_CLIENT ]]; then
-    alias v='mvim'
-else
     alias v='vim'
+else
+    alias v='mvim'
 fi
 
 # iptables
