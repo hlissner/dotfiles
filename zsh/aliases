@@ -13,29 +13,6 @@ alias mkdir='mkdir -pv'
 # Resume download if possible
 alias wget='wget -c'
 
-# Safety nets
-alias mv='mv -i'
-alias cp='cp -i'
-alias ln='ln -i'
-# do not delete / or prompt if deleting more than 3 files at a time #
-alias rm='rm -I --preserve-root'
-
-alias chown='chown --preserve-root'
-alias chmod='chmod --preserve-root'
-alias chgrp='chgrp --preserve-root'
-
-# vim
-if [[ -n $SSH_CLIENT ]]; then
-    alias v='vim'
-else
-    alias v='mvim'
-fi
-
-# iptables
-if command_exists iptables; then
-    alias ipt='sudo iptables'
-fi
-
 alias rb='ruby'
 alias py='python'
 alias js='node'
@@ -75,8 +52,30 @@ alias header='curl -I'
 
 # directory shortcuts
 alias dot='cd ~/.dotfiles'
-if command_exists "brew"; then
+
+if is_linux; then
+    # Safety nets
+    alias mv='mv -i'
+    alias cp='cp -i'
+    alias ln='ln -i'
+    # do not delete / or prompt if deleting more than 3 files at a time #
+    alias rm='rm -I --preserve-root'
+
+    alias chown='chown --preserve-root'
+    alias chmod='chmod --preserve-root'
+    alias chgrp='chgrp --preserve-root'
+
+    # iptables
+    alias ipt='sudo iptables'
+elif is_mac; then
     alias brewp='cd `brew --prefix`'
+fi
+
+# vim
+if command_exists mvim && [[ ! -n $SSH_CLIENT ]]; then
+    alias v='mvim'
+else
+    alias v='vim'
 fi
 
 # vim:set ft=zsh:
