@@ -11,11 +11,11 @@ echo "Updating ALL the things!"
 
 # Update these scripts!
 echo-g "==> Updating dotfiles"
-git pull | indent
+git pull
 
 # Updating the system with it's package manager (brew, apt-get, etc.)
 echo-g "==> Updating installed packages"
-pkg-update | indent
+pkg-update
 
 echo-g "==> Updating zsh, rvm and vim"
 # Then the rest
