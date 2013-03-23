@@ -7,15 +7,21 @@ cd ~/.dotfiles
 echo "Updating ALL the things!"
 
 # Update these scripts!
-echo "==> Updating dotfiles"
-git pull
+echo-g "==> Updating dotfiles"
+git pull | indent
 
 # Updating the system with it's package manager (brew, apt-get, etc.)
-echo "==> Updating installed packages"
-pkg-update
+echo-g "==> Updating installed packages"
+pkg-update | indent
 
+echo-g "==> Updating zsh, rvm and vim"
 # Then the rest
-echo
-install/rvm
-echo
-install/vim
+{
+    install/zsh
+    echo
+    install/rvm
+    echo
+    install/vim
+} | indent
+
+echo-g "==> All done!"
