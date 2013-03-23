@@ -1,11 +1,13 @@
 #!/usr/bin/env zsh
 
+export rvm_ignore_dotfiles=yes
+
 if ! command_exists rvm; then
     # If RVM's not installed, install it and the rubies
     echo-g "==> Rvm: Installing"
 
     # https://rvm.io
-    curl -L https://get.rvm.io | bash -s stable --ruby | indent
+    curl -L https://get.rvm.io | bash -s stable --ruby
 
     echo-g "==> Rvm: Install rubies"
     # Install rubies and update rubygems
