@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+source ~/.dotfiles/zsh/functions
 
 if [ ! -d ~/.oh-my-zsh ]; then
     # https://github.com/robbyrussell/oh-my-zsh

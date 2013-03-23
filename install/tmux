@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
 if ! command_exists "tmux"; then
     echo-g "==> Installing tmux"

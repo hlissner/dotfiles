@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
 if ! command_exists rvm; then
     # If RVM's not installed, install it and the rubies

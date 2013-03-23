@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
 # Installing macvim/compiling vim
 if is_mac && ! command_exists "mvim"; then
