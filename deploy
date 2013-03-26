@@ -74,7 +74,7 @@ if is_mac; then
     fi
 elif is_linux; then
     echo-g "==> Installing dependencies"
-    pkg-install curl python ruby wget zsh
+    pkg-install curl python ruby wget zsh git-core
 
     echo-g "==> Aptitude: Updating"
     pkg-update
@@ -83,7 +83,7 @@ fi
 # https://github.com/jamiew/git-friendly
 if ! command_exists "branch"; then
     echo-g "==> Installing git-friendly"
-    bash < <(curl https://raw.github.com/jamiew/git-friendly/master/install.sh)
+    sudo bash < <(curl https://raw.github.com/jamiew/git-friendly/master/install.sh)
 fi
 
 # Install & setup ZSH shell
