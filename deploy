@@ -89,8 +89,10 @@ fi
 # Install & setup ZSH shell
 $INSTALL_DIR/install/zsh
 
-# Install RVM & setup 1.8.7, 1.9.2 rubies
-$INSTALL_DIR/install/rvm
+if is_mac; then
+    # Install RVM & setup 1.8.7, 1.9.2 rubies
+    $INSTALL_DIR/install/rvm
+fi
 
 # Install & setup TMUX
 $INSTALL_DIR/install/tmux

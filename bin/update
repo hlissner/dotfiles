@@ -21,8 +21,10 @@ echo-g "==> Updating zsh, rvm and vim"
 # Then the rest
 install/zsh
 echo
-install/rvm
-echo
+if is_mac; then
+    install/rvm
+    echo
+fi
 install/vim
 
 echo-g "==> All done!"
