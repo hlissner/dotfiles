@@ -78,4 +78,7 @@ else
     alias v='vim'
 fi
 
+# vagrant
+alias va='vagrant'
+
 # vim:set ft=zsh:
