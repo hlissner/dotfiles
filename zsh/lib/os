@@ -27,11 +27,11 @@ if is_mac; then
 elif is_deb; then
 
     function pkg-install() {
-        sudo apt-get install $1
+        sudo apt-get -y install $1
     }
 
     function pkg-remove() {
-        sudo apt-get remove $1
+        sudo apt-get -y remove $1
     }
 
     function pkg-update() {
