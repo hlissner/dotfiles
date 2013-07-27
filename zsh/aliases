@@ -16,6 +16,7 @@ alias wget='wget -c'
 alias rb='ruby'
 alias py='python'
 alias js='node'
+alias love="/Applications/love.app/Contents/MacOS/love"
 
 # tmux
 alias t='tmux'

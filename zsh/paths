@@ -16,4 +16,8 @@ if [ -d ~/.dotfiles ]; then
     PATH=~/.dotfiles/bin:$PATH
 fi
 
+if [ -d ~/Dropbox ]; then
+	PATH=~/Dropbox/dev/bin:$PATH
+fi
+
 # vim:set ft=zsh:
