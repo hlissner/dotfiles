@@ -1,6 +1,13 @@
 prompt_pwd() {
     SHORTPWD=`print -Pn "%4~"`
-    [[ "${SHORT_PWD:0:1}" =~ "[^/~]" ]] && SHORT_PWD=".../$SHORT_PWD"
+
+    if [[ -n "${ZSH_VERSION:-}" ]]
+        then _pwd="${SHORTPWD[0,1]}"
+        else _pwd="${SHORTPWD:0:1}"
+    fi
+
+    [[ $_pwd =~ "[^/~]" ]] && SHORTPWD=".../$SHORTPWD"
+
     echo -n $SHORTPWD
 }
 
@@ -28,7 +35,8 @@ prompt() {
 
     # Show the hostname if this is an SSH session
     if [[ -n $SSH_CLIENT ]]; then
-        echo -n "$(hostname) "
+        echo -n "%{$fg[blue]%}"
+        echo -n " $(hostname)"
     fi
 
     # The prompt
