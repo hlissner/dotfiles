@@ -22,8 +22,9 @@ ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[red]%}+%{$fg[white]%}"
 ##################
 
 prompt() {
-    echo -n "%{$fg[red]%}"
-    echo -n "%{$FX[bold]%}"
+    echo -n "%{$FG[242]%}"
+    echo -n "$(date '+%H:%M:%S')"
+    echo -n "%{$FG[white]%}"
 
     # Show the hostname if this is an SSH session
     if [[ -n $SSH_CLIENT ]]; then
@@ -31,7 +32,9 @@ prompt() {
     fi
 
     # The prompt
-    echo -n "\$ %{$FX[no-bold]%}"
+    echo -n "%{$fg[red]%}"
+    echo -n "%{$FX[bold]%}"
+    echo -n " \$ %{$FX[no-bold]%}"
 }
 
 rprompt() {
