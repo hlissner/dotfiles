@@ -2,7 +2,7 @@
 #  Aliases  #
 #############
 
-alias ls='ls -G'
+alias ls='ls -G --color'
 alias ll='ls -l'
 alias la='ls -la'
 alias l.='ls -Ad .*'
@@ -16,7 +16,9 @@ alias wget='wget -c'
 alias rb='ruby'
 alias py='python'
 alias js='node'
-alias love="/Applications/love.app/Contents/MacOS/love"
+if is_mac; then
+    alias love="/Applications/love.app/Contents/MacOS/love"
+fi
 
 # tmux
 alias t='tmux'
@@ -73,8 +75,12 @@ elif is_mac; then
 fi
 
 # vim
-if command_exists mvim && [[ ! -n $SSH_CLIENT ]]; then
-    alias v='mvim'
+if [[ ! -n $SSH_CLIENT ]]; then
+    if command_exists mvim; then
+        alias v='mvim'
+    else
+        alias v='gvim'
+    fi
 else
     alias v='vim'
 fi
