@@ -30,7 +30,7 @@ ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[red]%}+%{$fg[white]%}"
 
 prompt() {
     echo -n "%{$FG[242]%}"
-    echo -n "$(date '+%H:%M:%S')"
+    echo -n '$(date "+%H:%M:%S")'
     echo -n "%{$FG[white]%}"
 
     # Show the hostname if this is an SSH session
