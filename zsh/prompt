@@ -28,6 +28,11 @@ ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[red]%}+%{$fg[white]%}"
 #  Build Prompt  #
 ##################
 
+prompt_vimode() {
+    MODE_INDICATOR="-- COMMAND -- "
+    echo -n "${${KEYMAP/vicmd/$MODE_INDICATOR}/(main|viins)/}"
+}
+
 prompt() {
     echo -n "%{$FG[242]%}"
     echo -n '$(date "+%H:%M:%S")'
@@ -42,10 +47,14 @@ prompt() {
     # The prompt
     echo -n "%{$fg[red]%}"
     echo -n "%{$FX[bold]%}"
-    echo -n " \$ %{$FX[no-bold]%}"
+    echo -n " \$ "
+    echo -n "%{$FX[no-bold]%}"
+
 }
 
 rprompt() {
+    echo -n '$(prompt_vimode)'
+
     # Make the rprompt a bright grey to set it apart
     echo -n "%{$FG[245]%}"
     echo -n '$(prompt_pwd)'

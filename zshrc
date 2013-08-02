@@ -5,7 +5,7 @@ export ZSH=$HOME/.oh-my-zsh
 #  ruby: https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/ruby
 #  python: https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/python
 #  brew: https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/brew
-plugins=(ruby python brew)
+plugins=(ruby python brew vi-mode)
 
 # Liiiiive!
 source $ZSH/oh-my-zsh.sh

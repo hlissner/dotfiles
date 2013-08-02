@@ -42,4 +42,8 @@ export RUBYOPT=rubygems
 
 COMPLETION_WAITING_DOTS="true"
 
+# Make zsh prompt act like vi
+zle -N edit-command-line
+bindkey '^f' edit-command-line
+
 # vim:set ft=zsh:
