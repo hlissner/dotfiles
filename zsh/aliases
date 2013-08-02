@@ -2,7 +2,11 @@
 #  Aliases  #
 #############
 
-alias ls='ls -G --color'
+if is_mac; then
+    alias ls='ls -G'
+else
+    alias ls='ls -G --color'
+fi
 alias ll='ls -l'
 alias la='ls -la'
 alias l.='ls -Ad .*'
