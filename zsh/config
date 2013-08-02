@@ -46,4 +46,8 @@ COMPLETION_WAITING_DOTS="true"
 zle -N edit-command-line
 bindkey '^f' edit-command-line
 
+bindkey '^w' backward-kill-word
+bindkey '^a' beginning-of-line
+bindkey '^e' end-of-line
+
 # vim:set ft=zsh:
