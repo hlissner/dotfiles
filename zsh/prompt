@@ -1,3 +1,13 @@
+# GIT Stuff
+ZSH_THEME_GIT_PROMPT_PREFIX=" %{$fg[white]%}"
+ZSH_THEME_GIT_PROMPT_SUFFIX=""
+ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[red]%}+%{$fg[white]%}"
+# ZSH_THEME_GIT_PROMPT_CLEAN=""
+
+##################
+#  Build Prompt  #
+##################
+
 prompt_pwd() {
     SHORTPWD=`print -Pn "%4~"`
 
@@ -17,23 +27,23 @@ prompt_git() {
     fi
 }
 
-# GIT Stuff
-ZSH_THEME_GIT_PROMPT_PREFIX=" :%{$fg[white]%}"
-ZSH_THEME_GIT_PROMPT_SUFFIX=""
-ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[red]%}+%{$fg[white]%}"
-# ZSH_THEME_GIT_PROMPT_CLEAN=""
-
-
-##################
-#  Build Prompt  #
-##################
-
 prompt_vimode() {
+    # The prompt turns green in command mode, and red in insert mode
     MODE_INDICATOR=" %{$fg[green]%}\$ "
-    echo -n "${${KEYMAP/vicmd/$MODE_INDICATOR}/(main|viins)/ \$ }"
+    MODE_PROMPT="${${KEYMAP/vicmd/$MODE_INDICATOR}/(main|viins)/}"
+    if [ $MODE_PROMPT ]; then
+        echo -n $MODE_PROMPT
+    else
+        echo -n " \$ "
+    fi
 }
 
-prompt() {
+# prompts
+lprompt() {
+    # Start each prompt with a newline
+    echo
+
+    # Then the timestamp
     echo -n "%{$FG[242]%}"
     echo -n '$(date "+%H:%M:%S")'
     echo -n "%{$FG[white]%}"
@@ -47,10 +57,7 @@ prompt() {
     # The prompt
     echo -n "%{$fg[red]%}"
     echo -n "%{$FX[bold]%}"
-
     echo -n '$(prompt_vimode)'
-    # echo -n ' $ '
-
     echo -n "%{$reset_color%}"
 }
 
@@ -66,8 +73,7 @@ rprompt() {
     echo -n "%{$reset_color%}"
 }
 
-PROMPT="
-$(prompt)"
+PROMPT="$(lprompt)"
 RPROMPT="$(rprompt)"
 
 # vim:set ft=zsh:
