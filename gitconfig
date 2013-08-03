@@ -68,3 +68,10 @@
 
 [url "ssh://git@github.com"]
     insteadOf = "gh:"
+[url "ssh://git@github.com/hlissner"]
+    insteadOf = "gh:~"
+
+[url "ssh://git@bitbucket.org"]
+    insteadOf = "bb:"
+[url "ssh://git@bitbucket.org/hlissner"]
+    insteadOf = "bb:~"
