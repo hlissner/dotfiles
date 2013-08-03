@@ -29,8 +29,8 @@ ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[red]%}+%{$fg[white]%}"
 ##################
 
 prompt_vimode() {
-    MODE_INDICATOR="-- COMMAND -- "
-    echo -n "${${KEYMAP/vicmd/$MODE_INDICATOR}/(main|viins)/}"
+    MODE_INDICATOR=" %{$fg[green]%}\$ "
+    echo -n "${${KEYMAP/vicmd/$MODE_INDICATOR}/(main|viins)/ \$ }"
 }
 
 prompt() {
@@ -47,14 +47,14 @@ prompt() {
     # The prompt
     echo -n "%{$fg[red]%}"
     echo -n "%{$FX[bold]%}"
-    echo -n ' $ '
-    echo -n "%{$reset_color%}"
 
+    echo -n '$(prompt_vimode)'
+    # echo -n ' $ '
+
+    echo -n "%{$reset_color%}"
 }
 
 rprompt() {
-    echo -n '$(prompt_vimode)'
-
     # Make the rprompt a bright grey to set it apart
     echo -n "%{$FG[245]%}"
     echo -n '$(prompt_pwd)'
