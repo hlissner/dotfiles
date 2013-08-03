@@ -7,6 +7,7 @@ if is_mac; then
 else
     alias ls='ls -G --color'
 fi
+alias l='ls -1'
 alias ll='ls -l'
 alias la='ls -la'
 alias l.='ls -Ad .*'
