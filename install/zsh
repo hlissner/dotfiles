@@ -3,10 +3,8 @@
 source ~/.dotfiles/zsh/functions
 
 if [ ! -d ~/.oh-my-zsh ]; then
-    if is_linux; then
-        # Try to install zsh
-        pkg-install zsh
-    fi
+    # Try to install zsh
+    pkg-install zsh
 
     # https://github.com/robbyrussell/oh-my-zsh
     echo-g "==> ZSH: Installing oh-my-zsh"
