@@ -48,6 +48,7 @@ bindkey '^f' edit-command-line
 bindkey '^w' backward-kill-word
 bindkey '^a' beginning-of-line
 bindkey '^e' end-of-line
+bindkey ${terminfo[kdch1]} delete-char
 bindkey -M viins 'jj' vi-cmd-mode
 
 # Switch between block and line cursor (Only in iterm)
