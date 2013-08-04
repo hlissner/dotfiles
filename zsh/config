@@ -1,28 +1,4 @@
 
-# Switch between block and line cursor (Only in iterm)
-if is_mac; then
-    function zle-keymap-select zle-line-init
-    {
-        # change cursor shape in iTerm2
-        case $KEYMAP in
-            vicmd)      print -n -- "\E]50;CursorShape=0\C-G";;  # block cursor
-            viins|main) print -n -- "\E]50;CursorShape=1\C-G";;  # line cursor
-        esac
-
-        zle reset-prompt
-        zle -R
-    }
-
-    function zle-line-finish
-    {
-        print -n -- "\E]50;CursorShape=0\C-G"  # block cursor
-    }
-
-    zle -N zle-line-init
-    zle -N zle-line-finish
-    zle -N zle-keymap-select
-fi
-
 # Disable autocorrect behavior, very annoying!
 unsetopt correct_all
 
@@ -33,23 +9,17 @@ SAVEHIST=10000
 
 # Don't overwrite, append!
 setopt APPEND_HISTORY
-
 # Sharing history between shell instances
 setopt SHARE_HISTORY
-
 # If I type cd and then cd again, only save the last one
 setopt HIST_IGNORE_DUPS
-
 # Don't save lines that are just whitespace
 setopt HIST_IGNORE_SPACE
 setopt HIST_NO_STORE
-
 # Reduce     extra    whitespace
 setopt HIST_REDUCE_BLANKS
-
 # Save time and how long a command ran
 setopt EXTENDED_HISTORY
-
 # Beep boop
 setopt NO_BEEP
 
@@ -67,12 +37,39 @@ export RUBYOPT=rubygems
 
 COMPLETION_WAITING_DOTS="true"
 
+
+##################################
 # Make zsh prompt act like vi
+
 zle -N edit-command-line
+bindkey -v
 bindkey '^f' edit-command-line
 
 bindkey '^w' backward-kill-word
 bindkey '^a' beginning-of-line
 bindkey '^e' end-of-line
+bindkey -M viins 'jj' vi-cmd-mode
+
+# Switch between block and line cursor (Only in iterm)
+if is_mac; then
+    function zle-keymap-select zle-line-init {
+        # change cursor shape in iTerm2
+        case $KEYMAP in
+            vicmd)      print -n -- "\E]50;CursorShape=0\C-G";;  # block cursor
+            viins|main) print -n -- "\E]50;CursorShape=1\C-G";;  # line cursor
+        esac
+
+        zle reset-prompt
+        zle -R
+    }
+
+    function zle-line-finish {
+        print -n -- "\E]50;CursorShape=0\C-G"  # block cursor
+    }
+
+    zle -N zle-line-init
+    zle -N zle-line-finish
+    zle -N zle-keymap-select
+fi
 
 # vim:set ft=zsh:
