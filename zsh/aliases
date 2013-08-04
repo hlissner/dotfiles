@@ -33,23 +33,13 @@ alias tl='tmux list-sessions'
 alias td='tmux detach'
 
 # git
-# I know the git oh-my-zsh plugin has most of these, but 
-# I prefer to specify my own. Check gitconfig to see what
-# the shorthand commands do.
-alias g='git'
-alias ga='git add'
+# On top of oh-my-zsh's git aliases
+alias gs='git status'
+alias gst='git stash'
 alias gap='git add -p'
-alias gc='git commit'
-alias gs='git s'
-alias gl='git le'
-alias gf='git f'
-alias gg='git grep -Ii'
+alias gf='git ls-files | grep -i'
 alias gt='git tag'
-alias gd='git difftool'
-alias gdl="git ll -1"
-alias gr='git reset'
-alias ghr='git reset --hard'
-alias gbr='git br'
+alias gtl='git describe --tags --abbrev=0'
 
 # Laravel
 alias artisan='php artisan'
