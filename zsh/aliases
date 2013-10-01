@@ -52,20 +52,10 @@ alias header='curl -I'
 alias dot='cd ~/.dotfiles'
 
 if is_linux; then
-    # Safety nets
-    alias mv='mv -i'
-    alias cp='cp -i'
-    alias ln='ln -i'
-    # do not delete / or prompt if deleting more than 3 files at a time #
-    alias rm='rm -I --preserve-root'
-
-    alias chown='chown --preserve-root'
-    alias chmod='chmod --preserve-root'
-    alias chgrp='chgrp --preserve-root'
-
     # iptables
     alias ipt='sudo iptables'
 elif is_mac; then
+    alias b='brew'
     alias brewp='cd `brew --prefix`'
 fi
 
