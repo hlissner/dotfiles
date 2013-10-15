@@ -23,10 +23,10 @@ else
     brew tap homebrew/dupes
 
     brew install wget curl git
-    brew install tmux the_silver_search
+    brew install the_silver_search
     brew install lua --with-completion
     brew install macvim --devel --override-system-vim --with-lua
-    brew install vim --override-system-vi --with-lua --with-perl
+    # brew install vim --override-system-vi --with-lua --with-perl
 
     brew tap phinze/homebrew-cask
     brew install brew-cask
