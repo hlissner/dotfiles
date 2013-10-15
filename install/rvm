@@ -8,21 +8,6 @@ if ! command_exists rvm; then
 
     # https://rvm.io
     curl -L https://get.rvm.io | bash -s stable --ruby
-
-    echo-g "==> Rvm: Install rubies"
-    # Install rubies and update rubygems
-    rvm install 1.8.7
-    rvm install 2.0.0
-
-    if is_mac; then
-        # But ultimately, the system should be the default
-        rvm --default use system
-    else
-        rvm --default use 2.0.0
-    fi
-
-    # A few prerequisites
-    sudo gem install bluecloth capistrano bundler colorize
 fi
 
 # Update it
@@ -40,6 +25,7 @@ fi
 echo-g "==> Rvm: Updating rubies"
 rvm all do gem update --system
 rvm all do gem update
+rvm all do gem install bluecloth bundler colorize
 
 # Only mac needs this
 if is_mac; then
