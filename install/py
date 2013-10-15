@@ -1,0 +1,16 @@
+#!/usr/bin/env zsh
+
+if ! pkg-exists python; then
+    pkg-install python
+fi
+
+echo-g "==> Installing plugins"
+easy_install pip
+easy_install cython
+pip install PyOpenGL PyOpenGL_accelerate
+
+# Install sfml
+source ~/.dotfiles/install/sfml
+
+# Install v1.3 tag because there are bugs in 1.4 atm
+pip install git+git://github.com/Sonkun/python-sfml.git@v1.3
