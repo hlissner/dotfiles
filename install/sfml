@@ -1,0 +1,26 @@
+#!/usr/bin/env zsh
+
+if is_mac; then
+
+    # Get SFML 2.1
+    if [ ! -d /Library/Frameworks/SFML.framework ]; then
+        echo-g "==> Installing SFML 2.1"
+
+        mkdir ~/.temp-sfml
+        cd ~/.temp-sfml
+        wget http://www.sfml-dev.org/download/sfml/2.1/SFML-2.1-osx-clang-universal.tar.gz
+        tar -xvf SFML-2.1-osx-clang-universal.tar.gz
+        cd SFML-2.1-osx-clang.universal
+        sudo ./install.sh
+        rm -rf ~/.temp-sfml
+
+        pip install git+git://github.com/Sonkun/python-sfml.git
+    else
+        echo-r "==> SFML 2.1 already installed"
+    fi
+
+elif is_deb; then
+
+    echo-r "==> SFML install script for linux is incomplete!"
+
+fi
