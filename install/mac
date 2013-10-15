@@ -16,7 +16,10 @@ fi
 if [ ! -d /usr/local/Cellar ]; then
     echo-g "==> Installing homebrew"
     ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
+
+    echo-g "Done! Don't forget to install the Command Line Tools in XCode"
 else
+    echo-g "==> Installing all brews and apps"
     brew tap homebrew/dupes
 
     brew install wget curl git
