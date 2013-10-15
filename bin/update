@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
 # Ask for the administrator password upfront
 sudo -v
@@ -21,10 +21,15 @@ echo-g "==> Updating zsh, rvm and vim"
 # Then the rest
 install/zsh
 echo
-if is_mac; then
+
+# Only update rvm is it is installed
+if is_mac && command_exists rvm; then
     install/rvm
     echo
 fi
-install/vim
+
+if [ -d ~/.vim ]; then
+    install/vim
+fi
 
 echo-g "==> All done!"
