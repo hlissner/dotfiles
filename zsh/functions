@@ -5,8 +5,8 @@ function quick-look {
 }
 
 # Extract a compressed file with the appropriate command
-function extract {
-    if [ -f $1 ] ; then
+function unpack {
+    if [ -f "$1" ]; then
         case $1 in
             *.tar.bz2)        tar xjf $1        ;;
             *.tar.gz)         tar xzf $1        ;;
