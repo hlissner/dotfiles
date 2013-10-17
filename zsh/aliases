@@ -2,6 +2,20 @@
 #  Aliases  #
 #############
 
+RELPATH=$(dirname "$0")
+
+command_exists "git" && source $RELPATH/alias/git
+command_exists "tmux" && source $RELPATH/alias/tmux
+command_exists "vagrant" && source $RELPATH/alias/vagrant
+
+# Interpreters
+command_exists "ruby" && alias rb='ruby'
+command_exists "python" && alias py='python'
+command_exists "node" && alias js='node'
+if is_mac && [ -e /Applications/love.app/Contents/MacOS/love ]; then
+    alias love="/Applications/love.app/Contents/MacOS/love"
+fi
+
 if is_mac; then
     alias ls='ls -G'
 else
@@ -17,39 +31,7 @@ alias sha1='openssl sha1'
 alias mkdir='mkdir -pv'
 # Resume download if possible
 alias wget='wget -c'
-
-alias rb='ruby'
-alias py='python'
-alias js='node'
-if is_mac; then
-    alias love="/Applications/love.app/Contents/MacOS/love"
-fi
-
-# tmux
-alias t='tmux'
-alias tn='tmux new -s'
-alias ta='tmux attach -t'
-alias tl='tmux list-sessions'
-alias td='tmux detach'
-
-# git
-# On top of oh-my-zsh's git aliases
-alias gs='git status'
-alias gst='git stash'
-alias gap='git add -p'
-alias gf='git ls-files | grep -i'
-alias gt='git tag'
-alias gtl='git describe --tags --abbrev=0'
-
-# Laravel
-alias artisan='php artisan'
-alias bob='php artisan bob::build'
-
-# debug
 alias header='curl -I'
-
-# directory shortcuts
-alias dot='cd ~/.dotfiles'
 
 if is_linux; then
     # iptables
@@ -57,6 +39,7 @@ if is_linux; then
 elif is_mac; then
     alias b='brew'
     alias brewp='cd `brew --prefix`'
+    alias ql='quick-look'
 fi
 
 # vim
@@ -69,8 +52,5 @@ if [[ ! -n $SSH_CLIENT ]]; then
 else
     alias v='vim'
 fi
-
-# vagrant
-alias va='vagrant'
 
 # vim:set ft=zsh:
