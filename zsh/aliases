@@ -39,7 +39,7 @@ if is_linux; then
 elif is_mac; then
     alias b='brew'
     alias brewp='cd `brew --prefix`'
-    alias ql='quick-look'
+    alias ql='quicklook'
 fi
 
 # vim

@@ -1,6 +1,6 @@
 
 # Open a file in Mac OS's quick-look
-function quick-look {
+function quicklook {
     (( $# > 0 )) && qlmanage -p $* &>/dev/null &
 }
 
