@@ -30,6 +30,7 @@ if is_mac && command_exists rvm; then
     echo
 fi
 
+# Update vim if it exists
 if [ -d ~/.vim ]; then
     install/vim
 fi
