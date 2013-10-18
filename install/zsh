@@ -4,7 +4,10 @@ source ~/.dotfiles/zsh/functions
 
 if [ ! -d ~/.oh-my-zsh ]; then
     # Try to install zsh
-    pkg_install zsh
+    if ! pkg_install zsh; then
+        echo_g "==> ZSH: Homebrew is not installed!"
+        exit 1
+    fi
 
     # https://github.com/robbyrussell/oh-my-zsh
     echo_g "==> ZSH: Installing oh-my-zsh"
@@ -12,7 +15,14 @@ if [ ! -d ~/.oh-my-zsh ]; then
     
     # Set new shell
     echo_g "==> ZSH: Changing shell"
-    chsh -s $(which zsh)
+    
+    local zsh_bin=$(which zsh)
+    if !grep -i "$zsh_bin" /etc/shells; then
+        echo_r "==> ZSH: You need to add $zsh_bin to /etc/shells!"
+    else
+        chsh -s $(which zsh)
+    fi
+
 else
     echo_g "==> ZSH: Updating"
     cd ~/.oh-my-zsh
