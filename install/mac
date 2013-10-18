@@ -34,22 +34,22 @@ else
     brew install brew-cask
 
     # Install the apps I find useful (that I don't get through the app store)
-    app_exists "LaunchBar" && brew cask install launchbar
-    app_exists "Dropbox" && brew cask install dropbox
-    app_exists "Google Chrome" && brew cask install google-chrome
-    app_exists "Adium" && brew cask install adium
-    app_exists "AppCleaner" && brew cask install app-cleaner
-    app_exists "CodeKit" && brew cask install codekit
-    app_exists "iTerm" && brew cask install iterm2
-    app_exists "Reggy" && brew cask install reggy
-    app_exists "NetNewsWire" && brew cask install net-news-wire
-    app_exists "Soulver" && brew cask install soulver
-    app_exists "Scrivener" && brew cask install scrivener
-    app_exists "Sequel Pro" && brew cask install sequel-pro
-    app_exists "Skype" && brew cask install skype
-    app_exists "Transmission" && brew cask install transmission
-    app_exists "Transmit" && brew cask install transmit
-    app_exists "VLC" && brew cask install vlc
+    ! app_exists "LaunchBar" && brew cask install launchbar
+    ! app_exists "Dropbox" && brew cask install dropbox
+    ! app_exists "Google Chrome" && brew cask install google-chrome
+    ! app_exists "Adium" && brew cask install adium
+    ! app_exists "AppCleaner" && brew cask install app-cleaner
+    ! app_exists "CodeKit" && brew cask install codekit
+    ! app_exists "iTerm" && brew cask install iterm2
+    ! app_exists "Reggy" && brew cask install reggy
+    ! app_exists "NetNewsWire" && brew cask install net-news-wire
+    ! app_exists "Soulver" && brew cask install soulver
+    ! app_exists "Scrivener" && brew cask install scrivener
+    ! app_exists "Sequel Pro" && brew cask install sequel-pro
+    ! app_exists "Skype" && brew cask install skype
+    ! app_exists "Transmission" && brew cask install transmission
+    ! app_exists "Transmit" && brew cask install transmit
+    ! app_exists "VLC" && brew cask install vlc
 
     # I get Sparrow though the app store
     #app_exists "Sparrow" && brew cask install sparrow
