@@ -8,6 +8,8 @@ app_exists() {
     fi
 }
 
+source ~/.dotfiles/zsh/functions
+
 if ! is_mac; then
     echo-r "==> Aborting. This isn't a mac!"
     exit 1
