@@ -34,7 +34,7 @@ else
     brew install brew-cask
 
     # Install the apps I find useful (that I don't get through the app store)
-    ! app_exists "LaunchBar" && brew cask install launchbar
+    ! app_exists "LaunchBar" && brew cask install launch-bar
     ! app_exists "Dropbox" && brew cask install dropbox
     ! app_exists "Google Chrome" && brew cask install google-chrome
     ! app_exists "Adium" && brew cask install adium
