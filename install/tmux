@@ -1,16 +1,16 @@
 #!/usr/bin/env zsh
 
 if ! command_exists "tmux"; then
-    echo-g "==> Installing tmux"
-    pkg-install tmux
+    echo_g "==> Installing tmux"
+    pkg_install tmux
     if is_mac; then
         brew install reattach-to-user-namespace libevent
     fi
 else
-    echo-r "==> Tmux is already installed!"
+    echo_r "==> Tmux is already installed!"
 fi
 
-echo-g "==> Tmux: Setting up symlinks"
+echo_g "==> Tmux: Setting up symlinks"
 do_link ~/.dotfiles/tmux.conf ~/.tmux.conf
 
-echo-g "==> DONE!"
+echo_g "==> DONE!"

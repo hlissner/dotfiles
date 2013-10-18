@@ -12,29 +12,29 @@ function is_linux {
 
 if is_mac; then
 
-    function pkg-install() {
+    function pkg_install() {
         brew install $1
     }
 
-    function pkg-remove() {
+    function pkg_remove() {
         brew remove $1
     }
 
-    function pkg-update() {
+    function pkg_update() {
         brew update && brew upgrade
     }
 
 elif is_deb; then
 
-    function pkg-install() {
+    function pkg_install() {
         sudo apt-get -y install $1
     }
 
-    function pkg-remove() {
+    function pkg_remove() {
         sudo apt-get -y remove $1
     }
 
-    function pkg-update() {
+    function pkg_update() {
         sudo apt-get update && sudo apt-get upgrade
     }
     

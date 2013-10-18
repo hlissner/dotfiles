@@ -4,7 +4,7 @@ export rvm_ignore_dotfiles=yes
 
 if ! command_exists rvm; then
     # If RVM's not installed, install it and the rubies
-    echo-g "==> Rvm: Installing"
+    echo_g "==> Rvm: Installing"
 
     # https://rvm.io
     curl -L https://get.rvm.io | bash -s stable --ruby
@@ -18,11 +18,11 @@ if [ -f ~/.rvm/scripts/rvm ]; then
 fi
 
 # Update RVM
-# echo-g "==> Rvm: Updating"
+# echo_g "==> Rvm: Updating"
 # rvm get stable
 
 # Update all rubies and rubygems
-echo-g "==> Rvm: Updating rubies"
+echo_g "==> Rvm: Updating rubies"
 rvm all do gem update --system
 rvm all do gem update
 rvm all do gem install bluecloth bundler colorize
@@ -30,10 +30,10 @@ rvm all do gem install bluecloth bundler colorize
 # Only mac needs this
 if is_mac; then
     # Update system ruby
-    echo-g "==> Rvm: Updating system ruby"
+    echo_g "==> Rvm: Updating system ruby"
     rvm use system
     sudo gem update --system
     sudo gem update
 fi
 
-echo-g "==> Rvm: DONE!"
+echo_g "==> Rvm: DONE!"

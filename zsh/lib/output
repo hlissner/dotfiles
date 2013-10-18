@@ -21,11 +21,11 @@ WHITE='\e[47m'          # White
 
 NC="\e[m"               # Color Reset
 
-function echo-g {
+function echo_g {
     echo -e "$green$1$NC"
 }
 
-function echo-r {
+function echo_r {
     echo -e "$red$1$NC"
 }
 

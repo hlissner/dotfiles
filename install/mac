@@ -11,17 +11,17 @@ app_exists() {
 source ~/.dotfiles/zsh/functions
 
 if ! is_mac; then
-    echo-r "==> Aborting. This isn't a mac!"
+    echo_r "==> Aborting. This isn't a mac!"
     exit 1
 fi
 
 if [ ! -d /usr/local/Cellar ]; then
-    echo-g "==> Installing homebrew"
+    echo_g "==> Installing homebrew"
     ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
 
-    echo-g "Done! Don't forget to install the Command Line Tools in XCode"
+    echo_g "Done! Don't forget to install the Command Line Tools in XCode"
 else
-    echo-g "==> Installing all brews and apps"
+    echo_g "==> Installing all brews and apps"
     brew tap homebrew/dupes
 
     brew install wget curl git

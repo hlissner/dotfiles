@@ -10,15 +10,15 @@ cd ~/.dotfiles
 echo "Updating ALL the things!"
 
 # Update these scripts!
-echo-g "==> Updating dotfiles"
+echo_g "==> Updating dotfiles"
 git pull
 
 # Updating the system with it's package manager (brew, apt-get, etc.)
-echo-g "==> Updating installed packages"
-pkg-update
+echo_g "==> Updating installed packages"
+pkg_update
 
 if command_exists zsh; then
-    echo-g "==> Updating zsh, rvm and vim"
+    echo_g "==> Updating zsh, rvm and vim"
     # Then the rest
     install/zsh
     echo
@@ -35,4 +35,4 @@ if [ -d ~/.vim ]; then
     install/vim
 fi
 
-echo-g "==> All done!"
+echo_g "==> All done!"

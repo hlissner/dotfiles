@@ -1,10 +1,10 @@
 #!/usr/bin/env zsh
 
-if ! pkg-exists python; then
-    pkg-install python
+if ! pkg_exists python; then
+    pkg_install python
 fi
 
-echo-g "==> Installing plugins"
+echo_g "==> Installing plugins"
 easy_install pip
 easy_install cython
 pip install PyOpenGL PyOpenGL_accelerate

@@ -4,7 +4,7 @@ if is_mac; then
 
     # Get SFML 2.1
     if [ ! -d /Library/Frameworks/SFML.framework ]; then
-        echo-g "==> Installing SFML 2.1"
+        echo_g "==> Installing SFML 2.1"
 
         mkdir ~/.temp-sfml
         cd ~/.temp-sfml
@@ -16,11 +16,11 @@ if is_mac; then
 
         pip install git+git://github.com/Sonkun/python-sfml.git
     else
-        echo-r "==> SFML 2.1 already installed"
+        echo_r "==> SFML 2.1 already installed"
     fi
 
 elif is_deb; then
 
-    echo-r "==> SFML install script for linux is incomplete!"
+    echo_r "==> SFML install script for linux is incomplete!"
 
 fi
