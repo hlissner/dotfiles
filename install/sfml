@@ -8,13 +8,17 @@ if is_mac; then
 
         mkdir ~/.temp-sfml
         cd ~/.temp-sfml
-        wget http://www.sfml-dev.org/download/sfml/2.1/SFML-2.1-osx-clang-universal.tar.gz
-        tar -xvf SFML-2.1-osx-clang-universal.tar.gz
-        cd SFML-2.1-osx-clang.universal
+
+        SFML="SFML-2.1-osx-gcc-universal.tar.gz"
+
+        # wget http://www.sfml-dev.org/download/sfml/2.1/SFML-2.1-osx-clang-universal.tar.gz
+        wget http://www.sfml-dev.org/download/sfml/2.1/$SFML
+        tar -xvf $SFML
+        cd $SFML
         sudo ./install.sh
         rm -rf ~/.temp-sfml
 
-        pip install git+git://github.com/Sonkun/python-sfml.git
+        pip install git+git://github.com/Sonkun/python-sfml.git@v1.3
     else
         echo_r "==> SFML 2.1 already installed"
     fi
