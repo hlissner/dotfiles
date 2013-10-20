@@ -16,6 +16,13 @@ if is_mac && [ -e /Applications/love.app/Contents/MacOS/love ]; then
     alias love="/Applications/love.app/Contents/MacOS/love"
 fi
 
+# Text-editing niceties
+function agr {
+    ag -l "$1" | xargs sed -i "" -e "s/${1/\//\\\/}/${2/\//\\\/}/g"
+    ag "$2"
+}
+
+# Other conveniences
 if is_mac; then
     alias ls='ls -G'
 else
