@@ -26,8 +26,8 @@ function unpack {
 }
 
 # Source library
-source ~/.dotfiles/zsh/lib/util
-source ~/.dotfiles/zsh/lib/output
-source ~/.dotfiles/zsh/lib/os
+source ~/.zsh/lib/util
+source ~/.zsh/lib/output
+source ~/.zsh/lib/os
 
 # vim:set ft=zsh:
