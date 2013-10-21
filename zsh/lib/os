@@ -12,6 +12,11 @@ function is_linux {
 
 if is_mac; then
 
+    # Check to see if the (mac) app exists
+    function app_exists {
+        [ -d /Applications/"$1" ] || [ -e /Applications/"$1".app ] || [ -e ~/Applications/"$1".app ]
+    }
+
     if command_exists brew; then
 
         function pkg_install() {
