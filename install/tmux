@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-if ! command_exists "tmux"; then
+if ! command_exists tmux; then
     echo_g "==> Installing tmux"
     pkg_install tmux
     if is_mac; then
