@@ -5,7 +5,7 @@ source ~/.zsh/functions
 
 # Plugins:
 #  see <https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins>
-plugins=(vi-mode ruby python composer git)
+plugins=(vi-mode ruby python git)
 if is_mac; then
     plugins+=brew
     plugins+=tmux
