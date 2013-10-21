@@ -2,18 +2,27 @@
 
 # Installing macvim/compiling vim
 if is_mac && ! command_exists "mvim"; then
+
     echo_g "==> Installing macvim"
     brew install macvim --devel --with-lua --override-system-vim
+
 elif is_deb && ! vim --version | grep "Compiled by $(whoami)@$(hostname)" 2>&1 >/dev/null; then
+    
+    # All the prereqs to compile vim. Might need to add lua...
     echo_g "==> Preparing to compile vim from source"
     pkg_install libncurses5-dev libgnome2-dev libgnomeui-dev \
         libgtk2.0-dev libatk1.0-dev libbonoboui2-dev \
         libcairo2-dev libx11-dev libxpm-dev libxt-dev python-dev ruby-dev mercurial
     pkg_remove vim vim-runtime gvim
 
+    # Compile vim from source (needs Vim 7.3.584 *at least*, but we grab the latest 7.4
+    # from the repo for good measure). At the time of writing, Debian still uses 7.2 and
+    # Ubuntu: 7.3.
     cd ~
     hg clone https://code.google.com/p/vim/
     cd vim
+    hg checkout v7-4-052
+
     echo_g "==> Compiling vim from source"
     ./configure --with-features=huge \
         --enable-rubyinterp \
@@ -21,13 +30,15 @@ elif is_deb && ! vim --version | grep "Compiled by $(whoami)@$(hostname)" 2>&1 >
         --enable-perlinterp \
         --enable-luainterp \
         --enable-gui=gtk2 --enable-cscope --prefix=/usr
-    make VIMRUNTIMEDIR=/usr/share/vim/vim74b
+    make VIMRUNTIMEDIR=/usr/share/vim/vim74
     sudo make install
+
     rm -rf ~/vim
+
 fi
 
 # Installing vim rcfiles
-if [ ! -e ~/.vimrc ]; then
+if [ ! -e ~/.vim/.git ]; then
     echo_g "==> Installing vim rcfiles"
 
     if [ -d ~/.vim ]; then
