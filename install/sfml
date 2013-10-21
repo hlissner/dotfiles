@@ -2,6 +2,8 @@
 
 if is_mac; then
 
+    keep_alive
+
     # Get SFML 2.1
     if [ ! -d /Library/Frameworks/SFML.framework ]; then
         echo_g "==> Installing SFML 2.1"
@@ -18,7 +20,7 @@ if is_mac; then
         sudo ./install.sh
         rm -rf ~/.temp-sfml
 
-        pip install git+git://github.com/Sonkun/python-sfml.git@v1.3
+        sudo pip install git+git://github.com/Sonkun/python-sfml.git@v1.3
     else
         echo_r "==> SFML 2.1 already installed"
     fi
