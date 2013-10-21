@@ -8,24 +8,23 @@ if ! command_exists rvm; then
 
     # https://rvm.io
     curl -L https://get.rvm.io | bash -s stable --ruby
+else
+    # Update it
+
+    # Make sure rvm is sourced properly
+    if [ -f ~/.rvm/scripts/rvm ]; then
+        [ "$(type rvm | grep function)" ] || source ~/.rvm/scripts/rvm
+    fi
+
+    # Update RVM
+    echo_g "==> Rvm: Updating"
+    rvm get stable
 fi
-
-# Update it
-
-# Make sure rvm is sourced properly
-if [ -f ~/.rvm/scripts/rvm ]; then
-    [ "$(type rvm | grep function)" ] || source ~/.rvm/scripts/rvm
-fi
-
-# Update RVM
-# echo_g "==> Rvm: Updating"
-# rvm get stable
 
 # Update all rubies and rubygems
 echo_g "==> Rvm: Updating rubies"
 rvm all do gem update --system
 rvm all do gem update
-rvm all do gem install bluecloth bundler colorize
 
 # Only mac needs this
 if is_mac; then
