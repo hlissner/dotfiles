@@ -8,7 +8,7 @@ ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[red]%}+%{$fg[white]%}"
 #  Build Prompt  #
 ##################
 
-prompt_pwd() {
+function prompt_pwd {
     SHORTPWD=`print -Pn "%4~"`
 
     if [[ -n "${ZSH_VERSION:-}" ]]
@@ -21,13 +21,13 @@ prompt_pwd() {
     echo -n $SHORTPWD
 }
 
-prompt_git() {
+function prompt_git {
     if [ "`git_prompt_info`" ]; then
         echo -n "$(git_prompt_info)"
     fi
 }
 
-prompt_vimode() {
+function prompt_vimode {
     # The prompt turns green in command mode, and red in insert mode
     MODE_INDICATOR=" %{$fg[green]%}\$ "
     MODE_PROMPT="${${KEYMAP/vicmd/$MODE_INDICATOR}/(main|viins)/}"
@@ -39,7 +39,7 @@ prompt_vimode() {
 }
 
 # prompts
-lprompt() {
+function lprompt {
     # Start each prompt with a newline
     echo
 
@@ -61,7 +61,7 @@ lprompt() {
     echo -n "%{$reset_color%}"
 }
 
-rprompt() {
+function rprompt {
     # Make the rprompt a bright grey to set it apart
     echo -n "%{$FG[245]%}"
     echo -n '$(prompt_pwd)'
