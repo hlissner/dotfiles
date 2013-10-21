@@ -19,4 +19,11 @@ function do_link {
     fi
 }
 
+# Ask for admin password up front and keep sudo alive until the end of the script
+function keep_alive {
+    sudo -v
+    while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+}
+
+
 # vim:set ft=zsh:
