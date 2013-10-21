@@ -2,27 +2,19 @@
 #  Aliases  #
 #############
 
-RELPATH=$(dirname "$0")
-
-command_exists "git" && source $RELPATH/alias/git
-command_exists "tmux" && source $RELPATH/alias/tmux
-command_exists "vagrant" && source $RELPATH/alias/vagrant
+command_exists "git" && source ~/.zsh/alias/git
+command_exists "tmux" && source ~/.zsh/alias/tmux
+command_exists "vagrant" && source ~/.zsh/alias/vagrant
 
 # Interpreters
 command_exists "ruby" && alias rb='ruby'
 command_exists "python" && alias py='python'
 command_exists "node" && alias js='node'
-if is_mac && [ -e /Applications/love.app/Contents/MacOS/love ]; then
+if is_mac && [ -e /Applications/love.app ]; then
     alias love="/Applications/love.app/Contents/MacOS/love"
 fi
 
-# Text-editing niceties
-function agr {
-    ag -l "$1" | xargs sed -i "" -e "s/${1/\//\\\/}/${2/\//\\\/}/g"
-    ag "$2"
-}
-
-# Other conveniences
+# Shell conveniences
 if is_mac; then
     alias ls='ls -G'
 else
@@ -58,6 +50,24 @@ if [[ ! -n $SSH_CLIENT ]]; then
     fi
 else
     alias v='vim'
+fi
+
+# Text-editing niceties
+
+# Replace
+function repl {
+    sed $3 -e "s/${1/\//\\\/}/${2/\//\\\/}/g"
+}
+
+if command_exists "ag"; then
+
+    # Project-wide search 'n replace using the_silver_searcher: 
+    # https://github.com/ggreer/the_silver_searcher
+    function agr {
+        ag -l "$1" | xargs repl "$1" "$2" -i
+        ag "$2"
+    }
+
 fi
 
 # vim:set ft=zsh:
