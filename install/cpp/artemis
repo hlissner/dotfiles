@@ -1,0 +1,34 @@
+#!/usr/bin/env zsh
+
+if is_mac; then
+
+    keep_alive
+
+    if [ ! -d "/usr/local/include/Artemis" ]; then
+        echo_g "==> C++/Artemis: Attempting to compile ArtemisCpp"
+        if git clone https://github.com/vinova/Artemis-Cpp.git ~/.artcpp; then
+            cd ~/.artcpp
+            mkdir build
+            cd build
+            cmake ..
+            make
+            sudo make install
+            rm -rf ~/.artcpp
+            echo_g "==> C++/Artemis: Done!"
+        else
+            echo_r "==> C++/Artemis: Something went wrong installing ArtemisCpp"
+            RETVAL=3
+        fi
+    else
+        echo_r "==> C++/Artemis: Artemis is already installed"
+        RETVAL=2
+    fi
+
+elif is_deb; then
+
+    echo_r "==> C++/Artemis: Install script for linux not finished!"
+    RETVAL=1
+
+fi
+
+exit $RETVAL

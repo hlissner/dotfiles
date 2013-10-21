@@ -1,0 +1,16 @@
+#!/usr/bin/zsh
+
+echo-g "==> macapps/Essentials: Installing (you might have to run this more than once)..."
+
+# Install the apps I find essential for every mac I'm on 
+# (that I don't get through the app store)
+! app_exists "LaunchBar" && brew cask install launch-bar
+! app_exists "Dropbox" && brew cask install dropbox
+! app_exists "Google Chrome" && brew cask install google-chrome
+! app_exists "AppCleaner" && brew cask install app-cleaner
+! app_exists "iTerm" && brew cask install iterm2
+! app_exists "Sequel Pro" && brew cask install sequel-pro
+! app_exists "Transmission" && brew cask install transmission
+! app_exists "Transmit" && brew cask install transmit
+
+echo-g "==> macapps/Essentials: Done!"

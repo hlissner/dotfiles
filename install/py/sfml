@@ -1,0 +1,8 @@
+#!/usr/bin/env zsh
+
+echo_g "==> Py/SFML: Installing PySFML v1.3"
+
+# Install v1.3 tag because there are bugs in 1.4 atm
+pip install git+git://github.com/Sonkun/python-sfml.git@v1.3
+
+echo_g "==> Py/SFML: Done!"

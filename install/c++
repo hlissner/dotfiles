@@ -1,0 +1,21 @@
+#!/usr/bin/env zsh
+
+source ~/.dotfiles/zsh/functions
+
+BASEDIR=$(dirname "$0")
+
+echo_g "==> C++: Making sure prereqs are installed (cmake + git)"
+
+pkg_install cmake
+is_mac && pkg_install git
+is_deb && pkg_install git-core
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        "--sfml") $BASEDIR/cpp/sfml ;;
+        "--artemis") $BASEDIR/cpp/artemis ;;
+    esac
+    shift
+done
+
+echo_g "==> C++: All done!"

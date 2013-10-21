@@ -1,23 +1,19 @@
 #!/bin/sh
 
-function app_exists {
-    [ -e /Applications/"$1".app ] || [ -e ~/Applications/"$1".app ]
-}
-
 source ~/.dotfiles/zsh/functions
 
 if ! is_mac; then
-    echo_r "==> Aborting. This isn't a mac!"
+    echo_r "==> Mac: Aborting. This isn't a mac!"
     exit 1
 fi
 
 if [ ! -d /usr/local/Cellar ]; then
-    echo_g "==> Installing homebrew"
+    echo_g "==> Mac: Installing homebrew"
     ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
 
-    echo_g "Done! Don't forget to install the Command Line Tools in XCode"
+    echo_g "==> Mac: Done! Don't forget to install the Command Line Tools in XCode"
 else
-    echo_g "==> Installing all brews and apps"
+    echo_g "==> Mac: Installing basic brews"
     brew tap homebrew/dupes
 
     brew install wget curl git
@@ -29,27 +25,13 @@ else
     brew tap phinze/homebrew-cask
     brew install brew-cask
 
-    # Install the apps I find useful (that I don't get through the app store)
-    ! app_exists "LaunchBar" && brew cask install launch-bar
-    ! app_exists "Dropbox" && brew cask install dropbox
-    ! app_exists "Google Chrome" && brew cask install google-chrome
-    ! app_exists "Adium" && brew cask install adium
-    ! app_exists "AppCleaner" && brew cask install app-cleaner
-    ! app_exists "CodeKit" && brew cask install codekit
-    ! app_exists "iTerm" && brew cask install iterm2
-    ! app_exists "Reggy" && brew cask install reggy
-    ! app_exists "NetNewsWire" && brew cask install net-news-wire
-    ! app_exists "Soulver" && brew cask install soulver
-    ! app_exists "Scrivener" && brew cask install scrivener
-    ! app_exists "Sequel Pro" && brew cask install sequel-pro
-    ! app_exists "Skype" && brew cask install skype
-    ! app_exists "Transmission" && brew cask install transmission
-    ! app_exists "Transmit" && brew cask install transmit
-    ! app_exists "VLC" && brew cask install vlc
+    while [ $# -gt 0 ]; do
+        case "$1" in
+            "--essentials") $BASEDIR/macapps/essentials ;;
+            "--home") $BASEDIR/macapps/home ;;
+        esac
+        shift
+    done
 
-    # I get Sparrow though the app store
-    #app_exists "Sparrow" && brew cask install sparrow
+    echo_g "==> Mac: Done!"
 fi
-
-# Clean up
-unset .f app_exists

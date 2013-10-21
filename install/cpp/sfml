@@ -1,0 +1,42 @@
+#!/usr/bin/env zsh
+
+RETVAL=0
+
+if is_mac; then
+
+    keep_alive
+
+    # Get SFML 2.1
+    if [ ! -d /Library/Frameworks/SFML.framework ]; then
+        echo_g "==> C++/SFML: Installing SFML 2.1"
+
+        mkdir ~/.temp-sfml
+        cd ~/.temp-sfml
+
+        SFML="SFML-2.1-osx-gcc-universal.tar.gz"
+
+        # wget http://www.sfml-dev.org/download/sfml/2.1/SFML-2.1-osx-clang-universal.tar.gz
+        if wget http://www.sfml-dev.org/download/sfml/2.1/$SFML; then
+            tar -xvf $SFML
+            cd $SFML
+            sudo ./install.sh
+            rm -rf ~/.temp-sfml
+
+            echo_g "==> C++/SFML: Done!"
+        else
+            echo_r "==> C++/SFML: Something went wrong downloading SFML 2.1"
+            RETVAL=3
+        fi
+    else
+        echo_r "==> C++/SFML: SFML 2.1 is already installed"
+        RETVAL=2
+    fi
+
+elif is_deb; then
+
+    echo_r "==> C++/SFML: Install script for linux is incomplete!"
+    RETVAL=1
+
+fi
+
+exit $RETVAL

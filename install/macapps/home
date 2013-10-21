@@ -1,0 +1,15 @@
+#!/usr/bin/env zsh
+
+echo-g "==> macapps/Home: Installing (you might have to run this more than once)..."
+
+! app_exists "Adium" && brew cask install adium
+! app_exists "CodeKit" && brew cask install codekit
+! app_exists "Reggy" && brew cask install reggy
+! app_exists "NetNewsWire" && brew cask install net-news-wire
+! app_exists "Soulver" && brew cask install soulver
+! app_exists "Scrivener" && brew cask install scrivener
+! app_exists "Skype" && brew cask install skype
+! app_exists "Vagrant" && brew cask install vagrant
+! app_exists "VLC" && brew cask install vlc
+
+echo-g "==> macapps/Home: Done!"

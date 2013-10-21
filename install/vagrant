@@ -1,0 +1,3 @@
+#!/usr/bin/env zsh
+
+app_exists "Vagrant" && brew cask install vagrant
