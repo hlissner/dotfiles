@@ -24,14 +24,11 @@ if command_exists zsh; then
     echo
 fi
 
-# Only update rvm is it is installed
-if is_mac && command_exists rvm; then
-    install/rvm
-    echo
-fi
-
 # Update vim if it exists
 if [ -d ~/.vim ]; then
+    cd ~/.vim
+    git pull
+    cd ~/.dotfiles
     install/vim
 fi
 
