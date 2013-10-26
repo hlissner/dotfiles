@@ -51,7 +51,11 @@ function lprompt {
     # Show the hostname if this is an SSH session
     if [[ -n $SSH_CLIENT ]]; then
         echo -n "%{$fg[blue]%}"
-        echo -n " $(hostname)"
+        if is_mac; then
+            echo -n " $(hostname | sed -e 's/\.local$//')"
+        else
+            echo -n " $(hostname)"
+        fi
     fi
 
     # The prompt
