@@ -15,60 +15,81 @@ if [ -e /Applications/love.app ]; then
 fi
 
 # Shell conveniences
-if is_mac; then
-    alias ls='ls -G'
-else
-    alias ls='ls --color'
-fi
-alias sudo='sudo '
 alias l='ls -1'
 alias ll='ls -l'
 alias la='ls -la'
 alias l.='ls -Ad .*'
 alias du='du -h -d 1'
 alias q='exit'
+
 alias sha1='openssl sha1'
 alias mkdir='mkdir -pv'
-# Resume download if possible
-alias wget='wget -c'
 alias header='curl -I'
 
+# Resume download if possible
+alias wget='wget -c'
+
+# Lets us sudo aliases
+alias sudo='sudo '
+
 if is_linux; then
+
+    alias ls='ls --color'
+
     # iptables
     alias ipt='sudo iptables'
+
+    function v {
+        if [ $# -eq 0 ]; then
+            vim .
+        else
+            vim "$@"
+        fi
+    }
+
 elif is_mac; then
+
+    alias ls='ls -G'
+
     alias b='brew'
     alias brewp='cd `brew --prefix`'
     alias ql='quicklook'
+
+    function o {
+        if [ $# -eq 0 ]; then
+            open .
+        else
+            open "$@"
+        fi
+    }
+
+    function v {
+        if [ $# -eq 0 ]; then
+            mvim .
+        else
+            mvim "$@"
+        fi
+    }
+
 fi
 
-# vim
-if [[ ! -n $SSH_CLIENT ]]; then
-    if command_exists mvim; then
-        alias v='mvim'
-    else
-        alias v='gvim'
-    fi
-else
-    alias v='vim'
-fi
+# Make a directory and change to it
+function mkd {
+    mkdir "$@" && cd "$@"
+}
 
-# Text-editing niceties
-
-# Replace
+# Meant for string search-and-replace via stdin
 function repl {
     sed $3 -e "s/${1/\//\\\/}/${2/\//\\\/}/g"
 }
 
 if command_exists "ag"; then
-
     # Project-wide search 'n replace using the_silver_searcher: 
     # https://github.com/ggreer/the_silver_searcher
     function agr {
         ag -l "$1" | xargs repl "$1" "$2" -i
         ag "$2"
     }
-
 fi
 
 # vim:set ft=zsh:
