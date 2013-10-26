@@ -12,43 +12,32 @@ function is_linux {
 
 if is_mac; then
 
+    # Change working directory to the top-most Finder window location
+    function cdf() { # short for `cdfinder`
+            cd "$(osascript -e 'tell app "Finder" to POSIX path of (insertion location as alias)')"
+    }
+
+    # Open a file in Mac OS's quick-look
+    function quicklook {
+        (( $# > 0 )) && qlmanage -p $* &>/dev/null &
+    }
+
     # Check to see if the (mac) app exists
     function app_exists {
         [ -d /Applications/"$1" ] || [ -e /Applications/"$1".app ] || [ -e ~/Applications/"$1".app ]
     }
 
-    if command_exists brew; then
+    function pkg_install() {
+        brew install $1
+    }
 
-        function pkg_install() {
-            brew install $1
-        }
+    function pkg_remove() {
+        brew remove $1
+    }
 
-        function pkg_remove() {
-            brew remove $1
-        }
-
-        function pkg_update() {
-            brew update && brew upgrade
-        }
-
-    else
-    
-        function pkg_install() {
-            echo_r "Homebrew not installed"
-            exit 1
-        }
-
-        function pkg_remove() {
-            echo_r "Homebrew not installed"
-            exit 1
-        }
-
-        function pkg_update() {
-            echo_r "Homebrew not installed"
-            exit 1
-        }
-
-    fi
+    function pkg_update() {
+        brew update && brew upgrade
+    }
 
 elif is_deb; then
 
