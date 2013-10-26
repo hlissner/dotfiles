@@ -2,15 +2,15 @@
 #  Aliases  #
 #############
 
-command_exists "git" && source ~/.zsh/alias/git
-command_exists "tmux" && source ~/.zsh/alias/tmux
-command_exists "vagrant" && source ~/.zsh/alias/vagrant
+for file in ~/.zsh/alias/*; do
+    command_exists `basename "$file"` && source $file
+done
 
 # Interpreters
 command_exists "ruby" && alias rb='ruby'
 command_exists "python" && alias py='python'
 command_exists "node" && alias js='node'
-if is_mac && [ -e /Applications/love.app ]; then
+if [ -e /Applications/love.app ]; then
     alias love="/Applications/love.app/Contents/MacOS/love"
 fi
 
@@ -18,8 +18,9 @@ fi
 if is_mac; then
     alias ls='ls -G'
 else
-    alias ls='ls -G --color'
+    alias ls='ls --color'
 fi
+alias sudo='sudo '
 alias l='ls -1'
 alias ll='ls -l'
 alias la='ls -la'
