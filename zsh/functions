@@ -1,7 +1,13 @@
 
-# Open a file in Mac OS's quick-look
-function quicklook {
-    (( $# > 0 )) && qlmanage -p $* &>/dev/null &
+# Check to see if a command exists
+function command_exists {
+    command -v "$1" &> /dev/null
+}
+
+# Ask for admin password up front and keep sudo alive until the end of the script
+function keep_alive {
+    sudo -v
+    while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 }
 
 # Extract a compressed file with the appropriate command
@@ -26,8 +32,6 @@ function unpack {
 }
 
 # Source library
-source ~/.zsh/lib/util
-source ~/.zsh/lib/output
-source ~/.zsh/lib/os
+for f in ~/.zsh/lib/*; do source "$f"; done
 
 # vim:set ft=zsh:
