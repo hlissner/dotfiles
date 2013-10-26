@@ -1,14 +1,4 @@
 
-# Check to see if a command exists
-function command_exists {
-    command -v "$1" &> /dev/null
-}
-
-# log to a central logfile (specified by its caller globally)
-function do_log {
-    printf "[%s] %s: %s" "$(`basename $BASH_SOURCE`)" "`date`" "$1" >> $logfile
-}
-
 # Check if a symlink exists before trying to create it
 function do_link {
     if [ -e "$2" ]; then
@@ -18,12 +8,5 @@ function do_link {
         ln -sf "$1" "$2"
     fi
 }
-
-# Ask for admin password up front and keep sudo alive until the end of the script
-function keep_alive {
-    sudo -v
-    while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
-}
-
 
 # vim:set ft=zsh:
