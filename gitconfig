@@ -1,6 +1,8 @@
 [user]
 	name = Henrik Lissner
 	email = henrik@lissner.net
+[github]
+	user = hlissner
 
 [core]
     excludesfile = ~/.gitignore
