@@ -65,9 +65,9 @@ elif is_mac; then
 
     function v {
         if [ $# -eq 0 ]; then
-            mvim .
+            mvim --remote .
         else
-            mvim "$@"
+            mvim --remote "$@"
         fi
     }
 
