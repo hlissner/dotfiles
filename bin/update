@@ -1,15 +1,21 @@
 #!/usr/bin/env zsh
 
+#
+# [bin/update]
+# A small script I use to update my mac/ubuntu/deb system (via homebrew or apt-get),
+# zsh, vim and my local .vim and .dotfiles git repos.
+#
+# The real magic happens in the ./install/* scripts. There are others in there, in
+# case I want to update/install something specific.
+#
+
 # Ask for the administrator password upfront
 sudo -v
-
 # Keep-alive: update existing `sudo` time stamp until script is done
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
-cd ~/.dotfiles
-echo "Updating ALL the things!"
-
 # Update these scripts!
+cd ~/.dotfiles
 echo_g "==> Updating dotfiles"
 git pull
 
@@ -17,6 +23,7 @@ git pull
 echo_g "==> Updating installed packages"
 pkg_update
 
+# Now for zsh...
 if command_exists zsh; then
     echo_g "==> Updating zsh, rvm and vim"
     # Then the rest
@@ -24,7 +31,7 @@ if command_exists zsh; then
     echo
 fi
 
-# Update vim if it exists
+# Then vim, if it's installed
 if [ -d ~/.vim ]; then
     cd ~/.vim
     git pull
