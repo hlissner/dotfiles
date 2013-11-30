@@ -2,7 +2,7 @@
 
 # ~/.osx — http://mths.be/osx
 
-source ~/.dotfiles/zsh/lib/util
+source ~/.dotfiles/zsh/functions
 keep_alive
 
 
