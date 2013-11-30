@@ -49,7 +49,7 @@ else
                 # (that I don't get through the app store)
                 brew cask install app-cleaner
                 brew cask install google-chrome
-                brew cask install launch-bar
+                brew cask install launchbar
                 brew cask install dropbox
                 brew cask install iterm2
                 brew cask install sequel-pro
