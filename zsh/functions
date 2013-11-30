@@ -90,11 +90,11 @@ fi
 
 # Output functions
 function echo_g {
-    echo -e "$fg[green]$1$reset_color"
+    echo -e "\e[0;32m$1\e[m"
 }
 
 function echo_r {
-    echo -e "$fg[red]$1$reset_color"
+    echo -e "\e[0;31m$1\e[m"
 }
 
 # vim:set ft=zsh:
