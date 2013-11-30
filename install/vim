@@ -52,10 +52,11 @@ if [ ! -e ~/.vim/.git ]; then
     fi
 
     # Install vim from my distro: https://github.com/hlissner/mlvim
-    bash <(curl https://raw.github.com/hlissner/vim/master/install.sh -L)
+    git clone https://github.com/hlissner/vim.git ~/.vim
+    vim -u ~/.vim/.vimrc
 else
     # Installing/updating vim bundles
-    echo_g "==> Vim: Updating..."
+    echo_r "==> Updating vim"
     vim +NeoBundleUpdate +qall
 fi
 
