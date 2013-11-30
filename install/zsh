@@ -11,7 +11,7 @@ if [ ! -d ~/.oh-my-zsh ]; then
 
     # https://github.com/robbyrussell/oh-my-zsh
     echo_g "==> ZSH: Installing oh-my-zsh"
-    curl -L https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh | sh
+    git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
     
     # Set new shell
     echo_g "==> ZSH: Changing shell"
@@ -20,20 +20,22 @@ if [ ! -d ~/.oh-my-zsh ]; then
     if !grep -i "$zsh_bin" /etc/shells; then
         echo_r "==> ZSH: You need to add $zsh_bin to /etc/shells!"
     else
-        chsh -s $(which zsh)
+        chsh -s "$zsh_bin"
     fi
 
 else
+
     echo_g "==> ZSH: Updating"
     cd ~/.oh-my-zsh
     git pull
+
 fi
 
 # Create links
 echo_g "==> ZSH: Setting up symlinks"
-do_link ~/.dotfiles/zsh ~/.zsh
-do_link ~/.dotfiles/zshrc ~/.zshrc
-do_link ~/.dotfiles/zshenv ~/.zshenv
-do_link ~/.dotfiles/bashrc ~/.bashrc
+ln -sf ~/.dotfiles/zsh ~/.zsh
+ln -sf ~/.dotfiles/zshrc ~/.zshrc
+ln -sf ~/.dotfiles/zshenv ~/.zshenv
+ln -sf ~/.dotfiles/bashrc ~/.bashrc
 
 echo_g "==> ZSH: DONE!"
