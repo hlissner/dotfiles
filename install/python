@@ -7,12 +7,18 @@ pkg_install python
 
 echo_g "==> Python: Installing plugins"
 sudo easy_install pip
-sudo easy_install cython
 
 while [ $# -gt 0 ]; do
     case "$1" in
         "--opengl") $BASEDIR/py/opengl ;;
-        "--sfml") $BASEDIR/py/sfml ;;
+        "--sfml") 
+            sudo easy_install cython
+            $BASEDIR/py/sfml 
+            ;;
+        "--fabric") 
+            pip install Jinja2
+            $BASEDIR/py/fabric 
+            ;;
     esac
     shift
 done

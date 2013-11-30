@@ -1,0 +1,3 @@
+#!/usr/env/bin zsh
+
+pip install fabric
