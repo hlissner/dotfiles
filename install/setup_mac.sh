@@ -47,7 +47,7 @@ else
 
                 # Install the apps I find essential for every mac I'm on 
                 # (that I don't get through the app store)
-                brew cask install app-cleaner
+                brew cask install appcleaner
                 brew cask install google-chrome
                 brew cask install launchbar
                 brew cask install dropbox
