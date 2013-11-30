@@ -1,4 +1,3 @@
-
 # Disable autocorrect behavior, very annoying!
 unsetopt correct_all
 
