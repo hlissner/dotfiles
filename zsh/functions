@@ -88,4 +88,13 @@ if is_mac; then
 
 fi
 
+# Output functions
+function echo_g {
+    echo -e "$green$1$NC"
+}
+
+function echo_r {
+    echo -e "$red$1$NC"
+}
+
 # vim:set ft=zsh:
