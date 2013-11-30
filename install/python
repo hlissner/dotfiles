@@ -2,6 +2,8 @@
 
 keep_alive
 
+BASEDIR=$(dirname "$0")
+
 echo_g "==> Python: Trying to install Python"
 pkg_install python
 
