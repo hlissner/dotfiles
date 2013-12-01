@@ -1,0 +1,21 @@
+#!/bin/sh
+
+BASEDIR=$(dirname "$0")
+
+$BASEDIR/python
+pip install flexget
+pip install transmissionrpc
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        "--daemon") 
+            if is_mac; then
+                brew install transmission
+            elif is_deb; then
+                sudo add-apt-repository ppa:transmissionbt/ppa
+                pkg_install transmission-cli transmission-daemon transmission-common
+            fi
+            ;;
+    esac
+    shift
+done
