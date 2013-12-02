@@ -1,5 +1,7 @@
 #!/bin/sh
 
+source ~/.dotfiles/zsh/functions
+
 BASEDIR=$(dirname "$0")
 
 $BASEDIR/python
