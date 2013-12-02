@@ -8,9 +8,38 @@ pip install transmissionrpc
 
 while [ $# -gt 0 ]; do
     case "$1" in
-        "--daemon") 
+        "--daemon")
             if is_mac; then
                 brew install transmission
+
+                plistf="~/Library/LaunchAgents/com.flexget.plist"
+                if [ ! -f "$plistf" ]; then
+                    cat <<-EOF > "$plistf"
+                    <?xml version="1.0" encoding="UTF-8"?>
+                    <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+                    <plist version="1.0">
+                    <dict>  
+                        <key>Label</key>
+                        <string>com.flexget</string>
+                        <key>ProgramArguments</key>
+                        <array> 
+                            <string>/usr/local/bin/flexget</string>
+                            <string>--cron</string>
+                        </array>
+                        <key>Nice</key>
+                        <integer>1</integer>
+                        <key>StartInterval</key>
+                        <integer>900</integer>
+                        <key>RunAtLoad</key>
+                        <true/>
+                    </dict>
+                    </plist>
+EOF
+                fi
+
+                launchctl load -w "$plistf"
+                mkdir -p ~/.flexget
+                vim ~/.flexget/config.yml
             elif is_deb; then
                 sudo add-apt-repository ppa:transmissionbt/ppa
                 pkg_install transmission-cli transmission-daemon transmission-common
