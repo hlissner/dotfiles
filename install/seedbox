@@ -14,8 +14,9 @@ while [ $# -gt 0 ]; do
             if is_mac; then
                 brew install transmission
 
-                plistf="~/Library/LaunchAgents/com.flexget.plist"
+                plistf="$HOME/Library/LaunchAgents/com.flexget.plist"
                 if [ ! -f "$plistf" ]; then
+                    touch $plistf
                     cat <<-EOF > "$plistf"
                     <?xml version="1.0" encoding="UTF-8"?>
                     <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
