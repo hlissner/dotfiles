@@ -44,6 +44,7 @@ zle -N edit-command-line
 bindkey -v
 bindkey '^f' edit-command-line
 
+bindkey '^r' history-incremental-search-backward
 bindkey '^w' backward-kill-word
 bindkey '^a' beginning-of-line
 bindkey '^e' end-of-line
