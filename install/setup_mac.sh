@@ -10,9 +10,7 @@ if ! is_mac; then
 fi
 
 keep_alive
-ln -sf ~/.dotfiles/zsh ~/.zsh
-ln -sf ~/.dotfiles/zshrc ~/.zshrc
-ln -sf ~/.dotfiles/zshenv ~/.zshenv
+$BASEDIR/zsh
 
 if ! command_exists brew; then
     echo_g "==> Installing homebrew"
