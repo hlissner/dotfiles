@@ -1,0 +1,124 @@
+#!/usr/bin/env python
+
+# Python script to send prowl notifications when RSS feeds are updated.
+# Stores a temp file in ~/.prowl-rss with RSS guids. Intended to be run
+# via a cron job or on-demand, standalone.
+
+from __future__ import print_function
+
+"""
+Prowlpy V0.4.1
+
+Written by Jacob Burch, 7/6/2009
+
+Python module for posting to the iPhone Push Notification service Prowl: http://prowl.weks.net/
+"""
+__author__ = 'jacobburch@gmail.com'
+__version__ = 0.41
+
+import httplib2
+import urllib
+
+API_DOMAIN = 'https://prowl.weks.net/publicapi'
+
+class Prowl(object):
+    def __init__(self, apikey):
+        """
+        Initialize a Prowl instance.
+        """
+        self.apikey = apikey
+        
+        # Aliasing
+        self.add = self.post
+        
+    def post(self, application=None, event=None, description=None,priority=0):
+        # Create the http object
+        h = httplib2.Http()
+        
+        # Set User-Agent
+        headers = {'User-Agent': "Prowlpy/%s" % str(__version__)}
+        
+        # URL-encode and string-ify keywords. Better type/content testing is needed here
+        # url.encode below fixes need for url quotes
+        # string-ify-ing might still be required. haven't tested that
+        #application = urllib.quote(str(application))
+        #event = urllib.quote(str(event))
+        #description = urllib.quote(str(description))
+        #priority = urllib.quote(str(priority))
+        
+        # Perform the request and get the response headers and content
+        data = {
+            'apikey': self.apikey,
+            'application': application,
+            'event': event,
+            'description': description,
+            'priority': priority
+        }
+        headers["Content-type"] = "application/x-www-form-urlencoded"
+        resp,content = h.request("%s/add/" % API_DOMAIN, "POST", headers=headers, body=urllib.urlencode(data))
+        
+        if resp['status'] == '200':
+            return True
+        elif resp['status'] == '401': 
+            raise Exception("Auth Failed: %s" % content)
+        else:
+            raise Exception("Failed")
+        
+    
+    def verify_key(self):
+        h = httplib2.Http()
+        headers = {'User-Agent': "Prowlpy/%s" % str(__version__)}
+        verify_resp,verify_content = h.request("%s/verify?apikey=%s" % \
+                                                    (API_DOMAIN,self.apikey))
+        if verify_resp['status'] != '200':
+            raise Exception("Invalid API Key %s" % verify_content)
+        else:
+            return True
+
+
+#########################################################################
+
+import feedparser
+import time
+import sys
+import os
+
+GUID_FILE = os.path.expanduser("~") + "/.prowl-rss"
+
+try:
+    guids = [line.strip() for line in open(GUID_FILE)]
+except IOError:
+    print("{0} file couldn't be found/opened".format(GUID_FILE))
+    sys.exit(1)
+
+apikey = "f610e03b54a2ae59196b11f3b61aca78a75b29b5"
+feeds = [
+    # Put your feeds here
+    "https://github.com/hlissner.private.atom?token=510883__eyJzY29wZSI6IkF0b206L2hsaXNzbmVyLnByaXZhdGUuYXRvbSIsImV4cGlyZXMiOjI5NjUwOTc5OTh9--96d7ca9de4d4198352f0062cb786d66aa8b2a2fe"
+]
+
+p = Prowl(apikey)
+
+try:
+    fo = open(GUID_FILE, "a")
+    for feed in feeds:
+        xml = feedparser.parse(feed)
+
+        for e in xml.entries:
+            if e.guid not in guids:
+                p.add("RSS", e.title, "{0} - {1} <{2}>".format(e.title, xml.feed.title, e.link))
+
+                fo.write(e.guid+"\n")
+
+                guids.append(e.guid)
+                print("Found: {0} => {1}".format(e.title, e.link))
+            else:
+                print("Ignored: {0} => {1}".format(e.title, e.link))
+                pass
+
+    fo.close()
+
+except Exception, msg:
+    print(msg)
+
+
