@@ -7,3 +7,5 @@ alias gap='git add -p'
 alias gf='git ls-files | grep -i'
 alias gt='git tag'
 alias gtl='git describe --tags --abbrev=0'
+
+# find oh-my-zsh's here: ~/.oh-my-zsh/plugins/git/git.plugin.zsh
