@@ -6,6 +6,11 @@
 
 from __future__ import print_function
 
+apikey = "... API KEY HERE ..."
+feeds = [
+    # Put your feeds here
+]
+
 """
 Prowlpy V0.4.1
 
@@ -90,12 +95,6 @@ try:
 except IOError:
     print("{0} file couldn't be found/opened".format(GUID_FILE))
     sys.exit(1)
-
-apikey = "f610e03b54a2ae59196b11f3b61aca78a75b29b5"
-feeds = [
-    # Put your feeds here
-    "https://github.com/hlissner.private.atom?token=510883__eyJzY29wZSI6IkF0b206L2hsaXNzbmVyLnByaXZhdGUuYXRvbSIsImV4cGlyZXMiOjI5NjUwOTc5OTh9--96d7ca9de4d4198352f0062cb786d66aa8b2a2fe"
-]
 
 p = Prowl(apikey)
 
