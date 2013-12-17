@@ -22,19 +22,19 @@ function prompt_pwd {
 }
 
 function prompt_git {
-    if [ "`git_prompt_info`" ]; then
-        echo -n "$(git_prompt_info)"
-    fi
+    [ "`git_prompt_info`" ] && echo -n "$(git_prompt_info)"
 }
 
 function prompt_vimode {
     # The prompt turns green in command mode, and red in insert mode
-    MODE_INDICATOR=" %{$fg[green]%}\$ "
+    PROMPT="$>"
+
+    MODE_INDICATOR="%{$fg[green]%}%{$PROMPT%} "
     MODE_PROMPT="${${KEYMAP/vicmd/$MODE_INDICATOR}/(main|viins)/}"
     if [ $MODE_PROMPT ]; then
-        echo -n $MODE_PROMPT
+        echo -n "$MODE_PROMPT "
     else
-        echo -n " \$ "
+        echo -n "$PROMPT "
     fi
 }
 
@@ -43,26 +43,18 @@ function lprompt {
     # Start each prompt with a newline
     echo
 
-    # Then the timestamp
-    echo -n "%{$FG[242]%}"
-    echo -n '$(date "+%H:%M:%S")'
-    echo -n "%{$FG[white]%}"
-
     # Show the hostname if this is an SSH session
-    if [[ -n $SSH_CLIENT ]]; then
+    if [ ! -z "$SSH_CLIENT" ]; then
         echo -n "%{$fg[blue]%}"
         if is_mac; then
-            echo -n " $(hostname | sed -e 's/\.local$//')"
+            echo -n "$(hostname | sed -e 's/\.local$//') "
         else
-            echo -n " $(hostname)"
+            echo -n "$(hostname) "
         fi
     fi
 
-    # The prompt
-    echo -n "%{$fg[red]%}"
-    echo -n "%{$FX[bold]%}"
-    echo -n '$(prompt_vimode)'
-    echo -n "%{$reset_color%}"
+    # Print the prompt
+    echo -n '%{$fg[cyan]%}%{$FX[bold]%}$(prompt_vimode)%{$reset_color%}'
 }
 
 function rprompt {
