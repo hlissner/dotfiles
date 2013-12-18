@@ -10,32 +10,34 @@ if [ ! -d ~/.oh-my-zsh ]; then
     fi
 
     # https://github.com/robbyrussell/oh-my-zsh
-    echo_g "==> ZSH: Installing oh-my-zsh"
-    git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
+    if [ ! -d ~/.oh-my-zsh ]; then
+        echo_g "==> ZSH: Installing oh-my-zsh"
+        git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
+    fi
     
     # Set new shell
     echo_g "==> ZSH: Changing shell"
-    
-    local zsh_bin=$(which zsh)
-    if !grep -i "$zsh_bin" /etc/shells; then
-        echo_r "==> ZSH: You need to add $zsh_bin to /etc/shells!"
+    if is_mac; then
+        zsh_bin="`brew --prefix`/bin/zsh"
+        echo $zsh_bin | sudo tee /etc/shells
     else
-        chsh -s "$zsh_bin"
+        zsh_bin="/usr/bin/zsh"
+        echo $zsh_bin | sudo tee -a /etc/shells
     fi
 
+    # Change the shell
+    chsh -s "$zsh_bin"
 else
-
     echo_g "==> ZSH: Updating"
     cd ~/.oh-my-zsh
     git pull
-
 fi
 
 # Create links
 echo_g "==> ZSH: Setting up symlinks"
-ln -sf ~/.dotfiles/zsh ~/.zsh
-ln -sf ~/.dotfiles/zshrc ~/.zshrc
-ln -sf ~/.dotfiles/zshenv ~/.zshenv
-ln -sf ~/.dotfiles/bashrc ~/.bashrc
+rm -f ~/.zsh && ln -sf ~/.dotfiles/zsh ~/.zsh
+rm -f ~/.zshrc && ln -sf ~/.dotfiles/zshrc ~/.zshrc
+rm -f ~/.zshenv && ln -sf ~/.dotfiles/zshenv ~/.zshenv
+rm -f ~/.bashrc && ln -sf ~/.dotfiles/bashrc ~/.bashrc
 
 echo_g "==> ZSH: DONE!"
