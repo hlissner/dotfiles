@@ -54,7 +54,7 @@ function lprompt {
     fi
 
     # Print the prompt
-    echo -n '%{$fg[cyan]%}%{$FX[bold]%}$(prompt_vimode)%{$reset_color%}'
+    echo -n '%{$fg[red]%}%{$FX[bold]%}$(prompt_vimode)%{$reset_color%}'
 }
 
 function rprompt {
