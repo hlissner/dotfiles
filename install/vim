@@ -21,7 +21,7 @@ elif is_deb && ! vim --version | grep "Compiled by $(whoami)@$(hostname)" 2>&1 >
     cd ~
     hg clone https://code.google.com/p/vim/
     cd vim
-    hg checkout v7-4-052
+    hg checkout v7-4-131
 
     echo_g "==> Compiling vim from source"
     ./configure --with-features=huge \
@@ -52,7 +52,7 @@ if [ ! -e ~/.vim/.git ]; then
     fi
 
     # Install vim from my distro: https://github.com/hlissner/mlvim
-    git clone https://github.com/hlissner/vim.git ~/.vim
+    git clone https://github.com/hlissner/vim ~/.vim
     vim -u ~/.vim/.vimrc
 else
     # Installing/updating vim bundles
