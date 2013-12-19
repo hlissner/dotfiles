@@ -25,7 +25,7 @@ pkg_update
 
 # Now for zsh...
 if command_exists zsh; then
-    echo_g "==> Updating zsh, rvm and vim"
+    echo_g "==> Updating zsh"
     # Then the rest
     install/zsh
     echo
@@ -33,10 +33,9 @@ fi
 
 # Then vim, if it's installed
 if [ -d ~/.vim ]; then
+    echo_g "==> Updating vim"
     cd ~/.vim
     git pull
-    cd ~/.dotfiles
-    install/vim
 fi
 
 echo_g "==> All done!"
