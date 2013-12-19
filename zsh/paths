@@ -11,13 +11,7 @@ if [ -e /usr/local/bin/brew ]; then
 fi
 
 PATH=$HOME/.rvm/bin:$PATH
-
-if [ -d ~/.dotfiles ]; then
-    PATH=~/.dotfiles/bin:$PATH
-fi
-
-if [ -d ~/Dropbox ]; then
-	PATH=~/Dropbox/dev/bin:$PATH
-fi
+PATH=$HOME/.dotfiles/bin:$PATH
+PATH=$HOME/Dropbox/dev/bin:$PATH
 
 # vim:set ft=zsh:
