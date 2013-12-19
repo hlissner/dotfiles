@@ -7,7 +7,7 @@ if ! command_exists rvm; then
     echo_g "==> Rvm: Installing"
 
     # https://rvm.io
-    curl -L https://get.rvm.io | bash -s stable --ruby
+    curl -L https://get.rvm.io | bash -s stable
 else
     # Update it
 
