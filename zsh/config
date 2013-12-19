@@ -3,8 +3,8 @@ unsetopt correct_all
 
 # HISTORY
 HISTFILE=~/.histfile
-HISTSIZE=10000
-SAVEHIST=10000
+HISTSIZE=5000
+SAVEHIST=5000
 
 # Don't overwrite, append!
 setopt APPEND_HISTORY
