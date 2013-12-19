@@ -27,9 +27,9 @@ function prompt_git {
 
 function prompt_vimode {
     # The prompt turns green in command mode, and red in insert mode
-    PROMPT="$>"
+    PROMPT="$"
 
-    MODE_INDICATOR="%{$fg[green]%}%{$PROMPT%} "
+    MODE_INDICATOR="%{$fg[green]%}%{$PROMPT%}"
     MODE_PROMPT="${${KEYMAP/vicmd/$MODE_INDICATOR}/(main|viins)/}"
     if [ $MODE_PROMPT ]; then
         echo -n "$MODE_PROMPT "
