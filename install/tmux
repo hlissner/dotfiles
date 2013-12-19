@@ -11,6 +11,6 @@ else
 fi
 
 echo_g "==> Tmux: Setting up symlinks"
-ln -sf ~/.dotfiles/tmux.conf ~/.tmux.conf
+rm -rf ~/.tmux.conf && ln -sf ~/.dotfiles/tmux.conf ~/.tmux.conf
 
 echo_g "==> DONE!"
