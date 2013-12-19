@@ -1,8 +1,0 @@
-
-alias bt="transmission-remote dev"
-alias btl="bt -l"
-alias bta="bt --add"
-
-function btr {
-    bt -t$1 -r
-}

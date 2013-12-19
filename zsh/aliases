@@ -1,10 +1,31 @@
-#############
-#  Aliases  #
-#############
+# GIT
+if command_exists 'git'; then
+    # On top of oh-my-zsh's git aliases
+    alias gs='git status'
+    alias gst='git stash'
+    alias gap='git add -p'
+    alias gf='git ls-files | grep -i'
+    alias gt='git tag'
+    alias gtl='git describe --tags --abbrev=0'
 
-for file in ~/.zsh/alias/*; do
-    command_exists `basename "$file"` && source $file
-done
+    # find oh-my-zsh's here: ~/.oh-my-zsh/plugins/git/git.plugin.zsh
+fi
+
+# Tmux
+command_exists 'tmux' && alias t='tmux'
+
+# transmission-remote
+if command_exists 'transmission-remote'; then
+    alias bt="transmission-remote dev"
+    alias btl="bt -l"
+    alias bta="bt --add"
+
+    function btr {
+        bt -t$1 -r
+    }
+fi
+
+alias va='vagrant'
 
 # Interpreters
 command_exists "ruby" && alias rb='ruby'
