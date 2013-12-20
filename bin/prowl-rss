@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
-# Python script to send prowl notifications when RSS feeds are updated.
-# Stores a temp file in ~/.prowl-rss with RSS guids. Intended to be run
-# via a cron job or on-demand, standalone.
+# Checks to see if certain RSS feeds (listed in ~/.prowl-rss/feeds) have been
+# updated recently, and if so, send a prowl notification.
+# It stores read guids in ~/.prowl-rss/guids.
+#
+# Intended to be run via cron or on-demand.
 
 from __future__ import print_function
 
@@ -15,8 +17,9 @@ import os
 
 ###
 
-GUID_FILE = os.path.expanduser("~") + "/.prowl-rss"
-CONF_FILE = os.path.expanduser("~") + "/.prowl-rss-conf"
+API_FILE = os.path.expanduser("~") + "/.prowl-apikey"
+GUID_FILE = os.path.expanduser("~") + "/.prowl-rss/guids"
+FEEDS_FILE = os.path.expanduser("~") + "/.prowl-rss/feeds"
 
 API_DOMAIN = 'https://prowl.weks.net/publicapi'
 
@@ -51,9 +54,10 @@ def prowl_post(api, app=None, event=None, desc=None, priority=0):
 try:
     
     guids = [line.strip() for line in open(GUID_FILE)]
-    conf = [line.strip() for line in open(CONF_FILE)]
+    conf = [line.strip() for line in open(FEEDS_FILE)]
 
-    apikey = conf[0]
+    with open(API_FILE) as f:
+        apikey = f.read().strip()
     feeds = conf[1:]
 
     ##
