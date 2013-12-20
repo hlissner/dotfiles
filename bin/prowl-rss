@@ -58,7 +58,7 @@ try:
 
     with open(API_FILE) as f:
         apikey = f.read().strip()
-    feeds = conf[1:]
+    feeds = conf
 
     ##
     fo = open(GUID_FILE, "a")
