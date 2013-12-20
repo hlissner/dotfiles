@@ -1,5 +1,10 @@
 #!/usr/bin/env zsh
 
+# Converts an html file (or website) to a pdf. It installs
+# the dependencies if they aren't available.
+#
+# Note: MAC ONLY!
+
 if ! is_mac; then
     echo "Mac-only script!"
     exit

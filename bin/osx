@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # ~/.osx — http://mths.be/osx
+# A script to set a bunch of sane options on osx
 
 source ~/.dotfiles/zsh/functions
 keep_alive
