@@ -16,7 +16,7 @@ command_exists 'tmux' && alias t='tmux'
 
 # transmission-remote
 if command_exists 'transmission-remote'; then
-    alias bt="transmission-remote dev"
+    alias bt="transmission-remote server"
     alias btl="bt -l"
     alias bta="bt --add"
 
