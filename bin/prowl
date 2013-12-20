@@ -18,8 +18,8 @@ if [ $# -eq "3" ]; then
     APP="$1"
     TITLE="$2"
     MSG="$3"
-if [ $# -eq "2" ]; then
-    APP=`hostname`
+elif [ $# -eq "2" ]; then
+    APP="`hostname`"
     TITLE="$2"
     MSG="$3"
 else
@@ -32,4 +32,3 @@ curl -s https://api.prowlapp.com/publicapi/add \
     -F application="$APP" \
     -F event="$TITLE" \
     -F description="$MSG"
- 
