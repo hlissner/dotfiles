@@ -83,4 +83,4 @@ except IOError, e:
     print("{0} file couldn't be found/opened".format(e.filename))
     sys.exit(1)
 except Exception, msg:
-    print(msg)
+    print("Error: " + msg)
