@@ -14,6 +14,7 @@ import feedparser
 import time
 import sys
 import os
+import re
 
 ###
 
@@ -63,10 +64,14 @@ try:
     ##
     fo = open(GUID_FILE, "a")
     for feed in feeds:
-        xml = feedparser.parse(feed)
+        f = feed.split(' ', 1)
+        xml = feedparser.parse(f[0])
 
         for e in xml.entries:
             if e.guid not in guids:
+                if len(f) > 1 and not re.match(f[1], e.title):
+                    continue
+
                 prowl_post(apikey, "RSS", e.title, "{0} - {1} <{2}>".format(e.title, xml.feed.title, e.link))
 
                 fo.write(e.guid+"\n")
