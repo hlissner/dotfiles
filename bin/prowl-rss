@@ -46,7 +46,7 @@ def prowl_post(api, app=None, event=None, desc=None, priority=0):
     if resp['status'] == '200':
         return True
     elif resp['status'] == '401': 
-        raise Exception("Auth Failed: %s" % content)
+        raise Exception("Auth Failed: {0}".format(content))
     else:
         raise Exception("Failed")
 
@@ -65,21 +65,33 @@ try:
     fo = open(GUID_FILE, "a")
     for feed in feeds:
         f = feed.split(' ', 1)
+        print("-- Parsing {0}".format(f[0]))
         xml = feedparser.parse(f[0])
 
         for e in xml.entries:
-            if e.guid not in guids:
+            title = e.title.encode('utf-8')
+            try:
+                guid = e.guid
+            except Exception:
+                guid = e.link
+            if guid not in guids:
+                print("-- Looking")
                 if len(f) > 1 and not re.match(f[1], e.title):
+                    print("-- Does not match! Ignoring")
                     continue
 
-                prowl_post(apikey, "RSS", e.title, "{0} - {1} <{2}>".format(e.title, xml.feed.title, e.link))
+                print("-- Found, reporting: {0}".format(title))
 
-                fo.write(e.guid+"\n")
+                msg = "{0} - {1}".format(xml.feed.title.encode('utf-8'), title)
+                prowl_post(apikey, "RSS", title, msg)
 
-                guids.append(e.guid)
-                print("Found: {0} => {1}".format(e.title, e.link))
+                print("-- Writing to guids")
+                fo.write("{0}\n".format(guid))
+                guids.append(guid)
+
+                print("Found: {0} => {1}".format(title, e.link))
             else:
-                print("Ignored: {0} => {1}".format(e.title, e.link))
+                print("Ignored: {0} => {1}".format(title, e.link))
                 pass
 
     fo.close()
