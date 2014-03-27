@@ -1,0 +1,57 @@
+#!/usr/bin/env ruby
+
+# A quick script to watch a list of RSS feeds and report new entries
+# to Growl, which is chained to Prowl and my home network. Never miss
+# a notification again!
+
+# require 'prowl'
+require 'net/http'
+require 'simple-rss'
+require 'ruby-growl'
+
+GUID_FILE = "#{Dir.home}/.watch-rss"
+FEEDS_URL = "https://dl.dropboxusercontent.com/u/2908279/public/feeds"
+
+def open_url(uri)
+    Net::HTTP.get(URI(uri))
+end
+
+begin
+
+    guids = File.exists?(GUID_FILE) ? File.open(GUID_FILE).read.split("\n") : []
+    feeds = open_url(FEEDS_URL).split("\n")
+
+    g = Growl.new("localhost", "RSS Watcher")
+    g.add_notification("RSS Watcher")
+
+    feeds.each do |feed|
+        url,terms = feed.split("|")
+
+        feed = SimpleRSS.parse(open_url(url))
+        feed.items.each do |item|
+
+            guid = item.id || item.link
+            if not terms.nil? and not item.title.index(terms)
+                p "Skipped: #{item.title}"
+                next
+            end
+
+            unless guids.include? guid
+                g.notify("RSS Watcher", "New RSS entry!", "#{item.title}")
+
+                guids << guid
+
+                p "Found: #{item.title}"
+            else
+                p "Ignored: #{item.title}"
+            end
+
+        end
+
+    end
+
+    File.open(GUID_FILE, 'w').write(guids.join("\n"))
+rescue Exception => e
+    STDERR.puts e.message
+    # STDERR.puts e.backtrace.inspect.join("\n")
+end
