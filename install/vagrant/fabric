@@ -1,7 +1,0 @@
-#!/usr/bin/env zsh
-
-BASEDIR=$(dirname "$0")
-
-$BASEDIR/../python --fabric
-
-vagrant plugin install vagrant-fabric

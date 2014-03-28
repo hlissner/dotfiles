@@ -24,6 +24,3 @@ source ~/.zsh/prompt
 
 # Have a system specific rcfile? Source it!
 [ -f ~/.localrc ] && source ~/.localrc
-
-# Load RVM into a shell session *as a function*
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm" 

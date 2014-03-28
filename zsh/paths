@@ -10,8 +10,13 @@ if [ -e /usr/local/bin/brew ]; then
     fi
 fi
 
-PATH=$HOME/.rvm/bin:$PATH
+# rbenv paths
+[ -d $HOME/.rbenv ] && PATH=$HOME/.rbenv/bin:$HOME/.rbenv/shims:$PATH
+
+# hostname-specific bins
 [ -d $HOME/.dotfiles/bin/`hostname` ] && PATH=$HOME/.dotfiles/bin/`hostname`:$PATH
+
+# global bins
 PATH=$HOME/.dotfiles/bin:$PATH
 
 # vim:set ft=zsh:

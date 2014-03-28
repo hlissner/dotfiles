@@ -1,9 +1,0 @@
-#!/usr/bin/env zsh
-
-keep_alive
-
-echo_g "==> Py/OpenGL: Installing PyOpenGL"
-
-sudo pip install PyOpenGL PyOpenGL_accelerate
-
-echo_g "==> Py/OpenGL: Done!"
