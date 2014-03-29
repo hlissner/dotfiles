@@ -17,37 +17,6 @@ function is_linux {
     [[ $(uname) == 'Linux' ]]
 }
 
-# Package management aliases
-function pkg_install() {
-    if is_mac; then
-        brew install $1
-    elif is_deb; then
-        sudo apt-get -y install $1
-    fi
-}
-
-function pkg_remove() {
-    if is_mac; then
-        brew remove $1
-    elif is_deb; then
-        sudo apt-get -y remove $1
-    fi
-}
-
-function pkg_update() {
-    if is_mac; then
-        brew update && brew upgrade
-    elif is_deb; then
-        sudo apt-get update && sudo apt-get upgrade
-    fi
-}
-
-# Ask for admin password up front and keep sudo alive until the end of the script
-function keep_alive {
-    sudo -v
-    while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
-}
-
 # Extract a compressed file with the appropriate command
 function unpack {
     if [ -f "$1" ]; then
@@ -87,14 +56,5 @@ if is_mac; then
     }
 
 fi
-
-# Output functions
-function echo_g {
-    echo -e "\e[0;32m$1\e[m"
-}
-
-function echo_r {
-    echo -e "\e[0;31m$1\e[m"
-}
 
 # vim:set ft=zsh:

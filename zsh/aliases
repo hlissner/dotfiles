@@ -30,6 +30,7 @@ alias va='vagrant'
 
 # Interpreters
 command_exists "ruby" && alias rb='ruby'
+command_exists "rbenv" && alias re='rbenv'
 command_exists "python" && alias py='python'
 command_exists "node" && alias js='node'
 if [ -e /Applications/love.app ]; then
@@ -55,16 +56,10 @@ alias wget='wget -c'
 alias sudo='sudo '
 
 if is_linux; then
-
     alias ls='ls --color'
-
-    # iptables
     alias ipt='sudo iptables'
-
 elif is_mac; then
-
     alias ls='ls -G'
-
     alias b='brew'
     alias ql='quicklook'
 
@@ -75,7 +70,6 @@ elif is_mac; then
             open "$@"
         fi
     }
-
 fi
 
 alias v="vim"
@@ -85,5 +79,7 @@ function mkd {
     mkdir "$@" && cd "$@"
 }
 
+alias reload='exec $SHELL -l'
+alias c='clear'
 
 # vim:set ft=zsh:

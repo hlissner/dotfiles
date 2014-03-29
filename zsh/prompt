@@ -8,7 +8,7 @@ ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[red]%}+%{$fg[white]%}"
 #  Build Prompt  #
 ##################
 
-function prompt_pwd {
+function _prompt_pwd {
     SHORTPWD=`print -Pn "%4~"`
 
     if [[ -n "${ZSH_VERSION:-}" ]]
@@ -21,11 +21,11 @@ function prompt_pwd {
     echo -n $SHORTPWD
 }
 
-function prompt_git {
+function _prompt_git {
     [ "`git_prompt_info`" ] && echo -n "$(git_prompt_info)"
 }
 
-function prompt_vimode {
+function _prompt_vimode {
     # The prompt turns green in command mode, and red in insert mode
     PROMPT="$"
 
@@ -39,7 +39,7 @@ function prompt_vimode {
 }
 
 # prompts
-function lprompt {
+function _lprompt {
     # Start each prompt with a newline
     echo
 
@@ -54,22 +54,22 @@ function lprompt {
     fi
 
     # Print the prompt
-    echo -n '%{$fg[red]%}%{$FX[bold]%}$(prompt_vimode)%{$reset_color%}'
+    echo -n '%{$fg[red]%}%{$FX[bold]%}$(_prompt_vimode)%{$reset_color%}'
 }
 
-function rprompt {
+function _rprompt {
     # Make the rprompt a bright grey to set it apart
     echo -n "%{$FG[245]%}"
-    echo -n '$(prompt_pwd)'
+    echo -n '$(_prompt_pwd)'
 
     # Show the branch/status if in a git repo
-    echo -n '$(prompt_git)'
+    echo -n '$(_prompt_git)'
 
     # Reset formatting for command output
     echo -n "%{$reset_color%}"
 }
 
-PROMPT="$(lprompt)"
-RPROMPT="$(rprompt)"
+PROMPT="$(_lprompt)"
+RPROMPT="$(_rprompt)"
 
 # vim:set ft=zsh:

@@ -1,4 +1,5 @@
 # ZSH Env variables
+export ZSH_INIT=1
 export ZSH=$HOME/.oh-my-zsh
 
 source ~/.zsh/functions
@@ -24,3 +25,7 @@ source ~/.zsh/prompt
 
 # Have a system specific rcfile? Source it!
 [ -f ~/.localrc ] && source ~/.localrc
+
+# Init rbenv & pyenv
+command_exists rbenv && eval "$(rbenv init -)"
+command_exists pyenv && eval "$(pyenv init -)"
