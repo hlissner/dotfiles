@@ -38,6 +38,18 @@ function _prompt_vimode {
     fi
 }
 
+function _prompt_rbenv {
+    local ruby_version
+    ruby_version="$(rbenv local 2>/dev/null)"
+    [ "$?" -eq 0 ] && echo -n " %{$fx[bold]%}%{$fg[red]%}:$ruby_version"
+}
+
+function _prompt_pyenv {
+    local py_version
+    py_version="$(pyenv local 2>/dev/null)"
+    [ "$?" -eq 0 ] && echo -n " %{$fx[bold]%}%{$fg[yellow]%}:$py_version"
+}
+
 # prompts
 function _lprompt {
     # Start each prompt with a newline
@@ -64,6 +76,10 @@ function _rprompt {
 
     # Show the branch/status if in a git repo
     echo -n '$(_prompt_git)'
+
+    # Display the local version of rb/pyenv
+    command_exists rbenv && echo -n '$(_prompt_rbenv)'
+    command_exists pyenv && echo -n '$(_prompt_pyenv)'
 
     # Reset formatting for command output
     echo -n "%{$reset_color%}"
