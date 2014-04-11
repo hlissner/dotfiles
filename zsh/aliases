@@ -13,7 +13,7 @@ if command_exists 'git'; then
 fi
 
 # Tmux
-command_exists 'tmux' && alias t='tmux'
+command_exists 'tmux' && alias t='tmux -CC'
 
 # transmission-remote
 if command_exists 'transmission-remote'; then
@@ -21,21 +21,16 @@ if command_exists 'transmission-remote'; then
     alias btl="bt -l"
     alias bta="bt --add"
 
-    function btr {
-        bt -t$1 -r
-    }
+    function btr { bt -t$1 -r }
+    function bts { bt -t$1 -S }
 fi
 
 alias va='vagrant'
 
 # Interpreters
-command_exists "ruby" && alias rb='ruby'
-command_exists "rbenv" && alias re='rbenv'
-command_exists "python" && alias py='python'
-command_exists "node" && alias js='node'
-if [ -e /Applications/love.app ]; then
-    alias love="/Applications/love.app/Contents/MacOS/love"
-fi
+command_exists "rbenv" && alias rb='rbenv'
+command_exists "pyenv" && alias py='pyenv'
+[ -e /Applications/love.app ] && alias love="/Applications/love.app/Contents/MacOS/love"
 
 # Shell conveniences
 alias l='ls -1'
@@ -75,9 +70,7 @@ fi
 alias v="vim"
 
 # Make a directory and change to it
-function mkd {
-    mkdir "$@" && cd "$@"
-}
+function mkd { mkdir "$@" && cd "$@" }
 
 alias reload='exec $SHELL -l'
 alias c='clear'
