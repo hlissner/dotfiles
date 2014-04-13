@@ -11,10 +11,9 @@ task :osx do
 
     sh 'defaults write NSGlobalDomain AppleKeyboardUIMode -int 3'
     sh 'defaults write NSGlobalDomain AppleFontSmoothing -int 2'
-    sh 'defaults write com.apple.dock autohide -bool true'
     sh 'defaults write NSGlobalDomain AppleShowAllExtensions -bool true'
-    sh 'defaults write com.apple.finder ShowStatusBar -bool true'
     sh 'defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true'
+    sh 'defaults write com.apple.dock autohide -bool true'
 
     # Disable app quarantine
     sh 'defaults write com.apple.LaunchServices LSQuarantine -bool false'
@@ -22,7 +21,6 @@ task :osx do
     # Disable auto-correct
     sh 'defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false'
 
-    sh 'defaults write com.apple.finder _FXShowPosixPathInTitle -bool true'
     # Avoid creating .DS_Store files on network volumes
     sh 'defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true'
     # Disable the warning when changing a file extension
@@ -41,6 +39,9 @@ task :osx do
 
     # Use column view
     sh 'defaults write com.apple.finder FXPreferredViewStyle -string "clmv"'
+
+    sh 'defaults write com.apple.finder ShowStatusBar -bool true'
+    sh 'defaults write com.apple.finder _FXShowPosixPathInTitle -bool true'
 
     sh 'killall Finder'
     sh 'killall Dock'

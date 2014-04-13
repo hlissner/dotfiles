@@ -24,5 +24,9 @@ namespace :zsh do
         echo "Updating oh-my-zsh"
         sh 'cd ~/.oh-my-zsh && git pull'
     end
+    
+    task :remove do
+        sh 'rm -rf ~/.oh-my-zsh' if Dir.exists?(File.expand_path("~/.oh-my-zsh"))
+    end
 
 end

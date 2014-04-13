@@ -14,20 +14,20 @@ namespace :homebrew do
         end
 
         Homebrew.tap('homebrew/dupes')
-        # Homebrew.tap('homebrew/python')
         Homebrew.tap('phinze/cask')
 
         %w{
-            apple_gcc42
             coreutils
             wget
             curl
             tree
             git
-            cask
+            brew-cask
             the_silver_searcher
             tmux
             gist
+            lua
+            luajit
         }.each { |pkg| Homebrew.install pkg }
 
         %w{
@@ -49,7 +49,7 @@ namespace :homebrew do
     end
 
     desc "Remove homebrew cleanly"
-    task :remove do 
+    task :remove do
         Homebrew.destroy if Homebrew.is_installed?
     end
 

@@ -1,26 +1,47 @@
 
 require_relative 'lib/homebrew'
+require_relative 'lib/rbenv'
 
-task :rbenv do
-
-end
+task :rbenv => 'rbenv:update'
 
 namespace :rbenv do
 
-    BREWS = %w{rbenv ruby-build rbenv-bundler rbenv-vars rbenv-gem-rehash}
+    GLOBAL_GEMS = %w{bundler pry rspec rake}
 
     task :install do
-        BREWS.each { |pkg| Homebrew.install pkg }
+        unless Rbenv.is_installed?
+            echo "Installing rbenv"
+            Rbenv.bootstrap
+        end
     end
 
-    if Dir.exists?(File.expand_path("~/.rbenv"))
-        task :remove do
-            BREWS.each { |pkg| Homebrew.remove pkg }
-            sh "rm -rf ~/.rbenv"
+    task :v2_0 => :install do
+        v = "2.0.0-p451"
+        unless Rbenv.is_version_installed?(v)
+            echo "Building ruby #{v}"
+            Rbenv.install v, GLOBAL_GEMS
         end
+    end
 
-        task :update => :install do
+    task :v1_9 => :install do
+        v = "1.9.3-p545"
+        unless Rbenv.is_version_installed?(v)
+            echo "Building ruby #{v}"
+            Rbenv.install v, GLOBAL_GEMS
+        end
+    end
 
+    if Rbenv.is_installed?
+        task :remove do
+            echo "Deleting rbenv"
+            Rbenv.destroy
+        end
+    end
+
+    task :update => :install do
+        Rbenv.installed_versions.each do |v| 
+            echo "Updating ruby #{v}"
+            Rbenv.update v
         end
     end
 
