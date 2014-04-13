@@ -38,26 +38,34 @@ module Homebrew
     end
 
     def self.has_keg?(keg)
-        system("#{BIN} search #{keg}")
+        `#{BIN} search #{keg}`
     end
 
     def self.is_keg_installed?(keg)
-        system("#{BIN} list | grep -w '#{keg}'")
+        `#{BIN} list | grep -w '#{keg}'`
     end
 
     def self.is_cask_installed?(cask)
-        system("#{BIN} cask list | grep -w '#{cask}'")
+        `#{BIN} cask list | grep -w '#{cask}'`
     end
 
     def self.is_tapped?(tap)
-        system("#{BIN} tap | grep -w '#{tap}'")
+        `#{BIN} tap | grep -w '#{tap}'`
     end
 
     def self.is_installed?
-        File.exists?("usr/local/bin/brew")
+        File.exists?("/usr/local/bin/brew")
     end
-    
-    def self.update()
-        sh "#{BIN} update && #{BIN} upgrade"
+
+    def self.prefix(keg)
+        `#{BIN} --prefix #{keg}`.strip
+    end
+
+    def self.update(*args)
+        if args.length > 0
+            sh "#{BIN} upgrade #{args.join(' ')}"
+        else
+            sh "#{BIN} update && #{BIN} upgrade"
+        end
     end
 end
