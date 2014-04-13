@@ -2,6 +2,11 @@
 require_relative 'lib/output'
 
 task :osx do
+    if `defaults read com.apple.finder _FXShowPosixPathInTitle | grep 1`
+        echo 'OSX settings already applied!'
+        next
+    end
+
     echo "Applying OSX settings"
     sh 'chflags nohidden "${HOME}/Library"'
     sh 'defaults write NSGlobalDomain KeyRepeat -int 0'

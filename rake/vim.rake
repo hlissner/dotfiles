@@ -3,7 +3,7 @@ require_relative "lib/output"
 require_relative "lib/homebrew"
 
 desc "Ensure vim/macvim is installed and up to date"
-task :vim => 'vim:update'
+task :vim
 
 namespace :vim do
 
@@ -12,11 +12,6 @@ namespace :vim do
         %w{vim macvim}.each { |pkg| Homebrew.install(pkg, '--with-lua --with-luajit') }
 
         github('hlissner/vim', '~/.vim') unless Dir.exists?(File.expand_path("~/.vim"))
-    end
-
-    task :update => 'vim:install' do
-        echo "Updating vim..."
-        Homebrew.update *["lua", "luajit", "vim", "macvim"]
     end
 
     desc "Remove vim"

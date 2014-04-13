@@ -41,6 +41,8 @@ namespace :homebrew do
             launchbar
             java
         }.each { |app| Homebrew.install_cask app }
+
+        echo "Homebrew is installed. Moving on."
     end
 
     task :update => :install do
