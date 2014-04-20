@@ -1,0 +1,18 @@
+#!/bin/sh
+
+dir="$1"
+if [ $# -eq 0 ]; then
+    [ ! -d ~/Desktop/ss ] && mkdir -p ~/Desktop/ss
+    dir=~/Desktop/ss
+fi
+
+# Start taking screenshots every N seconds, until this script is called again
+if [ ! -f ~/.ss ]; then
+    echo "Timelapse, on in 3..."
+    touch ~/.ss
+    sleep 3
+    i=1;while [ -f ~/.ss ];do screencapture -t jpg -x ~/Desktop/ss/$i.jpg; let i++;sleep 5; done &
+else
+    echo "Deactivating timelapse!"
+    rm ~/.ss
+fi
