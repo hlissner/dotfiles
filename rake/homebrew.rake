@@ -1,9 +1,12 @@
 
 require_relative "lib/output"
 require_relative "lib/homebrew"
+require_relative "lib/sh"
 
 desc "Ensure homebrew is installed and up to date"
 task :homebrew => 'homebrew:update'
+
+verbose(false)
 
 namespace :homebrew do
 
@@ -32,13 +35,11 @@ namespace :homebrew do
 
         %w{
             dropbox
-            firefox
             appcleaner
             vagrant
             virtualbox
             growlnotify
             iterm2
-            launchbar
             java
         }.each { |app| Homebrew.install_cask app }
 

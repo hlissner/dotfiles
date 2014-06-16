@@ -1,3 +1,5 @@
+require_relative 'sh'
+
 include Rake::DSL
 
 module Homebrew
@@ -5,36 +7,36 @@ module Homebrew
 
     def self.bootstrap
         unless self.is_installed?
-            sh 'ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"'
-            sh 'exec $SHELL -l'
+            sh_safe 'ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"'
+            sh_safe 'exec $SHELL -l'
         end
     end
 
     def self.destroy
         if self.is_installed?
-            sh 'rm -rf /usr/local/Cellar /usr/local/.git ~/Library/Caches/Homebrew'
-            sh 'brew prune'
+            sh_safe 'rm -rf /usr/local/Cellar /usr/local/.git ~/Library/Caches/Homebrew'
+            sh_safe 'brew prune'
 
             ['Library/Homebrew', 'Library/Aliases', 'Library/Formula', 'Library/Contributions'].each do |dir|
-                sh "rm -r #{dir}"
+                sh_safe "rm -r #{dir}"
             end
         end
     end
 
     def self.install(keg, options=nil)
-        sh "#{BIN} install #{keg} #{options}" unless self.is_keg_installed?(keg)
+        sh_safe "#{BIN} install #{keg} #{options}" unless self.is_keg_installed?(keg)
     end
 
     def self.install_cask(cask, options=nil)
-        sh "#{BIN} cask install #{cask} #{options}" unless self.is_cask_installed?(cask)
+        sh_safe "#{BIN} cask install #{cask} #{options}" unless self.is_cask_installed?(cask)
     end
 
     def self.tap(tap)
-        sh "#{BIN} tap #{tap}" unless self.is_tapped? tap
+        sh_safe "#{BIN} tap #{tap}" unless self.is_tapped? tap
     end
 
     def self.remove(keg)
-        sh "#{BIN} remove #{keg}"
+        sh_safe "#{BIN} remove #{keg}"
     end
 
     def self.has_keg?(keg)
@@ -63,9 +65,9 @@ module Homebrew
 
     def self.update(*args)
         if args.length > 0
-            sh "#{BIN} upgrade #{args.join(' ')}"
+            sh_safe "#{BIN} upgrade #{args.join(' ')}"
         else
-            sh "#{BIN} update && #{BIN} upgrade"
+            sh_safe "#{BIN} update && #{BIN} upgrade"
         end
     end
 end

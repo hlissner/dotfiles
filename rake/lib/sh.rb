@@ -1,0 +1,14 @@
+
+require_relative 'output'
+
+# A 'safe' sh function that won't stop rake in its tracks
+# when it encounters a problem. I'll leave it up to the
+# programmer to expect problems and terminate when necessary.
+def sh_safe(cmd)
+    begin
+        return sh(cmd)
+    rescue
+        echoerr $!
+        return false
+    end
+end
