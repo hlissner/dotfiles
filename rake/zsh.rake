@@ -20,7 +20,7 @@ namespace :zsh do
         end
     end
 
-    task :update => :install do
+    task :update => "zsh:install" do
         echo "Updating oh-my-zsh"
         sh_safe 'cd ~/.oh-my-zsh && git pull'
     end

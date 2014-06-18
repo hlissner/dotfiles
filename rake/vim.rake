@@ -3,7 +3,7 @@ require_relative "lib/output"
 require_relative "lib/homebrew"
 
 desc "Ensure vim/macvim is installed and up to date"
-task :vim
+task :vim => "vim:install"
 
 namespace :vim do
 

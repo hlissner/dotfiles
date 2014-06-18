@@ -15,7 +15,7 @@ namespace :rbenv do
         end
     end
 
-    task :v2_0 => :install do
+    task :v2_0 => "rbenv:install" do
         v = "2.0.0-p451"
         unless Rbenv.is_version_installed?(v)
             echo "Building ruby #{v}"
@@ -23,7 +23,7 @@ namespace :rbenv do
         end
     end
 
-    task :v1_9 => :install do
+    task :v1_9 => "rbenv:install" do
         v = "1.9.3-p545"
         unless Rbenv.is_version_installed?(v)
             echo "Building ruby #{v}"
@@ -38,7 +38,7 @@ namespace :rbenv do
         end
     end
 
-    task :update => :install do
+    task :update => "rbenv:install" do
         Rbenv.installed_versions.each do |v| 
             echo "Updating ruby #{v}"
             Rbenv.update v

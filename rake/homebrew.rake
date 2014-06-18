@@ -46,7 +46,7 @@ namespace :homebrew do
         echo "Homebrew is installed. Moving on."
     end
 
-    task :update => :install do
+    task :update => "homebrew:install" do
         echo "Updating homebrew..."
         Homebrew.update
     end
