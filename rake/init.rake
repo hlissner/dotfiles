@@ -15,4 +15,5 @@ task :init,:node do |t,args|
     end
 end
 
-task :update => :init
+desc "Update the node"
+task :default => :init
