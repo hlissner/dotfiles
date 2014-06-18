@@ -2,7 +2,7 @@
 require_relative 'lib/output'
 
 task :osx do
-    if `defaults read com.apple.finder _FXShowPosixPathInTitle | grep 1`
+    if system('defaults read com.apple.finder _FXShowPosixPathInTitle >&/dev/null')
         echo 'OSX settings already applied!'
         next
     end

@@ -40,19 +40,19 @@ module Homebrew
     end
 
     def self.has_keg?(keg)
-        `#{BIN} search #{keg}`
+        system("#{BIN} search #{keg}")
     end
 
     def self.is_keg_installed?(keg)
-        `#{BIN} list | grep -w '#{keg}'`
+        system("#{BIN} list | grep -w '#{keg}' >& /dev/null")
     end
 
     def self.is_cask_installed?(cask)
-        `#{BIN} cask list | grep -w '#{cask}'`
+        system("#{BIN} cask list | grep -w '#{cask}' >& /dev/null")
     end
 
     def self.is_tapped?(tap)
-        `#{BIN} tap | grep -w '#{tap}'`
+        system("#{BIN} tap | grep -w '#{tap}' >& /dev/null")
     end
 
     def self.is_installed?
