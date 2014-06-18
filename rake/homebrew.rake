@@ -16,8 +16,9 @@ namespace :homebrew do
             Homebrew.bootstrap
         end
 
-        Homebrew.tap('homebrew/dupes')
-        Homebrew.tap('phinze/cask')
+        Homebrew.tap 'homebrew/dupes'
+        Homebrew.tap 'caskroom/cask'
+        Homebrew.install 'brew-cask'
 
         %w{
             coreutils
@@ -25,7 +26,6 @@ namespace :homebrew do
             curl
             tree
             git
-            brew-cask
             the_silver_searcher
             tmux
             gist
