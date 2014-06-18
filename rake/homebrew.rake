@@ -41,6 +41,7 @@ namespace :homebrew do
             growlnotify
             iterm2
             java
+            launchbar
         }.each { |app| Homebrew.install_cask app }
 
         echo "Homebrew is installed. Moving on."
