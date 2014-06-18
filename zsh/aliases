@@ -74,5 +74,6 @@ function mkd { mkdir "$@" && cd "$@" }
 
 alias reload='exec $SHELL -l'
 alias c='clear'
+alias rg='rake -g'
 
 # vim:set ft=zsh:
