@@ -6,6 +6,9 @@ HISTFILE=~/.histfile
 HISTSIZE=5000
 SAVEHIST=5000
 
+# No longer prompt to update oh-my-zsh
+DISABLE_AUTO_UPDATE="true"
+
 # Don't overwrite, append!
 setopt APPEND_HISTORY
 # Sharing history between shell instances
