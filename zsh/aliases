@@ -74,6 +74,9 @@ function mkd { mkdir "$@" && cd "$@" }
 
 alias reload='exec $SHELL -l'
 alias c='clear'
-alias rg='rake -g'
+alias r='rake -g'
+
+# Disable zsh glob syntax on the rake command
+alias rake='noglob rake'
 
 # vim:set ft=zsh:
