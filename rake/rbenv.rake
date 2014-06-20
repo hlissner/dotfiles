@@ -6,7 +6,7 @@ task :rbenv => 'rbenv:update'
 
 namespace :rbenv do
 
-    GLOBAL_GEMS = %w{bundler pry rspec rake}
+    GLOBAL_GEMS = %w{bundler pry rspec rake bluecloth}
 
     task :install do
         unless Rbenv.is_installed?
