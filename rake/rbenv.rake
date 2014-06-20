@@ -31,8 +31,10 @@ namespace :rbenv do
         end
     end
 
-    if Rbenv.is_installed?
-        task :remove do
+    task :remove do
+        if Rbenv.is_installed?
+            echo "rbenv isn't installed!"
+        else
             echo "Deleting rbenv"
             Rbenv.destroy
         end
