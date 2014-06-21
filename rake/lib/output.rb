@@ -1,9 +1,9 @@
-require 'colorize'
-
 def echo(msg)
-    puts "=> #{msg}".bold.green
+    # print green text
+    puts "\e[32m=> #{msg}\e[0m"
 end
 
 def echoerr(msg)
-    puts "=> #{msg}".bold.red
+    # print red text
+    puts "\e[31m=> #{msg}\e[0m"
 end
