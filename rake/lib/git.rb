@@ -7,5 +7,5 @@ def git(url,dest)
 end
 
 def github(repo,dest)
-    git "git@github.com:#{repo}.git", dest
+    git "https://github.com/#{repo}.git", dest
 end

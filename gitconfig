@@ -34,3 +34,6 @@
     insteadOf = "bb:"
 [url "ssh://git@bitbucket.org/hlissner"]
     insteadOf = "bb:~"
+
+[credential]
+    helper = osxkeychain
