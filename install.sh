@@ -7,7 +7,7 @@ function do_link {
     fi
 }
 
-[ ! -d ~/.dotfiles ] && git clone git@github.com:hlissner/dotfiles.git ~/.dotfiles
+[ ! -d ~/.dotfiles ] && git clone https://github.com/hlissner/dotfiles ~/.dotfiles
 
 do_link zsh
 do_link zshrc
