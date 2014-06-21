@@ -8,7 +8,8 @@ module Homebrew
     def self.bootstrap
         unless self.is_installed?
             sh_safe 'ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"'
-            sh_safe 'exec $SHELL -l'
+            echo "Homebrew is installed! Restart the shell then rake."
+            exit
         end
     end
 

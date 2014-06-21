@@ -10,7 +10,8 @@ module Rbenv
     def self.bootstrap
         unless self.is_installed?
             BREWS.each { |pkg| Homebrew.install pkg }
-            sh_safe 'exec $SHELL -l'
+            echo "Rbenv is installed! Restart the shell then rake."
+            exit
         end
     end
 
@@ -24,8 +25,8 @@ module Rbenv
     def self.install(version, gems=[])
         unless self.is_version_installed?(version)
             sh_safe "rbenv install #{version}"
+            sh_safe "RBENV_VERSION=#{version} #{GEM_BIN} install #{gems.join(' ')}"
         end
-        sh_safe "RBENV_VERSION=#{version} #{GEM_BIN} install #{gems.join(' ')}"
     end
 
     def self.update(version)
