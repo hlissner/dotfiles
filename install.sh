@@ -1,7 +1,7 @@
 #!/bin/sh
 
 function do_link {
-    if [ ! -h "$2" ]; then
+    if [ ! -h "$HOME/.$1" ]; then
         echo "ln -sf '$HOME/.dotfiles/$1' '$HOME/.$1'"
         ln -sf "$HOME/.dotfiles/$1" "$HOME/.$1"
     fi
