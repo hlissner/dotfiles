@@ -8,12 +8,12 @@ function do_link {
 
 [ ! -d ~/.dotfiles ] && git clone git@github.com:hlissner/dotfiles.git ~/.dotfiles
 
-do_link zsh ~/.zsh
-do_link zshrc ~/.zshrc
-do_link zshenv ~/.zshenv
-do_link tmux.conf ~/.tmux.conf
-do_link gitignore ~/.gitignore
-do_link gitconfig ~/.gitconfig
-do_link bashrc ~/.bashrc
-do_link ctags ~/.ctags
-do_link rake ~/.rake
+do_link zsh $HOME/zsh
+do_link zshrc $HOME/zshrc
+do_link zshenv $HOME/zshenv
+do_link tmux.conf $HOME/tmux.conf
+do_link gitignore $HOME/gitignore
+do_link gitconfig $HOME/gitconfig
+do_link bashrc $HOME/bashrc
+do_link ctags $HOME/ctags
+do_link rake $HOME/rake
