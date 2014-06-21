@@ -2,7 +2,7 @@ require_relative 'lib/output'
 
 desc "Provision the node"
 task :init,:node do |t,args|
-    args.with_defaults(:node => `hostname`.strip)
+    args.with_defaults(:node => `hostname`.gsub('.local', '').strip)
     # TODO: chop off the *.local in osx hostnames
 
     path = "#{File.dirname(__FILE__)}/node/#{args.node}.rb"
