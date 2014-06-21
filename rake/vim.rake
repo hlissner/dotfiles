@@ -11,8 +11,10 @@ namespace :vim do
         %w{lua luajit}.each { |pkg| Homebrew.install pkg }
         %w{vim macvim}.each { |pkg| Homebrew.install(pkg, '--with-lua --with-luajit') }
 
-        github('hlissner/vim', '~/.vim')
-        github('Shougo/neobundle.vim', '~/.vim/bundle/neobundle.vim')
+        unless Dir.exists? (File.expand_path("~/.vim"))
+            github('hlissner/vim', '~/.vim')
+            github('Shougo/neobundle.vim', '~/.vim/bundle/neobundle.vim')
+        end
     end
 
     task :update => 'vim:install' do
