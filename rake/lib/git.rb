@@ -1,7 +1,9 @@
 include Rake::DSL
 
 def git(url,dest)
-    sh "git clone #{url} #{dest}" unless Dir.exists?(dest)
+    if not Dir.exists?(dest)
+        sh "git clone #{url} #{dest}" unless Dir.exists?(dest)
+    end
 end
 
 def github(repo,dest)
