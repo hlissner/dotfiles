@@ -12,3 +12,9 @@ def sh_safe(cmd)
         return false
     end
 end
+
+def do_link(src, dest)
+    if not (File.exist?(path_to_file) || File.symlink?(path_to_file))
+        sh_safe "ln -sf #{src} #{dest}"
+    end
+end
