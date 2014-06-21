@@ -1,4 +1,4 @@
-
+require_relative 'lib/sh'
 require_relative 'lib/git'
 
 desc "Ensure zsh and oh-my-zsh is installed and set"
@@ -10,8 +10,8 @@ namespace :zsh do
         unless Dir.exists?(File.expand_path("~/.oh-my-zsh"))
             echo "Installing oh-my-zsh"
             github 'robbyrussell/oh-my-zsh', '~/.oh-my-zsh'
-            sh_safe '~/.dotfiles/install.sh'
         end
+        sh_safe '~/.dotfiles/install.sh'
 
         unless `printenv SHELL | grep "/bin/zsh"`
             echo "Setting shell to zsh"
