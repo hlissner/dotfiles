@@ -31,6 +31,8 @@ namespace :homebrew do
             gist
             lua
             luajit
+            readline
+            openssl
         }.each { |pkg| Homebrew.install pkg }
 
         %w{
