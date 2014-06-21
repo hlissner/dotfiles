@@ -10,7 +10,7 @@ namespace :zsh do
         unless Dir.exists?(File.expand_path("~/.oh-my-zsh"))
             echo "Installing oh-my-zsh"
             github 'robbyrussell/oh-my-zsh', '~/.oh-my-zsh'
-            sh_safe '~/.oh-my-zsh/install.sh'
+            sh_safe '~/.dotfiles/install.sh'
         end
 
         unless `printenv SHELL | grep "/bin/zsh"`
