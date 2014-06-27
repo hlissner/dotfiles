@@ -1,6 +1,7 @@
 
 require_relative "lib/output"
 require_relative "lib/homebrew"
+require_relative "lib/sh"
 
 desc "Ensure vim/macvim is installed and up to date"
 task :vim => "vim:update"
@@ -19,8 +20,15 @@ namespace :vim do
 
     task :update => 'vim:install' do
         path = File.expand_path("~/.vim")
+
         echo "Updating vim"
         sh "cd #{path} && git pull"
+
+        echo "Updating vim plugins"
+        Dir.glob("#{path}/bundle/*") do |f| 
+            echo ":: Updating #{File.basename(f)}:"
+            sh_safe "cd #{f} && git pull"
+        end
     end
 
     desc "Remove vim"
