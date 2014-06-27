@@ -11,7 +11,6 @@ require_relative '../lib/homebrew'
 }.each { |task| Rake::Task[task].invoke }
 
 %w{
-    evernote
     transmit
     transmission
     vlc
@@ -23,6 +22,5 @@ require_relative '../lib/homebrew'
     sequel-pro
     scrivener
     omnigraffle
-    mindnode-pro
     love
 }.each { |app| Homebrew.install_cask app }
