@@ -8,7 +8,11 @@ if command_exists 'git'; then
     alias gf='git ls-files | grep -i'
     alias gt='git tag'
     alias gtl='git describe --tags --abbrev=0'
+    alias gpb='git push origin'
 
+    function git-new-root {
+        git filter-branch --subdirectory-filter "$@" --prune-empty -- --all
+    }
     # find oh-my-zsh's here: ~/.oh-my-zsh/plugins/git/git.plugin.zsh
 fi
 
@@ -28,8 +32,11 @@ fi
 alias va='vagrant'
 
 # Interpreters
-command_exists "rbenv" && alias rb='rbenv'
-command_exists "pyenv" && alias py='pyenv'
+command_exists "rbenv" && alias rbe='rbenv'
+command_exists "ruby" && alias rb='ruby'
+command_exists "pyenv" && alias pye='pyenv'
+command_exists "python" && alias py='python'
+command_exists "python3" && alias py3='python3'
 [ -e /Applications/love.app ] && alias love="/Applications/love.app/Contents/MacOS/love"
 
 # Shell conveniences
@@ -58,6 +65,10 @@ elif is_mac; then
     alias b='brew'
     alias ql='quicklook'
 
+    function v { 
+        open -t "mvim://open?url=file://`realpath "$1"`"
+    }
+
     function o {
         if [ $# -eq 0 ]; then
             open .
@@ -66,8 +77,6 @@ elif is_mac; then
         fi
     }
 fi
-
-alias v="vim"
 
 # Make a directory and change to it
 function mkd { mkdir "$@" && cd "$@" }
