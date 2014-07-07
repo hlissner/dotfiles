@@ -2,6 +2,7 @@
 # GIT
 if command_exists 'git'; then
     # On top of oh-my-zsh's git aliases
+    alias git='noglob git'
     alias gs='git status'
     alias gst='git stash'
     alias gap='git add -p'
