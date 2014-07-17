@@ -1,3 +1,5 @@
+#!/bin/zsh
+
 # ZSH Env variables
 export ZSH_INIT=1
 export ZSH=$HOME/.oh-my-zsh

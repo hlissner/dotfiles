@@ -1,3 +1,5 @@
+#!/bin/zsh
+
 # GIT Stuff
 ZSH_THEME_GIT_PROMPT_PREFIX=" %{$fg[white]%}"
 ZSH_THEME_GIT_PROMPT_SUFFIX=""
@@ -9,7 +11,7 @@ ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[red]%}+%{$fg[white]%}"
 ##################
 
 function _prompt_pwd {
-    SHORTPWD=`print -Pn "%4~"`
+    SHORTPWD=`print -Pn "%3~"`
 
     if [[ -n "${ZSH_VERSION:-}" ]]
         then _pwd="${SHORTPWD[0,1]}"
