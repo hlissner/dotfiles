@@ -4,6 +4,7 @@
 if command_exists 'git'; then
     # On top of oh-my-zsh's git aliases
     alias git='noglob git'
+	alias gc='git commit'
     alias gs='git status'
     alias gst='git stash'
     alias gap='git add -p'
@@ -35,19 +36,8 @@ elif is_mac; then
         fi
     }
 
-    # Open file in emacs daemon (will auto-start it)
-    function e {
-        macos=/Applications/Emacs.app/Contents/MacOS
-        if pgrep -qf 'Emacs.*--daemon'; then
-            args=-n
-        else
-            $macos/Emacs --daemon
-            args=-nc
-        fi
-        echo $args
-        emacsclient $args "$@"
-    }
-    alias es="emacsclient -e '(kill-emacs)'"
+    # Open file in emacs server
+	alias e="emacsclient -n"
 fi
 
 # Tmux
