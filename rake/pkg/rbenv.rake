@@ -1,6 +1,5 @@
-
-require_relative 'lib/homebrew'
-require_relative 'lib/rbenv'
+require_relative '../lib/homebrew'
+require_relative '../lib/rbenv'
 
 task :rbenv => 'rbenv:update'
 
@@ -45,6 +44,18 @@ namespace :rbenv do
             echo "Updating ruby #{v}"
             Rbenv.update v
         end
+    end
+
+    namespace :gem do
+
+        task :install, [:gem, :all_rubies] do |t, args|
+
+        end
+
+        task :remove, [:gem, :all_rubies] do |t, args|
+
+        end
+
     end
 
 end

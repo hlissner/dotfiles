@@ -1,12 +1,9 @@
+require_relative "../lib/output"
+require_relative "../lib/homebrew"
+require_relative "../lib/sh"
 
-require_relative "lib/output"
-require_relative "lib/homebrew"
-require_relative "lib/sh"
-
-desc "Ensure homebrew is installed and up to date"
+desc 'Install/update homebrew'
 task :homebrew => 'homebrew:update'
-
-verbose(false)
 
 namespace :homebrew do
 
@@ -49,6 +46,7 @@ namespace :homebrew do
         echo "Homebrew is installed. Moving on."
     end
 
+    desc "Update homebrew and upgrade brews"
     task :update => "homebrew:install" do
         echo "Updating homebrew..."
         Homebrew.update
@@ -60,4 +58,3 @@ namespace :homebrew do
     end
 
 end
-

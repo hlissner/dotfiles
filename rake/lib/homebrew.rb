@@ -40,6 +40,10 @@ module Homebrew
         sh_safe "#{BIN} remove #{keg}"
     end
 
+    def self.remove_cask(keg)
+        sh_safe "#{BIN} cask uninstall #{keg}"
+    end
+
     def self.has_keg?(keg)
         system("#{BIN} search #{keg}")
     end

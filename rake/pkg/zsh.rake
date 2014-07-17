@@ -1,5 +1,5 @@
-require_relative 'lib/sh'
-require_relative 'lib/git'
+require_relative '../lib/sh'
+require_relative '../lib/git'
 
 desc "Ensure zsh and oh-my-zsh is installed and set"
 task :zsh => 'zsh:update'

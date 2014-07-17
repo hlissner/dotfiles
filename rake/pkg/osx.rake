@@ -1,5 +1,4 @@
-
-require_relative 'lib/output'
+require_relative '../lib/output'
 
 task :osx do
     if system('defaults read com.apple.finder _FXShowPosixPathInTitle >&/dev/null')
