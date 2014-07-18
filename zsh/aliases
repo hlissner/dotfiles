@@ -3,12 +3,7 @@
 # GIT
 if command_exists 'git'; then
     # On top of oh-my-zsh's git aliases
-    alias git='noglob git'
-	alias gc='git commit'
-    alias gs='git status'
-    alias gst='git stash'
-    alias gap='git add -p'
-    alias gf='git ls-files | grep -i'
+    alias gap='ga -p'
     alias gt='git tag'
     alias gtl='git describe --tags --abbrev=0'
     alias gpb='git push origin'
@@ -81,7 +76,6 @@ alias wget='wget -c'
 
 # Lets us sudo aliases
 alias sudo='sudo '
-
 
 # Make a directory and change to it
 function mkd { mkdir "$@" && cd "$@" }
