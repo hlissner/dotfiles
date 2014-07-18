@@ -22,6 +22,8 @@ elif is_mac; then
     alias ql='quicklook'
 
     alias v='vim'
+    # Open file in emacs server; must be running!
+	alias e="emacsclient -n"
 
     function o {
         if [ $# -eq 0 ]; then
@@ -30,9 +32,6 @@ elif is_mac; then
             open $@
         fi
     }
-
-    # Open file in emacs server
-	alias e="emacsclient -n"
 fi
 
 # Tmux
