@@ -30,6 +30,7 @@ namespace :homebrew do
             luajit
             readline
             openssl
+            node
         }.each { |pkg| Homebrew.install pkg }
 
         %w{
