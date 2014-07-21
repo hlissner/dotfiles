@@ -2,8 +2,8 @@
     NeoBundle 'reedes/vim-colors-pencil'
 
     " Pretty indent indicators
-    NeoBundle 'Yggdroot/indentLine'
-        let g:indentLine_color_gui = '#4a514f'
+    " NeoBundle 'Yggdroot/indentLine'
+      "  let g:indentLine_color_gui = '#4a514f'
 " }}}
 
 " File search {{{
@@ -15,7 +15,7 @@
     endif
 
     " Project-wide search and replace
-    NeoBundle 'skwp/greplace.vim'
+    " NeoBundle 'skwp/greplace.vim'
 
     " Netrw improvements
     NeoBundle 'scrooloose/nerdtree'
@@ -87,36 +87,38 @@
 " Remote resources {{{
     " Visual git diffs in the gutter
     NeoBundle 'airblade/vim-gitgutter'
+        let g:gitgutter_realtime = 0
+        let g:gitgutter_eager = 0
 
     " 'a Git wrapper so awesome, it should be illegal'
-    NeoBundle 'tpope/vim-fugitive'
+    " NeoBundle 'tpope/vim-fugitive'
 
     " Async compiler plugins
-    NeoBundle 'tpope/vim-dispatch'
+    " NeoBundle 'tpope/vim-dispatch'
 " }
 
 " Programming {{{
         " Syntax checkers for a multitude of languages
-        NeoBundle 'scrooloose/syntastic'
-            let g:syntastic_auto_loc_list=0
-            " let g:syntastic_quiet_messages={'level': 'warnings'}
-            let g:syntastic_phpcs_disable=1
-            let g:syntastic_echo_current_error=1
-            let g:syntastic_enable_balloons = 0
-
-            let g:syntastic_error_symbol = '►'
-            let g:syntastic_warning_symbol = '►'
-
-            let g:syntastic_loc_list_height = 5
-            let g:syntastic_mode_map = {'mode': 'active', 'active_filetypes': [], 'passive_filetypes': ['html']}
+        " NeoBundle 'scrooloose/syntastic'
+        "     let g:syntastic_auto_loc_list=0
+        "     " let g:syntastic_quiet_messages={'level': 'warnings'}
+        "     let g:syntastic_phpcs_disable=1
+        "     let g:syntastic_echo_current_error=1
+        "     let g:syntastic_enable_balloons = 0
+        "
+        "     let g:syntastic_error_symbol = '►'
+        "     let g:syntastic_warning_symbol = '►'
+        "
+        "     let g:syntastic_loc_list_height = 5
+        "     let g:syntastic_mode_map = {'mode': 'active', 'active_filetypes': [], 'passive_filetypes': ['html']}
 
     " Running code inline for testing purposes
-    NeoBundle 'notalex/vim-run-live'
+    " NeoBundle 'notalex/vim-run-live'
 " }}}
 
 " Syntax {{{
     " HTML
-    NeoBundle 'othree/html5.vim'
+    " NeoBundle 'othree/html5.vim'
 
     " CSS/SCSS/LESS
     NeoBundle 'cakebaker/scss-syntax.vim'
@@ -136,7 +138,7 @@
     NeoBundleLazy 'marijnh/tern_for_vim',         {'autoload': {'filetypes': ['javascript']}, 'build': {'mac' : 'npm install'}}
 
     " C/C++
-    NeoBundle 'octol/vim-cpp-enhanced-highlight'
+    "NeoBundle 'octol/vim-cpp-enhanced-highlight'
 
     " Other
     NeoBundle 'tpope/vim-markdown'
