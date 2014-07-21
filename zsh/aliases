@@ -8,7 +8,7 @@ if command_exists 'git'; then
     alias gtl='git describe --tags --abbrev=0'
     alias gpb='git push origin'
 
-    function git-new-root {
+    git-new-root() {
         git filter-branch --subdirectory-filter "$@" --prune-empty -- --all
     }
     # find oh-my-zsh's here: ~/.oh-my-zsh/plugins/git/git.plugin.zsh
@@ -25,7 +25,7 @@ elif is_mac; then
     # Open file in emacs server; must be running!
 	alias e="emacsclient -n"
 
-    function o {
+    o() {
         if [ $# -eq 0 ]; then
             open .
         else
@@ -39,12 +39,14 @@ command_exists 'tmux' && alias t='tmux -CC'
 
 # transmission-remote
 if command_exists 'transmission-remote'; then
+
     alias bt="transmission-remote server"
     alias btl="bt -l"
     alias bta="bt --add"
 
-    function btr { bt -t$1 -r }
-    function bts { bt -t$1 -S }
+    btr() { bt -t$1 -r }
+    bts() { bt -t$1 -S }
+
 fi
 
 alias va='vagrant'
