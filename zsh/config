@@ -50,28 +50,31 @@ bindkey '^r' history-incremental-search-backward
 bindkey '^w' backward-kill-word
 bindkey '^a' beginning-of-line
 bindkey '^e' end-of-line
-bindkey ${terminfo[kdch1]} delete-char
 
-# Switch between block and line cursor (Only in iterm)
-if is_mac; then
-    function zle-keymap-select zle-line-init {
-        # change cursor shape in iTerm2
-        case $KEYMAP in
-            vicmd)      print -n -- "\E]50;CursorShape=0\C-G";;  # block cursor
-            viins|main) print -n -- "\E]50;CursorShape=1\C-G";;  # line cursor
-        esac
+if ! [ "$EMACS" ]; then
+	bindkey ${terminfo[kdch1]} delete-char
 
-        zle reset-prompt
-        zle -R
-    }
+	# Switch between block and line cursor (Only in iterm)
+	if is_mac; then
+		function zle-keymap-select zle-line-init {
+			# change cursor shape in iTerm2
+			case $KEYMAP in
+				vicmd)      print -n -- "\E]50;CursorShape=0\C-G";;  # block cursor
+				viins|main) print -n -- "\E]50;CursorShape=1\C-G";;  # line cursor
+			esac
 
-    function zle-line-finish {
-        print -n -- "\E]50;CursorShape=0\C-G"  # block cursor
-    }
+			zle reset-prompt
+			zle -R
+		}
 
-    zle -N zle-line-init
-    zle -N zle-line-finish
-    zle -N zle-keymap-select
+		function zle-line-finish {
+			print -n -- "\E]50;CursorShape=0\C-G"  # block cursor
+		}
+
+		zle -N zle-line-init
+		zle -N zle-line-finish
+		zle -N zle-keymap-select
+	fi
 fi
 
 # Switch between block and line cursor (Only in iterm)
