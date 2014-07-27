@@ -113,7 +113,7 @@
         "     let g:syntastic_mode_map = {'mode': 'active', 'active_filetypes': [], 'passive_filetypes': ['html']}
 
     " Running code inline for testing purposes
-    " NeoBundle 'notalex/vim-run-live'
+    NeoBundle 'notalex/vim-run-live'
 " }}}
 
 " Syntax {{{
