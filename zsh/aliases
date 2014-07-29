@@ -6,6 +6,7 @@ if command_exists 'git'; then
     alias gap='git add --patch'
     alias gt='git tag'
     alias gtl='git describe --tags --abbrev=0'
+    alias gcu='git reset --soft "HEAD^"'
     # alias gpb='git push origin'
 
     git-move-root() {
@@ -14,7 +15,7 @@ if command_exists 'git'; then
 fi
 
 # OS-specific aliases
-if [[ "$OSTYPE" != darwin* ]]; then
+if [[ "$OSTYPE" == darwin* ]]; then
     alias b='brew'
     alias v='vim'
     # Open file in emacs server; must be running!
