@@ -1,5 +1,4 @@
-source ~/.zsh/paths
-if [ -z ${ZSH_INIT+x} ]; then
-    source ~/.zsh/functions
-    source ~/.zsh/aliases
+# Ensure that a non-login, non-interactive shell has a defined environment.
+if [[ "$SHLVL" -eq 1 && ! -o LOGIN && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; then
+  source "${ZDOTDIR:-$HOME}/.zprofile"
 fi

@@ -7,9 +7,9 @@ task :zsh => 'zsh:update'
 namespace :zsh do
 
     task :install do
-        unless Dir.exists?(File.expand_path("~/.oh-my-zsh"))
-            echo "Installing oh-my-zsh"
-            github 'robbyrussell/oh-my-zsh', '~/.oh-my-zsh'
+        unless Dir.exists?(File.expand_path("~/.zprezto"))
+            echo "Installing prezto"
+            github 'hlissner/prezto', '~/.zprezto'
         end
         sh_safe '~/.dotfiles/install.sh'
 
@@ -21,12 +21,13 @@ namespace :zsh do
     end
 
     task :update => "zsh:install" do
-        echo "Updating oh-my-zsh"
-        sh_safe 'cd ~/.oh-my-zsh && git pull'
+        echo "Updating zprezto"
+        sh_safe 'cd ~/.zprezto && git pull'
+        # TODO: pull from parent repo
     end
     
     task :remove do
-        sh_safe 'rm -rf ~/.oh-my-zsh' if Dir.exists?(File.expand_path("~/.oh-my-zsh"))
+        sh_safe 'rm -rf ~/.zprezto' if Dir.exists?(File.expand_path("~/.zprezto"))
     end
 
 end

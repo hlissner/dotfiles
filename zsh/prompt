@@ -1,93 +1,117 @@
 #!/bin/zsh
 
+zstyle ':prezto:module:git:info:branch' format 'branch:%b'
+zstyle ':prezto:module:git:info:remote' format 'remote:%R'
+zstyle ':prezto:module:git:info:keys' format \
+  'prompt'  ' git(%b)' \
+  'rprompt' '[%R]'
+
+function prompt_custom_preexec {
+    if (( $+functions[git-info] )); then
+        git-info
+    fi
+}
+
+function prompt_custom_setup {
+    PROMPT='%m%# '
+    RPROMPT=''
+}
+
+# autoload colors
+# if [[ "$terminfo[colors]" -gt 8 ]]; then
+#     colors
+# fi
+
 # GIT Stuff
-ZSH_THEME_GIT_PROMPT_PREFIX=" %{$fg[white]%}"
-ZSH_THEME_GIT_PROMPT_SUFFIX=""
-ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[red]%}+%{$fg[white]%}"
+# ZSH_THEME_GIT_PROMPT_PREFIX=" %{$fg[white]%}"
+# ZSH_THEME_GIT_PROMPT_SUFFIX=""
+# ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[red]%}+%{$fg[white]%}"
 # ZSH_THEME_GIT_PROMPT_CLEAN=""
 
 ##################
 #  Build Prompt  #
 ##################
 
-function _prompt_pwd {
-    SHORTPWD=`print -Pn "%3~"`
+# function _prompt_pwd {
+#     SHORTPWD=`print -Pn "%3~"`
+#
+#     if [[ -n "${ZSH_VERSION:-}" ]]
+#         then _pwd="${SHORTPWD[0,1]}"
+#         else _pwd="${SHORTPWD:0:1}"
+#     fi
+#
+#     [[ $_pwd =~ "[^/~]" ]] && SHORTPWD=".../$SHORTPWD"
+#
+#     echo -n $SHORTPWD
+# }
+#
+# # function _prompt_git {
+# #     [ "`git_prompt_info`" ] && echo -n "$(git_prompt_info)"
+# # }
+#
+# function _prompt_vimode {
+#     # The prompt turns green in command mode, and red in insert mode
+#     PROMPT="$"
+#
+#     MODE_INDICATOR="%{$fg[green]%}%{$PROMPT%}"
+#     MODE_PROMPT="${${KEYMAP/vicmd/$MODE_INDICATOR}/(main|viins)/}"
+#     if [ $MODE_PROMPT ]; then
+#         echo -n "$MODE_PROMPT "
+#     else
+#         echo -n "$PROMPT "
+#     fi
+# }
+#
+# function _prompt_rbenv {
+#     local ruby_version
+#     ruby_version="$(rbenv local 2>/dev/null)"
+#     [ "$?" -eq 0 ] && echo -n " %{$fx[bold]%}%{$fg[red]%}:$ruby_version"
+# }
+#
+# function _prompt_pyenv {
+#     local py_version
+#     py_version="$(pyenv local 2>/dev/null)"
+#     [ "$?" -eq 0 ] && echo -n " %{$fx[bold]%}%{$fg[yellow]%}:$py_version"
+# }
+#
+# # prompts
+# function _lprompt {
+#     # Start each prompt with a newline
+#     echo
+#
+#     # Show the hostname if this is an SSH session
+#     if [ ! -z "$SSH_CLIENT" ]; then
+#         echo -n "%{$fg[blue]%}"
+#         if is_mac; then
+#             echo -n "$(hostname | sed -e 's/\.local$//') "
+#         else
+#             echo -n "$(hostname) "
+#         fi
+#     fi
+#
+#     # Print the prompt
+#     echo -n "$fg[red]$FX[bold]$(_prompt_vimode)$reset_color"
+# }
+#
+# function _rprompt {
+#     # Make the rprompt a bright grey to set it apart
+#     echo -n "%{$FG[245]%}"
+#     echo -n "$(_prompt_pwd)"
+#
+#     # Show the branch/status if in a git repo
+#     # echo -n '$(_prompt_git)'
+#
+#     # Display the local version of rb/pyenv
+#     command_exists rbenv && echo -n "$(_prompt_rbenv)"
+#     command_exists pyenv && echo -n "$(_prompt_pyenv)"
+#
+#     # Reset formatting for command output
+#     echo -n "$reset_color"
+# }
 
-    if [[ -n "${ZSH_VERSION:-}" ]]
-        then _pwd="${SHORTPWD[0,1]}"
-        else _pwd="${SHORTPWD:0:1}"
-    fi
-
-    [[ $_pwd =~ "[^/~]" ]] && SHORTPWD=".../$SHORTPWD"
-
-    echo -n $SHORTPWD
-}
-
-function _prompt_git {
-    [ "`git_prompt_info`" ] && echo -n "$(git_prompt_info)"
-}
-
-function _prompt_vimode {
-    # The prompt turns green in command mode, and red in insert mode
-    PROMPT="$"
-
-    MODE_INDICATOR="%{$fg[green]%}%{$PROMPT%}"
-    MODE_PROMPT="${${KEYMAP/vicmd/$MODE_INDICATOR}/(main|viins)/}"
-    if [ $MODE_PROMPT ]; then
-        echo -n "$MODE_PROMPT "
-    else
-        echo -n "$PROMPT "
-    fi
-}
-
-function _prompt_rbenv {
-    local ruby_version
-    ruby_version="$(rbenv local 2>/dev/null)"
-    [ "$?" -eq 0 ] && echo -n " %{$fx[bold]%}%{$fg[red]%}:$ruby_version"
-}
-
-function _prompt_pyenv {
-    local py_version
-    py_version="$(pyenv local 2>/dev/null)"
-    [ "$?" -eq 0 ] && echo -n " %{$fx[bold]%}%{$fg[yellow]%}:$py_version"
-}
-
-# prompts
-function _lprompt {
-    # Start each prompt with a newline
-    echo
-
-    # Show the hostname if this is an SSH session
-    if [ ! -z "$SSH_CLIENT" ]; then
-        echo -n "%{$fg[blue]%}"
-        if is_mac; then
-            echo -n "$(hostname | sed -e 's/\.local$//') "
-        else
-            echo -n "$(hostname) "
-        fi
-    fi
-
-    # Print the prompt
-    echo -n '%{$fg[red]%}%{$FX[bold]%}$(_prompt_vimode)%{$reset_color%}'
-}
-
-function _rprompt {
-    # Make the rprompt a bright grey to set it apart
-    echo -n "%{$FG[245]%}"
-    echo -n '$(_prompt_pwd)'
-
-    # Show the branch/status if in a git repo
-    echo -n '$(_prompt_git)'
-
-    # Display the local version of rb/pyenv
-    command_exists rbenv && echo -n '$(_prompt_rbenv)'
-    command_exists pyenv && echo -n '$(_prompt_pyenv)'
-
-    # Reset formatting for command output
-    echo -n "%{$reset_color%}"
-}
-
-PROMPT="$(_lprompt)"
-RPROMPT="$(_rprompt)"
+# PROMPT="$(_lprompt)"
+# RPROMPT="$(_rprompt)"
 
 # vim:set ft=zsh:
+
+
