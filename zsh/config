@@ -2,90 +2,13 @@
 
 # Disable autocorrect behavior, very annoying!
 unsetopt correct_all
-
-# HISTORY
-HISTFILE=/tmp/histfile
-HISTSIZE=5000
-SAVEHIST=5000
-
-# No longer prompt to update oh-my-zsh
-DISABLE_AUTO_UPDATE="true"
-
-# Don't overwrite, append!
-setopt APPEND_HISTORY
-# Sharing history between shell instances
-setopt SHARE_HISTORY
-# If I type cd and then cd again, only save the last one
-setopt HIST_IGNORE_DUPS
-# Don't save lines that are just whitespace
-setopt HIST_IGNORE_SPACE
-setopt HIST_NO_STORE
-# Reduce     extra    whitespace
-setopt HIST_REDUCE_BLANKS
-# Save time and how long a command ran
-setopt EXTENDED_HISTORY
-# Beep boop
-setopt NO_BEEP
-
-setopt EXTENDED_GLOB
-setopt PROMPT_SUBST
-setopt AUTO_PUSHD
-setopt PUSHD_IGNORE_DUPS
-
+# Don't wait for keys (snappier vi-mode)
 export KEYTIMEOUT=1
-export EDITOR=vim
-export RUBYOPT=rubygems
-
-# COMPLETION_WAITING_DOTS="true"
-
-
-##################################
-# Make zsh prompt act like vi
 
 zle -N edit-command-line
 bindkey -v
 bindkey '^f' edit-command-line
 
-bindkey '^r' history-incremental-search-backward
 bindkey '^w' backward-kill-word
 bindkey '^a' beginning-of-line
 bindkey '^e' end-of-line
-
-if ! [ "$EMACS" ]; then
-	bindkey ${terminfo[kdch1]} delete-char
-
-	# Switch between block and line cursor (Only in iterm)
-	if is_mac; then
-		function zle-keymap-select zle-line-init {
-			# change cursor shape in iTerm2
-			case $KEYMAP in
-				vicmd)      print -n -- "\E]50;CursorShape=0\C-G";;  # block cursor
-				viins|main) print -n -- "\E]50;CursorShape=1\C-G";;  # line cursor
-			esac
-
-			zle reset-prompt
-			zle -R
-		}
-
-		function zle-line-finish {
-			print -n -- "\E]50;CursorShape=0\C-G"  # block cursor
-		}
-
-		zle -N zle-line-init
-		zle -N zle-line-finish
-		zle -N zle-keymap-select
-	fi
-fi
-
-# Switch between block and line cursor (Only in iterm)
-autoload colors
-if [[ "$terminfo[colors]" -gt 8 ]]; then
-    colors
-fi
-for COLOR in RED GREEN YELLOW BLUE MAGENTA CYAN BLACK WHITE; do
-    eval $COLOR='$fg_no_bold[${(L)COLOR}]'
-    eval BOLD_$COLOR='$fg_bold[${(L)COLOR}]'
-done
-eval RESET='$reset_color'
-
-# print -n -- "\E]50;CursorShape=1\C-G"

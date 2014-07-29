@@ -2,74 +2,52 @@
 
 # GIT
 if command_exists 'git'; then
-    # On top of oh-my-zsh's git aliases
-    alias gap='ga -p'
+    alias ga='git add'
+    alias gap='git add --patch'
     alias gt='git tag'
     alias gtl='git describe --tags --abbrev=0'
-    alias gpb='git push origin'
+    alias gcu='git reset --soft "HEAD^"'
+    # alias gpb='git push origin'
 
-    git-new-root() {
+    git-move-root() {
         git filter-branch --subdirectory-filter "$@" --prune-empty -- --all
     }
-    # find oh-my-zsh's here: ~/.oh-my-zsh/plugins/git/git.plugin.zsh
 fi
 
 # OS-specific aliases
-if is_linux; then
-    alias ipt='sudo iptables'
-elif is_mac; then
+if [[ "$OSTYPE" == darwin* ]]; then
     alias b='brew'
-    alias ql='quicklook'
-
     alias v='vim'
     # Open file in emacs server; must be running!
 	alias e="emacsclient -n"
-
-    o() {
-        if [ $# -eq 0 ]; then
-            open .
-        else
-            open $@
-        fi
-    }
+else
+    alias ipt='sudo iptables'
 fi
-
-# Tmux
-command_exists 'tmux' && alias t='tmux -CC'
 
 # transmission-remote
 if command_exists 'transmission-remote'; then
-
     alias bt="transmission-remote server"
     alias btl="bt -l"
     alias bta="bt --add"
 
     btr() { bt -t$1 -r }
     bts() { bt -t$1 -S }
-
 fi
 
 alias va='vagrant'
 
 # Interpreters
-command_exists "rbenv" && alias rbe='rbenv'
-command_exists "ruby" && alias rb='ruby'
-command_exists "pyenv" && alias pye='pyenv'
-command_exists "python" && alias py='python'
-command_exists "python3" && alias py3='python3'
+alias rbe='rbenv'
+alias rb='ruby'
+alias pye='pyenv'
+alias py='python'
+alias py3='python3'
 [ -e /Applications/love.app ] && alias love="/Applications/love.app/Contents/MacOS/love"
 
 # Shell conveniences
-alias ls='ls --color=auto'
-alias l='ls -1'
-alias ll='ls -l'
-alias la='ls -la'
-alias l.='ls -Ad .*'
-alias du='du -h -d 1'
-alias q='exit'
+alias \\q='exit'
 
 alias sha1='openssl sha1'
-alias mkdir='mkdir -pv'
 alias header='curl -I'
 
 # Resume download if possible
@@ -81,9 +59,8 @@ alias sudo='sudo '
 # Make a directory and change to it
 function mkd { mkdir "$@" && cd "$@" }
 
-alias reload='exec $SHELL -l'
 alias c='clear'
-alias r='rake -g'
+alias r='noglob rake -g'
 
 # Disable zsh glob syntax on the rake command
 alias rake='noglob rake'
