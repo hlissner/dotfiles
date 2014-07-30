@@ -5,6 +5,12 @@
 # Load dependencies.
 pmodload 'helper'
 
+# Show the hostname if this is an SSH session
+_prompt_my_host=""
+if [ ! -z "$SSH_CLIENT" ]; then
+  _prompt_my_host=" %B%F{blue}| $(hostname | sed -e 's/\.local$//')%f%b"
+fi
+
 function prompt_my_pwd {
   local pwd="${PWD/#$HOME/~}"
 
@@ -68,7 +74,7 @@ function prompt_my_setup {
   # Define prompts.
   PROMPT='
 %F{cyan}${_prompt_my_pwd}%f${git_info:+${(e)git_info[prompt]}}%(!. %B%F{red}#%f%b.)${editor_info[keymap]} '
-  RPROMPT='${editor_info[overwrite]}%(?:: %F{red}⏎%f)${VIM:+" %B%F{green}V%f%b"}${git_info[rprompt]}'
+  RPROMPT='${editor_info[overwrite]}%(?:: %F{red}⏎%f)${VIM:+" %B%F{green}V%f%b"}${git_info[rprompt]}${_prompt_my_host}'
   # SPROMPT='zsh: correct %F{red}%R%f to %F{green}%r%f [nyae]? '
 }
 
