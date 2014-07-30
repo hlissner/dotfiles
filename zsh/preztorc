@@ -31,7 +31,6 @@ zstyle ':prezto:load' pmodule \
   'completion' \
   'prompt' \
   'git' \
-  'ssh' \
   'osx'
 
 
@@ -111,4 +110,3 @@ zstyle ':prezto:module:terminal' auto-title 'yes'
 
 # Auto start a session when Zsh is launched in a SSH connection.
 # zstyle ':prezto:module:tmux:auto-start' remote 'yes'
-
