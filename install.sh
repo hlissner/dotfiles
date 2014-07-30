@@ -4,8 +4,15 @@
 [ ! -d ~/.dotfiles ] && git clone https://github.com/hlissner/dotfiles ~/.dotfiles
 
 setopt EXTENDED_GLOB
-for rcfile in "${ZDOTDIR:-$HOME}"/.dotfiles/^(README.md|Gemfile|install.sh)(.N); do
+for rcfile in "${ZDOTDIR:-$HOME}"/.dotfiles/^(bin|README.md|Gemfile|install.sh)(N); do
     filep="${ZDOTDIR:-$HOME}/.${rcfile:t}"
 
-    [ -h $filep ] || ln -s "$rcfile" $filep
+    if [ -e "$filep" ]; then
+        echo "~/.${rcfile:t} already existed. Skipping..."
+        continue
+    else
+        echo "Linking ${rcfile:t} to ~/.${rcfile:t}"
+    fi
+
+    ln -s "$rcfile" $filep
 done
