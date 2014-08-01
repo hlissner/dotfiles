@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+
+# A quick script for sending myself prowl notifications
+
+require 'prowl'
+
+APIKEY_FILE = File.expand_path("~/.prowl-apikey")
+
+if ARGV.length != 3
+    p "Usage: prowl [appname] [title] [message]"
+    exit
+end
+
+if not File.exists? APIKEY_FILE
+    p "#{APIKEY_FILE} does not exist. Create it!"
+    exit
+end
+
+api_key = File.read(APIKEY_FILE).strip
+Prowl.add(
+    :apikey      => api_key,
+    :application => ARGV[0],
+    :event       => ARGV[1],
+    :description => ARGV[2]
+)
