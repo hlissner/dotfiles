@@ -1,7 +1,5 @@
 # Dotfiles of a spaghetti code warrior
 
-My mac dotfiles.
+My mac and ubuntu/debian dotfiles.
 
 Yes. They bite.
-
-(Check out the ubuntu branch for debian dotfiles)

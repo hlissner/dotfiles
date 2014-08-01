@@ -1,61 +1,65 @@
-require_relative "../lib/output"
-require_relative "../lib/homebrew"
-require_relative "../lib/sh"
+if RUBY_PLATFORM =~ /darwin/
 
-desc 'Install/update homebrew'
-task :homebrew => 'homebrew:update'
+    require_relative "../lib/output"
+    require_relative "../lib/homebrew"
+    require_relative "../lib/sh"
 
-namespace :homebrew do
+    desc 'Install/update homebrew'
+    task :homebrew => 'homebrew:update'
 
-    task :install do
-        unless Homebrew.is_installed?
-            echo "Installing Homebrew..."
-            Homebrew.bootstrap
+    namespace :homebrew do
+
+        task :install do
+            unless Homebrew.is_installed?
+                echo "Installing Homebrew..."
+                Homebrew.bootstrap
+            end
+
+            Homebrew.tap 'homebrew/dupes'
+            Homebrew.tap 'caskroom/cask'
+            Homebrew.install 'brew-cask'
+
+            %w{
+                coreutils
+                wget
+                curl
+                tree
+                git
+                the_silver_searcher
+                tmux
+                gist
+                lua
+                luajit
+                readline
+                openssl
+                node
+            }.each { |pkg| Homebrew.install pkg }
+
+            %w{
+                dropbox
+                appcleaner
+                vagrant
+                virtualbox
+                growlnotify
+                iterm2
+                java
+                launchbar
+            }.each { |app| Homebrew.install_cask app }
+
+            echo "Homebrew is installed. Moving on."
         end
 
-        Homebrew.tap 'homebrew/dupes'
-        Homebrew.tap 'caskroom/cask'
-        Homebrew.install 'brew-cask'
+        desc "Update homebrew and upgrade brews"
+        task :update => "homebrew:install" do
+            echo "Updating homebrew..."
+            Homebrew.update
+        end
 
-        %w{
-            coreutils
-            wget
-            curl
-            tree
-            git
-            the_silver_searcher
-            tmux
-            gist
-            lua
-            luajit
-            readline
-            openssl
-            node
-        }.each { |pkg| Homebrew.install pkg }
+        desc "Remove homebrew cleanly"
+        task :remove do
+            Homebrew.destroy if Homebrew.is_installed?
+        end
 
-        %w{
-            dropbox
-            appcleaner
-            vagrant
-            virtualbox
-            growlnotify
-            iterm2
-            java
-            launchbar
-        }.each { |app| Homebrew.install_cask app }
-
-        echo "Homebrew is installed. Moving on."
-    end
-
-    desc "Update homebrew and upgrade brews"
-    task :update => "homebrew:install" do
-        echo "Updating homebrew..."
-        Homebrew.update
-    end
-
-    desc "Remove homebrew cleanly"
-    task :remove do
-        Homebrew.destroy if Homebrew.is_installed?
     end
 
 end
