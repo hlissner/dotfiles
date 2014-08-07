@@ -1,7 +1,8 @@
 #!/bin/zsh
 
 # Disable autocorrect behavior, very annoying!
-unsetopt correct_all
+# unsetopt correct_all
+
 # Don't wait for keys (snappier vi-mode)
 export KEYTIMEOUT=1
 
