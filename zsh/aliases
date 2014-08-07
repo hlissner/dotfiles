@@ -7,7 +7,6 @@ if command_exists 'git'; then
     alias gt='git tag'
     alias gtl='git describe --tags --abbrev=0'
     alias gcu='git reset --soft "HEAD^"'
-    # alias gpb='git push origin'
 
     git-move-root() {
         git filter-branch --subdirectory-filter "$@" --prune-empty -- --all
@@ -61,8 +60,5 @@ function mkd { mkdir "$@" && cd "$@" }
 
 alias c='clear'
 alias r='noglob rake -g'
-
-# Disable zsh glob syntax on the rake command
-alias rake='noglob rake'
 
 # vim:set ft=zsh:
