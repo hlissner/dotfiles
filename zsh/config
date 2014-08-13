@@ -10,6 +10,6 @@ zle -N edit-command-line
 bindkey -v
 bindkey '^f' edit-command-line
 
-bindkey '^w' backward-kill-word
-bindkey '^a' beginning-of-line
-bindkey '^e' end-of-line
+bindkey -M viins '^w' backward-kill-word
+bindkey -M viins '^a' beginning-of-line
+bindkey -M viins '^e' end-of-line

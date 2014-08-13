@@ -13,6 +13,17 @@ if command_exists 'git'; then
     }
 fi
 
+# Tmux
+if command_exists 'tmux'; then
+    alias t='tmux new -s x || tmux attach -t x'
+    alias tl='tmux list-sessions'
+    alias ts='tmux switch'
+
+    function tmux-send {
+        tmux send-keys -s "x" $1 Enter
+    }
+fi
+
 # OS-specific aliases
 if [[ "$OSTYPE" == darwin* ]]; then
     alias b='brew'
@@ -44,7 +55,7 @@ alias py3='python3'
 [ -e /Applications/love.app ] && alias love="/Applications/love.app/Contents/MacOS/love"
 
 # Shell conveniences
-alias \\q='exit'
+alias q='exit'
 
 alias sha1='openssl sha1'
 alias header='curl -I'
@@ -53,7 +64,7 @@ alias header='curl -I'
 alias wget='wget -c'
 
 # Lets us sudo aliases
-alias sudo='sudo '
+# alias sudo='sudo '
 
 # Make a directory and change to it
 function mkd { mkdir "$@" && cd "$@" }
