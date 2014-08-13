@@ -175,6 +175,8 @@ NeoBundleFetch 'Shougo/neobundle.vim'
 
         " Project-wide search and replace
         " NeoBundle 'skwp/greplace.vim'
+        
+        NeoBundle 'christoomey/vim-tmux-navigator'
 
         " Netrw improvements
         NeoBundle 'scrooloose/nerdtree'
@@ -303,10 +305,10 @@ NeoBundleFetch 'Shougo/neobundle.vim'
         " % matchit shortcut, but only in normal mode!
         nmap <Tab> %
         " Easier fold toggle
-        nnoremap <C-j> 5j 
-        vnoremap <C-j> 5j 
-        nnoremap <C-k> 5k
-        vnoremap <C-k> 5k
+        nnoremap <M-j> 5j
+        vnoremap <M-j> 5j
+        nnoremap <M-k> 5k
+        vnoremap <M-k> 5k
 
         " f: Find. Also support repeating with .
         nnoremap <Plug>OriginalSemicolon ;
