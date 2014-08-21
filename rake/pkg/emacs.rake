@@ -7,6 +7,7 @@ namespace :emacs do
         unless Dir.exists?(File.expand_path("~/.emacs.d"))
             github('hlissner/emacs.d', '~/.emacs.d')
             Homebrew.install("emacs", "--with-gnutls --cocoa --keep-ctags --srgb")
+            Homebrew.install("homebrew/dupes/tidy", "--HEAD")
             Homebrew.install "aspell"
 
             sh_safe "/usr/local/bin/npm install jshint -g"
