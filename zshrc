@@ -7,7 +7,6 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
 fi
 
 # Source component rcfiles
-source ~/.zsh/functions
 source ~/.zsh/aliases
 source ~/.zsh/config
 

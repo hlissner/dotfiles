@@ -4,7 +4,7 @@
 # unsetopt correct_all
 
 # Don't wait for keys (snappier vi-mode)
-export KEYTIMEOUT=1
+# export KEYTIMEOUT=1
 
 zle -N edit-command-line
 bindkey -v
@@ -13,3 +13,13 @@ bindkey '^f' edit-command-line
 bindkey -M viins '^w' backward-kill-word
 bindkey -M viins '^a' beginning-of-line
 bindkey -M viins '^e' end-of-line
+
+bindkey -M viins ' ' magic-space
+bindkey -M viins 'jj' vi-cmd-mode
+
+
+bindkey -M vicmd "q" push-line
+
+# Incremental search is elite!
+bindkey -M vicmd "/" history-incremental-search-backward
+bindkey -M vicmd "?" history-incremental-search-forward
