@@ -33,7 +33,6 @@ path=(
   $HOME/.dotfiles/bin
   $HOME/.dotfiles/bin/`hostname`
   /usr/local/{bin,sbin}
-  /usr/local/opt/{rb,py}env
   $path
 )
 
