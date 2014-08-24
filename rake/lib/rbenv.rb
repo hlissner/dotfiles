@@ -3,7 +3,7 @@ require_relative 'homebrew'
 
 module Rbenv
 
-    BREWS = %w{rbenv ruby-build rbenv-bundler rbenv-vars rbenv-gem-rehash}
+    BREWS = %w{rbenv ruby-build rbenv-vars rbenv-gem-rehash}
 
     GEM_BIN = "/usr/local/opt/rbenv/shims/gem"
 
