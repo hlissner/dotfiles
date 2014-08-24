@@ -54,6 +54,7 @@ fi
 
 # OS-specific aliases
 if [[ "$OSTYPE" == darwin* ]]; then
+    alias codekit='open -a CodeKit'
     alias b='brew'
     alias v='vim'
     # Open file in emacs server; must be running!
@@ -81,6 +82,7 @@ alias rb='ruby'
 alias pye='pyenv'
 alias py='python'
 alias py3='python3'
+alias be='bundle exec'
 [ -e /Applications/love.app ] && alias love="/Applications/love.app/Contents/MacOS/love"
 
 # Shell conveniences
