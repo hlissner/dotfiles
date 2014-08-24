@@ -23,3 +23,7 @@ bindkey -M vicmd "q" push-line
 # Incremental search is elite!
 bindkey -M vicmd "/" history-incremental-search-backward
 bindkey -M vicmd "?" history-incremental-search-forward
+
+bindkey -M viins '^x^a' fasd-complete    # C-x C-a to do fasd-complete (fils and directories)
+bindkey -M viins '^x^f' fasd-complete-f  # C-x C-f to do fasd-complete-f (only files)
+bindkey -M viins '^x^d' fasd-complete-d  # C-x C-d to do fasd-complete-d (only directories)
