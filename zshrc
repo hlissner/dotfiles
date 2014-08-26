@@ -2,7 +2,7 @@
 
 # Prevent any of this initialization in non-interactive (or emacs)
 # shell commands. It slows them down.
-[[ $TERM == "dumb" ]] && return
+# [[ $TERM == "dumb" ]] && return
 
 function command_exists {
     command -v "$1" &> /dev/null

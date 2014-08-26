@@ -47,7 +47,7 @@ if command_exists 'tmux'; then
             tmux selectw -t irssi
             tmux selectp -t 0
             tmux killp -a                                               # kill all panes
-            irssi_nickpane
+            tmux-irssi-nickpane
         }
     fi
 fi
