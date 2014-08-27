@@ -18,10 +18,13 @@ fi
 source ~/.zsh/aliases
 source ~/.zsh/config
 
+# If is OSX
+if command_exists "brew"; then
+    export RBENV_ROOT=/usr/local/opt/rbenv
+    export PYENV_ROOT=/usr/local/opt/pyenv
+fi
+
 # Init rbenv & pyenv
 command_exists "fasd" && eval "$(fasd --init auto)"
 command_exists "rbenv" && eval "$(rbenv init - --no-rehash)"
-if command_exists "pyenv"; then
-    eval "$(pyenv init -)"
-    PATH="${HOME}/.pyenv/shims:${PATH}"
-fi
+command_exists "pyenv" && eval "$(pyenv init -)"
