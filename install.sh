@@ -2,6 +2,7 @@
 
 # In case this file was run via curl
 [ ! -d ~/.dotfiles ] && git clone https://github.com/hlissner/dotfiles ~/.dotfiles
+[ ! -d ~/.zprezto ] && git clone --recursive https://github.com/hlissner/prezto ~/.zprezto
 
 setopt EXTENDED_GLOB
 for rcfile in "${ZDOTDIR:-$HOME}"/.dotfiles/^(bin|README.md|Gemfile|install.sh)(N); do
