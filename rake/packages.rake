@@ -1,7 +1,8 @@
-require_relative "lib/rake"
+require_relative "lib/git"
 require_relative "lib/os"
-require_relative "lib/sh"
 require_relative "lib/output"
+require_relative "lib/rake"
+require_relative "lib/sh"
 
 verbose(false)
 
