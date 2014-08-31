@@ -23,6 +23,16 @@ task :io do
       scrivener
       omnigraffle
       love
+
+      qlcolorcode
+      qlstephen
+      qlmarkdown
+      quicklook-json
+      qlprettypatch
+      quicklook-csv
+      betterzipql
+      webp-quicklook
+      suspicious-package
     }.each { |app| Package.cask_install app }
   end
 end
