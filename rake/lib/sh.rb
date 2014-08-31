@@ -1,4 +1,3 @@
-
 require_relative 'output'
 
 # A 'safe' sh function that won't stop rake in its tracks

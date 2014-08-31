@@ -1,30 +1,28 @@
-require_relative '../lib/homebrew'
-
 desc "Provision main desktop"
 task :io do
-    %w{
-        pkg:osx
-        pkg:homebrew
-        pkg:zsh
-        pkg:vim
-        pkg:emacs
-        pkg:rbenv:v1_9
-        pkg:rbenv:v2_0
-        pkg:rbenv:update
-    }.each { |task| Rake::Task[task].invoke }
+  %w{
+    update
+    pkg:osx
+    pkg:zsh
+    pkg:vim
+    pkg:emacs
+    pkg:rbenv
+    pkg:pyenv
+  }.each { |task| Rake::Task[task].invoke }
 
+  if is_mac?
     %w{
-        transmit
-        transmission
-        vlc
-        flux
-        skype
-        adium
-        codekit
-        mongohub
-        sequel-pro
-        scrivener
-        omnigraffle
-        love
-    }.each { |app| Homebrew.install_cask app }
+      transmit
+      transmission
+      vlc
+      flux
+      skype
+      adium
+      codekit
+      sequel-pro
+      scrivener
+      omnigraffle
+      love
+    }.each { |app| Package.cask_install app }
+  end
 end
