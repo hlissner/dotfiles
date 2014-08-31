@@ -5,10 +5,7 @@
 #
 # Note: MAC ONLY!
 
-if ! is_mac; then
-    echo "Mac-only script!"
-    exit
-elif ! command_exists wkhtmltopdf; then
+if ! command -v "wkhtmltopdf" &> /dev/null; then
     # wkhtmltopdf > 0.9.9 has a habit of hanging after it completes, so we
     # install 0.9.9 explicitly instead.
     brew install https://raw.github.com/mxcl/homebrew/6e2d550cf4961129a790bfb0973f8e88704f439d/Library/Formula/wkhtmltopdf.rb
