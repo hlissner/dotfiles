@@ -23,4 +23,11 @@ fi
 # Init extra niceties
 command_exists "fasd" && eval "$(fasd --init auto)"
 command_exists "rbenv" && eval "$(rbenv init - --no-rehash)"
-command_exists "pyenv" && eval "$(pyenv init -)"
+if command_exists "pyenv"; then
+    eval "$(pyenv init -)"
+    eval "$(pyenv virtualenv-init -)"
+fi
+if command_exists "go"; then
+    export GOPATH="$HOME/Dropbox/Projects/dev/go"
+    export PATH="$GOPATH/bin:$PATH"
+fi
