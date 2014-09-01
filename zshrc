@@ -14,12 +14,6 @@ fi
 source ~/.zsh/aliases
 source ~/.zsh/config
 
-# If OSX...
-if command_exists "brew"; then
-    export RBENV_ROOT=/usr/local/opt/rbenv
-    export PYENV_ROOT=/usr/local/opt/pyenv
-fi
-
 # Init extra niceties
 command_exists "fasd" && eval "$(fasd --init auto)"
 command_exists "rbenv" && eval "$(rbenv init - --no-rehash)"
