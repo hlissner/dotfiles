@@ -17,6 +17,9 @@ namespace :pyenv do
         "yyuu/pyenv-virtualenv",
         "yyuu/pyenv-which-ext"
       ].each { |pkg| github pkg, "#{PYENV_ROOT}/plugins/" }
+
+      sh_safe "eval $(~/.pyenv/bin/pyenv init -)"
+      sh_safe "eval $(~/.pyenv/bin/pyenv virtualenv-init -)"
     end
   end
 
@@ -37,11 +40,9 @@ namespace :pyenv do
     end
   end
 
-  desc "Remove pyenv & installed pythons"
-  task :remove do
-    if pyenv_installed?
-      echo "pyenv isn't installed!"
-    else
+  if pyenv_installed?
+    desc "Remove pyenv & installed pythons"
+    task :remove do
       echo "Deleting pyenv"
       sh_safe "rm -rf #{PYENV_ROOT}"
     end
