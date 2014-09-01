@@ -21,15 +21,14 @@ namespace :rbenv do
         "rkh/rbenv-whatis",
         "rkh/rbenv-use"
       ].each { |pkg| github pkg, "#{RBENV_ROOT}/plugins/" }
+
+      sh_safe "eval $(~/.rbenv/bin/rbenv init -)"
     end
   end
 
   task :update => "rbenv:install" do
     echo "Updating rbenv & plugins"
-    sh_safe "cd #{RBENV_ROOT} && git pull"
-    rbenv_plugins do |dir|
-      sh_safe "cd #{dir} && git pull"
-    end
+    sh_safe "rbenv update"
 
     rbenv_versions do |version|
       echo "Updating ruby #{version}"
@@ -42,11 +41,9 @@ namespace :rbenv do
     end
   end
 
-  desc "Remove rbenv & installed rubies"
-  task :remove do
-    if rbenv_installed?
-      echo "rbenv isn't installed!"
-    else
+  if rbenv_installed?
+    desc "Remove rbenv & installed rubies"
+    task :remove do
       echo "Deleting rbenv"
       sh_safe "rm -rf #{RBENV_ROOT}"
     end
