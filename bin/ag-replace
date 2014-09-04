@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+# A simple script that uses ag <https://github.com/ggreer/the_silver_searcher> and perl
+# to do a project-wide search/replace.
+#
+# Usage: ag-replace [pattern] [replace]
+
+sanitize() {
+    echo "$1" | sed -e "s_/_\\\/_g"
+}
+
+input=$(sanitize "$1")
+replace=$(sanitize "$2")
+
+RED=$(printf "\033[31m")
+GREEN=$(printf "\033[32m")
+NC=$(printf "\033[0m")
+
+# Do a dry run for analysis
+ag "$1" -s --nocolor --nogroup > /tmp/ag-repl
+num=`cat /tmp/ag-repl | wc -l | sed -e "s/ //g"`
+rm -rf /tmp/ag-repl
+if [ "$num" -eq 0 ]; then
+    echo "No results were found!"
+    exit 1
+fi
+
+# Show the search/replace results
+ag "$1" $3 -s --group --nocolor --nobreak \
+    | perl -pe "s/(?<=.)$input/\033[4m$RED$replace$NC/g" \
+    | perl -pe "s/^([^:]+)/$GREEN\$1$NC/g"
+
+# Ask for confirmation
+echo
+echo -n "Apply $num changes? (y/n) "
+read -n1 REPLY
+echo
+
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    # Now actually do the search replace! This is destructive. No, no backups are made.
+    # You better have read the earlier prompt!
+    files=`ag "$1" $3 -s --nogroup --nocolor --files-with-matches`
+    out=`echo "$files" | xargs perl -pi -e "s/$input/$replace/g"`
+    echo "$files" | sed -e "s/^/  ✓ /g"
+
+    echo
+    echo "$num changes made!"
+else
+    echo "Aborted!"
+    exit 2
+fi
