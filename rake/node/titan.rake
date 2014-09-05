@@ -1,2 +1,2 @@
-desc "Provision 2nd desktop"
+desc "My media desktop"
 task :titan => :io

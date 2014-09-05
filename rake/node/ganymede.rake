@@ -1,2 +1,2 @@
-desc "Provision main laptop"
+desc "My work laptop"
 task :ganymede => :io

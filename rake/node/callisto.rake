@@ -1,4 +1,4 @@
-desc "Provision home server"
+desc "My home server"
 task :callisto do
   %w{
     update
