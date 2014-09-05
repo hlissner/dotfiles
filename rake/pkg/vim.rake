@@ -9,7 +9,7 @@ namespace :vim do
       Package.install "lua"
       %w{vim macvim}.each { |pkg| Package.install "#{pkg} --with-lua --with-luajit" }
     elsif is_linux?
-      Package.install "lua5.2"
+      Package.install "lua5.1"
 
       unless Dir.exists?(vim_path)
         sh_safe "sudo apt-get install libncurses5-dev libgnome2-dev libgnomeui-dev \
@@ -18,13 +18,13 @@ namespace :vim do
 
         sh_safe "hg clone https://code.google.com/p/vim/ /tmp/vim"
         sh_safe "cd /tmp/vim && ./configure --with-features=huge \
-                                          --enable-multibyte \
-                                          --enable-rubyinterp \
-                                          --enable-pythoninterp \
-                                          --enable-perlinterp \
-                                          --enable-luainterp \
-                                          --enable-clipboard \
-                                          --enable-cscope --prefix=/usr \
+                                            --enable-multibyte \
+                                            --enable-rubyinterp \
+                                            --enable-pythoninterp \
+                                            --enable-perlinterp \
+                                            --enable-luainterp \
+                                            --enable-clipboard \
+                                            --enable-cscope --prefix=/usr \
                            && make VIMRUNTIMEDIR=/usr/share/vim/vim74
                            && sudo make install"
         sh_safe "rm -rf /tmp/vim"
@@ -55,12 +55,11 @@ namespace :vim do
     end
   end
 
-  desc "Remove vim"
   task :remove do
     if is_mac?
-        echo "Uninstalling vim"
-        Package.remove "vim"
-        Package.remove "macvim"
+      echo "Uninstalling vim"
+      Package.remove "vim"
+      Package.remove "macvim"
     end
   end
 end

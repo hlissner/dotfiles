@@ -7,10 +7,9 @@ if is_mac?
 
   namespace :emacs do
     task :install do
-      unless Dir.exists?(ENV[:EMACS_D])
+      unless Dir.exists? ENV[:EMACS_D]
         github 'hlissner/emacs.d', '~/.emacs.d'
-        Package.install "emacs", "--with-gnutls --cocoa --keep-ctags --srgb"
-        Package.install "homebrew/dupes/tidy", "--HEAD"
+        Package.install "homebrew/dupes/tidy --HEAD"
         emacs_reqs.each { |pkg| Package.install pkg }
 
         sh_safe "/usr/local/bin/npm install jshint -g"
@@ -22,21 +21,28 @@ if is_mac?
     task :update do
       echo "Updating emacs.d & packages"
       sh_safe "cd ~/.emacs.d && git pull && cask update"
+
+      # Update rsense config
+      sh_safe "~/.rbenv/shims/ruby `brew --prefix rsense`/libexec/etc/config.rb > ~/.rsense"
     end
 
-    desc "Remove emacs & dependencies"
     task :remove do
       echo "Uninstalling emacs"
       Package.remove "emacs"
       Package.remove "homebrew/dupes/tidy"
       emacs_reqs.each { |pkg| Package.remove pkg }
 
-      rm_rf "~/.emacs.d" if Dir.exists?(ENV['EMACS_D'])
+      rm_rf "~/.emacs.d" if Dir.exists? ENV['EMACS_D']
     end
   end
 
   def emacs_reqs
-    %w{aspell cask rsense}
+    [
+      "emacs --with-gnutls --cocoa --keep-ctags --srgb",
+      "aspell --with-lang-en",
+      "cask",
+      "rsense"
+    ]
   end
 
 end
