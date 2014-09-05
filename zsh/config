@@ -1,10 +1,10 @@
-#!/bin/zsh
-
 # Disable autocorrect behavior, very annoying!
 # unsetopt correct_all
 
 # Don't wait for keys (snappier vi-mode)
 # export KEYTIMEOUT=1
+
+autoload -Uz command_exists
 
 zle -N edit-command-line
 bindkey -v
@@ -17,13 +17,36 @@ bindkey -M viins '^e' end-of-line
 bindkey -M viins ' ' magic-space
 bindkey -M viins 'jj' vi-cmd-mode
 
-
 bindkey -M vicmd "q" push-line
 
 # Incremental search is elite!
-bindkey -M vicmd "/" history-incremental-search-backward
-bindkey -M vicmd "?" history-incremental-search-forward
+bindkey -M vicmd "/" history-incremental-pattern-search-backward
+bindkey -M vicmd "?" history-incremental-pattern-search-forward
 
 bindkey -M viins '^x^a' fasd-complete    # C-x C-a to do fasd-complete (fils and directories)
 bindkey -M viins '^x^f' fasd-complete-f  # C-x C-f to do fasd-complete-f (only files)
 bindkey -M viins '^x^d' fasd-complete-d  # C-x C-d to do fasd-complete-d (only directories)
+
+# Completing words in buffer in tmux
+if [ -n "$TMUX" ]; then
+    _tmux_pane_words() {
+        local expl
+        local -a w
+        if [[ -z "$TMUX_PANE" ]]; then
+            _message "not running inside tmux!"
+            return 1
+        fi
+        w=( ${(u)=$(tmux capture-pane \; show-buffer \; delete-buffer)} )
+        _wanted values expl 'words from current tmux pane' compadd -a w
+    }
+
+    zle -C tmux-pane-words-prefix   complete-word _generic
+    zle -C tmux-pane-words-anywhere complete-word _generic
+
+    bindkey -M viins '^x^n' tmux-pane-words-prefix
+    bindkey -M viins '^x^o' tmux-pane-words-anywhere
+
+    zstyle ':completion:tmux-pane-words-(prefix|anywhere):*' completer _tmux_pane_words
+    zstyle ':completion:tmux-pane-words-(prefix|anywhere):*' ignore-line current
+    zstyle ':completion:tmux-pane-words-anywhere:*' matcher-list 'b:=* m:{A-Za-z}={a-zA-Z}'
+fi

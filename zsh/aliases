@@ -26,30 +26,6 @@ if command_exists 'tmux'; then
     function tmux-send {
         tmux send-keys -s "x" $1 Enter
     }
-
-    if command_exists 'irssi'; then
-        function tmux-irssi-nickpane {
-            tmux renamew irssi                                          # name the window
-            tmux -q setw main-pane-width $(( $(tput cols) - 21))        # set the main pane width to the total width-20
-            tmux splitw -v "cat ~/.irssi/nicklistfifo"                  # create the window and begin reading the fifo
-            tmux -q selectl main-vertical                               # assign the layout
-            tmux selectw -t irssi                                       # select window 'irssi'
-            tmux selectp -t 0                                           # select pane 0
-        }
-
-        function tmux-irssi {
-            tmux-irssi-nickpane
-            $(which irssi)                                              # launch irssi
-        }
-
-        # repair running irssi's nicklist pane
-        function tmux-irssi-repair() {
-            tmux selectw -t irssi
-            tmux selectp -t 0
-            tmux killp -a                                               # kill all panes
-            tmux-irssi-nickpane
-        }
-    fi
 fi
 
 # OS-specific aliases
@@ -57,8 +33,7 @@ if [[ "$OSTYPE" == darwin* ]]; then
     alias codekit='open -a CodeKit'
     alias b='brew'
     alias v='vim'
-    # Open file in emacs server; must be running!
-	alias e="emacsclient -n"
+	alias e="emacsclient -n"    # Emacs server must be running!
 else
     alias ipt='sudo iptables'
 fi
@@ -85,15 +60,16 @@ alias be='bundle exec'
 [ -e /Applications/love.app ] && alias love="/Applications/love.app/Contents/MacOS/love"
 
 # Shell conveniences
-alias sha1='openssl sha1'
-alias header='curl -I'
-# Resume download if possible
-alias wget='wget -c'
+alias wget='wget -c'    # Resume download if possible
+
+alias ls=' ls'          # Hide from history
+
+zman() {
+    PAGER="less -g -s '+/^       "$1"'" man zshall
+}
 
 # Make a directory and change to it
 function mkd { mkdir "$@" && cd "$@" }
 
-alias qq='exit'
-alias cc='clear'
-
-# vim:set ft=zsh:
+alias q='exit'
+alias clr='clear'
