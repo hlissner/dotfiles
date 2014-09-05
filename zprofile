@@ -3,12 +3,6 @@
 # Browser
 [[ "$OSTYPE" == darwin* ]] && export BROWSER='open'
 
-# Reset PATH to keep it from being clobbered in tmux
-if [ -x /usr/libexec/path_helper ]; then
-    PATH=''
-    source /etc/zshenv
-fi
-
 ## Editors
 export EDITOR='vim'
 export VISUAL='vim'
@@ -28,20 +22,21 @@ typeset -gU cdpath fpath mailpath path
 path=(
   $HOME/.{py,rb}env/bin
   $HOME/.dotfiles/bin
-  $HOME/.dotfiles/bin/`hostname`
   /usr/local/{bin,sbin}
-  $path
+  /usr/{bin,sbin}
+  /{bin,sbin}
 )
+[[ "$OSTYPE" == darwin* ]] && path+="/usr/X11/bin"
 
 fpath=(
-  $HOME/.zsh/themes
+  $HOME/.zsh/functions
   $fpath
 )
 
 # Set the default Less options.
 # Mouse-wheel scrolling has been disabled by -X (disable screen clearing).
 # Remove -X and -F (exit if the content fits on one screen) to enable it.
-export LESS='-F -g -i -M -R -S -w -X -z-4'
+export LESS='-X -F -g -i -M -R -S -w -z-4'
 
 # Set the Less input preprocessor.
 if (( $+commands[lesspipe.sh] )); then

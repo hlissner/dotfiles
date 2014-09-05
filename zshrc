@@ -1,9 +1,3 @@
-#!/bin/zsh
-
-function command_exists {
-    command -v "$1" &> /dev/null
-}
-
 # Source Prezto.
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source ~/.zsh/preztorc
@@ -11,8 +5,8 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
 fi
 
 # Source component rcfiles
-source ~/.zsh/aliases
 source ~/.zsh/config
+source ~/.zsh/aliases
 
 # Init extra niceties
 command_exists "fasd" && eval "$(fasd --init auto)"

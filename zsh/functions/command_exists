@@ -1,0 +1,2 @@
+# Detect if a command exists
+command -v "$1" &> /dev/null

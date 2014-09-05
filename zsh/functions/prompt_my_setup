@@ -11,23 +11,23 @@ if [ ! -z "$SSH_CLIENT" ]; then
   _prompt_my_host=" %B%F{blue}| $(hostname | sed -e 's/\.local$//')%f%b"
 fi
 
-function prompt_my_pwd {
+function _prompt_my_pwd {
   local pwd="${PWD/#$HOME/~}"
 
   if [[ "$pwd" == (#m)[/~] ]]; then
-    _prompt_my_pwd="$MATCH"
+    __prompt_my_pwd="$MATCH"
     unset MATCH
   else
-    _prompt_my_pwd="${${${(@j:/:M)${(@s:/:)pwd}##.#?}:h}%/}/${pwd:t}"
+    __prompt_my_pwd="${${${(@j:/:M)${(@s:/:)pwd}##.#?}:h}%/}/${pwd:t}"
   fi
 }
 
-function prompt_my_precmd {
+function _prompt_my_precmd {
   setopt LOCAL_OPTIONS
   unsetopt XTRACE KSH_ARRAYS
 
   # Format PWD.
-  prompt_my_pwd
+  _prompt_my_pwd
 
   # Get Git repository information.
   if (( $+functions[git-info] )); then
@@ -44,7 +44,7 @@ function prompt_my_setup {
   autoload -Uz add-zsh-hook
 
   # Add hook for calling git-info before each command.
-  add-zsh-hook precmd prompt_my_precmd
+  add-zsh-hook precmd _prompt_my_precmd
 
   # Set editor-info parameters.
   zstyle ':prezto:module:editor:info:completing' format '%B%F{red}...%f%b'
@@ -72,7 +72,7 @@ function prompt_my_setup {
     'rprompt' '%A%B%S%a%d%m%r%U%u'
 
   # Define prompts.
-  PROMPT='%F{cyan}${_prompt_my_pwd}%f${git_info:+${(e)git_info[prompt]}}%(!. %B%F{red}#%f%b.)${editor_info[keymap]} '
+  PROMPT='%F{cyan}${__prompt_my_pwd}%f${git_info:+${(e)git_info[prompt]}}%(!. %B%F{red}#%f%b.)${editor_info[keymap]} '
   RPROMPT='${editor_info[overwrite]}%(?:: %F{red}⏎%f)${VIM:+" %B%F{green}V%f%b"}${git_info[rprompt]}${_prompt_my_host}'
   # SPROMPT='zsh: correct %F{red}%R%f to %F{green}%r%f [nyae]? '
 }
