@@ -33,21 +33,29 @@ module Package
     end
   end
 
+  def tap(repo)
+    self.run("tap", repo) unless self.tapped?(repo)
+  end
+
+  def untap(repo)
+    self.run("untap #{repo}")
+  end
+
+  def tapped?(repo)
+    self.run("tap | grep -w '#{repo}' >& /dev/null")
+  end
+
   # Homebrew-specific functions
   def cask_install(cask)
     self.run("cask", "install", cask) unless self.cask_installed?(cask)
   end
 
+  def cask_remove(cask)
+    self.run("cask", "uninstall", cask) unless self.cask_installed?(cask)
+  end
+
   def cask_installed?(cask)
     self.run("cask list | grep -w '#{cask}' >& /dev/null")
-  end
-
-  def tap(repo)
-    self.run("tap", repo) unless self.tapped?(repo)
-  end
-
-  def tapped?(repo)
-    self.run("tap | grep -w '#{repo}' >& /dev/null")
   end
 
   def run(*args)

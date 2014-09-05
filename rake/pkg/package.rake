@@ -48,7 +48,6 @@ if is_mac?
       Package.update
     end
 
-    desc "Remove homebrew cleanly"
     task :remove do
       Package.destroy if Package.installed?
     end
