@@ -62,7 +62,7 @@ alias be='bundle exec'
 # Shell conveniences
 alias wget='wget -c'    # Resume download if possible
 
-alias ls=' ls'          # Hide from history
+alias ls=' ls -G'       # Hide from history
 
 zman() {
     PAGER="less -g -s '+/^       "$1"'" man zshall
