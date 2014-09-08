@@ -12,9 +12,14 @@ def rbenv_plugins
   Dir.glob("#{RBENV_ROOT}/plugins/*")
 end
 
-def rbenv_set_default_gems(gems)
-  return if !gems.is_a?(Array) or gems.length == 0
-  File.write("#{RBENV_ROOT}/default-gems", gems.join("\n"))
+def rbenv_set_default_gems(*gems)
+  default_gems_file = "#{RBENV_ROOT}/default-gems"
+  return if !gems.is_a?(Array) or gems.length == 0 or File.exists?(default_gems_file)
+  File.write(default_gems_file, gems.join("\n"))
+end
+
+def rbenv_version_installed?(version)
+  rbenv_versions.include?(version)
 end
 
 ###
@@ -45,12 +50,14 @@ namespace :rbenv do
 
       echo "Initializing rbenv", 2
       sh_safe "eval \"$(#{RBENV_ROOT}/bin/rbenv init -)\""
+    end
 
-      # Set default gems
-      rbenv_set_default_gems(:bundler, :rspec, :pry, :factory_girl)
+    # Set default gems
+    rbenv_set_default_gems(:bundler, :rspec, :pry, :factory_girl)
 
-      # Install global ruby + gems
-      ruby_version = "2.1.2"
+    # Install global ruby + gems
+    ruby_version = "2.1.2"
+    unless rbenv_version_installed? ruby_version
       echo "Setting up default ruby (#{ruby_version})", 2
       sh_safe "rbenv install #{ruby_version}"
       sh_safe "rbenv global #{ruby_version}"
@@ -72,6 +79,8 @@ namespace :rbenv do
       sh_safe "RBENV_VERSION=#{version} #{cmd} update -f"
       sh_safe "RBENV_VERSION=#{version} #{cmd} clean"
     end
+
+    sh_safe "rbenv rehash"
   end
 
   if rbenv_installed?

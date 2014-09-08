@@ -13,6 +13,10 @@ def pyenv_plugins
   Dir.glob("#{PYENV_ROOT}/plugins/*")
 end
 
+def pyenv_version_installed?(version)
+  pyenv_versions.include?(version)
+end
+
 ###
 
 desc "Install/update pyenv & all pythons"
@@ -31,21 +35,23 @@ namespace :pyenv do
         "yyuu/pyenv-virtualenv",
         "yyuu/pyenv-which-ext"
       ].each do |pkg|
-        echo "Installing #{pkg}", 2
+        ech  "Installing #{pkg}", 2
         github pkg, "#{PYENV_ROOT}/plugins/#{pkg.split("/")[1]}"
       end
 
       echo "Initializing pyenv", 2
       sh_safe "eval \"$(#{PYENV_ROOT}/bin/pyenv init -)\""
       sh_safe "eval \"$(#{PYENV_ROOT}/bin/pyenv virtualenv-init -)\""
+    end
 
+    py_version = ENV["PYTHON_VERSION"]
+    unless pyenv_version_installed? py_version
       # Install global python + packages
-      py_version = ENV["PYTHON_VERSION"]
       echo "Setting up default python (#{py_version})", 2
       sh_safe "pyenv install #{py_version}"
       sh_safe "pyenv global #{py_version}"
       sh_safe "PYENV_VERSION=#{py_version} #{PYENV_ROOT}/shims/pip install cython"
-      sh_safe "PYENV_VERSION=#{py_version} #{PYENV_ROOT}/shims/pip install nose virtualenv pyyaml"
+      sh_safe "PYENV_VERSION=#{py_version} #{PYENV_ROOT}/shims/pip install nose virtualenv pyyaml ipython"
     end
   end
 
