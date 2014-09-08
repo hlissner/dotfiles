@@ -4,8 +4,6 @@
 # Don't wait for keys (snappier vi-mode)
 # export KEYTIMEOUT=1
 
-autoload -Uz command_exists
-
 zle -N edit-command-line
 bindkey -v
 bindkey '^f' edit-command-line
