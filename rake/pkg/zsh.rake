@@ -14,7 +14,7 @@ namespace :zsh do
     end
     sh_safe '~/.dotfiles/install.sh'
 
-    if `printenv SHELL | grep "/zsh$"`
+    unless `printenv SHELL | grep "/zsh$"`
       echo "Setting shell to ZSH", 2
       zsh_bin = is_mac? ? "/usr/local/bin/zsh" : "/usr/bin/zsh"
       if !File.exists? zsh_bin
