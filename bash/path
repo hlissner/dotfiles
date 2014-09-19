@@ -1,0 +1,35 @@
+#!/bin/bash
+
+declare -a paths_prepend=(
+    "/usr/local/bin"
+    "/usr/local/sbin"
+    "$HOME/.dotfiles/bin"
+    "$HOME/.rbenv/shims"
+    "$HOME/.pyenv/shims"
+    "$HOME/.rbenv/bin"
+    "$HOME/.pyenv/bin"
+    "$(brew --prefix coreutils)/libexec/gnubin"
+)
+
+declare -a paths_append=(
+    # ...
+)
+
+# Prepend directories to PATH
+for index in ${!dirs_to_prepend[*]}; do
+    if [ -d ${dirs_to_prepend[$index]} ]; then
+        # If these directories exist, then prepend them to existing PATH
+        PATH="${dirs_to_prepend[$index]}:$PATH"
+    fi
+done
+
+# Append directories to PATH
+for index in ${!dirs_to_append[*]}; do
+    if [ -d ${dirs_to_append[$index]} ]; then
+        # If these bins exist, then append them to existing PATH
+        PATH="$PATH:${dirs_to_append[$index]}"
+    fi
+done
+
+unset paths_prepend paths_append
+export PATH

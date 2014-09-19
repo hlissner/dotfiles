@@ -1,0 +1,86 @@
+
+alias q='exit'
+alias clr='clear'
+alias catn='cat -n'         # cat + line numbers
+
+alias -- -="cd -"
+
+# Command fixes
+alias ln="${aliases[ln]:-ln} -v"    # verbose ln
+alias wget='wget -c'                # Resume download if possible
+alias rename='noglob rename'
+
+# Shortcut for git
+g() {
+    if [[ $# -gt 0 ]]; then
+        ${aliases[git]:-git} $@
+    else
+        ${aliases[git]:-git} status --short
+    fi
+}
+
+alias git='hub'
+alias gi='git init'
+alias ga='git add'
+alias gap='git add --patch'
+alias gc='git commit --verbose'
+alias gcm='git commit --verbose -m'
+alias gco='git checkout'
+alias gcl='git clone'
+alias gp='git push'
+alias gpl='git pull'
+alias gb='git branch'
+alias gt='git tag'
+alias gs='git status'
+alias gr='git reset "HEAD^"'
+alias gd='git diff'
+
+if is-callable 'tmux'; then
+    alias t='tmux new -s x || tmux attach -t x'
+    alias tl='tmux list-sessions'
+    alias ts='tmux switch'
+
+    tmux-send() {
+        tmux send-keys -s "x" $1 Enter
+    }
+fi
+
+# OS-specific aliases
+if [[ "$OSTYPE" == darwin* ]]; then
+    alias codekit='open -a CodeKit'
+    alias b='brew'
+    alias v='vim'
+	alias e="emacsclient -n"    # Emacs server must be running!
+else
+    alias ipt='sudo iptables'
+fi
+
+# transmission-remote
+if is-callable 'transmission-remote'; then
+    alias bt="transmission-remote server"
+    alias btl="bt -l"
+fi
+
+alias va='vagrant'
+alias rk='rake'
+alias rkg='rake -g'
+
+# Interpreters
+alias rb='ruby'
+alias rbe='rbenv'
+alias be='bundle exec'
+alias spec='rspec'
+
+alias py='python'
+alias pye='pyenv'
+[ -e /Applications/love.app ] && alias love="/Applications/love.app/Contents/MacOS/love"
+
+# Bash-only aliases
+if [ -z "$ZSH_VERSION" ]; then
+    # Allow aliases to be with sudo
+    alias sudo='sudo '
+
+    alias ls='ls -G'
+    alias l="ls -o"
+    alias la="ls -AGFoh"
+fi

@@ -1,3 +1,1 @@
-# Source component rcfiles
-# source ~/.zsh/functions
-# source ~/.zsh/aliases
+[ -n "$PS1" ] && source ~/.bash_profile;
