@@ -29,7 +29,6 @@ namespace :zsh do
       end
 
       sh_safe "chsh -s #{zsh_bin}"
-      sh_safe "exec /bin/zsh -l"
     end
 
     echo "Comment out path_helper to fix PATH in emacs!" if is_mac?

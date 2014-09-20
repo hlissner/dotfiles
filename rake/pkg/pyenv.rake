@@ -14,7 +14,8 @@ def pyenv_plugins
 end
 
 def pyenv_version_installed?(version)
-  pyenv_versions.include?(version)
+  versions = pyenv_versions
+  versions.include?(version) if versions
 end
 
 ###
@@ -35,7 +36,7 @@ namespace :pyenv do
         "yyuu/pyenv-virtualenv",
         "yyuu/pyenv-which-ext"
       ].each do |pkg|
-        ech  "Installing #{pkg}", 2
+        echo "Installing #{pkg}", 2
         github pkg, "#{PYENV_ROOT}/plugins/#{pkg.split("/")[1]}"
       end
 

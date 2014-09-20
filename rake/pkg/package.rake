@@ -2,6 +2,9 @@ require_relative "../lib/package"
 
 if is_mac?
 
+  desc "Update/setup homebrew"
+  task :homebrew => "homebrew:update"
+
   namespace :homebrew do
     task :setup do
       unless Package.installed?
@@ -21,6 +24,7 @@ if is_mac?
         "curl",
         "tree",
         "git",
+        "hub",
         "the_silver_searcher",
         "tmux",
         "gist",
@@ -54,6 +58,9 @@ if is_mac?
   end
 
 elsif is_linux?
+
+  desc "Update/setup aptitude"
+  task :aptitude => "aptitude:update"
 
   namespace :aptitude do
     task :setup do

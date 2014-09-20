@@ -17,7 +17,7 @@ module Package
   def installed?(package = nil)
     return File.exists?(@@brew_bin) if !package
 
-    self.run("list | grep -w '#{package}' >& /dev/null")
+    self.run("list | grep -w '^#{package.split(" ")[0]}$' >& /dev/null")
   end
 
   def remove(package)
@@ -42,7 +42,7 @@ module Package
   end
 
   def tapped?(repo)
-    self.run("tap | grep -w '#{repo}' >& /dev/null")
+    self.run("tap | grep -w '^#{repo}$' >& /dev/null")
   end
 
   # Homebrew-specific functions
@@ -55,12 +55,12 @@ module Package
   end
 
   def cask_installed?(cask)
-    self.run("cask list | grep -w '#{cask}' >& /dev/null")
+    self.run("cask list | grep -w '^#{cask}$' >& /dev/null")
   end
 
   def run(*args)
     raise "Homebrew isn't installed!" unless self.installed?
 
-    `#{@@brew_bin} #{args.join(' ')}`
+    system("#{@@brew_bin} #{args.join(' ')}")
   end
 end

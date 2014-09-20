@@ -3,11 +3,11 @@ task :bash => 'bash:update'
 
 namespace :bash do
   task :install do
-    if is_mac?
-      echo "Attempting to install bash + completion"
-      Package.install "bash"
-      Package.install "bash-completion"
+    echo "Attempting to install bash + completion"
+    Package.install "bash"
+    Package.install "bash-completion"
 
+    if is_mac?
       # Write the new bash into shells if it isn't already there
       bash_bin = "/usr/local/bin/bash"
       if `cat /etc/shells | grep "^#{bash_bin}$"`
