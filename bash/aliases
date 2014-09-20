@@ -3,12 +3,11 @@ alias q='exit'
 alias clr='clear'
 alias catn='cat -n'         # cat + line numbers
 
-alias -- -="cd -"
+alias -- -='cd -'
 
 # Command fixes
 alias ln="${aliases[ln]:-ln} -v"    # verbose ln
 alias wget='wget -c'                # Resume download if possible
-alias rename='noglob rename'
 
 # Shortcut for git
 g() {
@@ -50,15 +49,15 @@ if [[ "$OSTYPE" == darwin* ]]; then
     alias codekit='open -a CodeKit'
     alias b='brew'
     alias v='vim'
-	alias e="emacsclient -n"    # Emacs server must be running!
+	alias e='emacsclient -n'    # Emacs server must be running!
 else
     alias ipt='sudo iptables'
 fi
 
 # transmission-remote
 if is-callable 'transmission-remote'; then
-    alias bt="transmission-remote server"
-    alias btl="bt -l"
+    alias bt='transmission-remote server'
+    alias btl='bt -l'
 fi
 
 alias va='vagrant'
@@ -73,7 +72,7 @@ alias spec='rspec'
 
 alias py='python'
 alias pye='pyenv'
-[ -e /Applications/love.app ] && alias love="/Applications/love.app/Contents/MacOS/love"
+[ -e /Applications/love.app ] && alias love='/Applications/love.app/Contents/MacOS/love'
 
 # Bash-only aliases
 if [ -z "$ZSH_VERSION" ]; then
@@ -81,6 +80,6 @@ if [ -z "$ZSH_VERSION" ]; then
     alias sudo='sudo '
 
     alias ls='ls -G'
-    alias l="ls -o"
-    alias la="ls -AGFoh"
+    alias l='ls -o'
+    alias la='ls -AGFoh'
 fi
