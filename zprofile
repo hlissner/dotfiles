@@ -1,7 +1,5 @@
 # Executes commands at login pre-zshrc.
 
-autoload -Uz command_exists
-
 # Browser
 [[ "$OSTYPE" == darwin* ]] && export BROWSER='open'
 
@@ -22,7 +20,6 @@ typeset -gU cdpath fpath mailpath path
 
 # Set the list of directories that Zsh searches for programs.
 path=(
-  $HOME/.{py,rb}env/shims
   $HOME/.{py,rb}env/bin
   $HOME/.dotfiles/bin
   /usr/local/{bin,sbin}
@@ -54,18 +51,3 @@ fi
 
 TMPPREFIX="${TMPDIR%/}/zsh"
 [[ ! -d "$TMPPREFIX" ]] && mkdir -p "$TMPPREFIX"
-
-# Init extra niceties
-command_exists "rbenv" && eval "$(rbenv init - --no-rehash)"
-if command_exists "pyenv"; then
-    eval "$(pyenv init -)"
-    eval "$(pyenv virtualenv-init -)"
-fi
-if command_exists "go"; then
-    export GOPATH="$HOME/Dropbox/Projects/dev/go"
-    export PATH="$GOPATH/bin:$PATH"
-fi
-
-if [ -n "$EMACS" ]; then
-    source ~/.zsh/aliases
-fi

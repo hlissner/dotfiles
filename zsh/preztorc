@@ -18,21 +18,30 @@ zstyle ':prezto:*:*' color 'yes'
 
 # Set the Prezto modules to load (browse modules).
 # The order matters.
-zstyle ':prezto:load' pmodule \
-    'environment' \
-    'terminal' \
-    'editor' \
-    'opp' \
-    'history' \
-    'history-substring-search' \
-    'directory' \
-    'spectrum' \
-    'utility' \
-    'completion' \
-    'prompt' \
-    'git' \
-    'syntax-highlighting' \
-    'osx'
+if [[ -z "$EMACS" ]]; then
+    zstyle ':prezto:load' pmodule \
+        'environment' \
+        'terminal' \
+        'editor' \
+        'opp' \
+        'history' \
+        'history-substring-search' \
+        'directory' \
+        'spectrum' \
+        'utility' \
+        'completion' \
+        'prompt' \
+        'syntax-highlighting' \
+        'osx'
+else
+    zstyle ':prezto:load' pmodule \
+        'environment' \
+        'history' \
+        'directory' \
+        'spectrum' \
+        'utility' \
+        'osx'
+fi
 
 
 # Editor

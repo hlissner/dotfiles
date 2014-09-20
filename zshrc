@@ -5,8 +5,23 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
 fi
 
 # Source component rcfiles
-source ~/.zsh/config
+if [[ -z "$EMACS" ]]; then
+    source ~/.zsh/config
+    is-callable 'fasd' && eval "$(fasd --init auto)"
+fi
+
 source ~/.zsh/aliases
 
 # Init extra niceties
-command_exists "fasd" && eval "$(fasd --init auto)"
+is-callable 'rbenv' && eval "$(rbenv init - --no-rehash)"
+if is-callable 'pyenv'; then
+    eval "$(pyenv init - --no-rehash)"
+    eval "$(pyenv virtualenv-init -)"
+fi
+if is-callable 'go'; then
+    export GOPATH="$HOME/Dropbox/Projects/dev/go"
+    export PATH="$GOPATH/bin:$PATH"
+fi
+
+# Restore git completion with g()
+compdef g=git

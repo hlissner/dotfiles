@@ -1,75 +1,14 @@
 #!/bin/zsh
+# ZSH-specific aliases. Find the rest in ~/.bash/aliases
+
+source ~/.bash/aliases
 
 # GIT
-if command_exists 'git'; then
-    alias gi='git init'
-    alias ga='git add'
-    alias gap='git add --patch'
-    alias gt='git tag'
-    alias gtl='git describe --tags --abbrev=0'
-
-    git-move-root() {
-        git filter-branch --subdirectory-filter "$@" --prune-empty -- --all
-    }
-
-    git-undo-commit() {
-        git reset --soft "HEAD^"
-    }
-fi
-
-# Tmux
-if command_exists 'tmux'; then
-    alias t='tmux new -s x || tmux attach -t x'
-    alias tl='tmux list-sessions'
-    alias ts='tmux switch'
-
-    function tmux-send {
-        tmux send-keys -s "x" $1 Enter
-    }
-fi
-
-# OS-specific aliases
-if [[ "$OSTYPE" == darwin* ]]; then
-    alias codekit='open -a CodeKit'
-    alias b='brew'
-    alias v='vim'
-	alias e="emacsclient -n"    # Emacs server must be running!
-else
-    alias ipt='sudo iptables'
-fi
-
-# transmission-remote
-if command_exists 'transmission-remote'; then
-    alias bt="transmission-remote server"
-    alias btl="bt -l"
-    alias bta="bt --add"
-
-    btr() { bt -t$1 -r }
-    bts() { bt -t$1 -S }
-fi
-
-alias va='vagrant'
-alias r='noglob rake -g'
-
-# Interpreters
-alias rbe='rbenv'
-alias rb='ruby'
-alias pye='pyenv'
-alias py='python'
-alias be='bundle exec'
-[ -e /Applications/love.app ] && alias love="/Applications/love.app/Contents/MacOS/love"
-
-# Shell conveniences
-alias wget='wget -c'    # Resume download if possible
-
-alias ls=' ls -G'       # Hide from history
+alias ag='nocorrect noglob ag'
+alias rk='noglob rake'
+alias rkg='noglob rake -g'
+alias rename='noglob rename'
 
 zman() {
     PAGER="less -g -s '+/^       "$1"'" man zshall
 }
-
-# Make a directory and change to it
-function mkd { mkdir "$@" && cd "$@" }
-
-alias q='exit'
-alias clr='clear'
