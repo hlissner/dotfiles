@@ -1,3 +1,4 @@
+#!/bin/bash
 
 alias q='exit'
 alias clr='clear'
@@ -8,6 +9,7 @@ alias -- -='cd -'
 # Command fixes
 alias ln="${aliases[ln]:-ln} -v"    # verbose ln
 alias wget='wget -c'                # Resume download if possible
+alias rsyncd='rsync -va --delete'   # Hard sync two directories
 
 # Shortcut for git
 g() {
@@ -18,7 +20,8 @@ g() {
     fi
 }
 
-alias git='hub'
+is-callable 'hub' && alias git='hub'
+
 alias gi='git init'
 alias ga='git add'
 alias gap='git add --patch'
@@ -39,7 +42,7 @@ if is-callable 'tmux'; then
     alias tl='tmux list-sessions'
     alias ts='tmux switch'
 
-    tmux-send() {
+    function tmux-send {
         tmux send-keys -s "x" $1 Enter
     }
 fi
@@ -48,8 +51,16 @@ fi
 if [[ "$OSTYPE" == darwin* ]]; then
     alias codekit='open -a CodeKit'
     alias b='brew'
-    alias v='vim'
-	alias e='emacsclient -n'    # Emacs server must be running!
+
+    function v {
+        [ $# -eq 0 ] && vim . || vim $@
+    }
+
+    unalias e # get rid of prezto's alias
+    function e {
+        [ -z "$@" ] && input="." || input=$@
+        open -a "Emacs" $input
+    }
 else
     alias ipt='sudo iptables'
 fi
@@ -76,7 +87,7 @@ alias pye='pyenv'
 
 # Bash-only aliases
 if [ -z "$ZSH_VERSION" ]; then
-    # Allow aliases to be with sudo
+    # Allow sudo with aliases
     alias sudo='sudo '
 
     alias ls='ls -G'
