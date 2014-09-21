@@ -48,9 +48,9 @@ function prompt_my_setup {
 
   # Set editor-info parameters.
   zstyle ':prezto:module:editor:info:completing' format '%B%F{red}...%f%b'
-  zstyle ':prezto:module:editor:info:keymap:primary' format ' %B%F{red}❯%f%b'
+  zstyle ':prezto:module:editor:info:keymap:primary' format ' %B%F{red}$%f%b'
   zstyle ':prezto:module:editor:info:keymap:primary:overwrite' format ' %F{red}♺%f'
-  zstyle ':prezto:module:editor:info:keymap:alternate' format ' %B%F{green}❯%f%b'
+  zstyle ':prezto:module:editor:info:keymap:alternate' format ' %B%F{green}#%f%b'
 
   # Set git-info parameters.
   zstyle ':prezto:module:git:info' verbose 'yes'
