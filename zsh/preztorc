@@ -29,6 +29,7 @@ if [[ -z "$EMACS" ]]; then
         'directory' \
         'spectrum' \
         'utility' \
+        'git' \
         'completion' \
         'prompt' \
         'syntax-highlighting' \
@@ -40,6 +41,7 @@ else
         'directory' \
         'spectrum' \
         'utility' \
+        'git' \
         'osx'
 fi
 
