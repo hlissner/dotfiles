@@ -12,14 +12,7 @@ alias wget='wget -c'                # Resume download if possible
 alias rsyncd='rsync -va --delete'   # Hard sync two directories
 
 # Shortcut for git
-g() {
-    if [[ $# -gt 0 ]]; then
-        ${aliases[git]:-git} $@
-    else
-        ${aliases[git]:-git} status --short
-    fi
-}
-
+alias g=git
 is-callable 'hub' && alias git='hub'
 
 alias gi='git init'
@@ -33,7 +26,8 @@ alias gp='git push'
 alias gpl='git pull'
 alias gb='git branch'
 alias gt='git tag'
-alias gs='git status'
+alias gs='git status --short'
+alias gS='git status'
 alias gr='git reset "HEAD^"'
 alias gd='git diff'
 

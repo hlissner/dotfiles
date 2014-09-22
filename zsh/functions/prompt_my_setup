@@ -8,73 +8,73 @@ pmodload 'helper'
 # Show the hostname if this is an SSH session
 _prompt_my_host=""
 if [ ! -z "$SSH_CLIENT" ]; then
-  _prompt_my_host=" %B%F{blue}| $(hostname | sed -e 's/\.local$//')%f%b"
+    _prompt_my_host=" %B%F{blue}| $(hostname | sed -e 's/\.local$//')%f%b"
 fi
 
 function _prompt_my_pwd {
-  local pwd="${PWD/#$HOME/~}"
+    local pwd="${PWD/#$HOME/~}"
 
-  if [[ "$pwd" == (#m)[/~] ]]; then
-    __prompt_my_pwd="$MATCH"
-    unset MATCH
-  else
-    __prompt_my_pwd="${${${(@j:/:M)${(@s:/:)pwd}##.#?}:h}%/}/${pwd:t}"
-  fi
+    if [[ "$pwd" == (#m)[/~] ]]; then
+        __prompt_my_pwd="$MATCH"
+        unset MATCH
+    else
+        __prompt_my_pwd="${${${(@j:/:M)${(@s:/:)pwd}##.#?}:h}%/}/${pwd:t}"
+    fi
 }
 
-function _prompt_my_precmd {
-  setopt LOCAL_OPTIONS
-  unsetopt XTRACE KSH_ARRAYS
+# Only run git-info if a) the last command used git/hub or b) the pwd
+# has changed.
+function _prompt_git_preexec {
+    [[ $2 =~ (git|hub) ]] && _EXEC_GIT_COMMAND=1
+}
 
-  # Format PWD.
-  _prompt_my_pwd
+function _prompt_git_precmd {
+    if [ -n "$_EXEC_GIT_COMMAND" ]; then
+        _prompt_git_chpwd
+        unset _EXEC_GIT_COMMAND
+    fi
+}
 
-  # Get Git repository information.
-  if (( $+functions[git-info] )); then
-    git-info
-  fi
+function _prompt_git_chpwd {
+    setopt LOCAL_OPTIONS
+    unsetopt XTRACE KSH_ARRAYS
+
+    (( $+functions[git-info] )) && git-info
 }
 
 function prompt_my_setup {
-  setopt LOCAL_OPTIONS
-  unsetopt XTRACE KSH_ARRAYS
-  prompt_opts=(cr percent subst)
+    setopt LOCAL_OPTIONS
+    unsetopt XTRACE KSH_ARRAYS
+    prompt_opts=(cr percent subst)
 
-  # Load required functions.
-  autoload -Uz add-zsh-hook
+    # Load required functions.
+    autoload -Uz add-zsh-hook
 
-  # Add hook for calling git-info before each command.
-  add-zsh-hook precmd _prompt_my_precmd
+    # Add hook for calling git-info before each command.
+    add-zsh-hook precmd _prompt_git_precmd
+    add-zsh-hook chpwd _prompt_git_chpwd
+    add-zsh-hook preexec _prompt_git_preexec
 
-  # Set editor-info parameters.
-  zstyle ':prezto:module:editor:info:completing' format '%B%F{red}...%f%b'
-  zstyle ':prezto:module:editor:info:keymap:primary' format ' %B%F{red}$%f%b'
-  zstyle ':prezto:module:editor:info:keymap:primary:overwrite' format ' %F{red}♺%f'
-  zstyle ':prezto:module:editor:info:keymap:alternate' format ' %B%F{green}#%f%b'
+    add-zsh-hook precmd _prompt_my_pwd
 
-  # Set git-info parameters.
-  zstyle ':prezto:module:git:info' verbose 'yes'
-  zstyle ':prezto:module:git:info:action' format ':%%B%F{yellow}%s%f%%b'
-  zstyle ':prezto:module:git:info:added' format ' %%B%F{green}✚%f%%b'
-  zstyle ':prezto:module:git:info:ahead' format ' %%B%F{yellow}⬆%f%%b'
-  zstyle ':prezto:module:git:info:behind' format ' %%B%F{yellow}⬇%f%%b'
-  zstyle ':prezto:module:git:info:branch' format ':%F{green}%b%f'
-  zstyle ':prezto:module:git:info:commit' format ':%F{green}%.7c%f'
-  zstyle ':prezto:module:git:info:deleted' format ' %%B%F{red}✖%f%%b'
-  zstyle ':prezto:module:git:info:modified' format ' %%B%F{blue}✱%f%%b'
-  zstyle ':prezto:module:git:info:position' format ':%F{red}%p%f'
-  zstyle ':prezto:module:git:info:renamed' format ' %%B%F{magenta}➜%f%%b'
-  zstyle ':prezto:module:git:info:stashed' format ' %%B%F{cyan}✭%f%%b'
-  zstyle ':prezto:module:git:info:unmerged' format ' %%B%F{yellow}═%f%%b'
-  zstyle ':prezto:module:git:info:untracked' format ' %%B%F{white}◼%f%%b'
-  zstyle ':prezto:module:git:info:keys' format \
-    'prompt' ' %F{blue}%f$(coalesce "%b" "%p" "%c")%s' \
-    'rprompt' '%A%B%S%a%d%m%r%U%u'
+    # Set editor-info parameters.
+    zstyle ':prezto:module:editor:info:completing' format '%B%F{red}...%f%b'
+    zstyle ':prezto:module:editor:info:keymap:primary' format ' %B%F{red}$%f%b'
+    zstyle ':prezto:module:editor:info:keymap:primary:overwrite' format ' %F{red}♺%f'
+    zstyle ':prezto:module:editor:info:keymap:alternate' format ' %B%F{green}#%f%b'
 
-  # Define prompts.
-  PROMPT='%F{cyan}${__prompt_my_pwd}%f${git_info:+${(e)git_info[prompt]}}%(!. %B%F{red}#%f%b.)${editor_info[keymap]} '
-  RPROMPT='${editor_info[overwrite]}%(?:: %F{red}⏎%f)${VIM:+" %B%F{green}V%f%b"}${git_info[rprompt]}${_prompt_my_host}'
-  # SPROMPT='zsh: correct %F{red}%R%f to %F{green}%r%f [nyae]? '
+    # Set git-info parameters.
+    zstyle ':prezto:module:git:info' verbose 'yes'
+    zstyle ':prezto:module:git:info:branch' format ':%F{green}%b%f'
+    zstyle ':prezto:module:git:info:dirty' format '%F{red}+%f'
+
+    zstyle ':prezto:module:git:info:keys' format 'prompt' '' 'rprompt' '%b%D'
+
+    # Define prompts.
+    PROMPT='%F{cyan}${__prompt_my_pwd}%f${git_info:+${(e)git_info[prompt]}}%(!. %B%F{red}#%f%b.)${editor_info[keymap]} '
+    RPROMPT='${editor_info[overwrite]}${VIM:+" %B%F{green}V%f%b"}${git_info[rprompt]}${_prompt_my_host}%(?:: %F{red}⏎%f)'
+
+    _prompt_git_chpwd
 }
 
 prompt_my_setup "$@"

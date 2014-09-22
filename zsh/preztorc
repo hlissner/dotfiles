@@ -29,10 +29,10 @@ if [[ -z "$EMACS" ]]; then
         'directory' \
         'spectrum' \
         'utility' \
-        'git' \
         'completion' \
         'prompt' \
         'syntax-highlighting' \
+        'git' \
         'osx'
 else
     zstyle ':prezto:load' pmodule \

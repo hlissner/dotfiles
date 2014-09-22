@@ -22,6 +22,3 @@ if is-callable 'go'; then
     export GOPATH="$HOME/Dropbox/Projects/dev/go"
     export PATH="$GOPATH/bin:$PATH"
 fi
-
-# Restore git completion with g()
-compdef g=git
