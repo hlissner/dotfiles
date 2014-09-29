@@ -8,6 +8,7 @@ shopt -s extglob
 for rcfile in "$HOME"/.dotfiles/!(bin|README.md|Gemfile|install.sh); do
     filep="$HOME/."$(basename "$rcfile")
 
+    [ "$1" == "--force" ] && rm -f "$filep"
     [ -e "$filep" ] && continue
-    ln -vs "$rcfile" $filep
+    ln -vsF "$rcfile" $filep
 done
