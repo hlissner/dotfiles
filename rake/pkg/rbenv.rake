@@ -53,7 +53,18 @@ namespace :rbenv do
     end
 
     # Set default gems
-    rbenv_set_default_gems(:bundler, :rspec, :pry, :factory_girl)
+    rbenv_set_default_gems(
+      'bundler',
+      'rspec',
+      'pry',
+      'pry-doc',
+      'factory_girl',
+      'guard',
+      'rb-fsevent',
+      'guard-livereload',
+      'guard-sass',
+      'guard-concat'
+    )
 
     # Install global ruby + gems
     ruby_version = "2.1.2"
