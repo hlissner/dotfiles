@@ -79,6 +79,8 @@ alias py='python'
 alias pye='pyenv'
 [ -e /Applications/love.app ] && alias love='/Applications/love.app/Contents/MacOS/love'
 
+alias c++11='clang++ -std=c++11 -stdlib=libc++'
+
 # Bash-only aliases
 if [ -z "$ZSH_VERSION" ]; then
     # Allow sudo with aliases
