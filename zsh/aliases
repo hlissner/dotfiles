@@ -9,6 +9,8 @@ alias rk='noglob rake'
 alias rkg='noglob rake -g'
 alias rename='noglob rename'
 
+export p=~/Dropbox/projects
+
 zman() {
     PAGER="less -g -s '+/^       "$1"'" man zshall
 }
