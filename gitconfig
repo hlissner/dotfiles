@@ -1,26 +1,27 @@
 [user]
-	name = Henrik Lissner
-	email = henrik@lissner.net
+    name = Henrik Lissner
+    email = henrik@lissner.net
 [github]
-	user = hlissner
+    user = hlissner
 [core]
-	excludesfile = ~/.gitignore
-	whitespace = trailing-space
+    excludesfile = ~/.gitignore
+    whitespace = trailing-space
 [color]
-	ui = true
+    ui = true
 [diff]
-	tool = vimdiff
+    tool = vimdiff
 [difftool]
-	prompt = false
+    prompt = false
 [merge]
-	# Include summaries of merged commits in newly created merge commit messages
-	log = true
+    # Include summaries of merged commits in newly created merge commit messages
+    log = true
 [push]
-	default = simple
+    default = simple
 [credential]
-	helper = osxkeychain
+    helper = osxkeychain
 [alias]
-	undo-commit = reset --soft "HEAD^"
-	amend = commit --amend
-	ls = ls-files
-	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
+    undo-commit = reset --soft "HEAD^"
+    amend = commit --amend
+    ls = ls-files
+    lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
+    unadd = reset HEAD
