@@ -1,0 +1,3 @@
+map <M-j> 5j
+map <M-k> 5k
+map <Tab> %
