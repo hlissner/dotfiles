@@ -44,7 +44,7 @@ fi
 # OS-specific aliases
 if [[ "$OSTYPE" == darwin* ]]; then
     alias codekit='open -a CodeKit'
-    alias b='brew'
+    alias br='brew'
 
     function v {
         [ $# -eq 0 ] && vim . || vim $@
@@ -72,12 +72,12 @@ alias rkg='rake -g'
 # Interpreters
 alias rb='ruby'
 alias rbe='rbenv'
+alias b='bundle'
 alias be='bundle exec'
 alias spec='rspec'
 
 alias py='python'
 alias pye='pyenv'
-[ -e /Applications/love.app ] && alias love='/Applications/love.app/Contents/MacOS/love'
 
 alias c++11='clang++ -std=c++11 -stdlib=libc++'
 
