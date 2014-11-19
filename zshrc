@@ -18,10 +18,10 @@ if is-callable 'pyenv'; then
     eval "$(pyenv init - --no-rehash)"
     eval "$(pyenv virtualenv-init -)"
 fi
-if is-callable 'go'; then
-    export GOPATH="$HOME/Dropbox/Projects/dev/go"
-    export PATH="$GOPATH/bin:$PATH"
-fi
-if is-callable 'haxe'; then
-    export HAXE_STD_PATH="/usr/local/lib/haxe/std"
-fi
+# if is-callable 'go'; then
+#     export GOPATH="$HOME/Dropbox/Projects/dev/go"
+#     export PATH="$GOPATH/bin:$PATH"
+# fi
+# if is-callable 'haxe'; then
+#     export HAXE_STD_PATH="/usr/local/lib/haxe/std"
+# fi
