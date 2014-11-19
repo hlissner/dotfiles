@@ -1,8 +1,10 @@
 set nocompatible
 
+let g:is_ssh = ($SSH_TTY != "")
+
 " Initialize NeoBundle
 set rtp+=~/.vim/bundle/neobundle.vim/
-call neobundle#rc(expand('~/.vim/bundle'))
+call neobundle#begin(expand('~/.vim/bundle'))
 NeoBundleFetch 'Shougo/neobundle.vim'
 
 " Preferences {{{
@@ -201,6 +203,10 @@ NeoBundleFetch 'Shougo/neobundle.vim'
             \ }
             let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
             let g:ctrlp_match_window = 'bottom,order:btt,min:10,max:10,results:10'
+
+        " Smarter buffer/tab navigation
+        NeoBundle "szw/vim-ctrlspace"
+        let g:ctrlspace_use_tabline = 1
     " }}}
 
     " Editing {{{
@@ -216,7 +222,6 @@ NeoBundleFetch 'Shougo/neobundle.vim'
         NeoBundle 'mattn/emmet-vim'
 
         " Clean way to close buffers without altering window layout
-        " NeoBundle 'mattdbridges/bufkill.vim'
         NeoBundle 'moll/vim-bbye'
 
         " For aligning text
@@ -255,6 +260,39 @@ NeoBundleFetch 'Shougo/neobundle.vim'
     " Programming {{{
         " Running code inline for testing purposes
         NeoBundle 'notalex/vim-run-live'
+
+        if !g:is_ssh
+            " YCM's trouble to get working across systems, so let's
+            " just leave it to the systems running (mac|g)vim
+            if has("gui_running")
+                " Awesome autocompletion
+                NeoBundle 'Valloric/YouCompleteMe', {'build': {
+                            \ 'mac': './install.sh --clang-completer --system-libclang',
+                            \ 'unix': './install.sh --clang-completer' }}
+                    " let g:ycm_autoclose_preview_window_after_insertion = 1
+                    let g:ycm_confirm_extra_conf = 1
+                    " let g:ycm_register_as_syntastic_checker = 1
+                    " let g:ycm_seed_identifiers_with_syntax = 0
+                    " let g:ycm_add_preview_to_completeopt = 1
+                    let g:ycm_global_ycm_extra_conf = "~/.ycm_extra_conf.py"
+                    " let g:ycm_auto_trigger = 0
+                    let g:ycm_confirm_extra_conf = 0
+            endif
+
+            " Syntax checkers for a multitude of languages
+            NeoBundle 'scrooloose/syntastic'
+                let g:syntastic_auto_loc_list=0
+                " let g:syntastic_quiet_messages={'level': 'warnings'}
+                let g:syntastic_phpcs_disable=1
+                let g:syntastic_echo_current_error=1
+                let g:syntastic_enable_balloons = 0
+
+                let g:syntastic_error_symbol = '►'
+                let g:syntastic_warning_symbol = '►'
+
+                let g:syntastic_loc_list_height = 5
+                let g:syntastic_mode_map = {'mode': 'active', 'active_filetypes': [], 'passive_filetypes': ['html']}
+        endif
     " }}}
 
     " Syntax {{{
@@ -276,7 +314,7 @@ NeoBundleFetch 'Shougo/neobundle.vim'
         NeoBundle 'tpope/vim-markdown'
     " }}}
 
-    " NeoBundleCheck
+    call neobundle#end()
     filetype indent plugin on
 " }}}
 
