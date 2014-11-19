@@ -12,7 +12,8 @@ fi
 
 source ~/.zsh/aliases
 
-# Init extra niceties
+# Initialize rbenv and pyenv; rehashing slows down zsh startup, so we
+# disable it.
 is-callable 'rbenv' && eval "$(rbenv init - --no-rehash)"
 if is-callable 'pyenv'; then
     eval "$(pyenv init - --no-rehash)"
