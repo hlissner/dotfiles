@@ -39,8 +39,8 @@ fpath=(
 export LESS='-X -F -g -i -M -R -S -w -z-4'
 
 # Set the Less input preprocessor.
-if (( $+commands[lesspipe.sh] )); then
-  export LESSOPEN='| /usr/bin/env lesspipe.sh %s 2>&-'
+if (( $+commands[lesspipe] )); then
+  export LESSOPEN='| /usr/bin/env lesspipe %s 2>&-'
 fi
 
 # Temporary Files
