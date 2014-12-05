@@ -6,15 +6,21 @@
 [core]
     excludesfile = ~/.gitignore
     whitespace = trailing-space
+    editor = vim
+    pager = less -r
 [color]
     ui = true
 [diff]
     tool = vimdiff
 [difftool]
     prompt = false
+	cmd = vimdiff \"$LOCAL\" \"$REMOTE\"
+[difftool "ediff"]
+	cmd = emacsclient -n --eval \"(ediff-files \\\"$LOCAL\\\" \\\"$REMOTE\\\")\"
 [merge]
     # Include summaries of merged commits in newly created merge commit messages
     log = true
+    tool = vimdiff
 [push]
     default = simple
 [credential]
@@ -25,3 +31,19 @@
     ls = ls-files
     lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
     unadd = reset HEAD
+    st = status
+    co = checkout
+    ci = commit
+    di = diff
+    dc = diff --cached
+    ammend = commit --amend
+    pu = push -u
+
+    # data analysis
+    authors = !git log --format="%aN"
+    unique-authors = !git authors | sort -u
+    ranked-authors = !git authors | sort | uniq -c | sort -n
+    emails = !git log --format="%aE"
+    email-domains = !git log --format="%aE" | awk -F'@' '{print $2}'
+    unique-email-domains = !git email-domains | sort -u
+    ranked-email-domains = !git email-domains | sort | uniq -c | sort -n
