@@ -1,5 +1,4 @@
 source 'https://rubygems.org'
-gem 'simple-rss'
-gem 'ruby-growl'
 gem 'rake'
+gem 'pry'
 gem 'colorize'
