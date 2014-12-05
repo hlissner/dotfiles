@@ -7,18 +7,25 @@
 ######################
 .DS_Store?
 .DS_Store
+.CFUserTextEncoding
+.Trash
+.Xauthority
 thumbs.db
 Icon?
 Thumbs.db
+.cache
 
 # Code stuffs #
 ##############
 .svn
 .git
 .swp
+.idea
 .*.swp
 *~
 .tags
 tags
 .sass-cache
 tmp
+.codekit-cache
+config.codekit
