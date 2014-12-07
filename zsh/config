@@ -3,27 +3,21 @@ export GIT_MERGE_AUTOEDIT=no
 # Disable autocorrect behavior, very annoying!
 # unsetopt correct_all
 
-# Don't wait for keys (snappier vi-mode)
-# export KEYTIMEOUT=1
-
 zle -N edit-command-line
 bindkey -v
-bindkey '^f' edit-command-line
+bindkey '^ ' edit-command-line
 
 bindkey -M viins '^w' backward-kill-word
 bindkey -M viins '^a' beginning-of-line
 bindkey -M viins '^e' end-of-line
+bindkey -M viins '[w' forward-word
+bindkey -M viins '[b' backward-word
 
 bindkey -M viins ' ' magic-space
-bindkey -M viins 'jj' vi-cmd-mode
+bindkey -M viins 'jk' vi-cmd-mode
 
-bindkey -M vicmd "q" push-line
+bindkey -M vicmd "q" push-line-or-edit
 
-# Incremental search is elite!
-bindkey -M vicmd "/" history-incremental-pattern-search-backward
-bindkey -M vicmd "?" history-incremental-pattern-search-forward
-
-bindkey -M viins '^x^a' fasd-complete    # C-x C-a to do fasd-complete (fils and directories)
 bindkey -M viins '^x^f' fasd-complete-f  # C-x C-f to do fasd-complete-f (only files)
 bindkey -M viins '^x^d' fasd-complete-d  # C-x C-d to do fasd-complete-d (only directories)
 
@@ -43,8 +37,8 @@ if [ -n "$TMUX" ]; then
     zle -C tmux-pane-words-prefix   complete-word _generic
     zle -C tmux-pane-words-anywhere complete-word _generic
 
-    bindkey -M viins '^x^n' tmux-pane-words-prefix
-    bindkey -M viins '^x^o' tmux-pane-words-anywhere
+    bindkey -M viins '^n' tmux-pane-words-prefix
+    bindkey -M viins '^o' tmux-pane-words-anywhere
 
     zstyle ':completion:tmux-pane-words-(prefix|anywhere):*' completer _tmux_pane_words
     zstyle ':completion:tmux-pane-words-(prefix|anywhere):*' ignore-line current
