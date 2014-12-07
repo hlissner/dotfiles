@@ -14,7 +14,7 @@ zstyle ':prezto:*:*' color 'yes'
 # zstyle ':prezto:load' zmodule 'attr' 'stat'
 
 # Set the Zsh functions to load (man zshcontrib).
-# zstyle ':prezto:load' zfunction 'zargs' 'zmv'
+zstyle ':prezto:load' zfunction 'zmv'
 
 # Set the Prezto modules to load (browse modules).
 # The order matters.
