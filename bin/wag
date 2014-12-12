@@ -1,0 +1,71 @@
+#!/usr/bin/env ruby
+
+# A hacky script that allows you to search with ag
+# <https://github.com/ggreer/the_silver_searcher> and edit the results in
+# $EDITOR. The changes are propagated to all listed files, if any.
+#
+# Usage: wag [pattern]
+#
+# TODO Also rename files whose names have been changed
+
+if ARGV.empty?
+  puts "You didn't enter in anything!"
+  exit 1
+end
+
+def quit
+  t.unlink
+  exit 1
+end
+
+require 'tempfile'
+require 'shellwords'
+
+t = Tempfile.new('.ag-results')
+out = system("ag #{ARGV.join(' ')} --nogroup --nocolor > #{t.path}")
+if [false, nil].include? out
+  puts "No matches" if out === false
+
+  t.unlink
+  exit 1
+end
+
+old_lines = File.open(t.path).readlines
+system("#{ENV['EDITOR']} #{t.path}")
+lines = File.open(t.path).readlines
+t.unlink
+
+if old_lines.length != lines.length
+  puts "There was a line-number mismatch. Abort! Abort! Abort!"
+  exit 2
+end
+
+i = nil
+lines.each_with_index do |line, i|
+  next if line.empty? || line.eql?(old_lines[i])
+
+  l = line.split(":", 3)
+  unless l.length == 3
+    puts "Line #{i} is malformed as was skipped"
+    next
+  end
+
+  filename = Shellwords.escape(l[0])
+  lineno = Shellwords.escape(l[1])
+  content = l[2].gsub("'", "\\'")
+
+  if system("sed -i .bak '#{lineno}c\\
+#{content}' #{filename}")
+    puts "Replaced line #{lineno} in #{filename}"
+  else
+    puts "Failed to replace line #{lineno} in #{filename}"
+  end
+
+  system("rm -f #{filename}.bak") if File.exists?("#{filename}.bak")
+end
+
+if i === nil
+  puts "Didn't do nuthin'"
+else
+  puts "Done!"
+end
