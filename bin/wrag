@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-# A hacky script that allows you to search with ag
+# Wrag stands for writeable-ag; a hacky script that allows you to search with ag
 # <https://github.com/ggreer/the_silver_searcher> and edit the results in
 # $EDITOR. The changes are propagated to all listed files, if any.
 #
@@ -21,6 +21,7 @@ end
 
 usage if ARGV.empty?
 
+## Parsing options ################################
 options = {:rename => false,
            :backup => false}
 
@@ -28,13 +29,22 @@ opt = OptionParser.new
 opt.on('-f', '--rename-files') { options[:rename] = true }
 opt.on('-b', '--backup')       { options[:backup] = true }
 
-t = Tempfile.new('.ag-results')
-out = system("ag #{ARGV.join(' ')} --group --nocolor > #{t.path}")
-if [false, nil].include? out
-  puts "No matches" if out === false
+begin
+  opt.parse
+  # Get rid of misc args to pass the rest to ag
+  args = ARGV - ["-f", "--rename-files", "-b", "--backup"]
+rescue OptionParser::InvalidOption => e
+  puts "Invalid option: #{e}"
+  usage
+end
 
+## Perform search #################################
+t = Tempfile.new('.ag-results')
+out = system("ag #{args.join(' ')} --group --nocolor > #{t.path}")
+puts "No matches" if out === false
+if out == nil
   t.unlink
-  exit 1
+  exit 2
 end
 
 old_lines = File.open(t.path).readlines
@@ -44,9 +54,10 @@ t.unlink
 
 if old_lines.length != lines.length
   puts "There was a line-number mismatch. Abort! Abort! Abort!"
-  exit 2
+  exit 3
 end
 
+## Parse edited output ############################
 i = nil
 current_filename = nil
 lines.each_with_index do |line, i|
@@ -76,7 +87,7 @@ lines.each_with_index do |line, i|
     next
   else
     puts "Malformed line: #{line}"
-    exit 4
+    exit 3
   end
 
   next if line.eql?(old_lines[i].strip)
