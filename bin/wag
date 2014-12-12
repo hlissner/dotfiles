@@ -13,11 +13,6 @@ if ARGV.empty?
   exit 1
 end
 
-def quit
-  t.unlink
-  exit 1
-end
-
 require 'tempfile'
 require 'shellwords'
 
