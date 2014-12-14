@@ -33,6 +33,7 @@ NeoBundleFetch 'Shougo/neobundle.vim'
     " }}}
 
     " Behavior {{{
+        set noeol
         set autoread                 " Auto-update a file that's been edited externally
         set nospell                  " No spell check, please
         set visualbell               " No sounds!
@@ -63,7 +64,7 @@ NeoBundleFetch 'Shougo/neobundle.vim'
             if exists('g:loaded_fugitive')
                 set statusline+=\ %{fugitive#statusline()}     " Git Hotness
             endif
-            set statusline+=\ •\ 
+            set statusline+=\ •\
             set statusline+=%c                             " cursor column
             set statusline+=\ %l/%L                        " cursor line/total lines
             set statusline+=\ \:%P                         " percent through file
@@ -144,7 +145,7 @@ NeoBundleFetch 'Shougo/neobundle.vim'
     " }}}
 
     " Omnicomplete + wild settings {{{
-        set tags=./.tags;/,~/.tags,~/tags
+        set tags=./tags,./../tags,./../../tags,./../../../tags,tags
 
         set complete-=i
         set completeopt=menu
@@ -161,12 +162,17 @@ NeoBundleFetch 'Shougo/neobundle.vim'
 
     " Set *.scss to ft=scss instead of css.scss
     au BufRead,BufNewFile *.scss set filetype=scss
+
+    au BufRead,BufNewFile Cask set filetype=lisp
 " }}}
 
 """""""""""""""""""""""""""""""""""""""""
 "  Packages/Bundles and their settings  "
 """""""""""""""""""""""""""""""""""""""""
 " {{{
+    "NeoBundle 'justinmk/vim-sneak'
+    NeoBundle 'goldfeld/vim-seek'
+
     " File search {{{
         " More powerful file searching
         if executable('ag')
@@ -177,7 +183,7 @@ NeoBundleFetch 'Shougo/neobundle.vim'
 
         " Project-wide search and replace
         " NeoBundle 'skwp/greplace.vim'
-        
+
         NeoBundle 'christoomey/vim-tmux-navigator'
 
         " Netrw improvements
@@ -231,7 +237,7 @@ NeoBundleFetch 'Shougo/neobundle.vim'
         NeoBundle 'tomtom/tcomment_vim'
             let g:tcomment_types = {'blade': '{-- %s --}', 'twig': '{# %s #}'}
 
-        " Offers some plugins better compatibility with repeat ('.') 
+        " Offers some plugins better compatibility with repeat ('.')
         NeoBundle 'tpope/vim-repeat'
 
         " Easy changing and insertion of surrounding delimiters (e.g. quotes,
@@ -322,7 +328,7 @@ NeoBundleFetch 'Shougo/neobundle.vim'
 "  Keymappings  "
 """""""""""""""""
 " {{{
-    nnoremap <localleader>v :CtrlP ~/.vim<CR>
+    nnoremap <leader>E :CtrlP ~/.dotfiles<CR>
 
     " Comma get some... sorry.
     let mapleader = ','
@@ -335,6 +341,9 @@ NeoBundleFetch 'Shougo/neobundle.vim'
     imap jk <ESC>
     " Turn off search highlighting
     noremap <silent> <leader>? :nohlsearch<CR>
+
+    " Emacs-esque escape
+    inoremap <C-g> <C-[>
 
     " Navigation {{{
         " Normalize all the navigation keys to move by row/col despite any wrapped text
@@ -381,7 +390,7 @@ NeoBundleFetch 'Shougo/neobundle.vim'
 
     " Buffers {{{
         " Change CWD to current file's directory
-        nnoremap <leader>cd :cd %:p:h<cr>:pwd<cr>    
+        nnoremap <leader>cd :cd %:p:h<cr>:pwd<cr>
 
         " Next/prev buffer
         nnoremap ]b :<C-u>bnext<CR>
@@ -406,7 +415,7 @@ NeoBundleFetch 'Shougo/neobundle.vim'
         cnoremap ;/ <C-R>=expand('%:p:h').'/'<CR>
         cnoremap ;; <C-R>=expand("%:t")<CR>
         cnoremap ;. <C-R>=expand("%:p:r")<CR>
-        
+
         " Mimic shortcuts in the terminal
         cnoremap <C-a> <Home>
         cnoremap <C-e> <End>
@@ -447,7 +456,7 @@ NeoBundleFetch 'Shougo/neobundle.vim'
         let g:UltiSnipsJumpBackwardTrigger = "<S-Tab>"
         " Ignore the default snippets so I (and others) can define their own
         let g:UltiSnipsSnippetDirectories = ["snips"]
-        
+
         " Emmet
         imap <expr> <C-CR> emmet#expandAbbrIntelligent("\<tab>")
 
@@ -460,5 +469,14 @@ NeoBundleFetch 'Shougo/neobundle.vim'
         nnoremap ! :Switch<CR>
     " }}}
 " }}}
+
+"""""""""""""""""""""""
+"  Language settings  "
+"""""""""""""""""""""""
+" {{{
+    " 2-space indentation
+    autocmd FileType ruby setl ts=2 sw=2 sts=2 et
+" }}}
+
 
 " vim:set fdl=0 fdm=marker:

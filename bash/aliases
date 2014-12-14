@@ -32,19 +32,26 @@ alias gr='git reset "HEAD^"'
 alias gd='git diff'
 
 if is-callable 'tmux'; then
-    alias t='tmux new -s x || tmux attach -t x'
-    alias tl='tmux list-sessions'
-    alias ts='tmux switch'
+    alias t='tmux'
 
-    function tmux-send {
-        tmux send-keys -s "x" $1 Enter
+    # Start new session or create a grouped session so I'm not simply watching
+    # the same session in both windows.
+    alias ta='tmux new -s $(hostname) || tmux new -t $(hostname) -s $(hostname)-2 || tmux attach -t "io-2"'
+
+    function ts {
+        tmux send-keys "$*"
     }
+
+    alias tls='tmux ls'
+    # New instance attached to old session
+    alias tn='tmux new-session -t "x"'
 fi
 
 # OS-specific aliases
 if [[ "$OSTYPE" == darwin* ]]; then
     alias codekit='open -a CodeKit'
     alias br='brew'
+    alias bru='brew update && brew upgrade'
 
     function v {
         [ $# -eq 0 ] && vim . || vim $@
@@ -53,8 +60,15 @@ if [[ "$OSTYPE" == darwin* ]]; then
     unalias e # get rid of prezto's alias
     function e {
         [ -z "$@" ] && input="." || input=$@
-        open -a "Emacs" $input
+        emacsclient -n $input
     }
+    function et {
+        [ -z "$@" ] && input="." || input=$@
+        emacsclient -nw $input
+    }
+
+    alias c11='clang++ -std=c++11 -stdlib=libc++'
+    alias eclimd='/Applications/eclipse/eclimd'
 else
     alias ipt='sudo iptables'
 fi
@@ -62,7 +76,20 @@ fi
 # transmission-remote
 if is-callable 'transmission-remote'; then
     alias bt='transmission-remote server'
-    alias btl='bt -l'
+
+    # pretty print torrent list on remote server
+    function btl {
+        results=`transmission-remote server -l | \
+            awk 'NR > 1 { s = ""; for (i = 10; i <= NF; i++) s = s $i " "; print $9 " | " s  }' | \
+            sed '$d' | \
+            perl -pe 's/\s\[[a-zA-Z0-9]+\]\s/ /g'`
+
+        if [ -z "$results" ]; then
+            echo "No torrents!"
+        else
+            echo $results
+        fi
+    }
 fi
 
 alias va='vagrant'
@@ -74,12 +101,11 @@ alias rb='ruby'
 alias rbe='rbenv'
 alias b='bundle'
 alias be='bundle exec'
-alias spec='rspec'
+alias bi='bundle install --path vendor'
 
 alias py='python'
 alias pye='pyenv'
-
-alias c++11='clang++ -std=c++11 -stdlib=libc++'
+alias pyi='ipython'
 
 # Bash-only aliases
 if [ -z "$ZSH_VERSION" ]; then

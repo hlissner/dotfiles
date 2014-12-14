@@ -6,19 +6,24 @@ task :io do
     "pkg:vim",
     "pkg:emacs",
     "pkg:rbenv",
-    "pkg:pyenv",
-    "pkg:love"
+    "pkg:pyenv"
+    # "pkg:love"
   ].each { |task| Rake::Task[task].invoke }
 
   # Install my the mac-apps I commonly use
   if is_mac?
-    [ "transmit",
+    [ "dropbox",
+      "imagealpha",
+      "imageoptim",
+      "xquartz",
+      "things",
+      "openemu",
+      "transmit",
       "transmission",
       "vlc",
       "flux",
       "skype",
       "adium",
-      "codekit",
       "mindnode-pro",
       "sequel-pro",
       "scrivener",

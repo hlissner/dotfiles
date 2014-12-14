@@ -1,6 +1,11 @@
 # Pry config
 
 Pry.config.theme = 'monokai'
+if ENV['TERM'] == 'emacs'
+  Pry.config.color = false
+  Pry.config.pager = false
+  Pry.config.auto_indent = false
+end
 
 # Show ruby version/patch level in prompt
 prompt = "#{RUBY_VERSION}-p#{RUBY_PATCHLEVEL}"
@@ -17,10 +22,9 @@ if defined?(PryByebug)
 end
 
 # Repeat last command with enter
-default_command_set = Pry::Commands.command /^$/, 'repeat last command' do
+Pry::Commands.command /^$/, 'repeat last command' do
   _pry_.run_command Pry.history.to_a.last
 end
-Pry.config.commands.import(default_command_set)
 
 # https://github.com/michaeldv/awesome_print/
 # $ gem install awesome_print
@@ -29,7 +33,6 @@ begin
   AwesomePrint.defaults = { indent: -2 }
   AwesomePrint.pry!
 rescue LoadError
-  puts 'awesome_print not installed'
 end
 
 ## Benchmarking
