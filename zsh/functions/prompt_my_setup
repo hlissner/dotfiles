@@ -59,9 +59,9 @@ function prompt_my_setup {
 
     # Set editor-info parameters.
     zstyle ':prezto:module:editor:info:completing' format '%B%F{red}...%f%b'
-    zstyle ':prezto:module:editor:info:keymap:primary' format ' %B%F{red}$%f%b'
-    zstyle ':prezto:module:editor:info:keymap:primary:overwrite' format ' %F{red}♺%f'
-    zstyle ':prezto:module:editor:info:keymap:alternate' format ' %B%F{green}#%f%b'
+    zstyle ':prezto:module:editor:info:keymap:primary' format '%B%F{red}$%f%b'
+    zstyle ':prezto:module:editor:info:keymap:primary:overwrite' format '%F{red}♺%f'
+    zstyle ':prezto:module:editor:info:keymap:alternate' format '%B%F{green}#%f%b'
 
     # Set git-info parameters.
     zstyle ':prezto:module:git:info' verbose 'yes'
@@ -71,8 +71,11 @@ function prompt_my_setup {
     zstyle ':prezto:module:git:info:keys' format 'prompt' '' 'rprompt' '%b%D'
 
     # Define prompts.
-    PROMPT='%F{cyan}${__prompt_my_pwd}%f${git_info:+${(e)git_info[prompt]}}%(!. %B%F{red}#%f%b.)${editor_info[keymap]} '
-    RPROMPT='${editor_info[overwrite]}${VIM:+" %B%F{green}V%f%b"}${git_info[rprompt]}${_prompt_my_host}%(?:: %F{red}⏎%f)'
+    PROMPT='
+${editor_info[keymap]} '
+    RPROMPT='${editor_info[overwrite]}%F{cyan}${__prompt_my_pwd}${VIM:+" %B%F{green}V%f%b"}${_prompt_my_host}%(?:: %F{red}⏎%f)'
+    # PROMPT='%f${git_info:+${(e)git_info[prompt]}}%(!. %B%F{red}#%f%b.)${editor_info[keymap]} '
+    # RPROMPT='${editor_info[overwrite]}${VIM:+" %B%F{green}V%f%b"}${git_info[rprompt]}${_prompt_my_host}%(?:: %F{red}⏎%f)'
 
     _prompt_git_chpwd
 }
