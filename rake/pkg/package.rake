@@ -34,8 +34,7 @@ if is_mac?
         "node"
       ].each { |pkg| Package.install pkg }
 
-      [ "dropbox",
-        "appcleaner",
+      [ "appcleaner",
         "vagrant",
         "virtualbox",
         "growlnotify",

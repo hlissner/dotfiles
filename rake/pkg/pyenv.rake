@@ -1,5 +1,4 @@
 PYENV_ROOT = File.expand_path("~/.pyenv")
-ENV["PYTHON_VERSION"] = "3.4.1"
 
 def pyenv_installed?
   Dir.exists?(PYENV_ROOT)
@@ -45,14 +44,15 @@ namespace :pyenv do
       sh_safe "eval \"$(#{PYENV_ROOT}/bin/pyenv virtualenv-init -)\""
     end
 
-    py_version = ENV["PYTHON_VERSION"]
-    unless pyenv_version_installed? py_version
-      # Install global python + packages
-      echo "Setting up default python (#{py_version})", 2
-      sh_safe "pyenv install #{py_version}"
-      sh_safe "pyenv global #{py_version}"
-      sh_safe "PYENV_VERSION=#{py_version} #{PYENV_ROOT}/shims/pip install cython"
-      sh_safe "PYENV_VERSION=#{py_version} #{PYENV_ROOT}/shims/pip install nose virtualenv pyyaml ipython"
+    ['3.4.1', '2.7.8'].each do |version|
+        unless pyenv_version_installed? version
+            # Install global python + packages
+            echo "Setting up default python (#{version})", 2
+            sh_safe "pyenv install #{version}"
+            sh_safe "pyenv global #{version}"
+            sh_safe "PYENV_VERSION=#{version} #{PYENV_ROOT}/shims/pip install cython"
+            sh_safe "PYENV_VERSION=#{version} #{PYENV_ROOT}/shims/pip install nose virtualenv pyyaml ipython"
+        end
     end
   end
 
