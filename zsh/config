@@ -1,22 +1,26 @@
 export GIT_MERGE_AUTOEDIT=no
 
 # Disable autocorrect behavior, very annoying!
-# unsetopt correct_all
+unsetopt correct_all
 
-zle -N edit-command-line
+autoload -Uz zmv
+
+
+#################
+#  Keybindings  #
+#################
+
 bindkey -v
 bindkey '^ ' edit-command-line
 
 bindkey -M viins '^w' backward-kill-word
 bindkey -M viins '^a' beginning-of-line
 bindkey -M viins '^e' end-of-line
-bindkey -M viins '[w' forward-word
-bindkey -M viins '[b' backward-word
+bindkey -M viins '^[w' forward-word
+bindkey -M viins '^[b' backward-word
 
 bindkey -M viins ' ' magic-space
 bindkey -M viins 'jk' vi-cmd-mode
-
-bindkey -M vicmd "q" push-line-or-edit
 
 bindkey -M viins '^x^f' fasd-complete-f  # C-x C-f to do fasd-complete-f (only files)
 bindkey -M viins '^x^d' fasd-complete-d  # C-x C-d to do fasd-complete-d (only directories)

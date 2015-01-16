@@ -1,8 +1,11 @@
 # Sets Prezto options.
 
+[[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]
+source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
+
 # General
 
-zstyle ':prezto:module:prompt' theme 'my'
+zstyle ':prezto:module:prompt' theme 'v0'
 
 # Set case-sensitivity for completion, history lookup, etc.
 # zstyle ':prezto:*:*' case-sensitive 'yes'

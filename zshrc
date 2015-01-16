@@ -2,6 +2,8 @@
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
     source ~/.zsh/preztorc
     source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
+else
+    echo "Prezto isn't installed! Run ~/.dotfiles/install.sh"
 fi
 
 # Source component rcfiles
