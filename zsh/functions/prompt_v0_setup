@@ -1,0 +1,61 @@
+#
+# A simple theme based off sorin
+#
+
+# Load dependencies.
+pmodload 'helper'
+
+# Show the hostname if this is an SSH session
+if [ ! -z "$SSH_CLIENT" ]; then
+    __prompt_host="%B%F{blue}[$(hostname | sed -e 's/\.local$//')]%f%b "
+fi
+
+function _prompt_pwd {
+    local pwd="${PWD/#$HOME/~}"
+
+    if [[ "$pwd" == (#m)[/~] ]]; then
+        __prompt_pwd="$MATCH"
+        unset MATCH
+    else
+        __prompt_pwd="${${${(@j:/:M)${(@s:/:)pwd}##.#?}:h}%/}/${pwd:t}"
+    fi
+}
+
+# Why not use prezto's git module? Because git-info seems like overkill.
+function _prompt_git {
+    __prompt_git=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+    if [[ -n "$__prompt_git" ]]; then
+        __prompt_git=" :%F{yellow}$__prompt_git"
+        if ! git -c diff.autorefreshindex=true diff --quiet -- .; then
+            __prompt_git+="%F{white}+"
+        fi
+    fi
+}
+
+function prompt_v0_setup {
+    setopt LOCAL_OPTIONS
+    unsetopt XTRACE KSH_ARRAYS
+    prompt_opts=(cr percent subst)
+
+    # Load required functions.
+    autoload -Uz add-zsh-hook
+
+    # Add hook for calling git-info before each command.
+    add-zsh-hook precmd _prompt_git
+    add-zsh-hook precmd _prompt_pwd
+
+    # Set editor-info parameters.
+    zstyle ':prezto:module:editor:info:completing' format '%B%F{red}...%f%b'
+    zstyle ':prezto:module:editor:info:keymap:primary' format '%B%F{red}$%f%b'
+    zstyle ':prezto:module:editor:info:keymap:primary:overwrite' format '%F{red}♺%f'
+    zstyle ':prezto:module:editor:info:keymap:alternate' format '%B%F{green}|%f%b'
+
+    # Add newline before prompt
+    precmd() { print ""  }
+
+    # Define prompts.
+    PROMPT='${__prompt_host}%F{cyan}${__prompt_pwd} ${editor_info[keymap]} '
+    RPROMPT='%F{yellow}${__prompt_git:- }'
+}
+
+prompt_v0_setup "$@"

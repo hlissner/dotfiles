@@ -9,6 +9,16 @@ export VISUAL='vim'
 export PAGER='less'
 export RUBYOPT=rubygems
 
+# Set the default Less options.
+# Mouse-wheel scrolling has been disabled by -X (disable screen clearing).
+# Remove -X and -F (exit if the content fits on one screen) to enable it.
+export LESS='-X -F -g -i -M -R -S -w -z-4'
+
+# Set the Less input preprocessor.
+if (( $+commands[lesspipe] )); then
+  export LESSOPEN='| /usr/bin/env lesspipe %s 2>&-'
+fi
+
 ## Language
 if [[ -z "$LANG" ]]; then
   export LANG='en_US.UTF-8'
@@ -32,16 +42,6 @@ fpath=(
   $HOME/.zsh/functions
   $fpath
 )
-
-# Set the default Less options.
-# Mouse-wheel scrolling has been disabled by -X (disable screen clearing).
-# Remove -X and -F (exit if the content fits on one screen) to enable it.
-export LESS='-X -F -g -i -M -R -S -w -z-4'
-
-# Set the Less input preprocessor.
-if (( $+commands[lesspipe] )); then
-  export LESSOPEN='| /usr/bin/env lesspipe %s 2>&-'
-fi
 
 # Temporary Files
 if [[ ! -d "$TMPDIR" ]]; then
