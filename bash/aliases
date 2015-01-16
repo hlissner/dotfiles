@@ -4,8 +4,6 @@ alias q='exit'
 alias clr='clear'
 alias catn='cat -n'         # cat + line numbers
 
-alias -- -='cd -'
-
 # Command fixes
 alias ln="${aliases[ln]:-ln} -v"    # verbose ln
 alias wget='wget -c'                # Resume download if possible
