@@ -1,0 +1,11 @@
+set gui=nonavigation
+" Only use characters that don't suck to press.
+set hintchars="asdfghjkl;'"
+
+noremap j 5j
+noremap k 5k
+
+hi CmdLine font-family: "Terminus"; font-size: 14px;
+
+" Get my damn focus back
+autocmd PageLoad (www\\.youtube|groups.google)\\.com :normal <Esc>"
