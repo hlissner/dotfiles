@@ -1,11 +1,28 @@
+set editor=/Application/MacVim.app
+set animations
+set focuscontent
 set gui=nonavigation
 " Only use characters that don't suck to press.
 set hintchars="asdfghjkl;'"
 
+" Make hints look a lil nicer.
+hi Hint font-family: "Ubuntu Mono";
+hi -a Hint border: 1px solid black;
+hi -a Hint padding: 1px 1px 0 1px;
+hi -a Hint color: black;
+hi -a Hint background-color: #fffcc8;
+hi -a Hint font-size: 14px;
+hi HintActive background-color: rgba(0,0,0,0) !important;
+hi HintElem background-color: rgba(0,0,0,0) !important;
+
 noremap j 5j
 noremap k 5k
+noremap J <C-d>
+noremap K <C-u>
 
-hi CmdLine font-family: "Terminus"; font-size: 14px;
+hi CmdLine font-family: "Ubuntu Mono";
+hi -a CmdLine font-size: 14px;
+hi -a CmdLine padding: 4px 0 0;
 
 " Get my damn focus back
 autocmd PageLoad (www\\.youtube|groups.google)\\.com :normal <Esc>"
