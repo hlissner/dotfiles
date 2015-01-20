@@ -48,7 +48,7 @@ function prompt_v0_setup {
     zstyle ':prezto:module:editor:info:completing' format '%B%F{red}...%f%b'
     zstyle ':prezto:module:editor:info:keymap:primary' format '%B%F{red}$%f%b'
     zstyle ':prezto:module:editor:info:keymap:primary:overwrite' format '%F{red}♺%f'
-    zstyle ':prezto:module:editor:info:keymap:alternate' format '%B%F{green}|%f%b'
+    zstyle ':prezto:module:editor:info:keymap:alternate' format '%B%F{green}#%f%b'
 
     # Add newline before prompt
     precmd() { print ""  }

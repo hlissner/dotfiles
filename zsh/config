@@ -3,8 +3,6 @@ export GIT_MERGE_AUTOEDIT=no
 # Disable autocorrect behavior, very annoying!
 unsetopt correct_all
 
-autoload -Uz zmv
-
 
 #################
 #  Keybindings  #

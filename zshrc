@@ -4,7 +4,10 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
     source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 else
     echo "Prezto isn't installed! Run ~/.dotfiles/install.sh"
+    exit 1
 fi
+
+source ~/.zsh/aliases
 
 # Source component rcfiles
 if [[ -z "$EMACS" ]]; then
@@ -12,21 +15,12 @@ if [[ -z "$EMACS" ]]; then
     is-callable 'fasd' && eval "$(fasd --init auto)"
 fi
 
-source ~/.zsh/aliases
-
-# Initialize rbenv and pyenv; rehashing slows down zsh startup, so we
-# disable it.
 if is-callable 'rbenv'; then
+    export PATH=~/.rbenv/bin:$PATH
     eval "$(rbenv init - --no-rehash)"
 fi
+
 if is-callable 'pyenv'; then
+    export PATH=~/.pyenv/bin:~/.pyenv/shims:$PATH
     eval "$(pyenv init - --no-rehash)"
-    eval "$(pyenv virtualenv-init -)"
 fi
-# if is-callable 'go'; then
-#     export GOPATH="$HOME/Dropbox/Projects/dev/go"
-#     export PATH="$GOPATH/bin:$PATH"
-# fi
-# if is-callable 'haxe'; then
-#     export HAXE_STD_PATH="/usr/local/lib/haxe/std"
-# fi

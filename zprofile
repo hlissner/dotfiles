@@ -1,7 +1,7 @@
 # Executes commands at login pre-zshrc.
 
 # Browser
-[[ "$OSTYPE" == darwin* ]] && export BROWSER='open'
+export BROWSER='open'
 
 ## Editors
 export EDITOR='vim'
@@ -19,30 +19,6 @@ if (( $+commands[lesspipe] )); then
   export LESSOPEN='| /usr/bin/env lesspipe %s 2>&-'
 fi
 
-## Language
-if [[ -z "$LANG" ]]; then
-  export LANG='en_US.UTF-8'
-fi
-
-## Paths
-# Ensure path arrays do not contain duplicates.
-typeset -gU cdpath fpath mailpath path
-
-# Set the list of directories that Zsh searches for programs.
-path=(
-  $HOME/.{py,rb}env/bin
-  $HOME/.dotfiles/bin
-  /usr/local/{bin,sbin}
-  /usr/{bin,sbin}
-  /{bin,sbin}
-)
-[[ "$OSTYPE" == darwin* ]] && path+="/usr/X11/bin"
-
-fpath=(
-  $HOME/.zsh/functions
-  $fpath
-)
-
 # Temporary Files
 if [[ ! -d "$TMPDIR" ]]; then
   export TMPDIR="/tmp/$USER"
@@ -51,3 +27,24 @@ fi
 
 TMPPREFIX="${TMPDIR%/}/zsh"
 [[ ! -d "$TMPPREFIX" ]] && mkdir -p "$TMPPREFIX"
+
+## Language
+[[ -z "$LANG" ]] && export LANG='en_US.UTF-8'
+
+## Paths
+# Ensure path arrays do not contain duplicates.
+typeset -gU cdpath fpath mailpath path
+
+# Set the list of directories that Zsh searches for programs.
+path=(
+  $HOME/.dotfiles/bin
+  /usr/local/{bin,sbin}
+  /usr/{bin,sbin}
+  /{bin,sbin}
+)
+
+fpath=(
+  $HOME/.zsh/prompts
+  $HOME/.zsh/completion
+  $fpath
+)

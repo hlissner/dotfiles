@@ -3,6 +3,11 @@
 alias q='exit'
 alias clr='clear'
 alias catn='cat -n'         # cat + line numbers
+# Allow sudo with aliases
+alias sudo='sudo '
+alias ls='ls -G'
+alias l='ls -o'
+alias la='ls -AGFoh'
 
 # Command fixes
 alias ln="${aliases[ln]:-ln} -v"    # verbose ln
@@ -10,8 +15,8 @@ alias wget='wget -c'                # Resume download if possible
 alias rsyncd='rsync -va --delete'   # Hard sync two directories
 
 # Shortcut for git
-alias g=git
-is-callable 'hub' && alias git='hub'
+is-callable hub && alias git='hub'
+g() { [ $# -eq 0 ] && git status --short || git $* }
 
 alias gi='git init'
 alias ga='git add'
@@ -45,51 +50,6 @@ if is-callable 'tmux'; then
     alias tn='tmux new-session -t "x"'
 fi
 
-# OS-specific aliases
-if [[ "$OSTYPE" == darwin* ]]; then
-    alias codekit='open -a CodeKit'
-    alias br='brew'
-    alias bru='brew update && brew upgrade'
-
-    function v {
-        [ $# -eq 0 ] && vim . || vim $@
-    }
-
-    unalias e # get rid of prezto's alias
-    function e {
-        [ -z "$@" ] && input="." || input=$@
-        emacsclient -n $input
-    }
-    function et {
-        [ -z "$@" ] && input="." || input=$@
-        emacsclient -nw $input
-    }
-
-    alias c11='clang++ -std=c++11 -stdlib=libc++'
-    alias eclimd='/Applications/eclipse/eclimd'
-else
-    alias ipt='sudo iptables'
-fi
-
-# transmission-remote
-if is-callable 'transmission-remote'; then
-    alias bt='transmission-remote server'
-
-    # pretty print torrent list on remote server
-    function btl {
-        results=`transmission-remote server -l | \
-            awk 'NR > 1 { s = ""; for (i = 10; i <= NF; i++) s = s $i " "; print $9 " | " s  }' | \
-            sed '$d' | \
-            perl -pe 's/\s\[[a-zA-Z0-9]+\]\s/ /g'`
-
-        if [ -z "$results" ]; then
-            echo "No torrents!"
-        else
-            echo $results
-        fi
-    }
-fi
-
 alias va='vagrant'
 alias rk='rake'
 alias rkg='rake -g'
@@ -104,13 +64,3 @@ alias bi='bundle install --path vendor'
 alias py='python'
 alias pye='pyenv'
 alias pyi='ipython'
-
-# Bash-only aliases
-if [ -z "$ZSH_VERSION" ]; then
-    # Allow sudo with aliases
-    alias sudo='sudo '
-
-    alias ls='ls -G'
-    alias l='ls -o'
-    alias la='ls -AGFoh'
-fi
