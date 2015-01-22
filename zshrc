@@ -15,12 +15,12 @@ if [[ -z "$EMACS" ]]; then
     is-callable 'fasd' && eval "$(fasd --init auto)"
 fi
 
-if is-callable 'rbenv'; then
+if [ -d ~/.rbenv ]; then
     export PATH=~/.rbenv/bin:$PATH
     eval "$(rbenv init - --no-rehash)"
 fi
 
-if is-callable 'pyenv'; then
+if [ -d ~/.pyenv ]; then
     export PATH=~/.pyenv/bin:~/.pyenv/shims:$PATH
     eval "$(pyenv init - --no-rehash)"
 fi
