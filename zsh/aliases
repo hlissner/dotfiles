@@ -8,7 +8,7 @@ alias sudo='sudo '
 
 # Homebrew
 alias br='brew'
-alias bru='brew update'
+alias bru='brew update && brew upgrade'
 
 # Tools
 alias codekit='open -a CodeKit'
@@ -43,7 +43,7 @@ fi
 unalias e
 v() { [ $# -eq 0 ] && vim . || vim $@ }
 e() { # emacs
-    [ $# -eq 0 ] && input=$@
+    [ ! $# -eq 0 ] && input=$@
     emacsclient -n ${input:-.}
 }
 
