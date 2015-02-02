@@ -17,7 +17,7 @@ namespace :zsh do
     unless `printenv SHELL | grep "/zsh$"`
       echo "Setting shell to ZSH", 2
       zsh_bin = is_mac? ? "/usr/local/bin/zsh" : "/usr/bin/zsh"
-      if !File.exists? zsh_bin
+      unless File.exists? zsh_bin
         error "ZSH isn't in #{File.dirname(zsh_bin)}"
         next
       end
@@ -28,7 +28,7 @@ namespace :zsh do
         sh_safe "echo '#{zsh_bin}' | sudo tee -a /etc/shells"
       end
 
-      sh_safe "chsh -s #{zsh_bin}"
+      sh "chsh -s #{zsh_bin}"
     end
 
     echo "Comment out path_helper to fix PATH in emacs!" if is_mac?

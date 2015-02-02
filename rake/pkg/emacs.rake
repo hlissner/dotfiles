@@ -21,9 +21,7 @@ if is_mac?
 
   def setup_node
     echo "Installing node dependencies"
-    node_reqs.each do |pkg|
-      sh_safe "/usr/local/bin/npm install -g #{pkg}"
-    end
+    sh_safe "/usr/local/bin/npm install -g #{node_reqs.join(' ')}"
   end
 
   def setup_emacs_d
@@ -60,9 +58,12 @@ if is_mac?
     end
 
     task :update => "emacs:install" do
-      if emacs_installed?
+      if emacs_installed? && Dir.exists?("#{ENV['EMACS_D']}/.git")
         echo "Updating emacs.d & packages"
         sh_safe "cd '#{ENV["EMACS_D"]}' && git pull && cask update"
+
+        # Update node
+        sh_safe "/usr/local/bin/npm update -g #{node_reqs.join(' ')}"
 
         # Update rsense config
         sh_safe "/usr/bin/env ruby `brew --prefix rsense`/libexec/etc/config.rb > ~/.rsense"

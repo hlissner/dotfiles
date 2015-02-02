@@ -2,6 +2,7 @@ desc "My main computer"
 task :io do
   [ "pkg:update",
     "pkg:osx",
+    "pkg:nodejs",
     "pkg:zsh",
     "pkg:vim",
     "pkg:emacs",
@@ -16,7 +17,6 @@ task :io do
       "imagealpha",
       "imageoptim",
       "xquartz",
-      "things",
       "openemu",
       "transmit",
       "transmission",
