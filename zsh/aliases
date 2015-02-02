@@ -13,8 +13,6 @@ alias bru='brew update && brew upgrade'
 # Tools
 alias codekit='open -a CodeKit'
 alias ag='nocorrect noglob ag'
-alias rk='noglob rake'
-alias rkg='noglob rake -g'
 alias ln="${aliases[ln]:-ln} -v"    # Verbose ln
 alias wget='wget -c'                # Resume dl if possible
 alias rsyncd='rsync -va --delete'   # Hard sync two directories
@@ -60,6 +58,11 @@ alias bi='bundle install -path vendor'
 
 alias c11='clang++ -std=c++11 -stdlib=libc++'
 alias eclimd='/Applications/eclipse/eclimd'
+
+# Build tools
+alias rk='noglob rake'
+alias rkg='noglob rake -g'
+alias m='make'
 
 # GIT
 is-callable 'hub' && alias git='hub'
