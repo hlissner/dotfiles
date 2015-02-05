@@ -9,6 +9,11 @@ alias sudo='sudo '
 # Homebrew
 alias br='brew'
 alias bru='brew update && brew upgrade'
+update() {
+    brew update && brew upgrade
+    cd ~/.emacs.d && git pull && make
+    cd ~/.dotfiles && git pull
+}
 
 # Tools
 alias codekit='open -a CodeKit'
