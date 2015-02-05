@@ -1,5 +1,7 @@
 desc "My main computer"
 task :io do
+  sh "cd ~/.dotfiles && git pull"
+
   [ "pkg:update",
     "pkg:osx",
     "pkg:nodejs",

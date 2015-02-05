@@ -6,7 +6,6 @@ if is_mac?
     [ "emacs --with-gnutls --cocoa",
       "ispell",
       "cask",
-      "rsense",
       "markdown" ]
   end
 
@@ -40,7 +39,7 @@ if is_mac?
 
   namespace :emacs do
     desc "Install emacs completely"
-    task :install => ["nodejs:install", :setup, :setup_node, :setup_emacs_d]
+    task :install => ["pkg:nodejs:install", :setup, :setup_node, :setup_emacs_d]
 
     desc "Setup required homebrew packages"
     task :setup do
@@ -63,10 +62,7 @@ if is_mac?
         sh_safe "cd '#{ENV["EMACS_D"]}' && git pull && cask update"
 
         # Update node
-        sh_safe "/usr/local/bin/npm update -g #{node_reqs.join(' ')}"
-
-        # Update rsense config
-        sh_safe "/usr/bin/env ruby `brew --prefix rsense`/libexec/etc/config.rb > ~/.rsense"
+        sh "/usr/local/bin/npm update -g #{node_reqs.join(' ')}"
       end
     end
 

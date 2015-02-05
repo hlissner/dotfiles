@@ -3,7 +3,7 @@ def node_installed?
 end
 
 desc "Ensure nodejs & its prerequisites are installed"
-task :nodejs => "nodejs:update"
+task :nodejs => "pkg:nodejs:update"
 
 namespace :nodejs do
   desc "Install node.js completely"
@@ -20,8 +20,8 @@ namespace :nodejs do
     end
   end
 
-  unless node_installed?
-    task :update => "nodejs:install" do
+  if node_installed?
+    task :update => :install do
       echo "Updating node"
       if is_mac?
         Package.update "node"
