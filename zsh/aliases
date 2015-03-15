@@ -22,6 +22,7 @@ alias ln="${aliases[ln]:-ln} -v"    # Verbose ln
 alias wget='wget -c'                # Resume dl if possible
 alias rsyncd='rsync -va --delete'   # Hard sync two directories
 zman() { PAGER="less -g -s '+/^       "$1"'" man zshall; }
+mkd() { mkdir "$1" && cd "$1"; }
 
 # transmission-remote
 if is-callable 'transmission-remote'; then
