@@ -8,6 +8,8 @@ export EDITOR='vim'
 export VISUAL='vim'
 export PAGER='less'
 export RUBYOPT=rubygems
+export CC=/usr/bin/clang
+export CXX=/usr/bin/clang++
 
 # Set the default Less options.
 # Mouse-wheel scrolling has been disabled by -X (disable screen clearing).
