@@ -1,5 +1,5 @@
 ---
-doing_file: "~/Dropbox/notes/whatwasidoing.md"
+doing_file: "~/Dropbox/whatwasidoing.md"
 current_section: Currently
 default_template: "%date: %title%note"
 default_date_format: "%Y-%m-%d %H:%M"
