@@ -22,7 +22,7 @@ alias ln="${aliases[ln]:-ln} -v"    # Verbose ln
 alias wget='wget -c'                # Resume dl if possible
 alias rsyncd='rsync -va --delete'   # Hard sync two directories
 zman() { PAGER="less -g -s '+/^       "$1"'" man zshall; }
-mkd() { mkdir "$1" && cd "$1"; }
+mkd()  { mkdir "$1" && cd "$1"; }
 
 # transmission-remote
 if is-callable 'transmission-remote'; then
@@ -49,6 +49,13 @@ v() { [ $# -eq 0 ] && vim . || vim $@ }
 e() { # emacs
     [ ! $# -eq 0 ] && input=$@
     emacsclient -n ${input:-.}
+}
+ee() { # emacs in project root
+    if git root 2>/dev/null; then
+        e "$(git rev-parse --show-toplevel)"
+    else
+        e .
+    fi
 }
 
 # Compilers 'n interpretors
