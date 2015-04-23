@@ -26,6 +26,7 @@
 [credential]
     helper = osxkeychain
 [alias]
+	root = rev-parse --show-toplevel
     undo-commit = reset --soft "HEAD^"
     amend = commit --amend
     ls = ls-files
@@ -40,10 +41,7 @@
     pu = push -u
 
     # data analysis
-    authors = !git log --format="%aN"
-    unique-authors = !git authors | sort -u
+    authors = !git log --format="%aN" | sort -u
     ranked-authors = !git authors | sort | uniq -c | sort -n
-    emails = !git log --format="%aE"
-    email-domains = !git log --format="%aE" | awk -F'@' '{print $2}'
-    unique-email-domains = !git email-domains | sort -u
-    ranked-email-domains = !git email-domains | sort | uniq -c | sort -n
+    emails = !git log --format="%aE" | sort -u
+    email-domains = !git log --format="%aE" | awk -F'@' '{print $2}' | sort -u
