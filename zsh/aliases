@@ -10,7 +10,7 @@ alias sudo='sudo '
 alias br='brew'
 alias bru='brew update && brew upgrade'
 update() {
-    brew update && brew upgrade
+    brew update && brew upgrade --all
     cd ~/.emacs.d && git pull && make
     cd ~/.dotfiles && git pull
 }
