@@ -3,7 +3,7 @@ if is_mac?
   ENV["EMACS_D"] = File.expand_path("~/.emacs.d")
 
   def emacs_reqs
-    [ "emacs-mac --with-gnutls --with-imagemagick --with-modern-icon --HEAD",
+    [ "emacs --with-cocoa --with-gnutls --with-imagemagick --with-librsvg --HEAD",
       "ispell",
       "cask",
       "markdown" ]
@@ -43,10 +43,7 @@ if is_mac?
 
     desc "Setup required homebrew packages"
     task :setup do
-      if !emacs_installed? || ENV["FORCE"]
-        Package.tap "railwaycat/emacsmacport"
-        setup
-      end
+      setup if !emacs_installed? || ENV["FORCE"]
     end
 
     desc "Setup required node & node plugins"
@@ -73,7 +70,6 @@ if is_mac?
       echo "Uninstalling emacs"
       Package.remove "emacs"
       Package.remove "homebrew/dupes/tidy"
-      Package.untap "railwaycat/emacsmacport"
       emacs_reqs.each { |pkg| Package.remove pkg.split.first }
 
       rm_rf ENV["EMACS_D"] if Dir.exists? ENV["EMACS_D"]
