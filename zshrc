@@ -24,3 +24,6 @@ if [ -d ~/.pyenv ]; then
     export PATH=~/.pyenv/bin:~/.pyenv/shims:$PATH
     eval "$(pyenv init - --no-rehash)"
 fi
+
+export ANDROID_HOME=/usr/local/opt/android-sdk
+export PATH=$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$PATH
