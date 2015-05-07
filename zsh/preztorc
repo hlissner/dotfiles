@@ -5,7 +5,7 @@ source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 
 # General
 
-zstyle ':prezto:module:prompt' theme 'v0'
+zstyle ':prezto:module:prompt' theme 'pure'
 
 # Set case-sensitivity for completion, history lookup, etc.
 # zstyle ':prezto:*:*' case-sensitive 'yes'
