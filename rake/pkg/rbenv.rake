@@ -72,7 +72,7 @@ namespace :rbenv do
       echo "Setting up default ruby (#{ruby_version})", 2
       sh_safe "rbenv install #{ruby_version}"
       sh_safe "rbenv global #{ruby_version}"
-      sh_safe "RBENV_VERSION=#{ruby_version} #{RBENV_ROOT}/shims/gem install -f jekyll sass mercenary"
+      sh_safe "RBENV_VERSION=#{ruby_version} #{RBENV_ROOT}/shims/gem install -f jekyll sass mercenary colorize pry pry-doc pry-byebug rake"
     end
   end
 

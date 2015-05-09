@@ -50,7 +50,7 @@ namespace :pyenv do
             echo "Setting up default python (#{version})", 2
             sh_safe "pyenv install #{version}"
             sh_safe "pyenv global #{version}"
-            sh_safe "PYENV_VERSION=#{version} #{PYENV_ROOT}/shims/pip install cython"
+            sh_safe "PYENV_VERSION=#{version} #{PYENV_ROOT}/shims/pip install cython flake8"
             sh_safe "PYENV_VERSION=#{version} #{PYENV_ROOT}/shims/pip install nose virtualenv pyyaml ipython"
         end
     end
