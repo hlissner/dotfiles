@@ -67,7 +67,7 @@ namespace :rbenv do
     )
 
     # Install global ruby + gems
-    ruby_version = '2.1.3'
+    ruby_version = '2.1.6'
     unless rbenv_version_installed? ruby_version
       echo "Setting up default ruby (#{ruby_version})", 2
       sh_safe "rbenv install #{ruby_version}"
