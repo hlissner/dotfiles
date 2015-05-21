@@ -26,6 +26,7 @@ if [ -d ~/.pyenv ]; then
 fi
 
 export ANDROID_HOME=/usr/local/opt/android-sdk
+export ANDROID_SDK=/usr/local/Cellar/android-sdk/24.2
 export PATH=$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$PATH
 
 export CXXFLAGS='-I/usr/local/include -L/usr/local/lib'

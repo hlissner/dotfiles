@@ -8,12 +8,7 @@ alias sudo='sudo '
 
 # Homebrew
 alias br='brew'
-alias bru='brew update && brew upgrade'
-update() {
-    brew update && brew upgrade --all
-    cd ~/.emacs.d && git pull && make
-    cd ~/.dotfiles && git pull
-}
+alias bru='brew update && brew upgrade --all'
 
 # Tools
 alias codekit='open -a CodeKit'
@@ -29,7 +24,8 @@ if is-callable 'transmission-remote'; then
     alias bt='transmission-remote server'
 
     # pretty print torrent list on remote server
-    function btl {
+    btl() {
+        local results
         results=`transmission-remote server -l | \
             awk 'NR > 1 { s = ""; for (i = 10; i <= NF; i++) s = s $i " "; print $9 " | " s  }' | \
             sed '$d' | \
@@ -47,6 +43,7 @@ fi
 unalias e
 v() { [ $# -eq 0 ] && vim . || vim $@ }
 e() { # emacs
+    local input
     [ ! $# -eq 0 ] && input=$@
     emacsclient -n ${input:-.}
 }
