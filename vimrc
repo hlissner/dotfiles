@@ -128,7 +128,6 @@ NeoBundleFetch 'Shougo/neobundle.vim'
         set noswapfile
         if has('persistent_undo')
             set undodir=~/.vim/tmp/undo
-            set undofile
             set undolevels=500
             set undoreload=500
         endif
@@ -162,7 +161,6 @@ NeoBundleFetch 'Shougo/neobundle.vim'
 
     " Set *.scss to ft=scss instead of css.scss
     au BufRead,BufNewFile *.scss set filetype=scss
-
     au BufRead,BufNewFile Cask set filetype=lisp
 " }}}
 
@@ -245,12 +243,12 @@ NeoBundleFetch 'Shougo/neobundle.vim'
         NeoBundle 'tpope/vim-surround'
 
         " Snippets system
-        if has("python")
-            NeoBundle 'SirVer/ultisnips'
+        " if has("python")
+            " NeoBundle 'SirVer/ultisnips'
 
             " My snippets
-            NeoBundle 'hlissner/vim-ultisnips-snippets'
-        endif
+            " NeoBundle 'hlissner/vim-ultisnips-snippets'
+        " endif
 
         " One-key switching between true/false, yes/no, etc
         NeoBundle 'AndrewRadev/switch.vim'
