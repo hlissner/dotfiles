@@ -31,7 +31,9 @@ if has('gui_macvim')
 
     " set guifont=Ubuntu\ Mono:h14
     " set guifont=Monaco:h12
-    set guifont=Ubuntu\ Mono:h14
+    " set guifont=Ubuntu\ Mono:h14
+    set guifont=Terminus\ (TTF):h12
+    set noantialias
 
     " Replace some CMD shortcuts
     macmenu &File.Open\.\.\. key=<nop>
