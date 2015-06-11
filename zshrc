@@ -29,4 +29,5 @@ export ANDROID_HOME=/usr/local/opt/android-sdk
 export ANDROID_SDK=/usr/local/Cellar/android-sdk/24.2
 export PATH=$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$PATH
 
-export CXXFLAGS='-I/usr/local/include -L/usr/local/lib'
+export CPPFLAGS="-I/usr/local/include"
+export LDFLAGS="-L/usr/local/lib -L/usr/local/opt/sqlite/lib"
