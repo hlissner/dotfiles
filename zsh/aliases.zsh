@@ -13,7 +13,10 @@ alias bru='brew update && brew upgrade --all'
 # Tools
 alias codekit='open -a CodeKit'
 alias ag='nocorrect noglob ag'
-alias ln="${aliases[ln]:-ln} -v"    # Verbose ln
+alias ls="ls -G"
+alias l="ls -l"
+alias ll="ls -l"
+alias ln="ln -v"                    # Verbose ln
 alias wget='wget -c'                # Resume dl if possible
 alias rsyncd='rsync -va --delete'   # Hard sync two directories
 zman() { PAGER="less -g -s '+/^       "$1"'" man zshall; }
@@ -40,7 +43,6 @@ if is-callable 'transmission-remote'; then
 fi
 
 # Editors
-unalias e
 v() { [ $# -eq 0 ] && vim . || vim $@ }
 e() { # emacs
     local input

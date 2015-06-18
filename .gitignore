@@ -1,4 +1,5 @@
 vim/bundle/
 vimperator/info/
 tmp/
+zsh/cache
 Gemfile.lock
