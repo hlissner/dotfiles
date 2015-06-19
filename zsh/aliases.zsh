@@ -1,26 +1,32 @@
-#!/bin/zsh
-
 export p=~/Dropbox/projects
+
+alias -g ...="../.."
+alias -g ....="../../.."
+alias -g .....="../../../.."
 
 alias q=exit
 alias clr=clear
 alias sudo='sudo '
 
-# Homebrew
-alias br='brew'
-alias bru='brew update && brew upgrade --all'
-
 # Tools
-alias codekit='open -a CodeKit'
 alias ag='nocorrect noglob ag'
-alias ls="ls -G"
 alias l="ls -l"
-alias ll="ls -l"
+alias ll="ls -1"
+alias la="ls -la"
 alias ln="ln -v"                    # Verbose ln
 alias wget='wget -c'                # Resume dl if possible
 alias rsyncd='rsync -va --delete'   # Hard sync two directories
 zman() { PAGER="less -g -s '+/^       "$1"'" man zshall; }
 mkd()  { mkdir "$1" && cd "$1"; }
+
+j() {
+  local fasd_ret="$(fasd -i -d "$@")"
+  if [[ -d "$fasd_ret" ]]; then
+    cd "$fasd_ret"
+  else
+    print "$fasd_ret"
+  fi
+}
 
 # transmission-remote
 if is-callable 'transmission-remote'; then
@@ -43,12 +49,8 @@ if is-callable 'transmission-remote'; then
 fi
 
 # Editors
-v() { [ $# -eq 0 ] && vim . || vim $@ }
-e() { # emacs
-    local input
-    [ ! $# -eq 0 ] && input=$@
-    emacsclient -n ${input:-.}
-}
+v() { vim ${@:-.}; }             # Open in vim
+e() { emacsclient -n ${@:-.}; }  # Open in emacs (daemon)
 ee() { # emacs in project root
     if git root 2>/dev/null; then
         e "$(git rev-parse --show-toplevel)"
@@ -68,9 +70,6 @@ alias b='bundle'
 alias be='bundle exec'
 alias bi='bundle install -path vendor'
 
-alias c11='clang++ -std=c++11 -stdlib=libc++'
-alias eclimd='/Applications/eclipse/eclimd'
-
 # Build tools
 alias rk='noglob rake'
 alias rkg='noglob rake -g'
@@ -82,9 +81,11 @@ g() { [ $# -eq 0 ] && git status --short || git $* }
 
 alias gi='git init'
 alias gs='git status'
+alias gsu='git submodule'
 alias gco='git checkout'
 alias gc='git commit'
 alias gcm='noglob git commit -m'
+alias gcam='noglob git commit --amend -m'
 alias gd='git diff'
 alias gp='git push'
 alias gl='git pull'
@@ -93,6 +94,7 @@ alias ge='git exec'
 alias gb='git branch'
 alias gap='git add --patch'
 alias gr='git reset "HEAD^"'
+alias gre='git remote'
 
 # Tmux
 if is-callable 'tmux'; then
@@ -106,4 +108,36 @@ if is-callable 'tmux'; then
 
     # New instance attached to old session
     alias tn='tmux new-session -t $(hostname)'
+fi
+
+if is-mac; then
+    alias o='open'
+    alias ls="ls -G"
+
+    alias c11='clang++ -std=c++11 -stdlib=libc++'
+    alias eclimd='/Applications/eclipse/eclimd'
+
+    # Homebrew
+    alias br='brew'
+    alias bru='brew update && brew upgrade --all'
+    alias brc='brew cask'
+    alias codekit='open -a CodeKit'
+
+    # Quicklook
+    ql() { (( $# > 0 )) && qlmanage -p "$@" &> /dev/null; }
+elif is-cygwin; then
+    alias o='cygstart'
+    alias pbcopy='tee > /dev/clipboard'
+    alias pbpaste='cat /dev/clipboard'
+else
+    alias o='xdg-open'
+    alias ls="ls --color=auto"
+
+    if (( $+commands[xclip] )); then
+        alias pbcopy='xclip -selection clipboard -in'
+        alias pbpaste='xclip -selection clipboard -out'
+    elif (( $+commands[xsel] )); then
+        alias pbcopy='xsel --clipboard --input'
+        alias pbpaste='xsel --clipboard --output'
+    fi
 fi
