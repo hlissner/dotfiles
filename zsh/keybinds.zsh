@@ -26,7 +26,7 @@ bindkey "$terminfo[kcud1]" history-substring-search-down
 # bind UP and DOWN arrow keys (compatibility fallback
 # for Ubuntu 12.04, Fedora 21, and MacOSX 10.9 users)
 bindkey '^[[A' history-substring-search-up
-bindkey '^[[B' history-substring-search-down]]]]
+bindkey '^[[B' history-substring-search-down
 
 # Edit command in an external editor.
 bindkey -M vicmd "R" edit-command-line
