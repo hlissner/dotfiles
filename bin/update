@@ -1,5 +1,7 @@
 #!/bin/zsh
 
+set -e
+
 brew update && brew upgrade --all
 cd "$HOME/.emacs.d" && git pull && make
 cd "$HOME/.dotfiles" && git pull
@@ -19,9 +21,7 @@ if [ -d ~/.pyenv ]; then
     done
 fi
 
-if [ -d ~/.zprezto ]; then
-    cd "$HOME/.zprezto"
-    git fetch parent
-    git submodule foreach git checkout master
-    git submodule foreach git pull
+if [ -d ~/.zsh/zgen ]; then
+    source ~/.zsh/zgen/zgen.zsh
+    zgen selfupdate
 fi
