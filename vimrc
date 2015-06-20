@@ -1,3 +1,7 @@
+" VIMRC
+" A minimal vimrc for remote systems. For a more comprehensive vimrc, see
+" <https://github.com/hlissner/vim>.
+
 set nocompatible
 
 let g:is_ssh = ($SSH_TTY != "")
@@ -168,7 +172,6 @@ NeoBundleFetch 'Shougo/neobundle.vim'
 "  Packages/Bundles and their settings  "
 """""""""""""""""""""""""""""""""""""""""
 " {{{
-    "NeoBundle 'justinmk/vim-sneak'
     NeoBundle 'goldfeld/vim-seek'
 
     " File search {{{
