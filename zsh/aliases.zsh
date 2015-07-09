@@ -50,7 +50,7 @@ fi
 
 # Editors
 v() { vim ${@:-.}; }             # Open in vim
-e() { emacsclient -t ${@:-.}; }  # Open in emacs (daemon)
+e() { emacsclient -n ${@:-.}; }  # Open in emacs (daemon)
 ee() { # emacs in project root
     if git root 2>/dev/null; then
         e "$(git rev-parse --show-toplevel)"
