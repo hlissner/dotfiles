@@ -10,8 +10,8 @@ export PAGER='less'
 export RUBYOPT=rubygems
 export CC=/usr/bin/clang
 export CXX=/usr/bin/clang++
-export CPPFLAGS="-I/usr/local/include"
-export LDFLAGS="-L/usr/local/lib -L/usr/local/opt/sqlite/lib"
+export CPPFLAGS="-I/usr/local/include -std=c++11"
+export LDFLAGS="-L/usr/local/lib"
 
 # Set the default Less options.
 # Mouse-wheel scrolling has been disabled by -X (disable screen clearing).
