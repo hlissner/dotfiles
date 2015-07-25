@@ -44,13 +44,13 @@ namespace :pyenv do
       sh_safe "eval \"$(#{PYENV_ROOT}/bin/pyenv virtualenv-init -)\""
     end
 
-    ['3.4.3', '2.7.9'].each do |version|
+    ['3.4.3', '2.7.10'].each do |version|
         unless pyenv_version_installed? version
             # Install global python + packages
             echo "Setting up default python (#{version})", 2
             sh_safe "pyenv install #{version}"
             sh_safe "pyenv global #{version}"
-            sh_safe "PYENV_VERSION=#{version} #{PYENV_ROOT}/shims/pip install cython flake8"
+            sh_safe "PYENV_VERSION=#{version} #{PYENV_ROOT}/shims/pip install flake8"
             sh_safe "PYENV_VERSION=#{version} #{PYENV_ROOT}/shims/pip install nose virtualenv pyyaml ipython"
         end
     end
