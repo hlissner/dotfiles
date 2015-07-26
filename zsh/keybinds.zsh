@@ -15,6 +15,9 @@ bindkey -M viins '^x^f' fasd-complete-f  # C-x C-f to do fasd-complete-f (only f
 bindkey -M viins '^x^d' fasd-complete-d  # C-x C-d to do fasd-complete-d (only directories)
 
 bindkey -M viins '^q' push-line-or-edit
+bindkey -M vicmd "^[[3~"   delete-char
+bindkey "^[[3~"   delete-char
+bindkey "^[3;5~"  delete-char
 
 bindkey -M vicmd "?" history-incremental-pattern-search-backward
 bindkey -M vicmd "/" history-incremental-pattern-search-forward
