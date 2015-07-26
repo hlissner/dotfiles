@@ -59,18 +59,18 @@ ee() { # emacs in project root
     fi
 }
 
-# Compilers 'n interpretors
+# Compilers, interpretors 'n builders
 alias va='vagrant'
 alias py='python'
 alias pye='pyenv'
-alias pip='sudo pip'
 alias rb='ruby'
 alias rbe='rbenv'
 alias b='bundle'
 alias be='bundle exec'
 alias bi='bundle install -path vendor'
-
-# Build tools
+alias ans='ansible'
+alias ansp='ansible-playbook'
+alias fabg='noglob fab -f ~/.dotfiles/ansible/fabfile.py'
 alias rk='noglob rake'
 alias rkg='noglob rake -g'
 alias m='make'
