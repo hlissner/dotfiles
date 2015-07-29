@@ -1,9 +1,3 @@
-export p=~/Dropbox/projects
-
-alias -g ...="../.."
-alias -g ....="../../.."
-alias -g .....="../../../.."
-
 alias q=exit
 alias clr=clear
 alias sudo='sudo '
@@ -74,6 +68,7 @@ alias fabg='noglob fab -f ~/.dotfiles/ansible/fabfile.py'
 alias rk='noglob rake'
 alias rkg='noglob rake -g'
 alias m='make'
+alias c11='CPPFLAGS+=-std=c++11 '
 
 # GIT
 is-callable 'hub' && alias git='hub'
@@ -85,7 +80,7 @@ alias gsu='git submodule'
 alias gco='git checkout'
 alias gc='git commit'
 alias gcm='noglob git commit -m'
-alias gcam='noglob git commit --amend -m'
+alias gcma='noglob git commit --amend -m'
 alias gd='git diff'
 alias gp='git push'
 alias gl='git pull'
@@ -104,14 +99,14 @@ if is-callable 'tmux'; then
 
     # Start new session or create a grouped session so I'm not simply watching
     # the same session in both windows.
-    alias ta='tmux new -s $(hostname) || tmux new -t $(hostname) -s $(hostname)-2 || tmux attach -t "io-2"'
+    ta() {tmux new -s $1 || tmux new -t $1 -s $1-2 || tmux attach -t $1-2;}
 
     # New instance attached to old session
     alias tn='tmux new-session -t $(hostname)'
 fi
 
 if is-mac; then
-    alias o='open'
+    # alias open='open'
     alias ls="ls -G"
 
     alias c11='clang++ -std=c++11 -stdlib=libc++'
@@ -126,11 +121,11 @@ if is-mac; then
     # Quicklook
     ql() { (( $# > 0 )) && qlmanage -p "$@" &> /dev/null; }
 elif is-cygwin; then
-    alias o='cygstart'
+    alias open='cygstart'
     alias pbcopy='tee > /dev/clipboard'
     alias pbpaste='cat /dev/clipboard'
 else
-    alias o='xdg-open'
+    alias open='xdg-open'
     alias ls="ls --color=auto"
 
     if (( $+commands[xclip] )); then
@@ -141,3 +136,6 @@ else
         alias pbpaste='xsel --clipboard --output'
     fi
 fi
+
+# By default, open cwd
+o() { open ${@:-.}; }
