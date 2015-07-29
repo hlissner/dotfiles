@@ -10,7 +10,7 @@ export PAGER='less'
 export RUBYOPT=rubygems
 export CC=/usr/bin/clang
 export CXX=/usr/bin/clang++
-export CPPFLAGS="-I/usr/local/include -std=c++11"
+export CPPFLAGS="-I/usr/local/include"
 export LDFLAGS="-L/usr/local/lib"
 
 # Set the default Less options.
