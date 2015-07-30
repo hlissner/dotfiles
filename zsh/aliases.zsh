@@ -70,6 +70,12 @@ alias rkg='noglob rake -g'
 alias m='make'
 alias c11='CPPFLAGS+=-std=c++11 '
 
+# needs imagemagick and ghostscript (for ai)
+2png() {
+    mkdir -p _png;
+    for f in *.(psd|ai); do convert -resize 1200x1200 ${f}[0] _png/${f}.png; done;
+}
+
 # GIT
 is-callable 'hub' && alias git='hub'
 g() { [ $# -eq 0 ] && git status --short || git $* }
