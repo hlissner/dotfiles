@@ -25,6 +25,7 @@ j() {
 # transmission-remote
 if is-callable 'transmission-remote'; then
     alias bt='transmission-remote server'
+    alias bt-clear='bt -t all -r'
 
     # pretty print torrent list on remote server
     btl() {
