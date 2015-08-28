@@ -1,7 +1,10 @@
 #!/bin/bash
 
 # In case this file was run via curl
-[ ! -d ~/.dotfiles ] && git clone https://github.com/hlissner/dotfiles ~/.dotfiles
+[ ! -d ~/.dotfiles ] && git clone --recursive https://github.com/hlissner/dotfiles ~/.dotfiles
+[ ! -d ~/.vim ] && git clone --recursive https://github.com/hlissner/vim ~/.vim
+
+~/.vim/install.sh
 
 shopt -s extglob
 for rcfile in "$HOME"/.dotfiles/!(bin|README.md|Gemfile*|install.sh); do
