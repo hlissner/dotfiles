@@ -90,7 +90,7 @@ alias gcm='noglob git commit -m'
 alias gcma='noglob git commit --amend -m'
 alias gd='git diff'
 alias gp='git push'
-alias gl='git pull'
+alias gpl='git pull'
 alias ga='git add'
 alias ge='git exec'
 alias gb='git branch'
@@ -124,9 +124,6 @@ if is-mac; then
     alias bru='brew update && brew upgrade --all'
     alias brc='brew cask'
     alias codekit='open -a CodeKit'
-
-    # Quicklook
-    ql() { (( $# > 0 )) && qlmanage -p "$@" &> /dev/null; }
 elif is-cygwin; then
     alias open='cygstart'
     alias pbcopy='tee > /dev/clipboard'
