@@ -1,3 +1,22 @@
+# For emacs:
+*~
+*.*~
+\#*
+.\#*
+
+# For vim:
+*.swp
+.*.sw[a-z]
+*.un~
+Session.vim
+.netrwhist
+
+# Ignore tags (from etags and ctags)
+TAGS
+!TAGS/
+tags
+!tags/
+
 # Logs and databases #
 ######################
 *.log
@@ -16,7 +35,7 @@ Thumbs.db
 .cache
 
 # Code stuffs #
-##############
+###############
 .svn
 .git
 .swp
@@ -29,3 +48,12 @@ tags
 tmp
 .codekit-cache
 config.codekit
+
+# Compiled thangs #
+###################
+*.class
+*.exe
+*.o
+*.so
+*.dll
+*.pyc
