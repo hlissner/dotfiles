@@ -10,6 +10,7 @@ alias la="ls -la"
 alias ln="ln -v"                    # Verbose ln
 alias wget='wget -c'                # Resume dl if possible
 alias rsyncd='rsync -va --delete'   # Hard sync two directories
+alias mkdir='mkdir -p'
 zman() { PAGER="less -g -s '+/^       "$1"'" man zshall; }
 mkd()  { mkdir "$1" && cd "$1"; }
 
