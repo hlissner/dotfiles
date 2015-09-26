@@ -2,8 +2,6 @@
 # By Henrik Lissner <henrik@lissner.net>
 # Uses zgen to manage plugins
 
-export PATH="$HOME/.rbenv/bin:$HOME/.pyenv/bin:$PATH"
-
 source ~/.zsh/functions.zsh
 source ~/.zsh/aliases.zsh
 
@@ -31,11 +29,22 @@ if [ -z "$EMACS" ]; then
     cache fasd --init posix-alias zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zsh-wcomp-install
 fi
 
-cache rbenv init - --no-rehash
-cache pyenv init - --no-rehash
+export DOCKER_HOST=tcp://server:4243
 
+export GOPATH=$HOME/Dropbox/go
 export ANDROID_HOME=/usr/local/opt/android-sdk
 export ANDROID_SDK=/usr/local/Cellar/android-sdk/24.2
-export PATH=$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$PATH
+
+path=(
+    $HOME/.dotfiles/bin
+    $HOME/.{rb,py}env/bin
+    $GOPATH/bin
+    $ANDROID_HOME/platform-tools
+    $ANDROID_HOME/tools
+    $path
+)
+
+cache rbenv init - --no-rehash
+cache pyenv init - --no-rehash
 
 # Done!
