@@ -70,13 +70,8 @@ alias fabg='noglob fab -f ~/.dotfiles/ansible/fabfile.py'
 alias rk='noglob rake'
 alias rkg='noglob rake -g'
 alias m='make'
-alias c11='CPPFLAGS+=-std=c++11 '
-
-# needs imagemagick and ghostscript (for ai)
-2png() {
-    mkdir -p _png;
-    for f in *.(psd|ai); do convert -resize 1200x1200 ${f}[0] _png/${f}.png; done;
-}
+alias c11='clang++ -std=c++11'
+alias dk='docker'
 
 # GIT
 is-callable 'hub' && alias git='hub'
