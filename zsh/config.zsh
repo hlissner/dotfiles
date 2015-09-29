@@ -35,11 +35,8 @@ zle -N edit-command-line
 export GIT_MERGE_AUTOEDIT=no
 unsetopt CORRECT_ALL
 
-setopt append_history share_history extended_history
-setopt histignorealldups histignorespace
-setopt extended_glob
-setopt nonomatch
-setopt hash_list_all
+setopt NONOMATCH
+setopt HASH_LIST_ALL
 
 #
 # History
@@ -49,8 +46,9 @@ HISTFILE="${ZDOTDIR:-$HOME}/.zhistory"
 HISTSIZE=10000                   # Max events to store in internal history.
 SAVEHIST=10000                   # Max events to store in history file.
 
-unsetopt BANG_HIST               # Don't treat '!' specially during expansion.
+setopt BANG_HIST                 # Don't treat '!' specially during expansion.
 setopt EXTENDED_HISTORY          # Write the history file in the ':start:elapsed;command' format.
+setopt APPEND_HISTORY
 setopt INC_APPEND_HISTORY        # Write to the history file immediately, not when the shell exits.
 setopt SHARE_HISTORY             # Share history between all sessions.
 setopt HIST_EXPIRE_DUPS_FIRST    # Expire a duplicate event first when trimming history.
