@@ -99,17 +99,17 @@ if is-callable 'tmux'; then
     alias t='tmux'
     alias ts='tmux send-keys'
     alias tl='tmux ls'
-
-    # Start new session or create a grouped session so I'm not simply watching
-    # the same session in both windows.
-    ta() {tmux new -s $1 || tmux new -t $1 -s $1-2 || tmux attach -t $1-2;}
+    alias ta='tmux attach'
 
     # New instance attached to old session
     alias tn='tmux new-session -t $(hostname)'
+
+    # Start new session or create a grouped session so I'm not simply watching
+    # the same session in both windows.
+    tdup() {tmux new -s $1 || tmux new -t $1 -s $1-2 || tmux attach -t $1-2;}
 fi
 
 if is-mac; then
-    # alias open='open'
     alias ls="ls -G"
 
     alias c11='clang++ -std=c++11 -stdlib=libc++'
