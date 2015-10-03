@@ -98,15 +98,17 @@ alias gre='git remote'
 if is-callable 'tmux'; then
     alias t='tmux'
     alias ts='tmux send-keys'
-    alias tl='tmux ls'
+    alias tl='tmux list-sessions'
     alias ta='tmux attach'
 
-    # New instance attached to old session
-    alias tn='tmux new-session -t $(hostname)'
+    if [ -n $TMUX ]; then
+        # Detach all other clients to this session
+        alias takeover='tmux detach -a'
+    fi
 
     # Start new session or create a grouped session so I'm not simply watching
     # the same session in both windows.
-    tdup() {tmux new -s $1 || tmux new -t $1 -s $1-2 || tmux attach -t $1-2;}
+    tdup() {tmux new-session -t $1}
 fi
 
 if is-mac; then
