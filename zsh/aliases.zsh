@@ -45,6 +45,7 @@ if is-callable 'transmission-remote'; then
 fi
 
 # Editors
+is-callable 'nvim' && alias vim='nvim'
 v() { vim ${@:-.}; }             # Open in vim
 e() { emacsclient -n ${@:-.}; }  # Open in emacs (daemon)
 ee() { # emacs in project root
