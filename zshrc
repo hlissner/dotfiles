@@ -32,7 +32,7 @@ fi
 export DOCKER_HOST=tcp://server:4243
 
 export RUST_SRC_PATH=$HOME/Dropbox/lib/rust/src
-export GOPATH=$HOME/Dropbox/go
+export GOPATH=$HOME/Dropbox/work/go
 export ANDROID_HOME=/usr/local/opt/android-sdk
 export ANDROID_SDK=/usr/local/Cellar/android-sdk/24.2
 
