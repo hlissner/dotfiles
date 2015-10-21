@@ -12,29 +12,30 @@
        "make the url-bar visible" and "adjust margin-top to"
 */
 
-
 :root {
     /* TAB VARIABLES */
     --bg-light: #524C59; --bg-dark: #282333;
     --fg-light: #D6CCDC; --fg-dark: #AAA5AD;
     --tab-triangle-correction: -1px;
-    --tab-height: 28px; --tab-icon-size: 16px; --tab-strip-margin: -25px; --tab-overlap: -5px;
+    --tab-height: 29px; --tab-icon-size: 16px; --tab-strip-margin: -25px; --tab-overlap: -5px;
     --tab-fonts: "Ubuntu Mono",monospace,"Dejavu Sans"; --tab-font-size: 9.5pt;
     --tab-text-align: left; /* left | center | right */
     --tab-triangle: none; /* block | none */
 
     /* URL VARIABLES */
     --url-background: #3E3848; --url-color: var(--fg-light);
-    --url-height: 26px; --url-right-margin: 5px;
-    --url-fonts: "Ubuntu Mono",monospace,"Dejavu Sans"; --url-font-size: 9.5pt;
+    --url-height: 28px; --url-right-margin: 5px;
+    --url-fonts: "Ubuntu Mono",monospace,"Dejavu Sans"; --url-font-size: 12pt;
     --url-text-align: left; /* left | center | right */
-    --url-position: absolute; /* absolute == top (under tabs) || fixed == bottom of browser */
+    --url-position: fixed; /* absolute == top (under tabs) || fixed == bottom of browser */
     
     margin-bottom: 0 !important;
 }
 
 
 @-moz-document url(chrome://browser/content/browser.xul) {
+    #downloads-button, #tabview-button { margin-top: -2px !important; padding-left: 10px !important; opacity: 0.5; }
+    
     #titlebar, #titlebar-placeholder-on-TabsToolbar-for-captions-buttons { display: none !important; }
     
     /* URL-BAR */
@@ -47,6 +48,13 @@
     #identity-box { max-width: 28px !important; margin-left: -2px !important; padding-left: 5px !important; }
     #identity-box #identity-icon-labels { display: none !important; }
 
+    .autocomplete-richlistbox { height: auto !important; max-height: auto !important; background-color: var(--fg-light) !important; }
+    .autocomplete-richlistbox richlistitem[selected="true"] { background-color: var(--bg-dark) !important; }
+    .autocomplete-richlistbox .autocomplete-richlistitem .ac-url-box { display: none !important; }
+    .autocomplete-richlistbox .autocomplete-richlistitem[actiontype="searchengine"],
+    .autocomplete-richlistbox .autocomplete-richlistitem[type~="autofill"] { padding: 0 0 10px !important; }
+  
+    
     /* --- Uncomment the section below to enable the Back/Forward buttons [EXPERIMENTAL] (Requires url-bar) --- */
     /*
     #back-button, #forward-button { display: block !important; }
@@ -58,20 +66,21 @@
     #back-button::before { content: "<" !important; left: 0 !important; }
     #forward-button::before { content: ">" !important; left: calc(var(--url-height) + 8px) !important; }
     /**/
-    
-    /* --- Uncomment the section below to enable the New Tab Button [EXPERIMENTAL] --- */
-    
+       
     tab, .tabs-newtab-button { transition: background-color 0.1s ease-in-out !important; }
     tab:hover { background-color: #3C364A !important; }
     .tabs-newtab-button:hover { background-color: #3E384C !important; }
     
+    /* --- Uncomment the section below to enable the New Tab Button [EXPERIMENTAL] --- */
+    /*
     .tabs-newtab-button { display: block !important; background: #302A3A !important; margin: 0 0 0 0 !important; width: 28px !important; }
-    .tabs-newtab-button::before { content: "+" !important; }
+    .tabs-newtab-button::before { content: "+" !important; position: relative; bottom: 2px; opacity: 0.4; }
     .tabs-newtab-button .toolbarbutton-icon { display: none !important; }
     /**/
     
     .tab-drop-indicator { margin-bottom: 0 !important; }
     
+    #content-deck { padding-bottom: var(--url-height) !important; }
     #nav-bar {
         position: var(--url-position) !important; bottom: 0px !important;
         width: 100% !important; height: var(--url-height) !important;
@@ -79,7 +88,7 @@
         margin: 0 0 0 0 !important;
         
         /* --- Uncomment the section below to attach the url-bar to the tab-bar [EXPERIMENTAL] (Require a line in "#TabsToolbar" below) --- */
-        
+        /*
         position: fixed !important; top: 0 !important; left: 0 !important;
         width: 315px !important; max-width: 315px !important;
         z-index: 100 !important;
@@ -112,7 +121,7 @@
     /**/
     
     /* TABS */
-    .tabbrowser-tab[fadein]:not([pinned]) { min-width: 50px !important; }
+    .tabbrowser-tab[fadein]:not([pinned]) { min-width: 50px !important; max-width: 100% !important; }
     tab {
         font-family: var(--tab-fonts) !important;
         height: var(--tab-height) !important; min-height: var(--tab-height) !important;
@@ -125,14 +134,14 @@
         position: unset !important;
     }
     
-    .tabbrowser-tab label { padding: 0 14px 0 14px !important; }
+    .tabbrowser-tab label { padding: 0 10px 0 15px !important; }
     
     #tabbrowser-tabs .tabbrowser-tab[pinned]            { width: 28px !important; }
     #tabbrowser-tabs .tabbrowser-tab[pinned] label      { display: none !important; }
     #tabbrowser-tabs .tabbrowser-tab label { text-align: var(--url-text-align) !important; }
     
     #tabbrowser-tabs .tabbrowser-tab .tab-icon-image {
-        margin: 0 -10px 0 6px !important;
+        margin: 0 -9px 0 6px !important;
         width: var(--tab-icon-size) !important;
         height: var(--tab-icon-size) !important;
     }
@@ -155,14 +164,14 @@
     #TabsToolbar, #tabbrowser-tabs {
         -moz-appearance: none !important;
         height: var(--tab-height) !important; min-height: var(--tab-height)!important;
-        margin: 0 -6px 0 var(--tab-strip-margin) !important;
+        margin: 0 -2px 0 var(--tab-strip-margin) !important;
         padding-right: 0 !important;
         background: var(--bg-dark) !important;
         
         /* --- Uncomment the line below to attach the url-bar to the tab-bar [EXPERIMENTAL] (Require a line in "#nav-bar" above) --- */
         /**********************************/
             
-        margin-left: 133px !important;/**/
+        /*padding-left: 40px !important;/**/
             
         /**********************************/
     }
