@@ -1,0 +1,69 @@
+@-moz-document regexp("^https://trello.com/[bc]/.+") {
+  #board .badge  { margin-bottom:  2px; }
+  #board .badges { padding-bottom: 0;   }
+
+  #board .list {
+      display: block;
+      min-width: 125px; max-width: 250px;
+      margin: 0 0 30px 0; padding: 0;
+      background: none;
+      font-size: 95%;
+  }
+
+  #board .list-wrapper              { width: 225px; }
+  #board .list-wrapper:first-child  { margin-left: 10px; }
+
+  #board .list-card-details {
+      font-size:    95%;
+      line-height:  17px;
+      margin-top:   1px;
+  }
+
+  #board .list-header { color: #e2e4e6; }
+
+  #board .open-card-composer { color: #e2e4e6; }
+  #board .open-card-composer:hover {
+      background: none;
+      color: #eee;
+  }
+
+  #board .list-card {
+      margin-bottom: 0px;
+  }
+  #board .list-card-title {
+      margin-bottom: 2px;
+  }
+  #board .list-card-labels {
+      float: left;
+      margin-top: -11px;
+      margin-left: -5px;
+  }
+  #board .list-card-labels .card-label {
+      width: 35px;
+  }
+
+  .card-detail-window .card-detail-item-header,
+  .card-detail-window .card-detail-item-header-edit {
+      display: none;   
+  }
+}
+
+@-moz-document url-prefix("^https://trello.com/b/oNCdFuxc") {
+    /* Projects board */
+    .list-wrapper:nth-child(4) .badges { display: none; }
+}
+
+@-moz-document url("https://trello.com/") {
+    #content .board-list .details, 
+    #content .board-list .js-add-board
+    { min-height: 20px; }
+
+    #content .board-list li { 
+        margin-bottom: 6px;
+        width: 220px;
+        height: 36px;
+        overflow: hidden;
+    }
+
+    #content .js-add-board { line-height: 20px; }
+}
