@@ -11,16 +11,30 @@ alias ln="ln -v"                    # Verbose ln
 alias wget='wget -c'                # Resume dl if possible
 alias rsyncd='rsync -va --delete'   # Hard sync two directories
 alias mkdir='mkdir -p'
-zman() { PAGER="less -g -s '+/^       "$1"'" man zshall; }
 mkd()  { mkdir "$1" && cd "$1"; }
+zman() { PAGER="less -g -s '+/^       "$1"'" man zshall; }
+alias gurl='curl --compressed'
+
+alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
+alias localip="ipconfig getifaddr en0"
+alias ips="ifconfig -a | grep -o 'inet6\? \(\([0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+\)\|[a-fA-F0-9:]\+\)' | sed -e 's/inet6* //'"
+
+# View HTTP traffic
+alias sniff="sudo ngrep -d 'en0' -t '^(GET|POST) ' 'tcp and port 80'"
+alias httpdump="sudo tcpdump -i en0 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
+# URL-encode strings
+alias urlencode='python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1]);"'
+# Make URL REQUEST shortcuts
+for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do
+    alias "$method"="lwp-request -m '$method'"
+done
+
+# Send to sprunge.us
+alias bin="curl -s -F 'sprunge=<-' http://sprunge.us | head -n 1 | tr -d '\r\n ' | pbcopy"
 
 j() {
-  local fasd_ret="$(fasd -i -d "$@")"
-  if [[ -d "$fasd_ret" ]]; then
-    cd "$fasd_ret"
-  else
-    print "$fasd_ret"
-  fi
+    local fasd_ret="$(fasd -i -d "$@")"
+    [[ -d "$fasd_ret" ]] && cd "$fasd_ret" || print "$fasd_ret"
 }
 
 # transmission-remote
