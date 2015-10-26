@@ -22,10 +22,6 @@ bindkey "^[3;5~"  delete-char
 bindkey -M vicmd "?" history-incremental-pattern-search-backward
 bindkey -M vicmd "/" history-incremental-pattern-search-forward
 
-switch-to-emacs() osascript -e 'tell application "Emacs" to activate'
-zle -N switch-to-emacs
-bindkey -M vicmd '\\\\' switch-to-emacs
-
 # bind UP and DOWN arrow keys
 zmodload zsh/terminfo
 bindkey "$terminfo[kcuu1]" history-substring-search-up
