@@ -126,7 +126,7 @@ prompt_pure_setup() {
     # prompt turns red if the previous command didn't exit with 0
     N_MODE=" --NORMAL--"
     I_MODE=""
-    PROMPT='%(?.%F{green}.%F{red}❯%F{green})❯ %f'
+    PROMPT='%(?.%F{yellow}.%F{red})❯ %f'
 }
 
 prompt_pure_setup "$@"
