@@ -44,17 +44,12 @@ if is-callable 'transmission-remote'; then
 
     # pretty print torrent list on remote server
     btl() {
-        local results
-        results=`transmission-remote server -l | \
+        local results=`transmission-remote server -l | \
             awk 'NR > 1 { s = ""; for (i = 10; i <= NF; i++) s = s $i " "; print $9 " | " s  }' | \
             sed '$d' | \
             perl -pe 's/\s\[[a-zA-Z0-9]+\]\s/ /g'`
 
-        if [ -z "$results" ]; then
-            echo "No torrents!"
-        else
-            echo $results
-        fi
+        [ -z "$results" ] && echo "No torrents!" || echo "$results"
     }
 fi
 
@@ -63,11 +58,7 @@ is-callable 'nvim' && alias vim='nvim'
 v() { vim ${@:-.}; }             # Open in vim
 e() { emacsclient -n ${@:-.}; }  # Open in emacs (daemon)
 ee() { # emacs in project root
-    if git root 2>/dev/null; then
-        e "$(git rev-parse --show-toplevel)"
-    else
-        e .
-    fi
+    git root 2>/dev/null && e "$(git rev-parse --show-toplevel)" || e .
 }
 
 # Compilers, interpretors 'n builders
