@@ -144,6 +144,8 @@ else
         alias pbpaste='xsel --clipboard --output'
     fi
 fi
+alias c='pbcopy'
+alias p='pbpaste'
 
 # By default, open cwd
 o() { open ${@:-.}; }
