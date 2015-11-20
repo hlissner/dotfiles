@@ -40,7 +40,7 @@ export ANDROID_SDK=/usr/local/Cellar/android-sdk/24.2
 # export PATH=/usr/local/texlive/2015basic/bin/x86_64-darwin:$PATH
 
 path=(
-    $HOME/.dotfiles/bin
+    $HOME/.dotfiles/scripts
     $HOME/.{rb,py}env/bin
     $GOPATH/bin
     $ANDROID_HOME/platform-tools

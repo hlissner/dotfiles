@@ -1,0 +1,28 @@
+#!/bin/sh
+
+## Location where org-mode stores attachments
+ORG_DIR="$HOME/Dropbox/org/"
+DATA_DIR="$ORG_DIR/.attach";
+
+echo "The following files appear orphaned:";
+
+files=$(find "$DATA_DIR" -type f|perl -ne 'print "$1\n" if /([^\/]*)\/[^\/]*$/'|uniq|while read id; do grep -qiR --include "*.org" "$id" "$ORG_DIR" || find "$DATA_DIR" -ipath "*$id*" -type f; done)
+
+echo "$files"
+
+if [ "" == "$files" ]; then
+   echo "Nothing to do!"
+   exit
+fi
+
+echo "Delete? y/[n]"
+read delete
+case $delete in
+    y)
+        echo "$files" | while read fn; do rm "$fn"; done
+        echo "Done."
+        ;;
+    *)
+        echo "Not deleting anything!"
+        ;;
+esac
