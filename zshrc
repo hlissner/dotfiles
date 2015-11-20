@@ -2,11 +2,18 @@
 # By Henrik Lissner <henrik@lissner.net>
 # Uses zgen to manage plugins
 
-source ~/.zsh/functions.zsh
-source ~/.zsh/aliases.zsh
+DOTFILES=$HOME/.dotfiles
+
+source $DOTFILES/zsh/functions.zsh
+source $DOTFILES/zsh/aliases.zsh
 
 # if not running through emacs' shell-command
-if [ -z "$EMACS" ]; then
+if [ ! $TERM = dumb ]; then
+    ZGEN_AUTOLOAD_COMPINIT=true
+    if [[ "${USER}" == "root" ]]; then
+        ZGEN_AUTOLOAD_COMPINIT=false
+    fi
+
     source ~/.zsh/zgen/zgen.zsh
     if ! zgen saved; then
         echo "Creating zgen save"
@@ -18,13 +25,13 @@ if [ -z "$EMACS" ]; then
         zgen load Tarrasch/zsh-bd
         zgen load houjunchen/zsh-vim-mode
 
+        zgen load $DOTFILES/zsh/config.zsh
+        zgen load $DOTFILES/zsh/completion.zsh
+        zgen load $DOTFILES/zsh/keybinds.zsh
+        zgen load $DOTFILES/zsh/prompt.zsh
+
         zgen save
     fi
-
-    source ~/.zsh/config.zsh
-    source ~/.zsh/completion.zsh
-    source ~/.zsh/keybinds.zsh
-    source ~/.zsh/prompt.zsh
 
     cache fasd --init posix-alias zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zsh-wcomp-install
 fi
