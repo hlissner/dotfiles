@@ -45,3 +45,8 @@ path=(
   /usr/{bin,sbin}
   /{bin,sbin}
 )
+
+fpath=(
+  ~/.zsh/completion
+  $fpath
+)
