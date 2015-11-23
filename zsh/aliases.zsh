@@ -60,7 +60,13 @@ fi
 # Editors
 is-callable 'nvim' && alias vim='nvim'
 v() { vim ${@:-.}; }             # Open in vim
-e() { emacsclient -n ${@:-.}; }  # Open in emacs (daemon)
+e() { # Open in emacs (daemon)
+    if pgrep Emacs; then
+        emacsclient -n ${@:-.};
+    else
+        /Applications/Emacs.app/Contents/MacOS/Emacs ${@:-.} &
+    fi
+}
 ee() { # emacs in project root
     git root 2>/dev/null && e "$(git rev-parse --show-toplevel)" || e .
 }
