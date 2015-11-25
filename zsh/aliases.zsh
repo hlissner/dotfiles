@@ -88,6 +88,7 @@ alias rkg='noglob rake -g'
 alias m='make'
 alias c11='clang++ -std=c++11'
 alias dk='docker'
+alias exe='exercism'
 
 # GIT
 is-callable 'hub' && alias git='hub'
