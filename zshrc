@@ -36,26 +36,6 @@ if [ ! $TERM = dumb ]; then
     cache fasd --init posix-alias zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zsh-wcomp-install
 fi
 
-export DOCKER_HOST=tcp://server:4243
-
-export RUST_SRC_PATH=$HOME/Dropbox/lib/rust/src
-export GOPATH=$HOME/Dropbox/work/go
-export ANDROID_HOME=/usr/local/opt/android-sdk
-export ANDROID_SDK=/usr/local/Cellar/android-sdk/24.2
-
-# basictex
-# export PATH=/usr/local/texlive/2015basic/bin/x86_64-darwin:$PATH
-
-path=(
-    $HOME/.dotfiles/scripts
-    $HOME/.{rb,py}env/bin
-    $GOPATH/bin
-    $ANDROID_HOME/platform-tools
-    $ANDROID_HOME/tools
-    /usr/texbin
-    $path
-)
-
 cache rbenv init - --no-rehash
 cache pyenv init - --no-rehash
 
