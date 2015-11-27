@@ -1,28 +1,36 @@
 #!/bin/sh
 
-## Location where org-mode stores attachments
-ORG_DIR="$HOME/Dropbox/org/"
-DATA_DIR="$ORG_DIR/.attach";
+# A cleanup script for attachments in my org-mode notes.
 
-echo "The following files appear orphaned:";
+ORG_DIR="$HOME/Dropbox/org"
+ATTACH_DIR=".attach"
+IFS=$'\n'
 
-files=$(find "$DATA_DIR" -type f|perl -ne 'print "$1\n" if /([^\/]*)\/[^\/]*$/'|uniq|while read id; do grep -qiR --include "*.org" "$id" "$ORG_DIR" || find "$DATA_DIR" -ipath "*$id*" -type f; done)
+attachment_dirs() {
+    find "$ORG_DIR" -iname "$ATTACH_DIR" -type d
+}
 
-echo "$files"
+attachments_in_dir() {
+    cd "$1/../"
+    find ".attach" -type f
+}
 
-if [ "" == "$files" ]; then
-   echo "Nothing to do!"
-   exit
+is_orphaned_file() {
+    cd "$ORG_DIR"
+    ag -Q "$1" >/dev/null
+}
+
+if [ "$1" == "-n" ]; then
+    DRY_RUN=1
+    echo "Running dry run!"
 fi
 
-echo "Delete? y/[n]"
-read delete
-case $delete in
-    y)
-        echo "$files" | while read fn; do rm "$fn"; done
-        echo "Done."
-        ;;
-    *)
-        echo "Not deleting anything!"
-        ;;
-esac
+for folder in $(attachment_dirs); do
+    cd "$folder"
+    for file in $(attachments_in_dir "$folder"); do
+        if ! is_orphaned_file "$file"; then
+            [ -z "$DRY_RUN" ] && rm -f "$file"
+            echo "Deleted '$file'"
+        fi
+    done
+done
