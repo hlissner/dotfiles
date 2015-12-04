@@ -70,6 +70,9 @@ e() { # Open in emacs (daemon)
 ee() { # emacs in project root
     git root 2>/dev/null && e "$(git rev-parse --show-toplevel)" || e .
 }
+ediff() {
+    e --eval "(ediff-files \"$1\" \"$2\")"
+}
 
 # Compilers, interpretors 'n builders
 alias va='vagrant'
