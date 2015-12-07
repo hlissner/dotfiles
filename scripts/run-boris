@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+
+# Mac-only: run boris REPL with homebrewed PHP
+
+/usr/local/bin/php /usr/local/bin/boris
