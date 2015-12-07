@@ -1,5 +1,3 @@
-unless ENV['TERM'] == 'dumb'
-  require "pry"
-  Pry.start
-  exit
-end
+require "pry"
+Pry.start
+exit
