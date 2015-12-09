@@ -7,7 +7,7 @@
 ~/.vim/install.sh
 
 shopt -s extglob
-for rcfile in "$HOME"/.dotfiles/!(bin|README.md|Gemfile*|install.sh); do
+for rcfile in "$HOME"/.dotfiles/!(bin|scripts|README.md|Gemfile*); do
     filep="$HOME/."$(basename "$rcfile")
 
     [ "$1" == "--force" ] && rm -f "$filep"

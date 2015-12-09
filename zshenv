@@ -53,7 +53,7 @@ export ANDROID_SDK=/usr/local/Cellar/android-sdk/24.2
 
 # Set the list of directories that Zsh searches for programs.
 path=(
-  $HOME/.dotfiles/scripts
+  $HOME/.dotfiles/{bin,scripts}
   /usr/local/{bin,sbin}
   /usr/{bin,sbin}
   /{bin,sbin}
