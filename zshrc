@@ -17,11 +17,11 @@ if [ ! $TERM = dumb ]; then
     if ! zgen saved; then
         echo "Creating zgen save"
 
-        zgen load zsh-users/zsh-syntax-highlighting
         zgen load zsh-users/zsh-history-substring-search
         zgen load zsh-users/zsh-completions src
         zgen load Tarrasch/zsh-bd
         zgen load houjunchen/zsh-vim-mode
+        [[ "$SSH_CONNECTION" == '' ]] && zgen load zsh-users/zsh-syntax-highlighting
 
         zgen load $DOTFILES/zsh/config.zsh
         zgen load $DOTFILES/zsh/completion.zsh
