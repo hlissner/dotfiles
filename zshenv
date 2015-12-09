@@ -53,15 +53,15 @@ export ANDROID_SDK=/usr/local/Cellar/android-sdk/24.2
 
 # Set the list of directories that Zsh searches for programs.
 path=(
+  $HOME/.dotfiles/scripts
   /usr/local/{bin,sbin}
   /usr/{bin,sbin}
   /{bin,sbin}
-  $HOME/.dotfiles/scripts
   $HOME/.{rb,py}env/bin
   $GOPATH/bin
   $ANDROID_HOME/platform-tools
   $ANDROID_HOME/tools
-  /usr/texbin
+  /Library/TeX/texbin
   $path
 )
 
