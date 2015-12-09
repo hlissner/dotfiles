@@ -5,7 +5,6 @@
 DOTFILES=$HOME/.dotfiles
 
 source $DOTFILES/zsh/functions.zsh
-source $DOTFILES/zsh/aliases.zsh
 
 # if not running through emacs' shell-command
 if [ ! $TERM = dumb ]; then
@@ -35,6 +34,8 @@ if [ ! $TERM = dumb ]; then
 
     cache fasd --init posix-alias zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zsh-wcomp-install
 fi
+
+source $DOTFILES/zsh/aliases.zsh
 
 cache rbenv init - --no-rehash
 cache pyenv init - --no-rehash

@@ -15,9 +15,10 @@ alias ln="ln -v"                    # Verbose ln
 alias wget='wget -c'                # Resume dl if possible
 alias rsyncd='rsync -va --delete'   # Hard sync two directories
 alias mkdir='mkdir -p'
-mkd()  { mkdir "$1" && cd "$1"; }
-zman() { PAGER="less -g -s '+/^       "$1"'" man zshall; }
 alias gurl='curl --compressed'
+zman() { PAGER="less -g -s '+/^       "$1"'" man zshall; }
+take() { mkdir "$1" && cd "$1"; }
+compdef take=mkdir
 
 alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
 alias localip="ipconfig getifaddr en0"
@@ -96,6 +97,7 @@ alias exe='exercism'
 # GIT
 is-callable 'hub' && alias git='hub'
 g() { [ $# -eq 0 ] && git status --short || git $* }
+compdef _git g=git
 
 alias gi='git init'
 alias gs='git status'
@@ -163,3 +165,4 @@ alias p='pbpaste'
 
 # By default, open cwd
 o() { open ${@:-.}; }
+compdef o=open
