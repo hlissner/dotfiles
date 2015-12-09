@@ -69,7 +69,7 @@ prompt_pure_precmd() {
     # git info
     vcs_info
 
-    local prompt_pure_preprompt="%F{blue}%~%F{242}$vcs_info_msg_0_`prompt_pure_git_dirty`$prompt_pure_username%f%F{yellow}`prompt_pure_cmd_exec_time`%f"'$(vi_mode_prompt_info)'
+    local prompt_pure_preprompt="%F{blue}%~%F{242}$vcs_info_msg_0_`prompt_pure_git_dirty`%f%F{yellow}`prompt_pure_cmd_exec_time`%f"'$(vi_mode_prompt_info)'
     # print -P $prompt_pure_preprompt
     RPROMPT=$prompt_pure_preprompt
 
@@ -118,15 +118,15 @@ prompt_pure_setup() {
     zstyle ':vcs_info:git*' actionformats ' %b|%a'
 
     # show username@host if logged in through SSH
-    [[ "$SSH_CONNECTION" != '' ]] && prompt_pure_username=' %n@%m'
+    [[ "$SSH_CONNECTION" != '' ]] && prompt_pure_username='%n@%m '
 
     # show username@host if root, with username in white
-    [[ $UID -eq 0 ]] && prompt_pure_username=' %F{white}%n%F{242}@%m'
+    [[ $UID -eq 0 ]] && prompt_pure_username='%F{white}%n%F{242}@%m '
 
     # prompt turns red if the previous command didn't exit with 0
     N_MODE=" --NORMAL--"
     I_MODE=""
-    PROMPT='%(?.%F{yellow}.%F{red})❯ %f'
+    PROMPT='$prompt_pure_username%(?.%F{yellow}.%F{red})❯ %f'
 }
 
 prompt_pure_setup "$@"
