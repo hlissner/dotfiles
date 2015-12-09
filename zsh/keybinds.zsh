@@ -1,14 +1,14 @@
 bindkey -v
-bindkey '^ ' edit-command-line
+bindkey '^@' edit-command-line
 
-bindkey -M viins '^w' backward-kill-word
+bindkey -M viins '^w'  backward-kill-word
 bindkey -M viins '^[w' forward-word
 bindkey -M viins '^[b' backward-word
 
 bindkey -M vicmd 'yy' vi-yank-whole-line
-bindkey -M vicmd 'Y' vi-yank-eol
+bindkey -M vicmd 'Y'  vi-yank-eol
 
-bindkey -M viins ' ' magic-space
+bindkey -M viins ' '  magic-space
 bindkey -M viins 'jk' vi-cmd-mode
 
 bindkey -M viins '^x^f' fasd-complete-f  # C-x C-f to do fasd-complete-f (only files)
