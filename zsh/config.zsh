@@ -28,10 +28,6 @@ unsetopt BG_NICE          # Don't run all background jobs at a lower priority.
 unsetopt HUP              # Don't kill jobs on shell exit.
 unsetopt CHECK_JOBS       # Don't report on jobs when shell exit.
 
-# Allow command line editing in an external editor.
-autoload -Uz edit-command-line
-zle -N edit-command-line
-
 export GIT_MERGE_AUTOEDIT=no
 unsetopt CORRECT_ALL
 

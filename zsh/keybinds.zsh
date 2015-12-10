@@ -1,51 +1,59 @@
 bindkey -v
+
+# Allow command line editing in an external editor.
+autoload -Uz edit-command-line
+zle -N edit-command-line
 bindkey '^ ' edit-command-line
 
-bindkey '`' autopair-insert
-bindkey '"' autopair-insert
-bindkey "'" autopair-insert
-bindkey '(' autopair-insert
-bindkey '[' autopair-insert
-bindkey '{' autopair-insert
-bindkey '^?' autopair-delete
+# zsh-autopair
+bindkey '`'  autopair-insert
+bindkey '"'  autopair-insert
+bindkey "'"  autopair-insert
+bindkey '('  autopair-insert
+bindkey '['  autopair-insert
+bindkey '{'  autopair-insert
+bindkey '^?' autopair-delete # smart backspace
 
-bindkey -M viins '^w'  backward-kill-word
-bindkey -M viins '^[w' forward-word
-bindkey -M viins '^[b' backward-word
+bindkey '^n' history-substring-search-down
+bindkey '^p' history-substring-search-up
+bindkey '^s' history-incremental-pattern-search-backward
+bindkey '^u' undo
+bindkey '^r' redo
+bindkey '^w' backward-kill-word
+bindkey '^b' backward-word
+bindkey '^e' forward-word
+bindkey '^q' push-line-or-edit
+bindkey '^a' beginning-of-line
+bindkey '^e' end-of-line
 
-bindkey -M vicmd 'yy' vi-yank-whole-line
-bindkey -M vicmd 'Y'  vi-yank-eol
+# Shift + Tab
+bindkey -M viins '^[[Z'  reverse-menu-complete
 
-bindkey -M viins ' '  magic-space
-bindkey -M viins 'jk' vi-cmd-mode
+bindkey -M viins ' '     magic-space
+bindkey -M viins 'jk'    vi-cmd-mode
 
-bindkey -M viins '^x^f' fasd-complete-f  # C-x C-f to do fasd-complete-f (only files)
-bindkey -M viins '^x^d' fasd-complete-d  # C-x C-d to do fasd-complete-d (only directories)
-
-bindkey -M viins '^q' push-line-or-edit
-bindkey -M vicmd "^[[3~"   delete-char
-bindkey "^[[3~"   delete-char
-bindkey "^[3;5~"  delete-char
-
-bindkey -M vicmd "?" history-incremental-pattern-search-backward
-bindkey -M vicmd "/" history-incremental-pattern-search-forward
+# Vim keymaps
+bindkey -M vicmd 'ga'    what-cursor-position
+bindkey -M vicmd 'gg'    beginning-of-history
+bindkey -M vicmd 'G '    end-of-history
+bindkey -M vicmd '^k'    kill-line
+bindkey -M vicmd '?'     history-incremental-pattern-search-forward
+bindkey -M vicmd '/'     history-incremental-pattern-search-backward
+bindkey -M vicmd ':'     execute-named-cmd
+# Page up / Page down
+bindkey -M vicmd 'H'     run-help
+bindkey -M vicmd 'u'     undo
+bindkey -M vicmd 'U'     redo
+bindkey -M vicmd 'yy'    vi-yank-whole-line
+bindkey -M vicmd 'Y'     vi-yank-eol
 
 # bind UP and DOWN arrow keys
-zmodload zsh/terminfo
-bindkey "$terminfo[kcuu1]" history-substring-search-up
-bindkey "$terminfo[kcud1]" history-substring-search-down
-# bind UP and DOWN arrow keys (compatibility fallback
-# for Ubuntu 12.04, Fedora 21, and MacOSX 10.9 users)
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
 
-# Edit command in an external editor.
-bindkey -M vicmd "R" edit-command-line
-
-# # Undo/Redo
-bindkey -M vicmd "u" undo
-bindkey -M vicmd "$key_info[Control]R" redo
-
+# Completion
+bindkey -M viins '^x^f' fasd-complete-f  # C-x C-f to do fasd-complete-f (only files)
+bindkey -M viins '^x^d' fasd-complete-d  # C-x C-d to do fasd-complete-d (only directories)
 # Completing words in buffer in tmux
 if [ -n "$TMUX" ]; then
     _tmux_pane_words() {
@@ -62,10 +70,23 @@ if [ -n "$TMUX" ]; then
     zle -C tmux-pane-words-prefix   complete-word _generic
     zle -C tmux-pane-words-anywhere complete-word _generic
 
-    bindkey -M viins '^n' tmux-pane-words-prefix
-    bindkey -M viins '^o' tmux-pane-words-anywhere
+    bindkey -M viins '^x^n' tmux-pane-words-prefix
+    bindkey -M viins '^x^o' tmux-pane-words-anywhere
 
     zstyle ':completion:tmux-pane-words-(prefix|anywhere):*' completer _tmux_pane_words
     zstyle ':completion:tmux-pane-words-(prefix|anywhere):*' ignore-line current
     zstyle ':completion:tmux-pane-words-anywhere:*' matcher-list 'b:=* m:{A-Za-z}={a-zA-Z}'
 fi
+
+# Fixes
+bindkey -M vicmd "^[[3~" delete-char
+bindkey "^[[3~"   delete-char
+bindkey "^[3;5~"  delete-char
+
+# Fix vimmish ESC
+export KEYTIMEOUT=10   # just enough time for jk
+bindkey -sM vicmd '^[' '^G'
+bindkey -rM viins '^X'
+bindkey -M viins '^X,' _history-complete-newer \
+                 '^X/' _history-complete-older \
+                 '^X`' _bash_complete-word
