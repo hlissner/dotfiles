@@ -4,27 +4,32 @@ bindkey -v
 autoload -Uz edit-command-line
 zle -N edit-command-line
 bindkey '^ ' edit-command-line
+bindkey '^@' edit-command-line
 
 # zsh-autopair
-bindkey '`'  autopair-insert
-bindkey '"'  autopair-insert
-bindkey "'"  autopair-insert
-bindkey '('  autopair-insert
-bindkey '['  autopair-insert
-bindkey '{'  autopair-insert
-bindkey '^?' autopair-delete # smart backspace
+bindkey -M viins '`'  autopair-insert-or-skip
+bindkey -M viins '"'  autopair-insert-or-skip
+bindkey -M viins "'"  autopair-insert-or-skip
+bindkey -M viins '('  autopair-insert
+bindkey -M viins '['  autopair-insert
+bindkey -M viins '{'  autopair-insert
+bindkey -M viins '^?' autopair-delete # smart backspace
 
-bindkey '^n' history-substring-search-down
-bindkey '^p' history-substring-search-up
-bindkey '^s' history-incremental-pattern-search-backward
-bindkey '^u' undo
-bindkey '^r' redo
-bindkey '^w' backward-kill-word
-bindkey '^b' backward-word
-bindkey '^e' forward-word
-bindkey '^q' push-line-or-edit
-bindkey '^a' beginning-of-line
-bindkey '^e' end-of-line
+bindkey -M viins ')'  autopair-skip
+bindkey -M viins ']'  autopair-skip
+bindkey -M viins '}'  autopair-skip
+
+bindkey -M viins '^n' history-substring-search-down
+bindkey -M viins '^p' history-substring-search-up
+bindkey -M viins '^s' history-incremental-pattern-search-backward
+bindkey -M viins '^u' undo
+bindkey -M viins '^r' redo
+bindkey -M viins '^w' backward-kill-word
+bindkey -M viins '^b' backward-word
+bindkey -M viins '^e' forward-word
+bindkey -M viins '^q' push-line-or-edit
+bindkey -M viins '^a' beginning-of-line
+bindkey -M viins '^e' end-of-line
 
 # Shift + Tab
 bindkey -M viins '^[[Z'  reverse-menu-complete
