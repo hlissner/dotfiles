@@ -96,11 +96,15 @@ prompt_hook_precmd() {
     unset cmd_timestamp
 }
 
-prompt_hook_update_cursor() {
+prompt_hook_update_vim_mode() {
     # change cursor shape in iTerm2
     case $KEYMAP in
-        vicmd)      print -n -- "\E]50;CursorShape=0\C-G";;  # block cursor
-        viins|main) print -n -- "\E]50;CursorShape=1\C-G";;  # line cursor
+        vicmd)      print -n -- "\E]50;CursorShape=0\C-G";
+                    CUR_MODE=$N_MODE;
+                    ;;  # block cursor
+        main|viins) print -n -- "\E]50;CursorShape=1\C-G";
+                    CUR_MODE=$I_MODE;
+                    ;;  # line cursor
     esac
 
     zle reset-prompt
@@ -110,15 +114,6 @@ prompt_hook_update_cursor() {
 prompt_hook_restore_cursor() {
     print -n -- "\E]50;CursorShape=0\C-G"  # block cursor
 }
-
-prompt_hook_update_vim_mode() {
-  case $ZSH_CUR_KEYMAP in
-    vicmd) CUR_MODE=$N_MODE ;;
-    main|viins) CUR_MODE=$I_MODE ;;
-  esac
-  zle reset-prompt
-}
-
 
 ## Initialization ######################
 prompt_init() {
@@ -148,12 +143,9 @@ prompt_init() {
     I_MODE="❯ "
 
     # Show $N-MODE if in normal mode
+    # Change cursor depending on vim mode
     hooks-add-hook zle_keymap_select_hook prompt_hook_update_vim_mode
     hooks-add-hook zle_line_init_hook prompt_hook_update_vim_mode
-
-    # Change cursor depending on vim mode
-    hooks-add-hook zle_line_init_hook prompt_hook_update_cursor
-    hooks-add-hook zle_keymap_select_hook prompt_hook_update_cursor
     hooks-add-hook zle_line_finish_hook prompt_hook_restore_cursor
 
 
