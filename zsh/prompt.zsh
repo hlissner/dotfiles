@@ -15,7 +15,7 @@
 
 # turns seconds into human readable time
 # 165392 => 1d 21h 56m 32s
-prompt_pure_human_time() {
+_human_time() {
     echo -n " "
     local tmp=$1
     local days=$(( tmp / 60 / 60 / 24 ))
@@ -28,8 +28,14 @@ prompt_pure_human_time() {
     echo "${seconds}s"
 }
 
+# string length ignoring ansi escapes
+_string_length() {
+    # Subtract one since newline is counted as two characters
+    echo $(( ${#${(S%%)1//(\%([KF1]|)\{*\}|\%[Bbkf])}} - 1 ))
+}
+
 # fastest possible way to check if repo is dirty
-prompt_pure_git_dirty() {
+prompt_git_dirty() {
     # check if we're in a git repo
     [[ "$(command git rev-parse --is-inside-work-tree 2>/dev/null)" == "true" ]] || return
     # check if it's dirty
@@ -40,14 +46,16 @@ prompt_pure_git_dirty() {
 }
 
 # displays the exec time of the last command if set threshold was exceeded
-prompt_pure_cmd_exec_time() {
+prompt_cmd_exec_time() {
     local stop=$EPOCHSECONDS
     local start=${cmd_timestamp:-$stop}
     integer elapsed=$stop-$start
-    (($elapsed > ${PURE_CMD_MAX_EXEC_TIME:=5})) && prompt_pure_human_time $elapsed
+    (($elapsed > ${PURE_CMD_MAX_EXEC_TIME:=5})) && _human_time $elapsed
 }
 
-prompt_pure_preexec() {
+
+## Hooks ###############################
+prompt_hook_preexec() {
     cmd_timestamp=$EPOCHSECONDS
 
     # shows the current dir and executed command in the title when a process is active
@@ -56,22 +64,16 @@ prompt_pure_preexec() {
     print -Pn "\a"
 }
 
-# string length ignoring ansi escapes
-prompt_pure_string_length() {
-    # Subtract one since newline is counted as two characters
-    echo $(( ${#${(S%%)1//(\%([KF1]|)\{*\}|\%[Bbkf])}} - 1 ))
-}
-
-prompt_pure_precmd() {
+prompt_hook_precmd() {
     # shows the full path in the title
     print -Pn '\e]0;%~\a'
 
     # git info
     vcs_info
 
-    local prompt_pure_preprompt="%F{blue}%~%F{242}$vcs_info_msg_0_`prompt_pure_git_dirty`%f%F{yellow}`prompt_pure_cmd_exec_time`%f"'$(vi_mode_prompt_info)'
-    # print -P $prompt_pure_preprompt
-    RPROMPT=$prompt_pure_preprompt
+    local prompt_preprompt="%F{blue}%~%F{242}$vcs_info_msg_0_`prompt_git_dirty`%f%F{yellow}`prompt_cmd_exec_time`%f"''
+    # print -P $prompt_preprompt
+    RPROMPT=$prompt_preprompt
 
     # check async if there is anything to pull
     (( ${PURE_GIT_PULL:-1} )) && {
@@ -86,7 +88,7 @@ prompt_pure_precmd() {
             local arrows=''
             (( $(command git rev-list --right-only --count HEAD...@'{u}' 2>/dev/null) > 0 )) && arrows='⇣'
             (( $(command git rev-list --left-only --count HEAD...@'{u}' 2>/dev/null) > 0 )) && arrows+='⇡'
-            RPROMPT+="\e7\e[A\e[1G\e[`prompt_pure_string_length $prompt_pure_preprompt`C%F{cyan}${arrows}%f\e8"
+            RPROMPT+="\e7\e[A\e[1G\e[`_string_length $prompt_preprompt`C%F{cyan}${arrows}%f\e8"
         }
     } &!
 
@@ -94,11 +96,35 @@ prompt_pure_precmd() {
     unset cmd_timestamp
 }
 
-prompt_pure_setup() {
+prompt_hook_update_cursor() {
+    # change cursor shape in iTerm2
+    case $KEYMAP in
+        vicmd)      print -n -- "\E]50;CursorShape=0\C-G";;  # block cursor
+        viins|main) print -n -- "\E]50;CursorShape=1\C-G";;  # line cursor
+    esac
+
+    zle reset-prompt
+    zle -R
+}
+
+prompt_hook_restore_cursor() {
+    print -n -- "\E]50;CursorShape=0\C-G"  # block cursor
+}
+
+prompt_hook_update_vim_mode() {
+  case $ZSH_CUR_KEYMAP in
+    vicmd) CUR_MODE=$N_MODE ;;
+    main|viins) CUR_MODE=$I_MODE ;;
+  esac
+  zle reset-prompt
+}
+
+
+## Initialization ######################
+prompt_init() {
     # prevent percentage showing up
     # if output doesn't end with a newline
     export PROMPT_EOL_MARK=''
-
     # disable auth prompting on git 2.3+
     export GIT_TERMINAL_PROMPT=0
 
@@ -109,24 +135,36 @@ prompt_pure_setup() {
     autoload -Uz add-zsh-hook
     autoload -Uz vcs_info
 
-    add-zsh-hook precmd prompt_pure_precmd
-    add-zsh-hook preexec prompt_pure_preexec
+    add-zsh-hook precmd prompt_hook_precmd
+    add-zsh-hook preexec prompt_hook_preexec
 
     zstyle ':vcs_info:*' enable git
     zstyle ':vcs_info:*' use-simple true
     zstyle ':vcs_info:git*' formats ' %b'
     zstyle ':vcs_info:git*' actionformats ' %b|%a'
 
+    ## Vim setup
+    N_MODE="%F{blue}# "
+    I_MODE="❯ "
+
+    # Show $N-MODE if in normal mode
+    hooks-add-hook zle_keymap_select_hook prompt_hook_update_vim_mode
+    hooks-add-hook zle_line_init_hook prompt_hook_update_vim_mode
+
+    # Change cursor depending on vim mode
+    hooks-add-hook zle_line_init_hook prompt_hook_update_cursor
+    hooks-add-hook zle_keymap_select_hook prompt_hook_update_cursor
+    hooks-add-hook zle_line_finish_hook prompt_hook_restore_cursor
+
+
     # show username@host if logged in through SSH
-    [[ "$SSH_CONNECTION" != '' ]] && prompt_pure_username='%n@%m '
+    [[ "$SSH_CONNECTION" != '' ]] && prompt_username='%n@%m '
 
     # show username@host if root, with username in white
-    [[ $UID -eq 0 ]] && prompt_pure_username='%F{white}%n%F{242}@%m '
+    [[ $UID -eq 0 ]] && prompt_username='%F{white}%n%F{242}@%m '
 
     # prompt turns red if the previous command didn't exit with 0
-    N_MODE=" --NORMAL--"
-    I_MODE=""
-    PROMPT='$prompt_pure_username%(?.%F{yellow}.%F{red})❯ %f'
+    PROMPT='$prompt_username%(?.%F{yellow}.%F{red})$CUR_MODE%f'
 }
 
-prompt_pure_setup "$@"
+prompt_init "$@"
