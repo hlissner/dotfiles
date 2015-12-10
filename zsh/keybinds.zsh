@@ -1,5 +1,13 @@
 bindkey -v
-bindkey '^@' edit-command-line
+bindkey '^ ' edit-command-line
+
+bindkey '`' autopair-insert
+bindkey '"' autopair-insert
+bindkey "'" autopair-insert
+bindkey '(' autopair-insert
+bindkey '[' autopair-insert
+bindkey '{' autopair-insert
+bindkey '^?' autopair-delete
 
 bindkey -M viins '^w'  backward-kill-word
 bindkey -M viins '^[w' forward-word
