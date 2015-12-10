@@ -20,7 +20,7 @@ if [ ! $TERM = dumb ]; then
         zgen load zsh-users/zsh-history-substring-search
         zgen load zsh-users/zsh-completions src
         zgen load Tarrasch/zsh-bd
-        zgen load houjunchen/zsh-vim-mode
+        zgen load willghatch/zsh-hooks
         zgen load hlissner/zsh-autopair
         [[ "$SSH_CONNECTION" == '' ]] && zgen load zsh-users/zsh-syntax-highlighting
 
