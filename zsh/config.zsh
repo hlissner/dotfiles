@@ -7,7 +7,7 @@ zle -N self-insert url-quote-magic
 #
 
 # Treat these characters as part of a word.
-WORDCHARS='*?_-.[]~&;!#$%^(){}<>'
+WORDCHARS='*?[]~&.;!#$%^(){}<>'
 
 setopt BRACE_CCL          # Allow brace character class list expansion.
 setopt COMBINING_CHARS    # Combine zero-length punctuation characters (accents)
