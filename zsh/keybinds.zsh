@@ -78,6 +78,14 @@ if [ -n "$TMUX" ]; then
     zstyle ':completion:tmux-pane-words-anywhere:*' matcher-list 'b:=* m:{A-Za-z}={a-zA-Z}'
 fi
 
+# Vim's C-x C-l in zsh
+history-beginning-search-backward-then-append() {
+  zle history-beginning-search-backward
+  zle vi-add-eol
+}
+zle -N history-beginning-search-backward-then-append
+bindkey -M viins '^x^l' history-beginning-search-backward-then-append
+
 # Fixes
 bindkey -M vicmd "^[[3~" delete-char
 bindkey "^[[3~"   delete-char
