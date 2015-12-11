@@ -22,11 +22,10 @@ bindkey -M viins '}'  autopair-skip
 bindkey -M viins '^n' history-substring-search-down
 bindkey -M viins '^p' history-substring-search-up
 bindkey -M viins '^s' history-incremental-pattern-search-backward
-bindkey -M viins '^u' undo
+bindkey -M viins '^u' backward-kill-line
 bindkey -M viins '^r' redo
 bindkey -M viins '^w' backward-kill-word
 bindkey -M viins '^b' backward-word
-bindkey -M viins '^e' forward-word
 bindkey -M viins '^q' push-line-or-edit
 bindkey -M viins '^a' beginning-of-line
 bindkey -M viins '^e' end-of-line
