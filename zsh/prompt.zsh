@@ -104,11 +104,8 @@ prompt_init() {
     zstyle ':vcs_info:git*' formats ':%b'
     zstyle ':vcs_info:git*' actionformats ':%b (%a)'
 
-    # show username@host if logged in through SSH
-    [[ "$SSH_CONNECTION" != '' ]] && prompt_username='%n@%m '
-
-    # show username@host if root, with username in white
-    [[ $UID -eq 0 ]] && prompt_username='%F{white}%n%F{242}@%m '
+    # show username@host if logged in through SSH OR logged in as root
+    [[ "$SSH_CONNECTION" != '' || "$UID" -eq 0 ]] && prompt_username='%F{white}%n%F{244}@%m '
 
     ## Vim cursors
     N_MODE="%F{blue}## "
