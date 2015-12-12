@@ -91,7 +91,6 @@ alias fabg='noglob fab -f ~/.dotfiles/ansible/fabfile.py'
 alias rk='noglob rake'
 alias rkg='noglob rake -g'
 alias m='make'
-alias c11='clang++ -std=c++11'
 alias dk='docker'
 alias exe='exercism'
 
@@ -103,25 +102,30 @@ compdef _git g=git
 alias gi='git init'
 alias gs='git status'
 alias gsu='git submodule'
+alias gsq='git squash'
 alias gco='git checkout'
 alias gc='git commit'
 alias gcm='noglob git commit -m'
 alias gcma='noglob git commit --amend -m'
 alias gd='git diff'
 alias gp='git push'
+alias gpb='git push origin'
+alias gpt='git push --follow-tags'
 alias gpl='git pull'
 alias ga='git add'
-alias ge='git exec'
+alias gau='git add -u'
 alias gb='git branch'
+alias gbd='git branch -D'
 alias gap='git add --patch'
-alias gr='git reset "HEAD^"'
-alias gre='git remote'
+alias gr='git reset HEAD'
+alias gt='git tag'
+alias gtd='git tag -d'
+alias gt!='git tag -a'
+alias gls='git ls-files'
 
 # Tmux
 if is-callable 'tmux'; then
     alias t='tmux'
-    alias ts='tmux send-keys'
-    alias tl='tmux list-sessions'
     alias ta='tmux attach'
 
     if [ -n $TMUX ]; then
@@ -137,7 +141,7 @@ fi
 if is-mac; then
     alias ls="ls -G"
 
-    alias c11='clang++ -std=c++11 -stdlib=libc++'
+    alias c11='clang++ -std=c++11'
     alias eclimd='/Applications/eclipse/eclimd'
 
     # Homebrew
