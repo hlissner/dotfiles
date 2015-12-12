@@ -5,6 +5,7 @@ alias sudo='sudo '
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
+alias -- -='cd -'
 
 # Tools
 alias ag='nocorrect noglob ag'
