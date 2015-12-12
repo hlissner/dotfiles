@@ -29,7 +29,7 @@ prompt_git_dirty() {
     # check if we're in a git repo
     [[ "$(command git rev-parse --is-inside-work-tree 2>/dev/null)" == "true" ]] || return
     # check if it's dirty
-    [[ "$(git status --porcelain --ignore-submodules -unormal)" ]] || return
+    command test -n "$(git status --porcelain --ignore-submodules -unormal)" || return
 
     echo -n "%F{red}[+]"
     local r=$(command git rev-list --right-only --count HEAD...@'{u}' 2>/dev/null)
