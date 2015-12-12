@@ -59,6 +59,7 @@ if is-callable 'transmission-remote'; then
 fi
 
 # Editors
+alias emacs='emacs -nw'
 is-callable 'nvim' && alias vim='nvim'
 v() { vim ${@:-.}; }             # Open in vim
 e() { # Open in emacs (daemon)
