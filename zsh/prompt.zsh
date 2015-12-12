@@ -35,8 +35,8 @@ prompt_git_dirty() {
     local r=$(command git rev-list --right-only --count HEAD...@'{u}' 2>/dev/null)
     local l=$(command git rev-list --left-only --count HEAD...@'{u}' 2>/dev/null)
 
-    (( ${r:-0} > 0 )) && echo -n " %F{green}$r⇣"
-    (( ${l:-0} > 0 )) && echo -n " %F{yellow}$l⇡"
+    (( ${r:-0} > 0 )) && echo -n " %F{green}${r}⇣"
+    (( ${l:-0} > 0 )) && echo -n " %F{yellow}${l}⇡"
     echo -n '%f'
 }
 
