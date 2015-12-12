@@ -38,10 +38,16 @@ done
 # Send to sprunge.us
 alias bin="curl -s -F 'sprunge=<-' http://sprunge.us | head -n 1 | tr -d '\r\n ' | pbcopy"
 
-j() {
-    local fasd_ret="$(fasd -i -d "$@")"
-    [[ -d "$fasd_ret" ]] && cd "$fasd_ret" || print "$fasd_ret"
-}
+if is-callable 'bd'; then
+    alias b="bd"
+    alias bb='cd "$(git root)"'
+fi
+if is-callable 'fasd'; then
+    j() {
+        local fasd_ret="$(fasd -i -d "$@")"
+        [[ -d "$fasd_ret" ]] && cd "$fasd_ret" || print "$fasd_ret"
+    }
+fi
 
 # transmission-remote
 if is-callable 'transmission-remote'; then
@@ -83,9 +89,9 @@ alias py='python'
 alias pye='pyenv'
 alias rb='ruby'
 alias rbe='rbenv'
-alias b='bundle'
-alias be='bundle exec'
-alias bi='bundle install -path vendor'
+alias bu='bundle'
+alias bue='bundle exec'
+alias bui='bundle install -path vendor'
 alias ans='ansible'
 alias ansp='ansible-playbook'
 alias fabg='noglob fab -f ~/.dotfiles/ansible/fabfile.py'
