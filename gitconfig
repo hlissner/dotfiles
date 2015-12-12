@@ -34,10 +34,9 @@
 	ls = ls-files
 	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
 	unadd = reset HEAD
-	st = status
-	co = checkout
 	ammend = commit --amend
 	exec = "!exec "
+	squash = rebase -i origin/master
 
 	# data analysis
 	authors = !git log --format="%aN" | sort -u
