@@ -13,11 +13,13 @@ bindkey -M viins "'"  autopair-insert-or-skip
 bindkey -M viins '('  autopair-insert
 bindkey -M viins '['  autopair-insert
 bindkey -M viins '{'  autopair-insert
+bindkey -M viins '<'  autopair-insert
 bindkey -M viins '^?' autopair-delete # smart backspace
 
 bindkey -M viins ')'  autopair-skip
 bindkey -M viins ']'  autopair-skip
 bindkey -M viins '}'  autopair-skip
+bindkey -M viins '>'  autopair-skip
 
 bindkey -M viins '^n' history-substring-search-down
 bindkey -M viins '^p' history-substring-search-up
