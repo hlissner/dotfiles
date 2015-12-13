@@ -35,6 +35,9 @@ for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do
     alias "$method"="lwp-request -m '$method'"
 done
 
+# find conflicted dropbox files
+alias findc="find . -iname '*conflicted*' -type f"
+
 # Send to sprunge.us
 alias bin="curl -s -F 'sprunge=<-' http://sprunge.us | head -n 1 | tr -d '\r\n ' | pbcopy"
 
