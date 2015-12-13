@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env zsh
 
 # A cleanup script for attachments in my org-mode notes.
 
@@ -20,7 +20,7 @@ is_orphaned_file() {
     ag -Q "$1" >/dev/null
 }
 
-if [ "$1" == "-n" ]; then
+if [[ "$1" == "-n" ]]; then
     DRY_RUN=1
     echo "Running dry run!"
 fi
@@ -29,7 +29,7 @@ for folder in $(attachment_dirs); do
     cd "$folder"
     for file in $(attachments_in_dir "$folder"); do
         if ! is_orphaned_file "$file"; then
-            [ -z "$DRY_RUN" ] && rm -f "$file"
+            [[ -z "$DRY_RUN" ]] && rm -f "$file"
             echo "Deleted '$file'"
         fi
     done
