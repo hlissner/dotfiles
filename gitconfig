@@ -6,7 +6,6 @@
 [core]
 	excludesfile = ~/.gitignore
 	whitespace = trailing-space
-	editor = vim
 	pager = less -r
 [color]
 	ui = true
