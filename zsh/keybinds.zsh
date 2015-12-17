@@ -4,22 +4,6 @@ bindkey -v
 autoload -Uz edit-command-line
 zle -N edit-command-line
 bindkey '^ ' edit-command-line
-bindkey '^@' edit-command-line
-
-# zsh-autopair
-bindkey -M viins '`'  autopair-insert-or-skip
-bindkey -M viins '"'  autopair-insert-or-skip
-bindkey -M viins "'"  autopair-insert-or-skip
-bindkey -M viins '('  autopair-insert
-bindkey -M viins '['  autopair-insert
-bindkey -M viins '{'  autopair-insert
-bindkey -M viins '<'  autopair-insert
-bindkey -M viins '^?' autopair-delete # smart backspace
-
-bindkey -M viins ')'  autopair-skip
-bindkey -M viins ']'  autopair-skip
-bindkey -M viins '}'  autopair-skip
-bindkey -M viins '>'  autopair-skip
 
 bindkey -M viins '^n' history-substring-search-down
 bindkey -M viins '^p' history-substring-search-up
