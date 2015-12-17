@@ -1,13 +1,13 @@
 autoload -U zmv
-autoload -U url-quote-magic
-zle -N self-insert url-quote-magic
+autoload -U colors && colors
 
 #
 # General
 #
 
 # Treat these characters as part of a word.
-WORDCHARS='*?[]~&.;!#$%^(){}<>'
+WORDCHARS='_-*?[]~&.;!#$%^(){}<>'
+DIRSTACKSIZE=9
 
 setopt BRACE_CCL          # Allow brace character class list expansion.
 setopt COMBINING_CHARS    # Combine zero-length punctuation characters (accents)
@@ -15,7 +15,7 @@ setopt COMBINING_CHARS    # Combine zero-length punctuation characters (accents)
 setopt RC_QUOTES          # Allow 'Henry''s Garage' instead of 'Henry'\''s Garage'.
 unsetopt MAIL_WARNING     # Don't print a warning message if a mail file has been accessed.
 
-setopt NOBEEP             # Hush now, quiet now.
+unsetopt BEEP             # Hush now, quiet now.
 
 #
 # Jobs
@@ -31,7 +31,7 @@ unsetopt CHECK_JOBS       # Don't report on jobs when shell exit.
 export GIT_MERGE_AUTOEDIT=no
 unsetopt CORRECT_ALL
 
-setopt NONOMATCH
+unsetopt NOMATCH
 setopt HASH_LIST_ALL
 
 #
