@@ -53,20 +53,17 @@ export GOPATH=$HOME/Dropbox/work/go
 export ANDROID_HOME=/usr/local/opt/android-sdk
 export ANDROID_SDK=/usr/local/Cellar/android-sdk/24.2
 
-# basictex
-# export PATH=/usr/local/texlive/2015basic/bin/x86_64-darwin:$PATH
-
 # Set the list of directories that Zsh searches for programs.
 path=(
   $HOME/.dotfiles/{bin,scripts}
-  /usr/local/{bin,sbin}
-  /usr/{bin,sbin}
-  /{bin,sbin}
   $HOME/.{rb,py}env/bin
   $GOPATH/bin
   $ANDROID_HOME/platform-tools
   $ANDROID_HOME/tools
   /Library/TeX/texbin
+  /usr/local/{bin,sbin}
+  /usr/{bin,sbin}
+  /{bin,sbin}
   $path
 )
 

@@ -15,10 +15,11 @@ _human_time() {
     echo "${seconds}s"
 }
 
-# string length ignoring ansi escapes
-_string_length() {
-    # Subtract one since newline is counted as two characters
-    echo $(( ${#${(S%%)1//(\%([KF1]|)\{*\}|\%[Bbkf])}} - 1 ))
+_strlen () {
+    FOO=$1
+    local zero='%([BSUbfksu]|([FB]|){*})'
+    LEN=${#${(S%%)FOO//$~zero/}}
+    echo $LEN
 }
 
 # fastest possible way to check if repo is dirty
@@ -54,10 +55,14 @@ prompt_hook_preexec() {
 }
 
 prompt_hook_precmd() {
+    last_time=$EPOCHSECONDS
     # shows the full path in the title
     print -Pn '\e]0;%~\a'
     # git info
     vcs_info
+    # newline before prompt (except on first prompt)
+    [[ -n "$_DONE" ]] && print ""
+    _DONE=1
 }
 
 # Updates cursor shape and prompt symbol based on vim mode
