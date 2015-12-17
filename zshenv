@@ -7,8 +7,8 @@ is-cygwin() { [[ "$OSTYPE" == "cygwin"* ]]; }
 export BROWSER='open'
 
 ## Editors
-export EDITOR='vim'
-export VISUAL='vim'
+export EDITOR=$(is-callable nvim && echo 'nvim' || echo 'vim')
+export VISUAL=$EDITOR
 export PAGER='less'
 export RUBYOPT=rubygems
 # export CC=/usr/bin/clang
