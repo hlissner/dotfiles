@@ -3,6 +3,44 @@ is-mac() { [[ "$OSTYPE" == "darwin"* ]]; }
 is-deb() { [[ "$OSTYPE" == "linux-gnu" ]]; }
 is-cygwin() { [[ "$OSTYPE" == "cygwin"* ]]; }
 
+## Paths
+# Ensure path arrays do not contain duplicates.
+typeset -gU cdpath fpath mailpath path
+
+##
+export DOCKER_HOST=tcp://server:4243
+
+export RUST_SRC_PATH=$HOME/Dropbox/lib/rust/src
+export GOPATH=$HOME/Dropbox/work/go
+export ANDROID_HOME=/usr/local/opt/android-sdk
+export ANDROID_SDK=/usr/local/Cellar/android-sdk/24.2
+
+# Set the list of directories that Zsh searches for programs.
+path=(
+  $HOME/.dotfiles/{bin,scripts}
+  $HOME/.{rb,py}env/bin
+  $GOPATH/bin
+  $ANDROID_HOME/platform-tools
+  $ANDROID_HOME/tools
+  /Library/TeX/texbin
+  /usr/local/{bin,sbin}
+  /usr/{bin,sbin}
+  /{bin,sbin}
+  $path
+)
+
+local FUNC_DIR="$HOME/.dotfiles/zsh/functions"
+fpath=(
+  ~/.zsh/completion
+  "$FUNC_DIR"
+  $fpath
+)
+
+# Load all scripts from ./zsh/functions/*
+for func in "$FUNC_DIR"/*(N-.x:t); do
+    autoload -Uz $func
+done
+
 # Browser
 export BROWSER='open'
 
@@ -41,40 +79,3 @@ TMPPREFIX="${TMPDIR%/}/zsh"
 ## Language
 [[ -z "$LANG" ]] && export LANG='en_US.UTF-8'
 
-## Paths
-# Ensure path arrays do not contain duplicates.
-typeset -gU cdpath fpath mailpath path
-
-##
-export DOCKER_HOST=tcp://server:4243
-
-export RUST_SRC_PATH=$HOME/Dropbox/lib/rust/src
-export GOPATH=$HOME/Dropbox/work/go
-export ANDROID_HOME=/usr/local/opt/android-sdk
-export ANDROID_SDK=/usr/local/Cellar/android-sdk/24.2
-
-# Set the list of directories that Zsh searches for programs.
-path=(
-  $HOME/.dotfiles/{bin,scripts}
-  $HOME/.{rb,py}env/bin
-  $GOPATH/bin
-  $ANDROID_HOME/platform-tools
-  $ANDROID_HOME/tools
-  /Library/TeX/texbin
-  /usr/local/{bin,sbin}
-  /usr/{bin,sbin}
-  /{bin,sbin}
-  $path
-)
-
-local FUNC_DIR="$HOME/.dotfiles/zsh/functions"
-fpath=(
-  ~/.zsh/completion
-  "$FUNC_DIR"
-  $fpath
-)
-
-# Load all scripts from ./zsh/functions/*
-for func in "$FUNC_DIR"/*(N-.x:t); do
-    autoload -Uz $func
-done
