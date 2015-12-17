@@ -1,18 +1,17 @@
 # Return if requirements are not found.
 [[ "$TERM" == 'dumb' ]] && return 1
 
-# Load and initialize the completion system ignoring insecure directories.
-autoload -Uz compinit && compinit -i
-
 ## Options
 setopt COMPLETE_IN_WORD    # Complete from both ends of a word.
-setopt ALWAYS_TO_END       # Move cursor to the end of a completed word.
 setopt PATH_DIRS           # Perform path search even on command names with slashes.
 setopt AUTO_MENU           # Show completion menu on a successive tab press.
 setopt AUTO_LIST           # Automatically list choices on ambiguous completion.
 setopt AUTO_PARAM_SLASH    # If completed parameter is a directory, add a trailing slash.
+setopt AUTO_PARAM_KEYS
+setopt FLOW_CONTROL        # Disable start/stop characters in shell editor.
 unsetopt MENU_COMPLETE     # Do not autoselect the first completion entry.
-unsetopt FLOW_CONTROL      # Disable start/stop characters in shell editor.
+unsetopt COMPLETE_ALIASES  # Completion for aliases
+unsetopt ALWAYS_TO_END     # Move cursor to the end of a completed word.
 unsetopt CASE_GLOB
 
 # Use caching to make completion for commands such as dpkg and apt usable.
@@ -24,8 +23,6 @@ zstyle ':completion:*' matcher-list '' \
        'm:{a-z\-}={A-Z\_}' \
        'r:[^[:alpha:]]||[[:alpha:]]=** r:|=* m:{a-z\-}={A-Z\_}' \
        'r:[[:ascii:]]||[[:ascii:]]=** r:|=* m:{a-z\-}={A-Z\_}'
-
-# zstyle ':completion:*' matcher-list 'r:[[:ascii:]]||[[:ascii:]]=** r:|=* m:{a-z\-}={A-Z\_}'
 
 # Group matches and describe.
 zstyle ':completion:*:*:*:*:*' menu select
@@ -42,7 +39,7 @@ zstyle ':completion:*' group-name ''
 zstyle ':completion:*' verbose yes
 
 # Fuzzy match mistyped completions.
-zstyle ':completion:*' completer _complete _match _approximate
+zstyle ':completion:*' completer _complete _list _match _approximate
 zstyle ':completion:*:match:*' original only
 zstyle ':completion:*:approximate:*' max-errors 1 numeric
 
@@ -61,6 +58,7 @@ zstyle ':completion:*:*:cd:*' tag-order local-directories directory-stack path-d
 zstyle ':completion:*:*:cd:*:directory-stack' menu yes select
 zstyle ':completion:*:-tilde-:*' group-order 'named-directories' 'path-directories' 'users' 'expand'
 zstyle ':completion:*' squeeze-slashes true
+zstyle ':completion:*' special-dirs true
 
 # History
 zstyle ':completion:*:history-words' stop yes
@@ -74,7 +72,6 @@ zstyle ':completion::*:(-command-|export):*' fake-parameters ${${${_comps[(I)-va
 # Populate hostname completion.
 zstyle -e ':completion:*:hosts' hosts 'reply=(
   ${=${=${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) 2>/dev/null)"}%%[#| ]*}//\]:[0-9]*/ }//,/ }//\[/ }
-  ${=${(f)"$(cat /etc/hosts(|)(N) <<(ypcat hosts 2>/dev/null))"}%%\#*}
   ${=${${${${(@M)${(f)"$(cat ~/.ssh/config 2>/dev/null)"}:#Host *}#Host }:#*\**}:#*\?*}}
 )'
 
