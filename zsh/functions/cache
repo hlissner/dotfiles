@@ -1,0 +1,13 @@
+#!/usr/bin/env zsh
+
+[[ -z "$ZSH_CACHE_DIR" ]] && exit 1
+
+[[ ! -d "$ZSH_CACHE_DIR" ]] && mkdir -p "$ZSH_CACHE_DIR"
+
+is-callable "$1" || return 1
+local cache="${ZSH_CACHE_DIR}/$1-cache"
+if [[ ! -s "$cache" ]]; then
+    echo "Caching $1"
+    $@ >| "$cache" 2> /dev/null
+fi
+source $cache

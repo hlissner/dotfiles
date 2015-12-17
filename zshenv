@@ -1,3 +1,8 @@
+is-callable() { (( $+commands[$1] )) || (( $+functions[$1] )) || (( $+aliases[$1] )); }
+is-mac() { [[ "$OSTYPE" == "darwin"* ]]; }
+is-deb() { [[ "$OSTYPE" == "linux-gnu" ]]; }
+is-cygwin() { [[ "$OSTYPE" == "cygwin"* ]]; }
+
 # Browser
 export BROWSER='open'
 
@@ -65,7 +70,14 @@ path=(
   $path
 )
 
+local FUNC_DIR="$HOME/.dotfiles/zsh/functions"
 fpath=(
   ~/.zsh/completion
+  "$FUNC_DIR"
   $fpath
 )
+
+# Load all scripts from ./zsh/functions/*
+for func in "$FUNC_DIR"/*(N-.x:t); do
+    autoload -Uz $func
+done
