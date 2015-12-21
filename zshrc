@@ -1,16 +1,6 @@
 ### zshrc
 # By Henrik Lissner <henrik@lissner.net>
 
-############################################
-
-# Light mode are for remote shells or computers where I don't have much access, and
-# therefore cannot install most of my zsh plugins (though can somehow get away with using
-# zsh itself).
-
-LIGHTMODE=
-
-############################################
-
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 ZSH_PLUGINS_ALIAS_TIPS_EXPAND=1
 ZGEN_AUTOLOAD_COMPINIT=true
