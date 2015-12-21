@@ -1,18 +1,44 @@
 bindkey -v
 
+## vi-mode ###############
+bindkey -M viins 'jk' vi-cmd-mode
+# bindkey -M viins '^I' expand-or-complete-prefix
+
+# surround
+autoload -Uz surround
+zle -N delete-surround surround
+zle -N add-surround surround
+zle -N change-surround surround
+bindkey -a cs change-surround
+bindkey -a ds delete-surround
+bindkey -a ys add-surround
+bindkey -M visual S add-surround
+
+# text-objects
+autoload -U select-quoted; zle -N select-quoted
+for m in visual viopp; do
+    for c in {a,i}{\',\",\`}; do
+        bindkey -M $m $c select-quoted
+    done
+done
+autoload -U select-bracketed; zle -N select-bracketed
+for m in visual viopp; do
+    for c in {a,i}${(s..)^:-'()[]{}<>bB'}; do
+        bindkey -M $m $c select-bracketed
+    done
+done
+
 # Allow command line editing in an external editor.
-autoload -Uz edit-command-line
-zle -N edit-command-line
+autoload -Uz edit-command-line; zle -N edit-command-line
 bindkey '^ ' edit-command-line
 
 bindkey -M viins '^n' history-substring-search-down
 bindkey -M viins '^p' history-substring-search-up
 bindkey -M viins '^s' history-incremental-pattern-search-backward
 bindkey -M viins '^u' backward-kill-line
-bindkey -M viins '^r' redo
 bindkey -M viins '^w' backward-kill-word
 bindkey -M viins '^b' backward-word
-bindkey -M viins '^q' push-line-or-edit
+bindkey -M viins '^g' push-line-or-edit
 bindkey -M viins '^a' beginning-of-line
 bindkey -M viins '^e' end-of-line
 
@@ -20,22 +46,17 @@ bindkey -M viins '^e' end-of-line
 bindkey -M viins '^[[Z'  reverse-menu-complete
 
 bindkey -M viins ' '     magic-space
-bindkey -M viins 'jk'    vi-cmd-mode
 
 # Vim keymaps
 bindkey -M vicmd 'ga'    what-cursor-position
-bindkey -M vicmd 'gg'    beginning-of-history
-bindkey -M vicmd 'G '    end-of-history
 bindkey -M vicmd '^k'    kill-line
 bindkey -M vicmd '?'     history-incremental-pattern-search-forward
 bindkey -M vicmd '/'     history-incremental-pattern-search-backward
 bindkey -M vicmd ':'     execute-named-cmd
 # Page up / Page down
 bindkey -M vicmd 'H'     run-help
-bindkey -M vicmd 'u'     undo
-bindkey -M vicmd 'U'     redo
-bindkey -M vicmd 'yy'    vi-yank-whole-line
-bindkey -M vicmd 'Y'     vi-yank-eol
+
+bindkey -s -M vicmd ',o'   "tmux resize-pane -Z\n"
 
 # bind UP and DOWN arrow keys
 bindkey '^[[A' history-substring-search-up
@@ -54,7 +75,7 @@ fancy-ctrl-z () {
 zle -N fancy-ctrl-z
 bindkey '^Z' fancy-ctrl-z
 
-# Completion
+# Omni-Completion
 bindkey -M viins '^x^f' fasd-complete-f  # C-x C-f to do fasd-complete-f (only files)
 bindkey -M viins '^x^d' fasd-complete-d  # C-x C-d to do fasd-complete-d (only directories)
 # Completing words in buffer in tmux
@@ -101,3 +122,19 @@ bindkey -rM viins '^X'
 bindkey -M viins '^X,' _history-complete-newer \
                  '^X/' _history-complete-older \
                  '^X`' _bash_complete-word
+
+# In-place search insertion
+autoload -Uz narrow-to-region
+function _history-incremental-preserving-pattern-search-backward
+{
+  local state
+  MARK=CURSOR  # magick, else multiple ^R don't work
+  narrow-to-region -p "$LBUFFER${BUFFER:+>>}" -P "${BUFFER:+<<}$RBUFFER" -S state
+  zle end-of-history
+  zle history-incremental-pattern-search-backward
+  narrow-to-region -R state
+}
+zle -N _history-incremental-preserving-pattern-search-backward
+bindkey "^R" _history-incremental-preserving-pattern-search-backward
+bindkey -M isearch "^R" history-incremental-pattern-search-backward
+bindkey "^S" history-incremental-pattern-search-forward

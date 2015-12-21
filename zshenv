@@ -1,7 +1,4 @@
-is-callable() { (( $+commands[$1] )) || (( $+functions[$1] )) || (( $+aliases[$1] )); }
-is-mac() { [[ "$OSTYPE" == "darwin"* ]]; }
-is-deb() { [[ "$OSTYPE" == "linux-gnu" ]]; }
-is-cygwin() { [[ "$OSTYPE" == "cygwin"* ]]; }
+source $HOME/.dotfiles/.common.sh
 
 ## Paths
 # Ensure path arrays do not contain duplicates.
@@ -9,7 +6,6 @@ typeset -gU cdpath fpath mailpath path
 
 ##
 export DOCKER_HOST=tcp://server:4243
-
 export RUST_SRC_PATH=$HOME/Dropbox/lib/rust/src
 export GOPATH=$HOME/Dropbox/work/go
 export ANDROID_HOME=/usr/local/opt/android-sdk
@@ -17,7 +13,7 @@ export ANDROID_SDK=/usr/local/Cellar/android-sdk/24.2
 
 # Set the list of directories that Zsh searches for programs.
 path=(
-  $HOME/.dotfiles/{bin,scripts}
+  $DOTFILES/{bin,scripts}
   $HOME/.{rb,py}env/bin
   $GOPATH/bin
   $ANDROID_HOME/platform-tools
@@ -29,17 +25,12 @@ path=(
   $path
 )
 
-local FUNC_DIR="$HOME/.dotfiles/zsh/functions"
+local FUNC_DIR="$DOTFILES/zsh/functions"
 fpath=(
   ~/.zsh/completion
   "$FUNC_DIR"
   $fpath
 )
-
-# Load all scripts from ./zsh/functions/*
-for func in "$FUNC_DIR"/*(N-.x:t); do
-    autoload -Uz $func
-done
 
 # Browser
 export BROWSER='open'
@@ -57,12 +48,7 @@ export CPLUS_INCLUDE_PATH="/usr/local/include"
 export LIBRARY_PATH="/usr/local/lib"
 # export LDFLAGS="-L/usr/local/lib"
 
-# Set the default Less options.
-# Mouse-wheel scrolling has been disabled by -X (disable screen clearing).
-# Remove -X and -F (exit if the content fits on one screen) to enable it.
-export LESS='-X -F -g -i -M -R -S -w -z-4'
-
-# Set the Less input preprocessor.
+export LESS='-F -g -i -M -R -S -w -z-4'
 if (( $+commands[lesspipe] )); then
   export LESSOPEN='| /usr/bin/env lesspipe %s 2>&-'
 fi
@@ -76,6 +62,6 @@ fi
 TMPPREFIX="${TMPDIR%/}/zsh"
 [[ ! -d "$TMPPREFIX" ]] && mkdir -p "$TMPPREFIX"
 
-## Language
 [[ -z "$LANG" ]] && export LANG='en_US.UTF-8'
 
+autoload -U colors && colors
