@@ -2,12 +2,10 @@
 
 # In case this file was run via curl
 [ ! -d ~/.dotfiles ] && git clone --recursive https://github.com/hlissner/dotfiles ~/.dotfiles
-[ ! -d ~/.vim ] && git clone --recursive https://github.com/hlissner/vim ~/.vim
-
-~/.vim/install.sh
 
 shopt -s extglob
-for rcfile in "$HOME"/.dotfiles/!(bin|scripts|README.md|install.sh|Gemfile*); do
+for rcfile in "${HOME}/.dotfiles/!(.*|bin|scripts|*.md|install.sh)"
+do
     filep="$HOME/."$(basename "$rcfile")
 
     [ "$1" == "--force" ] && rm -f "$filep"
