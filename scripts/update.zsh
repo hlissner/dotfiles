@@ -3,15 +3,17 @@
 set -e
 
 indent() { sed 's/^/  /'; }
-up-to-date() { 
+up-to-date() {
     LOCAL=$(git rev-parse @)
     REMOTE=$(git rev-parse @{u})
     [[ "$LOCAL" == "$REMOTE" ]]
 }
 
+sudo softwareupdate -i -a
+
 (( $+commands[brew] )) && {
     echo "Updating homebrew"
-    { brew update && brew upgrade --all; } | indent
+    { brew update; brew upgrade --all; brew cleanup } | indent
 }
 
 [[ -f "$HOME/.emacs.d/Makefile" ]] && {
