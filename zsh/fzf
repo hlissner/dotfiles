@@ -1,0 +1,16 @@
+local fzf_path="/usr/local/opt/fzf"
+
+export FZF_DEFAULT_COMMAND='ag -g ""'
+export FZF_DEFAULT_OPTS='--reverse --inline-info'
+
+if [[ ! "$PATH" == *$fzf_path/bin* ]]; then
+  export PATH="$PATH:$fzf_path/bin"
+fi
+
+if [[ ! "$MANPATH" == *$fzf_path/man* && -d "$fzf_path/man" ]]; then
+  export MANPATH="$MANPATH:$fzf_path/man"
+fi
+
+is-interactive && source "$fzf_path/shell/completion.zsh" 2> /dev/null
+
+source "$fzf_path/shell/key-bindings.zsh"

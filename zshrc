@@ -19,22 +19,17 @@ if ! zgen saved; then
 
     zgen load hlissner/zsh-autopair "autopair.zsh"
     zgen load zsh-users/zsh-history-substring-search
-    is-ssh || zgen load zsh-users/zsh-syntax-highlighting
     zgen load zsh-users/zsh-completions src
+    is-ssh || zgen load zsh-users/zsh-syntax-highlighting
 
     zgen save
 fi
 
 cache rbenv init - --no-rehash
 cache pyenv init - --no-rehash
-if is-interactive; then
-    cache fasd --init posix-alias zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zsh-wcomp-install
+is-interactive && cache fasd --init posix-alias zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zsh-wcomp-install
 
-    export FZF_DEFAULT_COMMAND='ag -g ""'
-    export FZF_DEFAULT_OPTS='--reverse --inline-info'
-    [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-fi
-
+iload zsh/fzf
 load  zsh/config
 iload zsh/keybinds
 iload zsh/prompt
