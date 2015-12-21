@@ -23,6 +23,7 @@ done
 unset paths
 export PATH
 
+iload bash/fzf
 
 ## Bash rcfiles ###########################
 
