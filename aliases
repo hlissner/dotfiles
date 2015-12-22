@@ -14,6 +14,13 @@ if [[ "$OSTYPE" == linux* ]]; then
     DL=~/dl
 fi
 
+# Editors
+is-callable 'nvim' && alias vim=nvim
+if is-callable 'emacs'; then
+    alias emacs='emacs -nw'
+    ediff() { e --eval "(ediff-files \"$1\" \"$2\")"; }
+fi
+
 
 ## Fast folder navigation ####################################################
 
@@ -39,9 +46,9 @@ if is-callable 'fasd' && is-callable 'fzf'; then
             local t
             t=$(fasd -lf "$*" |\
                 fzf --tac +s -m -1 -e --query="$*") && \
-                $EDITOR "${t[@]}"
+                ${EDITOR[@]} ${FLAGS:-} "${t[@]}"
         else
-            $EDITOR $*
+            $EDITOR ${FLAGS:-} $*
         fi
     }
 
@@ -50,31 +57,26 @@ if is-callable 'fasd' && is-callable 'fzf'; then
         (($#>0)) && local args="-f$*"
         local dir
         dir=$({
-            local _path="$PWD"
+            local _path=$PWD
             while [[ -n "$_path" && "$_path" != "/" ]]; do
-                _path="${_path%/*}"
-                echo $_path
+                _path=$(dirname "$_path")
+                echo "$_path"
             done
-        } | fzf +s -e -0 -1 $args --query="$*") && cd "$dir"
+        } | fzf +s -e $args --query="$*" | tail -1) && cd "$dir"
     }
 
     # Emacs version of v
     e() {
         if pgrep Emacs 2>&1 >/dev/null; then
-            EDITOR='emacsclient -n' v $@
+            EDITOR=emacsclient FLAGS=-n v $@
         else
-            EDITOR='/Applications/Emacs.app/Contents/MacOS/Emacs' v $@ &
+            EDITOR=/Applications/Emacs.app/Contents/MacOS/Emacs v $@ &
         fi
     }
 else
     alias v='vim'
     alias e='emacs'
 fi
-
-# Editors
-is-callable 'emacs' && alias emacs='emacs -nw'
-is-callable 'nvim' && alias vim=nvim
-ediff() { e --eval "(ediff-files \"$1\" \"$2\")"; }
 
 
 ## Redefined tools ###########################################################
@@ -221,8 +223,9 @@ alias gbr='git browse'
 alias gi='git init'
 alias gs='git status'
 alias gsu='git submodule'
-alias gsq='git squash'
+alias gsq='git rebase -i origin/master'
 alias gco='git checkout'
+alias gcoo='git checkout --'
 alias gc='git commit'
 alias gcm='noglob git commit -m'
 alias gcma='noglob git commit --amend -m'
@@ -260,6 +263,8 @@ if is-callable 'tmux'; then
         alias tf='tmux find-window'
         # Detach all other clients to this session
         alias mine='tmux detach -a'
+        # Send command to other tmux window
+        tt() { tmux send-keys -t .+ C-u && tmux set-buffer "$*" && tmux paste-buffer -t .+ && tmux send-keys -t .+ Enter; }
         # Create new session (from inside one)
         tn() {
             local name="${1:-`basename $PWD`}"
