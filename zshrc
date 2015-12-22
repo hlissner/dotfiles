@@ -13,7 +13,6 @@ if ! zgen saved; then
 
     zgen load StackExchange/blackbox
     zgen load thewtex/tmux-mem-cpu-load
-    zgen load djui/alias-tips
     zgen load joepvd/zsh-hints
     zgen load unixorn/git-extra-commands
 
