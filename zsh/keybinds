@@ -1,3 +1,5 @@
+autoload -U is-at-least
+
 bindkey -v
 
 ## vi-mode ###############
@@ -12,11 +14,10 @@ zle -N change-surround surround
 bindkey -a cs change-surround
 bindkey -a ds delete-surround
 bindkey -a ys add-surround
-bindkey -M visual S add-surround
 
 # text-objects
-autoload -U is-at-least
 if is-at-least 5.0.8; then
+    bindkey -M visual S add-surround
     autoload -U select-quoted; zle -N select-quoted
     for m in visual viopp; do
         for c in {a,i}{\',\",\`}; do
