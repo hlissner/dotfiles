@@ -1,3 +1,5 @@
+#!/usr/bin/env zsh
+
 load aliases
 
 alias ?='since @$last'

@@ -1,3 +1,5 @@
+#!/usr/bin/env zsh
+
 autoload -U is-at-least
 
 bindkey -v

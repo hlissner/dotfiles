@@ -1,3 +1,5 @@
+#!/usr/bin/env zsh
+
 local fzf_path="/usr/local/opt/fzf"
 if [[ ! -d "$fzf_path" && -d "$HOME/.fzf" ]]; then
     fzf_path="$HOME/.fzf"
