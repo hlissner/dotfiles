@@ -15,18 +15,21 @@ bindkey -a ys add-surround
 bindkey -M visual S add-surround
 
 # text-objects
-autoload -U select-quoted; zle -N select-quoted
-for m in visual viopp; do
-    for c in {a,i}{\',\",\`}; do
-        bindkey -M $m $c select-quoted
+autoload -U is-at-least
+if is-at-least 5.0.8; then
+    autoload -U select-quoted; zle -N select-quoted
+    for m in visual viopp; do
+        for c in {a,i}{\',\",\`}; do
+            bindkey -M $m $c select-quoted
+        done
     done
-done
-autoload -U select-bracketed; zle -N select-bracketed
-for m in visual viopp; do
-    for c in {a,i}${(s..)^:-'()[]{}<>bB'}; do
-        bindkey -M $m $c select-bracketed
+    autoload -U select-bracketed; zle -N select-bracketed
+    for m in visual viopp; do
+        for c in {a,i}${(s..)^:-'()[]{}<>bB'}; do
+            bindkey -M $m $c select-bracketed
+        done
     done
-done
+fi
 
 # Allow command line editing in an external editor.
 autoload -Uz edit-command-line; zle -N edit-command-line
