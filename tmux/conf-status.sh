@@ -26,7 +26,7 @@ else
 
     STATUS="$DELIM<<$RESET"
     STATUS+=$SYSINFO
-    command -v 'tmux-mem-cpu-load' >/dev/null && STATUS+=$(tmux-mem-cpu-load -i 5)
+    command -v 'tmux-mem-cpu-load' >/dev/null && STATUS+=' '$(tmux-mem-cpu-load -i 5)
     STATUS+=$RESET
     STATUS+="$DELIM < $RESET"
     STATUS+=$IP
