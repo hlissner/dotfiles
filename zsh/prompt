@@ -4,6 +4,8 @@ _strlen() { echo ${#${(S%%)1//$~%([BSUbfksu]|([FB]|){*})/}}; }
 
 # fastest possible way to check if repo is dirty
 prompt_git_dirty() {
+    is-callable git || return
+
     # disable auth prompting on git 2.3+
     GIT_TERMINAL_PROMPT=0
 
@@ -83,19 +85,25 @@ prompt_init() {
     zstyle ':vcs_info:git*' actionformats ':%b (%a)'
 
     # show username@host if logged in through SSH OR logged in as root
-    is-ssh || is-root && prompt_username='%F{white}%n%F{244}@%m '
+    is-ssh || is-root && prompt_username='%F{magenta}%n%F{244}@%m '
 
     ## Vim cursors
-    N_MODE="%F{blue}## "
-    I_MODE=">> "
+    if [[ -z "$SSH_CONNECTION" ]]
+    then
+        N_MODE="%F{blue}## "
+        I_MODE=">> "
+    else
+        N_MODE="%F{blue}### "
+        I_MODE=">>> "
+    fi
 
-    RPROMPT='$prompt_username'                                     # PWD
-    RPROMPT+='%F{cyan}${vcs_info_msg_0_}$(prompt_git_dirty)'  # Branch + dirty indicator
+    RPROMPT='%F{cyan}${vcs_info_msg_0_}$(prompt_git_dirty)'  # Branch + dirty indicator
     RPROMPT+='%F{yellow}$(prompt_cmd_exec_time)'             # Exec time
     RPROMPT+='%f' # end
 
-    PROMPT='%F{blue}%~ %f'                         # username
-    PROMPT+='%(?.%F{green}.%F{red})${PROMPT_SYMBOL:->>> }' # Prompt (red if $? == 0)
+    PROMPT='$prompt_username'  # username
+    PROMPT+='%F{blue}%~ %f'      # path
+    PROMPT+='%(?.%F{green}.%F{red})${PROMPT_SYMBOL:-$ }' # Prompt (red if $? == 0)
     PROMPT+='%f' #end
 }
 
