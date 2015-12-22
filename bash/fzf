@@ -1,20 +1,27 @@
+local fzf_path="/usr/local/opt/fzf"
+if [[ ! -d "$fzf_path" && -d "$HOME/.fzf" ]]; then
+    fzf_path="$HOME/.fzf"
+else
+    return
+fi
+
 # Setup fzf
 # ---------
-if [[ ! "$PATH" == */usr/local/opt/fzf/bin* ]]; then
-  export PATH="$PATH:/usr/local/opt/fzf/bin"
+if [[ ! "$PATH" == *$fzf_path/bin* ]]; then
+  export PATH="$PATH:$fzf_path/bin"
 fi
 
 # Man path
 # --------
-if [[ ! "$MANPATH" == */usr/local/opt/fzf/man* && -d "/usr/local/opt/fzf/man" ]]; then
-  export MANPATH="$MANPATH:/usr/local/opt/fzf/man"
+if [[ ! "$MANPATH" == *$fzf_path/man* && -d "$fzf_path/man" ]]; then
+  export MANPATH="$MANPATH:$fzf_path/man"
 fi
 
 # Auto-completion
 # ---------------
-[[ $- == *i* ]] && source "/usr/local/opt/fzf/shell/completion.bash" 2> /dev/null
+[[ $- == *i* ]] && source "$fzf_path/shell/completion.bash" 2> /dev/null
 
 # Key bindings
 # ------------
-source "/usr/local/opt/fzf/shell/key-bindings.bash"
+source "$fzf_path/shell/key-bindings.bash"
 
