@@ -9,7 +9,7 @@ if (( $(echo "$TMUX_VERSION >= 2.1" | bc) )); then
     # fix mouse scrolling: enter copy mode on scroll-up, exits it when scrolled to bottom
     tmux bind -n WheelUpPane if-shell -F -t = "#{mouse_any_flag}" "send-keys -M" "if -Ft= '#{pane_in_mode}' 'send-keys -M' 'copy-mode -e'"
 else
-    tmux setw -g mode-mouse
+    tmux setw -g mode-mouse on
     tmux set -g mouse-resize-pane on
     tmux set -g mouse-select-pane on
     tmux set -g mouse-select-window on
@@ -50,7 +50,13 @@ then
 
     tmux set -g status-bg colour237
     tmux set -g status-fg white
+
+    tmux set -g pane-active-border-fg yellow
+    tmux set -g pane-border-fg colour238
 else
     tmux set -g status-bg yellow
     tmux set -g status-fg black
+
+    tmux set -g pane-active-border-fg blue
+    tmux set -g pane-border-fg colour237
 fi
