@@ -18,6 +18,7 @@ if [[ -x /usr/libexec/path_helper ]]; then
 fi
 path=(
     $DOTFILES/{bin,scripts}
+    $DOTFILES/tmux/tmuxifier/bin
     $HOME/.{rb,py}env/bin
     $HOME/bin
     $GOPATH/bin

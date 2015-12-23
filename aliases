@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 ## aliases
 #
 # Aliases that apply regardless of shell. Loaded from ./.${SHELL}/aliases

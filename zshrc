@@ -2,7 +2,6 @@
 # By Henrik Lissner <henrik@lissner.net>
 
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
-ZSH_PLUGINS_ALIAS_TIPS_EXPAND=1
 ZGEN_AUTOLOAD_COMPINIT=true
 [[ "${USER}" == "root" ]] && ZGEN_AUTOLOAD_COMPINIT=false
 
