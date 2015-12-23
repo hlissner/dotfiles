@@ -29,7 +29,7 @@ prompt_cmd_exec_time() {
     local stop=$EPOCHSECONDS
     local start=${cmd_timestamp:-$stop}
     integer elapsed=$stop-$start
-    (($elapsed > 2)) && $DOTFILES/bin/since -- $elapsed
+    (($elapsed > 2)) && echo ' '$($DOTFILES/bin/since -- $elapsed)
 }
 
 ## Hooks ###############################
