@@ -1,3 +1,6 @@
 [submodule "zsh/zgen"]
 	path = zsh/zgen
 	url = https://github.com/tarjoilija/zgen
+[submodule "tmux/tmuxifier"]
+	path = tmux/tmuxifier
+	url = https://github.com/jimeh/tmuxifier
