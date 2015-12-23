@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 _clone() { [[ -d "$2" ]] || git clone --recursve "$1" "$2"; }
 
@@ -6,12 +6,12 @@ _clone() { [[ -d "$2" ]] || git clone --recursve "$1" "$2"; }
 _clone https://github.com/hlissner/dotfiles ~/.dotfiles
 
 shopt -s extglob
-for rcfile in "${HOME}/.dotfiles/!(.*|bin|scripts|*.md|install.sh)"
+for rcfile in "${HOME}"/.dotfiles/!(.*|bin|scripts|*.md|install.sh)
 do
     filep="$HOME/."$(basename "$rcfile")
 
     [ "$1" == "--force" ] && rm -f "$filep"
-    [ -e "$filep" ] || ln -vsF "$rcfile" $filep
+    [ -e "$filep" ] || ln -vs "$rcfile" "$filep"
 done
 
 # Install fzf and fasd
