@@ -40,11 +40,10 @@ else
 fi
 
 # If in ssh, use default C-b prefix
-if [[ -z "$SSH_CONNECTON" ]]
+if [[ -z "$SSH_CONNECTION" ]]
 then
     # Remap the key prefix
     tmux set -g prefix ^c
-    tmux unbind C-b
     # Restore sigterm C-c
     tmux bind C-c send-prefix
 
@@ -54,9 +53,13 @@ then
     tmux set -g pane-active-border-fg yellow
     tmux set -g pane-border-fg colour238
 else
+    # Remap the key prefix
+    tmux set -g prefix ^a
+
     tmux set -g status-bg yellow
     tmux set -g status-fg black
 
     tmux set -g pane-active-border-fg blue
     tmux set -g pane-border-fg colour237
 fi
+tmux unbind C-b
