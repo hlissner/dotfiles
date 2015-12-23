@@ -23,10 +23,15 @@ done
 unset paths
 export PATH
 
-iload bash/fzf
 
 ## Bash rcfiles ###########################
 
-load  bash/aliases  # ~/.bash/aliases
-load  bash/config   # ~/.bash/config
-iload bash/prompt   # ~/.bash/prompt
+cache rbenv init - --no-rehash
+cache pyenv init - --no-rehash
+is-interactive && cache fasd --init posix-alias bash-hook bash-ccomp bash-ccomp-install
+is-callable tmuxifier && is-interactive && cache tmuxifier init -
+
+iload bash/fzf
+load  bash/aliases
+load  bash/config
+iload bash/prompt
