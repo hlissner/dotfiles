@@ -27,6 +27,7 @@ fi
 cache rbenv init - --no-rehash
 cache pyenv init - --no-rehash
 is-interactive && cache fasd --init posix-alias zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zsh-wcomp-install
+is-callable tmuxifier && is-interactive && cache tmuxifier init -
 
 iload zsh/fzf
 load  zsh/config
