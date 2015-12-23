@@ -20,7 +20,7 @@ cache() {
     [[ ! -d "$CACHE_DIR" ]] && mkdir -p "$CACHE_DIR"
 
     is-callable "$1" || return 1
-    local cache="${CACHE_DIR}/$1"
+    local cache="${CACHE_DIR}/$1-$(basename $SHELL)"
     if ! [[ -f "$cache" && -s "$cache" ]]; then
         echo "Caching $1"
         $@ > "$cache" 2> /dev/null
