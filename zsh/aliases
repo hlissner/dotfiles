@@ -6,21 +6,13 @@ alias ?='since @$last'
 
 # Fast directory navigation
 if is-callable 'fasd' && is-callable 'fzf'; then
-
     # TODO Jump to folder in project
     alias ,='fzf -d "$(project-root)"'
     alias /='fzf -f "$(project-root)"'
-
-    # alias v='vim'
-
-    # -() {
-    #     local d; d=$(echo ${dirstack:gs/ /\\n/} | fzf-tmux +s -e -1 --query="$*") && cd -
-    # }
 fi
 # see functions/commacd
-# alias ,,,='cd ${$(find ~/Dropbox/work -maxdepth 2 -type d | fzf):-.}'
-# alias ,-='[[ -n "$dirstack" ]] && cd $(echo "${dirstack:gs/ /\\n/}" | fzf) || echo "Nothing in the stack"'
-# alias ,/='fzf_project_root'
+alias ,,,='cd ${$(find ~/Dropbox/work -maxdepth 2 -type d | fzf):-.}'
+alias ,/='fzf_project_root'
 
 zman() { PAGER="less -g -s '+/^       "$1"'" man zshall; }
 
