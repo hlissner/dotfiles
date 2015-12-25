@@ -1,14 +1,15 @@
-require('core')
+-- Core
+util = require('util')
 
---
-require('modules/windows')
-
--- Globals
-screen = hs.screen.primaryScreen()
+-- Settings
+hs.window.animationDuration = 0
 
 -- Modules
-require('keybinds')
-require('apps')
-require('urls')
-require('locations')
+-- require('apps')
+-- require('urls')
+-- require('locations')
 
+util.autoimport("./apps")
+
+--
+require('bindings')
