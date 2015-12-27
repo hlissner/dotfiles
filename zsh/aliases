@@ -2,6 +2,8 @@
 
 load aliases
 
+autoload -U zmv
+
 alias ?='since @$last'
 
 # Fast directory navigation
@@ -12,7 +14,7 @@ if is-callable 'fasd' && is-callable 'fzf'; then
 fi
 # see functions/commacd
 alias ,,,='cd ${$(find ~/Dropbox/work -maxdepth 2 -type d | fzf):-.}'
-alias ,/='fzf_project_root'
+# alias ,/='fzf_project_root'
 
 zman() { PAGER="less -g -s '+/^       "$1"'" man zshall; }
 

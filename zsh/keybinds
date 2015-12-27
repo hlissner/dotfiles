@@ -16,10 +16,10 @@ zle -N change-surround surround
 bindkey -a cs change-surround
 bindkey -a ds delete-surround
 bindkey -a ys add-surround
+bindkey -M visual S add-surround
 
 # text-objects
 if is-at-least 5.0.8; then
-    bindkey -M visual S add-surround
     autoload -U select-quoted; zle -N select-quoted
     for m in visual viopp; do
         for c in {a,i}{\',\",\`}; do
@@ -48,21 +48,12 @@ bindkey -M viins '^g' push-line-or-edit
 bindkey -M viins '^a' beginning-of-line
 bindkey -M viins '^e' end-of-line
 
+bindkey -M viins ' '  magic-space
+bindkey -M vicmd '^k' kill-line
+bindkey -M vicmd 'H'  run-help
+
 # Shift + Tab
 bindkey -M viins '^[[Z'  reverse-menu-complete
-
-bindkey -M viins ' '     magic-space
-
-# Vim keymaps
-bindkey -M vicmd 'ga'    what-cursor-position
-bindkey -M vicmd '^k'    kill-line
-bindkey -M vicmd '?'     history-incremental-pattern-search-forward
-bindkey -M vicmd '/'     history-incremental-pattern-search-backward
-bindkey -M vicmd ':'     execute-named-cmd
-# Page up / Page down
-bindkey -M vicmd 'H'     run-help
-
-bindkey -s -M vicmd ',o'   "tmux resize-pane -Z\n"
 
 # bind UP and DOWN arrow keys
 bindkey '^[[A' history-substring-search-up
