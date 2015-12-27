@@ -24,28 +24,31 @@
 
     /* URL VARIABLES */
     --url-background: #3E3848; --url-color: var(--fg-light);
-    --url-height: 28px; --url-right-margin: 5px;
+    --url-height: 26px; --url-right-margin: 5px;
     --url-fonts: "Ubuntu Mono",monospace,"Dejavu Sans"; --url-font-size: 12pt;
     --url-text-align: left; /* left | center | right */
-    --url-position: fixed; /* absolute == top (under tabs) || fixed == bottom of browser */
-    
+    --url-position: absolute; /* absolute == top (under tabs) || fixed == bottom of browser */
+
     margin-bottom: 0 !important;
 }
 
 
 @-moz-document url(chrome://browser/content/browser.xul) {
+    statuspanel label { background-color: var(--bg-dark); }
+
+
     #downloads-button, #tabview-button { margin-top: -2px !important; padding-left: 10px !important; opacity: 0.5; }
-    
+
     #titlebar, #titlebar-placeholder-on-TabsToolbar-for-captions-buttons { display: none !important; }
-    
+
     /* URL-BAR */
     #back-button, #forward-button, #back-button *, #forward-button *, /*#identity-box,*/ #urlbar-reload-button, #urlbar-stop-button, #urlbar-go-button,
     #PanelUI-button, #bookmarks-menu-button, #home-button, #stylish-toolbar-button, #abp-toolbarbutton,
     #notification-popup-box, #new-tab-button, #private-browsing-indicator, #search-container, #nav-bar-overflow-button,
-    .tabs-newtab-button, .tab-close-button, .tab-close, .tab-throbber, .tab-background-start, .tab-background-end,
-    #window-controls /*, #alltabs-button, #tabview-button, .tab-icon-image, .tab-icon-image:not([pinned])*/ { display: none !important; }
-    
-    #identity-box { max-width: 28px !important; margin-left: -2px !important; padding-left: 5px !important; }
+    .tabs-newtab-button, /*.tab-close-button, .tab-close,*/ .tab-background-start, .tab-background-end,
+    #window-controls /*, .tab-throbber, #alltabs-button, #tabview-button, .tab-icon-image, .tab-icon-image:not([pinned])*/ { display: none !important; }
+
+    #identity-box { max-width: 26px !important; margin-left: 0px !important; padding-left: 5px !important; }
     #identity-box #identity-icon-labels { display: none !important; }
 
     .autocomplete-richlistbox { height: auto !important; max-height: auto !important; background-color: var(--fg-light) !important; }
@@ -53,8 +56,7 @@
     .autocomplete-richlistbox .autocomplete-richlistitem .ac-url-box { display: none !important; }
     .autocomplete-richlistbox .autocomplete-richlistitem[actiontype="searchengine"],
     .autocomplete-richlistbox .autocomplete-richlistitem[type~="autofill"] { padding: 0 0 10px !important; }
-  
-    
+
     /* --- Uncomment the section below to enable the Back/Forward buttons [EXPERIMENTAL] (Requires url-bar) --- */
     /*
     #back-button, #forward-button { display: block !important; }
@@ -66,27 +68,27 @@
     #back-button::before { content: "<" !important; left: 0 !important; }
     #forward-button::before { content: ">" !important; left: calc(var(--url-height) + 8px) !important; }
     /**/
-       
+
     tab, .tabs-newtab-button { transition: background-color 0.1s ease-in-out !important; }
     tab:hover { background-color: #3C364A !important; }
     .tabs-newtab-button:hover { background-color: #3E384C !important; }
-    
+
     /* --- Uncomment the section below to enable the New Tab Button [EXPERIMENTAL] --- */
-    /*
+
     .tabs-newtab-button { display: block !important; background: #302A3A !important; margin: 0 0 0 0 !important; width: 28px !important; }
-    .tabs-newtab-button::before { content: "+" !important; position: relative; bottom: 2px; opacity: 0.4; }
+    .tabs-newtab-button::before { content: "+" !important; position: relative; bottom: 1px; opacity: 0.4; }
     .tabs-newtab-button .toolbarbutton-icon { display: none !important; }
     /**/
-    
+
     .tab-drop-indicator { margin-bottom: 0 !important; }
-    
-    #content-deck { padding-bottom: var(--url-height) !important; }
+
+    #content-deck { /*padding-bottom: var(--url-height) !important;*/ }
     #nav-bar {
         position: var(--url-position) !important; bottom: 0px !important;
         width: 100% !important; height: var(--url-height) !important;
         min-height: var(--url-height) !important; max-height: var(--url-height) !important;
-        margin: 0 0 0 0 !important;
-        
+        margin: 0 0 0px 0 !important;
+
         /* --- Uncomment the section below to attach the url-bar to the tab-bar [EXPERIMENTAL] (Require a line in "#TabsToolbar" below) --- */
         /*
         position: fixed !important; top: 0 !important; left: 0 !important;
@@ -96,21 +98,22 @@
     }
        #nav-bar-customization-target { width: 100% !important; }
           #urlbar-wrapper {
-              width: 100% !important; margin-top: 0 !important; /* --- adjust margin-top to ~ -5px if you experience gap --- */
+              width: 100% !important; margin-top: 0px !important; /* --- adjust margin-top to ~ -5px if you experience gap --- */
               position: absolute !important; top: 0 !important; left: 0 !important;
               border-bottom: 0px solid var(--bg-light) !important;
           }
+             #urlbar-icons { padding-right: 5px !important; }
              #urlbar {
                  border: none !important; border-radius: 0 !important;
-                 margin: 0 0 0 0 !important; padding: 0 2px 0 2px !important;
-                 width: calc(100% + var(--url-right-margin)) !important;
+                 margin: 0 0 0 0 !important; padding: 0 0 0 0 !important;
+                 width: 100% !important;
                  height: var(--url-height) !important; min-height: var(--url-height) !important;
                  background: var(--url-background) !important; color: var(--url-color) !important;
                  font-family: var(--url-fonts) !important; font-size: var(--url-font-size) !important;
                  text-align: var(--url-text-align) !important;
              }
              /*#urlbar * { -moz-appearance: none !important; }*/
-    
+
     /* --- Comment out the section below to make the url-bar visible --- */
     /*
     #nav-bar {
@@ -119,45 +122,54 @@
         overflow: hidden !important; visibility: hidden !important;
     }
     /**/
-    
+
     /* TABS */
-    .tabbrowser-tab[fadein]:not([pinned]) { min-width: 50px !important; max-width: 100% !important; }
+    .tabbrowser-tab[fadein]:not([pinned]) { min-width: 50px !important; max-width: 300px !important; margin-right: 1px !important; }
     tab {
         font-family: var(--tab-fonts) !important;
         height: var(--tab-height) !important; min-height: var(--tab-height) !important;
         background: var(--bg-dark) !important; color: var(--fg-dark) !important;
         font-size: var(--tab-font-size) !important; text-shadow: none !important; text-align: var(--tab-text-align) !important;
-        padding-bottom: 2px !important;
+        padding-bottom: 0 !important;
     }
-    
+
     .tabbrowser-tab[visuallyselected="true"] {
         position: unset !important;
     }
-    
+
     .tabbrowser-tab label { padding: 0 10px 0 15px !important; }
-    
+
     #tabbrowser-tabs .tabbrowser-tab[pinned]            { width: 28px !important; }
     #tabbrowser-tabs .tabbrowser-tab[pinned] label      { display: none !important; }
     #tabbrowser-tabs .tabbrowser-tab label { text-align: var(--url-text-align) !important; }
-    
+
     #tabbrowser-tabs .tabbrowser-tab .tab-icon-image {
-        margin: 0 -9px 0 6px !important;
+        margin: 0 -9px 0 7px !important;
         width: var(--tab-icon-size) !important;
         height: var(--tab-icon-size) !important;
     }
-    
+
     .tabbrowser-tab *, .tabs-newtab-button * {
-        background: none !important; list-style-image: none !important;
+        background: none !important;
         margin: 0 0 0 0 !important; padding: 0 0 0 0 !important;
         -moz-appearance: none !important;
     }
-    
+
+    .tabbrowser-tab .tab-close-button {
+        margin-right: 4px !important;
+        opacity: 0.25 !important;
+    }
+    .tabbrowser-tab .tab-throbber {
+        margin-left: 6px !important;
+        margin-right: -8px !important;
+    }
+
     #tabbrowser-tabs .tabbrowser-tab[pinned] .tab-stack { height: var(--tab-height) !important; width: 100% !important; }
     #tabbrowser-tabs .tabbrowser-arrowscrollbox .box-inherit.scrollbox-innerbox { max-height: var(--tab-height) !important; }
     .scrollbutton-up, .scrollbutton-down { border: none !important; }
-    
+
     .tabbrowser-tab[selected="true"] .tab-stack {
-        background: var(--bg-light) !important; color: var(--fg-light) !important;
+        background: var(--url-background) !important; color: var(--fg-light) !important;
         border-radius: 0px !important; position: relative !important;
         /*border-top: 1px solid #dc52a5 !important;/**/
     }
@@ -167,22 +179,22 @@
         margin: 0 -2px 0 var(--tab-strip-margin) !important;
         padding-right: 0 !important;
         background: var(--bg-dark) !important;
-        
+
         /* --- Uncomment the line below to attach the url-bar to the tab-bar [EXPERIMENTAL] (Require a line in "#nav-bar" above) --- */
         /**********************************/
-            
+
         /*padding-left: 40px !important;/**/
-            
+
         /**********************************/
     }
     #TabsToolbar::after { display: none !important; }
-    .tabbrowser-tab::before, .tabbrowser-tab::after { background: none !important; opacity: 1 !important; visibility: visible !important; }
-    
+    .tabbrowser-tab::before, .tabbrowser-tab::after { background: none !important; opacity: 0 !important; visibility: visible !important; }
+
     /*browser, #navigator-toolbox { -moz-appearance: none !important; background: transparent !important; }*/
-    
+
     #navigator-toolbox::after { height: 0px !important; background: var(--bg-light) !important; }
     #liberator-separator { height: 0px !important; background: var(--bg-light) !important; border-top: 0 !important; }
-    
+
     /* MENUS */
     menuitem + menuseparator, menu + menuseparator/*, .menu-iconic-left*/ { display: none !important; }
     /*menuitem > label { margin-left: var(--tab-height) !important; }*/
@@ -193,14 +205,14 @@
 
     /* HIDE ORANGE MENU BUTTON */
     #appmenu-toolbar-button, #appmenu-button-container { display: none !important; }
-    
+
     /* HIDE STATUS BAR */
-    #status-bar, #statusbar-display, statuspanel { display: none !important; }
+    /*#status-bar, #statusbar-display, statuspanel { display: none !important; }*/
 
     /* PRIVATE BROWSING ICON HIDE */
     #main-window[privatebrowsingmode=temporary] #private-browsing-indicator,
     #main-window[privatebrowsingmode=temporary] #private-browsing-indicator-titlebar { display: none !important; }
-    
+
     /* Vimperator icon style */
     #liberator-statusline:not([customizing="true"]) { margin: -2px -2px !important; padding: 0 0 !important; height: 24px !important; }
     #liberator-statusline:not([customizing="true"]) :-moz-any(toolbarbutton) { height: 100% !important; }
@@ -208,13 +220,13 @@
         list-style-image: url(http://twily.info/img/tabview-button.png?v=2) /* 16x16 px image */ !important;
         -moz-image-region: rect(0, 0, 0, 0) !important;
     }
-    
+
     #liberator-completions { background: var(--bg-dark) !important; }
 
     /* Tabgroup margin top fix */
     #tab-view-deck #tab-view { margin: 24px 12px 12px 12px !important; }
     #tab-view-deck { background: var(--bg-light) !important; }
-    
+
     window[sizemode="fullscreen"] #liberator-statusline { display: none !important; }
     window[sizemode="fullscreen"] #liberator-bottombar  {
         margin-top: -24px !important;
@@ -228,7 +240,7 @@
 @-moz-document url(chrome://browser/content/tabview.html) {
     #content #bg, #actions, body { background: var(--bg-light) !important; }
     body * { color: var(--fg-light) !important; }
-    
+
     body .groupItem, #content #actions, body .undo {
         background: var(--bg-dark) !important;
         border: 0 !important; border-radius: 0 !important; box-shadow: 0 0 0 0 !important;
@@ -238,7 +250,7 @@
         transition: .3s ease-out !important;
     }
     #content #actions:hover { opacity: 1 !important; }
-    
+
     body .appTabTrayContainer { border: 0 !important; }
     body .tab, body .tab .thumb {
         box-shadow: 0 0 0 0 !important; border: 0 !important; border-radius: 0 !important;
@@ -253,14 +265,14 @@
 /* AGENT_SHEET */
 @-moz-document url-prefix(http://), url-prefix(https://), url-prefix(chrome://liberator/), url-prefix(file:///) {
     /* SCROLLBAR */
-    scrollbar[orient="vertical"], scrollbar thumb[orient="vertical"], 
+    scrollbar[orient="vertical"], scrollbar thumb[orient="vertical"],
     scrollbar[orient="horizontal"], scrollbar thumb[orient="horizontal"] {
-        display: none !important; /* none = hide || block = show */
+        display: block !important; /* none = hide || block = show */
     }
-    
+
     /*
     scrollbar > slider { -moz-appearance: none !important; }
-    
+
     scrollbar[orient="vertical"] { margin: -3px -7px -3px -3px !important; }
     scrollbar[orient='vertical'] > slider { background: #282333 !important; max-width: 5px !important; }
     scrollbar[orient='vertical'] > slider > thumb {
@@ -268,7 +280,7 @@
         background: #524C59 !important; border: 0 !important;
         width: 5px !important; max-width: 5px !important;
     }
-    
+
     scrollbar[orient="horizontal"] { margin: -3px -3px -7px -3px !important; }
     scrollbar[orient='horizontal'] > slider { background: #282333 !important; max-height: 5px !important; }
     scrollbar[orient='horizontal'] > slider > thumb {
@@ -276,7 +288,7 @@
         background: #524C59 !important; border: 0 !important;
         height: 5px !important; max-height: 5px !important;
     }
-    
+
     scrollbar > scrollbarbutton { -moz-appearance: none !important; border: none !important; background: none !important; }
     scrollbar[orient='vertical'] > scrollbarbutton { min-height: 0 !important; }
     scrollbar[orient='horizontal'] > scrollbarbutton { min-width: 0 !important; }
@@ -300,12 +312,12 @@
 @-moz-document regexp("about:stylish-edit.*") {
     #main-area, textbox { background: var(--bg-light) !important; }
     textbox, grid, columns, rows, separator { border: 0 !important; }
-    
+
     .devtools-toolbarbutton { background: var(--bg-dark) !important; color: var(--fg-light) !important; }
 }
 
 /*----- Fix for white flash on new tab -----*/
-tabbrowser tabpanels, #appcontent > #content { background: var(--bg-light) !important; }
+tabbrowser tabpanels, #appcontent > #content { padding: 0 !important; margin: 0 !important; background: var(--url-background) !important; }
 
 
 /* Set dark text in light textareas */
