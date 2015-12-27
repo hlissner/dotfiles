@@ -3,13 +3,17 @@ util = require('util')
 
 -- Settings
 hs.window.animationDuration = 0
+hs.urlevent.bind("reload", util.reload)
 
 -- Modules
--- require('apps')
 -- require('urls')
 -- require('locations')
 
-util.autoimport("./apps")
 
 --
+require('modules/apps')
+-- require('modules/windows')
+
+util.autoimport("./apps")
 require('bindings')
+
