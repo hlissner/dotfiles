@@ -1,5 +1,11 @@
 #!/usr/bin/env zsh
 
+# Ran into an issue where the surround module wasn't working if KEYTIMEOUT is <= 10.
+# Specifically, (delete|change)-surround immediately abort into insert mode if
+# KEYTIMEOUT <= 8, and if <= 10, then add-surround would do the same. At 11, all these
+# issues vanish. Very strange!
+export KEYTIMEOUT=15
+
 autoload -U is-at-least
 
 bindkey -v
@@ -113,7 +119,6 @@ bindkey "^[[3~"   delete-char
 bindkey "^[3;5~"  delete-char
 
 # Fix vimmish ESC
-export KEYTIMEOUT=10   # just enough time for jk
 bindkey -sM vicmd '^[' '^G'
 bindkey -rM viins '^X'
 bindkey -M viins '^X,' _history-complete-newer \
