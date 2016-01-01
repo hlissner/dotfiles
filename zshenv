@@ -19,7 +19,7 @@ fi
 path=(
     $DOTFILES/{bin,scripts}
     $DOTFILES/tmux/tmuxifier/bin
-    $HOME/.{rb,py}env/bin
+    $HOME/.{rb,py}env/{bin,shims}
     $HOME/bin
     $GOPATH/bin
     $ANDROID_HOME/platform-tools
