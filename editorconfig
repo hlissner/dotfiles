@@ -9,7 +9,7 @@ charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
 
-[*.{rb,lua,yml,yaml,json,toml,nim,coffee}]
+[*.{el,rb,lua,yml,yaml,json,toml,nim,coffee,scss}]
 indent_size = 2
 
 [*.go]
@@ -17,7 +17,3 @@ indent_style = tab
 
 [Makefile]
 indent_style = tab
-
-# Emacs snippets
-[{snippets,templates}/**]
-insert_final_newline = false
