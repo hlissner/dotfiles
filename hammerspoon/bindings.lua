@@ -14,19 +14,19 @@ function commandMode:exited()  overlay:hide() end
 
 -- Command mode keybindings
 hs.fnutils.each({
-    { '',      'escape', util.call(commandMode, 'exit') },
-    { '',      'r',      util.reload },
-    { 'shift', 'r',      function() hs.openConsole(); commandMode:exit() end },
+  { '',      'escape', util.call(commandMode, 'exit') },
+  { '',      'r',      util.reload },
+  { 'shift', 'r',      function() hs.openConsole(); commandMode:exit() end },
 }, function (item)
-    commandMode:bind(item[1], item[2], item[3])
+  commandMode:bind(item[1], item[2], item[3])
 end)
 
 -- Global keybindings
 hs.fnutils.each({
-    -- { {'cmd', 'ctrl'}, 'up',    function() print("UP"); modes.position:enter() end },
-    -- { {'cmd', 'ctrl'}, 'left',  function() print("LEFT"); resizeBRMode:enter() end },
-    -- { {'cmd', 'ctrl'}, 'right', function() print("RIGHT"); resizeTLMode:enter() end },
+  -- { {'cmd', 'ctrl'}, 'up',    function() print("UP"); modes.position:enter() end },
+  -- { {'cmd', 'ctrl'}, 'left',  function() print("LEFT"); resizeBRMode:enter() end },
+  -- { {'cmd', 'ctrl'}, 'right', function() print("RIGHT"); resizeTLMode:enter() end },
 }, function (item)
-    hs.hotkey.bind(item[1], item[2], item[3])
+  hs.hotkey.bind(item[1], item[2], item[3])
 end)
 
