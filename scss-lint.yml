@@ -1,0 +1,11 @@
+linters:
+  SingleLinePerProperty:
+    enabled: false
+  SpaceBeforeBrace:
+    allow_single_line_padding: true
+  ColorVariable:
+    enabled: false
+  NestingDepth:
+    enabled: false
+  EmptyLineBetweenBlocks:
+    enabled: false
