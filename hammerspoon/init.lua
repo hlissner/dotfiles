@@ -2,7 +2,7 @@
 util = require('util')
 
 -- Settings
-hs.window.animationDuration = 0
+hs.window.animationDuration = 0.1
 hs.urlevent.bind("reload", util.reload)
 
 -- Modules
