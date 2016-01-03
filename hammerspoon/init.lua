@@ -12,7 +12,7 @@ hs.urlevent.bind("reload", util.reload)
 
 --
 require('modules/apps')
--- require('modules/windows')
+require('modules/windows')
 
 util.autoimport("./apps")
 require('bindings')
