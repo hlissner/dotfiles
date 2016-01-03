@@ -81,6 +81,7 @@ function window:slide (direction, amount)
   self:move(f)
 end
 
+-- TODO Multiple monitor support
 function window:resizeIn (direction, amount)
   local f = currentFrame()
   local s = currentScreenFrame()
@@ -111,6 +112,7 @@ function window:resizeIn (direction, amount)
   self:move(f)
 end
 
+-- TODO Improve multiple monitor support
 function window:resizeOut (direction, amount)
   local f = currentFrame()
   local s = currentScreenFrame()
@@ -137,6 +139,7 @@ function window:resizeOut (direction, amount)
       f.x = f.x - amount
     end
   elseif direction == self.direction.right then
+    -- FIXME If on other monitor, extends past boundaries
     if amount == true then
       f.w = s.w - f.x
     else
