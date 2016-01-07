@@ -16,8 +16,10 @@ local function tmuxpresskey(mod, key)
   return false
 end
 
+-- App settings
+local iterm2
 App.new("iTerm2")
-   .onInit(function (self, app)
+   .onLaunched(function (self, app)
        -- cmd+N for switching tmux windows
        for i = 1,9 do
          i = tostring(i)

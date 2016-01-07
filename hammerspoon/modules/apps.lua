@@ -28,6 +28,13 @@ App.new = function(name)
   end
   self.onLaunched = function(fn)
     self.onLaunchedFn = fn
+    local app = hs.application.find(self.name)
+    if app then
+      self.launch(app)
+      if app:isFrontmost() then
+        self.activate(app)
+      end
+    end
     return self
   end
   self.onTerminated = function(fn)
