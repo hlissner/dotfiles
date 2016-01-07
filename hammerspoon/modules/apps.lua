@@ -77,7 +77,11 @@ App.new = function(name)
   end
 
   self.disableBinds = function(self)
-    hs.fnutils.each(self.bindings, function(b) b.key:disable() end)
+    hs.fnutils.each(self.bindings, function(b)
+      if b and b.key then
+          b.key:disable()
+      end
+    end)
   end
 
   self.clearBinds = function(self)
