@@ -1,3 +1,6 @@
+exclude: '/_sass/**'
+exclude: '/css/**'
+
 linters:
   SingleLinePerProperty:
     enabled: false
@@ -9,3 +12,10 @@ linters:
     enabled: false
   EmptyLineBetweenBlocks:
     enabled: false
+  VendorPrefix:
+    enabled: false
+  SingleLinePerSelector:
+    enabled: false
+  Comment:
+    enabled: false
+
