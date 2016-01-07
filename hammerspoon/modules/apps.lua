@@ -7,22 +7,17 @@ App.new = function(name)
   self.name = name
   self.bindings = {}
 
-  self.onInitFn = nil
   self.onActivateFn = nil
   self.onDeactivateFn = nil
   self.onLaunchedFn = nil
   self.onTerminatedFn = nil
 
   self.bind = function(mods, key, action, predicate)
-    table.insert(self.bindings,
-                 {key = hs.hotkey.new(mods, key, action), predicate = predicate})
+    table.insert(self.bindings, {key = hs.hotkey.new(mods, key, action),
+                                 predicate = predicate})
     return self
   end
 
-  self.onInit = function(fn)
-    fn(self)
-    return self
-  end
   self.onActivate = function(fn)
     self.onActivateFn = fn
     return self
@@ -66,11 +61,11 @@ App.new = function(name)
 
   self.enableBinds = function(self)
     hs.fnutils.each(self.bindings, function(b)
-                      if b.predicate and not b.predicate() then
-                        b.key:disable()
-                      else
-                        b.key:enable()
-                      end
+      if b.predicate and not b.predicate() then
+        b.key:disable()
+      else
+        b.key:enable()
+      end
     end)
   end
 
@@ -79,7 +74,7 @@ App.new = function(name)
   end
 
   self.clearBinds = function(self)
-    hs.fnutils.each(self.bindings, function(b) b.key:delete() end)
+    self:disableBinds()
     self.bindings = {}
   end
 
