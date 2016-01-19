@@ -9,7 +9,7 @@ charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
 
-[*.{el,rb,lua,yml,yaml,json,toml,nim,coffee,scss,slim,jade}]
+[*.{el,rb,lua,yml,yaml,json,toml,nim,coffee,scss,slim,jade,html}]
 indent_size = 2
 
 [*.go]
