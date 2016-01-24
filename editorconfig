@@ -15,5 +15,5 @@ indent_size = 2
 [*.go]
 indent_style = tab
 
-[Makefile]
+[{Makefile,gitconfig}]
 indent_style = tab
