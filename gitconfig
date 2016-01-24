@@ -36,6 +36,7 @@
 	ammend = commit --amend
 	exec = "!exec "
 	squash = rebase -i origin/master
+	orphan = checkout --orphan
 
 	# data analysis
 	authors = !git log --format="%aN" | sort -u
