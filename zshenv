@@ -13,18 +13,18 @@ export RUBYOPT=rubygems
 
 # OSX Only
 if [[ -x /usr/libexec/path_helper ]]; then
-    eval $(/usr/libexec/path_helper -s)
+  eval $(/usr/libexec/path_helper -s)
 fi
 path=(
-    $DOTFILES/{bin,scripts}
-    $DOTFILES/tmux/tmuxifier/bin
-    $HOME/.{rb,py}env/{bin,shims}
-    $HOME/bin
-    $GOPATH/bin
-    $ANDROID_HOME/platform-tools
-    $ANDROID_HOME/tools
-    /Library/TeX/texbin
-    $path
+  $DOTFILES/{bin,scripts}
+  $DOTFILES/tmux/tmuxifier/bin
+  $HOME/.{rb,py}env/{bin,shims}
+  $HOME/bin
+  $GOPATH/bin
+  $ANDROID_HOME/platform-tools
+  $ANDROID_HOME/tools
+  /Library/TeX/texbin
+  $path
 )
 
 local FUNC_DIR="$DOTFILES/zsh/functions"
