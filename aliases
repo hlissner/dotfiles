@@ -196,6 +196,8 @@ alias rk='rake'
 alias rkg='rake -g'
 alias mk='make'
 alias dk='docker'
+alias dkm='docker-machine'
+alias dkc='docker-compose'
 alias exe='exercism'
 alias c11='clang++ -std=c++11'
 
