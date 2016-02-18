@@ -36,26 +36,26 @@ App.new("iTerm2")
        -- new tmux window
        self.bind({'cmd'}, 'n', function()
          if not tmuxPressKey({}, 'c') then
-           App.find("iTerm2"):selectMenuItem({"Shell", "New Window"})
+           app:selectMenuItem({"Shell", "New Window"})
          end
        end)
 
        -- new window
        self.bind({'cmd', 'shift'}, 'n', function()
-         App.find("iTerm2"):selectMenuItem({"Shell", "New Window"})
+         app:selectMenuItem({"Shell", "New Window"})
        end)
 
        -- close pane/window
        self.bind({'cmd'}, 'w', function()
          if not tmuxPressKey({}, 'x') then
-           App.find("iTerm2"):selectMenuItem({"Shell", "Close"})
+           app:selectMenuItem({"Shell", "Close"})
          end
        end)
 
        -- detach tmux before quitting iterm
        self.bind({'cmd'}, 'q', function()
          if not tmuxPressKey({}, 'd') then
-           App.find("iTerm2"):kill()
+           app:kill()
          end
        end)
      end)
