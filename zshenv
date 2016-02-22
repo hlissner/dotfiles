@@ -29,7 +29,7 @@ path=(
 
 local FUNC_DIR="$DOTFILES/zsh/functions"
 fpath=(
-  ~/.zsh/completion
+  ~/.zsh/completions
   "$FUNC_DIR"
   $fpath
 )
