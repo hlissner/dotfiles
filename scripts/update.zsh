@@ -9,8 +9,6 @@ up-to-date() {
     [[ "$LOCAL" == "$REMOTE" ]]
 }
 
-sudo softwareupdate -i -a
-
 (( $+commands[brew] )) && {
     echo "Updating homebrew"
     { brew update; brew upgrade --all; brew cleanup } | indent
@@ -27,19 +25,14 @@ do
     [[ -d "$HOME/.${i}env" ]] && {
         echo "Updating ${i}env"
         {
-            if ! up-to-date; then
-                echo "UPDATING"
-                git pull > /dev/null
-            fi
+            git pull > /dev/null
 
             {
                 for plugin in "$HOME"/.${i}env/plugins/*
                 do
                     cd "$plugin"
-                    if ! up-to-date; then
-                        echo "+ UPDATING `basename ${plugin}`"
-                        git pull > /dev/null
-                    fi
+                    echo "+ `basename ${plugin}`"
+                    git pull > /dev/null
                 done
             } 2&>1 | indent
         } 2&>1 | indent
