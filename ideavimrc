@@ -1,8 +1,0 @@
-set hlsearch
-set gdefault
-set smartcase
-set scroll=5
-
-map <M-j> 5j
-map <M-k> 5k
-map <Tab> %
