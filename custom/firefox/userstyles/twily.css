@@ -17,7 +17,7 @@
     --bg-light: #524C59; --bg-dark: #282333;
     --fg-light: #D6CCDC; --fg-dark: #AAA5AD;
     --tab-triangle-correction: -1px;
-    --tab-height: 29px; --tab-icon-size: 16px; --tab-strip-margin: -25px; --tab-overlap: -5px;
+    --tab-height: 29px; --tab-icon-size: 16px; --tab-strip-margin: -8px; --tab-overlap: -5px;
     --tab-fonts: "Ubuntu Mono",monospace,"Dejavu Sans"; --tab-font-size: 9.5pt;
     --tab-text-align: left; /* left | center | right */
     --tab-triangle: none; /* block | none */
@@ -37,7 +37,7 @@
     statuspanel label { background-color: var(--bg-dark); }
 
 
-    #downloads-button, #tabview-button { margin-top: -2px !important; padding-left: 10px !important; opacity: 0.5; }
+    /*#downloads-button, #tabview-button { margin-top: -2px !important; padding-left: 10px !important; opacity: 0.5; }*/
 
     #titlebar, #titlebar-placeholder-on-TabsToolbar-for-captions-buttons { display: none !important; }
 
@@ -87,7 +87,7 @@
         position: var(--url-position) !important; bottom: 0px !important;
         width: 100% !important; height: var(--url-height) !important;
         min-height: var(--url-height) !important; max-height: var(--url-height) !important;
-        margin: 0 0 0px 0 !important;
+        margin: 0 0 0 0 !important;
 
         /* --- Uncomment the section below to attach the url-bar to the tab-bar [EXPERIMENTAL] (Require a line in "#TabsToolbar" below) --- */
         /*
@@ -98,8 +98,9 @@
     }
        #nav-bar-customization-target { width: 100% !important; }
           #urlbar-wrapper {
-              width: 100% !important; margin-top: 0px !important; /* --- adjust margin-top to ~ -5px if you experience gap --- */
+              width: 100.5% !important; margin-top: 0px !important; /* --- adjust margin-top to ~ -5px if you experience gap --- */
               position: absolute !important; top: 0 !important; left: 0 !important;
+              padding-left: 6px;
               border-bottom: 0px solid var(--bg-light) !important;
           }
              #urlbar-icons { padding-right: 5px !important; }
@@ -176,7 +177,7 @@
     #TabsToolbar, #tabbrowser-tabs {
         -moz-appearance: none !important;
         height: var(--tab-height) !important; min-height: var(--tab-height)!important;
-        margin: 0 -2px 0 var(--tab-strip-margin) !important;
+        margin: 0 -2px 0px var(--tab-strip-margin) !important;
         padding-right: 0 !important;
         background: var(--bg-dark) !important;
 
