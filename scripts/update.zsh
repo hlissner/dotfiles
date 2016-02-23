@@ -34,8 +34,8 @@ do
                     echo "+ `basename ${plugin}`"
                     git pull > /dev/null
                 done
-            } 2&>1 | indent
-        } 2&>1 | indent
+            } 2>&1 | indent
+        } 2>&1 | indent
     }
 done
 
@@ -45,6 +45,6 @@ done
         source "$HOME/.zsh/zgen/zgen.zsh"
         zgen selfupdate
         zgen update
-    } 2&>1 | indent
+    } 2>&1 | indent
 }
 
