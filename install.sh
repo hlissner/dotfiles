@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 
-_clone() { [[ -d "$2" ]] || git clone --recursve "$1" "$2"; }
+_clone() { [ -d "$2" ] || git clone --recursive "$1" "$2"; }
 
 # In case this file was run via curl
 _clone https://github.com/hlissner/dotfiles ~/.dotfiles
+_clone https://github.com/tarjoilija/zgen ~/.zgen
+_clone https://github.com/jimeh/tmuxifier ~/.tmuxifier
 
 shopt -s extglob
 for rcfile in "${HOME}"/.dotfiles/!(.*|bin|scripts|*.md|install.sh)

@@ -1,11 +1,16 @@
 ### zshrc
 # By Henrik Lissner <henrik@lissner.net>
 
+if [ ! -d ~/.zgen ]; then
+    echo "Zgen isn't installed! Run install.sh"
+    exit 1
+fi
+
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 ZGEN_AUTOLOAD_COMPINIT=true
 [[ "${USER}" == "root" ]] && ZGEN_AUTOLOAD_COMPINIT=false
 
-load zsh/zgen/zgen.zsh
+source ~/.zgen/zgen.zsh
 if ! zgen saved; then
     echo "Creating zgen save"
     [[ -d "$CACHE_DIR" ]] && rm -f "$CACHE_DIR/*"
