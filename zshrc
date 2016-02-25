@@ -29,7 +29,7 @@ fi
 
 cache rbenv init - --no-rehash
 cache pyenv init - --no-rehash
-if is-interative; then
+if is-interactive; then
     is-callable fasd && cache fasd --init posix-alias zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zsh-wcomp-install
     is-callable tmuxifier && cache tmuxifier init -
 fi
