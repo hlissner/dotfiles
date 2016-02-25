@@ -15,15 +15,3 @@ do
     [ "$1" == "--force" ] && rm -f "$filep"
     [ -e "$filep" ] || ln -vs "$rcfile" "$filep"
 done
-
-# Install fzf and fasd
-case $OSTYPE in
-    darwin*)
-        brew install fzf fasd
-        ;;
-    linux*)
-        _clone https://github.com/junegunn/fzf ~/.fzf
-        _clone https://github.com/clvv/fasd ~/fasd && \
-            cd ~/fasd && make install && rm -rf ~/fasd
-        ;;
-esac
