@@ -6,6 +6,7 @@ if [ ! -d ~/.zgen ]; then
     exit 1
 fi
 
+TMUXIFIER="$HOME/.tmuxifier"
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 ZGEN_AUTOLOAD_COMPINIT=true
 [[ "${USER}" == "root" ]] && ZGEN_AUTOLOAD_COMPINIT=false
@@ -27,6 +28,13 @@ if ! zgen saved; then
     zgen save
 fi
 
+source ~/.zsh/config
+if is-interactive; then
+    source ~/.zsh/keybinds
+    source ~/.zsh/prompt
+    source ~/.zsh/completion
+fi
+
 cache rbenv init - --no-rehash
 cache pyenv init - --no-rehash
 if is-interactive; then
@@ -34,12 +42,6 @@ if is-interactive; then
     cache tmuxifier init -
 fi
 
-source ~/.zsh/config
-if is-interactive; then
-    source ~/.zsh/keybinds
-    source ~/.zsh/prompt
-    source ~/.zsh/completion
-fi
 source ~/.zsh/aliases
 
 # Done!

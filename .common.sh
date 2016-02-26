@@ -24,5 +24,3 @@ cache() {
     fi
     source $cache
 }
-
-source "$DOTFILES/aliases"

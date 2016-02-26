@@ -27,8 +27,7 @@ path=(
 )
 
 fpath=(
-  ~/.zsh/completions
-  "$DOTFILES/zsh/functions"
+  ~/.zsh/{functions,completions}
   $fpath
 )
 
