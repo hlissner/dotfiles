@@ -123,7 +123,6 @@ zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<-
 
 mycompdef() { is-callable "$1" && compdef ${@[2,-1]} }
 
-mycompdef fasd _fasd_zsh_word_complete_d z=fasd
 mycompdef g    _hub g=hub
 mycompdef o    o=open
 mycompdef take take=mkdir

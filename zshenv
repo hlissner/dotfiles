@@ -17,20 +17,18 @@ if [[ -x /usr/libexec/path_helper ]]; then
 fi
 path=(
   $DOTFILES/{bin,scripts}
-  $DOTFILES/tmux/tmuxifier/bin
+  $HOME/.tmuxifier/bin
   $HOME/.{rb,py}env/{bin,shims}
   $HOME/bin
   $GOPATH/bin
   $ANDROID_HOME/platform-tools
   $ANDROID_HOME/tools
-  /Library/TeX/texbin
   $path
 )
 
-local FUNC_DIR="$DOTFILES/zsh/functions"
 fpath=(
   ~/.zsh/completions
-  "$FUNC_DIR"
+  "$DOTFILES/zsh/functions"
   $fpath
 )
 

@@ -30,14 +30,16 @@ fi
 cache rbenv init - --no-rehash
 cache pyenv init - --no-rehash
 if is-interactive; then
-    is-callable fasd && cache fasd --init posix-alias zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zsh-wcomp-install
-    is-callable tmuxifier && cache tmuxifier init -
+    cache fasd --init posix-alias zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zsh-wcomp-install
+    cache tmuxifier init -
 fi
 
-load  zsh/config
-iload zsh/keybinds
-iload zsh/prompt
-load  zsh/aliases
-iload zsh/completion
+source ~/.zsh/config
+if is-interactive; then
+    source ~/.zsh/keybinds
+    source ~/.zsh/prompt
+    source ~/.zsh/completion
+fi
+source ~/.zsh/aliases
 
 # Done!

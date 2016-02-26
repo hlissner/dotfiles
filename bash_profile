@@ -26,12 +26,13 @@ export PATH
 
 ## Bash rcfiles ###########################
 
+source ~/.bash/config
+
 cache rbenv init - --no-rehash
 cache pyenv init - --no-rehash
-is-interactive && cache fasd --init posix-alias bash-hook bash-ccomp bash-ccomp-install
-is-callable tmuxifier && is-interactive && cache tmuxifier init -
+if is-interactive; then
+    cache fasd --init posix-alias bash-hook bash-ccomp bash-ccomp-install
+    cache tmuxifier init -
+    source ~/.bash/prompt
+fi
 
-iload bash/fzf
-load  bash/aliases
-load  bash/config
-iload bash/prompt

@@ -8,9 +8,6 @@ is-interactive() { [[ $- == *i* ]]; }
 is-root() { [[ "$UID" -eq 0 ]]; }
 is-ssh() { [[ "$SSH_CONNECTION" != '' ]]; }
 
-load() { source "$DOTFILES/$1"; }
-iload() { is-interactive && load "$1"; }
-
 cache() {
     if [[ -z "$CACHE_DIR" ]]; then
         >&2 echo "Cache not set!"
@@ -28,3 +25,4 @@ cache() {
     source $cache
 }
 
+source "$DOTFILES/aliases"
