@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-[[ $(tmux display-message -p "#{?session_attached,1,0}") == "1" ]]
