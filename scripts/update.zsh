@@ -14,7 +14,7 @@ up-to-date() {
     { brew update; brew upgrade --all; brew cleanup } | indent
 }
 
-[[ -f "$HOME/.emacs.d/Makefile" ]] && {
+[ -f "$HOME/.emacs.d/Makefile" ] && {
     echo -n "Updating emacs"
     cd "$HOME/.emacs.d" && make update | indent
 }
@@ -22,11 +22,10 @@ up-to-date() {
 local env=(rb py)
 for i in $env
 do
-    [[ -d "$HOME/.${i}env" ]] && {
+    [ -d "$HOME/.${i}env" ] && {
         echo "Updating ${i}env"
         {
             git pull > /dev/null
-
             {
                 for plugin in "$HOME"/.${i}env/plugins/*
                 do
@@ -39,10 +38,10 @@ do
     }
 done
 
-[[ -d ~/.zsh/zgen ]] && {
+[ -d ~/.zsh/zgen ] && {
     echo "Updating zgen"
     {
-        source "$HOME/.zsh/zgen/zgen.zsh"
+        source "$HOME/.zgen/zgen.zsh"
         zgen selfupdate
         zgen update
     } 2>&1 | indent
