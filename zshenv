@@ -19,6 +19,7 @@ path=(
   $DOTFILES/{bin,scripts}
   $HOME/.tmuxifier/bin
   $HOME/.{rb,py}env/{bin,shims}
+  $HOME/.composer/vendor/bin
   $HOME/bin
   $GOPATH/bin
   $ANDROID_HOME/platform-tools
