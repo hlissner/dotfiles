@@ -1,6 +1,5 @@
 # Pry config
 
-Pry.config.theme = 'monokai'
 if ENV['TERM'] == 'emacs'
   Pry.config.color = false
   Pry.config.pager = false
