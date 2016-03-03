@@ -1,5 +1,3 @@
-# Dotfiles of a spaghetti code warrior
+# Henrik's dotfiles
 
-My mac and ubuntu/debian dotfiles.
-
-Yes. They bite.
+They bite.
