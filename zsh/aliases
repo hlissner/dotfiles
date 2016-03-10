@@ -154,6 +154,9 @@ alias rkg='rake -g'
 alias mk='make'
 alias exe='exercism'
 alias c11='clang++ -std=c++11'
+alias dk='docker'
+alias dkm='docker-machine'
+alias dkc='docker-compose'
 
 case $OSTYPE in
     "darwin"*) # is OSX
