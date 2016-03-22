@@ -8,15 +8,12 @@ fi
 
 TMUXIFIER="$HOME/.tmuxifier"
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
-ZGEN_AUTOLOAD_COMPINIT=true
-[[ "${USER}" == "root" ]] && ZGEN_AUTOLOAD_COMPINIT=false
 
 source ~/.zgen/zgen.zsh
 if ! zgen saved; then
     echo "Creating zgen save"
     [[ -d "$CACHE_DIR" ]] && rm -f "$CACHE_DIR/*"
 
-    zgen load StackExchange/blackbox
     zgen load thewtex/tmux-mem-cpu-load
     zgen load joepvd/zsh-hints
 
