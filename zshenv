@@ -24,6 +24,7 @@ path=(
   $GOPATH/bin
   $ANDROID_HOME/platform-tools
   $ANDROID_HOME/tools
+  /usr/local/{,s}bin
   $path
 )
 
