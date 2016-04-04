@@ -1,6 +1,6 @@
 # Pry config
 
-if ENV['TERM'] == 'emacs'
+if ENV['TERM'] == 'dumb'
   Pry.config.color = false
   Pry.config.pager = false
   Pry.config.auto_indent = false
@@ -39,4 +39,8 @@ end
 def time(repetitions = 100, &block)
   require 'benchmark'
   Benchmark.bm { |b| b.report { repetitions.times(&block) } }
+end
+
+def run(file)
+  require "#{Dir.pwd}/#{file}"
 end
