@@ -14,9 +14,6 @@ if ! zgen saved; then
     echo "Creating zgen save"
     [[ -d "$CACHE_DIR" ]] && rm -f "$CACHE_DIR/*"
 
-    zgen load thewtex/tmux-mem-cpu-load
-    zgen load joepvd/zsh-hints
-
     zgen load hlissner/zsh-autopair "autopair.zsh"
     zgen load zsh-users/zsh-history-substring-search
     zgen load zsh-users/zsh-completions src
