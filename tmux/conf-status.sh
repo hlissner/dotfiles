@@ -24,13 +24,7 @@ else
         HOST=$(color bg black)$(color fg yellow)
     fi
 
-    STATUS="$DELIM<<$RESET"
-    if command -v 'tmux-mem-cpu-load' >/dev/null; then
-        STATUS+=$SYSINFO
-        STATUS+=' '$(tmux-mem-cpu-load -i 15)
-        STATUS+=$RESET
-    fi
-    STATUS+="$DELIM < $RESET"
+    STATUS="$DELIM<<$RESET "
     STATUS+=$IP$(dig +short myip.opendns.com @208.67.222.222)" $RESET"
     STATUS+=$HOST' '$HOSTNAME' '
 fi
