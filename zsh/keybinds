@@ -53,6 +53,7 @@ bindkey -M viins '^b' backward-word
 bindkey -M viins '^g' push-line-or-edit
 bindkey -M viins '^a' beginning-of-line
 bindkey -M viins '^e' end-of-line
+bindkey -M viins '^d' push-line-or-edit
 
 bindkey -M viins ' '  magic-space
 bindkey -M vicmd '^k' kill-line
