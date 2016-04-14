@@ -39,7 +39,6 @@ export BROWSER='open'
 # Editors
 export EDITOR=$(is-callable nvim && echo 'nvim' || echo 'vim')
 export VISUAL=$EDITOR
-export PAGER='less'
 
 # export CC=/usr/bin/clang
 # export CXX=/usr/bin/clang++
