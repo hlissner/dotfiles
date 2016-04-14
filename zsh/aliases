@@ -36,6 +36,15 @@ fi
 
 ## Fast folder navigation ####################################################
 alias b="back"
+back() { # Jump to a parent directory
+    dir=$({
+    _path=$PWD
+    while [[ -n "$_path" && "$_path" != "/" ]]; do
+        _path=$(dirname "$_path")
+        echo "$_path"
+    done
+    } | grep -i "$*" | tail -1) && cd "$dir"
+}
 
 ## Redefined tools ###########################################################
 # Always enable colored `grep` output
