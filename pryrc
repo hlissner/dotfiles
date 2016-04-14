@@ -1,6 +1,6 @@
 # Pry config
 
-if ENV['TERM'] == 'dumb'
+if ['dumb', 'emacs'].include? ENV['TERM']
   Pry.config.color = false
   Pry.config.pager = false
   Pry.config.auto_indent = false
