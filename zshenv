@@ -29,7 +29,7 @@ path=(
 )
 
 fpath=(
-  ~/.zsh/{functions,completions}
+  ~/.zsh/completions
   $fpath
 )
 
