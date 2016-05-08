@@ -7,6 +7,7 @@ if [ ! -d ~/.zgen ]; then
 fi
 
 TMUXIFIER="$HOME/.tmuxifier"
+TMUXIFIER_LAYOUT_PATH="$HOME/.tmux/layouts"
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 
 source ~/.zgen/zgen.zsh
