@@ -173,7 +173,7 @@ case $OSTYPE in
     "darwin"*) # is OSX
         # Homebrew
         alias br='brew'
-        alias bru='brew update && brew upgrade --all'
+        alias bru='brew update && brew upgrade --all && brew cleanup'
         alias brc='brew cask'
         alias codekit='open -a CodeKit'
         ;;
