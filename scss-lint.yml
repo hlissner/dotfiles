@@ -18,4 +18,8 @@ linters:
     enabled: false
   Comment:
     enabled: false
+  QualifyingElement:
+    enabled: false
+  IdSelector:
+    enabled: false
 
