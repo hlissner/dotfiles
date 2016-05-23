@@ -1,7 +1,4 @@
-## aliases
-#
-# Aliases that apply regardless of shell. Loaded from ./.${SHELL}/aliases
-#
+#!/usr/bin/env zsh
 autoload -U zmv
 
 alias ?='since @$last'
@@ -11,6 +8,7 @@ zman() { PAGER="less -g -s '+/^       "$1"'" man zshall; }
 # Compilers, interpretors 'n builders
 alias rk="noglob ${aliases[rk]:-rake}"
 alias rkg="noglob ${aliases[rkg]:-rake -g}"
+
 
 ## Named Directories #########################################################
 
@@ -244,11 +242,6 @@ if is-callable 'tmux'; then
             tmux switch-client -t "$name"
             tmux display-message "Session #S created"
         }
-        # ts() {
-        #     local session=$(tmux list-sessions -F "#{session_name}" | \
-        #         fzf --query="$1" --select-1 --exit-0) &&
-        #         tmux switch-client -t "$session"
-        # }
     else
         t() {
             if (( $# > 0 )); then
