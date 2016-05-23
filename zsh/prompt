@@ -92,10 +92,10 @@ prompt_init() {
     if [[ -z "$SSH_CONNECTION" ]]
     then
         N_MODE="%F{blue}## "
-        I_MODE=">> "
+        I_MODE="$ "
     else
         N_MODE="%F{blue}### "
-        I_MODE=">>> "
+        I_MODE="& "
     fi
 
     RPROMPT='%F{cyan}${vcs_info_msg_0_}$(prompt_git_dirty)'  # Branch + dirty indicator
