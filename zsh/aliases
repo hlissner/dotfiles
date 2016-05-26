@@ -61,6 +61,7 @@ alias wget='wget -c'                # Resume dl if possible
 alias rsyncd='rsync -va --delete'   # Hard sync two directories
 alias mkdir='mkdir -p'
 alias gurl='curl --compressed'
+alias ydl='youtube-dl'
 take() { mkdir "$1" && cd "$1"; }
 
 
