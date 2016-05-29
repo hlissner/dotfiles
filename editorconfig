@@ -12,7 +12,7 @@ insert_final_newline = true
 [{Vagrant,Cap,Rake,Gem}file]
 indent_size = 2
 
-[*.{rb,cr,lua,y{a,}ml,json,toml,nim,coffee,css,s{a,c}ss,slim,jade,pug,html}]
+[*.{rb,cr,lua,y{a,}ml,json,toml,nim,coffee,css,s{a,c}ss,styl,slim,jade,pug,html}]
 indent_size = 2
 
 [*.go]
