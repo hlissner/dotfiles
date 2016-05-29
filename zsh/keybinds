@@ -50,7 +50,7 @@ bindkey -M viins '^s' history-incremental-pattern-search-backward
 bindkey -M viins '^u' backward-kill-line
 bindkey -M viins '^w' backward-kill-word
 bindkey -M viins '^b' backward-word
-bindkey -M viins '^f' backward-word
+bindkey -M viins '^f' forward-word
 bindkey -M viins '^g' push-line-or-edit
 bindkey -M viins '^a' beginning-of-line
 bindkey -M viins '^e' end-of-line
