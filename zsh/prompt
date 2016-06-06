@@ -91,11 +91,11 @@ prompt_init() {
     ## Vim cursors
     if [[ -z "$SSH_CONNECTION" ]]
     then
-        N_MODE="%F{blue}## "
-        I_MODE="$ "
+        N_MODE="%F{green}## "
+        I_MODE="%(?.%F{blue}.%F{red})λ "
     else
-        N_MODE="%F{blue}### "
-        I_MODE="& "
+        N_MODE="%F{red}### "
+        I_MODE="%(?.%F{magenta}.%F{red})λ "
     fi
 
     RPROMPT='%F{cyan}${vcs_info_msg_0_}$(prompt_git_dirty)'  # Branch + dirty indicator
@@ -103,8 +103,8 @@ prompt_init() {
     RPROMPT+='%f' # end
 
     PROMPT='$prompt_username'  # username
-    PROMPT+='%F{blue}%~ %f'      # path
-    PROMPT+='%(?.%F{green}.%F{red})${PROMPT_SYMBOL:-$ }' # Prompt (red if $? == 0)
+    PROMPT+='%F{cyan}%~ %f'      # path
+    PROMPT+='${PROMPT_SYMBOL:-$ }' # Prompt (red if $? == 0)
     PROMPT+='%f' #end
 }
 
