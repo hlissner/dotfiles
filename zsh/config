@@ -1,6 +1,9 @@
 #!/usr/bin/env zsh
 
-export GIT_MERGE_AUTOEDIT=no
+## Plugins
+TMUXIFIER="$HOME/.tmuxifier"
+TMUXIFIER_LAYOUT_PATH="$HOME/.tmux/layouts"
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 
 ## General
 # Treat these characters as part of a word.

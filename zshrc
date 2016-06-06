@@ -6,9 +6,7 @@ if [ ! -d ~/.zgen ]; then
     exit 1
 fi
 
-TMUXIFIER="$HOME/.tmuxifier"
-TMUXIFIER_LAYOUT_PATH="$HOME/.tmux/layouts"
-ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
+source ~/.zsh/config
 
 source ~/.zgen/zgen.zsh
 if ! zgen saved; then
@@ -23,7 +21,6 @@ if ! zgen saved; then
     zgen save
 fi
 
-source ~/.zsh/config
 if is-interactive; then
     source ~/.zsh/keybinds
     source ~/.zsh/prompt
