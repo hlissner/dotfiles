@@ -38,7 +38,7 @@ do
             do
                 cd "$plugin"
                 echo "+ `basename ${plugin}`"
-                git pull > /dev/null
+                git pull
             done
         } 2>&1 | indent
     }
