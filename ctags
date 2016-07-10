@@ -1,0 +1,11 @@
+-e
+--langdef=scala
+--langmap=scala:.scala
+--regex-scala=/\bclass\s+(\w+)/\1/c,classes/
+--regex-scala=/\bobject\s+(\w+)/\1/c,objects/
+--regex-scala=/\btrait\s+(\w+)/\1/t,traits/
+--regex-scala=/\btype\s+(\w+)/\1/T,types/
+--regex-scala=/\bdef\s+(\w+)/\1/m,methods/
+--regex-scala=/\bval\s+(\w+)/\1/l,constants/
+--regex-scala=/\bvar\s+(\w+)/\1/l,variables/
+--regex-scala=/\bpackage\s+((\w|[.])+)/\1/p,packages/
