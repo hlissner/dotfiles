@@ -13,7 +13,7 @@ if [ "$(name)" == "Darwin" ]; then
 fi
 
 shopt -s extglob
-for rcfile in "${HOME}"/.dotfiles/!(.*|bin|scripts|*.md|install.sh)
+for rcfile in "${HOME}"/.dotfiles/!(.*|bin|scripts|*.md|LICENSE|install.sh)
 do
     filep="$HOME/."$(basename "$rcfile")
 
