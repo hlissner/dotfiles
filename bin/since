@@ -13,6 +13,8 @@ set -e
 date=date
 if [[ "$OSTYPE" == darwin* ]]; then
     date=gdate
+elif [[ "$OSTYPE" == linux* ]]; then
+    date=date
 else
     echo "Unsupported system"
     exit 1
