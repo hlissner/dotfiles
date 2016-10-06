@@ -177,8 +177,12 @@ case $OSTYPE in
         alias codekit='open -a CodeKit'
         ;;
     "linux"*)
-        alias apt='sudo apt-get'
-        alias aptu='sudo apt-get update && sudo apt-get upgrade'
+        is-callable apt-get && \
+            alias apt='sudo apt-get' && \
+            alias aptu'sudo apt-get update && sudo apt-get upgrade'
+        is-callable pacman && \
+            alias pac='sudo pacman' && \
+            alias pacu='sudo pacman -Syu'
         ;;
     "cygwin"*)
         ;;
