@@ -1,0 +1,21 @@
+#!/bin/bash
+
+case "$OSTYPE" in
+    darwin*)
+        brew install fasd
+        ;;
+    linux*)
+        if [ -f /etc/arch-release ]
+        then
+            mkdir -p $HOME/build && cd $HOME/build
+            git clone https://aur.archlinux.org/fasd.git fasd
+            cd fasd
+            makepkg -sri
+        elif [ -f /etc/debian_version ];
+        then
+            sudo add-apt-repository ppa:aacebedo/fasd
+            sudo apt update
+            sudo apt install fasd
+        fi
+        ;;
+esac

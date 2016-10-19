@@ -1,0 +1,46 @@
+#!/bin/bash
+
+PWD=$(dirname $0)
+
+sudo pacman --noconfirm -S \
+    wget curl make tmux rsync tree the_silver_searcher bc \
+    wpa_supplicant wpa_actiond dhcpcd netctl dialog \
+    xorg-init xorg-server xorg-xandr xorg-xrdb xorg-xmodmap xorg-fonts-75dpi xorg-xfd xdotool \
+    lightdm bspwm sxhkd compton feh \
+    rofi rxvt-unicode firefox mpd ncmpcpp \
+    obs-studio youtube-dl
+
+install() {
+    local cmd="$1"
+    local repo="$2"
+
+    local dest=$(basename -s .git "$repo")
+    command -v "$cmd" >/dev/null && return
+    TEMP=$(mktemp -d)
+    cd "$TEMP"
+    if [ ! -d "$dest" ]
+    then
+        git clone "$repo" "$dest"
+        pushd "$dest"
+        makepkg -sri --noconfirm
+        popd
+    fi
+    rm -rf "$TEMP"
+}
+
+# Bar utilities
+install lemonbar https://aur.archlinux.org/lemonbar-xft-git.git
+install xtitle https://aur.archlinux.org/xtitle.git
+install clock https://aur.archlinux.org/sutils-git.git
+install xdo https://aur.archlinux.org/xdo-git.git
+install siji https://aur.archlinux.org/siji-git.git
+
+# WM Greeter
+if [ ! -d /usr/share/lightdm-webkit ]
+then
+    install "" https://aur.archlinux.org/lightdm-webkit-greeter.git
+fi
+
+# Utilities
+install git-crypt https://aur.archlinux.org/git-crypt.git
+install fasd https://aur.archlinux.org/fasd-git.git

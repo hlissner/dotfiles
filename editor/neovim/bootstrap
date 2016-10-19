@@ -1,0 +1,25 @@
+#!/bin/bash
+
+command -v nvim >/dev/null && exit
+
+case "$OSTYPE" in
+    darwin*)
+        brew tap neovim/neovim
+        brew install make neovim
+        ;;
+    linux*)
+        if [ -f /etc/arch-release ]; then
+            sudo pacman --noconfirm -S make neovim
+        elif [ -f /etc/debian_version ]; then
+            # TODO
+            exit 1
+        fi
+        ;;
+esac
+
+if [ ! -d "$HOME/.vim" ]
+then
+    git clone --recursive "hlissner/.vim" "$HOME/.vim"
+    cd "$HOME/.vim"
+    make install
+fi

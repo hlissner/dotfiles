@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Install homebrew
+if ! command -v brew;
+then
+    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+    # Installing essentials
+    brew install wget curl make
+fi

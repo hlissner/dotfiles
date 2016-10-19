@@ -1,0 +1,12 @@
+#!/bin/bash
+
+case "$OSTYPE" in
+    darwin*)
+        brew install rbenv
+        ;;
+    linux*)
+        git clone https://github.com/rbenv/rbenv.git $HOME/.rbenv
+        cd $HOME/.rbenv && src/configure && make -C src
+        git clone https://github.com/rbenv/ruby-build.git $HOME/.rbenv/plugins/ruby-build
+        ;;
+esac

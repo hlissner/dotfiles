@@ -1,0 +1,13 @@
+#!/bin/bash
+
+case "$OSTYPE" in
+    darwin*)
+        brew install tmux
+        ;;
+    linux*)
+        if [ -f /etc/arch-release ]; then
+            sudo pacman -S tmux
+        elif [ -f /etc/debian-version ]; then
+            sudo apt-get install tmux
+        fi
+esac

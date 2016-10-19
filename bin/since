@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -e
-(( $# > 0 )) || exit 1
+(( $# > 0 )) || return
 
 # Displays the time since $1 in a human readable format (e.g. 4h 25m 55s). If given a
 # file, the modified time is used. If $1 == "--", then this script acts as a converter,
@@ -13,8 +13,6 @@ set -e
 date=date
 if [[ "$OSTYPE" == darwin* ]]; then
     date=gdate
-elif [[ "$OSTYPE" == linux* ]]; then
-    date=date
 else
     echo "Unsupported system"
     exit 1

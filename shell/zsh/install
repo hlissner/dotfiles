@@ -1,0 +1,25 @@
+#!/bin/bash
+
+if [[ "$SHELL" != *zsh ]]
+then
+    case "$OSTYPE" in
+        darwin*)
+            brew install zsh
+
+            # Add homebrewed zsh to /etc/shells
+            if ! grep '/usr/local/bin/zsh' /etc/shells >/dev/null;
+            then
+                sudo bash -c "echo '/usr/local/bin/zsh' >> /etc/shells"
+            fi
+            ;;
+        linux*)
+            if [ -f /etc/arch-release ]; then
+                sudo pacman --noconfirm -S zsh
+            elif [ -f /etc/debian_version ]; then
+                sudo apt-get install zsh
+            fi
+            ;;
+    esac
+
+    chsh -s $(which zsh)
+fi

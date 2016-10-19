@@ -1,0 +1,17 @@
+#!/bin/bash
+
+case "$OSTYPE" in
+    darwin*)
+        brew install pyenv
+        ;;
+    linux*)
+        if [ ! -d "$HOME/.pyenv" ]; then
+            git clone https://github.com/yyuu/pyenv.git $HOME/.pyenv
+        fi
+        ;;
+esac
+
+PWD=$(pwd -P)
+mkdir -p $HOME/.config
+
+[ -f "$HOME/.config/flake8" ] || ln -s "$PWD/dev/python/.config/flake8" "$HOME/.config/flake8"

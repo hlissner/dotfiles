@@ -1,0 +1,7 @@
+os/arch
+vcs/*
+shell/zsh
+editor/emacs
+editor/neovim
+dev/*
+browser

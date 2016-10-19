@@ -1,0 +1,5 @@
+os/macos
+browser
+editor/{emacs,neovim}
+shell/zsh
+vcs/*

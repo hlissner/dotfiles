@@ -1,0 +1,67 @@
+Xft.dpi: 72
+Xft.autohint: 0
+Xft.lcdfilter: lcddefault
+Xft.hintstyle: hintfull
+Xft.hinting: 1
+Xft.antialias: 1
+Xft.rgba: rgb
+
+! urxvt
+urxvt*buffered: true
+urxvt*cursorBlink: true
+urxvt*underlineColor: yellow
+urxvt*font: xft:terminus:size=9:antialias=false
+urxvt*depth: 32
+urxvt*borderless: 1
+urxvt*scrollBar: false
+urxvt*loginShell: true
+urxvt*secondaryScroll: true
+urxvt*saveLines: 5000
+urxvt.termName: rxvt-256color
+urxvt.perl-ext-common: default,matcher
+urxvt.urlLauncher: firefox
+urxvt.matcher.button: 1
+urxvt.background: #22252c
+urxvt.foreground: #bbc2cf
+
+! rofi
+rofi.font: Terminus 9
+rofi.location: 1
+rofi.levenshtein-sort: 1
+rofi.width: 250
+rofi.lines: 10
+rofi.hide-scrollbar: true
+rofi.bw: 0
+
+!                  bg       border
+rofi.color-window: #22252c, #444449
+!                  bg       fg       bgalt    hlbg     hlfg
+rofi.color-normal: #22252c, #bbc2cf, #262930, #444449, #bbc2cf
+rofi.color-urgent: #22252c, #bb828f, #262930, #744449, #dbe2ef
+rofi.color-active: #22252c, #bbc2cf, #262930, #444449, #dbe2ef
+
+! Colors
+! dark0 + gray
+*color0: #282828
+*color8: #928374
+! neutral_red + bright_red
+*color1: #cc241d
+*color9: #fb4934
+! neutral_green + bright_green
+*color2: #98971a
+*color10: #b8bb26
+! neutral_yellow + bright_yellow
+*color3: #d79921
+*color11: #fabd2f
+! neutral_blue + bright_blue
+*color4: #458588
+*color12: #83a598
+! neutral_purple + bright_purple
+*color5: #b16286
+*color13: #d3869b
+! neutral_aqua + faded_aqua
+*color6: #689d6a
+*color14: #8ec07c
+! light4 + light1
+*color7: #a89984
+*color15: #ebdbb2

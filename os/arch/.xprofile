@@ -1,0 +1,8 @@
+sxhkd &
+compton &
+
+# wallpaper
+feh --bg-scale $HOME/pictures/wallpaper
+
+# Start bittorrent sync
+pgrep rslsync >/dev/null || { cd $HOME && /usr/local/bin/rslsync; }

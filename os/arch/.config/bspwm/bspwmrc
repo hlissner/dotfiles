@@ -1,0 +1,72 @@
+#! /bin/sh
+
+running() { pgrep "$1" >/dev/null; }
+
+
+bspc config border_width    4
+bspc config window_gap      14
+bspc config bottom_padding  2
+bspc config left_padding    4
+bspc config right_padding   4
+running panel || bspc config top_padding 2
+
+bspc config split_ratio          0.50
+bspc config borderless_monocle   true
+bspc config gapless_monocle      true
+bspc config paddingless_monocle  true
+bspc config focus_by_distance    true
+bspc config history_aware_focus  true
+
+
+#
+# Appearance
+#
+
+bspc config normal_frame_opacity  0.0
+bspc config focused_frame_opacity 0.1
+bspc config normal_border_color  "#22252c"
+bspc config active_border_color  "#1C1E20"
+bspc config focused_border_color "#44474e"
+
+
+#
+# Displays
+#
+
+i=1
+for monitor in $(bspc query -M); do
+    bspc monitor $monitor -n "$i" -d $1/{desktop,code,web,file,chat,art,misc,music}
+    let i++
+done
+NMON=$i
+unset i
+
+
+#
+# Rules
+#
+
+bspc rule -a Gimp floating=on follow=on
+bspc rule -a mplayer2 state=floating
+bspc rule -a Kupfer.py focus=on
+bspc rule -a Screenkey manage=off
+bspc rule -a scratchpad sticky=on floating=on
+bspc rule -a Emacs split_ratio=0.25
+bspc rule -a Firefox split_ratio=0.30
+
+
+#
+#
+#
+
+# wallpaper
+feh --bg-scale $HOME/pictures/wallpaper
+
+# window manager helpers
+running sxhkd || sxhkd &
+running compton || compton &
+# bar
+running panel.sh || { cd ~/.config/panel && ./panel.sh & }
+
+# bittorrent sync
+running rslsync || { cd $HOME && /usr/local/bin/rslsync; }

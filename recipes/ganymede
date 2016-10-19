@@ -1,0 +1,6 @@
+os/macos
+browser
+dev/*
+editor/{emacs,neovim}
+shell/zsh
+vcs/*

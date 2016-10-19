@@ -1,0 +1,7 @@
+os/arch
+browser
+docker
+dev/*
+editor/{emacs,neovim}
+shell/zsh
+vcs/*

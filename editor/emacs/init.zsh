@@ -1,0 +1,1 @@
+path=(~/.cask/bin $path)

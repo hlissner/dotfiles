@@ -1,0 +1,22 @@
+#!/bin/bash
+
+case "$OSTYPE" in
+    darwin*)
+        brew install make vim
+        ;;
+    linux*)
+        if is-arch; then
+            sudo pacman -S make vim
+        else is-debian; then
+            # TODO
+            exit 1
+        fi
+        ;;
+esac
+
+if [ ! -d "$HOME/.vim" ]
+then
+    git-repo "hlissner/.vim" "$HOME/.vim"
+    cd "$HOME/.vim"
+    make install
+fi

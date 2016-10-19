@@ -1,0 +1,15 @@
+#!/bin/bash
+
+command -v hg >/dev/null && exit
+
+case "$OSTYPE" in
+    darwin*)
+        brew install mercurial
+        ;;
+    linux*)
+        if [ -f /etc/arch-release ]; then
+            sudo pacman --noconfirm -S mercurial
+        elif [ -f /etc/debian-version ]; then
+            sudo apt-get -y mercurial
+        fi
+esac

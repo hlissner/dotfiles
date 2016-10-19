@@ -1,0 +1,82 @@
+#!/bin/bash
+export DOTFILES=$(cd $(dirname $0) && pwd -P)
+source "$DOTFILES/shell/common.sh"
+set -e
+
+#
+install() {
+    for topic in $*;
+    do
+        local path="$(dirname $0)/$topic"
+        if [ -d "$path" ];
+        then
+            [ -f "$path/install" ] && . "$path/install"
+
+            # Link available dotfiles (1 level deep)
+            for file in "$1"/.[a-zA-Z]*
+            do
+                if [ -d "$file" ]; then
+                    for subfile in "$file"/*
+                    do
+                        local base="$HOME/$(basename $file)"
+                        [ ! -d "$base" ] && mkdir -p "$base"
+                        ln -svf "$subfile" "$base"
+                    done
+                elif [ -f "$file" ]; then
+                    ln -svf "$file" "$HOME"
+                fi
+            done
+
+            # Symlink enabled topic folders
+            if [ ! -h "$DOTFILES/.enabled.d/$(basename $path)" ]
+            then
+                ln -svf "$DOTFILES/$path" "$DOTFILES/.enabled.d"
+            fi
+        elif [ -f "$path" ]
+        then
+            install $(cat "$path")
+        fi
+    done
+}
+
+update() {
+    for topic in $DOTFILES/.enabled.d/*/
+    do
+        [ -x "$topic/update" ] && . "$topic/update"
+    done
+}
+
+clean() {
+    # Temporarily move dotfiles to kill symlinks
+    mv $DOTFILES /tmp/dotfiles
+    # Clean up dead symlinks
+    find -L $HOME -iname '.*' -type l -maxdepth 1 -exec rm -fv {} \;
+    if [ -d "$HOME/.config" ]
+    then
+        find -L $HOME/.config -iname '.*' -type l -maxdepth 1 -exec rm -fv {} \;
+    fi
+    # Move it back
+    mv /tmp/dotfiles $DOTFILES
+}
+
+usage() {
+    echo "Nope"
+    exit
+}
+
+
+##
+(( "$#" == 0 )) && usage
+
+COMMAND="$1"
+shift
+case "$COMMAND" in
+    i|install) install $* ;;
+    u|update) update ;;
+    c|clean) clean ;;
+    r|reinstall)
+        clean
+        install $*
+        ;;
+    *) usage ;;
+esac
