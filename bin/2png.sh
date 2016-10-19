@@ -5,8 +5,9 @@
 
 # Usage: 2png *.{psd,ai}
 
-[ ! -d _png ] && mkdir -p _png;
+[[ ! -d _png ]] && mkdir -p _png;
 
-for f in $1; do
+for f in $1
+do
     convert -resize 1200x1200 ${f}[0] _png/${f}.png
 done

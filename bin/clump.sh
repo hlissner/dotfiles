@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Script for encrypting and decrypting folders, using GPG and tar
 # Usage:
