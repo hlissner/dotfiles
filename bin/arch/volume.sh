@@ -2,16 +2,16 @@
 
 if [[ $# == 0 ]]
 then
-    echo "Usage: volume.sh [+|-|unmute|mute]"
-    exit 1
+    echo "$(amixer get Master | sed -n 's/^.*\[\([0-9]\+\)%.*$/\1/p' | uniq)"
+    exit
 fi
 
 COMMAND=$1
 case "$COMMAND" in
-    [+-])  amixer set Master 10%$COMMAND ;;
-    *mute) amixer set Master $COMMAND ;;
-    *)
-        echo "Invalid command"
+    [0-9]*) amixer set Master $COMMAND ;;
+    [+-])   amixer set Master 10%$COMMAND ;;
+    *mute)  amixer set Master $COMMAND ;;
+    *)  >&2 echo "Invalid command"
         exit 1
         ;;
 esac
