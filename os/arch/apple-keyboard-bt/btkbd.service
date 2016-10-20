@@ -1,0 +1,19 @@
+[Unit]
+Description=systemd Unit to automatically start a Bluetooth keyboard
+Documentation=https://wiki.archlinux.org/index.php/Bluetooth_Keyboard
+Requires=dbus-org.bluez.service
+After=dbus-bluez.org.service
+ConditionPathExists=/etc/btkbd.conf
+ConditionPathExists=/usr/bin/hcitool
+ConditionPathExists=/usr/bin/hciconfig
+
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/btkbd.conf
+ExecStart=
+ExecStart=/usr/bin/hciconfig ${HCIDEVICE} up
+# ignore errors on connect, spurious problems with bt? so start next command with -
+ExecStart=-/usr/bin/hcitool cc ${BTKBDMAC}
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# Bluetooth
+sudo ln -s $PWD/services/btkbd.conf /etc/
+sudo ln -s $PWD/services/btkbd.service /etc/systemd/system/
+
+# Install service
+sudo systemctl enable btkbd.service
+sudo systemctl start btkbd.service
+
+# Turn off FN mode
+bash -c 'echo 2 > /sys/module/hid_apple/parameters/fnmode'
