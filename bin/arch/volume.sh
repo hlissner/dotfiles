@@ -11,6 +11,7 @@ case "$COMMAND" in
     [0-9]*) amixer set Master $COMMAND ;;
     [+-])   amixer set Master 10%$COMMAND ;;
     *mute)  amixer set Master $COMMAND ;;
+    toggle) amixer set Master toggle ;;
     *)  >&2 echo "Invalid command"
         exit 1
         ;;
