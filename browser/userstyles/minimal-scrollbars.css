@@ -1,0 +1,57 @@
+/* AGENT_SHEET */
+scrollbarbutton[sbattr="scrollbar-up-top"],
+scrollbarbutton[sbattr="scrollbar-down-top"],
+scrollbarbutton[sbattr="scrollbar-up-bottom"],
+scrollbarbutton[sbattr="scrollbar-down-bottom"] {
+-moz-appearance: none !important;
+display: none !important;
+}
+scrollbar[orient="vertical"] {
+-moz-margin-start: -15px;
+min-width: 15px!important;
+max-width: 15px!important;
+-moz-appearance: none!important;
+position: relative;
+background-color: transparent!important;
+background-image: none!important;
+border: 0;
+z-index: 2147483647;
+-moz-box-align: start;
+padding:1px 1px 1px 6px!important;
+}
+scrollbar[orient="horizontal"] {
+margin-top: -15px;
+min-height: 15px;
+max-height: 15px;
+-moz-appearance: none!important;
+position: relative;
+background-color: transparent;
+background-image: none;
+border: 0;
+z-index: 2147483647;
+-moz-box-align: start;
+padding:6px 11px 1px 1px!important;
+}
+scrollbar thumb {
+-moz-appearance: none !important;
+background-color: rgba(80,80,80,0.5);
+border-radius: 8px;
+border: 0;
+}
+scrollbar[orient="vertical"] thumb {
+min-height: 20px!important;
+min-width: 15px!important;
+max-width: 15px!important;
+}
+scrollbar[orient="horizontal"] thumb {
+min-width: 20px!important;
+min-height: 15px!important;
+max-height: 15px!important;
+
+}
+scrollbar thumb:hover, scrollbar thumb:active {
+background-color: rgba(0,0,0,0.5);
+}
+html div scrollbar {
+-moz-margin-start: 0!important;
+}
