@@ -16,3 +16,5 @@ export LESS='-g -i -M -R -S -w -z-4'
 if is-callable lesspipe; then
   export LESSOPEN='| /usr/bin/env lesspipe %s 2>&-'
 fi
+
+path=($DOTFILES/os/macos/bin $path)
