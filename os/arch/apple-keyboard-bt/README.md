@@ -17,4 +17,5 @@ $ bluetoothctl -a
 [bluetooth]# quit
 ```
 
-Then run `./install` to set up the service.
+Then run `./install` to set up the service (also flips function keys mode from the
+fn+F<num> default).
