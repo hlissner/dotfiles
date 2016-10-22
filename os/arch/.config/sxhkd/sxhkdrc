@@ -8,9 +8,9 @@ super + Return
 
 # scratchpad
 super + grave
-    xdotool search --onlyvisible --classname scratchpad windowunmap \
-        || xdotool search --classname scratchpad windowmap \
-        || termite --name scratchpad --class scratchpad --geometry 400x120
+    xdotool search --onlyvisible --class scratchpad windowunmap \
+        || xdotool search --class scratchpad windowmap \
+        || termite --class=scratchpad
 
 # program launcher
 super + space
@@ -29,12 +29,8 @@ super + alt + Escape
 	bspc quit
 
 # close and kill
-super + {_,shift + }w
+super + {_,shift + }q
 	bspc node -{c,k}
-
-# alternate between the tiled and monocle layout
-super + m
-	bspc desktop -l next
 
 # if the current node is automatic, send it to the last manual, otherwise pull the last leaf
 super + y
@@ -48,9 +44,8 @@ super + g
 # state/flags
 #
 
-# set the window state
-super + {t,shift + t,s,f}
-	bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
+super + {f,shift + f}
+	bspc {desktop -l next,node -t \~floating}
 
 # set the node flags
 super + ctrl + {x,y,z}
@@ -60,7 +55,7 @@ super + ctrl + {x,y,z}
 # focus/swap
 #
 
-# focus the node in the given direction
+# focus/swap the node in the given direction
 super + {_,shift + }{h,j,k,l}
 	bspc node -{f,s} {west,south,north,east}
 
@@ -76,9 +71,9 @@ super + {_,shift + }c
 super + bracket{left,right}
 	bspc desktop -f {prev,next}
 
-# focus the last node/desktop
-super + Tab
-	bspc node -f last
+# focus the last node/desktop / rotate / balance / equalize
+super + {_,shift +,ctrl +,alt +} Tab
+	bspc node {-f last,@/ {-R 90,-B,-E}}
 
 # focus the older or newer node in the focus history
 super + {o,i}
@@ -114,6 +109,10 @@ super + ctrl + shift + space
 # resize tiled/floating
 #
 
+# Rebalance windows
+# super + plus
+#     bspc node @focused:/ -B
+
 # expand the tiled space in the given direction
 super + alt + {h,j,k,l}
 	bspc node {@west -r -10,@south -r +10,@north -r -10,@east -r +10}
@@ -147,13 +146,7 @@ super + @button{1-3}
 #
 
 super + shift + {Down,Up}
-    amixer set Master 5%{-,+}; \
-    echo "V$(amixer get Master | sed -n 's/^.*\[\([0-9]\+\)%.*$/\1/p' | uniq)" > /tmp/panel-fifo
+    volume.sh {-,+}
 
-super + ctrl + shift + Up
-    amixer set Master unmute; \
-    echo "V$(amixer get Master | sed -n 's/^.*\[\([0-9]\+\)%.*$/\1/p' | uniq)" > /tmp/panel-fifo
-
-super + ctrl + shift + Down
-    amixer set Master mute; \
-    echo "V0" > /tmp/panel-fifo
+super + ctrl + shift + {Down,Up}
+    volume.sh {mute,unmute}
