@@ -46,11 +46,10 @@ unset i
 # Rules
 #
 
-bspc rule -a Gimp floating=on follow=on
 bspc rule -a mplayer2 state=floating
 bspc rule -a Kupfer.py focus=on
 bspc rule -a Screenkey manage=off
-bspc rule -a scratchpad sticky=on floating=on
+bspc rule -a scratchpad state=floating sticky=on center=on
 bspc rule -a Emacs split_ratio=0.25
 bspc rule -a Firefox split_ratio=0.30
 
