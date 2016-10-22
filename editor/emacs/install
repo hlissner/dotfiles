@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 case "$OSTYPE" in
     darwin*)
@@ -8,7 +8,7 @@ case "$OSTYPE" in
         ;;
     linux*)
         if [ -f /etc/arch-release ]; then
-            sudo pacman -S make emacs python2
+            sudo pacman --noconfirm -S make emacs python2
         elif [ -f /etc/debian_version ]; then
             sudo apt-get install make emacs python
         fi

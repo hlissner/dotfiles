@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+if [[ -d ~/.emacs.d ]]
+then
+    cd ~/.emacs.d && make update
+fi
