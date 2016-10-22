@@ -112,10 +112,11 @@ do
                 0|off)
                     vol="%{F$COLOR_FREE_FG}\ue202%{F-}"
                     ;;
-                *) vol="\ue203"
+                *)  vol="\ue203"
                     ;;
             esac
+            vol="%{A:volume.sh toggle:} $vol %{A}"
             ;;
     esac
-    echo -e "%{l}${wm}${playing}%{r}${mail} ${wifi} ${date} ${clock}  ${bt}${vol} "
+    echo -e "%{l}${wm}${playing}%{r}${mail} ${wifi} ${date} ${clock} ${bt}${vol}"
 done

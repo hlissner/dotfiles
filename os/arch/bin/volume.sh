@@ -2,7 +2,10 @@
 
 if [[ $# == 0 ]]
 then
-    echo "$(amixer get Master | sed -n 's/^.*\[\([0-9]\+\)%.*$/\1/p' | uniq)"
+    data=$(amixer get Master)
+    vol=$(echo "$data" | sed -n 's/^.*\[\([0-9]\+\)%.*$/\1/p' | uniq)
+    state=$(echo "$data" | grep '\[on\]')
+    [[ $state ]] && echo $vol || echo 0
     exit
 fi
 
@@ -22,5 +25,5 @@ if amixer get Master | grep '\[off\]' >/dev/null
 then
     panel_notify.sh "V0"
 else
-    panel_notify.sh "V$(amixer get Master | sed -n 's/^.*\[\([0-9]\+\)%.*$/\1/p' | uniq)"
+    panel_notify.sh "V$vol"
 fi

@@ -1,8 +1,11 @@
 #!/usr/bin/bash
 
-pgrep panel.sh >/dev/null || exit
-
 FIFO=/tmp/panel-fifo
 
-[[ -f $FIFO ]] || exit
-echo "$@" > "/tmp/panel-fifo"
+if [[ ! -p $FIFO ]]
+then
+    >&2 echo "FIFO not initialized"
+    exit
+fi
+
+echo "$@" > "$FIFO" &
