@@ -98,7 +98,7 @@ do
                                 BG=$COLOR_FOCUSED_URGENT_BG
                                 ;;
                         esac
-                        wm="${wm}%{F${FG}}%{B${BG}}%{A:bspc desktop -f ${id#?}:}  ${name}  %{A}%{B-}%{F-}"
+                        wm="${wm}%{F${FG}}%{B${BG}}%{A:bspc desktop -f ${id#?}:}  ${ICONS[$name]:$name}  %{A}%{B-}%{F-}"
                         ;;
                 esac
                 shift
