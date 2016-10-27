@@ -18,7 +18,7 @@ trap 'trap - TERM; kill 0' INT TERM QUIT EXIT
 mkfifo "$PANEL_FIFO"
 
 #
-bspc config top_padding "$PANEL_HEIGHT"
+bspc config top_padding $(( $PANEL_HEIGHT - 2 ))
 bspc subscribe report > "$PANEL_FIFO" &
 clock -sf 'T%A, %b %d::%I:%M %p' > "$PANEL_FIFO" &
 
