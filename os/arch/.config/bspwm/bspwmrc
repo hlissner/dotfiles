@@ -65,7 +65,7 @@ feh --bg-scale $HOME/pictures/wallpaper
 running sxhkd || sxhkd &
 running compton || compton &
 # bar
-running panel.sh || { cd ~/.config/panel && ./panel.sh & }
+running lemonbar || { cd ~/.config/panel && ./panel.sh & }
 
 # bittorrent sync
 running rslsync || { cd $HOME && /usr/local/bin/rslsync; }
