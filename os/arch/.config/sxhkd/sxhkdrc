@@ -3,7 +3,7 @@
 #
 
 # terminal emulator
-super + Return
+super + ctrl + Return
 	urxvt
 
 # scratchpad
