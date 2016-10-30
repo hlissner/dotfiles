@@ -6,7 +6,7 @@ case "$OSTYPE" in
         ;;
     linux*)
         if [[ -f /etc/arch-release ]]; then
-            sudo pacman -S --noconfirm make vim
+            sudo pacman --noconfirm -S make vim
         elif [[ -f /etc/debian_version ]]; then
             # TODO
             exit 1
