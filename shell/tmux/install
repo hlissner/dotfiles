@@ -6,8 +6,8 @@ case "$OSTYPE" in
         ;;
     linux*)
         if [ -f /etc/arch-release ]; then
-            sudo pacman -S tmux
+            sudo pacman --noconfirm -S tmux
         elif [ -f /etc/debian-version ]; then
-            sudo apt-get install tmux
+            sudo apt-get install -y tmux
         fi
 esac
