@@ -21,7 +21,7 @@ esac
 
 if [ ! -d "$HOME/.emacs.d" ];
 then
-    repo "hlissner/.emacs.d" "$HOME/.emacs.d"
+    git clone --recursive "hlissner/.emacs.d" "$HOME/.emacs.d"
     cd "$HOME/.emacs.d"
     make install
     make snippets
