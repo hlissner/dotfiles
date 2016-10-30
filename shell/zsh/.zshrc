@@ -21,7 +21,7 @@ then
     zgen save
 fi
 
-[ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
+[[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
 
 for file in $DOTFILES/.enabled.d/*/*.zsh;
 do
