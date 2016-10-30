@@ -4,15 +4,14 @@ command -v nvim >/dev/null && exit
 
 case "$OSTYPE" in
     darwin*)
-        brew tap neovim/neovim
-        brew install make neovim
+        brew install make
+        brew install --HEAD neovim/neovim/neovim
         ;;
     linux*)
         if [ -f /etc/arch-release ]; then
-            sudo pacman --noconfirm -S make neovim
+            sudo pacman --noconfirm -S make neovim python-neovim
         elif [ -f /etc/debian_version ]; then
-            # TODO
-            exit 1
+            sudo apt-get install -y neovim python3-neovim
         fi
         ;;
 esac
