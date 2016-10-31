@@ -2,45 +2,57 @@
 
 PWD=$(dirname $0)
 
-sudo pacman --noconfirm -S \
-    wget curl make tmux rsync tree the_silver_searcher bc \
-    wpa_supplicant wpa_actiond dhcpcd netctl dialog \
-    xorg-init xorg-server xorg-xandr xorg-xrdb xorg-xmodmap xorg-fonts-75dpi xorg-xfd xdotool \
-    lightdm bspwm sxhkd compton feh \
-    rofi rxvt-unicode firefox mpd ncmpcpp \
-    obs-studio youtube-dl
+sudo pacman --needed --noconfirm -S git
 
-install() {
-    local cmd="$1"
-    local repo="$2"
-
-    local dest=$(basename -s .git "$repo")
-    command -v "$cmd" >/dev/null && return
-    TEMP=$(mktemp -d)
-    cd "$TEMP"
-    if [ ! -d "$dest" ]
-    then
-        git clone "$repo" "$dest"
-        pushd "$dest"
-        makepkg -sri --noconfirm
-        popd
-    fi
-    rm -rf "$TEMP"
-}
-
-# Bar utilities
-install lemonbar https://aur.archlinux.org/lemonbar-xft-git.git
-install xtitle https://aur.archlinux.org/xtitle.git
-install clock https://aur.archlinux.org/sutils-git.git
-install xdo https://aur.archlinux.org/xdo-git.git
-install siji https://aur.archlinux.org/siji-git.git
-
-# WM Greeter
-if [ ! -d /usr/share/lightdm-webkit ]
+if ! command -v yaourt >/dev/null
 then
-    install "" https://aur.archlinux.org/lightdm-webkit-greeter.git
+    TEMP=$(mktemp -d)
+    pushd $TEMP
+    git clone https://aur.archlinux.org/package-query.git && cd package-query && makepkg -si
+    git clone https://aur.archlinux.org/yaourt.git && cd yaourt && makepkg -si
+    popd
+    rm -rf "$TEMP"
 fi
 
+# Install from AUR
+aur() {
+    if ! command -v $1 >/dev/null
+    then
+        shift
+        yaourt --noconfirm -S ${*:-$1}
+    fi
+}
+
+pacman="sudo pacman --needed --noconfirm -S"
+
+# Essential X things
+$pacman xorg-init xorg-server xorg-xandr xorg-xrdb xorg-xmodmap \
+        xorg-fonts-75dpi xorg-xfd xdotool
+
+# For wifi
+$pacman wpa_supplicant wpa_actiond dhcpcd netctl dialog
+
+# Window manager
+$pacman lightdm lightdm-webkit2-greeter bspwm sxhkd compton
+
+# Essential shell utilities
+$pacman wget curl make tmux rsync tree the_silver_searcher bc xsel
+
+# Applications
+$pacman rxvt-unicode firefox obs-studio chromium
+
 # Utilities
-install git-crypt https://aur.archlinux.org/git-crypt.git
-install fasd https://aur.archlinux.org/fasd-git.git
+$pacman feh youtube-dl rofi mpd ncmpcpp redshift
+aur git-crypt
+aur fasd
+
+# Taskbar
+aur lemonbar lemonbar-xft-git siji-git
+aur xdo-git
+aur clock sutils-git
+
+# Fonts
+$pacman ttf-dejavu ttf-inconsolata ttf-liberation ttf-ubuntu-font-family terminus-font
+# GTK theme
+aur '[[ -d /usr/share/themes/Arc-Dark ]]' gtk-theme-arc
+
