@@ -1,7 +1,6 @@
 #!/bin/bash
 
 PANEL_HEIGHT=24
-PANEL_FIFO=/tmp/panel-fifo
 PANEL_FONT="gohufont:size=11:antialias=false"
 ICON_FONT="siji:size=9:antialias=false"
 

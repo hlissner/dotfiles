@@ -1,19 +1,20 @@
 #!/usr/bin/env bash
 
-. $(dirname $0)/config.sh
+theme="$1"
 
-num_mon=$(bspc query -M | wc -l)
+. $(dirname $0)/themes/${theme}.sh
 
 declare -A ICONS
-ICONS[desktop]='\ue1d7'
-ICONS[code]='\ue1ec'
-ICONS[art]='\ue1c7'
-ICONS[web]='\ue26d'
-ICONS[chat]='\ue19f'
-ICONS[file]='\ue1e1'
-ICONS[music]='\ue1a6'
-ICONS[misc]='\ue140'
+ICONS[desktop]="\ue1d7"
+ICONS[code]="\ue1ec"
+ICONS[art]="\ue1c7"
+ICONS[web]="\ue26d"
+ICONS[chat]="\ue19f"
+ICONS[file]="\ue1e1"
+ICONS[music]="\ue1a6"
+ICONS[misc]="\ue140"
 
+num_mon=$(bspc query -M | wc -l)
 while read -r line
 do
     data="${line#?}"
@@ -21,23 +22,11 @@ do
         E*) # TODO ethernet
             ;;
         T*) # clock output
-            date=" \ue267 ${data%::*} "
-            clock=" \ue016 ${data#*::} "
+            date=" ${data%::*} "
+            clock=" ${data#*::} "
             ;;
         I*) # wifi
-            if [[ $data ]]
-            then
-                signal="\ue25d"
-                case "$data" in
-                    100|[6-9][0-9]*) signal="\ue261" ;;
-                    [4-5][0-9]*) signal="\ue260" ;;
-                    [2-3][0-9]*) signal="\ue25f" ;;
-                    *) signal="\ue25e" ;;
-                esac
-                wifi=" $signal $(iwgetid -r) "
-            else
-                wifi=" %{F$COLOR_FREE_FG}\ue21a%{F-} "
-            fi
+            wifi=" $data "
             ;;
         M*) # TODO mail
             mail=" \ue1a8 2 "
@@ -55,7 +44,7 @@ do
             while [[ $# > 0 ]]
             do
                 id=$1
-                name=${id#??}
+                name=${id#???}
                 case $id in
                     [mM]*)
                         [[ $num_mon < 2 ]] && shift && continue
@@ -108,14 +97,7 @@ do
             updates=" \ue00f $data updates "
             ;;
         V*) # volume
-            case "$data" in
-                0|off)
-                    vol="%{F$COLOR_FREE_FG}\ue202%{F-}"
-                    ;;
-                *)  vol="\ue203"
-                    ;;
-            esac
-            vol="%{A:volume.sh toggle:} $vol %{A}"
+            vol="$data"
             ;;
     esac
     echo -e "%{l}${wm}${playing}%{r}${mail} ${wifi} ${date} ${clock} ${bt}${vol}"
