@@ -57,3 +57,13 @@ $pacman ttf-dejavu ttf-inconsolata ttf-liberation ttf-ubuntu-font-family terminu
 # GTK theme
 aur '[[ -d /usr/share/themes/Arc-Dark ]]' gtk-theme-arc
 
+# Install hooks
+hookdest=/etc/pacman.d/hooks
+for hook in $PWD/pacman-hooks/*.hook
+do
+    [ -f $hookdest/$(basename "$hook") ] || ln -svf $hook $hookdest/
+done
+
+# Install crontab
+$pacman cronie
+[ -f $PWD/crontab ] && crontab $PWD/crontab
