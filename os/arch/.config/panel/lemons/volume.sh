@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-muted="\ue202"
-speaker="\ue203"
+# I expect all volume adjustments to be done through the volume.sh script (in
+# os/arch/bin), which will inform lemonbar of changes, so we only need to intialize
+# volume once here.
 
 data=$(amixer get Master)
 vol=0
@@ -10,10 +11,4 @@ then
     vol=$(echo "$data" | sed -n 's/^.*\[\([0-9]\+\)%.*$/\1/p' | uniq)
 fi
 
-case "$vol" in
-    0) text="%{F$COLOR_FREE_FG}${muted}%{F-}"
-       ;;
-    *) text="${speaker} ${vol}%"
-       ;;
-esac
-echo "V%{A:volume.sh toggle:} ${text} %{A}"
+echo "V$vol"

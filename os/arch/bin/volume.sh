@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [[ $# == 0 ]]
+if [[ $# = 0 ]]
 then
     data=$(amixer get Master)
     vol=$(echo "$data" | sed -n 's/^.*\[\([0-9]\+\)%.*$/\1/p' | uniq)
@@ -21,9 +21,4 @@ case "$COMMAND" in
 esac
 
 # Report to lemonbar, if active
-if amixer get Master | grep '\[off\]' >/dev/null
-then
-    panel_notify.sh "V0"
-else
-    panel_notify.sh "V$vol"
-fi
+~/.config/panel/panel_update.sh volume
