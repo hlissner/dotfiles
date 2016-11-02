@@ -4,6 +4,7 @@ PWD=$(dirname $0)
 
 sudo pacman --needed --noconfirm -S git
 
+# Install yaourt
 if ! command -v yaourt >/dev/null
 then
     TEMP=$(mktemp -d)
@@ -42,7 +43,7 @@ $pacman wget curl make tmux rsync tree the_silver_searcher bc xsel
 $pacman rxvt-unicode firefox obs-studio chromium
 
 # Utilities
-$pacman feh youtube-dl rofi mpd ncmpcpp redshift
+$pacman feh youtube-dl rofi mpd mpc ncmpcpp redshift
 aur git-crypt
 aur fasd
 
