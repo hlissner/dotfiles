@@ -2,8 +2,13 @@ alias ls="${aliases[ls]:-ls} --color=auto"
 
 alias open='xdg-open'
 
-alias pac='sudo pacman'
-alias pacu='sudo pacman -Syu'
+alias sys='systemctl'
+alias sys!='sudo systemctl'
+
+alias pac='pacaur'
+alias pacu='pacaur -Syu'  # upgrade
+alias pacc='pacaur -Sc'   # clean
+alias paco='pacaur -Qtdq' # orphaned packages
 
 if (( $+commands[xclip] )); then
     alias y='xclip -selection clipboard -in'

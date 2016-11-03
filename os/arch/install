@@ -1,65 +1,52 @@
 #!/bin/bash
 
 PWD=$(dirname $0)
+pacman="sudo pacman --needed --noconfirm -S"
+pacaur="sudo pacaur --needed --noconfirm -s"
 
-sudo pacman --needed --noconfirm -S git
-
-# Install yaourt
-if ! command -v yaourt >/dev/null
+## Bootstrap
+$pacman git
+if ! command -v pacaur >/dev/null
 then
-    TEMP=$(mktemp -d)
-    pushd $TEMP
-    git clone https://aur.archlinux.org/package-query.git && cd package-query && makepkg -si
-    git clone https://aur.archlinux.org/yaourt.git && cd yaourt && makepkg -si
+    pushd $(mktemp -d)
+    git clone https://aur.archlinux.org/pacaur.git && cd pacaur && makepkg -sri
+    TEMP=$(pwd)
     popd
     rm -rf "$TEMP"
 fi
 
-# Install from AUR
-aur() {
-    if ! command -v $1 >/dev/null
-    then
-        shift
-        yaourt --noconfirm -S ${*:-$1}
-    fi
-}
 
-pacman="sudo pacman --needed --noconfirm -S"
+########################################
+#
+# GUI+Desktop
+#
+########################################
 
-# Essential X things
 $pacman xorg-init xorg-server xorg-xandr xorg-xrdb xorg-xmodmap \
-        xorg-fonts-75dpi xorg-xfd xdotool
-
-# For wifi
-$pacman wpa_supplicant wpa_actiond dhcpcd netctl dialog
-
-# Window manager
-$pacman lightdm lightdm-webkit2-greeter bspwm sxhkd compton
-
-# Essential shell utilities
-$pacman wget curl make tmux rsync tree the_silver_searcher bc xsel
-
-# Applications
-$pacman rxvt-unicode firefox obs-studio chromium
-
-# Utilities
-$pacman feh youtube-dl rofi mpd mpc ncmpcpp redshift
-aur git-crypt
-aur fasd
-
-# Taskbar
-aur lemonbar lemonbar-xft-git siji-git
-aur xdo-git
-aur clock sutils-git
+        xorg-fonts-75dpi xorg-xset xorg-xfd xdotool
+$pacaur xdo-git
 
 # Fonts
 $pacman ttf-dejavu ttf-inconsolata ttf-liberation ttf-ubuntu-font-family terminus-font
-# GTK theme
-aur '[[ -d /usr/share/themes/Arc-Dark ]]' gtk-theme-arc
+# Taskbar
+$pacaur lemonbar lemonbar-xft-git siji-git clock sutils-git
+# Window manager
+$pacman lightdm lightdm-webkit2-greeter bspwm sxhkd compton
+
+
+
+########################################
+#
+# System/Shell
+#
+########################################
+
+# Essentials
+$pacman wget curl make tmux rsync tree the_silver_searcher bc xsel
 
 # Install hooks
 hookdest=/etc/pacman.d/hooks
-for hook in $PWD/pacman-hooks/*.hook
+for hook in $PWD/pacman.d/hooks/*.hook
 do
     [ -f $hookdest/$(basename "$hook") ] || ln -svf $hook $hookdest/
 done
@@ -67,3 +54,51 @@ done
 # Install crontab
 $pacman cronie
 [ -f $PWD/crontab ] && crontab $PWD/crontab
+
+# Utilities
+$pacman feh youtube-dl rofi mpd mpc ncmpcpp redshift
+$pacaur git-crypt fasd
+
+
+
+########################################
+#
+# Networking
+#
+########################################
+
+ETH=$(basename $(echo /sys/class/net/enp*))
+WLP=$(basename $(echo /sys/class/net/wlp*))
+
+$pacman dhcpcd netctl
+# Speed up connections on boot
+if ! grep "^noarp$" /etc/dhcpcd.conf
+then
+    echo "\nnoarp" | sudo tee -a /etc/dhcpcd.conf
+fi
+
+if [[ $ETH ]]; then
+    $pacman ifplug
+    sudo systemctl enable netctl-ifplugd@$ETH.service
+    sudo systemctl start netctl-ifplugd@$ETH.service
+fi
+
+if [[ $WLP ]]; then
+    $pacman wpa_supplicant wpa_actiond dialog
+    sudo wifi-menu
+fi
+
+
+
+########################################
+#
+# Apps & Customization
+#
+########################################
+
+# Applications
+$pacman rxvt-unicode firefox obs-studio chromium
+
+# GTK theme
+[[ -d /usr/share/themes/Arc-Dark ]] || $pacaur gtk-theme-arc
+
