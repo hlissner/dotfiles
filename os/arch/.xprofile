@@ -1,8 +1,32 @@
-sxhkd &
-compton &
+#!/bin/sh
+
+export __GL_THREADED_OPTIMISATIONS=1
+
+running() { pgrep "$1" >/dev/null; }
 
 # wallpaper
 feh --bg-scale $HOME/pictures/wallpaper
 
-# Start bittorrent sync
-pgrep rslsync >/dev/null || { cd $HOME && /usr/local/bin/rslsync; }
+# mouse acceleration
+xset m 11/8 0
+# keyboard repeat rate
+xset r rate 350 45
+
+# bittorrent sync
+running rslsync || { cd $HOME && /usr/local/bin/rslsync; }
+# monitor color adjustment based on time-of-day
+running redshift || redshift &
+# music server
+running mpd || mpd &
+
+# lemonbar config depends on bspwm, so wait for it
+{
+    while ! running bspwm; do sleep 1; done
+    cd ~/.config/panel && ./panel.sh &
+
+    # notifications
+    dunst &
+    # window manager helpers
+    compton &
+    sxhkd &
+} &
