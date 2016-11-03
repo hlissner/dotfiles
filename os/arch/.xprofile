@@ -22,7 +22,7 @@ running mpd || mpd &
 # lemonbar config depends on bspwm, so wait for it
 {
     while ! running bspwm; do sleep 1; done
-    cd ~/.config/panel && ./panel.sh &
+    ~/.config/panel/panel.sh &
 
     # notifications
     dunst &
