@@ -13,17 +13,17 @@ for ((i=0;i<=END;i++)); do
     COLOR[$i]=$(xrdb -query | awk "/^\*\.color$i:/ {print \$2}")
 done
 
-BG="$(xrdb -query | awk '/^\*\.background:/ {print $2}')"
-FG="$(xrdb -query | awk '/^\*\.foreground:/ {print $2}')"
+bg="$(xrdb -query | awk '/^\*\.background:/ {print $2}')"
+fg="$(xrdb -query | awk '/^\*\.foreground:/ {print $2}')"
 
 # FG="#bbc2cf"
 # BG="#e022252c"
-COLOR[FG]="$FG"
-COLOR[BG]="#e0${BG#?}"
+COLOR[FG]="$fg"
+COLOR[BG]="#e0${bg#?}"
 
 COLOR[HL]="#185b75"
 COLOR[DIM]="#155872"
-COLOR[ALTBG]="#FF${BG#?}"
+COLOR[ALTBG]="#FF${bg#?}"
 
 COLOR_MONITOR_FG="#8dbcdf"
 COLOR_MONITOR_BG="${COLOR[BG]}"
@@ -53,22 +53,25 @@ ICON[web]="\ue26d"
 ICON[chat]="\ue19f"
 ICON[file]="\ue1e1"
 ICON[music]="\ue1a6"
-ICON[misc]="\ue140"
+ICON[games]="\ue140" # ghost
 # clock icons
 ICON[date]="\ue267"
 ICON[time]="\ue016"
 # wireless icons
-ICON[wifioff]="\ue21a"
-ICON[wifi0]="\ue25d"
-ICON[wifi1]="\ue25e"
-ICON[wifi2]="\ue25f"
-ICON[wifi3]="\ue260"
-ICON[wifi4]="\ue261"
+# ICON[wifioff]="\ue21a"
+# ICON[wifi1]="\ue25e"
+# ICON[wifi2]="\ue25f"
+# ICON[wifi3]="\ue260"
+# ICON[wifi4]="\ue261"
+ICON[wifioff]="\ue217"
+ICON[wifi1]="\ue218"
+ICON[wifi2]="\ue219"
+ICON[wifi3]="\ue21a"
 # media player icons
 ICON[play]="\ue058"
 ICON[pause]="\ue09b"
 ICON[stop]="\ue099"
-ICON[muted]="\ue202"
-ICON[speaker]="\ue203"
+ICON[muted]="\ue04f"
+ICON[speaker]="\ue05d"
 # misc
 ICON[mail]="\ue070"
