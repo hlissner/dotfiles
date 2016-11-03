@@ -1,1 +1,5 @@
 .enabled.d/*
+*.log
+*.pid
+*.db
+mpdstate
