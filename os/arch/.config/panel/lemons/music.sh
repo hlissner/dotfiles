@@ -1,4 +1,4 @@
-# Not meant to be run directly
+#!/usr/bin/env bash
 
 while :
 do
