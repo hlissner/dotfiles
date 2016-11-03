@@ -121,10 +121,9 @@ zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<-
 
 ## Custom compdefs #######################
 
-mycompdef() { is-callable "$1" && compdef ${@[2,-1]} }
+compdef g=hub
+compdef o=open
+compdef take=mkdir
+compdef t=tmux
 
-mycompdef g    _hub g=hub
-mycompdef o    o=open
-mycompdef take take=mkdir
-mycompdef t    t=tmux
-
+autoload -U compinit && compinit
