@@ -15,6 +15,12 @@ super + grave
 # program launcher
 super + space
     rofi -show run
+# switch to desktop
+super + shift + space
+    rofi_bspwm.sh
+# password manager
+super + alt + space
+    rofi_pass.sh
 
 # make sxhkd reload its configuration files:
 super + Escape
