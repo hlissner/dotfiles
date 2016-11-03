@@ -32,6 +32,12 @@ $pacman ttf-dejavu ttf-inconsolata ttf-liberation ttf-ubuntu-font-family terminu
 $pacaur lemonbar lemonbar-xft-git siji-git clock sutils-git
 # Window manager
 $pacman lightdm lightdm-webkit2-greeter bspwm sxhkd compton
+sudo sed -i 's/^#\?\(user-session=\).*/\1bspwm/;
+             s/^#\?\(greeter-allow-guest=\).*/\1false/;
+             s/^#\?\(greeter-session=\).*/\1lightdm-webkit2-greeter/'
+    /etc/lightdm/lightdm.conf
+sudo sed -i 's/^#\?\(webkit-theme = \).*/\1vnought/'
+    /etc/lightdm/lightdm-webkit2-greeter.conf
 
 
 
