@@ -1,8 +1,5 @@
 #! /bin/sh
 
-running() { pgrep "$1" >/dev/null; }
-
-
 bspc config border_width    2
 bspc config window_gap      14
 bspc config bottom_padding  0
@@ -51,23 +48,3 @@ bspc rule -a Kupfer.py focus=on
 bspc rule -a Screenkey manage=off
 bspc rule -a scratchpad state=floating sticky=on center=on
 bspc rule -a Emacs split_ratio=0.25
-
-
-#
-# Bootstrap
-#
-
-## Essentials
-# window manager helpers
-running sxhkd || sxhkd &
-running compton || compton &
-# bar
-running lemonbar || { cd ~/.config/panel && ./panel.sh & }
-
-## Personal
-# wallpaper
-feh --bg-scale $HOME/pictures/wallpaper
-# bittorrent sync
-running rslsync || { cd $HOME && /usr/local/bin/rslsync; }
-# monitor color adjustment based on time-of-day
-running redshift || redshift &
