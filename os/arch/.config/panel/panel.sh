@@ -1,30 +1,32 @@
 #!/usr/bin/env bash
 
+if [[ $1 == "--kill" ]]
+then
+    pkill -f 'bash .+/panel\.sh'
+    exit
+fi
+
+
 CWD="$(cd $(dirname $0) && pwd -P)"
+. $CWD/panel_config
 
 #
-. $CWD/panel_config
-# trap "trap - TERM; [ -e "$PANEL_FIFO" ] && rm "$PANEL_FIFO"; kill 0" INT TERM QUIT EXIT
+running() { pgrep -f $1 >/dev/null; }
 
-if [ -t 0 ]
+cleanup() {
+    [ -e "$PANEL_FIFO" ] && rm -f "$PANEL_FIFO"
+    pkill -P $$
+}
+
+#
+trap cleanup INT TERM QUIT EXIT
+[ -e "$PANEL_FIFO" ] && rm "$PANEL_FIFO"
+mkfifo "$PANEL_FIFO"
+
+if running lemonbar
 then
-    if [ "$(pgrep -cx lemonbar)" -gt 0 ]
-    then
-        2>&1 echo "Lemonbar already running"
-        exit
-    fi
-else
-    if pgrep lemonbar >/dev/null; then
-        # redirect stdin to fifo
-        [ -e "$PANEL_FIFO" ] || mkfifo "$PANEL_FIFO"
-        while read -r line
-        do
-            echo $line > "$PANEL_FIFO" &
-        done
-    else
-        2>&1 echo "Lemonbar isn't running"
-    fi
-    exit
+    2>&1 echo "Lemonbar already running"
+    exit 1
 fi
 
 
@@ -63,7 +65,7 @@ parse() {
             # Minimal icons
             U*) updates=" %{F${COLOR[DIM]}}\ue00f%{F-}"
                 if [[ "$data" > 0 ]]; then
-                    updates=" %{F${COLOR[2]}}\ue00f$data%{F-} "
+                    updates=" %{F${COLOR[2]}}\ue00f$data%{F-}"
                 fi
                 ;;
             M*) icon="${ICON[mail]}"
@@ -78,24 +80,23 @@ parse() {
                 esac
                 ;;
             V*) case "$data" in
-                    0) vol="%{F${COLOR[DIM]}}${ICON[muted]}%{F-}"
+                    0) vol=" %{F${COLOR[DIM]}}${ICON[muted]}%{F-}"
                        ;;
-                    *) vol="${ICON[speaker]}"
+                    *) vol=" ${ICON[speaker]}"
                        ;;
                 esac
                 ;;
 
             # Full segments
-            I*) ssid=" ${data#*,}"
+            I*) # ssid=" ${data#*,}"
                 case "${data%,*}" in
-                    100|[6-9][0-9]) icon="${ICON[wifi4]}$ssid" ;;
-                    [4-5][0-9]) icon="${ICON[wifi3]}$ssid" ;;
-                    [2-3][0-9]) icon="${ICON[wifi2]}$ssid" ;;
-                    [0-9]|1[0-9]) icon="${ICON[wifi1]}$ssid" ;;
+                    100|[6-9][0-9]) icon="${ICON[wifi3]} " ;;
+                    [2-5][0-9]) icon="${ICON[wifi2]} " ;;
+                    # [1-2][0-9]) icon="${ICON[wifi2]} " ;;
                     x) icon="${ICON[wifioff]}" ;;
-                    *) icon="${ICON[wifi0]}$ssid" ;;
+                    *) icon="${ICON[wifi1]} " ;;
                 esac
-                wifi="   $icon "
+                wifi=" $icon"
                 ;;
             E*) # TODO ethernet
                 ;;
@@ -182,7 +183,7 @@ parse() {
         esac
         echo -e \
             "%{l}${wm}${song}" \
-            "%{r}${updates}${mail}${vol}${wifi}${datetime} "
+            "%{r}${mail}${updates}${vol}${wifi}${datetime} "
     done
 }
 
