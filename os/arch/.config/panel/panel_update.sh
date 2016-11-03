@@ -15,7 +15,8 @@ then
     exit 2
 fi
 
-pkill -f "bash \./$1\.sh"
-pushd $CWD/lemons >/dev/null
-./$1.sh | ../panel.sh &
+. $CWD/panel_config
+pkill -f "bash \./lemons/$1\.sh"
+pushd "$CWD" >/dev/null
+./lemons/$1.sh > "$PANEL_FIFO" &
 popd >/dev/null
