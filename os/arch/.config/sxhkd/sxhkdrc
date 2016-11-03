@@ -53,6 +53,9 @@ super + g
 super + {f,shift + f}
 	bspc {desktop -l next,node -t \~floating}
 
+super + shift + p
+    bspc node -t \~pseudo_tiled
+
 # set the node flags
 super + ctrl + {x,y,z}
 	bspc node -g {locked,sticky,private}
@@ -134,10 +137,6 @@ super + {Left,Down,Up,Right}
 #
 # pointer focus/move/resize
 #
-
-# focus
-~button1
-	bspc pointer -g focus
 
 # start move/resize
 super + button{1-3}
