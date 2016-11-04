@@ -1,6 +1,0 @@
-[theme]
-name=Awe
-description=Awe Greeter
-engine=lightdm-webkit-greeter
-url=index.html
-session=bspwm
