@@ -33,13 +33,13 @@ bspc config active_border_color  "${COLOR[13]}"
 # Displays
 #
 
-bspc monitor primary -d 1/{DESKTOP,WEB,CODE,CHAT,ART,MEDIA,MUSIC}
+NMON=$(bspc query -M | wc -l)
+bspc monitor ${monitors} -d 1/{DESKTOP,WEB,CODE,CHAT,ART,MEDIA,MUSIC}
 i=2
 for monitor in $(bspc query -M | tail -n +2); do
     bspc monitor $monitor -n "$i" -d $i/{DESKTOP,WEB,CODE,CHAT,MUSIC}
     let i++
 done
-NMON=$i
 unset i
 
 
