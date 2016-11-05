@@ -30,6 +30,8 @@ case "$OSTYPE" in
         fi
 esac
 
+$DOTFILES/bootstrap update
+
 # Update editors
 update ~/.emacs.d "make update"
 update ~/.vim     "make update"
@@ -37,5 +39,4 @@ update ~/.vim     "make update"
 # Others
 update ~/.zgen
 update ~/.cask
-update ~/.{rb,py}env
 
