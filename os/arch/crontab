@@ -10,5 +10,5 @@
 # 0  *  *  *  *  ...
 
 # Lemonbar
-0,30 * * * * ~/.config/panel/panel_update.sh updates
-   * * * * * ~/.config/panel/panel_update.sh mail
+0,30 * * * * ~/.config/panel/panel-notify :updates
+ */2 * * * * ~/.config/panel/panel-notify :mail
