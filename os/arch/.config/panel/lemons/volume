@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env dash
 
 # I expect all volume adjustments to be done through the volume.sh script (in
 # os/arch/bin), which will inform lemonbar of changes, so we only need to intialize

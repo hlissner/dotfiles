@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+$(dirname $0)/panel-notify :updates

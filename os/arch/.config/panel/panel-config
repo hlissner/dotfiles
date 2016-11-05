@@ -1,0 +1,70 @@
+PANEL_FIFO=/tmp/panel-fifo
+
+# Customization ########################
+PANEL_HEIGHT=25
+PANEL_FONT="terminus:size=9:antialias=false"
+ICON_FONT="siji:size=9:antialias=false"
+
+# Colors
+for i in 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+do
+    eval "COLOR_$i="$(xrdb -query | awk "/^\*\.color$i:/ {print \$2}")
+done
+
+bg="$(xrdb -query | awk '/^\*\.background:/ {print $2}')"
+fg="$(xrdb -query | awk '/^\*\.foreground:/ {print $2}')"
+
+# FG="#bbc2cf"
+# BG="#e022252c"
+COLOR_FG="$fg"
+COLOR_BG="#e0${bg#?}"
+
+COLOR_HL="#185b75"
+COLOR_DIM="#155872"
+COLOR_ALTBG="#FF${bg#?}"
+COLOR_NONE="#00${bg#?}"
+
+COLOR_MONITOR_FG="#8dbcdf"
+COLOR_MONITOR_BG="${COLOR_BG}"
+COLOR_FOCUSED_MONITOR_FG="#b1d0e8"
+COLOR_FOCUSED_MONITOR_BG="${COLOR_NONE}"
+COLOR_FREE_FG="${COLOR_DIM}"
+COLOR_FREE_BG="${COLOR_BG}"
+COLOR_FOCUSED_FREE_FG="${COLOR_0}"
+COLOR_FOCUSED_FREE_BG="${COLOR_NONE}"
+COLOR_OCCUPIED_FG="#a7a5a5"
+COLOR_OCCUPIED_BG="${COLOR_BG}"
+COLOR_FOCUSED_OCCUPIED_FG="#d6d3d2"
+COLOR_FOCUSED_OCCUPIED_BG="${COLOR_NONE}"
+COLOR_URGENT_FG="${COLOR_1}"
+COLOR_URGENT_BG="${COLOR_BG}"
+COLOR_FOCUSED_URGENT_FG="#501d1f"
+COLOR_FOCUSED_URGENT_BG="${COLOR_NONE}"
+
+# bspwm desktop icons
+ICON_DESKTOP=""
+ICON_CODE=""
+ICON_ART=""
+ICON_WEB=""
+ICON_CHAT=""
+ICON_FILE=""
+ICON_MUSIC=""
+ICON_MEDIA=""
+ICON_GAMES="" # ghost
+# clock icons
+ICON_DATE=""
+ICON_TIME=""
+# wireless icons
+ICON_WIFI0=""
+ICON_WIFI1=""
+ICON_WIFI2=""
+ICON_WIFI3=""
+# media player icons
+ICON_PLAY=""
+ICON_PAUSE=""
+ICON_STOP=""
+ICON_MUTED=""
+ICON_SPEAKER=""
+# misc
+ICON_MAIL=""
+ICON_UPD=""

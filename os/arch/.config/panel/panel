@@ -1,27 +1,24 @@
-#!/usr/bin/env bash
+#!/usr/bin/env dash
 
-if [[ $1 == "--kill" ]]
+if [ "$1" = "--kill" ]
 then
-    pkill -f 'bash .+/panel\.sh'
+    pkill -f '^bash .+/panel$'
     exit
 fi
 
-
 CWD="$(cd $(dirname $0) && pwd -P)"
-. $CWD/panel_config
+. $CWD/panel-config
+
 
 #
 running() { pgrep -f $1 >/dev/null; }
-
-cleanup() {
-    [ -e "$PANEL_FIFO" ] && rm -f "$PANEL_FIFO"
-    pkill -P $$
-}
+cleanup() { rm -rf /tmp/panel-fifo-* && pkill -P $$; }
 
 #
 trap cleanup INT TERM QUIT EXIT
 [ -e "$PANEL_FIFO" ] && rm "$PANEL_FIFO"
 mkfifo "$PANEL_FIFO"
+echo "MKFIFO $PANEL_FIFO"
 
 if running lemonbar
 then
@@ -34,24 +31,24 @@ fi
 # Bootstrap panel(s)
 #
 
-clock -sf "T%A, %b %d::%I:%M%p" > "$PANEL_FIFO" &
-xtitle -sf 'X%s' > "$PANEL_FIFO" &
-bspc subscribe report > "$PANEL_FIFO" &
+clock -sf "T%A, %b %d::%I:%M%p" > "${PANEL_FIFO}" &
+xtitle -sf 'X%s' > "${PANEL_FIFO}" &
+bspc subscribe report > "${PANEL_FIFO}" &
 
-pushd $CWD/lemons >/dev/null
-for lemon in *.sh
+cd $CWD/lemons >/dev/null
+for lemon in *
 do
-    echo "INIT: $lemon"
-    ./$lemon > "$PANEL_FIFO" &
+echo "INIT $lemon"
+./$lemon >"${PANEL_FIFO}" &
 done
-popd >/dev/null
+cd - >/dev/null
 
 #
-progress-bar() {
+progress_bar() {
     BAR_SIZE=${2:-26}
-    C1="%{F#FF0000}-%{F-}"
-    C2="%{F#555555}-%{F-}"
-    DELIM="%{F#777777}|%{F-}"
+    C1="%{F${COLOR_6}}-%{F-}"
+    C2="%{F${COLOR_DIM}}-%{F-}"
+    DELIM=
 
     echo "$1" | SIZE=$BAR_SIZE CHAR1="$C1" CHAR2="$C2" SEP='' START="$DELIM" END="$DELIM" mkb
 }
@@ -63,78 +60,83 @@ parse() {
         data="${line#?}"
         case $line in
             # Minimal icons
-            U*) updates=" %{F${COLOR[DIM]}}\ue00f%{F-}"
-                if [[ "$data" > 0 ]]; then
-                    updates=" %{F${COLOR[2]}}\ue00f$data%{F-}"
+            U*) updates=" %{F${COLOR_DIM}}$ICON_UPD%{F-}"
+                if [ "$data" -gt 0 ]; then
+                    updates=" %{F${COLOR_2}}$ICON_UPD$data%{F-}"
                 fi
                 ;;
-            M*) icon="${ICON[mail]}"
+            M*) icon="${ICON_MAIL}"
+                color="${COLOR_FG}"
+                if [ "$data" = *! ]
+                then
+                    data="${data%?}"
+                    color="${COLOR_1}"
+                fi
                 case "$data" in
-                    !)  mail="%{F${COLOR[3]}}$icon!%{F-}"
-                        ;;
                     [1-9]*)
-                        mail="%{F${COLOR[1]}}$icon$data%{F-}"
+                        mail="$icon$data"
                         ;;
-                    0)  mail="%{F${COLOR[DIM]}}$icon%{F-}"
+                    0)  mail="$icon"
+                        color="${COLOR_DIM}"
                         ;;
                 esac
+                mail="%{F$color}$mail%{F-}"
                 ;;
             V*) case "$data" in
-                    0) vol=" %{F${COLOR[DIM]}}${ICON[muted]}%{F-}"
+                    0) vol=" %{F${COLOR_DIM}}${ICON_MUTED}%{F-}"
                        ;;
-                    *) vol=" ${ICON[speaker]}"
+                    *) vol=" ${ICON_SPEAKER}"
                        ;;
                 esac
                 ;;
-
-            # Full segments
             I*) # ssid=" ${data#*,}"
                 case "${data%,*}" in
-                    100|[6-9][0-9]) icon="${ICON[wifi3]} " ;;
-                    [2-5][0-9]) icon="${ICON[wifi2]} " ;;
-                    # [1-2][0-9]) icon="${ICON[wifi2]} " ;;
-                    x) icon="${ICON[wifioff]}" ;;
-                    *) icon="${ICON[wifi1]} " ;;
+                    100|[6-9][0-9]) icon="${ICON_WIFI3} " ;;
+                    [2-5][0-9]) icon="${ICON_WIFI2} " ;;
+                    x) icon="${ICON_WIFI0}" ;;
+                    *) icon="${ICON_WIFI1} " ;;
                 esac
                 wifi=" $icon"
                 ;;
+
+            # Full segments
             E*) # TODO ethernet
                 ;;
-            X*) title="$data"
+            X*) xtitle="$data"
                 ;;
-            T*) datetime="   ${ICON[date]} ${data%::*}   ${ICON[time]} ${data#*::}"
+            T*) datetime="   ${ICON_DATE} ${data%::*}   ${ICON_TIME} ${data#*::}"
                 ;;
             S*) song=""
                 case "$data" in
-                    P*) icon="${ICON[play]}" ;;
-                    p*) icon="${ICON[pause]}" ;;
+                    P*) icon="%{F${COLOR_2}}${ICON_PLAY}%{F-}" ;;
+                    p*) icon="%{F${COLOR_4}}${ICON_PAUSE}%{F-}" ;;
                     *)  icon="" ;;
                 esac
-                if [[ -n $icon ]]
+                if [ -n "$icon" ]
                 then
                     info="${data#?}"
-                    title=$(echo "$info" | cut -d'^' -f1)
-                    artist=$(echo "$info" | cut -d'^' -f2)
-                    album=$(echo "$info" | cut -d'^' -f3)
+                    # title=$(echo "$info" | cut -d'^' -f1)
+                    # artist=$(echo "$info" | cut -d'^' -f2)
+                    # album=$(echo "$info" | cut -d'^' -f3)
                     seek=$(echo "$info" | cut -d'^' -f4)
                     perc=$(echo "$info" | cut -d'^' -f5)
 
-                    song="%{B${COLOR[ALTBG]}} $icon ${seek%/*} $(progress-bar $perc 24) ${seek#*/}  %{B-}"
-                    song="$song  $title - $artist"
-                    [[ $album ]] && song="$song ($album)"
+                    # song="$title - $artist"
+                    # [ -n "$album" ] && song="$song ($album)"
+                    song="%{B${COLOR_ALTBG}} $icon ${seek%/*} $(progress_bar $perc 16) ${seek#*/}  %{B-} "
                 fi
                 ;;
             W*) # bspwm's state
                 wm=""
                 IFS=':'
                 set -- $data
-                while [[ $# > 0 ]]
+                while [ "$#" -gt 0 ]
                 do
                     id=$1
                     name=${id#???}
                     case $id in
                         [mM]*)
-                            [[ $num_mon < 2 ]] && shift && continue
+                            [ "$num_mon" -lt 2 ] && shift && continue
                             case $id in
                                 m*) # monitor
                                     _FG=$COLOR_MONITOR_FG
@@ -174,7 +176,8 @@ parse() {
                                     _BG=$COLOR_FOCUSED_URGENT_BG
                                     ;;
                             esac
-                            wm="${wm}%{F$_FG}%{B$_BG}%{A:bspc desktop -f ${id#?}:}  ${ICON[$name]:$name}  %{A}%{B-}%{F-}"
+                            eval "icon=\$ICON_$name"
+                            wm="${wm}%{F$_FG}%{B$_BG}%{A:bspc desktop -f ${id#?}:}  ${icon:-$name}  %{A}%{B-}%{F-}"
                             ;;
                     esac
                     shift
@@ -183,18 +186,19 @@ parse() {
         esac
         echo -e \
             "%{l}${wm}${song}" \
+            "%{c}${xtitle}" \
             "%{r}${mail}${updates}${vol}${wifi}${datetime} "
     done
 }
 
-parse < "$PANEL_FIFO" | \
+parse < "${PANEL_FIFO}" | \
     lemonbar \
     -a 32 \
     -g x$PANEL_HEIGHT \
     -f "$PANEL_FONT" \
     -f "$ICON_FONT" \
-    -F "${COLOR[FG]}" \
-    -B "${COLOR[BG]}" \
+    -F "$COLOR_FG" \
+    -B "$COLOR_BG" \
     | sh &
 
 wait

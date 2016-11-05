@@ -1,0 +1,14 @@
+#!/usr/bin/env dash
+
+# No wifi interface? Abort!
+ints=$(find /sys/class/net/*/wireless -type d)
+[ -z "$ints" ] && echo "Ix" && exit
+
+# Start watching
+while :
+do
+    signal=$(awk 'NR==3 {print $3}' /proc/net/wireless)
+    echo "I${signal%?}"
+    # echo "I${signal%?},$(iwgetid --raw)"
+    sleep 10
+done
