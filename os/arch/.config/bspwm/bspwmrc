@@ -55,3 +55,4 @@ bspc rule -a Vlc state=floating
 bspc rule -a feh state=floating center=on
 bspc rule -a Kupfer.py focus=on
 bspc rule -a Screenkey manage=off
+bspc rule -a love state=floating center=on sticky=on
