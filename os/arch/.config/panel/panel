@@ -2,7 +2,7 @@
 
 if [ "$1" = "--kill" ]
 then
-    pkill -f '^bash .+/panel$'
+    pkill -f '^dash .+/panel$'
     exit
 fi
 
@@ -12,7 +12,7 @@ CWD="$(cd $(dirname $0) && pwd -P)"
 
 #
 running() { pgrep -f $1 >/dev/null; }
-cleanup() { rm -rf /tmp/panel-fifo-* && pkill -P $$; }
+cleanup() { rm -rf "$PANEL_FIFO"; pkill -P $$; }
 
 #
 trap cleanup INT TERM QUIT EXIT
