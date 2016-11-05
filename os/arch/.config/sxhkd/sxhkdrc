@@ -4,7 +4,7 @@
 
 # terminal emulator
 super + ctrl + Return
-	urxvt
+	termite
 
 # scratchpad
 super + grave
@@ -15,12 +15,9 @@ super + grave
 # program launcher
 super + space
     rofi -show run
-# switch to desktop
-super + shift + space
-    rofi_bspwm.sh
 # password manager
-super + alt + space
-    rofi_pass.sh
+super + alt + backslash
+    rofi-pass
 
 # make sxhkd reload its configuration files:
 super + Escape

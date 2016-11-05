@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+shopt -s nullglob globstar
+
+prefix=${PASSWORD_STORE_DIR-~/.password-store}
+password_files=( "$prefix"/**/*.gpg  )
+password_files=( "${password_files[@]#"$prefix"/}"  )
+password_files=( "${password_files[@]%.gpg}"  )
+
+password=$(printf "%s\n" "${password_files[@]}" | rofi -dmenu -p pass: "$@")
+
+[[ -n $password  ]] || exit
+
+for browser in firefox chromium
+do
+    wid=$(xdotool search --onlyvisible --name "$browser")
+    [[ $wid ]] && break
+done
+
+# If browser is in focus, type it in
+if [[ $wid = $(xdotool getwindowfocus) ]]
+then
+    data="$(pass show "$password")"
+    pass="$(echo "$data" | head -1)"
+    login="$(echo "$data" | grep "^login:" | awk '{print $2}')"
+
+    xdotool type --clearmodifiers "$login"
+    xdotool key Tab
+    xdotool type --clearmodifiers "$pass"
+else
+    pass show -c "$password" 2>/dev/null
+fi
