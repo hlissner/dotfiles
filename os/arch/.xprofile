@@ -19,6 +19,9 @@ running redshift || redshift &
 # music server
 running mpd || mpd &
 
+# remember my keys
+running ssh-agent || eval $(ssh-agent)
+
 # lemonbar config depends on bspwm, so wait for it
 {
     while ! running bspwm; do sleep 1; done
