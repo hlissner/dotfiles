@@ -10,6 +10,8 @@ alias br='brew'
 alias bru='brew update && brew upgrade --all && brew cleanup'
 alias brc='brew cask'
 
+alias localip="ipconfig getifaddr en1"
+
 # OS X has no `md5sum`, so use `md5` as a fallback
 is-callable md5sum || alias md5sum="md5"
 # OS X has no `sha1sum`, so use `shasum` as a fallback

@@ -10,6 +10,8 @@ alias pacu='pacaur -Syu'  # upgrade
 alias pacc='pacaur -Sc'   # clean
 alias paco='pacaur -Qtdq' # orphaned packages
 
+alias localip='ip route get 1 | awk {print $NF;exit}'
+
 if (( $+commands[xclip] )); then
     alias y='xclip -selection clipboard -in'
     alias p='xclip -selection clipboard -out'
