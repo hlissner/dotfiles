@@ -60,6 +60,22 @@ parse() {
         data="${line#?}"
         case $line in
             # Minimal icons
+            B*) perc="${data%\%:*}"
+                state="${data#*:}"
+                case "${perc}" in
+                    100|9[0-9]) icon="${ICON_BAT9}" ;;
+                    8[0-9]) icon="${ICON_BAT8}" ;;
+                    7[0-9]) icon="${ICON_BAT7}" ;;
+                    6[0-9]) icon="${ICON_BAT6}" ;;
+                    5[0-9]) icon="${ICON_BAT5}" ;;
+                    4[0-9]) icon="${ICON_BAT4}" ;;
+                    3[0-9]) icon="%{F$COLOR_3}${ICON_BAT3}%{F-}" ;;
+                    2[0-9]) icon="%{F$COLOR_3}${ICON_BAT2}%{F-}" ;;
+                    1[0-9]) icon="%{F$COLOR_1}${ICON_BAT1}%{F-}" ;;
+                    *) icon="%{F$COLOR_1}${ICON_BAT0}%{F-}" ;;
+                esac
+                [ "$state" = "1" ] && battery="${icon}${ICON_BATAC}" || battery="${icon} "
+                ;;
             U*) updates=" %{F${COLOR_DIM}}$ICON_UPD%{F-}"
                 if [ "$data" -gt 0 ]; then
                     updates=" %{F${COLOR_2}}$ICON_UPD$data%{F-}"
@@ -187,7 +203,7 @@ parse() {
         echo -e \
             "%{l}${wm}${song}" \
             "%{c}${xtitle}" \
-            "%{r}${mail}${updates}${vol}${wifi}${datetime} "
+            "%{r}${battery}${mail}${updates}${vol}${wifi}${datetime} "
     done
 }
 

@@ -1,0 +1,22 @@
+#!/usr/bin/env dash
+
+# No guarantee that it will be called BAT0, but it suits my purposes.
+if ! command -v acpi >/dev/null
+then
+    >&2 echo "acpi is not installed, battery segment disabled"
+    exit
+fi
+if [ ! -d "/sys/class/power_supply/BAT0" ]
+then
+    >&2 echo "No battery! This must be a PC"
+    exit
+fi
+
+while :
+do
+    BAT=$(acpi --battery)
+    PERC=$(echo $BAT | cut -d, -f2)
+    echo -n "B${PERC#?}:"
+    echo "$BAT" | grep charging >/dev/null && echo "1" || echo "0"
+    sleep 15
+done
