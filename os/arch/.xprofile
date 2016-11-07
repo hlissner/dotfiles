@@ -36,5 +36,5 @@ running ssh-agent || eval $(ssh-agent)
     # If sxhkd isn't running, something is wrong and we're stuck. Instead, open
     # a terminal so I can do something about it
     sleep 3
-    running sxhkd || termite &
+    running sxhkd || urxvt &
 } &
