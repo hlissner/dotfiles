@@ -1,5 +1,7 @@
 #!/usr/bin/env dash
 
+. $(dirname $0)/../panel-config
+
 # No guarantee that it will be called BAT0, but it suits my purposes.
 if ! command -v acpi >/dev/null
 then
@@ -12,11 +14,41 @@ then
     exit
 fi
 
+ICON_BAT0=""
+ICON_BAT1=""
+ICON_BAT2=""
+ICON_BAT3=""
+ICON_BAT4=""
+ICON_BAT5=""
+ICON_BAT6=""
+ICON_BAT7=""
+ICON_BAT8=""
+ICON_BAT9=""
+ICON_BATAC=""
+
 while :
 do
     BAT=$(acpi --battery)
     PERC=$(echo $BAT | cut -d, -f2)
-    echo -n "B${PERC#?}:"
-    echo "$BAT" | grep charging >/dev/null && echo "1" || echo "0"
+
+    case "${PERC#??}" in
+        100|9[0-9]) icon="${ICON_BAT9}" ;;
+        8[0-9]) icon="${ICON_BAT8}" ;;
+        7[0-9]) icon="${ICON_BAT7}" ;;
+        6[0-9]) icon="${ICON_BAT6}" ;;
+        5[0-9]) icon="${ICON_BAT5}" ;;
+        4[0-9]) icon="${ICON_BAT4}" ;;
+        3[0-9]) icon="%{F$COLOR_3}${ICON_BAT3}%{F-}" ;;
+        2[0-9]) icon="%{F$COLOR_3}${ICON_BAT2}%{F-}" ;;
+        1[0-9]) icon="%{F$COLOR_1}${ICON_BAT1}%{F-}" ;;
+        *) icon="%{F$COLOR_1}${ICON_BAT0}%{F-}" ;;
+    esac
+    if echo "$BAT" | grep charging >/dev/null
+    then
+        echo "${icon}${ICON_BATAC}"
+    else
+        echo "${icon} "
+    fi
+
     sleep 15
 done

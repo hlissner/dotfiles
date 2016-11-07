@@ -4,11 +4,21 @@
 # os/arch/bin), which will inform lemonbar of changes, so we only need to intialize
 # volume once here.
 
-data=$(amixer get Master)
-vol=0
+. $(dirname $0)/../panel-config
+
+# media player icons
+ICON_MUTED=""
+ICON_SPEAKER=""
+
 if echo "$data" | grep '\[on\]' >/dev/null
 then
     vol=$(echo "$data" | sed -n 's/^.*\[\([0-9]\+\)%.*$/\1/p' | uniq)
+    case "$vol" in
+        0) echo "V${ICON_MUTED}"
+            ;;
+        *) echo "V${ICON_SPEAKER}"
+            ;;
+    esac
+else
+    echo "V%{F${COLOR_DIM}}${ICON_MUTED}%{F-}"
 fi
-
-echo "V$vol"

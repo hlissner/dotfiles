@@ -31,28 +31,17 @@ fi
 # Bootstrap panel(s)
 #
 
-clock -sf "T%A, %b %d::%I:%M%p" > "${PANEL_FIFO}" &
+clock -sf "T${ICON_DATE} %A, %b %d   ${ICON_TIME} %I:%M%p" > "${PANEL_FIFO}" &
 xtitle -sf 'X%s' > "${PANEL_FIFO}" &
 bspc subscribe report > "${PANEL_FIFO}" &
 
-cd $CWD/lemons >/dev/null
-for lemon in *
+for lemon in $CWD/lemons/*
 do
-echo "INIT $lemon"
-./$lemon >"${PANEL_FIFO}" &
+    echo "INIT $(basename $lemon)"
+    $lemon > "${PANEL_FIFO}" &
 done
-cd - >/dev/null
 
 #
-progress_bar() {
-    BAR_SIZE=${2:-26}
-    C1="%{F${COLOR_6}}-%{F-}"
-    C2="%{F${COLOR_DIM}}-%{F-}"
-    DELIM=
-
-    echo "$1" | SIZE=$BAR_SIZE CHAR1="$C1" CHAR2="$C2" SEP='' START="$DELIM" END="$DELIM" mkb
-}
-
 parse() {
     num_mon=$(bspc query -M | wc -l)
     while read -r line
@@ -60,59 +49,15 @@ parse() {
         data="${line#?}"
         case $line in
             # Minimal icons
-            B*) perc="${data%\%:*}"
-                state="${data#*:}"
-                case "${perc}" in
-                    100|9[0-9]) icon="${ICON_BAT9}" ;;
-                    8[0-9]) icon="${ICON_BAT8}" ;;
-                    7[0-9]) icon="${ICON_BAT7}" ;;
-                    6[0-9]) icon="${ICON_BAT6}" ;;
-                    5[0-9]) icon="${ICON_BAT5}" ;;
-                    4[0-9]) icon="${ICON_BAT4}" ;;
-                    3[0-9]) icon="%{F$COLOR_3}${ICON_BAT3}%{F-}" ;;
-                    2[0-9]) icon="%{F$COLOR_3}${ICON_BAT2}%{F-}" ;;
-                    1[0-9]) icon="%{F$COLOR_1}${ICON_BAT1}%{F-}" ;;
-                    *) icon="%{F$COLOR_1}${ICON_BAT0}%{F-}" ;;
-                esac
-                [ "$state" = "1" ] && battery="${icon}${ICON_BATAC}" || battery="${icon} "
+            B*) battery="$data"
                 ;;
-            U*) updates=" %{F${COLOR_DIM}}$ICON_UPD%{F-}"
-                if [ "$data" -gt 0 ]; then
-                    updates=" %{F${COLOR_2}}$ICON_UPD$data%{F-}"
-                fi
+            U*) updates=" $data"
                 ;;
-            M*) icon="${ICON_MAIL}"
-                color="${COLOR_FG}"
-                if [ "$data" = *! ]
-                then
-                    data="${data%?}"
-                    color="${COLOR_1}"
-                fi
-                case "$data" in
-                    [1-9]*)
-                        mail="$icon$data"
-                        ;;
-                    0)  mail="$icon"
-                        color="${COLOR_DIM}"
-                        ;;
-                esac
-                mail="%{F$color}$mail%{F-}"
+            M*) mail=" $data"
                 ;;
-            V*) case "$data" in
-                    0) vol=" %{F${COLOR_DIM}}${ICON_MUTED}%{F-}"
-                       ;;
-                    *) vol=" ${ICON_SPEAKER}"
-                       ;;
-                esac
+            V*) vol=" $data"
                 ;;
-            I*) # ssid=" ${data#*,}"
-                case "${data%,*}" in
-                    100|[6-9][0-9]) icon="${ICON_WIFI3} " ;;
-                    [2-5][0-9]) icon="${ICON_WIFI2} " ;;
-                    x) icon="${ICON_WIFI0}" ;;
-                    *) icon="${ICON_WIFI1} " ;;
-                esac
-                wifi=" $icon"
+            I*) wifi=" $data"
                 ;;
 
             # Full segments
@@ -120,27 +65,9 @@ parse() {
                 ;;
             X*) xtitle="$data"
                 ;;
-            T*) datetime="   ${ICON_DATE} ${data%::*}   ${ICON_TIME} ${data#*::}"
+            T*) datetime="   $data"
                 ;;
-            S*) song=""
-                case "$data" in
-                    P*) icon="%{F${COLOR_2}}${ICON_PLAY}%{F-}" ;;
-                    p*) icon="%{F${COLOR_4}}${ICON_PAUSE}%{F-}" ;;
-                    *)  icon="" ;;
-                esac
-                if [ -n "$icon" ]
-                then
-                    info="${data#?}"
-                    # title=$(echo "$info" | cut -d'^' -f1)
-                    # artist=$(echo "$info" | cut -d'^' -f2)
-                    # album=$(echo "$info" | cut -d'^' -f3)
-                    seek=$(echo "$info" | cut -d'^' -f4)
-                    perc=$(echo "$info" | cut -d'^' -f5)
-
-                    # song="$title - $artist"
-                    # [ -n "$album" ] && song="$song ($album)"
-                    song="%{B${COLOR_ALTBG}} $icon ${seek%/*} $(progress_bar $perc 16) ${seek#*/}  %{B-} "
-                fi
+            S*) song="$data "
                 ;;
             W*) # bspwm's state
                 wm=""
