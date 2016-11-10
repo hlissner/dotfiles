@@ -1,6 +1,2 @@
 #!/usr/bin/env bash
-
-if [[ -d ~/.vim ]]
-then
-    cd ~/.vim && make update
-fi
+[[ -d ~/.vim ]] && { cd ~/.vim && make update; }

@@ -1,3 +1,7 @@
+#
+# These aliases will be common to Bash and Zsh shells
+#
+
 alias q='exit'
 alias clr='clear'
 alias sudo='sudo '
