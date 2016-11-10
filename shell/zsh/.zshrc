@@ -6,8 +6,7 @@
 repo "tarjoilija/zgen" "$HOME/.zgen"
 
 source "$HOME/.zgen/zgen.zsh"
-if ! zgen saved;
-then
+if ! zgen saved; then
     info "Creating zgen save"
 
     cache-clear
@@ -23,9 +22,12 @@ fi
 
 [[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
 
-for file in $DOTFILES/.enabled.d/*/*.zsh;
-do
-    source "$file"
+for file in $DOTFILES/.enabled.d/*; do
+    [[ -d "$file/bin" ]] && export PATH="$file/bin:$PATH"
+
+    for script in $file/*.zsh; do
+        source "$script"
+    done
 done
 
 # Done!
