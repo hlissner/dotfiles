@@ -1,15 +1,16 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-case "$OSTYPE" in
+case $OSTYPE in
     darwin*)
         brew install tmux
         ;;
     linux*)
         if [ -f /etc/arch-release ]; then
-            sudo pacman --noconfirm -S tmux
+            sudo pacman --needed --noconfirm -S tmux
         elif [ -f /etc/debian-version ]; then
             sudo apt-get install -y tmux
         fi
+        ;;
 esac
 
 git-repo() { [[ -d $2 ]] || git clone "https://github.com/$1" "$2"; }
