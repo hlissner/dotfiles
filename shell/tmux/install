@@ -16,3 +16,4 @@ git-repo() { [[ -d $2 ]] || git clone "https://github.com/$1" "$2"; }
 
 CWD="$(dirname $0)"
 git-repo tmux-plugins/tpm "$CWD/.tmux/plugins/tpm"
+git-repo jimeh/tmuxifier "$CWD/.tmuxifier"
