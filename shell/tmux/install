@@ -11,3 +11,8 @@ case "$OSTYPE" in
             sudo apt-get install -y tmux
         fi
 esac
+
+git-repo() { [[ -d $2 ]] || git clone "https://github.com/$1" "$2"; }
+
+CWD="$(dirname $0)"
+git-repo tmux-plugins/tpm "$CWD/.tmux/plugins/tpm"

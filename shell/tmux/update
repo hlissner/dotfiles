@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+CWD="$(dirname $0)"
+if [[ -d "$CWD/.tmux/plugins/tpm/bin" ]]; then
+    "$CWD/.tmux/plugins/tpm/bin/update_plugins" all
+    "$CWD/.tmux/plugins/tpm/bin/clean_plugins" all
+fi
