@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+case $OSTYPE in
+    darwin*)
+        brew install weechat
+        ;;
+    linux*)
+        if [[ -d /etc/arch-release ]]; then
+            sudo pacman --needed --noconfirm -S weechat
+        elif [[ -d /etc/debian_version ]]; then
+            # TODO Untested
+            sudo apt-get install -y weechat
+        fi
+esac
+
+# If this exists, it's already configured
+[[ -f ~/.weechat/sec.conf ]] && exit
+
+if [[ -f ~/.secrets/irc.conf ]]; then
+    # ...otherwise, configure it!
+    CWD=$(cd $(dirname $0) && pwd -P)
+    weechat -r "/set plugins.var.fifo.fifo on'" &
+    PID=$?
+
+    while ! pgrep weechat >/dev/null; do sleep 1; done
+    wee "$HOME/.secrets/irc.conf"
+    wee "$CWD/setting.txt"
+    wee "$CWD/servers.txt"
+    kill $PID
+else
+    >&2 echo "Couldn't find secrets!"
+    exit 1
+fi
