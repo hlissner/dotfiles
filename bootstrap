@@ -86,7 +86,7 @@ done
 shift $((OPTIND-1))
 
 #
-# [[ -d ~/.bin ]] || _run mkdir -p ~/.bin
+[[ -d ~/.bin ]] || _run mkdir -p ~/.bin
 PATH="$DOTFILES/.bin:$PATH"
 for topic in ${@:-$(find "$DOTFILES/.enabled.d" -maxdepth 1 -type l)}; do
     [[ -d $topic ]] || continue
