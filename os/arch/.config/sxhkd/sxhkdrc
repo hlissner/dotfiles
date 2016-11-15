@@ -23,6 +23,29 @@ super + alt + backslash
 super + Escape
 	pkill -USR1 -x sxhkd
 
+
+#
+#
+#
+
+XF86Audio{Play,Pause}
+    mpc -q toggle
+
+XF86Audio{Prev,Next}
+    mpc -q {prev,next}
+
+XF86Audio{LowerVolume,RaiseVolume}
+    vol {-,+}
+
+XF86AudioMute
+    vol toggle
+
+super + XF86Eject
+    zzz
+
+#XF86MonBrightness{Up,Down}
+
+
 #
 # bspwm hotkeys
 #
