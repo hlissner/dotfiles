@@ -1,82 +1,128 @@
-#!/bin/bash
-export DOTFILES=$(cd $(dirname $0) && pwd -P)
-source "$DOTFILES/shell/common.sh"
+#!/usr/bin/env bash
+
+# My (idempotent) dotfile deployment script.
+#
+# You pass the directories of "topics" to it to install them. It will:
+# 1. symlink $topic/bin/* to ~/.bin/
+# 2. symlink $topic/.* => ~/ and $topic/.*/* => ~/.$1/
+# 3. run $topic/install the first time
+# 4. run $topic/update on consecutive runs
+#
+# NOTE: Be sure to add ~/.bin to PATH
+#
+# Options:
+#   -i  Don't run install scripts
+#   -u  Don't run update scripts
+#   -l  Don't symlink dotfiles or bin scripts
+#   -d  Do a dry run (only output commands, no changes)
+#   -y  Overwrite conflicts (no prompts)
+#   -n  Don't overwrite conflicts (no prompts
+
 set -e
+DOTFILES=$(cd $(dirname $0) && pwd -P)
+source "$DOTFILES/shell/common.sh"
+shopt -s nullglob
 
 #
-install() {
-    for topic in $*;
-    do
-        local path="$(dirname $0)/$topic"
-        if [ -d "$path" ];
-        then
-            [ -f "$path/install" ] && . "$path/install"
+blue="\033[34m"
+magenta="\033[35m"
+green="\033[32m"
+orange="\033[33m"
+grey="\033[36m"
+red="\033[31m"
+nc="\033[0m"
+#
 
-            # Link available dotfiles (1 level deep)
-            for file in "$1"/.[a-zA-Z]*
-            do
-                if [ -d "$file" ]; then
-                    for subfile in "$file"/*
-                    do
-                        local base="$HOME/$(basename $file)"
-                        [ ! -d "$base" ] && mkdir -p "$base"
-                        ln -svf "$subfile" "$base"
-                    done
-                elif [ -f "$file" ]; then
-                    ln -svf "$file" "$HOME"
-                fi
-            done
+_run() {
+    local cmd="${@//$DOTFILES\//}"
+    cmd="${cmd//$HOME/~}"
+    local clr=""
+    case $cmd in
+        *~/.bin/) clr="${magenta}" ;;
+        ln*)      clr=""  ;;
+        mkdir*)   clr="${blue}"    ;;
+        *)        clr="${orange}"
+    esac
+    echo -e "   $PREFIX$clr$cmd$nc"
+    [[ $DRYRUN ]] || { $@ | sed 's/^/  => /'; }
+}
 
-            # Symlink enabled topic folders
-            if [ ! -h "$DOTFILES/.enabled.d/$(basename $path)" ]
-            then
-                ln -svf "$DOTFILES/$path" "$DOTFILES/.enabled.d"
-            fi
-        elif [ -f "$path" ]
-        then
-            install $(cat "$path")
+_link() {
+    if [[ -f "$2" || ( -d "$2" && -f "$2/${1##*/}" ) ]]; then
+        if [[ $yes ]]; then
+            [[ $yes = 1 ]] && choice=y || choice=n
+        else
+            read -n 1 -p "? ${1##*/} exists in $2 -- overwrite? [y/n] " choice
+            echo
         fi
-    done
-}
-
-update() {
-    for topic in $DOTFILES/.enabled.d/*/
-    do
-        [ -x "$topic/update" ] && . "$topic/update"
-    done
-}
-
-clean() {
-    # Temporarily move dotfiles to kill symlinks
-    mv $DOTFILES /tmp/dotfiles
-    # Clean up dead symlinks
-    find -L $HOME -iname '.*' -type l -maxdepth 1 -exec rm -fv {} \;
-    if [ -d "$HOME/.config" ]
-    then
-        find -L $HOME/.config -iname '.*' -type l -maxdepth 1 -exec rm -fv {} \;
+        case $choice in
+            y|Y) PREFIX="${red}OVERWRITE:${nc} " _run ln -svf "$1" "$2"
+                ;;
+            *)   PREFIX="${red}ABORTED:${nc} " DRYRUN=1 _run ln -svf "$1" "$2"
+                ;;
+        esac
+    else
+        _run ln -svf "$1" "$2"
     fi
-    # Move it back
-    mv /tmp/dotfiles $DOTFILES
 }
-
-usage() {
-    echo "Nope"
-    exit
-}
-
 
 ##
-(( "$#" == 0 )) && usage
+install=1
+link=1
+update=1
+yes=
+while getopts iuldyn opt; do
+    case $opt in
+        d) DRYRUN=1 ;;
+        i) install= ;;
+        l) link=    ;;
+        n) yes=0    ;;
+        u) update=  ;;
+        y) yes=1    ;;
+        *) >&2 echo "Aborted."
+           exit 1   ;;
+    esac
+done
+shift $((OPTIND-1))
 
-COMMAND="$1"
-shift
-case "$COMMAND" in
-    i|install) install $* ;;
-    u|update) update ;;
-    c|clean) clean ;;
-    r|reinstall)
-        clean
-        install $*
-        ;;
-    *) usage ;;
-esac
+#
+# [[ -d ~/.bin ]] || _run mkdir -p ~/.bin
+PATH="$DOTFILES/.bin:$PATH"
+for topic in ${@:-$(find "$DOTFILES/.enabled.d" -maxdepth 1 -type l)}; do
+    [[ -d $topic ]] || continue
+
+    tpath=$(realpath "$topic")
+    tname="$(basename $(dirname $tpath))_${tpath##*/}"
+    echo -e "${green}${tname//_//}${nc}"
+    # Link binaries
+    for bin in $tpath/bin/*; do
+        [[ "$link" && -x "$bin" ]] && _link "$bin" "~/.bin/"
+    done
+
+    # Link topic to .enabled.d
+    if [[ -h "$DOTFILES/.enabled.d/$tname" ]]; then
+        [[ "$update" && -x $tpath/update ]] && _run "$tpath/update"
+    else
+        # Register topic as 'enabled'
+        _run ln -svf "$tpath" "$DOTFILES/.enabled.d/$tname"
+
+        # Run install script
+        [[ "$install" && -x $tpath/install ]] && _run "$tpath/install"
+    fi
+
+    # Symlink dotfiles from topic directories (2 levels deep)
+    [[ "$link" ]] || continue
+    for file in "$tpath"/.[a-zA-Z]*; do
+        if [[ -d $file ]]; then
+            for subfile in "$file"/*; do
+                base="$HOME/${file##*/}/"
+                [[ -d $base ]] || _run mkdir -p "$base"
+                _link "$subfile" "$base"
+            done
+        elif [[ -f $file ]]; then
+            _link "$file" "$HOME/"
+        fi
+    done
+done
+
+# vim:set ft=sh:
