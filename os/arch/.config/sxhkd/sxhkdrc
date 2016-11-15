@@ -17,7 +17,7 @@ super + space
     rofi -show run
 # password manager
 super + alt + backslash
-    rofi-pass
+    dpass
 
 # make sxhkd reload its configuration files:
 super + Escape
