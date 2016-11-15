@@ -1,41 +1,40 @@
 #!/usr/bin/env bash
 
-# Script for encrypting and decrypting folders, using GPG and tar
+# Helper for encrypting/decrypting folders with gpg and tar.
 # Usage:
 #   clump foldername               # packs
-#   clump foldername dest          # packs to specific location
 #   clump foldername.clump         # unpacks
-#   clump foldername.clump dest    # unpacks to specific location
 
-if [ "$#" -eq 0 ]; then
+set -e
+if (($# == 0)); then
     >&2 echo "Usage: $0 <FILE|DIRECTORY> [DEST]"
     exit 1
 fi
 
-EXT="clump"
-TARGET="$1"
-COMMAND=
-if [ -f "$TARGET" ]; then
-    COMMAND=unpack
-elif [ -d "$TARGET" ]; then
-    COMMAND=pack
+ext='clump'
+target="$1"
+cmd=
+if [[ -f $target ]]; then
+    cmd=unpack
+elif [[ -d $target ]]; then
+    cmd=pack
 else
-    >&2 echo "Not a valid target: '$TARGET'"
+    >&2 echo "Not a valid target: '$target'"
     exit 1
 fi
 
-case "$COMMAND" in
+case $cmd in
     p|pack)
-        if [ -f "$TARGET.$EXT" ]; then
+        if [[ -f $target.$ext ]]; then
             >&2 echo "Destination file already exists"
             exit 2
         fi
-        tar -pcvf - "$TARGET" | gpg -c > "$TARGET.$EXT"
-        echo "Packed into $TARGET.$EXT"
+        tar -pcvf - "$target" | gpg -c > "$target.$ext"
+        echo "Packed into $target.$ext"
         ;;
     u|unpack)
-        TMPFILE=$(mktemp)
-        gpg -d "$TARGET" > "$TMPFILE" && tar -pxvf "$TMPFILE"
-        rm -f "$TMPFILE"
+        tmpfile=$(mktemp)
+        gpg -d "$target" > "$tmpfile" && tar -pxvf "$tmpfile"
+        rm -f "$tmpfile"
         ;;
 esac
