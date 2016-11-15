@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -e
-(( $# > 0 )) || return
+(( $# > 0 )) || exit
 
 # Displays the time since $1 in a human readable format (e.g. 4h 25m 55s). If given a
 # file, the modified time is used. If $1 == "--", then this script acts as a converter,
@@ -11,18 +11,18 @@ set -e
 
 # `date` on OSX does not have the --date parameter
 date=date
-if [[ "$OSTYPE" == darwin* ]]; then
+if [[ $OSTYPE == darwin* ]]; then
     date=gdate
-else
+elif ! command -v $date >/dev/null; then
     echo "Unsupported system"
     exit 1
 fi
 
 # If given a file, give time since last modification
-(( $# == 1 )) && [[ -f "$*" ]] && arg=reference || arg=date
+(( $# == 1 )) && [[ -f $@ ]] && arg=reference || arg=date
 
 args="$*"
-if [[ "$1" == "--" ]]; then
+if [[ $1 == -- ]]; then
     t="$2"
 else
     now=$(${date} +%s)
