@@ -1,1 +1,1 @@
-path=($DOTFILES/os/arch/bin $path)
+path=(~/.bin $path)
