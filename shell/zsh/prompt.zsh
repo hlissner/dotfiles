@@ -1,6 +1,5 @@
+#!/usr/bin/env zsh
 # Based off Pure <https://github.com/sindresorhus/pure>
-
-is-interactive || exit
 
 _strlen() { echo ${#${(S%%)1//$~%([BSUbfksu]|([FB]|){*})/}}; }
 

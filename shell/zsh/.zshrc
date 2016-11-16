@@ -1,9 +1,16 @@
-### zshrc
-#
+#!/usr/bin/env zsh
+# zshrc
 # By Henrik Lissner <henrik@lissner.net>
-#
 
 repo "tarjoilija/zgen" "$HOME/.zgen"
+
+load shell/zsh/aliases.zsh
+load shell/zsh/config.zsh
+if is-interactive; then
+    load shell/zsh/completion.zsh
+    load shell/zsh/keybinds.zsh
+    load shell/zsh/prompt.zsh
+fi
 
 source "$HOME/.zgen/zgen.zsh"
 if ! zgen saved; then
@@ -21,13 +28,5 @@ if ! zgen saved; then
 fi
 
 [[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
-
-for file in $DOTFILES/.enabled.d/*; do
-    [[ -d "$file/bin" ]] && export PATH="$file/bin:$PATH"
-
-    for script in $file/*.zsh; do
-        source "$script"
-    done
-done
 
 # Done!

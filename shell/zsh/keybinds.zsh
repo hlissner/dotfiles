@@ -1,5 +1,3 @@
-is-interactive || exit
-
 # Ran into an issue where the surround module wasn't working if KEYTIMEOUT is <= 10.
 # Specifically, (delete|change)-surround immediately abort into insert mode if
 # KEYTIMEOUT <= 8, and if <= 10, then add-surround would do the same. At 11, all these

@@ -1,5 +1,3 @@
-is-interactive || exit
-
 ## Options
 setopt COMPLETE_IN_WORD    # Complete from both ends of a word.
 setopt PATH_DIRS           # Perform path search even on command names with slashes.

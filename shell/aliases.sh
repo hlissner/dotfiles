@@ -1,5 +1,5 @@
 #
-# These aliases will be common to Bash and Zsh shells
+# These aliases are common to Bash and Zsh shells
 #
 
 alias q='exit'
