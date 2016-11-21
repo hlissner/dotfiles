@@ -1,8 +1,10 @@
 PANEL_FIFO=/tmp/panel-fifo
 
 # Customization ########################
-PANEL_HEIGHT=25
+PANEL_HEIGHT=28
+# PANEL_FONT="FiraMono:size=7:antialias=true"
 PANEL_FONT="terminus:size=8:antialias=false"
+# ICON_FONT="siji:size=8:antialias=true"
 ICON_FONT="siji:size=7:antialias=false"
 
 # Colors
@@ -14,32 +16,29 @@ done
 bg="$(xrdb -query | awk '/^\*\.background:/ {print $2}')"
 fg="$(xrdb -query | awk '/^\*\.foreground:/ {print $2}')"
 
-# FG="#bbc2cf"
-# BG="#e022252c"
 COLOR_FG="$fg"
-COLOR_BG="#e0${bg#?}"
+COLOR_BG="#22${COLOR_4#?}"
 
-COLOR_HL="#185b75"
 COLOR_DIM="#155872"
 COLOR_ALTBG="#FF${bg#?}"
 COLOR_NONE="#00${bg#?}"
 
 COLOR_MONITOR_FG="#8dbcdf"
-COLOR_MONITOR_BG="${COLOR_BG}"
+COLOR_MONITOR_BG="${COLOR_NONE}"
 COLOR_FOCUSED_MONITOR_FG="#b1d0e8"
-COLOR_FOCUSED_MONITOR_BG="${COLOR_NONE}"
+COLOR_FOCUSED_MONITOR_BG="${COLOR_BG}"
 COLOR_FREE_FG="${COLOR_DIM}"
-COLOR_FREE_BG="${COLOR_BG}"
-COLOR_FOCUSED_FREE_FG="${COLOR_0}"
-COLOR_FOCUSED_FREE_BG="${COLOR_NONE}"
+COLOR_FREE_BG="${COLOR_NONE}"
+COLOR_FOCUSED_FREE_FG="${COLOR_DIM}"
+COLOR_FOCUSED_FREE_BG="${COLOR_BG}"
 COLOR_OCCUPIED_FG="#a7a5a5"
-COLOR_OCCUPIED_BG="${COLOR_BG}"
+COLOR_OCCUPIED_BG="${COLOR_NONE}"
 COLOR_FOCUSED_OCCUPIED_FG="#d6d3d2"
-COLOR_FOCUSED_OCCUPIED_BG="${COLOR_NONE}"
+COLOR_FOCUSED_OCCUPIED_BG="${COLOR_BG}"
 COLOR_URGENT_FG="${COLOR_1}"
-COLOR_URGENT_BG="${COLOR_BG}"
+COLOR_URGENT_BG="${COLOR_NONE}"
 COLOR_FOCUSED_URGENT_FG="#501d1f"
-COLOR_FOCUSED_URGENT_BG="${COLOR_NONE}"
+COLOR_FOCUSED_URGENT_BG="${COLOR_BG}"
 
 # bspwm desktop icons
 ICON_DESKTOP=""
