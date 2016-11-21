@@ -1,21 +1,16 @@
 #!/usr/bin/env dash
 
-# wireless icons
-ICON_WIFI0=""
-ICON_WIFI1=""
-ICON_WIFI2=""
-ICON_WIFI3=""
+. $(dirname $0)/../panel-config
 
 # No wifi interface? Abort!
 ints=$(find /sys/class/net/*/wireless -type d)
 [ -z "$ints" ] && echo "I${ICON_WIFI0}" && exit
 
 # Start watching
-while :
-do
+while :; do
     # SSID=$(iwgetid --raw)
     signal=$(awk 'NR==3 {print $3}' /proc/net/wireless)
-    case "${signal%?}" in
+    case ${signal%?} in
         100|[6-9][0-9]) icon="${ICON_WIFI3}" ;;
         [2-5][0-9])     icon="${ICON_WIFI2}" ;;
         *)              icon="${ICON_WIFI1}" ;;
@@ -23,3 +18,5 @@ do
     echo "I$icon"
     sleep 10
 done
+
+# vim:set ft=sh:

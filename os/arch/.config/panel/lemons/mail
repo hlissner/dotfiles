@@ -1,15 +1,21 @@
 #!/usr/bin/env bash
 
-[ -f ~/.secrets/accounts.sh ] && . ~/.secrets/accounts.sh || exit
-. $(dirname $0)/../panel-config
+set -e
+CWD=$(dirname $0)
+if [[ ! -f ~/.private/config/email ]]; then
+    >&2 echo "Couldn't load account settings"
+    exit 1
+fi
+
+. ~/.private/config/email
+. $CWD/../panel-config
 
 ICON_MAIL=""
 
-get-mail() {
+get_mail() {
     local feed=$(curl -u "$1:$2" --silent https://mail.google.com/mail/feed/atom)
-    if [ "$(echo $feed | grep -c "<fullcount>")" -eq 1 ]
-    then
-        echo $feed | grep -o "<entry>" | wc -l
+    if [[ "${feed//\<fullcount\>/}" != "$feed" ]]; then
+        echo "$feed" | grep -o "<entry>" | wc -l
     else
         >&2 echo "mail.sh: error with $1"
         ERROR=!
@@ -17,14 +23,14 @@ get-mail() {
     fi
 }
 
-a=$(get-mail "${MAIL1[USER]}" "${MAIL1[PASS]}")
-b=$(get-mail "${MAIL2[USER]}" "${MAIL2[PASS]}")
-c=$(get-mail "${MAIL3[USER]}" "${MAIL3[PASS]}")
+a=$(get_mail "${MAIL1_USER}" "${MAIL1_PASS}")
+b=$(get_mail "${MAIL2_USER}" "${MAIL2_PASS}")
+c=$(get_mail "${MAIL3_USER}" "${MAIL3_PASS}")
 
 num=$(( $a + $b + $c ))
 icon="${ICON_MAIL}"
-color=${COLOR_FG}
-case "$num" in
+color="${COLOR_FG}"
+case $num in
     [1-9]*)
         icon="$icon$num"
         ;;
@@ -32,6 +38,8 @@ case "$num" in
         ;;
 esac
 
-[ -n "$ERROR" ] && color=${COLOR_1}
+[[ $ERROR ]] && color=${COLOR_1}
 
 echo "M%{F$color}$icon%{F-}"
+
+# vim:set ft=sh:

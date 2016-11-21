@@ -2,10 +2,6 @@
 
 . $(dirname $0)/../panel-config
 
-ICON_PLAY=""
-ICON_PAUSE=""
-# ICON_STOP=""
-
 progress_bar() {
     BAR_SIZE=${2:-26}
     C1="%{F${COLOR_6}}-%{F-}"
@@ -15,11 +11,9 @@ progress_bar() {
     echo "$1" | SIZE=$BAR_SIZE CHAR1="$C1" CHAR2="$C2" SEP='' START="$DELIM" END="$DELIM" mkb
 }
 
-while :
-do
+while :; do
     output=$(mpc --format ";%title%;%artist%;%album%")
-    if echo $output | grep "^;" 2>&1 >/dev/null
-    then
+    if echo $output | grep "^;" 2>&1 >/dev/null; then
         # title=$(echo "$output" | head -1 | cut -d';' -f2)
         # artist=$(echo "$output" | head -1 | cut -d';' -f3)
         # album=$(echo "$output" | head -1 | cut -d';' -f4)
@@ -44,3 +38,5 @@ do
     fi
     sleep 1
 done
+
+# vim:set ft=sh:

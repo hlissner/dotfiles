@@ -2,12 +2,12 @@
 
 . $(dirname $0)/../panel-config
 
-ICON_UPD=""
-
-pkgs="$(checkupdates | wc -l)"
-if [ "$pkgs" -gt 0 ]
+num=$({ checkupdates; cower -u; } | wc -l)
+if [ "$num" -gt 0 ]
 then
-    echo "U%{F${COLOR_2}}$ICON_UPD$pkgs%{F-}"
+    echo "U%{F${COLOR_2}}$ICON_UPD$num%{F-}"
 else
     echo "U%{F${COLOR_DIM}}$ICON_UPD%{F-}"
 fi
+
+# vim:set ft=sh:

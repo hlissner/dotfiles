@@ -51,7 +51,40 @@ ICON_FILE=""
 ICON_MUSIC=""
 ICON_MEDIA=""
 ICON_GAMES="" # ghost
+ICON_MISC=""
+
 # clock icons
 ICON_DATE=""
-ICON_TIME=""
+ICON_TIME=""
+
+# battery icons
+ICON_BAT0=""
+ICON_BAT1=""
+ICON_BAT2=""
+ICON_BAT3=""
+ICON_BAT4=""
+ICON_BAT5=""
+ICON_BAT6=""
+ICON_BAT7=""
+ICON_BAT8=""
+ICON_BAT9=""
+ICON_BATAC=""
+
+ICON_SYNC=""
+
+# media icons
+ICON_PLAY=""
+ICON_PAUSE=""
+# ICON_STOP=""
+ICON_MUTED=""
+ICON_SPEAKER=""
+
+# wireless icons
+ICON_WIFI0=""
+ICON_WIFI1=""
+ICON_WIFI2=""
+ICON_WIFI3=""
+
+# updates
+ICON_UPD=""
 

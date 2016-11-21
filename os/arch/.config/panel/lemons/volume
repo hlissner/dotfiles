@@ -6,19 +6,18 @@
 
 . $(dirname $0)/../panel-config
 
-# media player icons
-ICON_MUTED=""
-ICON_SPEAKER=""
-
-if echo "$data" | grep '\[on\]' >/dev/null
-then
+data=$(amixer get Master)
+vol=0
+if echo "$data" | grep '\[on\]' >/dev/null; then
     vol=$(echo "$data" | sed -n 's/^.*\[\([0-9]\+\)%.*$/\1/p' | uniq)
-    case "$vol" in
-        0) echo "V${ICON_MUTED}"
+    case $vol in
+        0)  echo "V${ICON_MUTED}"
             ;;
-        *) echo "V${ICON_SPEAKER}"
+        *)  echo "V${ICON_SPEAKER}"
             ;;
     esac
 else
     echo "V%{F${COLOR_DIM}}${ICON_MUTED}%{F-}"
 fi
+
+# vim:set ft=sh:
