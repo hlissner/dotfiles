@@ -1,17 +1,14 @@
 #!/usr/bin/env dash
 
-if [ "$1" = "--kill" ]
-then
+if [ "$1" = "-k" ]; then
     pkill -f '^dash .+/panel$'
     exit
 fi
 
-CWD="$(cd $(dirname $0) && pwd -P)"
+CWD=$(dirname $0)
 . $CWD/panel-config
 
-
 #
-running() { pgrep -f $1 >/dev/null; }
 cleanup() { rm -rf "$PANEL_FIFO"; pkill -P $$; }
 
 #
@@ -20,9 +17,8 @@ trap cleanup INT TERM QUIT EXIT
 mkfifo "$PANEL_FIFO"
 echo "MKFIFO $PANEL_FIFO"
 
-if running lemonbar
-then
-    2>&1 echo "Lemonbar already running"
+if pgrep lemonbar >/dev/null; then
+    >&2 echo "Lemonbar is already running"
     exit 1
 fi
 
@@ -35,17 +31,15 @@ clock -sf "T${ICON_DATE} %A, %b %d   ${ICON_TIME} %I:%M%p" > "${PANEL_FIFO}" &
 xtitle -sf 'X%s' > "${PANEL_FIFO}" &
 bspc subscribe report > "${PANEL_FIFO}" &
 
-for lemon in $CWD/lemons/*
-do
-    echo "INIT $(basename $lemon)"
+for lemon in $CWD/lemons/*; do
+    echo "INIT ${lemon##*/}"
     $lemon > "${PANEL_FIFO}" &
 done
 
 #
 parse() {
     num_mon=$(bspc query -M | wc -l)
-    while read -r line
-    do
+    while read -r line; do
         data="${line#?}"
         case $line in
             # Minimal icons
@@ -55,14 +49,12 @@ parse() {
                 ;;
             M*) mail=" $data"
                 ;;
-            V*) vol=" $data"
+            V*) vol=" %{A:volume.sh toggle:}$data${A}"
                 ;;
             I*) wifi=" $data"
                 ;;
 
             # Full segments
-            E*) # TODO ethernet
-                ;;
             X*) xtitle="$data"
                 ;;
             T*) datetime="   $data"
@@ -119,7 +111,7 @@ parse() {
                                     _BG=$COLOR_FOCUSED_URGENT_BG
                                     ;;
                             esac
-                            eval "icon=\$ICON_$name"
+                            eval "icon=\$ICON_$(echo $name | tr '[:lower:]' '[:upper:]')"
                             wm="${wm}%{F$_FG}%{B$_BG}%{A:bspc desktop -f ${id#?}:}  ${icon:-$name}  %{A}%{B-}%{F-}"
                             ;;
                     esac
@@ -130,7 +122,7 @@ parse() {
         echo -e \
             "%{l}${wm}${song}" \
             "%{c}${xtitle}" \
-            "%{r}${battery}${mail}${updates}${vol}${wifi}${datetime} "
+            "%{r}${battery}${mail}${updates}${vol}${wifi}${datetime}  "
     done
 }
 
@@ -141,7 +133,7 @@ parse < "${PANEL_FIFO}" | \
     -f "$PANEL_FONT" \
     -f "$ICON_FONT" \
     -F "$COLOR_FG" \
-    -B "$COLOR_BG" \
+    # -B "$COLOR_BG" \
     | sh &
 
 wait
