@@ -3,20 +3,20 @@
     allow_markup = yes
     bounce_freq = 0
     browser = /usr/bin/chromium
-    dmenu = /usr/bin/dmenu -p dunst:
+    dmenu = /usr/bin/rofi -dmenu -p dunst:
     follow = none
-    font = gohu 11
+    font = Fira Mono 9
     format = "<b>%s</b>\n%b"
     # geometry [{width}]x{height}][+/-{x}+/-{y}]
-    geometry = "0-0+25"
+    geometry = "300x22-0+26"
     history_length = 20
-    horizontal_padding = 10
+    horizontal_padding = 8
     idle_threshold = 120
     ignore_newline = no
     indicate_hidden = yes
     line_height = 0
     monitor = 0
-    padding = 10
+    padding = 4
     separator_color = frame
     separator_height = 1
     show_age_threshold = 60
@@ -33,24 +33,24 @@
     icon_folders = /usr/share/icons/hicolor/16x16/apps/:/usr/share/icons/Adwaita/16x16/actions/
 
 [frame]
-    width = 0
-#    color = "6092BE"
+    width = 1
+    color = "81a2be"
 
 [shortcuts]
     context = ctrl+shift+period
 
 [urgency_low]
-    background = "#272822"
+    background = "#22252c"
     foreground = "#FFFFFF"
     timeout = 5
 
 [urgency_normal]
-    background = "#272822"
+    background = "#22252c"
     foreground = "#FFFFFF"
     timeout = 5
 
 [urgency_critical]
-   background = "#272822"
+   background = "#44252c"
    foreground = "#D46A6A"
     timeout = 5
 
