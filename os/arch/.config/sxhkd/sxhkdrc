@@ -25,7 +25,7 @@ super + Escape
 
 
 #
-#
+# Media keys
 #
 
 XF86Audio{Play,Pause}
@@ -134,44 +134,21 @@ super + ctrl + space
 super + ctrl + shift + space
 	bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
 
-#
-# resize tiled/floating
-#
-
 # Rebalance windows
 # super + plus
 #     bspc node @focused:/ -B
 
 # expand the tiled space in the given direction
 super + alt + {h,j,k,l}
-	bspc node {@west -r -10,@south -r +10,@north -r -10,@east -r +10}
+	bspc node {@west -r -20,@south -r +20,@north -r -20,@east -r +20}
 
 # contract the tiled space in the given direction
 super + alt + shift + {h,j,k,l}
-	bspc node {@east -r -10,@north -r +10,@south -r -10,@west -r +10}
+	bspc node {@east -r -20,@north -r +20,@south -r -20,@west -r +20}
 
 # move a floating window
 super + {Left,Down,Up,Right}
 	xdo move {-x -20,-y +20,-y -20,-x +20}
 
-#
-# pointer focus/move/resize
-#
-
-# start move/resize
-super + button{1-3}
-	bspc pointer -g {move,resize_side,resize_corner}
-
-# end move/resize
-super + @button{1-3}
-	bspc pointer -u
-
-#
-# Volume
-#
-
-super + shift + {Down,Up}
-    volume.sh {-,+}
-
-super + ctrl + shift + {Down,Up}
-    volume.sh {mute,unmute}
+super + ctrl + {Left,Down,Up,Right}
+	xdo resize {-w -20,-h -20,-h -20,-w -20}
