@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-$(dirname $0)/panel-notify :updates
+/home/hlissner/.config/panel/panel-notify :updates
