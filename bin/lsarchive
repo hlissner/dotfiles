@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
-#
+
 # Lists the contents of archives.
 #
 # Adapted from a script by Sorin Ionescu <sorin.ionescu@gmail.com>
 
-if (( $# == 0 ))
-then
+if (($# == 0)); then
   cat >&2 <<EOF
 usage: $0 [-option] [file ...]
 
@@ -16,22 +15,19 @@ Report bugs to <sorin.ionescu@gmail.com>.
 EOF
 fi
 
-if [[ "$1" == "-v" || "$1" == "--verbose" ]]
-then
+if [[ $1 = -v || $1 = --verbose ]]; then
     verbose=0
     shift
 fi
 
-while (( $# > 0 ))
-do
-    if [[ ! -s "$1" ]]
-    then
+while (($# > 0)); do
+    if [[ ! -s $1 ]]; then
         >&2 echo "$0: file not valid: $1"
         shift
         continue
     fi
 
-    case "${1:l}" in
+    case ${1:l} in
         *.tar.gz|*.tgz) tar t${verbose:+v}vzf "$1" ;;
         *.tar.bz2|*.tbz|*.tbz2) tar t${verbose:+v}jf "$1" ;;
         *.tar.xz|*.txz) tar --xz --help &> /dev/null \
