@@ -1,4 +1,3 @@
-Xft.dpi: 81
 Xft.autohint: false
 Xft.lcdfilter: lcddefault
 Xft.hintstyle: hintslight
@@ -7,77 +6,70 @@ Xft.antialias: true
 Xft.rgba: rgb
 
 ! urxvt
-urxvt*buffered: true
-urxvt*cursorBlink: true
-urxvt*underlineColor: yellow
-urxvt*font: xft:Terminus:size=9:antialias=false
-urxvt*depth: 32
-urxvt*borderless: 1
-urxvt*scrollBar: false
-urxvt*loginShell: true
-urxvt*secondaryScroll: true
-urxvt*saveLines: 5000
-urxvt.termName: rxvt-256color
-urxvt.perl-ext-common: default,matcher
-urxvt.urlLauncher: firefox
-urxvt.matcher.button: 1
+urxvt*background:             [95]#22252c
+urxvt*buffered:               true
+urxvt*cursorBlink:            true
+urxvt*underlineColor:         yellow
+urxvt*font:                   xft:Terminus:size=9:antialias=false
+urxvt*depth:                  32
+urxvt*borderless:             1
+urxvt*scrollBar:              false
+urxvt*loginShell:             true
+urxvt*secondaryScroll:        true
+urxvt*saveLines:              5000
+urxvt.termName:               rxvt-256color
+urxvt.matcher.button:         1
+urxvt.urlLauncher:            firefox
+URxvt.perl-ext-common:        default,matcher,clipboard
+URxvt.keysym.Shift-Control-C: perl:clipboard:copy
+URxvt.keysym.Shift-Control-V: perl:clipboard:paste
+URxvt.clipboard.autocopy:     true
 
 ! rofi
-rofi.background: #22252c
-rofi.foreground: #efefef
-rofi.font: Terminus 9
-rofi.location: 2
+rofi.background:       #22252c
+rofi.foreground:       #efefef
+rofi.font:             Terminus 9
+rofi.location:         2
 rofi.levenshtein-sort: 1
-rofi.width: 40
-rofi.lines: 20
-rofi.hide-scrollbar: true
-rofi.bw: 0
+rofi.width:            40
+rofi.lines:            20
+rofi.hide-scrollbar:   true
+rofi.bw:               0
 
+rofi.color_enabled: true
 !                  bg       border
 rofi.color-window: #22252c, #444449
 !                  bg       fg       bgalt    hlbg     hlfg
 rofi.color-normal: #22252c, #bbc2cf, #262930, #12151c, #279dc5
 rofi.color-urgent: #22252c, #bb828f, #262930, #744449, #dbe2ef
 rofi.color-active: #22252c, #bbc2cf, #262930, #444449, #dbe2ef
-! #bbc2cf
 
 ! special
-urxvt.background: rgba:2200/2500/2c00/fb00
 *.background: #22252c
-! *.foreground: #bbc2cf
 *.foreground:   #c5c8c6
-! *.background:   #1d1f21
-! *.cursorColor:  #c5c8c6
 *.cursorColor:  #81a2be
 
 ! black
 *.color0:       #282a2e
 *.color8:       #373b41
-
 ! red
 *.color1:       #a54242
 *.color9:       #cc6666
-
 ! green
 *.color2:       #8c9440
 *.color10:      #b5bd68
-
 ! yellow
 *.color3:       #de935f
 *.color11:      #f0c674
-
 ! blue
 *.color4:       #5f819d
 *.color12:      #81a2be
-
 ! magenta
 *.color5:       #85678f
 *.color13:      #b294bb
-
 ! cyan
 *.color6:       #5e8d87
 *.color14:      #8abeb7
-
 ! white
 *.color7:       #707880
 *.color15:      #c5c8c6
