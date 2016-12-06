@@ -6,10 +6,11 @@ alias q='exit'
 alias clr='clear'
 alias sudo='sudo '
 
-alias ..='cd ..'
-alias ...='cd ../..'
-alias ....='cd ../../..'
-alias -- -='cd -'
+alias ..='cd .. && ls'
+alias ...='cd ../.. && ls'
+alias ....='cd ../../.. && ls'
+alias -- -='cd - && ls'
+cdl() { cd "$1" && ls -l; }
 
 alias ln="${aliases[ln]:-ln} -v"  # verbose ln
 alias l='ls -l'
@@ -44,12 +45,11 @@ alias exe='exercism'
 alias map="xargs -n1"
 
 o() { open "${1:-.}" }
-c() { cd "$1" && ls -l; }
 take() { mkdir "$1" && cd "$1"; }
 hex()  { echo -n $@ | xxd -psdu; }
 
 if command -v compdef >/dev/null; then
+    compdef cdl=cd
     compdef o=open
-    compdef c=cd
     compdef take=mkdir
 fi
