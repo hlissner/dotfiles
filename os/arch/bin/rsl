@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# Run resilio (bittorrent sync) from $HOME if it isn't running. Otherwise, open
+# its gui in the browser.
+
+open="open"
+[[ $OSTYPE == linux* ]] && open="xdg-open"
+if pgrep rslsync >/dev/null; then
+    $open http://locahost:8888
+else
+    pushd $HOME >/dev/null
+    rslsync &
+    popd >/dev/null
+fi
