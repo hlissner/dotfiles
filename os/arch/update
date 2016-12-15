@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
 
-sudo pacman -Syu
-command -v yaourt >/dev/null && yaourt -Syu
+if command -v pacaur >/dev/null; then
+    pacaur -Syu
+else
+    pacman -Syu
+fi
