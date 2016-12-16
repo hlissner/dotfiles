@@ -4,14 +4,6 @@
 
 repo "tarjoilija/zgen" "$HOME/.zgen"
 
-load shell/zsh/aliases.zsh
-load shell/zsh/config.zsh
-if is-interactive; then
-    load shell/zsh/completion.zsh
-    load shell/zsh/keybinds.zsh
-    load shell/zsh/prompt.zsh
-fi
-
 source "$HOME/.zgen/zgen.zsh"
 if ! zgen saved; then
     info "Creating zgen save"
@@ -26,6 +18,13 @@ if ! zgen saved; then
 
     zgen save
 fi
+
+if is-interactive; then
+    load shell/zsh/completion.zsh
+    load shell/zsh/keybinds.zsh
+    load shell/zsh/prompt.zsh
+fi
+loadall aliases.zsh
 
 [[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
 

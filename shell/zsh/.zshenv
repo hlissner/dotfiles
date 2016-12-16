@@ -1,14 +1,12 @@
-export DOTFILES="$HOME/.dotfiles"
-source "$DOTFILES/shell/common.sh"
+source "$HOME/.dotfiles/shell/common.sh"
 
 ## Paths
 # Ensure path arrays do not contain duplicates.
 typeset -gU cdpath fpath mailpath path
-
 path=(/usr/local/{,s}bin $path)
 
-load shell/env.sh
-loadall shell/zsh env.zsh
+load shell/zsh/config.zsh
+loadall env.zsh
 
 path=(
     $HOME/.bin
