@@ -11,9 +11,9 @@ if [[ "$SHELL" != *zsh ]]; then
             fi
             ;;
         linux*)
-            if [ -f /etc/arch-release ]; then
+            if [[ -f /etc/arch-release ]]; then
                 sudo pacman --needed --noconfirm -S zsh
-            elif [ -f /etc/debian_version ]; then
+            elif [[ -f /etc/debian_version ]]; then
                 sudo apt-get install -y zsh
             fi
             ;;
