@@ -8,16 +8,15 @@ case "$OSTYPE" in
         brew install --HEAD neovim/neovim/neovim
         ;;
     linux*)
-        if [ -f /etc/arch-release ]; then
-            sudo pacman --noconfirm -S make neovim python-neovim
-        elif [ -f /etc/debian_version ]; then
+        if [[ -f /etc/arch-release ]]; then
+            sudo pacman --needed --noconfirm -S make neovim python-neovim
+        elif [[ -f /etc/debian_version ]]; then
             sudo apt-get install -y neovim python3-neovim
         fi
         ;;
 esac
 
-if [ ! -d "$HOME/.vim" ]
-then
+if [[ ! -d "$HOME/.vim" ]]; then
     git clone --recursive "hlissner/.vim" "$HOME/.vim"
     cd "$HOME/.vim"
     make install
