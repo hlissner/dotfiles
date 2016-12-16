@@ -24,21 +24,8 @@ prompt_git_dirty() {
     echo -n '%f'
 }
 
-# displays the exec time of the last command if set threshold was exceeded
-prompt_cmd_exec_time() {
-    local stop=$EPOCHSECONDS
-    local start=${cmd_timestamp:-$stop}
-    integer elapsed=$stop-$start
-    (($elapsed > 2)) && echo ' '$($DOTFILES/bin/since -- $elapsed)
-}
-
 ## Hooks ###############################
-prompt_hook_preexec() {
-    cmd_timestamp=$EPOCHSECONDS
-}
-
 prompt_hook_precmd() {
-    LAST=$EPOCHSECONDS
     print -Pn '\e]0;%~\a' # full path in the title
     vcs_info # get git info
     # Newline before prompt, excpet on init
@@ -47,10 +34,7 @@ prompt_hook_precmd() {
 
 ## Initialization ######################
 prompt_init() {
-    zmodload zsh/datetime
-
-    # prevent percentage showing up
-    # if output doesn't end with a newline
+    # prevent percentage showing up if output doesn't end with a newline
     export PROMPT_EOL_MARK=''
 
     prompt_opts=(cr subst percent)
@@ -60,7 +44,6 @@ prompt_init() {
     autoload -Uz vcs_info
 
     add-zsh-hook precmd prompt_hook_precmd
-    add-zsh-hook preexec prompt_hook_preexec
     # Updates cursor shape and prompt symbol based on vim mode
     zle-keymap-select() {
         case $KEYMAP in
@@ -89,23 +72,16 @@ prompt_init() {
     is-ssh || is-root && prompt_username='%F{magenta}%n%F{244}@%m '
 
     ## Vim cursors
-    if [[ -z "$SSH_CONNECTION" ]]
-    then
-        N_MODE="%F{green}## "
-        I_MODE="%(?.%F{yellow}.%F{red})λ "
-    else
+    if [[ "$SSH_CONNECTION" ]]; then
         N_MODE="%F{red}### "
-        I_MODE="%(?.%F{green}.%F{red})λ "
+        I_MODE="%(?.%F{magenta}.%F{red})λ "
+    else
+        N_MODE="%F{magenta}## "
+        I_MODE="%(?.%F{blue}.%F{red})λ "
     fi
 
-    RPROMPT='%F{cyan}${vcs_info_msg_0_}$(prompt_git_dirty)'  # Branch + dirty indicator
-    RPROMPT+='%F{yellow}$(prompt_cmd_exec_time)'             # Exec time
-    RPROMPT+='%f' # end
-
-    PROMPT='$prompt_username'  # username
-    PROMPT+='%F{blue}%~ %f'      # path
-    PROMPT+='${PROMPT_SYMBOL:-$ }' # Prompt (red if $? == 0)
-    PROMPT+='%f' #end
+    RPROMPT='%F{cyan}${vcs_info_msg_0_}$(prompt_git_dirty)%f'
+    PROMPT='%F{cyan}%~ %f${PROMPT_SYMBOL:-$ }%f'
 }
 
 prompt_init "$@"
