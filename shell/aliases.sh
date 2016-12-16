@@ -10,7 +10,6 @@ alias ..='cd .. && ls'
 alias ...='cd ../.. && ls'
 alias ....='cd ../../.. && ls'
 alias -- -='cd - && ls'
-cdl() { cd "$1" && ls -l; }
 
 alias ln="${aliases[ln]:-ln} -v"  # verbose ln
 alias l='ls -l'
@@ -44,12 +43,15 @@ alias exe='exercism'
 # .gitattributes | map dirname
 alias map="xargs -n1"
 
-o() { open "${1:-.}" }
+# Colored ls
+case $OSTYPE in
+    darwin*) alias ls='ls -G' ;;
+    linux*)  alias ls='ls --color=auto' ;;
+esac
+
 take() { mkdir "$1" && cd "$1"; }
 hex()  { echo -n $@ | xxd -psdu; }
 
 if command -v compdef >/dev/null; then
-    compdef cdl=cd
-    compdef o=open
     compdef take=mkdir
 fi
