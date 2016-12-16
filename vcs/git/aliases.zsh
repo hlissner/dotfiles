@@ -1,9 +1,10 @@
-is-callable 'hub' && alias git='hub'
-g() { [ $# -eq 0 ] && git status --short || git $*; }
+is-callable hub && alias git='hub'
+g() { [[ $# = 0 ]] && git status --short . || git $*; }
+compdef g=hub
 
 alias gbr='git browse'
 alias gi='git init'
-alias gs='git status'
+alias gs='git status --short'
 alias gsu='git submodule'
 alias gsq='git rebase -i origin/master'
 alias gco='git checkout'
@@ -28,5 +29,4 @@ alias gt='git tag'
 alias gtd='git tag -d'
 alias gta='git tag -a'
 alias gl='git log --oneline --decorate'
-alias gls='git ls-files'
 
