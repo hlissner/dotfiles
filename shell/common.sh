@@ -12,8 +12,9 @@ fail()    { printf "\r\033[2K[\033[0;31mFAIL\033[0m] $1\n"; echo; exit; }
 load () { source "$DOTFILES/$1"; }
 
 loadall () {
-    for file in "$DOTFILES"/.enabled.d/${1//\//_}/${2:-*.*sh}; do
-        source "$file"
+    local files=( "$ENABLED_DIR"/*/"${1:-*.*sh}" )
+    for file in "${files[@]}"; do
+        [[ -e "$file" ]] && source "$file"
     done
 }
 
