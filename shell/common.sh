@@ -1,4 +1,6 @@
-CACHE_DIR="$DOTFILES/shell/zsh/cache"
+DOTFILES="$HOME/.dotfiles"
+CACHE_DIR="$HOME/.cache/${ZSH_NAME:-sh}"
+ENABLED_DIR="$DOTFILES/.enabled.d"
 
 is-callable() { command -v "$1" >/dev/null; }
 is-interactive() { [[ $- == *i* ]]; }
@@ -23,8 +25,8 @@ cache() {
     [[ -d "$CACHE_DIR" ]] || mkdir -p "$CACHE_DIR"
 
     is-callable "$1" || return 1
-    local cache="${CACHE_DIR}/$1-$(basename $SHELL)"
-    if [[ ! -f "$cache" && -s "$cache" ]]; then
+    local cache="${CACHE_DIR}/$1-${SHELL##*/}"
+    if [[ ! -f "$cache" || ! -s "$cache" ]]; then
         echo "Caching $1"
         $@ > "$cache" 2> /dev/null
     fi
