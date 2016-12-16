@@ -1,5 +1,4 @@
 load shell/aliases.sh
-loadall shell/zsh aliases.zsh
 
 #
 autoload -U zmv
