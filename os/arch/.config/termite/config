@@ -2,30 +2,37 @@
 foreground = #839496
 foreground_bold = #eee8d5
 #foreground_dim = #888888
-# background = #22252c
-background = rgba(34, 37, 44, 0.95)
+#background = #22252c
+background = rgba(34, 37, 44, 0.94)
 cursor = #93a1a1
 
 # if unset, will reverse foreground and background
 #highlight = #839496
 
-# colors from color0 to color254 can be set
-color0 = #073642
-color1 = #dc322f
-color2 = #859900
-color3 = #b58900
-color4 = #268bd2
-color5 = #d33682
-color6 = #2aa198
-color7 = #eee8d5
-color8 = #002b36
-color9 = #cb4b16
-color10 = #586e75
-color11 = #657b83
-color12 = #839496
-color13 = #6c71c4
-color14 = #93a1a1
-color15 = #fdf6e3
+# black
+color0  = #282a2e
+color8  = #373b41
+# red
+color1  = #a54242
+color9  = #cc6666
+# green
+color2  = #8c9440
+color10 = #b5bd68
+# yellow
+color3  = #de935f
+color11 = #f0c674
+# blue
+color4  = #5f819d
+color12 = #81a2be
+# magenta
+color5  = #85678f
+color13 = #b294bb
+# cyan
+color6  = #5e8d87
+color14 = #8abeb7
+# white
+color7  = #707880
+color15 = #c5c8c6
 
 [options]
 font = FontAwesome 12
