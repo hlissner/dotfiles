@@ -5,17 +5,12 @@ case "$OSTYPE" in
         brew install fasd
         ;;
     linux*)
-        if [ -f /etc/arch-release ]
-        then
-            mkdir -p $HOME/build && cd $HOME/build
-            git clone https://aur.archlinux.org/fasd.git fasd
-            cd fasd
-            makepkg -sri
-        elif [ -f /etc/debian_version ];
-        then
+        if [[ -f /etc/arch-release ]]; then
+            pacaur --needed --noconfirm -S fasd
+        elif [[ -f /etc/debian_version ]]; then
             sudo add-apt-repository ppa:aacebedo/fasd
             sudo apt update
-            sudo apt install fasd
+            sudo apt install -y fasd
         fi
         ;;
 esac
