@@ -95,7 +95,7 @@ for topic in ${@:-$(find "$ENABLED_DIR" -maxdepth 1 -type l)}; do
     echo -e "${green}${tname//_//}${nc}"
     # Link binaries
     for bin in $tpath/bin/*; do
-        [[ "$link" && -x "$bin" ]] && _link "$bin" "~/.bin/"
+        [[ "$link" && -x "$bin" ]] && _link "$bin" "$HOME/.bin/"
     done
 
     # Link topic to .enabled.d
