@@ -1,1 +1,5 @@
-is-callable zgen && zgen update
+#!/usr/bin/env bash
+if command -v zgen >/dev/null; then
+    zgen selfupdate
+    zgen update
+fi
