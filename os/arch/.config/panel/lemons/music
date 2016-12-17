@@ -12,6 +12,11 @@ progress_bar() {
 }
 
 while :; do
+    if ! pgrep mpd >/dev/null; then
+        sleep 5
+        continue
+    fi
+
     output=$(mpc --format ";%title%;%artist%;%album%")
     if echo $output | grep "^;" 2>&1 >/dev/null; then
         # title=$(echo "$output" | head -1 | cut -d';' -f2)
