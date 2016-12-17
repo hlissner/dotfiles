@@ -25,6 +25,8 @@ fi
 pac base base-devel intel-ucode
 # device mounting drivers
 pac dosfstools ntfs-3g exfat-utils hfsprogs
+# nc
+pac gnu-netcat
 
 # hostname
 read -p "Enter computer hostname: " host
