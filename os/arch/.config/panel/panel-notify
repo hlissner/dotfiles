@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+if ! pgrep lemonbar >/dev/null; then
+    >&2 echo "Lemonbar isn't running"
+    exit 1
+fi
+
 CWD=$(dirname $0)
 if [[ -t 0 ]]; then
     if (( $# == 0 )); then
