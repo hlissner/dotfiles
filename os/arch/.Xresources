@@ -19,11 +19,11 @@ urxvt*secondaryScroll:        true
 urxvt*saveLines:              5000
 urxvt.termName:               rxvt-256color
 urxvt.matcher.button:         1
-urxvt.urlLauncher:            firefox
-URxvt.perl-ext-common:        default,matcher,clipboard
-URxvt.keysym.Shift-Control-C: perl:clipboard:copy
-URxvt.keysym.Shift-Control-V: perl:clipboard:paste
-URxvt.clipboard.autocopy:     true
+urxvt.urlLauncher:            chromium
+urxvt.perl-ext-common:        default,matcher,clipboard
+urxvt.keysym.Shift-Control-C: perl:clipboard:copy
+urxvt.keysym.Shift-Control-V: perl:clipboard:paste
+urxvt.clipboard.autocopy:     true
 
 ! rofi
 rofi.background:       #22252c
