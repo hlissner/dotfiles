@@ -43,12 +43,6 @@ alias exe='exercism'
 # .gitattributes | map dirname
 alias map="xargs -n1"
 
-# Colored ls
-case $OSTYPE in
-    darwin*) alias ls='ls -G' ;;
-    linux*)  alias ls='ls --color=auto' ;;
-esac
-
 take() { mkdir "$1" && cd "$1"; }
 hex()  { echo -n $@ | xxd -psdu; }
 

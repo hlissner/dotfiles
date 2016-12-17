@@ -1,4 +1,3 @@
-alias ls='ls -G'
 alias ls="${aliases[ls]:-ls} -G"
 
 alias date='gdate'
