@@ -4,7 +4,7 @@
 
 # terminal emulator
 super + ctrl + Return
-	urxvt
+	termite
 
 # scratchpad
 super + grave
