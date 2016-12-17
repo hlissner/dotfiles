@@ -57,7 +57,7 @@ bspc rule -a Emacs split_ratio=0.25 state=tiled
 bspc rule -a Gimp desktop=^6
 bspc rule -a mplayer2 state=floating
 bspc rule -a Vlc state=floating
-bspc rule -a feh state=floating center=on
+bspc rule -a feh state=fullscreen
 bspc rule -a Kupfer.py focus=on
 bspc rule -a Screenkey manage=off
 bspc rule -a love state=floating center=on sticky=on
