@@ -14,8 +14,10 @@ else
     case $OSTYPE in
         darwin*) sleep 1; pmset displaysleepnow ;;
         linux*)
-            pgrep slock >/dev/null || slock &
-            sleep 3
+            if command -v slock >/dev/null; then
+                pgrep slock >/dev/null || slock &
+            fi
+            sleep 1
             xset dpms force off
             ;;
     esac
