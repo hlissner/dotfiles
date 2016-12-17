@@ -1,15 +1,11 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 PWD=$(dirname $0)
-pacman="sudo pacman --needed --noconfirm -S"
-pacaur="sudo pacaur --needed --noconfirm -y"
+
+pacman='sudo pacman --needed --noconfirm'
+pacaur='pacaur --needed --noconfirm'
 
 exists() { command -v "$1" >/dev/null; }
-
-install() {
-    echo "==> Installing: $@"
-    sudo pacmaur --needed --noconfirm -S $@
-}
 
 
 ########################################
@@ -21,37 +17,47 @@ install() {
 if ! echo -e "GET http://google.com HTTP/1.0\n\n" | nc google.com 80 > /dev/null 2>&1; then
     >&2 echo "No internet connection detected!"
     exit 1
+elif [[ $(id -u) == 0 ]]; then
+    >&2 echo "Should not be run as root!"
+    exit 2
 fi
 
-## Datetime
-sudo timedatectl set-ntp true
-sudo timedatectl set-timezone America/Toronto
-# Use localtime b/c I expect to dualboot with windows (hisssss)
-sudo hwclock --systohc --localtime
+# Essential utilities
+$pacman -S wget curl tree rsync openssh dnsutils
 
-# Set locale
-sed -i '/^#en_US\.UTF-8/s/^#//' /etc/locale.gen
-locale-gen
-ln -sfv /usr/share/zoneinfo/America/Toronto /etc/localtime
-# Be verbose about package updates
-sed -i 's/^#\(VerbosePkgLists.*\)/\1/' /etc/pacman.conf
-
-
-## AUR helper
-install git
-if ! command -v pacaur >/dev/null; then
+# Set up pacaur (AUR helper)
+if ! exists pacaur; then
     pushd $(mktemp -d)
-    gpg --recv-keys --keyserver hkp://pgp.mit.edu 1EB2638FF56C0C53
-    git clone https://aur.archlinux.org/cower.git  && cd cower  && makepkg -sri
-    git clone https://aur.archlinux.org/pacaur.git && cd pacaur && makepkg -sri
+    curl -o PKGBUILD https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=cower && makepkg --skippgpcheck -sri
+    curl -o PKGBUILD https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=pacaur && makepkg --skippgpcheck -sri
     TEMP=$(pwd)
     popd
     rm -rf "$TEMP"
+
+    if ! exists pacaur; then
+        >&2 echo "Pacaur wasn't successfully installed"
+        exit 3
+    fi
 fi
 
-## Fontconfig
-if ! grep infinality /etc/pacman.conf >/dev/null; then
-    echo <<EOL >>/etc/pacman.conf
+
+## Bootstrap
+# Helpful utilities
+$pacaur -S the_silver_searcher fasd tmux hub bc keybase cronie
+sudo systemctl enable cronie.service
+
+if [[ -z $SERVER ]]; then
+    # crontab
+    if exists crontab; then
+        [[ -f $PWD/crontab ]] && crontab $PWD/crontab
+    fi
+
+    # desktop server
+    $pacman -S xorg-init xorg-server
+
+    # fontconfig
+    if ! grep infinality /etc/pacman.conf >/dev/null; then
+        echo <<EOL | sudo tee -a /etc/pacman.conf
 [infinality-bundle]
 Server = http://bohoomil.com/repo/\$arch
 
@@ -61,115 +67,28 @@ Server = http://bohoomil.com/repo/multilib/\$arch
 [infinality-bundle-fonts]
 Server = http://bohoomil.com/repo/fonts
 EOL
+        sudo pacman-key -r 962DDE58
+        sudo pacman-key --lsign-key 962DDE58
+        sudo pacman -Sy
+
+        $pacaur -S ttf-droid-ib ttf-opensans otf-fira-{mono,sans}-ibx terminus-font-td1
+    fi
+
+    # Window manager
+    $pacaur -S bspwm sxhkd compton
+    # Taskbar
+    $pacaur -S lemonbar-xft-git siji-git xtitle sutils-git
+    # Music player
+    $pacaur -S mpd mpc ncmpcpp
+    # Utilities
+    $pacaur -S rofi feh maim slop neofetch-git pass youtube-dl xdotool
+    # Apps
+    $pacaur -S redshift chromium termite
+
+    # Install pacman hooks
+    hookdest=/etc/pacman.d/hooks
+    mkdir -p "$hookdest"
+    for hook in $PWD/$hookdest/*.hook; do
+        [[ -f $hookdest/${hook##*/} ]] || sudo ln -svf $hook $hookdest/
+    done
 fi
-sudo pacman-key -r 962DDE58
-sudo pacman-key -lsign-key 962DDE58
-sudo pacman -Sy
-
-install ttf-droid-ib ttf-opensans otf-fira-{mono,sans}-ibx terminus-font-td1
-
-
-########################################
-#
-# GUI+Desktop
-#
-########################################
-
-# Essentials
-install nvidia \
-        xorg-init xorg-server \
-        rxvt-unicode \
-        bspwm sxhkd compton xdotool \
-        dosfstools ntfs-3g \
-        wget curl tree rsync openssh dnsutils
-
-# Window manager
-install bspwm sxhkd compton lightdm lightdm-webkit2-greeter xdotool
-# Taskbar
-install lemonbar-xft-git siji-git xtitle sutils-git
-
-# Install pacman hooks
-hookdest=/etc/pacman.d/hooks
-mkdir -p "$hookdest"
-for hook in $PWD/$hookdest/*.hook; do
-    [[ -f $hookdest/${hook##*/} ]] || sudo ln -svf $hook $hookdest/
-done
-
-# Configure lightdm
-sudo sed -i 's/^#\?\(user-session=\).*/\1bspwm/;
-             s/^#\?\(greeter-allow-guest=\).*/\1false/;
-             s/^#\?\(greeter-session=\).*/\1lightdm-webkit2-greeter/' \
-    /etc/lightdm/lightdm.conf
-sudo sed -i 's/^#\?\(webkit-theme = \).*/\1vnought/' \
-    /etc/lightdm/lightdm-webkit2-greeter.conf
-[ -d /usr/share/lightdm-webkit/themes/vnought ] || \
-    sudo git clone https://github.com/hlissner/lightdm-webkit2-vnought /usr/share/lightdm-webkit/themes/vnought
-
-
-########################################
-#
-# System/Shell
-#
-########################################
-
-# Tools
-install hub                  # convient git wrapper
-install bc                   # my calculator
-install rsync                # replaces dropbox
-install pass                 # password manager
-install maim slop            # screenshots + selection
-install neofetch-git         # for unixporn
-install rofi                 # dmenu replacement
-install mpd mpc ncmpcpp      # music server + player
-install redshift             # display color shift based on time of day
-install feh                  # wallpaper setter + image previewer
-install the_silver_searcher  # fast file searching
-install tmux                 # terminal multiplexer
-install fasd                 # quick filesystem navigation
-install git-crypt
-install youtube-dl
-
-# cron
-install cronie
-[[ -f $PWD/crontab ]] && crontab $PWD/crontab
-sudo systemctl enable cronie.service
-
-
-########################################
-#
-# Apps & Customization
-#
-########################################
-
-# Applications
-install rxvt-unicode
-install termite
-install obs-studio
-install chromium firefox     # browsers
-
-# virtual machines
-install virtualbox-host-dkms virtualbox
-
-# GTK theme
-[[ -d /usr/share/themes/Arc-Dark ]] || install gtk-theme-arc
-
-
-
-########################################
-#
-# Security
-#
-########################################
-
-# SSH: no root login + only pubkey auth
-sudo sed -i 's/^#\?\(PasswordAuthentication \).*/\1no/; \
-             s/^#\?\(PermitRootLogin ).*/\1no/; \
-             s/^#\?\(X11Forwarding ).*/\1yes/; \
-             ' \
-             /etc/ssh/sshd_config
-
-# Fix permissions
-sudo chmod 700 /etc/iptables
-
-# Prompts for password!
-gpg -d $PWD/.config/panel/panel.secrets.gpg > $PWD/.config/panel/panel.secrets
