@@ -6,8 +6,12 @@ fi
 
 case $OSTYPE in
     darwin*)
-        # Comes preinstalled on MacOS
-        sudo launchctl load -w /System/Library/LaunchDaemons/ssh.plist
+        macos-load-ssh() {
+            # Comes preinstalled on MacOS
+            sudo launchctl load -w /System/Library/LaunchDaemons/ssh.plist
+        }
+        # Activate service when script is finished
+        trap macos-load-ssh EXIT
         ;;
     linux*)
         if [[ -f /etc/arch-release ]]; then
