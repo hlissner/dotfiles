@@ -1,9 +1,14 @@
 #!/usr/bin/env dash
 
+if [ -z "$(ip link | grep wlp | awk '{print $2}'| sed 's/://' | sed '1!d')" ]; then
+    echo "No wireless device"
+    exit
+fi
+
 . $(dirname $0)/../panel-config
 
 # No wifi interface? Abort!
-ints=$(find /sys/class/net/*/wireless -type d)
+ints=$(find /sys/class/net -maxdepth 2 -type d -iname 'wireless')
 [ -z "$ints" ] && echo "I${ICON_WIFI0}" && exit
 
 # Start watching
