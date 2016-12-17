@@ -1,11 +1,9 @@
 #!/bin/bash
 
-if command -v brew;
-then
+if command -v brew; then
     brew update
-    brew upgrade --all
+    brew upgrade
     brew cleanup
-    brew prune
 else
     2>&1 echo "homebrew wasn't found"
 fi
