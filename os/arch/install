@@ -52,8 +52,8 @@ if [[ -z $SERVER ]]; then
         [[ -f $PWD/crontab ]] && crontab $PWD/crontab
     fi
 
-    # desktop server
-    $pacman -S xorg-init xorg-server
+    # desktop essentials
+    $pacman -S xorg-init xorg-server alsa-utils
 
     # fontconfig
     if ! grep infinality /etc/pacman.conf >/dev/null; then
