@@ -8,13 +8,9 @@ export CPLUS_INCLUDE_PATH="/usr/local/include"
 export LIBRARY_PATH="/usr/local/lib"
 # export LDFLAGS="-L/usr/local/lib"
 
-if [[ "$OSTYPE" == darwin* ]]; then
-    [[ -x /usr/libexec/path_helper ]] && eval $(/usr/libexec/path_helper -s)
-fi
+[[ -x /usr/libexec/path_helper ]] && eval $(/usr/libexec/path_helper -s)
 
 export LESS='-g -i -M -R -S -w -z-4'
 if is-callable lesspipe; then
   export LESSOPEN='| /usr/bin/env lesspipe %s 2>&-'
 fi
-
-path=($DOTFILES/os/macos/bin $path)
