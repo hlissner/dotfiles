@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+if [[ -z $FORCE ]]; then
+    pgrep sshd >/dev/null && exit
+fi
+
 case $OSTYPE in
     darwin*)
         # Comes preinstalled on MacOS
