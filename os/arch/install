@@ -53,7 +53,7 @@ if [[ -z $SERVER ]]; then
     fi
 
     # desktop essentials
-    $pacman -S xorg-init xorg-server alsa-utils
+    $pacman -S xorg-init xorg-server
 
     # fontconfig
     if ! grep infinality /etc/pacman.conf >/dev/null; then
@@ -77,13 +77,17 @@ EOL
     # Window manager
     $pacaur -S bspwm sxhkd compton
     # Taskbar
-    $pacaur -S lemonbar-xft-git siji-git xtitle sutils-git
+    $pacaur -S lemonbar-xft-git siji-git xtitle sutils-git dunst libnotify
     # Music player
     $pacaur -S mpd mpc ncmpcpp
     # Utilities
     $pacaur -S rofi feh maim slop neofetch-git pass youtube-dl xdotool
     # Apps
     $pacaur -S redshift chromium termite
+    # Power events from users
+    $pacaur -S polkit
+    # Audio
+    $pacaur -S alsa-utils
 
     # Install pacman hooks
     hookdest=/etc/pacman.d/hooks
