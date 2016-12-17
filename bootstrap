@@ -16,7 +16,7 @@
 #   -l  Don't symlink dotfiles or bin scripts
 #   -d  Do a dry run (only output commands, no changes)
 #   -y  Overwrite conflicts (no prompts)
-#   -n  Don't overwrite conflicts (no prompts
+#   -p  Prompt on file conflict (to overwrite)
 
 set -e
 source "$(cd $(dirname $0) && pwd -P)/shell/common.sh"
@@ -55,10 +55,11 @@ _link() {
             echo
         fi
         case $choice in
-            y|Y) PREFIX="${red}OVERWRITE:${nc} " _run ln -svf "$1" "$2"
-                ;;
+            y|Y) _run rm -rf "$2"
+                 PREFIX="${red}OVERWRITE:${nc} " _run ln -svf "$1" "$2"
+                 ;;
             *)   PREFIX="${red}ABORTED:${nc} " DRYRUN=1 _run ln -svf "$1" "$2"
-                ;;
+                 ;;
         esac
     else
         _run ln -svf "$1" "$2"
@@ -69,13 +70,13 @@ _link() {
 install=1
 link=1
 update=1
-yes=
-while getopts iuldyn opt; do
+yes=0
+while getopts iuldyp opt; do
     case $opt in
         d) DRYRUN=1 ;;
         i) install= ;;
         l) link=    ;;
-        n) yes=0    ;;
+        p) yes=     ;;
         u) update=  ;;
         y) yes=1    ;;
         *) >&2 echo "Aborted."
