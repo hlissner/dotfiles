@@ -2,12 +2,12 @@
 
 set -e
 CWD=$(dirname $0)
-if [[ ! -f ~/.private/config/email ]]; then
+if [[ ! -f ~/.private/config/email.conf ]]; then
     >&2 echo "Couldn't load account settings"
     exit 1
 fi
 
-. ~/.private/config/email
+. ~/.private/config/email.conf
 . $CWD/../panel-config
 
 ICON_MAIL=""
