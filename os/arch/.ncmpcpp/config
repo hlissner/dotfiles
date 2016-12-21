@@ -10,8 +10,8 @@ ncmpcpp_directory = ~/.ncmpcpp
 #mpd_connection_timeout = 5
 
 ## Needed for tag editor and file operations to work.
-#mpd_music_dir = ~/music
-#mpd_crossfade_time = 5
+mpd_music_dir = ~/music
+mpd_crossfade_time = 5
 
 ##### music visualizer #####
 ##
@@ -66,15 +66,13 @@ ncmpcpp_directory = ~/.ncmpcpp
 #
 ## Available values: spectrum, wave, wave_filled, ellipse.
 ##
-#visualizer_type = wave
-#
+visualizer_type = spectrum
 #visualizer_look = ●▮
-#
 #visualizer_color = blue, cyan, green, yellow, magenta, red
 #
 ## Alternative subset of 256 colors for terminals that support it.
 ##
-#visualizer_color = 41, 83, 119, 155, 185, 215, 209, 203, 197, 161
+visualizer_color = 41, 83, 119, 155, 185, 215, 209, 203, 197, 161
 #
 ##### system encoding #####
 ##
@@ -271,23 +269,14 @@ ncmpcpp_directory = ~/.ncmpcpp
 ## Note: Possible display modes: classic, columns.
 ##
 #playlist_display_mode = columns
-#
 #browser_display_mode = classic
-#
 #search_engine_display_mode = classic
-#
 #playlist_editor_display_mode = classic
-#
 #discard_colors_if_item_is_selected = yes
-#
 #incremental_seeking = yes
-#
 #seek_time = 1
-#
 #volume_change_step = 2
-#
 #autocenter_mode = no
-#
 #centered_cursor = no
 #
 ##
@@ -295,8 +284,7 @@ ncmpcpp_directory = ~/.ncmpcpp
 ## be used to build 'empty' part of progressbar.
 ##
 #progressbar_look = =>
-#
-#progressbar_boldness = yes
+progressbar_boldness = yes
 #
 ## Available values: database, playlist.
 ##
@@ -304,7 +292,7 @@ ncmpcpp_directory = ~/.ncmpcpp
 #
 ## Available values: classic, alternative.
 ##
-#user_interface = classic
+user_interface = alternative
 #
 #data_fetching_delay = yes
 #
