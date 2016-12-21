@@ -89,7 +89,11 @@ EOL
     # Audio
     $pacaur -S alsa-utils
 
-    # Install pacman hooks
+    systemctl enable --user redshift.service
+    systemctl enable --user rslsync.service
+    systemctl enable --user mpd.service
+
+    # FIXME Install pacman hooks
     hookdest=/etc/pacman.d/hooks
     mkdir -p "$hookdest"
     for hook in $PWD/$hookdest/*.hook; do
