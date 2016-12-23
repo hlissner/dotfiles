@@ -17,6 +17,7 @@
 #   -d  Do a dry run (only output commands, no changes)
 #   -y  Overwrite conflicts (no prompts)
 #   -p  Prompt on file conflict (to overwrite)
+#   -r  Refresh; the same as -ui
 
 set -e
 source "$(cd $(dirname $0) && pwd -P)/shell/common.sh"
@@ -71,7 +72,7 @@ install=1
 link=1
 update=1
 yes=0
-while getopts iuldyp opt; do
+while getopts iuldypr opt; do
     case $opt in
         d) DRYRUN=1 ;;
         i) install= ;;
@@ -79,6 +80,9 @@ while getopts iuldyp opt; do
         p) yes=     ;;
         u) update=  ;;
         y) yes=1    ;;
+        r) update=
+           install=
+           ;;
         *) >&2 echo "Aborted."
            exit 1   ;;
     esac
