@@ -5,7 +5,7 @@ export __GL_THREADED_OPTIMISATIONS=1
 running() { pgrep "$1" >/dev/null; }
 
 # wallpaper
-feh --bg-scale $HOME/pictures/wallpaper
+feh --bg-center $HOME/pictures/wallpaper
 
 # mouse acceleration
 xset m 11/8 0
