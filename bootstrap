@@ -117,13 +117,13 @@ for topic in ${@:-$(find "$ENABLED_DIR" -maxdepth 1 -type l)}; do
     # Symlink dotfiles from topic directories (2 levels deep)
     [[ "$link" ]] || continue
     for file in "$tpath"/.[a-zA-Z]*; do
-        if [[ -d $file ]]; then
+        if [[ -d $file && "${file##*/}" == .config ]]; then
             for subfile in "$file"/*; do
                 base="$HOME/${file##*/}/"
                 [[ -d $base ]] || _run mkdir -p "$base"
                 _link "$subfile" "$base"
             done
-        elif [[ -f $file ]]; then
+        elif [[ -e $file ]]; then
             _link "$file" "$HOME/"
         fi
     done
