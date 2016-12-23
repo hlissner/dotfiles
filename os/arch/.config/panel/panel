@@ -82,7 +82,7 @@ parse() {
                                     _BG=$COLOR_FOCUSED_MONITOR_BG
                                     ;;
                             esac
-                            wm="${wm}%{F$_FG}%{B$_BG}%{A:bspc monitor -f ${id}:} ${name} %{A}%{B-}%{F-}"
+                            wm="${wm}%{F$_FG}%{B$_BG}%{A:bspc monitor -f ${id#?}:} ${id#?} %{A}%{B-}%{F-}"
                             ;;
                         [fFoOuU]*)
                             case $id in
