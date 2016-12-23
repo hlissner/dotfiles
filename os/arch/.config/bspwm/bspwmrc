@@ -1,16 +1,16 @@
 #!/bin/sh
 
-bspc config border_width    1
+bspc config border_width    2
 bspc config window_gap      20
-bspc config top_padding     80
-bspc config bottom_padding  50
+bspc config top_padding     70
+bspc config bottom_padding  40
 bspc config left_padding    50
 bspc config right_padding   50
 
 bspc config split_ratio          0.50
 bspc config gapless_monocle      true
 bspc config borderless_monocle   true
-bspc config paddingless_monocle  false
+bspc config paddingless_monocle  true
 bspc config click_to_focus       true
 
 bspc config pointer_modifier mod4
