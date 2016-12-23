@@ -12,25 +12,12 @@ them.
 
 ## Bootstrap
 
-`bootstrap` is my idempotent dotfile deployment script. This is how it works:
+`bootstrap` is my idempotent dotfile deployment script.
 
-You pass the directories of "topics" you want to install and it will:
-
-1. symlink `$topic/bin/*` to `~/.bin/`
-2. symlink `$topic/.*` to `~/` _and_ `$topic/.*/*` to `~/.$1/` (i.e. 2-level
-   symlinking). e.g.  `os/arch/.Xresources` will be symlinked to
-   `~/.Xresources`, and `os/arch/.config/redshift.conf` will be symlinked to
-   `~/.config/redshift.conf` (`~/.config` is not a symlink).
-3. run `$topic/install` the first time
-4. run `$topic/update` on consecutive runs
-5. symlink `$topic` to `$DOTFILES/.enabled.d/` to keep track of what's enabled.
-   Running `bootstrap` without arguments will run this process on all
-   enabled topics in `.enabled.d/`.
-
-> NOTE: Be sure to add ~/.bin to PATH
+e.g. `./bootstrap os/arch shell/{zsh,tmux} dev/python`
 
 ```
-Usage: bootstrap [-iuldyn] [topic1[ topic2[ ...]]]
+Usage: bootstrap [-iuldynr] [topic1[ topic2[ ...]]]
 
 Options:
   -d  Do a dry run (only output commands, no changes)
@@ -39,25 +26,33 @@ Options:
   -n  Don't overwrite conflicts (no prompts
   -u  Don't run update scripts
   -y  Overwrite conflicts (no prompts)
+  -r  Refresh symlinks (same as -uiy)
 ```
 
-Or write a recipe list (examples in `recipes/`):
+Here's a simplified break down of what it does:
 
-+ `bootstrap $(recipes/ganymede)` (my laptop)
+```bash
+# 1. Symlinks topic's bin scripts to ~/.bin
+ln -sfv $topic/bin/* ~/.bin/
 
-To update the topics that you've already enabled, simply run `bootstrap`, and it
-will update your symlinks and run `$topic/update` wherever they may exist.
+# 2. Symlinks dotfiles to $HOME
+ln -sfv $topic/.* ~/
+ln -sfv $topic/.config/* ~/.config/
 
-A few good-to-knows (where $topic is an enabled topic):
-
-+ zshrc auto-sources `$topic/*.zsh`
-+ `$topic/bin/*` scripts will be symlinked to `~/.bin`. The included bash/zsh
-  topics add `~/.bin` to `PATH`.
+# 3. Track enabled topics in ~/.dotfiles/.enabled.d.
+# 4. If topic is enabled, run its update script. Otherwise, run its install script
+if [[ -e ~/.dotfiles/.enabled.d/$topic ]]; then
+    $topic/update
+else
+    ln -sfv $topic ~/.dotfiles/.enabled.d/
+    $topic/install
+fi
+```
 
 ## Clean
 
-`clean` will delete broken symlinks in `$HOME`, and can "disable" topics by
-removing their symlinks in `.enabled.d/`
+`clean` will delete broken symlinks in `$HOME`, and can "disable" all topics by removing
+their symlinks in `.enabled.d/`.
 
 ```
 Usage: clean [-du]
@@ -67,7 +62,7 @@ Options:
   -u  Uninstall all enabled topics
 ```
 
-## Relevant
+## Other Relevant Configs
 
-+ [Vim config](https://github.com/hlissner/.vim)
-+ [Emacs config](https://github.com/hlissner/.emacs.d)
++ [Vim](https://github.com/hlissner/.vim) (pulled in by the `editor/vim` topic)
++ [Emacs](https://github.com/hlissner/.emacs.d) (pulled in by the `editor/emacs` topic)
