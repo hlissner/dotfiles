@@ -6,14 +6,15 @@ alias q='exit'
 alias clr='clear'
 alias sudo='sudo '
 
-alias ..='cd .. && ls'
-alias ...='cd ../.. && ls'
-alias ....='cd ../../.. && ls'
-alias -- -='cd - && ls'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias -- -='cd -'
 
 alias ln="${aliases[ln]:-ln} -v"  # verbose ln
-alias l='ls -l'
-alias ll='ls -la'
+alias l='ls -1'
+alias ll='ls -l'
+alias la='ls -la'
 
 # notify me before clobbering files
 alias rm='rm -i'
