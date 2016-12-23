@@ -3,3 +3,6 @@
 *.pid
 *.db
 mpdstate
+
+shell/tmux/.tmux/plugins/
+shell/tmux/.tmuxifier/
