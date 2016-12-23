@@ -38,14 +38,20 @@ bspc config active_border_color  "${COLOR[13]}"
 # Displays
 #
 
-NMON=$(bspc query -M | wc -l)
-bspc monitor ${monitors} -d 1/{desktop,code,web,chat,art,media,music}
-i=2
-for monitor in $(bspc query -M | tail -n +2); do
-    bspc monitor $monitor -n "$i" -d $i/{desktop,web,code,chat}
-    let i++
-done
-unset i
+host=$(hostname)
+case $host in
+    triton*)
+        bspc monitor DVI-I-1 -n 1
+        bspc monitor HDMI-0  -n 2
+        bspc monitor DVI-D-0 -n 3
+        ;;
+esac
+
+nmon=$(bspc query -M | wc -l)
+bspc monitor 1 -d 1/{desktop,web,code,art,games}
+[[ $nmon > 2 ]] && bspc monitor 2 -d 2/{desktop,music,chat}
+[[ $nmon > 3 ]] && bspc monitor 3 -d 3/{desktop,media}
+[[ $nmon > 4 ]] && bspc monitor 4 -d 4/{desktop,web,chat,media}
 
 
 #
