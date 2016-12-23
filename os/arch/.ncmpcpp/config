@@ -172,24 +172,19 @@ visualizer_color = 41, 83, 119, 155, 185, 215, 209, 203, 197, 161
 ##
 #
 #song_list_format = {%a - }{%t}|{$8%f$9}$R{$3(%l)$9}
-#
 #song_status_format = {{%a{ "%b"{ (%y)}} - }{%t}}|{%f}
-#
 #song_library_format = {%n - }{%t}|{%f}
 #
 #
 #alternative_header_first_line_format = $b$1$aqqu$/a$9 {%t}|{%f} $1$atqq$/a$9$/b
-#
 #alternative_header_second_line_format = {{$4$b%a$/b$9}{ - $7%b$9}{ ($4%y$9)}}|{%D}
 #
-#now_playing_prefix = $b
-#
+now_playing_prefix = $b>
 #now_playing_suffix = $/b
 #
 #browser_playlist_prefix = "$2playlist$9 "
 #
-#selected_item_prefix = $6
-#
+selected_item_prefix = +$6
 #selected_item_suffix = $9
 #
 #modified_item_prefix = $3> $9
@@ -246,8 +241,7 @@ visualizer_color = 41, 83, 119, 155, 185, 215, 209, 203, 197, 161
 ##   tag and then composer and performer if previous ones are
 ##   not available.
 ##
-#
-#song_columns_list_format = (20)[]{a} (6f)[green]{NE} (50)[white]{t|f:Title} (20)[cyan]{b} (7f)[magenta]{l}
+song_columns_list_format = (2f)[white]{CE:_} (3f)[green]{NEr} (45)[white]{t|f:Title} (8f)[magenta]{lr} (20)[]{a|A:Artist} (25)[cyan]{b}
 #
 ##### various settings #####
 #
@@ -256,20 +250,16 @@ visualizer_color = 41, 83, 119, 155, 185, 215, 209, 203, 197, 161
 ## time song changes. Useful for notifications etc.
 ##
 #execute_on_song_change = ""
-#
 #playlist_show_mpd_host = no
-#
-#playlist_show_remaining_time = no
-#
-#playlist_shorten_total_times = no
-#
+playlist_show_remaining_time = yes
+playlist_shorten_total_times = yes
 #playlist_separate_albums = no
 #
 ##
 ## Note: Possible display modes: classic, columns.
 ##
 #playlist_display_mode = columns
-#browser_display_mode = classic
+browser_display_mode = columns
 #search_engine_display_mode = classic
 #playlist_editor_display_mode = classic
 #discard_colors_if_item_is_selected = yes
@@ -292,7 +282,7 @@ progressbar_boldness = yes
 #
 ## Available values: classic, alternative.
 ##
-user_interface = alternative
+user_interface = classic
 #
 #data_fetching_delay = yes
 #
@@ -303,30 +293,18 @@ user_interface = alternative
 ## Available values: wrapped, normal.
 ##
 #default_find_mode = wrapped
-#
 #default_tag_editor_pattern = %n - %t
-#
 #header_visibility = yes
-#
-#statusbar_visibility = yes
-#
+statusbar_visibility = yes
 #titles_visibility = yes
-#
 #header_text_scrolling = yes
-#
 #cyclic_scrolling = no
-#
 #lines_scrolled = 2
-#
 #follow_now_playing_lyrics = no
-#
 #fetch_lyrics_for_current_song_in_background = no
-#
 #store_lyrics_in_song_dir = no
-#
 #generate_win32_compatible_filenames = yes
-#
-#allow_for_physical_item_deletion = no
+allow_for_physical_item_deletion = yes
 #
 ##
 ## Note: If you set this variable, ncmpcpp will try to
@@ -337,7 +315,6 @@ user_interface = alternative
 ## Note: Language has to be expressed as an ISO 639 alpha-2 code.
 ##
 #lastfm_preferred_language = en
-#
 #show_hidden_files_in_local_browser = no
 #
 ##
@@ -372,19 +349,12 @@ user_interface = alternative
 ##
 #
 #locked_screen_width_part = 50
-#
 #ask_for_locked_screen_width_part = yes
-#
 #jump_to_now_playing_song_at_start = yes
-#
 #ask_before_clearing_playlists = yes
-#
 #clock_display_seconds = no
-#
 #display_volume_level = yes
-#
 #display_bitrate = no
-#
 #display_remaining_time = no
 #
 ## Available values: none, basic, extended, perl.
@@ -397,21 +367,13 @@ user_interface = alternative
 ## media library, etc.
 ##
 #ignore_leading_the = no
-#
 #block_search_constraints_change_if_items_found = yes
-#
 #mouse_support = yes
-#
 #mouse_list_scroll_whole_page = yes
-#
-#empty_tag_marker = <empty>
-#
+empty_tag_marker = <empty>
 #tags_separator = " | "
-#
-#tag_editor_extended_numeration = no
-#
+tag_editor_extended_numeration = yes
 #media_library_sort_by_mtime = no
-#
 #enable_window_title = yes
 #
 ##
