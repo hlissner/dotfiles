@@ -95,7 +95,7 @@ EOL
 
     # FIXME Install pacman hooks
     hookdest=/etc/pacman.d/hooks
-    mkdir -p "$hookdest"
+    sudo mkdir -p "$hookdest"
     for hook in $PWD/$hookdest/*.hook; do
         [[ -f $hookdest/${hook##*/} ]] || sudo ln -svf $hook $hookdest/
     done
