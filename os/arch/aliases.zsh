@@ -1,4 +1,4 @@
-alias ls="${aliases[ls]:-ls} --color=auto"
+alias ls="${aliases[ls]:-ls} --color=auto --group-directories-first"
 
 alias open='xdg-open'
 
