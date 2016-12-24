@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# Encrypted, remote clipboard insertion via SSH
+# Remote clipboard insertion via SSH
 # By Henrik Lissner <henrik@lissner.net>
 #
-# A simple script for sending data to another computer's clipboard via SSH. Acts
-# as a universal clipboard. This script must be available on the remote.  Pipe
-# through gpg if you want the contents encrypted.
+# A simple script for sending data to another computer's clipboard via SSH. Acts as
+# a universal clipboard. This script must be available on the remote. Pipe through gpg
+# if you want the contents encrypted.
 #
 # It helps if your ssh connection is pubkey authenticated and password-less.
 #
