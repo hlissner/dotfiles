@@ -249,7 +249,7 @@ song_columns_list_format = (2f)[white]{CE:_} (3f)[green]{NEr} (45)[white]{t|f:Ti
 ## Note: Custom command that will be executed each
 ## time song changes. Useful for notifications etc.
 ##
-#execute_on_song_change = ""
+execute_on_song_change = "notify-song.sh"
 #playlist_show_mpd_host = no
 playlist_show_remaining_time = yes
 playlist_shorten_total_times = yes
