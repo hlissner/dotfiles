@@ -50,8 +50,8 @@ rofi.color-urgent: #22252c, #bb828f, #262930, #744449, #dbe2ef
 rofi.color-active: #22252c, #bbc2cf, #262930, #444449, #dbe2ef
 
 ! special
-*.background: #22252c
-*.foreground:   #c5c8c6
+*.background:   #22252c
+*.foreground:   #e5e8e6
 *.cursorColor:  #81a2be
 
 ! black
@@ -67,8 +67,8 @@ rofi.color-active: #22252c, #bbc2cf, #262930, #444449, #dbe2ef
 *.color3:       #de935f
 *.color11:      #f0c674
 ! blue
-*.color4:       #5f819d
-*.color12:      #81a2be
+*.color4:       #6f91ad
+*.color12:      #91b2ce
 ! magenta
 *.color5:       #85678f
 *.color13:      #b294bb
@@ -77,4 +77,4 @@ rofi.color-active: #22252c, #bbc2cf, #262930, #444449, #dbe2ef
 *.color14:      #8abeb7
 ! white
 *.color7:       #707880
-*.color15:      #c5c8c6
+*.color15:      #e5e8e6
