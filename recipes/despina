@@ -1,7 +1,6 @@
 os/arch
 vcs/*
 shell/zsh
-editor/emacs
-editor/neovim
+editor/{emacs,neovim}
 dev/*
 browser

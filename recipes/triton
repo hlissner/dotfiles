@@ -3,5 +3,6 @@ browser
 docker
 dev/*
 editor/{emacs,neovim}
-shell/zsh
+shell/{zsh,ssh,fasd,tmux}
+weechat
 vcs/*
