@@ -2,9 +2,19 @@
 
 . $(dirname $0)/../panel-config
 
+updtmp=/tmp/update-count
+touch "$updtmp"
+
 num=$({ checkupdates; cower -u; } | wc -l)
 if [ "$num" -gt 0 ]
 then
+    lastnum=$(<$updtmp)
+    if [ "$num" -ne "${lastnum:-0}" ]; then
+        echo "$num" > "$updtmp"
+        if [ "$num" -gt "${lastnum:-0}" ]; then
+            notify-send "$num new updates available"
+        fi
+    fi
     echo "U%{F${COLOR_2}}$ICON_UPD$num%{F-}"
 else
     echo "U%{F${COLOR_DIM}}$ICON_UPD%{F-}"
