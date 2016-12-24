@@ -2,7 +2,7 @@
 
 command -v nvim >/dev/null && exit
 
-case "$OSTYPE" in
+case $OSTYPE in
     darwin*)
         brew install make
         brew install --HEAD neovim/neovim/neovim

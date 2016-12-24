@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-case "$OSTYPE" in
+case $OSTYPE in
     darwin*)
         brew install make vim
         ;;
     linux*)
         if [[ -f /etc/arch-release ]]; then
-            sudo pacman --noconfirm -S make vim
+            sudo pacman --needed --noconfirm -S make vim
         elif [[ -f /etc/debian_version ]]; then
             # TODO
             exit 1

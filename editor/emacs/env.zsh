@@ -1,1 +1,1 @@
-path=(~/.cask/bin $path)
+path=($HOME/.cask/bin $path)
