@@ -4,7 +4,7 @@
 
 # terminal emulator
 super + ctrl + Return
-	termite
+    termite
 
 # scratchpad
 super + grave
@@ -21,29 +21,33 @@ super + alt + backslash
 
 # make sxhkd reload its configuration files:
 super + Escape
-	pkill -USR1 -x sxhkd
+    pkill -USR1 -x sxhkd
 
 
 #
 # Media keys
 #
 
+Pause
+    mpc -q toggle
+super + Pause
+    zzz
+Print
+    maim --opengl -s ~/shared/screenshots/$(date +%F-%T).png
+super + Print
+    maim --opengl --showcursor ~/shared/screenshots/$(date +%F-%T).png
+
+#
 XF86Audio{Play,Pause}
     mpc -q toggle
-
 XF86Audio{Prev,Next}
     mpc -q {prev,next}
-
 XF86Audio{LowerVolume,RaiseVolume}
     vol {-,+}
-
 XF86AudioMute
     vol toggle
-
 super + XF86Eject
     zzz
-
-#XF86MonBrightness{Up,Down}
 
 
 #
@@ -52,33 +56,33 @@ super + XF86Eject
 
 # quit bspwm normally
 super + alt + Escape
-	bspc quit
+    bspc quit
 
 # close and kill
 super + {_,shift + }q
-	bspc node -{c,k}
+    bspc node -{c,k}
 
 # if the current node is automatic, send it to the last manual, otherwise pull the last leaf
 super + y
-	bspc query -N -n focused.automatic && bspc node -n last.!automatic || bspc node last.leaf -n focused
+    bspc query -N -n focused.automatic && bspc node -n last.!automatic || bspc node last.leaf -n focused
 
 # swap the current node and the biggest node
 super + g
-	bspc node -s biggest
+    bspc node -s biggest
 
 #
 # state/flags
 #
 
 super + {f,shift + f}
-	bspc {desktop -l next,node -t \~floating}
+    bspc {desktop -l next,node -t \~floating}
 
 super + shift + p
     bspc node -t \~pseudo_tiled
 
 # set the node flags
 super + ctrl + {x,y,z}
-	bspc node -g {locked,sticky,private}
+    bspc node -g {locked,sticky,private}
 
 #
 # focus/swap
@@ -86,33 +90,42 @@ super + ctrl + {x,y,z}
 
 # focus/swap the node in the given direction
 super + {_,shift + }{h,j,k,l}
-	bspc node -{f,s} {west,south,north,east}
+    bspc node -{f,s} {west,south,north,east}
 
 # focus the node for the given path jump
 super + {p,b,comma,period}
-	bspc node -f @{parent,brother,first,second}
+    bspc node -f @{parent,brother,first,second}
 
 # focus the next/previous node
 super + {_,shift + }c
-	bspc node -f {next,prev}
+    bspc node -f {next,prev}
 
 # focus the next/previous desktop
 super + bracket{left,right}
-	bspc desktop -f {prev,next}
-
-# focus the last node/desktop / rotate / balance / equalize
-super + {_,shift +,ctrl +,alt +} Tab
-	bspc node {-f last,@/ {-R 90,-B,-E}}
+    bspc desktop -f {prev,next}
 
 # focus the older or newer node in the focus history
 super + {o,i}
-	bspc wm -h off; \
-	bspc node {older,newer} -f; \
-	bspc wm -h on
+    bspc wm -h off; \
+    bspc node {older,newer} -f; \
+    bspc wm -h on
 
-# focus or send to the given desktop
+# focus monitor or send to the given desktop
 super + {_,shift + }{1-9,0}
-	bspc {desktop -f,node -d} '^{1-9,10}'
+    bspc {monitor -f,node -m} '^{1-9,10}'
+
+# Cycle desktops
+super + {_,shift +} Tab
+    bspc desktop -f {next,prev}
+
+super + ctrl + {_,shift +} Tab
+    bspc node -d {next,prev}
+
+#
+# focus the last node/desktop / rotate / balance / equalize
+super + {shift +,ctrl +,alt +} Tab
+    bspc node {@/ {-R 90,-B,-E}}
+
 
 #
 # preselect
@@ -120,35 +133,31 @@ super + {_,shift + }{1-9,0}
 
 # preselect the direction
 super + ctrl + {h,j,k,l}
-	bspc node -p {west,south,north,east}
+    bspc node -p {west,south,north,east}
 
 # preselect the ratio
 super + ctrl + {1-9}
-	bspc node -o 0.{1-9}
+    bspc node -o 0.{1-9}
 
 # cancel the preselection for the focused node
 super + ctrl + space
-	bspc node -p cancel
+    bspc node -p cancel
 
 # cancel the preselection for the focused desktop
 super + ctrl + shift + space
-	bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
-
-# Rebalance windows
-# super + plus
-#     bspc node @focused:/ -B
+    bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
 
 # expand the tiled space in the given direction
 super + alt + {h,j,k,l}
-	bspc node {@west -r -20,@south -r +20,@north -r -20,@east -r +20}
+    bspc node {@west -r -20,@south -r +20,@north -r -20,@east -r +20}
 
 # contract the tiled space in the given direction
 super + alt + shift + {h,j,k,l}
-	bspc node {@east -r -20,@north -r +20,@south -r -20,@west -r +20}
+    bspc node {@east -r -20,@north -r +20,@south -r -20,@west -r +20}
 
 # move a floating window
 super + {Left,Down,Up,Right}
-	xdo move {-x -20,-y +20,-y -20,-x +20}
+    xdo move {-x -20,-y +20,-y -20,-x +20}
 
 super + ctrl + {Left,Down,Up,Right}
-	xdo resize {-w -20,-h -20,-h -20,-w -20}
+    xdo resize {-w -20,-h -20,-h -20,-w -20}
