@@ -1,9 +1,14 @@
+! fonts
 Xft.autohint: false
 Xft.lcdfilter: lcddefault
 Xft.hintstyle: hintslight
 Xft.hinting: true
 Xft.antialias: true
 Xft.rgba: rgb
+
+! cursor
+Xcursor.theme: default
+Xcursor.size: 32
 
 ! urxvt
 urxvt*background:             [95]#22252c
