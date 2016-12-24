@@ -12,19 +12,20 @@ xset m 11/8 0
 # keyboard repeat rate
 xset r rate 350 45
 
+# key daemon
 running sxhkd || sxhkd &
-# lemonbar config depends on bspwm, so wait for it
+# notifications
+running dunst || dunst &
+# window manager helpers
+running compton || compton &
+
+# taskbar
+$HOME/.config/panel/panel 2>&1 >$HOME/.config/panel/panel.log &
+
 {
-    while ! running bspwm; do sleep 1; done
-    $HOME/.config/panel/panel 2>&1 >$HOME/.config/panel/panel.log &
-
-    # notifications
-    running dunst || dunst &
-    # window manager helpers
-    running compton || compton &
-
-    # If sxhkd isn't running, something is wrong and we're stuck. Instead, open
-    # a terminal so I can do something about it
     sleep 3
+
+    # If sxhkd isn't running by now, something is wrong and we're stuck. Instead, open
+    # a terminal so I can do something about it
     running sxhkd || termite &
 } &
