@@ -81,7 +81,7 @@ EOL
     # Music player
     $pacaur -S mpd mpc ncmpcpp
     # Utilities
-    $pacaur -S rofi feh maim slop neofetch-git pass youtube-dl xdotool
+    $pacaur -S rofi feh maim slop-opengl neofetch-git pass youtube-dl xdotool
     # Apps
     $pacaur -S redshift chromium termite
     # Power events from users
