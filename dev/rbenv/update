@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+if [[ -d "$HOME/.rbenv" ]]; then
+    cd $HOME/.rbenv && git pull
+    for plugin in $HOME/.rbenv/plugins/*/; do
+        cd "$plugin" && git pull
+    done
+fi

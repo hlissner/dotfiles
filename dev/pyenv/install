@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+if [[ -d "$HOME/.pyenv" ]]; then
+    >&2 echo "~/.pyenv already exists, can't install."
+    exit 1
+else
+    git clone https://github.com/yyuu/pyenv.git $HOME/.pyenv
+fi
