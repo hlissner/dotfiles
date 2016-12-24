@@ -8,5 +8,5 @@ Target=*
 [Action]
 Description="Updating lemonbar updates segemnt"
 When=PostTransaction
-Exec="/home/hlissner/.config/panel/lemons/updates.sh"
+Exec="/home/hlissner/.config/panel/panel-pacman-hook"
 
