@@ -49,7 +49,7 @@ parse() {
                 ;;
             M*) mail=" $data"
                 ;;
-            V*) vol=" %{A:volume.sh toggle:}$data${A}"
+            V*) vol=" %{A:vol toggle:}$data${A}"
                 ;;
             I*) wifi=" $data"
                 ;;
