@@ -27,6 +27,7 @@ Options:
   -u  Don't run update scripts
   -y  Overwrite conflicts (no prompts)
   -r  Refresh symlinks (same as -uiy)
+  -s  Server mode; only install the bare minimum (depends on topic)
 ```
 
 Here's a simplified break down of what it does:

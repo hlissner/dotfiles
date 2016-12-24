@@ -18,6 +18,7 @@
 #   -y  Overwrite conflicts (no prompts)
 #   -p  Prompt on file conflict (to overwrite)
 #   -r  Refresh; the same as -ui
+#   -s  Server mode; only install the bare minimum
 
 set -e
 source "$(cd $(dirname $0) && pwd -P)/shell/common.sh"
@@ -72,7 +73,7 @@ install=1
 link=1
 update=1
 yes=0
-while getopts iuldypr opt; do
+while getopts iuldyprs opt; do
     case $opt in
         d) DRYRUN=1 ;;
         i) install= ;;
@@ -80,6 +81,7 @@ while getopts iuldypr opt; do
         p) yes=     ;;
         u) update=  ;;
         y) yes=1    ;;
+        s) SERVER=1 ;;
         r) update=
            install=
            ;;
