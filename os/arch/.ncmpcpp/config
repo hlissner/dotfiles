@@ -262,10 +262,10 @@ playlist_shorten_total_times = yes
 browser_display_mode = columns
 #search_engine_display_mode = classic
 #playlist_editor_display_mode = classic
-#discard_colors_if_item_is_selected = yes
+discard_colors_if_item_is_selected = yes
 #incremental_seeking = yes
-#seek_time = 1
-#volume_change_step = 2
+seek_time = 5
+volume_change_step = 10
 #autocenter_mode = no
 #centered_cursor = no
 #
