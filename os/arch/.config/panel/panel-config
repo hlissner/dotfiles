@@ -8,8 +8,7 @@ PANEL_FONT="terminus:size=8:antialias=false"
 ICON_FONT="siji:size=7:antialias=false"
 
 # Colors
-for i in 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
-do
+for i in 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15; do
     eval "COLOR_$i="$(xrdb -query | awk "/^\*\.color$i:/ {print \$2}")
 done
 
@@ -17,7 +16,8 @@ bg="$(xrdb -query | awk '/^\*\.background:/ {print $2}')"
 fg="$(xrdb -query | awk '/^\*\.foreground:/ {print $2}')"
 
 COLOR_FG="$fg"
-COLOR_BG="#DD${COLOR_0#?}"
+COLOR_BG="#D9000000"
+# COLOR_BG="#DD${COLOR_0#?}"
 
 COLOR_DIM="#155872"
 COLOR_ALTBG="#FF${bg#?}"
@@ -31,15 +31,15 @@ COLOR_FOCUSED_MONITOR_BG="${COLOR_4}"
 COLOR_FREE_FG="${COLOR_DIM}"
 COLOR_FREE_BG="${COLOR_BG}"
 COLOR_FOCUSED_FREE_FG="${COLOR_DIM}"
-COLOR_FOCUSED_FREE_BG="${COLOR_ALTBG}"
+COLOR_FOCUSED_FREE_BG="${COLOR_NONE}"
 COLOR_OCCUPIED_FG="#a7a5a5"
 COLOR_OCCUPIED_BG="${COLOR_BG}"
 COLOR_FOCUSED_OCCUPIED_FG="#d6d3d2"
-COLOR_FOCUSED_OCCUPIED_BG="${COLOR_BG}"
+COLOR_FOCUSED_OCCUPIED_BG="${COLOR_NONE}"
 COLOR_URGENT_FG="${COLOR_1}"
 COLOR_URGENT_BG="${COLOR_BG}"
 COLOR_FOCUSED_URGENT_FG="#501d1f"
-COLOR_FOCUSED_URGENT_BG="${COLOR_BG}"
+COLOR_FOCUSED_URGENT_BG="${COLOR_NONE}"
 
 # bspwm desktop icons
 ICON_DESKTOP=""

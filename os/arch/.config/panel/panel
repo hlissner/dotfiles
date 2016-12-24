@@ -133,7 +133,7 @@ parse < "${PANEL_FIFO}" | \
     -f "$PANEL_FONT" \
     -f "$ICON_FONT" \
     -F "$COLOR_FG" \
-    # -B "$COLOR_BG" \
+    -B "$COLOR_BG" \
     | sh &
 
 wait
