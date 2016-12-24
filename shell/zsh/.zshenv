@@ -3,16 +3,12 @@ source "$HOME/.dotfiles/shell/common.sh"
 ## Paths
 # Ensure path arrays do not contain duplicates.
 typeset -gU cdpath fpath mailpath path
-path=(/usr/local/{,s}bin $path)
+path=( /usr/local/{,s}bin $path )
 
 load shell/zsh/config.zsh
 loadall env.zsh
 
-path=(
-    $HOME/.bin
-    $DOTFILES/bin
-    $path
-)
+path=( $HOME/.bin $DOTFILES/bin $path )
 
 fpath=(
     $DOTFILES/shell/zsh/{completions,functions}
