@@ -18,7 +18,6 @@ super + space
 # password manager
 super + alt + backslash
     dpass
-
 # make sxhkd reload its configuration files:
 super + Escape
     pkill -USR1 -x sxhkd
@@ -111,15 +110,11 @@ super + {o,i}
     bspc wm -h on
 
 # focus monitor or send to the given desktop
-super + {_,shift + }{1-9,0}
-    bspc {monitor -f,node -m} '^{1-9,10}'
+super + {_,shift +}{Left,Right}
+    bspc {monitor -f,node -m} {prev,next}
 
-# Cycle desktops
-super + {_,shift +} Tab
-    bspc desktop -f {next,prev}
-
-super + ctrl + {_,shift +} Tab
-    bspc node -d {next,prev}
+super + {_,shift +}{1-9,0}
+    bspc {desktop -f,node -d} C/{1-9,10}
 
 #
 # focus the last node/desktop / rotate / balance / equalize
