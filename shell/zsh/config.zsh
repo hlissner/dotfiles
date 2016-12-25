@@ -1,6 +1,4 @@
 ## Plugins
-TMUXIFIER="$DOTFILES/tmux/tmuxifier"
-TMUXIFIER_LAYOUT_PATH="$DOTFILES/tmux/tmuxifier/layouts"
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 
 ## General
