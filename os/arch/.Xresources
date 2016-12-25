@@ -33,21 +33,26 @@ urxvt.clipboard.autocopy:     true
 ! rofi
 rofi.background:       #22252c
 rofi.foreground:       #efefef
-rofi.font:             Terminus 9
-rofi.location:         2
+rofi.font:             Fira Mono Medium 18
+rofi.location:         0
 rofi.levenshtein-sort: 1
-rofi.width:            40
-rofi.lines:            20
 rofi.hide-scrollbar:   true
 rofi.bw:               0
+rofi.padding:          60
+! rofi.fullscreen:       true
+rofi.lines:            12
+rofi.opacity:          96
+rofi.line-margin:      15
+rofi.width:            50
 
 rofi.color_enabled: true
 !                  bg       border
-rofi.color-window: #22252c, #444449
+rofi.color-window: #20232a, #444449
 !                  bg       fg       bgalt    hlbg     hlfg
-rofi.color-normal: #22252c, #bbc2cf, #262930, #12151c, #279dc5
-rofi.color-urgent: #22252c, #bb828f, #262930, #744449, #dbe2ef
-rofi.color-active: #22252c, #bbc2cf, #262930, #444449, #dbe2ef
+rofi.color-normal: #20232a, #7b828f, #20232a, #20232a, #7fa1ed
+rofi.color-urgent: #20232a, #7b424f, #20232a, #20232a, #7fa1ed
+rofi.color-active: #20232a, #7b828f, #20232a, #20232a, #7fa1ed
+! 262930
 
 ! special
 *.background:   #22252c
@@ -56,7 +61,7 @@ rofi.color-active: #22252c, #bbc2cf, #262930, #444449, #dbe2ef
 
 ! black
 *.color0:       #282a2e
-*.color8:       #373b41
+*.color8:       #474b51
 ! red
 *.color1:       #a54242
 *.color9:       #cc6666
@@ -67,8 +72,8 @@ rofi.color-active: #22252c, #bbc2cf, #262930, #444449, #dbe2ef
 *.color3:       #de935f
 *.color11:      #f0c674
 ! blue
-*.color4:       #6f91ad
-*.color12:      #91b2ce
+*.color4:       #7fa1bd
+*.color12:      #b1d2ee
 ! magenta
 *.color5:       #85678f
 *.color13:      #b294bb
