@@ -8,7 +8,5 @@ case $OSTYPE in
     linux*)
         if [[ -f /etc/arch-release ]]; then
             sudo pacman --needed --noconfirm -S docker docker-compose
-            sudo systemctl enable docker.service
-            sudo systemctl start docker.service
         fi
 esac

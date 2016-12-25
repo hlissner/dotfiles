@@ -5,6 +5,7 @@ case "$OSTYPE" in
         ;;
     linux*)
         alias docker='sudo docker'
+        alias dki='sudo systemctl start docker.service'
         ;;
 esac
 
