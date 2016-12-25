@@ -1,4 +1,4 @@
-#!/usr/bin/env dash
+#!/usr/bin/env bash
 
 if [ "$1" = "-k" ]; then
     pkill -f '^dash .+/panel$'
