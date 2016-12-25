@@ -37,4 +37,5 @@ color15 = #f5f8f6
 
 [options]
 font = FontAwesome 12
-font = Terminus 9
+# font = Terminus 9
+font = Fira Mono Medium 9
