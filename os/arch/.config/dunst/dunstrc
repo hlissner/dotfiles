@@ -5,18 +5,18 @@
     browser = /usr/bin/chromium
     dmenu = /usr/bin/rofi -dmenu -p dunst:
     follow = none
-    font = Fira Mono 11
+    font = Fira Sans 12
     format = "<b>%s</b>\n%b"
     # geometry [{width}]x{height}][+/-{x}+/-{y}]
-    geometry = "300x22-10+36"
+    geometry = "350x22-10+36"
     history_length = 20
-    horizontal_padding = 12
+    horizontal_padding = 24
     idle_threshold = 120
     ignore_newline = no
     indicate_hidden = yes
     line_height = 0
     monitor = 0
-    padding = 12
+    padding = 20
     separator_color = frame
     separator_height = 1
     show_age_threshold = 60
@@ -33,7 +33,7 @@
     icon_folders = /usr/share/icons/hicolor/16x16/apps/:/usr/share/icons/Adwaita/16x16/actions/
 
 [frame]
-    width = 1
+    width = 0
     color = "81a2be"
 
 [shortcuts]
