@@ -85,6 +85,7 @@ parse() {
                             wm="${wm}%{F$_FG}%{B$_BG}%{A:bspc monitor -f ${name}:} ${name} %{A}%{B-}%{F-}"
                             ;;
                         [fFoOuU]*)
+                            icon="$ICON_NONE"
                             case $id in
                                 f*) # free desktop
                                     _FG=$COLOR_FREE_FG
@@ -97,21 +98,25 @@ parse() {
                                 o*) # occupied desktop
                                     _FG=$COLOR_OCCUPIED_FG
                                     _BG=$COLOR_OCCUPIED_BG
+                                    icon="$ICON_FULL"
                                     ;;
                                 O*) # focused occupied desktop
                                     _FG=$COLOR_FOCUSED_OCCUPIED_FG
                                     _BG=$COLOR_FOCUSED_OCCUPIED_BG
+                                    icon="$ICON_FULL"
                                     ;;
                                 u*) # urgent desktop
                                     _FG=$COLOR_URGENT_FG
                                     _BG=$COLOR_URGENT_BG
+                                    icon="$ICON_FULL"
                                     ;;
                                 U*) # focused urgent desktop
                                     _FG=$COLOR_FOCUSED_URGENT_FG
                                     _BG=$COLOR_FOCUSED_URGENT_BG
+                                    icon="$ICON_FULL"
                                     ;;
                             esac
-                            eval "icon=\$ICON_$(echo ${name#??} | tr '[:lower:]' '[:upper:]')"
+                            # eval "icon=\$ICON_$(echo ${name#??} | tr '[:lower:]' '[:upper:]')"
                             wm="${wm}%{F$_FG}%{B$_BG}%{A:bspc desktop -f ${name}:}  ${icon:-$name}  %{A}%{B-}%{F-}"
                             ;;
                     esac

@@ -2,10 +2,8 @@ PANEL_FIFO=/tmp/panel-fifo
 
 # Customization ########################
 PANEL_HEIGHT=28
-# PANEL_FONT="FiraMono:size=7:antialias=true"
 PANEL_FONT="terminus:size=8:antialias=false"
-# ICON_FONT="siji:size=8:antialias=true"
-ICON_FONT="siji:size=7:antialias=false"
+ICON_FONT="siji:size=8:antialias=false"
 
 # Colors
 for i in 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15; do
@@ -16,7 +14,7 @@ bg="$(xrdb -query | awk '/^\*\.background:/ {print $2}')"
 fg="$(xrdb -query | awk '/^\*\.foreground:/ {print $2}')"
 
 COLOR_FG="$fg"
-COLOR_BG="#D9000000"
+COLOR_BG="#D001040b"
 # COLOR_BG="#DD${COLOR_0#?}"
 
 COLOR_DIM="#155872"
@@ -52,6 +50,10 @@ ICON_MUSIC=""
 ICON_MEDIA=""
 ICON_GAMES="" # ghost
 ICON_MISC=""
+
+# panel center
+ICON_NONE="\ue001"
+ICON_FULL="\ue000"
 
 # clock icons
 ICON_DATE=""
