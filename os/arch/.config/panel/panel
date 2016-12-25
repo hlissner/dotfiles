@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [ "$1" = "-k" ]; then
-    pkill -f '^dash .+/panel$'
+    pkill -f '^bash .+/panel$'
     exit
 fi
 
