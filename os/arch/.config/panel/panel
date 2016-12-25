@@ -134,7 +134,7 @@ parse() {
 parse < "${PANEL_FIFO}" | \
     lemonbar \
     -a 32 \
-    -g x$PANEL_HEIGHT \
+    -g 2560x$PANEL_HEIGHT+1200+0 \
     -f "$PANEL_FONT" \
     -f "$ICON_FONT" \
     -F "$COLOR_FG" \
