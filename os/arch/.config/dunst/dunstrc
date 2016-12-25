@@ -8,9 +8,9 @@
     font = Fira Mono 11
     format = "<b>%s</b>\n%b"
     # geometry [{width}]x{height}][+/-{x}+/-{y}]
-    geometry = "300x22-0+26"
+    geometry = "300x22-10+36"
     history_length = 20
-    horizontal_padding = 8
+    horizontal_padding = 12
     idle_threshold = 120
     ignore_newline = no
     indicate_hidden = yes
