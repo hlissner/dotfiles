@@ -44,6 +44,7 @@ rofi.lines:            12
 rofi.opacity:          96
 rofi.line-margin:      15
 rofi.width:            50
+rofi.monitor:          0
 
 rofi.color_enabled: true
 !                  bg       border
@@ -72,7 +73,7 @@ rofi.color-active: #20232a, #7b828f, #20232a, #20232a, #7fa1ed
 *.color3:       #de935f
 *.color11:      #f0c674
 ! blue
-*.color4:       #7fa1bd
+*.color4:       #8fb1cd
 *.color12:      #b1d2ee
 ! magenta
 *.color5:       #85678f
