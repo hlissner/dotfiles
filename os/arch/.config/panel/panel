@@ -71,53 +71,57 @@ parse() {
                     name=${id#?}
                     case $id in
                         [mM]*)
-                            [ "$num_mon" -lt 2 ] && shift && continue
-                            case $id in
-                                m*) # monitor
-                                    _FG=$COLOR_MONITOR_FG
-                                    _BG=$COLOR_MONITOR_BG
-                                    ;;
-                                M*) # focused monitor
-                                    _FG=$COLOR_FOCUSED_MONITOR_FG
-                                    _BG=$COLOR_FOCUSED_MONITOR_BG
-                                    ;;
-                            esac
-                            wm="${wm}%{F$_FG}%{B$_BG}%{A:bspc monitor -f ${name}:} ${name} %{A}%{B-}%{F-}"
+                            M="$name"
+                            [[ $M != "C" ]] && M=
+                            # [ "$num_mon" -lt 2 ] && shift && continue
+                            # case $id in
+                            #     m*) # monitor
+                            #         _FG=$COLOR_MONITOR_FG
+                            #         _BG=$COLOR_MONITOR_BG
+                            #         ;;
+                            #     M*) # focused monitor
+                            #         _FG=$COLOR_FOCUSED_MONITOR_FG
+                            #         _BG=$COLOR_FOCUSED_MONITOR_BG
+                            #         ;;
+                            # esac
+                            # wm="${wm}%{F$_FG}%{B$_BG}%{A:bspc monitor -f ${name}:} ${name} %{A}%{B-}%{F-}"
                             ;;
                         [fFoOuU]*)
-                            icon="$ICON_NONE"
-                            case $id in
-                                f*) # free desktop
-                                    _FG=$COLOR_FREE_FG
-                                    _BG=$COLOR_FREE_BG
-                                    ;;
-                                F*) # focused free desktop
-                                    _FG=$COLOR_FOCUSED_FREE_FG
-                                    _BG=$COLOR_FOCUSED_FREE_BG
-                                    ;;
-                                o*) # occupied desktop
-                                    _FG=$COLOR_OCCUPIED_FG
-                                    _BG=$COLOR_OCCUPIED_BG
-                                    icon="$ICON_FULL"
-                                    ;;
-                                O*) # focused occupied desktop
-                                    _FG=$COLOR_FOCUSED_OCCUPIED_FG
-                                    _BG=$COLOR_FOCUSED_OCCUPIED_BG
-                                    icon="$ICON_FULL"
-                                    ;;
-                                u*) # urgent desktop
-                                    _FG=$COLOR_URGENT_FG
-                                    _BG=$COLOR_URGENT_BG
-                                    icon="$ICON_FULL"
-                                    ;;
-                                U*) # focused urgent desktop
-                                    _FG=$COLOR_FOCUSED_URGENT_FG
-                                    _BG=$COLOR_FOCUSED_URGENT_BG
-                                    icon="$ICON_FULL"
-                                    ;;
-                            esac
-                            # eval "icon=\$ICON_$(echo ${name#??} | tr '[:lower:]' '[:upper:]')"
-                            wm="${wm}%{F$_FG}%{B$_BG}%{A:bspc desktop -f ${name}:}  ${icon:-$name}  %{A}%{B-}%{F-}"
+                            if [[ $M ]]; then
+                                icon="$ICON_NONE"
+                                case $id in
+                                    f*) # free desktop
+                                        _FG=$COLOR_FREE_FG
+                                        _BG=$COLOR_FREE_BG
+                                        ;;
+                                    F*) # focused free desktop
+                                        _FG=$COLOR_FOCUSED_FREE_FG
+                                        _BG=$COLOR_FOCUSED_FREE_BG
+                                        ;;
+                                    o*) # occupied desktop
+                                        _FG=$COLOR_OCCUPIED_FG
+                                        _BG=$COLOR_OCCUPIED_BG
+                                        icon="$ICON_FULL"
+                                        ;;
+                                    O*) # focused occupied desktop
+                                        _FG=$COLOR_FOCUSED_OCCUPIED_FG
+                                        _BG=$COLOR_FOCUSED_OCCUPIED_BG
+                                        icon="$ICON_FULL"
+                                        ;;
+                                    u*) # urgent desktop
+                                        _FG=$COLOR_URGENT_FG
+                                        _BG=$COLOR_URGENT_BG
+                                        icon="$ICON_FULL"
+                                        ;;
+                                    U*) # focused urgent desktop
+                                        _FG=$COLOR_FOCUSED_URGENT_FG
+                                        _BG=$COLOR_FOCUSED_URGENT_BG
+                                        icon="$ICON_FULL"
+                                        ;;
+                                esac
+                                # eval "icon=\$ICON_$(echo ${name#??} | tr '[:lower:]' '[:upper:]')"
+                                wm="${wm}%{F$_FG}%{B$_BG}%{A:bspc desktop -f ${name}:}  ${icon:-$name}  %{A}%{B-}%{F-}"
+                            fi
                             ;;
                     esac
                     shift
