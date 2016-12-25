@@ -36,7 +36,7 @@ while :; do
         then
             # song="$title - $artist"
             # [ -n "$album" ] && song="$song ($album)"
-            echo "%{B${COLOR_ALTBG}} $icon ${seek%/*} $(progress_bar $perc 16) ${seek#*/}  %{B-} "
+            echo "S%{B${COLOR_ALTBG}} $icon ${seek%/*} $(progress_bar $perc 16) ${seek#*/}  %{B-} "
         fi
     else
         echo "S"
