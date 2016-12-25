@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if command -v brew; then
+if command -v brew >/dev/null; then
     brew update
     brew upgrade
     brew cleanup
