@@ -15,9 +15,9 @@ case $host in
             bspc monitor DVI-D-0 -n L
         } 2>&1 >/dev/null
 
-        bspc monitor C -d C/{desktop,web,code,art,games}
-        [[ $nmon > 1 ]] && bspc monitor R -d R/{desktop,music,chat}
-        [[ $nmon > 2 ]] && bspc monitor L -d L/{media,chat}
+        bspc monitor C -d C/{1,2,3,4,5}
+        [[ $nmon > 1 ]] && bspc monitor R -d R/1
+        [[ $nmon > 2 ]] && bspc monitor L -d L/1
         ;;
 esac
 
