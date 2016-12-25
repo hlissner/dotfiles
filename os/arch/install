@@ -78,8 +78,6 @@ EOL
     $pacaur -S bspwm sxhkd compton
     # Taskbar
     $pacaur -S lemonbar-xft-git siji-git xtitle sutils-git dunst libnotify
-    # Music player
-    $pacaur -S mpd mpc ncmpcpp
     # Utilities
     $pacaur -S rofi feh sxiv maim slop-opengl neofetch-git pass youtube-dl xdotool
     # Apps
@@ -91,7 +89,6 @@ EOL
 
     systemctl enable --user redshift.service
     systemctl enable --user rslsync.service
-    systemctl enable --user mpd.service
 
     # FIXME Install pacman hooks
     hookdest=/etc/pacman.d/hooks

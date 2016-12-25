@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+case $OSTYPE in
+    darwin*)
+        brew install mpd mpc
+        brew install ncmpcpp --with-clock --with-visualizer
+        brew services start mpd
+        ;;
+    linux*)
+        if [[ -f /etc/arch-version ]]; then
+            sudo pacman --needed --noconfirm -S mpd mpc ncmpcpp
+            systemctl enable --user mpd.service
+            systemctl start --user mpd.service
+        fi
+        ;;
+esac
