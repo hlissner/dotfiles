@@ -241,7 +241,7 @@ selected_item_prefix = +$6
 ##   tag and then composer and performer if previous ones are
 ##   not available.
 ##
-song_columns_list_format = (2f)[white]{CE:_} (3f)[green]{NEr} (45)[white]{t|f:Title} (8f)[magenta]{lr} (20)[]{a|A:Artist} (25)[cyan]{b}
+song_columns_list_format = (5f)[green]{NEr} (45)[white]{t|f:Title} (8f)[magenta]{lr} (20)[]{a|A:Artist} (25)[cyan]{b}
 #
 ##### various settings #####
 #
