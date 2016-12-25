@@ -27,7 +27,7 @@ fi
 # Bootstrap panel(s)
 #
 
-clock -sf "T${ICON_DATE} %A, %b %d   ${ICON_TIME} %I:%M%p" > "${PANEL_FIFO}" &
+clock -sf "T${ICON_DATE} %A, %b %d   ${ICON_TIME} %I:%M %p" > "${PANEL_FIFO}" &
 xtitle -sf 'X%s' > "${PANEL_FIFO}" &
 bspc subscribe report > "${PANEL_FIFO}" &
 
