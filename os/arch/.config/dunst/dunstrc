@@ -5,7 +5,7 @@
     browser = /usr/bin/chromium
     dmenu = /usr/bin/rofi -dmenu -p dunst:
     follow = none
-    font = Fira Mono 9
+    font = Fira Mono 11
     format = "<b>%s</b>\n%b"
     # geometry [{width}]x{height}][+/-{x}+/-{y}]
     geometry = "300x22-0+26"
@@ -16,7 +16,7 @@
     indicate_hidden = yes
     line_height = 0
     monitor = 0
-    padding = 4
+    padding = 12
     separator_color = frame
     separator_height = 1
     show_age_threshold = 60
