@@ -16,15 +16,15 @@ esac
 # If this exists, it's already configured
 [[ -f ~/.weechat/sec.conf ]] && exit
 
-if [[ -f ~/.secrets/irc.conf ]]; then
+if [[ -f ~/.private/config/irc.conf ]]; then
     # ...otherwise, configure it!
     CWD=$(cd $(dirname $0) && pwd -P)
     weechat -r "/set plugins.var.fifo.fifo on'" &
     PID=$?
 
     while ! pgrep weechat >/dev/null; do sleep 1; done
-    wee "$HOME/.secrets/irc.conf"
-    wee "$CWD/setting.txt"
+    wee "$HOME/.private/config/irc.conf"
+    wee "$CWD/settings.txt"
     wee "$CWD/servers.txt"
     kill $PID
 else
