@@ -9,8 +9,6 @@ case $OSTYPE in
     linux*)
         if [[ -f /etc/arch-version ]]; then
             sudo pacman --needed --noconfirm -S mpd mpc ncmpcpp
-            systemctl enable --user mpd.service
-            systemctl start --user mpd.service
         fi
         ln -sfv $HOME/.config/mpd/mpd-linux.conf $HOME/.config/mpd/mpd.conf
         ;;
