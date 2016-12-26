@@ -1,5 +1,6 @@
-#!/usr/bin/env bash
-if command -v zgen >/dev/null; then
+#!/usr/bin/env zsh
+if [[ -e ~/.zgen/zgen.zsh ]] then
+    source ~/.zgen/zgen.zsh
     zgen selfupdate
     zgen update
 fi
