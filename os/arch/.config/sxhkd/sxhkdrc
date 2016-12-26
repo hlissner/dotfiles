@@ -28,7 +28,7 @@ super + Escape
 #
 
 Pause
-    mpc -q toggle
+    mpc -h ~/.config/mpd/mpd.sock -q toggle
 super + Pause
     zzz
 Print
@@ -38,9 +38,9 @@ super + Print
 
 #
 XF86Audio{Play,Pause}
-    mpc -q toggle
+    mpc -h ~/.config/mpd/mpd.sock -q toggle
 XF86Audio{Prev,Next}
-    mpc -q {prev,next}
+    mpc -h ~/.config/mpd/mpd.sock -q {prev,next}
 XF86Audio{LowerVolume,RaiseVolume}
     vol {-,+}
 XF86AudioMute
