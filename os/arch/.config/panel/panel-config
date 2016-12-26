@@ -5,13 +5,34 @@ PANEL_HEIGHT=28
 PANEL_FONT="terminus:size=8:antialias=false"
 ICON_FONT="siji:size=8:antialias=false"
 
-# Colors
-for i in 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15; do
-    eval "COLOR_$i="$(xrdb -query | awk "/^\*\.color$i:/ {print \$2}")
-done
+## Colors
+# black
+COLOR_0="#282a2e"
+COLOR_8="#474b51"
+# red
+COLOR_1="#a54242"
+COLOR_9="#cc6666"
+# green
+COLOR_2="#8c9440"
+COLOR_10="#b5bd68"
+# yellow
+COLOR_3="#de935f"
+COLOR_11="#f0c674"
+# blue
+COLOR_4="#8fb1cd"
+COLOR_12="#b1d2ee"
+# magenta
+COLOR_5="#85678f"
+COLOR_13="#b294bb"
+# cyan
+COLOR_6="#5e8d87"
+COLOR_14="#8abeb7"
+# white
+COLOR_7="#707880"
+COLOR_15="#e5e8e6"
 
-bg="$(xrdb -query | awk '/^\*\.background:/ {print $2}')"
-fg="$(xrdb -query | awk '/^\*\.foreground:/ {print $2}')"
+bg="#22252c"
+fg="#e5e8e6"
 
 COLOR_FG="$fg"
 COLOR_BG="#D001040b"
