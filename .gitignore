@@ -2,7 +2,9 @@
 *.log
 *.pid
 *.db
-mpdstate
 
 shell/tmux/.tmux/plugins/
 shell/tmux/.tmuxifier/
+
+shell/mpd/.config/mpd/mpd.*
+shell/mpd/.config/mpd/mpdstate
