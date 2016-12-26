@@ -5,7 +5,7 @@ ncmpcpp_directory = ~/.ncmpcpp
 lyrics_directory = ~/music/.db/lyrics
 
 ##### connection settings #####
-#mpd_host = localhost
+mpd_host = "~/.config/mpd/mpd.sock"
 #mpd_port = 6600
 #mpd_connection_timeout = 5
 
