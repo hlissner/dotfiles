@@ -6,13 +6,13 @@ updtmp=/tmp/update-count
 touch "$updtmp"
 
 num=$({ checkupdates; cower -u; } | wc -l)
-if [ "$num" -gt 0 ]
-then
-    lastnum=$(<$updtmp)
+if [ "$num" -gt 0 ]; then
+    lastnum=$(cat $updtmp)
     if [ "$num" -ne "${lastnum:-0}" ]; then
         echo "$num" > "$updtmp"
         if [ "$num" -gt "${lastnum:-0}" ]; then
-            notify-send "$num new updates available"
+            notify-send "$(( $num - $lastnum )) new update(s) available"
+            aplay -N -q /usr/share/sounds/ding.wav
         fi
     fi
     echo "U%{F${COLOR_2}}$ICON_UPD$num%{F-}"
