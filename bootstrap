@@ -105,6 +105,21 @@ for topic in ${@:-$(find "$ENABLED_DIR" -maxdepth 1 -type l)}; do
         [[ "$link" && -x "$bin" ]] && _link "$bin" "$HOME/.bin/"
     done
 
+    # Symlink dotfiles from topic directories (2 levels deep)
+    if [[ $link ]]; then
+        for file in "$tpath"/.[a-zA-Z]*; do
+            if [[ -d $file && "${file##*/}" == .config ]]; then
+                for subfile in "$file"/*; do
+                    base="$HOME/${file##*/}/"
+                    [[ -d $base ]] || _run mkdir -p "$base"
+                    _link "$subfile" "$base"
+                done
+            elif [[ -e $file ]]; then
+                _link "$file" "$HOME/"
+            fi
+        done
+    fi
+
     # Link topic to .enabled.d
     if [[ -h "$ENABLED_DIR/$tname" ]]; then
         [[ "$update" && -x $tpath/update ]] && _run "$tpath/update"
@@ -115,20 +130,6 @@ for topic in ${@:-$(find "$ENABLED_DIR" -maxdepth 1 -type l)}; do
         # Run install script
         [[ "$install" && -x $tpath/install ]] && _run "$tpath/install"
     fi
-
-    # Symlink dotfiles from topic directories (2 levels deep)
-    [[ "$link" ]] || continue
-    for file in "$tpath"/.[a-zA-Z]*; do
-        if [[ -d $file && "${file##*/}" == .config ]]; then
-            for subfile in "$file"/*; do
-                base="$HOME/${file##*/}/"
-                [[ -d $base ]] || _run mkdir -p "$base"
-                _link "$subfile" "$base"
-            done
-        elif [[ -e $file ]]; then
-            _link "$file" "$HOME/"
-        fi
-    done
 done
 
 # vim:set ft=sh:
