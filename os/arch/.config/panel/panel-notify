@@ -6,12 +6,7 @@ if ! pgrep lemonbar >/dev/null; then
 fi
 
 CWD=$(dirname $0)
-if [[ -t 0 ]]; then
-    if (( $# == 0 )); then
-        >&2 echo "Usage: panel_update.sh [LEMON_TO_UPDATE]"
-        exit 1
-    fi
-
+if (( $# > 0 )); then
     case $1 in
         :*) LEMON="$CWD/lemons/${1#?}"
             if [[ ! -f $LEMON ]]; then
