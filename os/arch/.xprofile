@@ -18,6 +18,8 @@ running sxhkd || sxhkd &
 running dunst || dunst &
 # window manager helpers
 running compton || compton &
+# music player
+running mpd || mpd &
 
 # taskbar
 $HOME/.config/panel/panel 2>&1 >$HOME/.config/panel/panel.log &
