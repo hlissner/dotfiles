@@ -2,7 +2,7 @@
 ncmpcpp_directory = ~/.ncmpcpp
 
 ## Directory for storing downloaded lyrics.
-#lyrics_directory = ~/.lyrics
+lyrics_directory = ~/music/.db/lyrics
 
 ##### connection settings #####
 #mpd_host = localhost
@@ -241,7 +241,7 @@ selected_item_prefix = +$6
 ##   tag and then composer and performer if previous ones are
 ##   not available.
 ##
-song_columns_list_format = (5f)[green]{NEr} (45)[white]{t|f:Title} (8f)[magenta]{lr} (20)[]{a|A:Artist} (25)[cyan]{b}
+song_columns_list_format = (2f)[green]{CEr:_} (3f)[green]{NEr:#} (45)[white]{t|f:Title} (8f)[magenta]{lr} (20)[]{a|A:Artist} (25)[cyan]{b}
 #
 ##### various settings #####
 #
@@ -249,7 +249,7 @@ song_columns_list_format = (5f)[green]{NEr} (45)[white]{t|f:Title} (8f)[magenta]
 ## Note: Custom command that will be executed each
 ## time song changes. Useful for notifications etc.
 ##
-execute_on_song_change = "notify-song.sh"
+execute_on_song_change = "notify-song"
 #playlist_show_mpd_host = no
 playlist_show_remaining_time = yes
 playlist_shorten_total_times = yes

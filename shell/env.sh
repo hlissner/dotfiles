@@ -1,6 +1,6 @@
 # Loaded at the end of the initialization process
 
-export PATH="$DOTFILES/bin:$DOTFILES/scripts:$HOME/bin:$PATH"
+export PATH="$HOME/.bin:$DOTFILES/bin:$PATH"
 
 #
 export EDITOR=$(is-callable nvim && echo 'nvim' || echo 'vim')

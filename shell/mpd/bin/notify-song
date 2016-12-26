@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+if ! pgrep mpd >/dev/null; then
+    >&2 echo "mpd isn't running."
+    exit 1
+fi
+
+info=$(mpc current)
+if [[ -z $info ]]; then
+    >&2 echo "nothing is playing."
+    exit
+fi
+
+case $OSTYPE in
+    darwin*)
+        terminal-notifier -title "Now playing" -message "$info" -appIcon "/Applications/iTunes.app/Contents/Resources/iTunes.icns"
+        ;;
+    linux*)
+        notify-send --icon="media-playback-start" --app-name="ncmpcpp" "Now playing" "$info"
+        ;;
+esac

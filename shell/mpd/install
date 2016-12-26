@@ -3,8 +3,8 @@
 case $OSTYPE in
     darwin*)
         brew install mpd mpc
-        brew install ncmpcpp --with-clock --with-visualizer
-        brew services start mpd
+        brew install ncmpcpp --with-clock --with-visualizer --with-outputs
+        ln -sfv $HOME/.config/mpd/mpd-osx.conf $HOME/.config/mpd/mpd.conf
         ;;
     linux*)
         if [[ -f /etc/arch-version ]]; then
@@ -12,5 +12,6 @@ case $OSTYPE in
             systemctl enable --user mpd.service
             systemctl start --user mpd.service
         fi
+        ln -sfv $HOME/.config/mpd/mpd-linux.conf $HOME/.config/mpd/mpd.conf
         ;;
 esac
