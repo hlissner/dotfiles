@@ -4,8 +4,7 @@
 # and prepends * to commands).
 
 fifos=$(echo "$HOME/.weechat/weechat_fifo_*")
-if [ -z "$fifos" ]
-then
+if [[ -z "$fifos" ]]; then
     >&2 echo "No FIFOs. Is weechat running?"
     exit 1
 fi
@@ -21,8 +20,7 @@ rd() {
     fi | sed '/^ *\(#\|$\)/ d;s/^/*/g'
 }
 
-if [ "$1" = "-d" ]
-then
+if [[ "$1" = "-d" ]]; then
     shift
     rd $@
 else
