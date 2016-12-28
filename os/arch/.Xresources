@@ -82,5 +82,5 @@ rofi.color-active: #20232a, #7b828f, #20232a, #20232a, #7fa1ed
 *.color6:       #5e8d87
 *.color14:      #8abeb7
 ! white
-*.color7:       #707880
-*.color15:      #e5e8e6
+*.color7:       #606870
+*.color15:      #f5f8f6
