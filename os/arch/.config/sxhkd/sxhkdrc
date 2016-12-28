@@ -48,6 +48,9 @@ XF86AudioMute
 super + XF86Eject
     zzz
 
+super + {Down,Up}
+    vol {-,+}
+
 
 #
 # bspwm hotkeys
