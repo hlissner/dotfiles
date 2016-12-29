@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+[[ -f /etc/arch-release ]] || exit
+
+sudo pacman -Ss udevil
+sudo systemctl enable devmon@$(whoami)
+sudo systemctl start devmon@$(whoami)
+
+sudo sed -i 's@^# \(success_exec =\)@\1 /home/hlissner/.dotfiles/os/arch/udevil/bin/notify-mount@' udevil.conf
