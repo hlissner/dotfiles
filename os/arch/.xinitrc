@@ -1,5 +1,6 @@
 #!/bin/sh
 
-[ -f ~/.Xresources ] && xrdb ~/.Xresources
-[ -f ~/.xprofile ] && source ~/.xprofile
-exec ssh-agent bspwm
+[[ -f $HOME/.Xresources ]] && xrdb ~/.Xresources
+[[ -f $HOME/.xprofile ]] && source ~/.xprofile
+
+exec bspwm

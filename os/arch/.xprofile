@@ -2,32 +2,33 @@
 
 export __GL_THREADED_OPTIMISATIONS=1
 
-running() { pgrep "$1" >/dev/null; }
-
-# wallpaper
-feh --bg-center $HOME/pictures/wallpaper
+# Maybe start this daemon
+run() {
+    command -v "$1" >/dev/null || return
+    pgrep "$1" >/dev/null || $@
+}
 
 # mouse acceleration
 xset m 11/8 0
 # keyboard repeat rate
 xset r rate 350 45
 
-# key daemon
-running sxhkd || sxhkd &
-# notifications
-running dunst || dunst &
-# window manager helpers
-running compton || compton &
-# music player
-running mpd || mpd &
+# essentials
+run dunst &      # notifications
+run compton &    # perdy effects + transparency
+run sxhkd &      # keyboard daemon
 
-# taskbar
-$HOME/.config/panel/panel 2>&1 >$HOME/.config/panel/panel.log &
+# set wallpaper
+run feh --no-fehbg --image-bg black --bg-center "$HOME/pictures/wallpaper"
 
 {
     sleep 3
 
     # If sxhkd isn't running by now, something is wrong and we're stuck. Instead, open
     # a terminal so I can do something about it
-    running sxhkd || termite &
+    pgrep sxhkd >/dev/null || termite &
 } &
+
+# key agents daemons
+eval "$(run gpg-agent --daemon)"
+eval "$(run ssh-agent)"
