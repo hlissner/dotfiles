@@ -15,11 +15,11 @@ def_key "J"
 def_key "h"
   select_item
 
-def_key "."
-  seek_forward
+def_key "right"
+    run_external_command "vol + >/dev/null"
 
-def_key ","
-  seek_backward
+def_key "left"
+    run_external_command "vol - >/dev/null"
 
 #def_key "mouse"
 #  mouse_event
