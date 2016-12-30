@@ -19,3 +19,6 @@ elif (( $+commands[xsel] )); then
     alias y='xsel --clipboard --input'
     alias p='xsel --clipboard --output'
 fi
+
+alias reboot="systemctl reboot"
+alias shutdown="systemctl poweroff"
