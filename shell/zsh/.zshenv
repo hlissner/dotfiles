@@ -19,3 +19,5 @@ if is-callable lesspipe; then
 fi
 
 [[ $LANG ]] || export LANG='en_US.UTF-8'
+
+export TERMINFO="$HOME/.terminfo"
