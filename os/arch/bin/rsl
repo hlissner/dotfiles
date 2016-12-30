@@ -5,10 +5,11 @@
 
 open="open"
 [[ $OSTYPE == linux* ]] && open="xdg-open"
-if pgrep rslsync >/dev/null; then
-    $open http://locahost:8888
-else
+
+if ! pgrep rslsync >/dev/null; then
     pushd $HOME >/dev/null
     rslsync &
     popd >/dev/null
 fi
+
+[[ -t 0 ]] && $open http://localhost:8888/gui/
