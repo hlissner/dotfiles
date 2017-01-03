@@ -16,10 +16,10 @@ def_key "h"
   select_item
 
 def_key "right"
-    run_external_command "vol + >/dev/null"
+    run_external_command "vol.sh + >/dev/null"
 
 def_key "left"
-    run_external_command "vol - >/dev/null"
+    run_external_command "vol.sh - >/dev/null"
 
 #def_key "mouse"
 #  mouse_event
