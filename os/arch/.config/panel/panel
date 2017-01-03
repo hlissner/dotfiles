@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 
-if [ "$1" = "-k" ]; then
-    pkill -f '^bash .+/panel$'
+if [[ "$1" = -k ]]; then
+    pkill -f '^[bd]ash .+/panel$'
     exit
+elif pgrep lemonbar >/dev/null; then
+    >&2 echo "Lemonbar is already running"
+    exit 1
 fi
 
 CWD=$(dirname $0)
@@ -13,14 +16,9 @@ cleanup() { rm -rf "$PANEL_FIFO"; pkill -P $$; }
 
 #
 trap cleanup INT TERM QUIT EXIT
-[ -e "$PANEL_FIFO" ] && rm "$PANEL_FIFO"
+[ -e "$PANEL_FIFO" ] && rm -f "$PANEL_FIFO"
 mkfifo "$PANEL_FIFO"
 echo "MKFIFO $PANEL_FIFO"
-
-if pgrep lemonbar >/dev/null; then
-    >&2 echo "Lemonbar is already running"
-    exit 1
-fi
 
 
 #
@@ -32,8 +30,10 @@ xtitle -sf 'X%s' > "${PANEL_FIFO}" &
 bspc subscribe report > "${PANEL_FIFO}" &
 
 for lemon in $CWD/lemons/*; do
-    echo "INIT ${lemon##*/}"
-    $lemon > "${PANEL_FIFO}" &
+    if [[ -f "$lemon" ]]; then
+        echo "INIT ${lemon##*/}"
+        $lemon > "${PANEL_FIFO}" &
+    fi
 done
 
 #
