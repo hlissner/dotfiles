@@ -3,7 +3,13 @@
 # If -f, then put computer to sleep.
 # Otherwise, lock screen and turn off monitor.
 
-if [[ $1 = -f ]]; then
+if [[ $1 = -h ]]; then
+    bin=${0##*/}
+    echo "Usage: $bin [-f]"
+    echo
+    echo "  $bin       # put display to sleep"
+    echo "  $bin -f    # put computer to sleep"
+elif [[ $1 = -f ]]; then
     echo "Going to sleep..."
     case $OSTYPE in
         darwin*) pmset sleepnow ;;

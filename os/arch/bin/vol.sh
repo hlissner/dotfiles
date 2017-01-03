@@ -10,7 +10,7 @@ fi
 
 case $1 in
     [0-9]*) amixer set Master $1 ;;
-    [+-])   amixer set Master 10%$1 ;;
+    [+-])   amixer set Master 5%$1 ;;
     *mute)  amixer set Master $1 ;;
     toggle) amixer set Master toggle ;;
     *)  >&2 echo "Invalid command"

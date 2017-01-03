@@ -5,7 +5,7 @@ if ! pgrep mpd >/dev/null; then
     exit 1
 fi
 
-info=$(mpc -h "$HOME/.config/mpd/mpd.sock" current)
+info=$(mpc current)
 if [[ -z $info ]]; then
     >&2 echo "nothing is playing."
     exit

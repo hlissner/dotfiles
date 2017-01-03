@@ -11,12 +11,12 @@
 # If the destination (or host) is a mac, use pbcopy and pbpaste instead.
 #
 # Workflow:
-#   host  $ echo "Hello world!" | rclip guest
-#   guest $ rclip
+#   host  $ echo "Hello world!" | rclip.sh guest
+#   guest $ rclip.sh
 #         Hello world!
 #     OR
-#   host  $ echo "Hello world!" | gpg -e | rclip guest
-#   guest $ rclip | gpg -d
+#   host  $ echo "Hello world!" | gpg -e | rclip.sh guest
+#   guest $ rclip.sh | gpg -d
 #         Hello world!
 
 pb=/tmp/rcopy-pb
