@@ -11,36 +11,78 @@ fi
 . $CWD/../panel-config
 
 get_mail() {
-    local feed=$(curl -u "$1:$2" --silent https://mail.google.com/mail/feed/atom)
-    if [[ "${feed//\<fullcount\>/}" != "$feed" ]]; then
-        echo "$feed" | grep -o "<entry>" | wc -l
+    local maildatatmp=/tmp/mail-data-"$1"
+    local mailtmp=/tmp/mail-count-"$1"
+
+    if true; then
+    # if curl -u "$1:$2" --silent https://mail.google.com/mail/feed/atom > "$maildatatmp"; then
+        [[ -f "$mailtmp" ]] || echo "0" >"$mailtmp"
+
+        local feed=$(<"$maildatatmp")
+        if [[ "${feed//\<fullcount\>/}" != "$feed" ]]; then
+            local lastnum=$(<"$mailtmp")
+            local total=$(echo "$feed" | grep -o "<entry>" | wc -l)
+            local new=0
+
+            echo "$total" > "$mailtmp"
+            if [[ $total > $lastnum ]]; then
+                new=$(( $total - $lastnum ))
+                NOTIFY=1
+            fi
+
+            parse_xml "$new" <<<"$feed"
+            echo $total
+            return
+        fi
+        >&2 echo "lemon/mail: malformed input ($1)"
     else
-        >&2 echo "mail.sh: error with $1"
-        ERROR=!
-        echo 0
+        >&2 echo "lemon/mail: failed to connect ($1)"
     fi
+    ERROR=!
+    echo 0
 }
 
-mailtmp=/tmp/mail-count
-touch "$mailtmp"
+# Oh man. I really did this in bash. Don't try this at home.
+parse_xml() {
+    [[ $1 == 0 ]] && return
+    echo 1 > /tmp/notify
+    local n="${1:-1}"
+    tr '<>' '\n' | sed -e '/^\(?xml \|feed \|\/\|link rel=\|$\)/d;s/^entry$/----/;s/^author$/====/' | \
+    {
+        while read line; do
+            [[ $line == "----" ]] && break
+        done
+        while [[ $n > 0 ]] && read line; do
+            case $line in
+                name)  read name  ;;
+                email) read email ;;
+                title) read title ;;
+            esac
+            if [[ $title && $name && $email ]]; then
+                let n--
+                notify-send --icon="mail-message-new" "$name\n&lt;${email/-/_}&gt;" "$title"
+                title=
+                name=
+                email=
+            fi
+        done
+    }
+}
 
+#
 a=$(get_mail "${MAIL1_USER}" "${MAIL1_PASS}")
 b=$(get_mail "${MAIL2_USER}" "${MAIL2_PASS}")
 c=$(get_mail "${MAIL3_USER}" "${MAIL3_PASS}")
+total=$(( $a + $b + $c ))
 
-num=$(( $a + $b + $c ))
 icon="${ICON_MAIL}"
 color="${COLOR_FG}"
-case $num in
+case $total in
     [1-9]*)
-        icon="$icon $num"
-        lastnum=$(cat "$mailtmp")
-        if [[ $num != $lastnum ]]; then
-            echo "$num" > "$mailtmp"
-            if (( $num > $lastnum )); then
-                notify-send "New messages" "You have $(( $num - $lastnum )) new messages"
-                aplay -N -q /usr/share/sounds/ding.wav
-            fi
+        icon="$icon $total"
+        if [[ -f /tmp/notify ]]; then
+            aplay -N -q /usr/share/sounds/ding.wav
+            rm -f /tmp/notify
         fi
         ;;
     0)  color="${COLOR_DIM}"
