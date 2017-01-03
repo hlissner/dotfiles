@@ -1,0 +1,44 @@
+# WeeChat plugin settings
+# By Henrik Lissner <henrik@lissner.net
+#
+# Pass this file to `./bin/wee` while weechat is running.
+
+# Interactive configuring
+/script install iset.pl
+
+# Separate buffer for highlights
+/script install highmon.pl
+/set plugins.var.perl.highmon.alighnment "nchannel"
+
+# Sidebar for buffers
+/script install buffers.pl
+/set weechat.bar.buffers.hidden off
+/set weechat.bar.buffers.items buffers
+/set weechat.bar.buffers.position left
+/set weechat.bar.buffers.size 20
+
+# Automatically keep buffers grouped by server and sorted by name
+/script install autosort.py
+/autosort replacements add ## #
+/autosort rules add irc.server.*.&* = 0
+/autosort rules add irc.server.*.#* = 1
+/autosort rules add irc.server.*.\*status = 2
+
+# Jump-to-buffer with fuzzy completion
+/script install go.py
+
+# Search buffers and logs
+/script install grep.py
+
+# Different colors for different users
+/script install colorize_nicks.py
+/set colorize_nicks.look.colorize_input on
+/set colorize_nicks.look.ignore_nicks_in_urls on
+
+# Colorize whole lines using nick colors
+/script install colorize_lines.pl
+/set plugins.var.perl.colorize_lines.lines on
+
+# notifications via pushover.net
+/script install pushover.pl
+/set plugins.var.ruby.pushover-weechat.userkey "${sec.data.pushover_key}"

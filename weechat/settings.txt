@@ -7,30 +7,6 @@
 
 /set irc.server_default.ssl on
 /set irc.server_default.ssl_verify on
-/set irc.look.server_buffer independent
-
-
-
-########################################
-#
-# Plugins
-#
-########################################
-
-/script install iset.pl
-/script install buffers.pl
-/script install go.py
-
-/script install colorize_lines.pl
-/set plugins.var.perl.colorize_lines.lines on
-
-/script install colorize_nicks.py
-/set colorize_nicks.look.colorize_input on
-/set colorize_nicks.look.ignore_nicks_in_urls on
-
-/script install pushover.pl
-/set plugins.var.ruby.pushover-weechat.userkey "${sec.data.pushover_key}"
-
 
 
 ########################################
@@ -39,25 +15,28 @@
 #
 ########################################
 
+# unmerge server buffers from core
+/set irc.look.server_buffer independent
+# ...extra indentation for buffers
+/set buffers.look.indenting on
+
 # One single input bar for all windows
 /bar add rootinput root bottom 1 0 buffer_name+[input_prompt]+(away),[input_search],[input_paste],> input_text
 /bar del input
+/set weechat.bar.rootinput.color_bg 0
 
 # Statusbar
-/set weechat.bar.status.items [buffer_last_number],[buffer_plugin],buffer_number+:+buffer_name+{buffer_nicklist_count}+buffer_zoom+buffer_filter,scroll,[lag],[hotlist],completion
+/set weechat.bar.status.items buffer_name:+{buffer_nicklist_count}+buffer_filter,scroll,[lag],[hotlist],completion
+# Titlebar (statusbar on top)
+/set weechat.bar.title.color_bg 8
+/set weechat.bar.title.position top
 
 # Buffer list
-/set weechat.bar.buffers.position left
-#/set weechat.bar.buffers.filling_top_bottom horizontal
-/set buffers.look.prefix on
-/set buffers.look.hide_merged_buffers all
-/set buffers.color.none_channel_fg 244
-/set buffers.color.current_bg blue
-/set buffers.color.current_fg default
-
+/set buffers.color.none_channel_fg 243
+/set buffers.color.number 240
+/set buffers.color.number_char 242
 /set weechat.look.prefix_same_nick "*"
 /set weechat.bar.nicklist.size 15
-/set weechat.bar.buffers.size 20
 /set weechat.color.chat_channel 247
 /set irc.look.color_nicks_in_nicklist on
 /set irc.look.color_nicks_in_server_messages off
@@ -75,9 +54,9 @@
 /set weechat.color.chat_nick_self *white
 /set weechat.color.chat_delimiters 243
 /set weechat.color.chat_time_delimiters 243
-/set logger.color.backlog.end lightgreen
-/set logger.color.backlog.line 243
 /set weechat.color.nicklist_away 243
+/set logger.color.backlog_end  245
+/set logger.color.backlog_line 241
 
 
 ###
