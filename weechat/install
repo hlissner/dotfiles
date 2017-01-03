@@ -13,21 +13,5 @@ case $OSTYPE in
         fi
 esac
 
-# If this exists, it's already configured
-[[ -f ~/.weechat/sec.conf ]] && exit
-
-if [[ -f ~/.private/config/irc.conf ]]; then
-    # ...otherwise, configure it!
-    CWD=$(cd $(dirname $0) && pwd -P)
-    weechat -r "/set plugins.var.fifo.fifo on'" &
-    PID=$?
-
-    while ! pgrep weechat >/dev/null; do sleep 1; done
-    wee "$HOME/.private/config/irc.conf"
-    wee "$CWD/settings.txt"
-    wee "$CWD/servers.txt"
-    kill $PID
-else
-    >&2 echo "Couldn't find secrets!"
-    exit 1
-fi
+# NOTE: init.sh needs to be run separately, afterward
+echo "Don't forget to run weechat/scripts/init.sh while weechat is open"
