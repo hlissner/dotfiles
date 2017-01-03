@@ -17,17 +17,18 @@ them.
 e.g. `./bootstrap os/arch shell/{zsh,tmux} dev/python`
 
 ```
-Usage: bootstrap [-iuldynr] [topic1[ topic2[ ...]]]
+Usage: bootstrap [-iuldypLSU] [topic1[ topic2[ ...]]]
 
 Options:
-  -d  Do a dry run (only output commands, no changes)
   -i  Don't run install scripts
-  -l  Don't symlink dotfiles or bin scripts
-  -n  Don't overwrite conflicts (no prompts
   -u  Don't run update scripts
+  -l  Don't symlink dotfiles or bin scripts
+  -d  Do a dry run (only output commands, no changes)
   -y  Overwrite conflicts (no prompts)
-  -r  Refresh symlinks (same as -uiy)
-  -s  Server mode; only install the bare minimum (depends on topic)
+  -p  Prompt on file conflict (to overwrite)
+  -L  Refresh links; the same as -ui
+  -S  Server mode; only install the bare minimum
+  -U  Update mode; run update scripts only
 ```
 
 Here's a simplified break down of what it does:
