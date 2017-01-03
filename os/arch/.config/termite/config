@@ -1,5 +1,5 @@
 [colors]
-foreground = #a3b4b6
+foreground = #e5e8e6
 foreground_bold = #eee8d5
 #foreground_dim = #888888
 background = #22252c
@@ -22,8 +22,8 @@ color10 = #b5bd68
 color3  = #de935f
 color11 = #f0c674
 # blue
-color4  = #6f91ad
-color12 = #91b2ce
+color4  = #8fb1cd
+color12 = #b1d2ee
 # magenta
 color5  = #85678f
 color13 = #b294bb
@@ -31,7 +31,7 @@ color13 = #b294bb
 color6  = #5e8d87
 color14 = #8abeb7
 # white
-color7  = #808800
+color7  = #606870
 color15 = #f5f8f6
 
 [options]
