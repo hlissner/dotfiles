@@ -25,7 +25,7 @@ echo "MKFIFO $PANEL_FIFO"
 # Bootstrap panel(s)
 #
 
-clock -sf "T${ICON_DATE} %A, %b %d   ${ICON_TIME} %I:%M %p" > "${PANEL_FIFO}" &
+clock -sf "D%A, %b %d    %I:%M %p" > "${PANEL_FIFO}" &
 xtitle -sf 'X%s' > "${PANEL_FIFO}" &
 bspc subscribe report > "${PANEL_FIFO}" &
 
@@ -43,26 +43,19 @@ parse() {
         data="${line#?}"
         case $line in
             # Minimal icons
-            B*) battery="$data"
-                ;;
-            U*) updates=" $data"
-                ;;
-            M*) mail=" $data"
-                ;;
-            V*) vol=" %{A:vol toggle:}$data${A}"
-                ;;
-            I*) wifi=" $data"
-                ;;
+            B*) battery="  $data  " ;;
+            U*) updates="  $data  " ;;
+            M*) mail="  $data  " ;;
+            V*) vol="  %{A:vol toggle:}$data${A}  " ;;
+            I*) wifi="  $data  " ;;
+            I*) wifi="  $data  " ;;
 
             # Full segments
-            X*) xtitle="$data"
-                ;;
-            T*) datetime="   $data"
-                ;;
-            S*) song="$data "
-                ;;
+            X*) xtitle="$data" ;;
+            D*) datetime="   $data    " ;;
+            S*) song="$data " ;;
             W*) # bspwm's state
-                wm=""
+                wm=
                 IFS=':'
                 set -- $data
                 while [ "$#" -gt 0 ]
@@ -88,39 +81,18 @@ parse() {
                             ;;
                         [fFoOuU]*)
                             if [[ $M ]]; then
-                                icon="$ICON_NONE"
+                                icon="$ICON_FULL"
                                 case $id in
-                                    f*) # free desktop
-                                        _FG=$COLOR_FREE_FG
-                                        _BG=$COLOR_FREE_BG
-                                        ;;
-                                    F*) # focused free desktop
-                                        _FG=$COLOR_FOCUSED_FREE_FG
-                                        _BG=$COLOR_FOCUSED_FREE_BG
-                                        ;;
-                                    o*) # occupied desktop
-                                        _FG=$COLOR_OCCUPIED_FG
-                                        _BG=$COLOR_OCCUPIED_BG
-                                        icon="$ICON_FULL"
-                                        ;;
-                                    O*) # focused occupied desktop
-                                        _FG=$COLOR_FOCUSED_OCCUPIED_FG
-                                        _BG=$COLOR_FOCUSED_OCCUPIED_BG
-                                        icon="$ICON_FULL"
-                                        ;;
-                                    u*) # urgent desktop
-                                        _FG=$COLOR_URGENT_FG
-                                        _BG=$COLOR_URGENT_BG
-                                        icon="$ICON_FULL"
-                                        ;;
-                                    U*) # focused urgent desktop
-                                        _FG=$COLOR_FOCUSED_URGENT_FG
-                                        _BG=$COLOR_FOCUSED_URGENT_BG
-                                        icon="$ICON_FULL"
-                                        ;;
+                                    f*) _FG=$COLOR_FREE_FG icon="$ICON_NONE" ;;         # free desktop
+                                    F*) _FG=$COLOR_FOCUSED_FREE_FG icon="$ICON_NONE" ;; # focused free desktop
+                                    o*) _FG=$COLOR_OCCUPIED_FG ;;                       # occupied desktop
+                                    O*) _FG=$COLOR_FOCUSED_OCCUPIED_FG ;;               # focused occupied desktop
+                                    u*) _FG=$COLOR_URGENT_FG ;;                         # urgent desktop
+                                    U*) _FG=$COLOR_FOCUSED_URGENT_FG ;;                 # focused urgent desktop
                                 esac
-                                # eval "icon=\$ICON_$(echo ${name#??} | tr '[:lower:]' '[:upper:]')"
-                                wm="${wm}%{F$_FG}%{B$_BG}%{A:bspc desktop -f ${name}:}  ${icon:-$name}  %{A}%{B-}%{F-}"
+                                eval "icon=\$ICON_$(echo ${name#??})"
+                                # wm="${wm}%{F$_FG}%{A:bspc desktop -f ${name}:}  ${icon:-$name}  %{A}%{F-}"
+                                wm="${wm}%{F$_FG}%{A:bspc desktop -f ${name}:}  ${icon:-$name}  %{A}%{B-}%{F-}"
                             fi
                             ;;
                     esac
@@ -129,9 +101,9 @@ parse() {
                 ;;
         esac
         echo -e \
-            "%{l}${wm}${song}" \
-            "%{c}${xtitle}" \
-            "%{r}${battery}${mail}${updates}${vol}${wifi}${datetime}  "
+            "%{l}    ${xtitle}${song}" \
+            "%{c}${wm}" \
+            "%{r}${battery}${mail}${updates}${vol}${wifi}  ${datetime}"
     done
 }
 
