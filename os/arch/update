@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if command -v pacaur >/dev/null; then
-    pacaur -Syu
+    pacaur -Syu --noconfirm
 else
-    pacman -Syu
+    pacman -Syu --noconfirm
 fi
