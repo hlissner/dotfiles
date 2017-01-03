@@ -10,14 +10,14 @@ super + ctrl + Return
 super + grave
     xdotool search --onlyvisible --class scratchpad windowunmap \
         || xdotool search --class scratchpad windowmap \
-        || termite --class=scratchpad
+        || termite --class=scratchpad --exec='tmux new-session -A -s scratch'
 
 # program launcher
 super + space
     rofi -show run
 # password manager
 super + alt + backslash
-    dpass
+    dpass.sh
 # make sxhkd reload its configuration files:
 super + Escape
     pkill -USR1 -x sxhkd
@@ -28,9 +28,9 @@ super + Escape
 #
 
 Pause
-    mpc -h ~/.config/mpd/mpd.sock -q toggle
+    mpc -q toggle
 super + Pause
-    zzz
+    zzz.sh
 Print
     maim --opengl -s ~/shared/screenshots/$(date +%F-%T).png
 super + Print
@@ -38,18 +38,20 @@ super + Print
 
 #
 XF86Audio{Play,Pause}
-    mpc -h ~/.config/mpd/mpd.sock -q toggle
+    mpc -q toggle
 XF86Audio{Prev,Next}
-    mpc -h ~/.config/mpd/mpd.sock -q {prev,next}
+    mpc -q {prev,next}
 XF86Audio{LowerVolume,RaiseVolume}
-    vol {-,+}
+    vol.sh {-,+}
 XF86AudioMute
-    vol toggle
+    vol.sh toggle
 super + XF86Eject
-    zzz
+    zzz.sh
 
 super + {Down,Up}
-    vol {-,+}
+    vol.sh {-,+}
+super + {Left,Right}
+    mpc {prev,next}
 
 
 #
@@ -63,14 +65,6 @@ super + alt + Escape
 # close and kill
 super + {_,shift + }q
     bspc node -{c,k}
-
-# if the current node is automatic, send it to the last manual, otherwise pull the last leaf
-super + y
-    bspc query -N -n focused.automatic && bspc node -n last.!automatic || bspc node last.leaf -n focused
-
-# swap the current node and the biggest node
-super + g
-    bspc node -s biggest
 
 #
 # state/flags
@@ -91,20 +85,20 @@ super + ctrl + {x,y,z}
 #
 
 # focus/swap the node in the given direction
-super + {_,shift + }{h,j,k,l}
-    bspc node -{f,s} {west,south,north,east}
+super + {_,shift +,ctrl +,shift + ctrl +}{h,j,k,l}
+    bspc.sh {f,s,F,S} {west,south,north,east}
 
 # focus the node for the given path jump
 super + {p,b,comma,period}
     bspc node -f @{parent,brother,first,second}
 
 # focus the next/previous node
-super + {_,shift + }c
-    bspc node -f {next,prev}
+super + {_,shift + }Tab
+    bspc.sh F {east,west}
 
-# focus the next/previous desktop
+# focus monitor or send to the given desktop
 super + bracket{left,right}
-    bspc desktop -f {prev,next}
+    bspc desktop -f focused#{prev,next}.local
 
 # focus the older or newer node in the focus history
 super + {o,i}
@@ -112,17 +106,8 @@ super + {o,i}
     bspc node {older,newer} -f; \
     bspc wm -h on
 
-# focus monitor or send to the given desktop
-super + {_,shift +}{Left,Right}
-    bspc {monitor -f,node -m} {prev,next}
-
 super + {_,shift +}{1-9,0}
     bspc {desktop -f,node -d} C/{1-9,10}
-
-#
-# focus the last node/desktop / rotate / balance / equalize
-super + {shift +,ctrl +,alt +} Tab
-    bspc node {@/ {-R 90,-B,-E}}
 
 
 #
@@ -130,32 +115,45 @@ super + {shift +,ctrl +,alt +} Tab
 #
 
 # preselect the direction
-super + ctrl + {h,j,k,l}
+super + alt + shift + {h,j,k,l}
     bspc node -p {west,south,north,east}
 
 # preselect the ratio
-super + ctrl + {1-9}
+super + alt + shift + {1-9}
     bspc node -o 0.{1-9}
 
 # cancel the preselection for the focused node
-super + ctrl + space
+super + alt + shift + space
     bspc node -p cancel
 
 # cancel the preselection for the focused desktop
-super + ctrl + shift + space
+super + alt + shift + space
     bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
 
 # expand the tiled space in the given direction
 super + alt + {h,j,k,l}
-    bspc node {@west -r -20,@south -r +20,@north -r -20,@east -r +20}
+    bspc node {@west -r -,@south -r +,@north -r -,@east -r +}64
 
 # contract the tiled space in the given direction
-super + alt + shift + {h,j,k,l}
-    bspc node {@east -r -20,@north -r +20,@south -r -20,@west -r +20}
+super + alt + ctrl + {h,j,k,l}
+    bspc node {@east -r -,@north -r +,@south -r -,@west -r +}64
 
 # move a floating window
-super + {Left,Down,Up,Right}
-    xdo move {-x -20,-y +20,-y -20,-x +20}
+super + alt + {Left,Down,Up,Right}
+    xdo move {-x -,-y +,-y -,-x +}40
 
-super + ctrl + {Left,Down,Up,Right}
-    xdo resize {-w -20,-h -20,-h -20,-w -20}
+super + alt + ctrl + {Left,Down,Up,Right}
+    xdo resize {-w -,-h -,-h -,-w -}40
+
+
+#
+#
+#
+
+# Stream mode
+super + shift + s
+    bspc config -m C left_padding 320; \
+    bspc config -m C right_padding 320; \
+    bspc config -m C top_padding 255; \
+    bspc config -m C bottom_padding 255; \
+    bspc config -m C window_gap 8
