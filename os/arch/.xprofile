@@ -8,27 +8,30 @@ run() {
     pgrep "$1" >/dev/null || $@
 }
 
+# failsafe
+{
+    sleep 5
+
+    # If sxhkd isn't running by now something is wrong and we're stuck, so open
+    # a terminal so I can do something about it
+    pgrep sxhkd >/dev/null || termite &
+} &
+
 # mouse acceleration
 xset m 11/8 0
 # keyboard repeat rate
 xset r rate 350 45
 
-# essentials
-run dunst &      # notifications
-run compton &    # perdy effects + transparency
-run sxhkd &      # keyboard daemon
-
 # set wallpaper
 run feh --no-fehbg --image-bg black --bg-center "$HOME/pictures/wallpaper"
 
-{
-    sleep 3
+# essentials
+run sxhkd &      # keyboard daemon
+run dunst &      # notifications
+run compton &    # perdy effects + transparency
 
-    # If sxhkd isn't running by now, something is wrong and we're stuck. Instead, open
-    # a terminal so I can do something about it
-    pgrep sxhkd >/dev/null || termite &
-} &
+# non-essentials
+run mpd &           # music server
+run redshift &      # screen temperature based on time-of-day
+$HOME/.bin/rsl.sh   # resilio sync
 
-# key agents daemons
-eval "$(run gpg-agent --daemon)"
-eval "$(run ssh-agent)"
