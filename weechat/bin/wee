@@ -13,8 +13,7 @@ rd() {
     if [ -t 0 ]; then
         cat $@
     else
-        while read -r line
-        do
+        while read -r line; do
             echo $line
         done
     fi | sed '/^ *\(#\|$\)/ d;s/^/*/g'
