@@ -5,13 +5,18 @@
 updtmp=/tmp/update-count
 touch "$updtmp"
 
-num=$({ checkupdates; cower -u; } | wc -l)
+list=$(checkupdates; cower -u)
+if [ -n "$list" ]; then
+    num=$(echo "$list" | wc -l)
+else
+    num=0
+fi
 if [ "$num" -gt 0 ]; then
     lastnum=$(cat $updtmp)
     if [ "$num" -ne "${lastnum:-0}" ]; then
         echo "$num" > "$updtmp"
         if [ "$num" -gt "${lastnum:-0}" ]; then
-            notify-send "$(( $num - $lastnum )) new update(s) available"
+            notify-send --icon="system-run" "$(( $num - $lastnum )) new update(s) available" "\n$list"
             aplay -N -q /usr/share/sounds/ding.wav
         fi
     fi
