@@ -1,0 +1,5 @@
+! Exchange Alt and Win
+clear Mod1
+clear Mod4
+add Mod4 = Alt_L Alt_R
+add Mod1 = Super_L Super_R
