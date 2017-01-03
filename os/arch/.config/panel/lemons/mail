@@ -7,10 +7,8 @@ if [[ ! -f ~/.private/config/email.conf ]]; then
     exit 1
 fi
 
-. ~/.private/config/email.conf
+. $HOME/.private/config/email.conf
 . $CWD/../panel-config
-
-ICON_MAIL=""
 
 get_mail() {
     local feed=$(curl -u "$1:$2" --silent https://mail.google.com/mail/feed/atom)
@@ -35,7 +33,7 @@ icon="${ICON_MAIL}"
 color="${COLOR_FG}"
 case $num in
     [1-9]*)
-        icon="$icon$num"
+        icon="$icon $num"
         lastnum=$(cat "$mailtmp")
         if [[ $num != $lastnum ]]; then
             echo "$num" > "$mailtmp"

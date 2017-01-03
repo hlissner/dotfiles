@@ -15,7 +15,7 @@ if [ "$num" -gt 0 ]; then
             aplay -N -q /usr/share/sounds/ding.wav
         fi
     fi
-    echo "U%{F${COLOR_2}}$ICON_UPD$num%{F-}"
+    echo "U%{F${COLOR_2}}$ICON_UPD $num%{F-}"
 else
     echo "U%{F${COLOR_DIM}}$ICON_UPD%{F-}"
 fi
