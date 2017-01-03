@@ -17,8 +17,9 @@
 #   -d  Do a dry run (only output commands, no changes)
 #   -y  Overwrite conflicts (no prompts)
 #   -p  Prompt on file conflict (to overwrite)
-#   -r  Refresh; the same as -ui
-#   -s  Server mode; only install the bare minimum
+#   -L  Refresh links; the same as -ui
+#   -S  Server mode; only install the bare minimum
+#   -U  Update mode; run update scripts only
 
 set -e
 source "$(cd $(dirname $0) && pwd -P)/shell/common.sh"
@@ -73,7 +74,7 @@ install=1
 link=1
 update=1
 yes=0
-while getopts iuldyprs opt; do
+while getopts iuldypLSUh opt; do
     case $opt in
         d) DRYRUN=1 ;;
         i) install= ;;
@@ -81,10 +82,29 @@ while getopts iuldyprs opt; do
         p) yes=     ;;
         u) update=  ;;
         y) yes=1    ;;
-        s) SERVER=1 ;;
-        r) update=
-           install=
+        S) SERVER=1 ;;
+        U) install=
+           yes=0
            ;;
+        L) update=
+           install=
+           yes=0
+           ;;
+        h) cat <<EOL
+Usage: $0 [-iuldypLSU] [topic1] [topic2] [...]
+
+    -i  Don't run install scripts
+    -u  Don't run update scripts
+    -l  Don't symlink dotfiles or bin scripts
+    -d  Do a dry run (only output commands, no changes)
+    -y  Overwrite conflicts (no prompts)
+    -p  Prompt on file conflict (to overwrite)
+    -L  Refresh links; the same as -ui
+    -S  Server mode; only install the bare minimum
+    -U  Update mode; run update scripts only
+EOL
+exit
+            ;;
         *) >&2 echo "Aborted."
            exit 1   ;;
     esac
