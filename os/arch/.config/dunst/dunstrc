@@ -8,15 +8,15 @@
     font = Fira Sans 12
     format = "<b>%s</b>\n%b"
     # geometry [{width}]x{height}][+/-{x}+/-{y}]
-    geometry = "350x22-10+36"
+    geometry = "375x22-10+36"
     history_length = 20
-    horizontal_padding = 24
+    horizontal_padding = 20
     idle_threshold = 120
     ignore_newline = no
     indicate_hidden = yes
     line_height = 0
     monitor = 0
-    padding = 20
+    padding = 18
     separator_color = frame
     separator_height = 1
     show_age_threshold = 60
@@ -30,7 +30,7 @@
     # Align icons left/right/off
     icon_position = right
     # Paths to default icons.
-    icon_folders = /usr/share/icons/hicolor/16x16/apps/:/usr/share/icons/Adwaita/16x16/actions/
+    icon_folders = /usr/share/icons/hicolor/32x32/apps/:/usr/share/icons/Adwaita/32x32/actions/
 
 [frame]
     width = 0
