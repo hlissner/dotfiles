@@ -10,7 +10,7 @@ super + ctrl + Return
 super + grave
     xdotool search --onlyvisible --class scratchpad windowunmap \
         || xdotool search --class scratchpad windowmap \
-        || termite --class=scratchpad --exec='tmux new-session -A -s scratch'
+        || termite --class=scratchpad --exec='tmux new-session -A -s scratch' --geometry=698x382
 
 # program launcher
 super + space
