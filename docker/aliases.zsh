@@ -1,11 +1,10 @@
-case "$OSTYPE" in
+case $OSTYPE in
     darwin*)
         alias dkm='docker-machine'
         alias dki='eval $(docker-machine env)'
         ;;
     linux*)
         alias docker='sudo docker'
-        alias dki='sudo systemctl start docker.service'
         ;;
 esac
 
