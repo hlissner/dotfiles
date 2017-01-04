@@ -5,17 +5,21 @@ if ! pgrep mpd >/dev/null; then
     exit 1
 fi
 
-info=$(mpc current)
-if [[ -z $info ]]; then
+info=$(mpc -f ";%artist%;%album%;%title%")
+if [[ -z $info || ${info:0:1} != ";" ]]; then
     >&2 echo "nothing is playing."
     exit
 fi
 
+artist=$(awk -F';' '{ print $2 }' <<<"$info")
+album=$(awk -F';' '{ print $3 }' <<<"$info")
+title=$(awk -F';' '{ print $4 }' <<<"$info")
+
 case $OSTYPE in
     darwin*)
-        terminal-notifier -title "Now playing" -message "$info" -appIcon "/Applications/iTunes.app/Contents/Resources/iTunes.icns"
+        terminal-notifier -title "$title" -message "by $artist\n$album" -appIcon "/Applications/iTunes.app/Contents/Resources/iTunes.icns"
         ;;
     linux*)
-        notify-send --icon="media-playback-start" --app-name="ncmpcpp" "Now playing" "$info"
+        notify-send --icon="media-playback-start" --app-name="ncmpcpp" "$title" "$artist\n<i>$album</i>"
         ;;
 esac
