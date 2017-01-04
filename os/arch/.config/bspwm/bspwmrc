@@ -69,7 +69,8 @@ esac
 
 bspc rule -r '*'
 bspc rule -a scratchpad state=floating sticky=on center=on monitor=C
-bspc rule -a Emacs split_ratio=0.25 border=off state=tiled
+bspc rule -a Emacs split_ratio=0.25 border=off state=fullscreen
+bspc rule -a Emacs:org-capture border=off state=floating
 bspc rule -a Gimp desktop=^6
 bspc rule -a mplayer2 state=floating
 bspc rule -a Vlc state=floating monitor=C center=on
