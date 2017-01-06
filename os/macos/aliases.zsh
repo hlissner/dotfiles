@@ -1,5 +1,4 @@
-alias ls="${aliases[ls]:-ls} -G"
-
+alias ls="gls --color=auto --group-directories-first"
 alias date='gdate'
 
 alias y='pbcopy'
