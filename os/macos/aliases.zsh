@@ -6,7 +6,7 @@ alias y='pbcopy'
 alias p='pbpaste'
 
 alias br='brew'
-alias bru='brew update && brew upgrade --all && brew cleanup'
+alias bru='brew update && brew upgrade && brew cleanup'
 alias brc='brew cask'
 
 alias localip="ipconfig getifaddr en1"
