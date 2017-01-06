@@ -8,4 +8,3 @@ export VISUAL=$EDITOR
 
 #
 export GPG_TTY=$(tty)
-umask 077
