@@ -2,7 +2,7 @@
 
 case $OSTYPE in
     darwin*)
-        brew install tmux
+        brew install tmux reattach-to-user-namespace
         ;;
     linux*)
         if [ -f /etc/arch-release ]; then
