@@ -2,7 +2,7 @@
 
 case "$OSTYPE" in
     darwin*)
-        brew install make cask python
+        brew install cask python
         brew tap railwaycat/emacsmacport
         brew install emacs-mac --with-imagemagick --with-modern-icon --HEAD
         ;;

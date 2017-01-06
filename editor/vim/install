@@ -2,7 +2,7 @@
 
 case $OSTYPE in
     darwin*)
-        brew install make vim
+        brew install vim
         ;;
     linux*)
         if [[ -f /etc/arch-release ]]; then
@@ -14,9 +14,8 @@ case $OSTYPE in
         ;;
 esac
 
-if [[ ! -d "$HOME/.vim" ]]
-then
-    git clone --recursive "hlissner/.vim" "$HOME/.vim"
+if [[ ! -d "$HOME/.vim" ]]; then
+    git clone --recursive "https://github.com/hlissner/.vim" "$HOME/.vim"
     cd "$HOME/.vim"
     make install
 fi
