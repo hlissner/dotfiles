@@ -22,5 +22,14 @@ for song in ${songs[@]}; do
 done
 :>"$playlistfile"
 
+# Remove duplicates in playlists
+for playlist in "$playlistdir"/*.m3u; do
+    awk '!seen[$0]++' "$playlist" > "${playlist}.tmp"
+    if [[ -f "${playlist}.tmp" ]]; then
+        rm -f "$playlist"
+        mv "${playlist}.tmp" "$playlist"
+    fi
+done
+
 # Remove empty directories
 find "$HOME/music" -type d -empty -delete
