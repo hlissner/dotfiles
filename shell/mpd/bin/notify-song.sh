@@ -17,7 +17,7 @@ title=$(awk -F';' '{ print $4 }' <<<"$info")
 
 case $OSTYPE in
     darwin*)
-        terminal-notifier -title "$title" -message "by $artist\n$album" -appIcon "/Applications/iTunes.app/Contents/Resources/iTunes.icns"
+        terminal-notifier -title "$title" -message "by $artist :: $album" -appIcon "/Applications/iTunes.app/Contents/Resources/iTunes.icns"
         ;;
     linux*)
         notify-send --icon="media-playback-start" --app-name="ncmpcpp" "$title" "$artist\n<i>$album</i>"
