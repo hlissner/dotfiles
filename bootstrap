@@ -69,6 +69,20 @@ _link() {
     fi
 }
 
+_linkall() {
+    local file="$1"
+    if [[ -d "$file" && "${file##*/}" == .@(config|local) ]]; then
+        for subfile in "$file"/*; do
+            base="$HOME/${file##*/}/"
+            [[ -d $base ]] || _run mkdir -p "$base"
+            _link "$subfile" "$base"
+        done
+    elif [[ -e $file ]]; then
+        _link "$file" "$HOME/"
+    fi
+}
+
+
 ##
 install=1
 link=1
@@ -119,25 +133,23 @@ for topic in ${@:-$(find "$ENABLED_DIR" -maxdepth 1 -type l)}; do
     [[ -d $topic ]] || continue
 
     tpath="$CWD/$topic"
-    tname="$(basename $(dirname $tpath))_${tpath##*/}"
+    tparentpath="$(dirname $tpath)"
+    tname="${tparentpath##*/}_${tpath##*/}"
     echo -e "${green}${tname//_//}${nc}"
     # Link binaries
     for bin in $tpath/bin/*; do
         [[ "$link" && -x "$bin" ]] && _link "$bin" "$HOME/.bin/"
     done
 
-    # Symlink dotfiles from topic directories (2 levels deep)
     if [[ $link ]]; then
+        # Symlink dotfiles from topic parent directory
+        for file in "$tparentpath"/.[a-zA-Z]*; do
+            _linkall "$file"
+        done
+
+        # Symlink dotfiles from topic directories (2 levels deep)
         for file in "$tpath"/.[a-zA-Z]*; do
-            if [[ -d $file && "${file##*/}" == .config ]]; then
-                for subfile in "$file"/*; do
-                    base="$HOME/${file##*/}/"
-                    [[ -d $base ]] || _run mkdir -p "$base"
-                    _link "$subfile" "$base"
-                done
-            elif [[ -e $file ]]; then
-                _link "$file" "$HOME/"
-            fi
+            _linkall "$file"
         done
     fi
 
