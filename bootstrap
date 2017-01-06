@@ -114,10 +114,11 @@ shift $((OPTIND-1))
 #
 [[ -d ~/.bin ]] || _run mkdir -p ~/.bin
 PATH="$DOTFILES/.bin:$PATH"
+CWD=$(cd $(dirname $0) && pwd -P)
 for topic in ${@:-$(find "$ENABLED_DIR" -maxdepth 1 -type l)}; do
     [[ -d $topic ]] || continue
 
-    tpath=$(realpath "$topic")
+    tpath="$CWD/$topic"
     tname="$(basename $(dirname $tpath))_${tpath##*/}"
     echo -e "${green}${tname//_//}${nc}"
     # Link binaries
