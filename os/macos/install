@@ -5,7 +5,7 @@ if ! command -v brew >/dev/null; then
     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
     # Installing essentials
-    brew install wget curl make tree
+    brew install wget curl tree coreutils
     # Essential apps
     brew cask install appcleaner iterm2 imageoptim imagealpha
 fi
