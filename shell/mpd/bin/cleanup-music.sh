@@ -5,7 +5,9 @@
 
 set -e
 
-playlistfile=$HOME/music/.db/playlists/delete-pls.m3u
+playlistdir="$(grep playlist_directory $HOME/.config/mpd/mpd.conf | awk '{ print $2; }')"
+playlistdir="${playlistdir//\"/}"
+playlistfile="$playlistdir/1-star.m3u"
 songs=$(<"$playlistfile")
 
 # Delete designated songs
