@@ -154,11 +154,12 @@ for topic in ${@:-$(find "$ENABLED_DIR" -maxdepth 1 -type l)}; do
     fi
 
     # Link topic to .enabled.d
-    if [[ -h "$ENABLED_DIR/$tname" ]]; then
-        [[ "$update" && -x $tpath/update ]] && _run "$tpath/update"
+    linkpath="${ENABLED_DIR}/${tpath##*/}"
+    if [[ -h "$linkpath" ]]; then
+        [[ "$update" && -x ${linkpath}/update ]] && _run "$linkpath/update"
     else
         # Register topic as 'enabled'
-        _run ln -svf "$tpath" "$ENABLED_DIR/$tname"
+        (( $# > 0 )) && _run ln -svf "$tpath" "$ENABLED_DIR/$tname"
 
         # Run install script
         [[ "$install" && -x $tpath/install ]] && _run "$tpath/install"
