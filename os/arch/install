@@ -71,7 +71,7 @@ EOL
         sudo pacman-key --lsign-key 962DDE58
         sudo pacman -Sy
 
-        $pacaur -S ttf-droid-ib ttf-opensans otf-fira-{mono,sans}-ibx terminus-font-td1
+        $pacaur -S ttf-droid-ib ttf-opensans otf-fira-{mono,sans}-ibx terminus-font-td1 ttf-source-sans-pro-ibx
     fi
 
     # Window manager
@@ -87,10 +87,6 @@ EOL
     # Audio
     $pacaur -S alsa-utils
 
-    systemctl enable --user redshift.service
-    systemctl enable --user rslsync.service
-
-    # FIXME Install pacman hooks
     hookdest=/etc/pacman.d/hooks
     sudo mkdir -p "$hookdest"
     for hook in $PWD/$hookdest/*.hook; do
