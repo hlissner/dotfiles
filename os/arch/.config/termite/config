@@ -3,8 +3,8 @@ foreground = #e5e8e6
 foreground_bold = #eee8d5
 #foreground_dim = #888888
 background = #22252c
-#background = rgba(34, 37, 44, 0.94)
-cursor = #93a1a1
+#background = rgba(34, 37, 44, 0.90)
+cursor = #93a1c1
 
 # if unset, will reverse foreground and background
 #highlight = #839496
