@@ -31,8 +31,8 @@ _run() {
         mkdir*)   clr="${blue}"    ;;
         *)        clr="${orange}"
     esac
-    echo -e "   $PREFIX$clr$cmd$nc"
-    [[ $DRYRUN ]] || { $@ | sed 's/^/  => /'; }
+    echo -e "  $PREFIX$clr$cmd$nc"
+    [[ $DRYRUN ]] || { $@ 2>&1 | sed 's/^/  => /'; }
 }
 
 _link() {
