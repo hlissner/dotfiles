@@ -53,9 +53,7 @@ prompt_init() {
         zle reset-prompt
         zle -R
     }
-    zle-line-finish() { print -n -- "\E]50;CursorShape=0\C-G" }
     zle -N zle-keymap-select
-    zle -N zle-line-finish
     zle -A zle-keymap-select zle-line-init
 
     zstyle ':vcs_info:*' enable git
