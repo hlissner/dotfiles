@@ -4,13 +4,13 @@
 
 # terminal emulator
 super + ctrl + Return
-    termite
+    urxvt
 
 # scratchpad
 super + grave
-    xdotool search --onlyvisible --class scratchpad windowunmap \
-        || xdotool search --class scratchpad windowmap \
-        || termite --class=scratchpad --exec='tmux new-session -A -s scratch' --geometry=698x382
+    xdotool search --onlyvisible --classname urxvt-scratch windowunmap \
+        || xdotool search --classname urxvt-scratch windowmap \
+        || urxvt -name urxvt-scratch -geometry 100x26 -e bash -c 'tmux new-session -A -s scratch'
 
 # program launcher
 super + space
