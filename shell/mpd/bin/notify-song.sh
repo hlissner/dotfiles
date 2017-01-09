@@ -15,11 +15,15 @@ artist=$(awk -F';' '{ print $2 }' <<<"$info")
 album=$(awk -F';' '{ print $3 }' <<<"$info")
 title=$(awk -F';' '{ print $4 }' <<<"$info")
 
+artist="${artist:-No Artist}"
+album="${artist:-No Album}"
+title="${artist:-Untitled}"
+
 case $OSTYPE in
     darwin*)
         terminal-notifier -title "$title" -message "by $artist :: $album" -appIcon "/Applications/iTunes.app/Contents/Resources/iTunes.icns"
         ;;
     linux*)
-        notify-send --icon="media-playback-start" --app-name="ncmpcpp" "$title" "$artist\n<i>$album</i>"
+        notify-send --icon="media-playback-start" --app-name="ncmpcpp" "$title" "${artist}\n<i>${album}</i>"
         ;;
 esac
