@@ -64,8 +64,9 @@ prompt_init() {
     zstyle ':vcs_info:git*' formats ':%b'
     zstyle ':vcs_info:git*' actionformats ':%b (%a)'
 
-    # show username@host if logged in through SSH OR logged in as root
-    is-ssh || is-root && prompt_username='%F{magenta}%n%F{244}@%m '
+    # show username@host if logged in through SSH
+    prompt_username=
+    is-ssh && prompt_username='%F{magenta}%n%F{244}@%m '
 
     ## Vim cursors
     if [[ "$SSH_CONNECTION" ]]; then
@@ -77,7 +78,7 @@ prompt_init() {
     fi
 
     RPROMPT='%F{cyan}${vcs_info_msg_0_}$(prompt_git_dirty)%f'
-    PROMPT='%F{cyan}%~ %f${PROMPT_SYMBOL:-$ }%f'
+    PROMPT='${prompt_username}%F{cyan}%~ %f${PROMPT_SYMBOL:-$ }%f'
 }
 
 prompt_init "$@"
