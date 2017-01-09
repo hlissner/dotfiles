@@ -3,23 +3,9 @@
 # My (idempotent) dotfile deployment script.
 #
 # You pass the directories of "topics" to it to install them. It will:
-# 1. symlink $topic/bin/* to ~/.bin/
-# 2. symlink $topic/.* => ~/ and $topic/.*/* => ~/.$1/
-# 3. run $topic/install the first time
-# 4. run $topic/update on consecutive runs
-#
-# NOTE: Be sure to add ~/.bin to PATH
-#
-# Options:
-#   -i  Don't run install scripts
-#   -u  Don't run update scripts
-#   -l  Don't symlink dotfiles or bin scripts
-#   -d  Do a dry run (only output commands, no changes)
-#   -y  Overwrite conflicts (no prompts)
-#   -p  Prompt on file conflict (to overwrite)
-#   -L  Refresh links; the same as -ui
-#   -S  Server mode; only install the bare minimum
-#   -U  Update mode; run update scripts only
+# 1. symlink $topic/.* => ~/ and $topic/.(config|local)/* => ~/.\1/
+# 2. run $topic/install the first time
+# 3. run $topic/update on consecutive runs
 
 set -e
 source "$(cd $(dirname $0) && pwd -P)/shell/common.sh"
@@ -69,19 +55,6 @@ _link() {
     fi
 }
 
-_linkall() {
-    local file="$1"
-    if [[ -d "$file" && "${file##*/}" == .@(config|local) ]]; then
-        for subfile in "$file"/*; do
-            base="$HOME/${file##*/}/"
-            [[ -d $base ]] || _run mkdir -p "$base"
-            _link "$subfile" "$base"
-        done
-    elif [[ -e $file ]]; then
-        _link "$file" "$HOME/"
-    fi
-}
-
 
 ##
 install=1
@@ -109,7 +82,7 @@ Usage: $0 [-iuldypLSU] [topic1] [topic2] [...]
 
     -i  Don't run install scripts
     -u  Don't run update scripts
-    -l  Don't symlink dotfiles or bin scripts
+    -l  Don't symlink dotfiles
     -d  Do a dry run (only output commands, no changes)
     -y  Overwrite conflicts (no prompts)
     -p  Prompt on file conflict (to overwrite)
@@ -126,44 +99,42 @@ done
 shift $((OPTIND-1))
 
 #
-[[ -d ~/.bin ]] || _run mkdir -p ~/.bin
-PATH="$DOTFILES/.bin:$PATH"
 CWD=$(cd $(dirname $0) && pwd -P)
-for topic in ${@:-$(find "$ENABLED_DIR" -maxdepth 1 -type l)}; do
+ENABLED_DIR="$CWD/.enabled.d"
+pushd $CWD >/dev/null
+for topic in ${@:-$(ls -1 "$ENABLED_DIR" | sed 's%_%/%')}; do
     [[ -d $topic ]] || continue
 
+    echo -e "${green}${topic}${nc}"
+
     tpath="$CWD/$topic"
-    tparentpath="$(dirname $tpath)"
-    tname="${tparentpath##*/}_${tpath##*/}"
-    echo -e "${green}${tname//_//}${nc}"
-    # Link binaries
-    for bin in $tpath/bin/*; do
-        [[ "$link" && -x "$bin" ]] && _link "$bin" "$HOME/.bin/"
-    done
-
     if [[ $link ]]; then
-        # Symlink dotfiles from topic parent directory
-        for file in "$tparentpath"/.[a-zA-Z]*; do
-            _linkall "$file"
-        done
-
-        # Symlink dotfiles from topic directories (2 levels deep)
-        for file in "$tpath"/.[a-zA-Z]*; do
-            _linkall "$file"
+        # Symlink dotfiles from topics (2 levels deep) + parent (1 level deep)
+        for file in "$tpath"{,../}/.[a-zA-Z]*; do
+            if [[ -d "$file" && "${file##*/}" == .@(config|local) ]]; then
+                for subfile in "$file"/*; do
+                    base="$HOME/${file##*/}/"
+                    [[ -d $base ]] || _run mkdir -p "$base"
+                    _link "$subfile" "$base"
+                done
+            elif [[ -e $file ]]; then
+                _link "$file" "$HOME/"
+            fi
         done
     fi
 
     # Link topic to .enabled.d
-    linkpath="${ENABLED_DIR}/${tpath##*/}"
+    linkpath="${ENABLED_DIR}/${topic//\//_}"
     if [[ -h "$linkpath" ]]; then
-        [[ "$update" && -x ${linkpath}/update ]] && _run "$linkpath/update"
+        [[ "$update" && -x ${linkpath}/update ]] && _run "$tpath/update"
     else
         # Register topic as 'enabled'
-        (( $# > 0 )) && _run ln -svf "$tpath" "$ENABLED_DIR/$tname"
+        _run ln -svf "$tpath" "$linkpath"
 
         # Run install script
-        [[ "$install" && -x $tpath/install ]] && _run "$tpath/install"
+        [[ "$install" && -x ${linkpath}/install ]] && _run "$tpath/install"
     fi
 done
+popd >/dev/null
 
 # vim:set ft=sh:
