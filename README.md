@@ -3,12 +3,11 @@
 
 <img src="http://i.giphy.com/ZHlGzvZb130nm.gif" align="right" />
 
-My dotfiles. Fuel for my madness. Designed for MacOS, Arch Linux and
-the various debian-based boxes I frequently ssh into.
+My dotfiles. Fuel for my madness. Designed for MacOS, Arch Linux and the various
+debian-based boxes I frequently ssh into.
 
-It is organized into topics, some with their own READMEs. Check them out for
-more targeted information. The `./boostrap` script is used to install and update
-them.
+It is organized into topics, some with their own READMEs. Check them out for more
+targeted information. The `./boostrap` script is used to install and update them.
 
 ## Bootstrap
 
@@ -22,7 +21,7 @@ Usage: bootstrap [-iuldypLSU] [topic1[ topic2[ ...]]]
 Options:
   -i  Don't run install scripts
   -u  Don't run update scripts
-  -l  Don't symlink dotfiles or bin scripts
+  -l  Don't symlink dotfiles
   -d  Do a dry run (only output commands, no changes)
   -y  Overwrite conflicts (no prompts)
   -p  Prompt on file conflict (to overwrite)
@@ -34,15 +33,12 @@ Options:
 Here's a simplified break down of what it does:
 
 ```bash
-# 1. Symlinks topic's bin scripts to ~/.bin
-ln -sfv $topic/bin/* ~/.bin/
-
-# 2. Symlinks dotfiles to $HOME
+# 1. Symlinks dotfiles to $HOME
 ln -sfv $topic/.* ~/
-ln -sfv $topic/.config/* ~/.config/
+ln -sfv $topic/.{config,local}/* ~/.{config,local}/
 
-# 3. Track enabled topics in ~/.dotfiles/.enabled.d.
-# 4. If topic is enabled, run its update script. Otherwise, run its install script
+# 2. Track enabled topics in ~/.dotfiles/.enabled.d.
+# 3. If topic is enabled, run its update script. Otherwise, run its install script
 if [[ -e ~/.dotfiles/.enabled.d/$topic ]]; then
     $topic/update
 else
