@@ -4,7 +4,7 @@
 
 # terminal emulator
 super + ctrl + Return
-    urxvt
+    urxvt -tn xterm-256color
 
 # scratchpad
 super + grave
