@@ -54,4 +54,4 @@ case $OSTYPE in
     linux*)
         notify-send --icon="media-playback-start" --app-name="ncmpcpp" "$title" "${artist}\n<i>${album}</i>\n$rating"
         ;;
-esac
+esac &
