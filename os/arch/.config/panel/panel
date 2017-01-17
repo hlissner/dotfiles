@@ -26,7 +26,6 @@ echo "MKFIFO $PANEL_FIFO"
 #
 
 clock -sf "D%A, %b %d    %I:%M %p" > "${PANEL_FIFO}" &
-xtitle -sf 'X%s' > "${PANEL_FIFO}" &
 bspc subscribe report > "${PANEL_FIFO}" &
 
 for lemon in $CWD/lemons/*; do
