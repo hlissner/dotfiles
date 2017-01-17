@@ -70,8 +70,8 @@ super + {_,shift + }q
 # state/flags
 #
 
-super + {f,shift + f}
-    bspc {desktop -l next,node -t \~floating}
+super + {_,shift + } f
+    {bspc.sh m,bspc node -t \~floating}
 
 super + shift + p
     bspc node -t \~pseudo_tiled
