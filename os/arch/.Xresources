@@ -14,7 +14,6 @@ Xcursor.size: 32
 URxvt*.buffered:               true
 URxvt*.cursorBlink:            true
 URxvt*.underlineColor:         yellow
-URxvt*.depth:                  32
 URxvt*.borderless:             1
 URxvt*.internalBorder:         6
 URxvt*.scrollBar:              false
@@ -26,12 +25,10 @@ URxvt*.perl-ext-common:        default,matcher
 URxvt*.matcher.button:         1
 URxvt*.url-launcher:           chromium
 URxvt*.matcher.rend.0:         Uline Bold fg5
-URxvt*.font:                   xft:Fira Mono Medium:size=9
-urxvt-scratch.font:            xft:Fira Mono Medium:size=10
+URxvt*.font:                   xft:Fira Mono:size=9
+urxvt-scratch.font:            xft:Fira Mono:size=10
 
 ! rofi
-rofi.background:       #22252c
-rofi.foreground:       #efefef
 rofi.font:             Fira Mono Medium 18
 rofi.location:         0
 rofi.levenshtein-sort: 1
@@ -49,14 +46,14 @@ rofi.color_enabled: true
 !                  bg       border
 rofi.color-window: #20232a, #444449
 !                  bg       fg       bgalt    hlbg     hlfg
-rofi.color-normal: #20232a, #7b828f, #20232a, #20232a, #7fa1ed
-rofi.color-urgent: #20232a, #7b424f, #20232a, #20232a, #7fa1ed
-rofi.color-active: #20232a, #7b828f, #20232a, #20232a, #7fa1ed
+rofi.color-normal: #20232a, #9ba2af, #20232a, #20232a, #7fa1ed
+rofi.color-urgent: #20232a, #9b626f, #20232a, #20232a, #7fa1ed
+rofi.color-active: #20232a, #9ba2af, #20232a, #20232a, #7fa1ed
 ! 262930
 
 ! special
 *.background:   #22252c
-*.foreground:   #e5e8e6
+*.foreground:   #e8eae9
 *.cursorColor:  #81a2be
 
 ! black
