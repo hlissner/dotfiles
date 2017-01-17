@@ -14,8 +14,7 @@ get_mail() {
     local maildatatmp=/tmp/mail-data-"$1"
     local mailtmp=/tmp/mail-count-"$1"
 
-    if true; then
-    # if curl -u "$1:$2" --silent https://mail.google.com/mail/feed/atom > "$maildatatmp"; then
+    if curl -u "$1:$2" --silent https://mail.google.com/mail/feed/atom > "$maildatatmp"; then
         [[ -f "$mailtmp" ]] || echo "0" >"$mailtmp"
 
         local feed=$(<"$maildatatmp")
