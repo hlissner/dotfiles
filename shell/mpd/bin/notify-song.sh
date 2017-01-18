@@ -51,11 +51,14 @@ fi
 
 case $OSTYPE in
     darwin*)
-        rating="[$rating] "
+        [[ $rating ]] && rating="[$rating] "
         killall terminal-notifier
         terminal-notifier -title "$rating$title" -message "by $artist :: $album" -appIcon "/Applications/iTunes.app/Contents/Resources/iTunes.icns"
         ;;
     linux*)
-        notify-send --icon="media-playback-start" --app-name="ncmpcpp" "$title" "${artist}\n<i>${album}</i>\n$rating"
+        [[ $rating ]] && rating="$rating\n"
+        notify-send --icon="media-playback-start" --app-name="ncmpcpp" "$rating$title" "${artist}\n<i>${album}</i>"
         ;;
-esac &
+esac >/dev/null 2>&1 &
+
+exit 0
