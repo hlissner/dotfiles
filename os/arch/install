@@ -44,6 +44,8 @@ fi
 ## Bootstrap
 # Helpful utilities
 $pacaur -S the_silver_searcher fasd tmux hub bc keybase cronie
+
+$pacaur -S udevil devmon
 sudo systemctl enable cronie.service
 
 if [[ -z $SERVER ]]; then
