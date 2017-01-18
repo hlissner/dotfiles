@@ -34,6 +34,10 @@ if [[ $stars ]]; then
     if [[ $starn ]]; then
         star_filled_icon="★"
         star_empty_icon="☆"
+        if [[ $OSTYPE == linux* ]]; then
+            star_filled_icon="<span fgcolor='#8fb1cd'>${star_filled_icon}</span>"
+            star_empty_icon="<span fgcolor='#666666'>${star_empty_icon}</span>"
+        fi
 
         for ((i=1;i<=5;i++)); do
             if (( "$starn" >= "$i" )); then
