@@ -35,3 +35,6 @@ run mpd &           # music server
 run redshift &      # screen temperature based on time-of-day
 $HOME/.bin/rsl.sh   # resilio sync
 
+#
+ssh-agent -s | sed 's/^echo/#echo/' > ~/.ssh/agentenv
+gpg-agent --daemon | sed 's/^echo/#echo/' > ~/.gnupg/agentenv
