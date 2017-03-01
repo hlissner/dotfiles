@@ -8,8 +8,7 @@ super + ctrl + Return
 
 # scratchpad
 super + grave
-    xdotool search --onlyvisible --classname urxvt-scratch windowunmap \
-        || xdotool search --classname urxvt-scratch windowmap \
+    tmux kill-session -t scratch \
         || urxvt -name urxvt-scratch -geometry 100x26 -e bash -c 'tmux new-session -A -s scratch'
 
 # program launcher
