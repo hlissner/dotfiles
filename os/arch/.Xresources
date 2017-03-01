@@ -10,6 +10,12 @@ Xft.rgba: rgb
 Xcursor.theme: default
 Xcursor.size: 32
 
+! emacs
+Emacs.toolBar: 0
+Emacs.menuBar: 0
+Emacs.verticalScrollBars: off
+Emacs.font: Fira Mono 10
+
 ! urxvt
 URxvt*.buffered:               true
 URxvt*.cursorBlink:            true
