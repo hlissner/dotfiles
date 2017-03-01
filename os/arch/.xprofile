@@ -3,7 +3,7 @@
 export __GL_THREADED_OPTIMISATIONS=1
 
 # Maybe start this daemon
-running() { pgrep "$1" >/dev/null || "$@"; }
+running() { pgrep "$1" >/dev/null; }
 run() {
     command -v "$1" >/dev/null || return
     running "$1" || "$@"
@@ -34,8 +34,8 @@ run compton &    # perdy effects + transparency
 # non-essentials
 run mpd &           # music server
 run redshift &      # screen temperature based on time-of-day
-~/.bin/rsl.sh       # resilio sync
+run rslsync &       # resilio sync
 
 # key agents
-running ssh-agent || { ssh-agent -s | sed 's/^echo/#echo/' \> ~/.ssh/agentenv; }
-running gpg-agent || { gpg-agent --daemon | sed 's/^echo/#echo/' \> ~/.gnupg/agentenv; }
+running ssh-agent || { ssh-agent -s | sed 's/^echo/#echo/' >~/.ssh/agentenv; }
+running gpg-agent || { gpg-agent --daemon | sed 's/^echo/#echo/' >~/.gnupg/agentenv; }
