@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 # lemonbar
-$HOME/.config/panel/panel 2>&1 >$HOME/.config/panel/panel.log &
+~/.config/panel/panel >~/.config/panel/panel.log 2>&1 &
 
 
 #
@@ -33,11 +33,16 @@ bspc config remove_disabled_monitors false
 bspc config remove_unplugged_monitors true
 
 bspc config border_width    0
-bspc config window_gap      16
-bspc config top_padding     32
-bspc config bottom_padding  34
-bspc config left_padding    32
-bspc config right_padding   32
+# bspc config window_gap      16
+# bspc config top_padding     32
+# bspc config bottom_padding  34
+# bspc config left_padding    32
+# bspc config right_padding   32
+bspc config window_gap      1
+bspc config top_padding     0
+bspc config bottom_padding  0
+bspc config left_padding    0
+bspc config right_padding   0
 
 
 #
@@ -45,6 +50,7 @@ bspc config right_padding   32
 #
 
 nmon=$(bspc query -M | wc -l)
+primary=$(bspc query -M -m prmary)
 host=$(hostname)
 case $host in
     triton*)
@@ -52,13 +58,15 @@ case $host in
             bspc monitor DVI-I-1 -n C
             bspc monitor HDMI-0  -n R
             bspc monitor DVI-D-0 -n L
-        } 2>&1 >/dev/null
+        } >/dev/null 2>&1
 
         bspc monitor C -d C/{1,2,3,4,5}
         [[ $nmon > 1 ]] && bspc monitor R -d R/1
         [[ $nmon > 2 ]] && bspc monitor L -d L/1
 
-        bspc config -m C top_padding 64
+        bspc config -m C top_padding 30
+        ;;
+    *)  bspc monitor "$primary" -n C
         ;;
 esac
 
