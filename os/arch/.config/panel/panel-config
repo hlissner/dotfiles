@@ -1,11 +1,11 @@
 PANEL_FIFO=/tmp/panel-fifo
 
 # Customization ########################
-PANEL_HEIGHT=32
+PANEL_HEIGHT=30
 # PANEL_FONT="terminus:size=8:antialias=false"
-PANEL_FONT="FiraSans:size=10:style=Bold"
+PANEL_FONT="FiraSans:size=9:style=Bold"
 # ICON_FONT="siji:size=8:antialias=false"
-ICON_FONT="FontAwesome:size=12"
+ICON_FONT="FontAwesome:size=11"
 
 ## Colors
 # black
@@ -37,7 +37,7 @@ bg="#22252c"
 fg="#e5e8e6"
 
 COLOR_FG="$fg"
-COLOR_BG="#7701040b"
+COLOR_BG="#4401040b"
 # COLOR_BG="#DD${COLOR_0#?}"
 
 # COLOR_DIM="#155872"
