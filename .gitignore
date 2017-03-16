@@ -8,3 +8,5 @@ shell/tmux/.tmuxifier/
 
 shell/mpd/.config/mpd/mpd.*
 shell/mpd/.config/mpd/mpdstate
+
+weechat/.weechat/*
