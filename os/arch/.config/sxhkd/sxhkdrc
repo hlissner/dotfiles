@@ -105,7 +105,7 @@ super + {o,i}
     bspc node {older,newer} -f; \
     bspc wm -h on
 
-super + {_,shift +}{1-9,0}
+super + ctrl + {_,shift +}{1-9,0}
     bspc {desktop -f,node -d} C/{1-9,10}
 
 # minimize (send to dump desktop)
