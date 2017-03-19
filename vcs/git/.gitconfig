@@ -18,7 +18,7 @@
 	prompt = false
 	cmd = vimdiff \"$LOCAL\" \"$REMOTE\"
 [difftool "ediff"]
-	cmd = emacsclient -n --eval \"(ediff-files \\\"$LOCAL\\\" \\\"$REMOTE\\\")\"
+	cmd = emacsclient -c --eval \"(ediff-files \\\"$LOCAL\\\" \\\"$REMOTE\\\")\"
 
 [merge]
 	# Include summaries of merged commits in newly created merge commit messages
