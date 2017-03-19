@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+case $OSTYPE in
+    darwin*)
+        brew install editorconfig
+        ;;
+    linux*)
+        if [[ -f /etc/arch-release ]]; then
+            sudo pacaur --needed --noconfirm -S editorconfig-core-c
+        fi
+        ;;
+esac
