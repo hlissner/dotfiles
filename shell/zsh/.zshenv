@@ -1,9 +1,9 @@
-source "$HOME/.dotfiles/shell/common.sh"
-
 ## Paths
 # Ensure path arrays do not contain duplicates.
 typeset -gU cdpath fpath mailpath path
 path=( /usr/local/{,s}bin $path )
+
+source "$HOME/.dotfiles/shell/common.sh"
 
 load shell/zsh/config.zsh
 loadall env.zsh
