@@ -1,4 +1,3 @@
 #!/usr/bin/env bash
-[[ -d ~/.cask    ]] && { cd ~/.cask && git pull; }
 [[ -d ~/.emacs.d ]] && { cd ~/.emacs.d && make update; }
 
