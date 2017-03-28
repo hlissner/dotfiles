@@ -1,9 +1,9 @@
 ## Paths
+source "$HOME/.dotfiles/shell/common.sh"
+
 # Ensure path arrays do not contain duplicates.
 typeset -gU cdpath fpath mailpath path
-path=( /usr/local/{,s}bin $path )
-
-source "$HOME/.dotfiles/shell/common.sh"
+path=( $DOTFILES/bin "$ENABLED_DIR"/*/bin /usr/local/{,s}bin $path )
 
 load shell/zsh/config.zsh
 loadall env.zsh
@@ -17,7 +17,3 @@ export LESS='-g -i -M -R -S -w -z-4'
 if is-callable lesspipe; then
     export LESSOPEN='| /usr/bin/env lesspipe %s 2>&-'
 fi
-
-[[ $LANG ]] || export LANG='en_US.UTF-8'
-
-export TERMINFO="$HOME/.terminfo"

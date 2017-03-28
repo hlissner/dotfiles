@@ -8,19 +8,12 @@ fi
 
 ## Bash rcfiles ###########################
 
-source $HOME/.dotfiles/.common.sh
+source $HOME/.dotfiles/common.sh
 
-declare -a paths=(
-    "$DOTFILES/{bin,scripts}"
-    "$HOME/.{rb,py}env/{shims,bin}"
-    "/usr/local/{bin,sbin}"
-)
-[[ "$OSTYPE" == "darwin"* ]] && paths+="$(brew --prefix coreutils)/libexec/gnubin"
-
-for index in ${!paths[*]}; do
-    [ -d ${paths[$index]} ] && PATH="${paths[$index]}:$PATH"
+PATH="$DOTFILES/bin:/usr/local/{bin,sbin}:$PATH"
+for bin in "$ENABLED_DIR"/*/bin; do
+    [[ -e "$bin" ]] && PATH="$bin:$PATH"
 done
-unset paths
 export PATH
 
 
