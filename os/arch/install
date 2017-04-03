@@ -76,6 +76,8 @@ EOL
         $pacaur -S ttf-droid-ib ttf-opensans otf-fira-{mono,sans}-ibx terminus-font-td1 ttf-source-sans-pro-ibx
     fi
 
+    # Desktop manager
+    $pacaur -S lightdm lightdm-webkit2-greeter
     # Window manager
     $pacaur -S bspwm sxhkd compton
     # Taskbar
@@ -84,8 +86,6 @@ EOL
     $pacaur -S rofi feh sxiv maim slop-opengl neofetch-git pass youtube-dl xdotool
     # Apps
     $pacaur -S redshift chromium termite
-    # Power events from users
-    $pacaur -S polkit
     # Audio
     $pacaur -S alsa-utils
 
