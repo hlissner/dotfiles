@@ -6,4 +6,4 @@ sudo pacman -Ss udevil
 sudo systemctl enable devmon@$(whoami)
 sudo systemctl start devmon@$(whoami)
 
-sudo sed -i 's@^# \(success_exec =\)@\1 /home/hlissner/.dotfiles/os/arch/automount/bin/notify-mount.sh@' udevil.conf
+sudo sed -i 's@^# \(success_exec =\)@\1 /home/hlissner/.dotfiles/os/arch/automount/bin/notify-mount@' udevil.conf

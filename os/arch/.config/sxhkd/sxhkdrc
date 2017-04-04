@@ -16,7 +16,7 @@ super + space
     rofi -show run
 # password manager
 super + alt + backslash
-    dpass.sh
+    dpass
 # make sxhkd reload its configuration files:
 super + Escape
     pkill -USR1 -x sxhkd
@@ -29,7 +29,7 @@ super + Escape
 Pause
     mpc -q toggle
 super + Pause
-    zzz.sh
+    zzz
 Print
     maim --opengl -s ~/shared/screenshots/$(date +%F-%T).png
 super + Print
@@ -41,14 +41,14 @@ XF86Audio{Play,Pause}
 XF86Audio{Prev,Next}
     mpc -q {prev,next}
 XF86Audio{LowerVolume,RaiseVolume}
-    vol.sh {-,+}
+    vol {-,+}
 XF86AudioMute
-    vol.sh toggle
+    vol toggle
 super + XF86Eject
-    zzz.sh
+    zzz
 
 super + {Down,Up}
-    vol.sh {-,+}
+    vol {-,+}
 super + {Left,Right}
     mpc {prev,next}
 
@@ -70,7 +70,7 @@ super + {_,shift + }q
 #
 
 super + {_,shift + } f
-    {bspc.sh m,bspc node -t \~floating}
+    {bspc-do m,bspc node -t \~floating}
 
 super + shift + p
     bspc node -t \~pseudo_tiled
@@ -85,7 +85,7 @@ super + ctrl + {x,y,z}
 
 # focus/swap the node in the given direction
 super + {_,shift +,ctrl +,shift + ctrl +}{h,j,k,l}
-    bspc.sh {f,s,F,S} {west,south,north,east}
+    bspc-do {f,s,F,S} {west,south,north,east}
 
 # focus the node for the given path jump
 super + {p,b,comma,period}
@@ -93,7 +93,7 @@ super + {p,b,comma,period}
 
 # focus the next/previous node
 super + {_,shift + }Tab
-    bspc.sh F {east,west}
+    bspc-do F {east,west}
 
 # focus monitor or send to the given desktop
 super + bracket{left,right}
