@@ -13,14 +13,26 @@ def_key "J"
   scroll_down
 
 def_key "h"
-  select_item
-
-def_key "right"
-  next_column
-
-def_key "left"
   previous_column
 
+def_key "l"
+  next_column
+
+def_key "L"
+  show_lyrics
+
+def_key "up"
+  volume_up
+
+def_key "down"
+  volume_down
+
+#def_key "right"
+#  next_column
+#
+#def_key "left"
+#  previous_column
+#
 #def_key "mouse"
 #  mouse_event
 #

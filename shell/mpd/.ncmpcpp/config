@@ -350,7 +350,7 @@ allow_for_physical_item_deletion = yes
 #jump_to_now_playing_song_at_start = yes
 #ask_before_clearing_playlists = yes
 #clock_display_seconds = no
-display_volume_level = no
+#display_volume_level = no
 #display_bitrate = yes
 display_remaining_time = no
 #
