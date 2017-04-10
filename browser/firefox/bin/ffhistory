@@ -4,10 +4,9 @@ from pyfzf import FzfPrompt
 from lib.FirefoxProfile import FirefoxProfile
 
 
-if __name__ == '__main__':
-    ff = FirefoxProfile.default()
+with FirefoxProfile.default() as ff:
     choice = FzfPrompt().prompt(ff.history())
     if choice:
-        ff.open("http" + choice[0].split(", http")[1])
+        ff.browse("http" + choice[0].split(", http")[1])
     else:
         print("Aborted")

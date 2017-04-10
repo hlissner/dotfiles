@@ -13,6 +13,12 @@ class FirefoxProfile:
         self.db = sqlite.connect(dbfile)
         self.cur = self.db.cursor()
 
+    def __enter__(self):
+        return FirefoxProfile.default()
+
+    def __exit__(self, _, __, ___):
+        self.close()
+
     @staticmethod
     def default():
         dbfile = None
@@ -59,7 +65,7 @@ class FirefoxProfile:
                 result.append(key)
         return result
 
-    def open(self, url):
+    def browse(self, url):
         if _platform.startswith("linux"):
             os.system('xdg-open "{}"'.format(url))
         elif _platform == "darwin":
