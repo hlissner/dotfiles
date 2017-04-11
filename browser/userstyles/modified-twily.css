@@ -15,7 +15,7 @@
 :root {
     /* TAB VARIABLES */
     --bg-light: #185b75; --bg-dark: #22252c;
-    --fg-light: #dbe2ef; --fg-dark: #155872;
+    --fg-light: #dbe2ef; --fg-dark: #758892;
     --bg-light-dark: #02455f;
     --tab-triangle-correction: -1px;
     --tab-height: 26px; --tab-icon-size: 16px; --tab-strip-margin: -8px; --tab-overlap: -5px;
@@ -73,8 +73,9 @@
 
     #content-deck { /*padding-bottom: var(--url-height) !important;*/ }
     #nav-bar {
-        display: none;
+        margin-bottom: 8px;
         /*
+        display: none;
         position: var(--url-position) !important; bottom: 0px !important;
         width: 100% !important; height: var(--url-height) !important;
         min-height: var(--url-height) !important; max-height: var(--url-height) !important;
