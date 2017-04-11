@@ -14,7 +14,7 @@ def get_pass(account):
     return {"password": password, "user": user}
 
 def folder_filter(name):
-    return not (name in ['[Gmail]/Spam', '[Gmail]/Important', '[Gmail]/All Mail'] or
+    return not (name in ['[Gmail]/Spam', '[Gmail]/Important'] or
                 name.startswith('[Airmail]'))
 
 def nametrans(name):
