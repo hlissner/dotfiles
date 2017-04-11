@@ -2,7 +2,6 @@ alias ta='tmux attach'
 alias tl='tmux ls'
 
 if [[ $TMUX ]]; then # From inside tmux
-    alias t='tmux'
     alias tf='tmux find-window'
     # Detach all other clients to this session
     alias mine='tmux detach -a'
@@ -16,14 +15,6 @@ if [[ $TMUX ]]; then # From inside tmux
         tmux display-message "Session #S created"
     }
 else # From outside tmux
-    t() {
-        if (( $# > 0 )); then
-            tmux $@ || tmux attach -t main
-        else
-            tmux new -s main
-        fi
-    }
-
     # Start grouped session so I can be in two different windows in one session
     tdup() { tmux new-session -t "${1:-`tmux display-message -p '#S'`}"; }
 fi
