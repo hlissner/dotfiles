@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+case "$OSTYPE" in
+    darwin*)
+        brew install offlineimap
+        brew install mu --with-emacs
+        ;;
+    linux*)
+        if [[ -f /etc/arch-release ]]; then
+            pacaur --needed --noconfirm -S offlineimap mu
+        fi
+        ;;
+esac

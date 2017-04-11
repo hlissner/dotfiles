@@ -1,0 +1,49 @@
+[general]
+accounts = Lissner,Gmail
+pythonfile = ~/.dotfiles/shell/mu/offlineimaprc.py
+
+[Account Gmail]
+localrepository = LocalGmail
+remoterepository = RepositoryGmail
+autorefresh = 5
+quick = 10
+postsynchook = mu index --maildir ~/.mail/gmail.com
+status_backend = sqlite
+
+[Repository LocalGmail]
+type = Maildir
+localfolders = ~/.mail/gmail.com
+nametrans = nametrans
+
+[Repository RepositoryGmail]
+type = Gmail
+remoteusereval = get_pass("gmail.com")["user"]
+remotepasseval = get_pass("gmail.com")["password"]
+folderfilter = folder_filter
+ssl = true
+sslcacertfile = /usr/local/etc/openssl/cert.pem  # This will only work for macOS
+sslcacertfile = /etc/ssl/certs/ca-certificates.crt
+nametrans = nametrans_reverse
+
+###
+[Account Lissner]
+localrepository = LocalLissner
+remoterepository = RepositoryLissner
+quick = 10
+postsynchook = mu index --maildir ~/.mail/lissner.net
+status_backend = sqlite
+
+[Repository LocalLissner]
+type = Maildir
+localfolders = ~/.mail/lissner.net
+nametrans = nametrans
+
+[Repository RepositoryLissner]
+type = Gmail
+remoteusereval = get_pass("lissner.net")["user"]
+remotepasseval = get_pass("lissner.net")["password"]
+folderfilter = folder_filter
+ssl = true
+sslcacertfile = /usr/local/etc/openssl/cert.pem  # This will only work for macOS
+sslcacertfile = /etc/ssl/certs/ca-certificates.crt
+nametrans = nametrans_reverse
