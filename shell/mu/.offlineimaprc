@@ -1,13 +1,16 @@
 [general]
 accounts = Lissner,Gmail
-pythonfile = ~/.dotfiles/shell/mu/offlineimaprc.py
+maxsynaccounts = 2
+pythonfile = ~/.dotfiles/shell/mu/lib.py
+fsync = False
+
+[DEFAULT]
+
 
 [Account Gmail]
 localrepository = LocalGmail
 remoterepository = RepositoryGmail
-autorefresh = 5
-quick = 10
-postsynchook = mu index --maildir ~/.mail/gmail.com
+postsynchook = mu index --maildir ~/.mail
 status_backend = sqlite
 
 [Repository LocalGmail]
@@ -20,6 +23,7 @@ type = Gmail
 remoteusereval = get_pass("gmail.com")["user"]
 remotepasseval = get_pass("gmail.com")["password"]
 folderfilter = folder_filter
+realdelete=no
 ssl = true
 sslcacertfile = /usr/local/etc/openssl/cert.pem  # This will only work for macOS
 sslcacertfile = /etc/ssl/certs/ca-certificates.crt
@@ -29,8 +33,7 @@ nametrans = nametrans_reverse
 [Account Lissner]
 localrepository = LocalLissner
 remoterepository = RepositoryLissner
-quick = 10
-postsynchook = mu index --maildir ~/.mail/lissner.net
+postsynchook = mu index --maildir ~/.mail
 status_backend = sqlite
 
 [Repository LocalLissner]
@@ -43,6 +46,7 @@ type = Gmail
 remoteusereval = get_pass("lissner.net")["user"]
 remotepasseval = get_pass("lissner.net")["password"]
 folderfilter = folder_filter
+realdelete=no
 ssl = true
 sslcacertfile = /usr/local/etc/openssl/cert.pem  # This will only work for macOS
 sslcacertfile = /etc/ssl/certs/ca-certificates.crt
