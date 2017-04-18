@@ -25,35 +25,35 @@ Inbox ~/.mail/gmail.com/Inbox
 Channel gmail-all
 Master :gmail-remote:"[Gmail]/All Mail"
 Slave :gmail-local:"All Mail"
-Create Both
+Create Slave
 Expunge Both
 SyncState *
 
 Channel gmail-inbox
 Master :gmail-remote:"INBOX"
 Slave :gmail-local:"Inbox"
-Create Both
+Create Slave
 Expunge Both
 SyncState *
 
 Channel gmail-drafts
 Master :gmail-remote:"[Gmail]/Drafts"
 Slave :gmail-local:"Drafts"
-Create Both
+Create Slave
 Expunge Both
 SyncState *
 
 Channel gmail-sent
 Master :gmail-remote:"[Gmail]/Sent Mail"
 Slave :gmail-local:"Sent Mail"
-Create Both
+Create Slave
 Expunge Both
 SyncState *
 
 Channel gmail-trash
 Master :gmail-remote:"[Gmail]/Trash"
 Slave :gmail-local:"Trash"
-Create Both
+Create Slave
 Expunge Both
 SyncState *
 
@@ -90,35 +90,35 @@ Inbox ~/.mail/lissner.net/Inbox
 Channel lissner-all
 Master :lissner-remote:"[Gmail]/All Mail"
 Slave :lissner-local:"All Mail"
-Create Both
+Create Slave
 Expunge Both
 SyncState *
 
 Channel lissner-inbox
 Master :lissner-remote:"INBOX"
 Slave :lissner-local:"Inbox"
-Create Both
+Create Slave
 Expunge Both
 SyncState *
 
 Channel lissner-drafts
 Master :lissner-remote:"[Gmail]/Drafts"
 Slave :lissner-local:"Drafts"
-Create Both
+Create Slave
 Expunge Both
 SyncState *
 
 Channel lissner-sent
 Master :lissner-remote:"[Gmail]/Sent Mail"
 Slave :lissner-local:"Sent Mail"
-Create Both
+Create Slave
 Expunge Both
 SyncState *
 
 Channel lissner-trash
 Master :lissner-remote:"[Gmail]/Trash"
 Slave :lissner-local:"Trash"
-Create Both
+Create Slave
 Expunge Both
 SyncState *
 
