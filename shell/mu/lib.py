@@ -2,7 +2,6 @@
 
 from subprocess import check_output
 from re import sub
-import sys
 
 def get_pass(account):
     data = check_output("/usr/bin/pass email/" + account, shell=True).splitlines()
@@ -15,18 +14,14 @@ def get_pass(account):
     return {"password": password, "user": user}
 
 def folder_filter(name):
-    return not (name in ['[Gmail]/Spam',
+    return not (name in ['INBOX',
+                         '[Gmail]/Spam',
                          '[Gmail]/Important',
-                         '[Gmail]/Starred',
-                         '[Gmail]/All Mail'] or
+                         '[Gmail]/Starred'] or
                 name.startswith('[Airmail]'))
 
 def nametrans(name):
-    return sub('^INBOX/(Starred|Sent Mail|Drafts|Trash|All Mail|Spam)$', '[Gmail]/\\1', name)
+    return sub('^(Starred|Sent Mail|Drafts|Trash|All Mail|Spam)$', '[Gmail]/\\1', name)
 
 def nametrans_reverse(name):
-    return sub('^(\[Gmail\])', 'INBOX.', name)
-
-
-if __name__ == '__main__':
-    print(get_pass(sys.argv[1].strip())['password'])
+    return sub('^(\[Gmail\]/)', '', name)

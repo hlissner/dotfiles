@@ -11,10 +11,11 @@ fsync = False
 localrepository = LocalGmail
 remoterepository = RepositoryGmail
 postsynchook = mu index --maildir ~/.mail
-status_backend = sqlite
+synclabels = yes
+labelsheader = X-Keywords
 
 [Repository LocalGmail]
-type = Maildir
+type = GmailMaildir
 localfolders = ~/.mail/gmail.com
 nametrans = nametrans
 
@@ -34,10 +35,11 @@ nametrans = nametrans_reverse
 localrepository = LocalLissner
 remoterepository = RepositoryLissner
 postsynchook = mu index --maildir ~/.mail
-status_backend = sqlite
+synclabels = yes
+labelsheader = X-Keywords
 
 [Repository LocalLissner]
-type = Maildir
+type = GmailMaildir
 localfolders = ~/.mail/lissner.net
 nametrans = nametrans
 
