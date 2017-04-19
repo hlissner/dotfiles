@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+
+# Rate the currently playing song in mpd.
+#
+# Under the hood, this simply appends the playing song to the
+# $playlist_directory/$N-star.m3u playlist.
+#
+# If rating = 0,
+#     then clear it from all playlists
+# Else if 1 <= rating <= 5,
+#     then clear it from all playlists,
+#     and add it to ${rating}-star.m3u
+# Else, error out
+#
+# Usage: rate [N]
+
+if (( $# != 1 )); then
+    echo "Usage: rate [N]"
+    exit 1
+fi
+
+rating="$1"
+playlistdir=$(awk '/playlist_directory/ { print gensub(/"/, "", "g", $2); }' "$HOME/.config/mpd/mpd.conf")
+playlistdir="${playlistdir/#\~/$HOME}"
+currentsong=$(mpc current -f '%file%')
+if [[ -z "$currentsong" ]]; then
+    >&2 echo 'Nothing is playing!'
+    exit 1
+fi
+
+#
+_clearPlaylists() {
+    # Remove the song from other playlists
+    for playlist in "${playlistdir}/"*-star.m3u; do
+        if grep "^$1$" "$playlist" >/dev/null; then
+            sed -i "\#^$1\$#d" "$playlist"
+        fi
+    done
+}
+
+#
+target="${playlistdir}/${rating}-star.m3u"
+
+if (( rating == 0 )); then
+    _clearPlaylists "$currentsong"
+    echo "Rating cleared"
+elif [[ ! -f "$target" ]]; then
+    >&2 echo "Not a valid rating, must be between 0-5!"
+    exit 2
+elif ! grep "^${currentsong}$" "$target" >/dev/null; then
+    _clearPlaylists "$currentsong"
+    echo "$currentsong" >> "$target"
+fi
+
+# Display new rating
+stars=""
+star_filled_icon="★"
+star_empty_icon="[2m[37m☆[0m"
+for ((i=1;i<=5;i++)); do
+    if (( "$rating" >= "$i" )); then
+        stars="${stars}${star_filled_icon}"
+    else
+        stars="${stars}${star_empty_icon}"
+    fi
+done
+echo "($stars) $currentsong"
