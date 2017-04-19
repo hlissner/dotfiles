@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# A non-interactive script that creates notifications (libnotify on Linux,
+# native notifications on MacOS), announcing the currently playing song. Used by
+# ncmpcpp.
+
 if ! pgrep mpd >/dev/null; then
     >&2 echo "mpd isn't running."
     exit 1
