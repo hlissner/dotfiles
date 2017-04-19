@@ -1,28 +1,28 @@
 #!/usr/bin/env bash
 
-# Delete all songs that are in the delete-pls playlist, and cleans up any empty folders
-# it leaves behind.
+# I frequently discover some of my music is simply awful. So I file them away in
+# my 1-star.m3u playlist. This script reads those songs, deletes them, and
+# cleans up any empty folders it leaves behind.
+#
+# Usage: cleanup-music
 
 set -e
 shopt -s nullglob
 
-playlistdir=$(grep playlist_directory "$HOME/.config/mpd/mpd.conf" | awk '{ print $2; }')
-playlistdir="${playlistdir//\"/}"
-playlistfile="${playlistdir/#\~/$HOME}/1-star.m3u"
-songs=$(cat "$playlistfile")
+musicdir=$(awk '/music_directory/ { print gensub(/"/, "", "g", $2); }' "$HOME/.config/mpd/mpd.conf")
+musicdir="${musicdir/#\~/$HOME}"
+playlistdir=$(awk '/playlist_directory/ { print gensub(/"/, "", "g", $2); }' "$HOME/.config/mpd/mpd.conf")
+playlistdir="${playlistdir/#\~/$HOME}"
+
+playlistfile="${playlistdir}/1-star.m3u"
 
 # Delete designated songs
-IFS="
-"
+IFS=$'\n'
 declare -a to_delete=()
-for song in "${songs[@]}"; do
-    fpath="$HOME/music/$song"
-    if [[ -f $fpath ]]; then
-        to_delete+=("$fpath")
-        # echo "Deleting: $song"
-        # rm -f "$fpath"
-    fi
-done
+while read -r song; do
+    songpath="${musicdir}/${song}"
+    [[ -f $songpath ]] && to_delete+=("$songpath")
+done < "$playlistfile"
 
 if (( ${#to_delete[@]} == 0 )); then
     echo "Nothing to delete"
@@ -36,7 +36,7 @@ read -r confirm
 case $confirm in
     y|Y)
         echo "Deleting..."
-        for file in ${to_delete[@]}; do
+        for file in "${to_delete[@]}"; do
             rm -fv "$file"
         done
         ;;
@@ -45,8 +45,8 @@ case $confirm in
 esac
 :>"$playlistfile"
 
-# Remove duplicates in playlists
-for playlist in "$playlistdir"/*.m3u; do
+# Remove duplicates across all playlists
+for playlist in ${playlistdir}/*.m3u; do
     awk '!seen[$0]++' "${playlist}" > "${playlist}.tmp"
     if [[ -f "${playlist}.tmp" ]]; then
         rm -f "$playlist"
