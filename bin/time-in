@@ -103,9 +103,9 @@ if __name__ == '__main__':
             then = here.astimezone(timezone(d_tzname))
             diff = diff(here, then)
 
-            print("{:30}{} ({} {})".format(
+            print("{:24} {}\t{} {}".format(
                 d_coords['name'],
-                then.isoformat(),
+                then,
                 diff,
                 "ago" if then < here else "ahead"
             ))
