@@ -1,0 +1,118 @@
+#!/usr/bin/env python3
+
+# Retrieves the time (and time difference) at a location (can be an address,
+# postal code, country name, etc). Uses Google Maps APIs to map locations to
+# coordinates, and coordinates to timezones.
+#
+# Requires: pytz. tzlocal
+# Usage: time-in Copenhagen "Toronto, ON" Vancouver
+
+import sys
+import os
+import json
+from base64 import b64encode
+from datetime import datetime
+from urllib import request
+
+from pytz import timezone
+from tzlocal import get_localzone
+
+URL_BASE = "https://maps.googleapis.com/maps/api/"
+URL_TZ = URL_BASE + "timezone/json?location={},{}&timestamp={}"
+URL_GEOCODE = URL_BASE + "geocode/json?address={}"
+
+CACHE_FILE = "/tmp/time-in"
+CACHE = {}
+
+
+#
+def _generate_url(url, *args):
+    return url.format(*map(request.quote, map(str, args)))
+
+def get_timezone(lat, lng, timestamp):
+    try:
+        url = _generate_url(URL_TZ, lat, lng, timestamp)
+        resp = request.urlopen(url).read()
+        result = json.loads(resp.decode('utf-8'))
+        if result['status'] == 'OK':
+            return result['timeZoneId']
+        elif result['status'] != 'UNKNOWN_ERROR':
+            raise Exception(result['error_message'])
+    except IOError:
+        print("IOError")
+
+def get_coords(desc):
+    try:
+        url = _generate_url(URL_GEOCODE, desc)
+        resp = request.urlopen(url).read()
+        result = json.loads(resp.decode('utf-8'))
+        if result['status'] == 'OK':
+            if result['results']:
+                return {
+                    "lat": result['results'][0]['geometry']['location']['lat'],
+                    "lng": result['results'][0]['geometry']['location']['lng'],
+                    "name": result['results'][0]['formatted_address']
+                }
+            else:
+                return None
+        elif result['status'] != 'UNKNOWN_ERROR':
+            raise Exception(result['error_message'])
+    except IOError:
+        print("IOError")
+
+def cache(key, fn, ttl):
+    if key in CACHE and CACHE[key]['time'] < CACHE[key]['time'] + ttl:
+        return CACHE[key]['value']
+    value = fn()
+    if value is not None:
+        CACHE[key] = {
+            'time': datetime.now().timestamp(),
+            'value': fn()
+        }
+    return value
+
+def diff(a, b):
+    a = a.replace(tzinfo=None)
+    b = b.replace(tzinfo=None)
+    return max(a, b) - min(a, b)
+
+def encode(s):
+    return str(b64encode(s.encode('ascii')))
+
+
+#
+if __name__ == '__main__':
+    if not sys.argv[1:]:
+        print("Usage: {} [LOCATION]".format(sys.argv[0]))
+        sys.exit(1)
+
+    if os.path.isfile(CACHE_FILE):
+        with open(CACHE_FILE, 'r') as f:
+            CACHE = json.load(f)
+
+    here = get_localzone().localize(datetime.now())
+    for location in sys.argv[1:]:
+        d_coords = cache("coords-" + encode(location), lambda: get_coords(location), 86400)
+        if d_coords:
+            d_tzname = cache(
+                "tz-" + encode(location),
+                lambda: get_timezone(d_coords['lat'], d_coords['lng'], here.timestamp()),
+                1800
+            )
+
+            then = here.astimezone(timezone(d_tzname))
+            diff = diff(here, then)
+
+            print("{:30}{} ({} {})".format(
+                d_coords['name'],
+                then.isoformat(),
+                diff,
+                "ago" if then < here else "ahead"
+            ))
+        else:
+            print("Couldn't find {}".format(location))
+
+    with open(CACHE_FILE, 'w') as f:
+        json.dump(CACHE, f)
+
+    sys.exit(0)
