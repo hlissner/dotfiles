@@ -29,36 +29,29 @@ CACHE = {}
 def _generate_url(url, *args):
     return url.format(*map(request.quote, map(str, args)))
 
-def get_timezone(lat, lng, timestamp):
+def _request(url, *args):
     try:
-        url = _generate_url(URL_TZ, lat, lng, timestamp)
-        resp = request.urlopen(url).read()
+        real_url = url.format(*map(request.quote, map(str, args)))
+        resp = request.urlopen(real_url).read()
         result = json.loads(resp.decode('utf-8'))
         if result['status'] == 'OK':
-            return result['timeZoneId']
+            return result
         elif result['status'] != 'UNKNOWN_ERROR':
             raise Exception(result['error_message'])
     except IOError:
-        print("IOError")
+        print("IOError")  # FIXME Better error handling
+
+def get_timezone(lat, lng, timestamp):
+    return _request(URL_TZ, lat, lng, timestamp)['timeZoneId']
 
 def get_coords(desc):
-    try:
-        url = _generate_url(URL_GEOCODE, desc)
-        resp = request.urlopen(url).read()
-        result = json.loads(resp.decode('utf-8'))
-        if result['status'] == 'OK':
-            if result['results']:
-                return {
-                    "lat": result['results'][0]['geometry']['location']['lat'],
-                    "lng": result['results'][0]['geometry']['location']['lng'],
-                    "name": result['results'][0]['formatted_address']
-                }
-            else:
-                return None
-        elif result['status'] != 'UNKNOWN_ERROR':
-            raise Exception(result['error_message'])
-    except IOError:
-        print("IOError")
+    result = _request(URL_GEOCODE, desc)
+    if result['results']:
+        return {
+            "lat": result['results'][0]['geometry']['location']['lat'],
+            "lng": result['results'][0]['geometry']['location']['lng'],
+            "name": result['results'][0]['formatted_address']
+        }
 
 def cache(key, fn, ttl):
     if key in CACHE and CACHE[key]['time'] < CACHE[key]['time'] + ttl:
