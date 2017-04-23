@@ -70,7 +70,7 @@ super + {_,shift + }q
 #
 
 super + {_,shift + } f
-    {bspc-do m,bspc node -t \~floating}
+    {bspc.sh m,bspc node -t \~floating}
 
 super + shift + p
     bspc node -t \~pseudo_tiled
@@ -85,7 +85,7 @@ super + ctrl + {x,y,z}
 
 # focus/swap the node in the given direction
 super + {_,shift +,ctrl +,shift + ctrl +}{h,j,k,l}
-    bspc-do {f,s,F,S} {west,south,north,east}
+    bspc.sh {f,s,F,S} {west,south,north,east}
 
 # focus the node for the given path jump
 super + {p,b,comma,period}
@@ -93,7 +93,7 @@ super + {p,b,comma,period}
 
 # focus the next/previous node
 super + {_,shift + }Tab
-    bspc-do F {east,west}
+    bspc.sh F {east,west}
 
 # focus monitor or send to the given desktop
 super + bracket{left,right}
