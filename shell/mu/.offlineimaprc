@@ -2,7 +2,6 @@
 accounts = Lissner,Gmail
 maxsynaccounts = 2
 pythonfile = ~/.dotfiles/shell/mu/lib.py
-fsync = False
 
 [DEFAULT]
 
@@ -10,9 +9,9 @@ fsync = False
 [Account Gmail]
 localrepository = LocalGmail
 remoterepository = RepositoryGmail
-postsynchook = mu index --maildir ~/.mail
 synclabels = yes
 labelsheader = X-Keywords
+maxconnections = 2
 
 [Repository LocalGmail]
 type = GmailMaildir
@@ -34,9 +33,9 @@ nametrans = nametrans_reverse
 [Account Lissner]
 localrepository = LocalLissner
 remoterepository = RepositoryLissner
-postsynchook = mu index --maildir ~/.mail
 synclabels = yes
 labelsheader = X-Keywords
+maxconnections = 2
 
 [Repository LocalLissner]
 type = GmailMaildir
