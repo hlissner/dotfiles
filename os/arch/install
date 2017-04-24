@@ -65,9 +65,11 @@ if [[ -z $SERVER ]]; then
     # Utilities
     $pacaur -S rofi feh sxiv maim slop-opengl neofetch-git pass youtube-dl xdotool
     # Apps
-    $pacaur -S redshift chromium termite
+    $pacaur -S redshift firefox termite
     # Audio
     $pacaur -S alsa-utils
+    # Dictionary
+    $pacaur -S dictd dict-gcide
 
     hookdest=/etc/pacman.d/hooks
     sudo mkdir -p "$hookdest"
