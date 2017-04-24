@@ -56,26 +56,6 @@ if [[ -z $SERVER ]]; then
 
     # desktop essentials
     $pacman -S xorg-init xorg-server
-
-    # fontconfig
-    if ! grep infinality /etc/pacman.conf >/dev/null; then
-        echo <<EOL | sudo tee -a /etc/pacman.conf
-[infinality-bundle]
-Server = http://bohoomil.com/repo/\$arch
-
-[infinality-bundle-multilib]
-Server = http://bohoomil.com/repo/multilib/\$arch
-
-[infinality-bundle-fonts]
-Server = http://bohoomil.com/repo/fonts
-EOL
-        sudo pacman-key -r 962DDE58
-        sudo pacman-key --lsign-key 962DDE58
-        sudo pacman -Sy
-
-        $pacaur -S ttf-droid-ib ttf-opensans otf-fira-{mono,sans}-ibx terminus-font-td1 ttf-source-sans-pro-ibx
-    fi
-
     # Desktop manager
     $pacaur -S lightdm lightdm-webkit2-greeter
     # Window manager
