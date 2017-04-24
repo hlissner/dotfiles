@@ -23,6 +23,8 @@ if is-interactive; then
     load shell/zsh/completion.zsh
     load shell/zsh/keybinds.zsh
     load shell/zsh/prompt.zsh
+
+    cache fasd --init posix-alias zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zsh-wcomp-install
 fi
 loadall aliases.zsh
 

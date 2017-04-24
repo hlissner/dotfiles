@@ -3,7 +3,7 @@
 if [[ "$SHELL" != *zsh ]]; then
     case "$OSTYPE" in
         darwin*)
-            brew install zsh
+            brew install zsh fzf fasd
 
             # Add homebrewed zsh to /etc/shells
             if ! grep '/usr/local/bin/zsh' /etc/shells >/dev/null; then
@@ -12,9 +12,11 @@ if [[ "$SHELL" != *zsh ]]; then
             ;;
         linux*)
             if [[ -f /etc/arch-release ]]; then
-                sudo pacman --needed --noconfirm -S zsh
+                sudo pacman --needed --noconfirm -S zsh fzf fasd
             elif [[ -f /etc/debian_version ]]; then
-                sudo apt-get install -y zsh
+                sudo add-apt-repository ppa:aacebedo/fasd
+                sudo apt-get update
+                sudo apt-get install -y zsh fasd fzf
             fi
             ;;
     esac
