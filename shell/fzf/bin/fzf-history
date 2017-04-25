@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+url="$(firefox-history | gui-fzf | sed 's/^.*, http/http/')"
+[[ $url ]] && open "$url"

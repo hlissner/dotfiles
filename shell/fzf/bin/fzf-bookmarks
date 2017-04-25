@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+url="$(firefox-bookmarks | gui-fzf | sed 's/^.*, http/http/')"
+[[ $url ]] && open "$url"
