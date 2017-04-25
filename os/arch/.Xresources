@@ -33,6 +33,8 @@ URxvt*.url-launcher:           firefox
 URxvt*.matcher.rend.0:         Uline Bold fg5
 URxvt*.font:                   xft:Fira Mono:size=9
 urxvt-scratch.font:            xft:Fira Mono:size=10
+urxvt-fuzzy.font:              xft:Fira Mono:size=14
+urxvt-fuzzy.internalBorder:    15
 
 ! rofi
 rofi.font:             Fira Mono Medium 18
