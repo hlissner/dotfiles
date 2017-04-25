@@ -1,12 +1,7 @@
-#!/usr/bin/env python
-
 import sqlite3 as sqlite
 import os
 from glob import glob
-from pyfzf import FzfPrompt
 from sys import platform as _platform
-
-fzf = FzfPrompt()
 
 class FirefoxProfile:
     def __init__(self, dbfile):
@@ -54,16 +49,17 @@ class FirefoxProfile:
         return self._process(self.cur.fetchall())
 
     def _process(self, data):
-        lookup = {}
-        result = []
+        title_lookup = {}
+        url_lookup = {}
+        ret = []
         for row in data:
-            title = (row[0] or "").encode('utf-8').strip()
-            url = (row[1] or "").encode('utf-8').strip()
-            key = ", ".join((title, url))
-            if key not in lookup and row[1].startswith("http"):
-                lookup[key] = 1
-                result.append(key)
-        return result
+            title = row[0].encode('utf-8').decode()
+            url = row[1].encode('utf-8').decode()
+            if url.startswith("http") and title not in title_lookup and url not in url_lookup:
+                title_lookup[title] = 1
+                url_lookup[url] = 1
+                ret.append("{}, {}".format(title, url))
+        return ret
 
     def browse(self, url):
         if _platform.startswith("linux"):
