@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+case $OSTYPE in
+    darwin*) open $@ ;;
+    linux*) xdg-open $@ ;;
+esac
+
+# OPTIONAL: requires bin/tmux
+if command -v 'tmux-session-name' >/dev/null; then
+    # If this was used from a scratch tmux terminal, close it
+    [[ "$(tmux-session-name)" == scratch ]] && tmux kill-session -t scratch
+fi

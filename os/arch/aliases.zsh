@@ -1,7 +1,5 @@
 alias ls="${aliases[ls]:-ls} --color=auto --group-directories-first"
 
-alias open='xdg-open'
-
 alias sys='systemctl'
 alias sys!='sudo systemctl'
 
