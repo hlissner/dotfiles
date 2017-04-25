@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+urlencode() {
+    local LANG=C
+    for ((i=0;i<${#1};i++)); do
+        if [[ ${1:$i:1} =~ ^[a-zA-Z0-9\.\~\_\-]$ ]]; then
+            printf "${1:$i:1}"
+        else
+            printf '%%%02X' "'${1:$i:1}"
+        fi
+    done
+}
+
+query=$(urlencode "$*")
+echo "Opening https://duckduckgo.com/?q=$query"
+open "https://duckduckgo.com/?q=$query"
