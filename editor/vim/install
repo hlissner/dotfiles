@@ -7,9 +7,6 @@ case $OSTYPE in
     linux*)
         if [[ -f /etc/arch-release ]]; then
             sudo pacman --needed --noconfirm -S make vim
-        elif [[ -f /etc/debian_version ]]; then
-            # TODO
-            exit 1
         fi
         ;;
 esac

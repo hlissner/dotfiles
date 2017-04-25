@@ -2,7 +2,7 @@
 
 case $OSTYPE in
     darwin*)
-	command -v nvim >/dev/null || brew install --HEAD neovim/neovim/neovim
+        command -v nvim >/dev/null || brew install --HEAD neovim/neovim/neovim
         ;;
     linux*)
         if [[ -f /etc/arch-release ]]; then

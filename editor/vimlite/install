@@ -9,7 +9,6 @@ case $OSTYPE in
             sudo pacman --needed --noconfirm -S vim
         elif [[ -f /etc/debian_version ]]; then
             sudo apt-get install -y vim
-            exit 1
         fi
         ;;
 esac

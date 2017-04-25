@@ -1,7 +1,5 @@
 #!/bin/bash
 
-command -v git >/dev/null && command -v hub >/dev/null && exit
-
 case "$OSTYPE" in
     darwin*)
         brew install git hub
@@ -11,8 +9,10 @@ case "$OSTYPE" in
             sudo pacman --needed --noconfirm -S git hub
         elif [[ -f /etc/debian-version ]]; then
             sudo apt-get install -y git
-            mkdir -p $HOME/builds && cd $HOME/builds
-            git clone https://github.com/github/hub.git && cd hub
-            make install prefix=/usr/local
+            if ! command -v hub >/dev/null; then
+                mkdir -p $HOME/builds && cd $HOME/builds
+                git clone https://github.com/github/hub.git && cd hub
+                make install prefix=/usr/local
+            fi
         fi
 esac
