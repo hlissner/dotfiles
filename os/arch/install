@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+set -e
+shopt -s nullglob
+
 PWD=$(dirname $0)
 
 pacman='sudo pacman --needed --noconfirm'
@@ -44,8 +47,6 @@ fi
 ## Bootstrap
 # Helpful utilities
 $pacaur -S the_silver_searcher fasd tmux hub bc keybase cronie
-
-$pacaur -S udevil devmon
 sudo systemctl enable cronie.service
 
 if [[ -z $SERVER ]]; then
@@ -61,7 +62,7 @@ if [[ -z $SERVER ]]; then
     # Window manager
     $pacaur -S bspwm sxhkd compton
     # Taskbar
-    $pacaur -S lemonbar-xft-git siji-git xtitle sutils-git dunst libnotify
+    $pacaur -S lemonbar-xft-git sutils-git dunst libnotify
     # Utilities
     $pacaur -S rofi feh sxiv maim slop-opengl neofetch-git pass youtube-dl xdotool
     # Apps
