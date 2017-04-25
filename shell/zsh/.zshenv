@@ -9,7 +9,7 @@ load shell/zsh/config.zsh
 loadall env.zsh
 
 fpath=(
-    $DOTFILES/shell/zsh/{completions,functions}
+    $DOTFILES/shell/zsh/completions
     $fpath
 )
 

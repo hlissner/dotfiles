@@ -1,4 +1,4 @@
-os/arch
+os/arch{,automount}
 browser
 docker
 dev/*
