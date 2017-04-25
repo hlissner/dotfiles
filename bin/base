@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# Converts a number from one base to another. DEST_RADIX is optional and
+# defaults to 10.
+#
+# Usage: base [SRC_RADIX] [NUMBER] [DEST_RADIX]
+# Examples:
+#  + base 2 110      #=> 6
+#  + base 2 110 10   #=> 6
+#  + base 16 FF      #=> 6
+
+bc <<< "obase=${3:-10};ibase=$1;$2"
