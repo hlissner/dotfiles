@@ -1,7 +1,0 @@
-#!/usr/bin/env python3
-
-from lib.FirefoxProfile import FirefoxProfile
-
-
-with FirefoxProfile.default() as ff:
-    print("\n".join(ff.bookmarks()))
