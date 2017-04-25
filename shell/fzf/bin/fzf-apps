@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+# Uses fzf as an application launcher.
+#
+# Requires: fzf, lnch
+
+case $OSTYPE in
+    darwin*)
+        cmd=$(find -L {,~}/Applications -iname '*.app' -maxdepth 2 -type f 2>/dev/null | sort -u | gui-fzf)
+        [[ $cmd ]] && open "$cmd"
+        ;;
+    linux*)
+        cmd=$(echo -n "$PATH" | xargs -d: -I{} -r -- find -L {} -maxdepth 1 -mindepth 1 -type f -executable -printf '%P\n' 2>/dev/null | sort -u | gui-fzf)
+        if [[ $cmd ]]; then
+            if ! which lnch >/dev/null; then
+                notify-send 'lnch is not installed' 'run "go get github.com/oem/lnch"'
+                exit 1
+            fi
+
+            # This disowns the subprocess from the parent shell (i.e. if
+            # that shell gets closed, the subprocess will survive).
+            if [[ $cmd == fzf-* ]]; then
+                $cmd
+            else
+                lnch "$cmd"
+            fi
+        fi
+        ;;
+esac

@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+[[ $TMUX ]] || flags="--reverse --border"
+fzf $flags
