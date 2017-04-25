@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
-# A simple script for correcting the spelling of a word. Uses (and requires) fzf
-# to select the correct word. This output can be piped to something like dict
+# Find the correct spelling of a word. Uses (and requires) fzf to select the
+# correct word. This output can be piped to something like dict to find
+# definitions/synonyms.
 #
+# Requires: aspell, fzf
 # Usage: spell mispeling
 # Example: dict $(spell mispeling)
 
@@ -10,13 +12,8 @@ result=$(echo "$@" | aspell -a | tail -n-2)
 if [[ "$result" == '*' ]]; then
     echo "$@"
 else
-    if ! command -v 'fzf' >/dev/null; then
-        >&2 echo "fzf not installed"
-        exit 1
-    fi
-
     words=$(echo "$result" | sed 's/[:,] /\n/g' | tail -n +2)
-    if (( $(wc -l <<< "$words") > 1 )); then
+    if (( $(wc -l <<< "$words") > 1 )) && command -v 'fzf' >/dev/null; then
         fzf <<< "$words"
     else
         echo "$words"
