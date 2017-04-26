@@ -2,12 +2,11 @@
 
 set -e
 CWD=$(dirname $0)
-if [[ ! -f ~/.private/config/email.conf ]]; then
+if [[ ! -f ~/.private/config/email ]]; then
     >&2 echo "Couldn't load account settings"
     exit 1
 fi
 
-. $HOME/.private/config/email.conf
 . $CWD/../panel-config
 
 get_mail() {
@@ -69,10 +68,11 @@ parse_xml() {
 }
 
 #
-a=$(get_mail "${MAIL1_USER}" "${MAIL1_PASS}")
-b=$(get_mail "${MAIL2_USER}" "${MAIL2_PASS}")
-c=$(get_mail "${MAIL3_USER}" "${MAIL3_PASS}")
-total=$(( $a + $b + $c ))
+total=0
+while read -r line; do
+    IFS=, read -r _addr _pwd <<< "$line"
+    total=$(( total + $(get_mail "$_addr" "$_pwd") ))
+done < "$HOME/.private/config/email"
 
 icon="${ICON_MAIL}"
 color="${COLOR_FG}"
