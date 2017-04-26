@@ -19,17 +19,17 @@
 
   --main-font-family: "Terminus", sans-serif;
 }
- 
+
 /* :::::: NEW TAB :::::: */
 @-moz-document url("about:newtab"){
-  
+
   body {
     background: var(--main-page-bg-color);
     color: #ccc;
   }
-  
+
   #newtab-search-container { display: none; }
-  
+
   /* BG */
   #newtab-scrollbox {
     background: url("") top center /cover, var(--main-page-bg-color) !important;
@@ -45,7 +45,7 @@
   #newtab-search-logo {
     display: none;
   }
-  
+
   #newtab-search-text {
     padding: 0px 15px 0px 15px !important;
     min-height: 55px;
@@ -61,7 +61,7 @@
     transition-property: border;
     transition-duration: 150ms;
   }
-    
+
   #newtab-search-text:focus,
   #newtab-search-text[autofocus] {
     border: 1px solid var(--main-page-text-color-two)!important;
@@ -69,7 +69,7 @@
     transition-property: border;
     transition-duration: 150ms;
   }
-    
+
   #newtab-search-submit {
     padding: 0px 15px 0px 15px !important;
     height: 55px;
@@ -84,7 +84,7 @@
     text-transform: uppercase;
     color: var(--main-page-text-color) !important;
   }
-    
+
   #newtab-search-text:focus + #newtab-search-submit,
   #newtab-search-text[autofocus] + #newtab-search-submit{
     background: transparent !important;
@@ -93,29 +93,29 @@
     box-shadow: none !important;
     color: var(--main-page-text-color-two) !important;
   }
-    
+
   #newtab-search-text + #newtab-search-submit:hover {
     background: var(--main-page-text-color-two) !important;
     border: 1px solid var(--main-page-text-color-two)!important;
     color: var(--main-page-text-invert-color-two) !important;
   }
-    
+
   #newtab-search-text +#newtab-search-submit:hover:active {
     background: var(--main-page-text-invert-color-two) !important;
     border: 1px solid var(--main-page-text-color-two)!important;
     color: var(--main-page-text-color-two) !important;
   }
-  
+
   /* SITES */
-  
+
   .newtab-title {
     border-radius: 0;
   }
-  
+
   .newtab-site {
     box-shadow: none !important;
     border: none !important;
-    color: var(--main-page-text-color-two) !important; 
+    color: var(--main-page-text-color-two) !important;
     margin: 0px;
     border-radius: 0px;
   }
@@ -135,17 +135,17 @@
     background-color: var(--main-page-bg-color) !important;
     border: 1px solid var(--main-page-border-color)!important;
   }
- 
+
   .newtab-sponsored,.newtab-title {
     font-size: 12px !important;
     font-family: var(--main-font-family) !important;
-    color:var(--main-page-text-color) !important; 
+    color:var(--main-page-text-color) !important;
     transition-property: color;
     transition-duration: 150ms;
   }
 
   .newtab-sponsored{
-    color:var(--main-page-text-color-two) !important; 
+    color:var(--main-page-text-color-two) !important;
   }
 
   .newtab-site:hover .newtab-title {
@@ -158,7 +158,7 @@
     filter: grayscale(1) opacity(.9);
     border: none;
   }
-  
+
   .newtab-site:hover .newtab-thumbnail {
     border-radius: 0px;
     transition: opacity 100ms ease-out;
@@ -227,7 +227,7 @@
     box-shadow: none;
 
   }
-  
+
   /* CONTROLS */
   .newtab-control-block {
     opacity: 0;
@@ -255,11 +255,11 @@
     font-size: 12px !important;
     font-family: var(--main-font-family) !important;
     color: var(--main-page-link-color);
-    text-decoration: none; 
+    text-decoration: none;
     /*transition-property: color;
     transition-duration: 150ms;*/
   }
-  
+
   #newtab-intro-what:hover {
     color: var(--main-page-link-color);
   }

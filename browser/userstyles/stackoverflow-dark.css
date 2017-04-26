@@ -14,7 +14,7 @@
   https://github.com/StylishThemes/StackOverflow-Dark/issues
 
   previous version information contained at the userstyles site
-  ****************************************************************/
+****************************************************************/
 
   * {
     border-color: #444 !important;
@@ -29,8 +29,8 @@
     background-origin: padding-box !important;
     background-attachment: scroll !important;
     background-repeat: repeat !important;
-background-size: auto !important;
-background-position: left top !important;
+    background-size: auto !important;
+    background-position: left top !important;
   }
 
   /* custom code font */
@@ -605,14 +605,14 @@ background-position: left top !important;
   }
 
   /*! Tomorrow Night Eighties */.prettyprint{background:#2d2d2d!important;font-family:Menlo,'Bitstream Vera Sans Mono','DejaVu Sans Mono',Monaco,Consolas,monospace!important;line-height:1.4em!important;padding:10px!important}.pln{color:#ccc!important}@media screen{.str{color:#9c9!important}.kwd{color:#c9c!important}.com{color:#999!important}.typ{color:#69c!important}.lit{color:#f99157!important}.pun{color:#ccc!important}.opn{color:#ccc!important}.clo{color:#ccc!important}.tag{color:#f2777a!important}.atn{color:#f99157!important}.atv{color:#6cc!important}.dec{color:#f99157!important}.var{color:#f2777a!important}.fun{color:#69c!important}}@media print,projection{.str{color:#060!important}.kwd{color:#006!important;font-weight:700!important}.com{color:#600!important;font-style:italic!important}.typ{color:#404!important;font-weight:700!important}.lit{color:#044!important}.clo,.opn,.pun{color:#440!important}.tag{color:#006!important;font-weight:700!important}.atn{color:#404!important}.atv{color:#060!important}}ol.linenums{margin-top:0!important;margin-bottom:0!important}
- 
+
 }
 
 /* These extra @-moz-document definitions will not be included in the "grunt user"
-* build because Chrome Stylish puts these extra definitions into separate sections
-* with separate regexp/domain definitions.
-* If the css below changes, it will have to be manually updated
-*/
+ * build because Chrome Stylish puts these extra definitions into separate sections
+ * with separate regexp/domain definitions.
+ * If the css below changes, it will have to be manually updated
+ */
 
 /* === StackExchange tweaks ===
 _____ _           _   _____         _                      _                 _
