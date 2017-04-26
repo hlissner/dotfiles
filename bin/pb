@@ -5,7 +5,7 @@
 
 if [[ -t 0 ]]; then
     if command -v xclip >/dev/null; then
-        xclip -selection clipboard -out
+        xclip -display :0 -selection clipboard -out
     elif command -v xsel >/dev/null; then
         xsel --clipboard --output
     elif command -v pbpaste >/dev/null; then
@@ -16,7 +16,7 @@ if [[ -t 0 ]]; then
     fi
 else
     if command -v xclip >/dev/null; then
-        xclip -selection clipboard -in
+        xclip -display :0 -selection clipboard -in
     elif command -v xsel >/dev/null; then
         xsel --clipboard --input
     elif command -v pbcopy >/dev/null; then
