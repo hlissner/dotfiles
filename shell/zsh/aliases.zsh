@@ -7,6 +7,7 @@ zman() { PAGER="less -g -s '+/^       "$1"'" man zshall; }
 alias ag='noglob ag'
 
 alias ddg='duckduckgo'
+alias bt='transmission-remote'
 
 # Canonical hex dump; some systems have this symlinked
 is-callable hd || alias hd="hexdump -C"
