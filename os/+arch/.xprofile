@@ -3,7 +3,7 @@
 export __GL_THREADED_OPTIMISATIONS=1
 
 # Maybe start this daemon
-running() { pgrep "$1" >/dev/null; }
+running() { pgrep -x "$1" >/dev/null; }
 run() {
     command -v "$1" >/dev/null || return
     running "$1" || "$@"
@@ -15,7 +15,7 @@ run() {
 
     # If sxhkd isn't running by now something is wrong and we're stuck, so open
     # a terminal so I can do something about it
-    pgrep sxhkd >/dev/null || termite &
+    pgrep -x sxhkd >/dev/null || termite &
 } &
 
 # mouse acceleration
@@ -32,9 +32,9 @@ run dunst &      # notifications
 run compton &    # perdy effects + transparency
 
 # non-essentials
-run mpd &           # music server
-run redshift &      # screen temperature based on time-of-day
-run rslsync &       # resilio sync
+run mpd &        # music server
+run redshift &   # screen temperature based on time-of-day
+run rslsync &    # resilio sync
 
 # key agents
 running ssh-agent || { ssh-agent -s | sed 's/^echo/#echo/' >~/.ssh/agentenv; }
