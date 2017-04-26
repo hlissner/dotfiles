@@ -6,7 +6,7 @@
 
 case $OSTYPE in
     darwin*)
-        cmd=$(find -L {,~}/Applications -iname '*.app' -maxdepth 2 -type f 2>/dev/null | sort -u | gui-fzf)
+        cmd=$(find -L {,~}/Applications -iname '*.app' -maxdepth 2 -type d 2>/dev/null | sort -u | gui-fzf)
         [[ $cmd ]] && open "$cmd"
         ;;
     linux*)
