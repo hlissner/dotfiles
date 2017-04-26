@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 case $OSTYPE in
-    darwin*) open $@ ;;
-    linux*) xdg-open $@ ;;
+    darwin*) /usr/bin/open "$@" ;;
+    linux*) xdg-open "$@" ;;
 esac
 
 # OPTIONAL: requires shell/tmux
