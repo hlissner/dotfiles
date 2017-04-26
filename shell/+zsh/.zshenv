@@ -5,11 +5,11 @@ source "$HOME/.dotfiles/shell/common.sh"
 typeset -gU cdpath fpath mailpath path
 path=( $DOTFILES/bin "$ENABLED_DIR"/*/bin /usr/local/{,s}bin $path )
 
-load shell/zsh/config.zsh
+load shell/+zsh/config.zsh
 loadall env.zsh
 
 fpath=(
-    $DOTFILES/shell/zsh/completions
+    $DOTFILES/shell/+zsh/completions
     $fpath
 )
 

@@ -3,10 +3,10 @@
 *.pid
 *.db
 
-shell/tmux/.tmux/plugins/
-shell/tmux/.tmuxifier/
+shell/+tmux/.tmux/plugins/
+shell/+tmux/.tmuxifier/
 
-shell/mpd/.config/mpd/mpd.*
-shell/mpd/.config/mpd/mpdstate
+shell/+mpd/.config/mpd/mpd.*
+shell/+mpd/.config/mpd/mpdstate
 
-weechat/.weechat/*
++weechat/.weechat/*
