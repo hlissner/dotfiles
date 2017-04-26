@@ -2,6 +2,7 @@ os/+arch
 os/+arch/+automount
 +docker
 dev/+*
+editor/+editorconfig
 editor/+emacs
 editor/+neovim
 shell/+zsh

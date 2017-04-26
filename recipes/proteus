@@ -1,6 +1,11 @@
-os/macos
+os/+macos
 browser
-dev/*
-editor/{emacs,neovim}
-shell/zsh
-vcs/*
+dev/+*
+editor/+editorconfig
+editor/+emacs
+editor/+neovim
+shell/+zsh
+shell/+ssh
+shell/+fzf
+shell/+tmux
+vcs/+*
