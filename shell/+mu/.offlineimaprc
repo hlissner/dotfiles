@@ -1,7 +1,7 @@
 [general]
 accounts = Lissner,Gmail
 maxsynaccounts = 2
-pythonfile = ~/.dotfiles/shell/mu/lib.py
+pythonfile = ~/.dotfiles/shell/+mu/lib.py
 
 [DEFAULT]
 
