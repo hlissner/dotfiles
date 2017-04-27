@@ -4,3 +4,6 @@ command -v python3 >/dev/null && alias py3='python3'
 
 alias pye='pyenv'
 alias ipy='ipython'
+
+# shortcut for calculator
+function = { ipython --pylab=qt5 --no-banner; }
