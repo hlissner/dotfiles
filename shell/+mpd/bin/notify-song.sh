@@ -4,53 +4,48 @@
 # native notifications on MacOS), announcing the currently playing song. Used by
 # ncmpcpp.
 
+_color() { printf '<span fgcolor="%s">%s</span>' "$1" "$2"; }
+
 if ! pgrep mpd >/dev/null; then
     >&2 echo "mpd isn't running."
     exit 1
 fi
 
-info=$(mpc -f ";%artist%;%album%;%title%;%file%")
-if [[ -z $info || ${info:0:1} != ";" ]]; then
+info=$(mpc current -f ";%artist%;%album%;%title%;%file%")
+if [[ ${info:0:1} != ";" ]]; then
     >&2 echo "nothing is playing."
-    exit
+    exit 1
 fi
 
-artist=$(awk -F';' '{ print $2 }' <<<"$info")
-album=$(awk -F';' '{ print $3 }' <<<"$info")
-title=$(awk -F';' '{ print $4 }' <<<"$info")
-file=$(awk -F';' '{ print $5 }' <<<"$info")
+IFS=';' read -r _ artist album title file <<< "$info"
 
-artist="${artist:-No Artist}"
-album="${album:-No Album}"
-title="${title:-Untitled}"
+artist="${artist:-$(_color "#757575" "No Artist")}"
+album="${album:-$(_color "#757575" "No Album")}"
+title="${title:-$(_color "#757575" "Untitled")}"
 rating=
 
-stars=$(cd ~/music/.db/playlists/ && grep "$file" ./*-star.m3u)
-if [[ $stars ]]; then
-    case $stars in
-        ./1-star.m3u*) starn=1 ;;
-        ./2-star.m3u*) starn=2 ;;
-        ./3-star.m3u*) starn=3 ;;
-        ./4-star.m3u*) starn=4 ;;
-        ./5-star.m3u*) starn=5 ;;
-    esac
-
-    if [[ $starn ]]; then
-        star_filled_icon="★"
-        star_empty_icon="☆"
-        if [[ $OSTYPE == linux* ]]; then
-            star_filled_icon="<span fgcolor='#8fb1cd'>${star_filled_icon}</span>"
-            star_empty_icon="<span fgcolor='#666666'>${star_empty_icon}</span>"
-        fi
-
-        for ((i=1;i<=5;i++)); do
-            if (( "$starn" >= "$i" )); then
-                rating="${rating}${star_filled_icon}"
-            else
-                rating="${rating}${star_empty_icon}"
-            fi
-        done
+case $(grep "$file" ~/music/.db/playlists/*-star.m3u) in
+    */1-star.m3u:*) starn=1 ;;
+    */2-star.m3u:*) starn=2 ;;
+    */3-star.m3u:*) starn=3 ;;
+    */4-star.m3u:*) starn=4 ;;
+    */5-star.m3u:*) starn=5 ;;
+esac
+if [[ $starn ]]; then
+    star_filled_icon="★"
+    star_empty_icon="☆"
+    if [[ $OSTYPE == linux* ]]; then
+        star_filled_icon=$(_color "#8fb1cd" "$star_filled_icon")
+        star_empty_icon=$(_color "#666666" "$star_empty_icon")
     fi
+
+    for ((i=1;i<=5;i++)); do
+        if (( "$starn" >= "$i" )); then
+            rating="${rating}${star_filled_icon}"
+        else
+            rating="${rating}${star_empty_icon}"
+        fi
+    done
 fi
 
 case $OSTYPE in
