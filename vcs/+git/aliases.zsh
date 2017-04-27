@@ -1,4 +1,7 @@
 is-callable hub && alias git='hub'
+
+# g = git status
+# g ... = git $@
 g() { [[ $# = 0 ]] && git status --short . || git $*; }
 compdef g=hub
 
@@ -6,7 +9,7 @@ alias gbr='git browse'
 alias gi='git init'
 alias gs='git status --short'
 alias gsu='git submodule'
-alias gsq='git rebase -i origin/master'
+alias greb='git rebase --autostash -i origin/master'
 alias gco='git checkout'
 alias gcoo='git checkout --'
 alias gc='git commit'
@@ -18,7 +21,7 @@ alias gd='git diff'
 alias gp='git push'
 alias gpb='git push origin'
 alias gpt='git push --follow-tags'
-alias gpl='git pull'
+alias gpl='git pull --rebase --autostash'
 alias ga='git add'
 alias gau='git add -u'
 alias gb='git branch'
