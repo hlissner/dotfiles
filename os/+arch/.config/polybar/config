@@ -11,7 +11,7 @@
 background = #8801040b
 background-alt = #22252c
 foreground = #e5e8e6
-foreground-alt = #55
+foreground-alt = ${xrdb:color8}
 primary = #ffb52a
 secondary = #e60053
 alert = ${xrdb:color5}
@@ -21,7 +21,7 @@ margin-top = 4
 margin-bottom = 5
 
 [bar/main]
-monitor = "DVI-I-1"
+monitor = ${env:MONITOR:DVI-I-1}
 width = 100%
 height = 29
 offset-x = 0
@@ -52,7 +52,7 @@ font-2 = FontAwesome:fontformat=truetype:size=10.5;1
 modules-left = bspwm
 modules-center = xwindow
 ; modules-right = volume date redshift
-modules-right = pkg mail volume date redshift powermenu
+modules-right = pkg mail volume date redshift
 
 ;tray-position = center
 tray-padding = 2
@@ -269,13 +269,15 @@ label = %date% %time%
 [module/volume]
 type = internal/volume
 
-format-volume = <label-volume> <bar-volume>
-label-volume = " "
+; format-volume = <label-volume> <bar-volume>
+format-volume = <bar-volume>
+; label-volume = " "
 label-volume-foreground = ${root.foreground}
 
-format-muted-prefix = " "
+; format-muted = <ramp-volume>
+format-muted-prefix = " "
 format-muted-foreground = ${colors.foreground-alt}
-label-muted = sound muted
+; label-muted = sound muted
 
 bar-volume-width = 10
 bar-volume-foreground-0 = #55aa55
@@ -286,14 +288,19 @@ bar-volume-foreground-4 = #55aa55
 bar-volume-foreground-5 = #f5a70a
 bar-volume-foreground-6 = #ff5555
 bar-volume-gradient = false
-bar-volume-indicator = │
+bar-volume-indicator = |
 bar-volume-indicator-font = 2
 bar-volume-indicator-foreground = #ff
-bar-volume-fill = ─
+bar-volume-fill = -
 bar-volume-fill-font = 2
-bar-volume-empty = ─
+bar-volume-empty = -
 bar-volume-empty-font = 2
 bar-volume-empty-foreground = ${colors.foreground-alt}
+
+; Only applies if <ramp-volume> is used
+ramp-volume-0 = 
+ramp-volume-1 = 
+ramp-volume-2 = 
 
 [module/battery]
 type = internal/battery
@@ -372,7 +379,11 @@ menu-2-0-exec = sudo poweroff
 menu-2-1 = 
 menu-2-1-exec = menu-open-0
 
+
+;=====================================================
 ; Custom scripts
+;=====================================================
+
 [module/pkg]
 type = custom/script
 interval = 1200
