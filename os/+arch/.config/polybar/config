@@ -270,11 +270,10 @@ label = %date% %time%
 type = internal/volume
 
 ; format-volume = <label-volume> <bar-volume>
-format-volume = <bar-volume>
+format-volume = <ramp-volume>
 ; label-volume = " "
 label-volume-foreground = ${root.foreground}
 
-; format-muted = <ramp-volume>
 format-muted-prefix = " "
 format-muted-foreground = ${colors.foreground-alt}
 ; label-muted = sound muted
