@@ -8,7 +8,7 @@
 ;=====================================================
 
 [colors]
-background = #8801040b
+background = #0001040b
 background-alt = #22252c
 foreground = #e5e8e6
 foreground-alt = ${xrdb:color8}
@@ -17,8 +17,8 @@ secondary = #e60053
 alert = ${xrdb:color5}
 
 [global/wm]
-margin-top = 4
-margin-bottom = 5
+margin-top = 2
+margin-bottom = 0
 
 [bar/main]
 monitor = ${env:MONITOR:DVI-I-1}
@@ -39,9 +39,8 @@ underline-color = #00f
 border-bottom-size = 0
 border-bottom-color = #333
 
-spacing = 2
-padding-left = 0
-padding-right = 2
+padding-left = 1
+padding-right = 1
 module-margin-left = 2
 module-margin-right = 2
 
@@ -50,9 +49,8 @@ font-1 = "Fira Mono:fontformat=truetype:style=Bold:size=10;1"
 font-2 = FontAwesome:fontformat=truetype:size=10.5;1
 
 modules-left = bspwm
-modules-center = xwindow
-; modules-right = volume date redshift
-modules-right = pkg mail volume date redshift
+modules-center = date
+modules-right = pkg mail volume redshift
 
 ;tray-position = center
 tray-padding = 2
@@ -73,7 +71,7 @@ override-redirect = true
 
 [module/xwindow]
 type = internal/xwindow
-label = %title:0:60:...%
+label = %title:0:80:...%
 
 [module/xkeyboard]
 type = internal/xkeyboard
@@ -119,19 +117,20 @@ format = <label-state> <label-mode>
 
 label-focused = %icon%
 label-focused-background = ${colors.background-alt}
-label-focused-underline= ${colors.primary}
-label-focused-padding = 2
+; label-focused-underline= ${colors.primary}
+label-focused-underline= ${xrdb:color4}
+label-focused-padding = 3
 
 label-occupied = %icon%
-label-occupied-padding = 2
+label-occupied-padding = 3
 
 label-urgent = %icon%
 label-urgent-background = ${colors.alert}
-label-urgent-padding = 2
+label-urgent-padding = 3
 
 label-empty = %icon%
 label-empty-foreground = ${colors.foreground-alt}
-label-empty-padding = 2
+label-empty-padding = 3
 
 [module/i3]
 type = internal/i3
@@ -157,7 +156,7 @@ label-urgent-padding = ${module/bspwm.label-urgent-padding}
 
 label-visible = %index%
 label-visible-background = ${self.label-focused-background}
-label-visible-underline = ${self.label-focused-underline}
+; label-visible-underline = ${self.label-focused-underline}
 label-visible-padding = ${self.label-focused-padding}
 
 [module/mpd]
@@ -262,7 +261,7 @@ time-alt = %H:%M:%S
 
 format-prefix = 
 format-prefix-foreground = ${colors.foreground-alt}
-format-underline = #0a6cf5
+; format-underline = ${xrdb:color4}
 
 label = %date% %time%
 
@@ -387,7 +386,7 @@ menu-2-1-exec = menu-open-0
 type = custom/script
 interval = 1200
 format = <label>
-format-underline = #dc322f
+; format-underline = #dc322f
 label = "%output:0:30%"
 exec = ~/.config/polybar/modules/updates
 exec-if = "ping -q -w 2 -c 1 176.34.135.167 >/dev/null"
@@ -402,7 +401,8 @@ exec = ~/.config/polybar/modules/mail
 [module/redshift]
 type = custom/script
 interval = 30
-format-prefix = "  "
+; format-prefix = " "
 exec = ~/.config/polybar/modules/redshift
+exec-if = "pgrep redshift >/dev/null"
 
 ; vim:ft=dosini
