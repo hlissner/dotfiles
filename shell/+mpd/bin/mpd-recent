@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# Show a list of recently added songs, and the date they were added. This can be
+# used to compile a playlist, e.g.
+#
+# mpc clear
+# mpc add $(mpc-recent | cut -f2)
+
+grep added "$HOME/.config/mpd/mpd.log" | sed 's/ : update: added /\t/g'
+
