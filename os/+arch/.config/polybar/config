@@ -44,8 +44,8 @@ padding-right = 1
 module-margin-left = 2
 module-margin-right = 2
 
-font-0 = "Fira Sans:fontformat=truetype:style=Bold:size=10;1"
-font-1 = "Fira Mono:fontformat=truetype:style=Bold:size=10;1"
+font-0 = "Fira Sans:style=Bold:size=10;1"
+font-1 = "Fira Mono:style=Bold:size=10;1"
 font-2 = FontAwesome:fontformat=truetype:size=10.5;1
 
 modules-left = bspwm
