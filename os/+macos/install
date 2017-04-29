@@ -3,13 +3,9 @@
 # Install homebrew
 if ! command -v brew >/dev/null; then
     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-
-    # Installing essentials
-    brew install wget curl tree coreutils bash
-    # Essential apps
-    brew cask install appcleaner iterm2 imageoptim imagealpha
 fi
 
 brew install \
-    hub the_silver_searcher pass keybase ffmpeg fasd tmux \
+    wget curl tree coreutils bash \
+    the_silver_searcher pass keybase ffmpeg \
     neofetch youtube-dl

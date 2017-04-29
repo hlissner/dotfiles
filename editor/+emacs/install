@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 
-case "$OSTYPE" in
+case $OSTYPE in
     darwin*)
-        brew tap railwaycat/emacsmacport
-        brew install emacs-mac --with-imagemagick --with-modern-icon
+        brew install emacs --with-modules --with-librsvg --with-imagemagick --with-gnutls --with-cocoa
         ;;
     linux*)
         if [[ -f /etc/arch-release ]]; then
@@ -15,6 +14,9 @@ case "$OSTYPE" in
 esac
 
 if [[ ! -d "$HOME/.emacs.d" ]]; then
-    git clone --recursive "hlissner/.emacs.d" "$HOME/.emacs.d"
-    cd "$HOME/.emacs.d" && make install
+    git clone --recursive "https://github.com/hlissner/.emacs.d" "$HOME/.emacs.d"
+fi
+
+if [[ -f "$HOME/.emacs.d/Makefile" ]]; then
+    cd "$HOME/.emacs.d" && YES=1 make install
 fi
