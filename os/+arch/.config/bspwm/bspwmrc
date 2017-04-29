@@ -1,8 +1,5 @@
 #!/usr/bin/bash
 
-# top-bar
-pgrep -x polybar >/dev/null || polybar main >~/.config/polybar/polybar.log 2>&1 &
-
 #
 # Appearance
 #
@@ -53,21 +50,17 @@ primary=$(bspc query -M -m prmary)
 host=$(hostname)
 case $host in
     triton*)
-        # {
-        #     bspc monitor DVI-I-1 -n C
-        #     bspc monitor HDMI-0  -n R
-        #     bspc monitor DVI-D-0 -n L
-        # } >/dev/null 2>&1
-
-        bspc monitor DVI-I-1 -d {1,2,3,4,5}
+        export MONITOR=DVI-I-1
+        bspc monitor $MONITOR -d {1,2,3,4,5}
         [[ $nmon > 1 ]] && bspc monitor HDMI-0 -d HDMI-0/1
         [[ $nmon > 2 ]] && bspc monitor DVI-D-0 -d DVI-D-0/1
 
-        bspc config -m DVI-I-1 top_padding 30
-        ;;
-    *)  bspc monitor "$primary" -n C
+        bspc config -m $MONITOR top_padding 30
         ;;
 esac
+
+# top-bar
+~/.config/polybar/run.sh
 
 
 #
