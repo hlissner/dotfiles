@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
+# Provisions arch linux. Should be run from a non-root user, after the bootstrap
+# script (and reboot).
+
 set -e
-shopt -s nullglob
 
 PWD=$(dirname $0)
 
@@ -17,7 +19,7 @@ exists() { command -v "$1" >/dev/null; }
 #
 ########################################
 
-if ! echo -e "GET http://google.com HTTP/1.0\n\n" | nc google.com 80 > /dev/null 2>&1; then
+if ! ping -c1 google.com >/dev/null; then
     >&2 echo "No internet connection detected!"
     exit 1
 elif [[ $(id -u) == 0 ]]; then
@@ -26,7 +28,7 @@ elif [[ $(id -u) == 0 ]]; then
 fi
 
 # Essential utilities
-$pacman -S wget curl tree rsync openssh dnsutils
+$pacman -S wget git curl tree rsync openssh dnsutils
 
 # Set up pacaur (AUR helper)
 if ! exists pacaur; then
@@ -46,37 +48,18 @@ fi
 
 ## Bootstrap
 # Helpful utilities
-$pacaur -S the_silver_searcher fasd tmux hub bc keybase cronie
-sudo systemctl enable cronie.service
+$pacaur -S the_silver_searcher tmux hub bc keybase-bin
 
 if [[ -z $SERVER ]]; then
-    # crontab
-    if exists crontab; then
-        [[ -f $PWD/crontab ]] && crontab $PWD/crontab
-    fi
-
     # desktop essentials
-    $pacman -S xorg-init xorg-server
-    # Desktop manager
-    $pacaur -S lightdm lightdm-webkit2-greeter
-    # Window manager
-    $pacaur -S bspwm sxhkd compton
-    # Taskbar
-    $pacaur -S xcb-proto polybar
-    # Notifications
-    $pacaur -S dunst libnotify
-    # Utilities
-    $pacaur -S rofi feh sxiv maim slop-opengl neofetch-git pass youtube-dl xdotool
-    # Apps
-    $pacaur -S redshift firefox termite
-    # Audio
-    $pacaur -S alsa-utils
-    # Dictionary
-    $pacaur -S dictd dict-gcide
-
-    hookdest=/etc/pacman.d/hooks
-    sudo mkdir -p "$hookdest"
-    for hook in $PWD/$hookdest/*.hook; do
-        [[ -f $hookdest/${hook##*/} ]] || sudo ln -svf $hook $hookdest/
-    done
+    $pacaur -S \
+        xorg-xinit xorg-server \
+        lightdm lightdm-webkit2-greeter \
+        bspwm sxhkd compton \
+        xcb-proto polybar \
+        dunst libnotify \
+        feh sxiv maim slop-opengl neofetch-git pass youtube-dl xdotool \
+        redshift firefox \
+        alsa-utils \
+        dictd dict-gcide
 fi

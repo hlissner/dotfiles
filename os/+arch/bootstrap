@@ -4,7 +4,6 @@
 # connection, and the harddrives to be set up (and one of the mounted to /mnt).
 
 MOUNT=/mnt
-USERNAME=hlissner
 
 exists() { command -v "$1" >/dev/null; }
 arch() { arch-chroot "$MOUNT" /bin/bash -c "$1"; }
@@ -16,10 +15,27 @@ if ! exists arch-chroot; then
 elif ! grep "$MOUNT " /proc/mounts >/dev/null; then
     >&2 echo "$MOUNT isn't mounted"
     exit 2
-elif ! echo -e "GET http://google.com HTTP/1.0\n\n" | nc google.com 80 > /dev/null 2>&1; then
+elif ! ping -c1 http://google.com >/dev/null; then
     >&2 echo "No internet connection detected!"
     exit 3
 fi
+
+#
+set -e
+
+## Collect info
+# hostname
+read -rp "Hostname:\t" host
+
+
+#
+echo "$host" > "$MOUNT/etc/hostname"
+
+# ensure keys are up to date
+pacman-key --init
+pacman-key --populate arch-linux
+pacman-key --refresh-keys
+pacman -Syy
 
 # bootstrap
 pac base base-devel intel-ucode
@@ -27,10 +43,6 @@ pac base base-devel intel-ucode
 pac dosfstools ntfs-3g exfat-utils hfsprogs
 # nc
 pac gnu-netcat
-
-# hostname
-read -p "Enter computer hostname: " host
-echo "$host" > "$MOUNT/etc/hostname"
 
 # networking support
 WIRELESS_DEV=$(ip link | grep wlp | awk '{print $2}'| sed 's/://' | sed '1!d')
