@@ -62,4 +62,10 @@ if [[ -z $SERVER ]]; then
         redshift firefox \
         alsa-utils \
         dictd dict-gcide
+
+    hookdest=/etc/pacman.d/hooks
+    sudo mkdir -p "$hookdest"
+    for hook in $PWD/$hookdest/*.hook; do
+        [[ -f $hookdest/${hook##*/} ]] || sudo ln -svf $hook $hookdest/
+    done
 fi
