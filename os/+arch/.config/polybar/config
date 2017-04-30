@@ -50,7 +50,7 @@ font-2 = FontAwesome:fontformat=truetype:size=11;1
 
 modules-left = bspwm
 modules-center = date
-modules-right = pkg mail volume redshift
+modules-right = eth pkg mail volume redshift
 
 enable-ipc = true
 
@@ -239,11 +239,11 @@ ramp-signal-foreground = ${colors.foreground-alt}
 
 [module/eth]
 type = internal/network
-interface = enp0s31f6
+interface = ${env:ETH:enp0s31f6}
 interval = 3.0
 
-format-connected-underline = #55aa55
-format-connected-prefix = " "
+; format-connected-underline = #55aa55
+; format-connected-prefix = " "
 format-connected-foreground-foreground = ${colors.foreground-alt}
 label-connected = %local_ip%
 
@@ -258,7 +258,7 @@ interval = 5
 date = "  %A, %h %d"
 date-alt = " %Y-%m-%d"
 
-time = "  %I:%M %p"
+time = "   %I:%M %p"
 time-alt = %H:%M:%S
 
 format-prefix = 
@@ -275,9 +275,9 @@ format-volume = <ramp-volume>
 ; label-volume = " "
 label-volume-foreground = ${root.foreground}
 
-format-muted-prefix = " "
+; format-muted-prefix = " "
 format-muted-foreground = ${colors.foreground-alt}
-; label-muted = sound muted
+label-muted = 
 
 bar-volume-width = 10
 bar-volume-foreground-0 = #55aa55

@@ -15,14 +15,16 @@ n = 0
 if os.path.isfile(CONFIG_FILE):
     with open(CONFIG_FILE) as fp:
         for line in fp:
-            addr, pwd = line.strip().split(",")
-            obj = imaplib.IMAP4_SSL('imap.gmail.com', 993)
-            obj.login(addr, pwd)
-            obj.select()
-            n += len(obj.search(None, 'UnSeen')[1][0].split())
-            obj.close()
-            obj.logout()
-    print("%{{F#{}}}{} {}".format(COLOR_HL if n > 0 else COLOR_NONE, ICON, n))
+            if line:
+                addr, pwd = line.strip().split(",")
+                obj = imaplib.IMAP4_SSL('imap.gmail.com', 993)
+                obj.login(addr, pwd)
+                obj.select()
+                n += len(obj.search(None, 'UnSeen')[1][0].split())
+                obj.close()
+                obj.logout()
+    cl = COLOR_HL if n > 0 else COLOR_NONE
+    print("%{{u#{}}}%{{F#{}}}{} {}".format(cl, cl, ICON, n))
 else:
     print("%{{F#{}}}{} -".format(COLOR_ERR, ICON))
     sys.exit(1)
