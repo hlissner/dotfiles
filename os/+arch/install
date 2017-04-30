@@ -64,7 +64,7 @@ if [[ -z $SERVER ]]; then
         xcb-proto polybar \
         dunst libnotify \
         feh sxiv maim slop-opengl neofetch-git pass youtube-dl xdotool \
-        redshift firefox \
+        redshift chromium chromium-widevine \
         alsa-utils \
         dictd dict-gcide
 
