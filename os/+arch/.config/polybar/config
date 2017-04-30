@@ -46,7 +46,7 @@ module-margin-right = 2
 
 font-0 = "Fira Sans:style=Bold:size=10;1"
 font-1 = "Fira Mono:style=Bold:size=10;1"
-font-2 = FontAwesome:fontformat=truetype:size=10.5;1
+font-2 = FontAwesome:fontformat=truetype:size=11;1
 
 modules-left = bspwm
 modules-center = date
@@ -400,7 +400,6 @@ exec = ~/.config/polybar/modules/mail
 [module/redshift]
 type = custom/script
 interval = 30
-; format-prefix = " "
 exec = ~/.config/polybar/modules/redshift
 exec-if = "pgrep redshift >/dev/null"
 

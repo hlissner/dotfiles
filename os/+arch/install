@@ -33,8 +33,8 @@ $pacman -S wget git curl tree rsync openssh dnsutils
 # Set up pacaur (AUR helper)
 if ! exists pacaur; then
     pushd $(mktemp -d)
-    curl -o PKGBUILD https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=cower && makepkg --skippgpcheck -sri
-    curl -o PKGBUILD https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=pacaur && makepkg --skippgpcheck -sri
+    curl -o PKGBUILD https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=cower && makepkg --needed --noconfirm --skippgpcheck -sri
+    curl -o PKGBUILD https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=pacaur && makepkg --needed --noconfirm --skippgpcheck -sri
     TEMP=$(pwd)
     popd
     rm -rf "$TEMP"
@@ -48,9 +48,14 @@ fi
 
 ## Bootstrap
 # Helpful utilities
-$pacaur -S the_silver_searcher tmux hub bc keybase-bin
+$pacaur -S the_silver_searcher tmux hub bc keybase-bin cronie
+systemctl enable cronie.service
 
 if [[ -z $SERVER ]]; then
+    if exists crontab; then
+        [[ -f $PWD/crontab ]] && crontab $PWD/crontab
+    fi
+
     # desktop essentials
     $pacaur -S \
         xorg-xinit xorg-server \
