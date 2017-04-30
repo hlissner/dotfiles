@@ -52,6 +52,8 @@ modules-left = bspwm
 modules-center = date
 modules-right = pkg mail volume redshift
 
+enable-ipc = true
+
 ;tray-position = center
 tray-padding = 2
 ;tray-transparent = true
@@ -383,13 +385,10 @@ menu-2-1-exec = menu-open-0
 ;=====================================================
 
 [module/pkg]
-type = custom/script
-interval = 1200
-format = <label>
-; format-underline = #dc322f
-label = "%output:0:30%"
-exec = ~/.config/polybar/modules/updates
-exec-if = "ping -q -w 2 -c 1 176.34.135.167 >/dev/null"
+type = custom/ipc
+format = <output>
+hook-0 = ~/.config/polybar/modules/updates
+initial = 1
 
 [module/mail]
 type = custom/script
