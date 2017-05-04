@@ -4,7 +4,7 @@ if [[ ! -d "$HOME/.pyenv" || $FORCE ]]; then
     git clone https://github.com/yyuu/pyenv.git $HOME/.pyenv
 
     # Install the latest v2 and v3 versions of python
-    source "$(cd $(dirname $0) && pwd)"/env.zsh
+    PATH="$HOME/.pyenv/bin:$PATH"
     py2=$(pyenv install --list | sed 's/^  //' | grep -e '^3' | grep --invert-match 'dev\|a\|b' | tail -1)
     py3=$(pyenv install --list | sed 's/^  //' | grep -e '^2' | grep --invert-match 'dev\|a\|b' | tail -1)
     pyenv install "$py2"
