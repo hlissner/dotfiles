@@ -51,16 +51,19 @@ host=$(hostname)
 case $host in
     triton*)
         export MONITOR=DVI-I-1
-        bspc monitor $MONITOR -d {1,2,3,4,5}
         [[ $nmon > 1 ]] && bspc monitor HDMI-0 -d HDMI-0/1
         [[ $nmon > 2 ]] && bspc monitor DVI-D-0 -d DVI-D-0/1
 
-        bspc config -m $MONITOR top_padding 30
+        ;;
+    proteus*)
+        export MONITOR=LVDS-0
         ;;
 esac
-
-# top-bar
-~/.config/polybar/run.sh
+if [[ $MONITOR ]]; then
+    bspc config -m $MONITOR top_padding 30
+    bspc monitor $MONITOR -d {1,2,3,4,5}
+    ~/.config/polybar/run.sh
+fi
 
 
 #
