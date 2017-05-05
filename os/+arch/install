@@ -76,5 +76,6 @@ if [[ -z $SERVER ]]; then
         feh sxiv maim slop-opengl neofetch-git pass youtube-dl xdotool \
         redshift chromium chromium-widevine \
         alsa-utils \
-        dictd dict-gcide
+        dictd dict-gcide \
+        arc-gtk-theme
 fi
