@@ -59,8 +59,8 @@ case $host in
         MONITOR=LVDS-0
         ;;
     halimede*)
-	MONITOR=HDMI-0
-	;;
+        MONITOR=HDMI-0
+        ;;
 esac
 if [[ $MONITOR ]]; then
     bspc config -m $MONITOR top_padding 30
