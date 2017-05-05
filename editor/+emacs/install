@@ -16,7 +16,3 @@ esac
 if [[ ! -d "$HOME/.emacs.d" ]]; then
     git clone --recursive "https://github.com/hlissner/.emacs.d" "$HOME/.emacs.d"
 fi
-
-if [[ -f "$HOME/.emacs.d/Makefile" ]]; then
-    cd "$HOME/.emacs.d" && YES=1 make install
-fi
