@@ -70,7 +70,7 @@ if [[ -z $SERVER ]]; then
     $pacaur -S \
         xorg-xinit xorg-server \
         lightdm lightdm-webkit2-greeter \
-        bspwm sxhkd compton \
+        bspwm sxhkd compton rvxt-unicode rvxt-unicode-terminfo \
         xcb-proto polybar \
         dunst libnotify \
         feh sxiv maim slop-opengl neofetch-git pass youtube-dl xdotool \
