@@ -7,7 +7,7 @@ case $OSTYPE in
         ln -sfv $HOME/.config/mpd/mpd-osx.conf $HOME/.config/mpd/mpd.conf
         ;;
     linux*)
-        if [[ -f /etc/arch-version ]]; then
+        if [[ -f /etc/arch-release ]]; then
             sudo pacman --needed --noconfirm -S mpd mpc ncmpcpp
         fi
         ln -sfv $HOME/.config/mpd/mpd-linux.conf $HOME/.config/mpd/mpd.conf
