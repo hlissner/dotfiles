@@ -6,7 +6,7 @@ case $OSTYPE in
         ;;
     linux*)
         if [[ -f /etc/arch-release ]]; then
-            pacaur --needed --noconfirm -S editorconfig-core-c
+            pacaur --noedit --needed --noconfirm -S editorconfig-core-c
         fi
         ;;
 esac
