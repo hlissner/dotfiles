@@ -32,12 +32,16 @@ $pacman -S wget git curl tree rsync openssh dnsutils
 
 # Set up pacaur (AUR helper)
 if ! exists pacaur; then
-    pushd $(mktemp -d)
+    TEMP="$(mktemp -d)"
+    function cleanup {
+        rm -rf "$TEMP"
+    }
+    trap cleanup EXIT
+
+    pushd "$TEMP"
     curl -o PKGBUILD https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=cower && makepkg --needed --noconfirm --skippgpcheck -sri
     curl -o PKGBUILD https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=pacaur && makepkg --needed --noconfirm --skippgpcheck -sri
-    TEMP=$(pwd)
     popd
-    rm -rf "$TEMP"
 
     if ! exists pacaur; then
         >&2 echo "Pacaur wasn't successfully installed"
@@ -49,12 +53,18 @@ fi
 ## Bootstrap
 # Helpful utilities
 $pacaur -S the_silver_searcher tmux hub bc keybase-bin cronie
-systemctl enable cronie.service
+sudo systemctl enable cronie.service
 
 if [[ -z $SERVER ]]; then
     if exists crontab; then
-        [[ -f $PWD/crontab ]] && crontab $PWD/crontab
+        [[ -f $PWD/crontab ]] && crontab "$PWD/crontab"
     fi
+
+    hookdest=/etc/pacman.d/hooks
+    sudo mkdir -p "$hookdest"
+    for hook in $PWD/$hookdest/*.hook; do
+        [[ -f $hookdest/${hook##*/} ]] || sudo ln -svf "$hook" "$hookdest/"
+    done
 
     # desktop essentials
     $pacaur -S \
@@ -67,10 +77,4 @@ if [[ -z $SERVER ]]; then
         redshift chromium chromium-widevine \
         alsa-utils \
         dictd dict-gcide
-
-    hookdest=/etc/pacman.d/hooks
-    sudo mkdir -p "$hookdest"
-    for hook in $PWD/$hookdest/*.hook; do
-        [[ -f $hookdest/${hook##*/} ]] || sudo ln -svf $hook $hookdest/
-    done
 fi

@@ -32,8 +32,6 @@ read -rp "Hostname:\t" host
 echo "$host" > "$MOUNT/etc/hostname"
 
 # ensure keys are up to date
-pacman-key --init
-pacman-key --populate arch-linux
 pacman-key --refresh-keys
 pacman -Syy
 
@@ -41,14 +39,12 @@ pacman -Syy
 pac base base-devel intel-ucode
 # device mounting drivers
 pac dosfstools ntfs-3g exfat-utils hfsprogs
-# nc
-pac gnu-netcat
 
 # networking support
 WIRELESS_DEV=$(ip link | grep wlp | awk '{print $2}'| sed 's/://' | sed '1!d')
 if [[ $WIRELESS_DEV ]]; then
     echo "==> ${WIRELESS_DEV} interface detected"
-    pac iw wireless_tools wpa_actiond wpa_supplicant dialog
+    pac iw wireless_tools wpa_actiond wpa_supplicant dialog netctl
 fi
 
 WIRED_DEV=$(ip link | grep "en[sop]" | awk '{print $2}'| sed 's/://' | sed '1!d')
