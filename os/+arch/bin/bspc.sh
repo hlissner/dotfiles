@@ -13,13 +13,7 @@ cmd=$1
 dir=$2
 
 case $cmd in
-    m) main=$(bspc query -M -m primary)
-       mon=$(bspc query -M -m focused)
-       if [[ $main == $mon ]]; then
-           xdotool search --onlyvisible --classname lemonbar windowunmap || \
-               xdotool search --classname lemonbar windowmap
-       fi
-       bspc desktop -l next
+    m) bspc desktop -l next
        ;;
     # focus
     f) if ! bspc node -f "$dir.local"; then
