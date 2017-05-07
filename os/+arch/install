@@ -52,7 +52,7 @@ fi
 
 ## Bootstrap
 # Helpful utilities
-$pacaur -S the_silver_searcher tmux hub bc keybase-bin cronie
+$pacaur -S ripgrep tmux hub gist bc keybase-bin cronie
 sudo systemctl enable cronie.service
 
 if [[ -z $SERVER ]]; then
