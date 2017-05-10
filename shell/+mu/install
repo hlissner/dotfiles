@@ -7,7 +7,7 @@ case "$OSTYPE" in
         ;;
     linux*)
         if [[ -f /etc/arch-release ]]; then
-            pacaur --needed --noconfirm -S offlineimap mu
+            pacaur --noedit --needed --noconfirm -S offlineimap mu
         fi
         ;;
 esac
