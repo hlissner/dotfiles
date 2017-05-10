@@ -71,7 +71,7 @@ super + {_,shift + }q
 # state/flags
 #
 
-super + {_,shift + } f
+super + {ctrl,shift + } f
     {bspc.sh m,bspc node -t \~floating}
 
 super + shift + p
@@ -109,10 +109,6 @@ super + {o,i}
 
 super + ctrl + {_,shift +}{1-9,0}
     bspc {desktop -f,node -d} {1-9,10}
-
-# minimize (send to dump desktop)
-super + m
-    bspc node -d 5
 
 
 #
