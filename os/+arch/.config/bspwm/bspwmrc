@@ -63,11 +63,10 @@ case $host in
         ;;
 esac
 if [[ $MONITOR ]]; then
+    export MONITOR
     bspc config -m $MONITOR top_padding 30
     bspc monitor $MONITOR -d {1,2,3,4,5}
-    ~/.config/polybar/run.sh
-
-    export MONITOR
+    . ~/.config/polybar/run.sh
 fi
 
 
