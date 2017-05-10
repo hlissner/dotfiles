@@ -15,10 +15,11 @@ PALETTE="/tmp/palette.png"
 
 usage() {
     cat <<EOL
-Usage: $0 [-fsth] [videofile] [destfile]
+Usage: $0 [-fsSth] SOURCE_FILE [destfile]
 
     -f [FPS]       set frames per second
     -s [hh:mm:ss]  set starting time (like -ss in ffmpeg)
+    -S [W:H]       set width/height (either can be -1 for auto)
     -t [hh:mm:ss]  set the duration to capture (like -t in ffmpeg)
     -h             this help
 EOL
@@ -29,10 +30,11 @@ trap cleanup EXIT
 
 #
 fps=30
-while getopts hf:s:t: opt; do
+while getopts hf:s:t:S: opt; do
     case $opt in
         f) fps="$OPTARG" ;;
         s) start="-ss $OPTARG" ;;
+        S) scale=",scale=$OPTARG:flags=lanczos" ;;
         t) duration="-t $OPTARG" ;;
         h) usage
             exit
@@ -59,8 +61,8 @@ elif [[ ! -f $1 ]]; then
 fi
 
 src="$1"
-dest="${2:-${${src##*/}%.mov}.gif}"
-flags="fps=${fps}"
+dest="${2:-${src%.*}.gif}"
+flags="fps=${fps}$scale"
 
 # stats_mode=full favors motion, causing the resulting palette to better
 # accomodate fades and transitions.
