@@ -1,30 +1,79 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
 import imaplib
+import email
 import os
 import sys
+import re
+from shlex import quote
 
 ICON = ""
 CONFIG_FILE = os.path.expanduser("~/.private/config/email")
+CACHE_FILE = "/tmp/polybar-mail"
 
 COLOR_HL = "B48EAD"
 COLOR_NONE = "65737E"
 COLOR_ERR = "D08770"
 
-n = 0
-if os.path.isfile(CONFIG_FILE):
-    with open(CONFIG_FILE) as fp:
-        for line in fp:
-            if line:
-                addr, pwd = line.strip().split(",")
-                obj = imaplib.IMAP4_SSL('imap.gmail.com', 993)
-                obj.login(addr, pwd)
-                obj.select()
-                n += len(obj.search(None, 'UnSeen')[1][0].split())
-                obj.close()
-                obj.logout()
-    cl = COLOR_HL if n > 0 else COLOR_NONE
-    print("%{{u#{}}}%{{F#{}}}{} {}".format(cl, cl, ICON, n))
-else:
-    print("%{{F#{}}}{} -".format(COLOR_ERR, ICON))
-    sys.exit(1)
+
+#
+def recent_messages(address, password):
+    obj = imaplib.IMAP4_SSL('imap.gmail.com', 993)
+    obj.login(address, password)
+    try:
+        obj.select('Inbox')
+        ret, resp = obj.search(None, '(UNSEEN)')
+        if ret == 'OK':
+            uids = resp[0].split()
+            if uids:
+                ret, data = obj.fetch(b",".join(uids), '(BODY.PEEK[])')
+                if ret == 'OK':
+                    for m in filter(lambda x: len(x) > 1, data):
+                        yield email.message_from_string(m[1].decode('utf-8'))
+                else:
+                    print("Error: fetch")
+        else:
+            print("Error: lookup")
+    finally:
+        obj.close()
+        obj.logout()
+
+def notify(sender, subject):
+    if sender[0] == "?" and "<" in sender:
+        sender = sender.split("<")[1].split(">")[0]
+    os.system("/usr/bin/notify-send {} {}".format(quote("<b>{}</b>".format(sender)), quote(subject)))
+
+def ding():
+    os.system("/usr/bin/aplay -N -q '{}'".format(os.path.expanduser("~/.config/polybar/sounds/robinhood76-music-box.wav")))
+
+
+#
+if __name__ == '__main__':
+    if os.path.isfile(CONFIG_FILE):
+        cache = []
+        if os.path.isfile(CACHE_FILE):
+            with open(CACHE_FILE, 'r') as fp:
+                cache = fp.read().strip().split("\n")
+
+        with open(CONFIG_FILE, 'r') as fp:
+            accounts = [line.strip().split(",") for line in fp if line]
+
+        total = 0
+        unique = 0
+        for addr, pwd in accounts:
+            for msg in recent_messages(addr, pwd):
+                total += 1
+                if msg['Message-Id'] not in cache:
+                    notify(msg['From'], msg['Subject'])
+                    cache.append(msg['Message-Id'].strip())
+                    unique += 1
+
+        color = COLOR_HL if total > 0 else COLOR_NONE
+        print("%{{u#{}}}%{{F#{}}}{} {}".format(color, color, ICON, total))
+        if unique > 0:
+            ding()
+        with open(CACHE_FILE, 'w') as fp:
+            fp.write("\n".join(cache[-75:]))
+    else:
+        print("%{{F#{}}}{} -".format(COLOR_ERR, ICON))
+        sys.exit(1)
