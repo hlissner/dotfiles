@@ -39,7 +39,7 @@ def recent_messages(address, password):
         obj.logout()
 
 def notify(sender, subject):
-    if sender[0] == "?" and "<" in sender:
+    if not sender[0].isalnum() and "<" in sender:
         sender = sender.split("<")[1].split(">")[0]
     os.system("/usr/bin/notify-send {} {}".format(quote("<b>{}</b>".format(sender)), quote(subject)))
 
