@@ -8,8 +8,8 @@
 ;=====================================================
 
 [colors]
-background = #0001040b
-background-alt = #22252c
+background = #9912151c
+background-alt = #5522354f
 foreground = #e5e8e6
 foreground-alt = ${xrdb:color8}
 primary = #ffb52a
@@ -17,13 +17,13 @@ secondary = #e60053
 alert = ${xrdb:color5}
 
 [global/wm]
-margin-top = 2
+margin-top = 0
 margin-bottom = 0
 
 [bar/main]
 monitor = ${env:MONITOR:DVI-I-1}
 width = 100%
-height = 29
+height = 27
 offset-x = 0
 offset-y = 0
 
@@ -31,18 +31,17 @@ offset-y = 0
 background = ${colors.background}
 foreground = ${colors.foreground}
 
-overline-size = 2
+overline-size = 0
 overline-color = #f00
-underline-size = 2
+underline-size = 0
 underline-color = #00f
 
 border-bottom-size = 0
-border-bottom-color = #333
 
-padding-left = 1
-padding-right = 1
-module-margin-left = 2
-module-margin-right = 2
+padding-left = 0
+padding-right = 0
+module-margin-left = 0
+module-margin-right = 0
 
 font-0 = "Fira Sans:style=Bold:size=10;1"
 font-1 = "Fira Mono:style=Bold:size=10;1"
@@ -50,7 +49,8 @@ font-2 = FontAwesome:fontformat=truetype:size=11;1
 
 modules-left = bspwm
 modules-center = date
-modules-right = eth pkg mail volume redshift
+modules-right = wlp eth pkg mail volume redshift
+; modules-right = wlp eth pkg volume redshift
 
 enable-ipc = true
 
@@ -118,20 +118,22 @@ ws-icon-default = x
 format = <label-state> <label-mode>
 
 label-focused = %icon%
-label-focused-background = ${colors.background-alt}
-; label-focused-underline= ${colors.primary}
-label-focused-underline= ${xrdb:color4}
+; label-focused-background = ${colors.background-alt}
+; label-focused-underline = ${colors.primary}
+; label-focused-foreground = ${xrdb:color2}
 label-focused-padding = 3
 
 label-occupied = %icon%
+label-occupied-foreground = #aa85678f
 label-occupied-padding = 3
 
 label-urgent = %icon%
-label-urgent-background = ${colors.alert}
+label-urgent-foreground = ${xrdb:color9}
+; label-urgent-background = ${colors.alert}
 label-urgent-padding = 3
 
 label-empty = %icon%
-label-empty-foreground = ${colors.foreground-alt}
+label-empty-foreground = #88282a2e
 label-empty-padding = 3
 
 [module/i3]
@@ -142,11 +144,12 @@ wrapping-scroll = false
 
 label-mode-padding = 2
 label-mode-foreground = #000
-label-mode-background = ${colors.primary}
+; label-mode-background = ${colors.primary}
 
 label-focused = %index%
-label-focused-background = ${module/bspwm.label-focused-background}
-label-focused-underline = ${module/bspwm.label-focused-underline}
+; label-focused-background = ${module/bspwm.label-focused-background}
+label-focused-foreground = ${xrdb:color4}
+; label-focused-underline = ${module/bspwm.label-focused-underline}
 label-focused-padding = ${module/bspwm.label-focused-padding}
 
 label-unfocused = %index%
@@ -239,8 +242,8 @@ ramp-signal-foreground = ${colors.foreground-alt}
 
 [module/eth]
 type = internal/network
-interface = ${env:ETH:enp0s31f6}
-interval = 3.0
+interface = ${env:ETH:enp2s0}
+interval = 4.0
 
 ; format-connected-underline = #55aa55
 ; format-connected-prefix = " "
@@ -251,6 +254,21 @@ format-disconnected-underline = ${self.format-connected-underline}
 label-disconnected = %ifname% disconnected
 label-disconnected-foreground = ${colors.foreground-alt}
 
+[module/wlp]
+type = internal/network
+interface = ${env:WLP:wlp3s0}
+interval = 4.0
+
+; format-connected-underline = #55aa55
+; format-connected-prefix = " "
+format-connected-foreground-foreground = ${colors.foreground-alt}
+label-connected = %local_ip%
+
+format-disconnected-underline = ${self.format-connected-underline}
+label-disconnected = %ifname% disconnected
+label-disconnected-foreground = ${colors.foreground-alt}
+
+
 [module/date]
 type = internal/date
 interval = 5
@@ -258,7 +276,7 @@ interval = 5
 date = "  %A, %h %d"
 date-alt = " %Y-%m-%d"
 
-time = "   %I:%M %p"
+time = "    %I:%M %p"
 time-alt = %H:%M:%S
 
 format-prefix = 
@@ -387,19 +405,22 @@ menu-2-1-exec = menu-open-0
 [module/pkg]
 type = custom/ipc
 format = <output>
+format-padding = 3
 hook-0 = ~/.config/polybar/modules/updates
 initial = 1
 
 [module/mail]
 type = custom/script
-interval = 120
+interval = 300
 format = <label>
+format-padding = 3
 format-prefix-foreground = ${colors.foreground-alt}
 exec = ~/.config/polybar/modules/mail
 
 [module/redshift]
 type = custom/script
 interval = 30
+format-padding = 3
 exec = ~/.config/polybar/modules/redshift
 exec-if = "pgrep redshift >/dev/null"
 
