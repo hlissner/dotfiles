@@ -18,8 +18,11 @@ case $1 in
         ;;
 esac
 
-killall -9 -q osd_cat &>/dev/null
-osd_cat --font="10x20" --delay=2 --color=white --align=center --pos=bottom --barmode=percentage --percentage $($0) &
+# community/xosd
+if command -v osd_cat >/dev/null; then
+    killall -9 -q osd_cat &>/dev/null
+    osd_cat --font="10x20" --delay=2 --color=white --align=center --pos=bottom --barmode=percentage --percentage $($0) &
+fi
 
 # Report to lemonbar, if active
 $HOME/.config/panel/panel-notify :volume
