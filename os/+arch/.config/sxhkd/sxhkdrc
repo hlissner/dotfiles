@@ -33,9 +33,9 @@ Pause
 super + Pause
     zzz
 Print
-    maim --opengl -s ~/shared/screenshots/$(date +%F-%T).png
+    maim -s ~/screenshots/$(date +%F-%T).png && notify-send "Screenshot saved"
 super + Print
-    maim --opengl --showcursor ~/shared/screenshots/$(date +%F-%T).png
+    maim ~/screenshots/$(date +%F-%T).png && notify-send "Screenshot saved"
 
 #
 XF86Audio{Play,Pause}
