@@ -53,13 +53,13 @@ case $host in
         MONITOR=DVI-I-1
         [[ $nmon > 1 ]] && bspc monitor HDMI-0 -d HDMI-0/1
         [[ $nmon > 2 ]] && bspc monitor DVI-D-0 -d DVI-D-0/1
-
         ;;
     proteus*)
         MONITOR=LVDS-0
         ;;
     halimede*)
         MONITOR=HDMI-0
+        [[ $nmon > 1 ]] && bspc monitor DVI-I-1 -d DVI-I-1/1
         ;;
 esac
 if [[ $MONITOR ]]; then
