@@ -6,6 +6,6 @@
 #  + git checkout `fzf-git-sha`
 #  + git commit --fixup `fzf-git-sha`
 
-commits=$(git log --color=always --pretty=oneline --abbrev-commit --reverse) &&
-    commit=$(echo "$commits" | fzf --tac +s +m -e --ansi --reverse) &&
+commits=$(git log --color=always --abbrev-commit --reverse --format="%C(auto)%h%d %s %C(black)%C(bold)%cr") &&
+    commit=$(echo "$commits" | gui-fzf --tac +s +m -e --ansi) &&
     echo -n $(echo "$commit" | sed "s/ .*//")
