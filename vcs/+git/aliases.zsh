@@ -7,9 +7,10 @@ compdef g=hub
 
 alias gbr='git browse'
 alias gi='git init'
-alias gs='git status --short'
+alias gf='git fetch'
+alias gs='git status'
 alias gsu='git submodule'
-alias greb='git rebase --autostash -i origin/master'
+alias grb='git rebase --autostash -i'
 alias gco='git checkout'
 alias gcoo='git checkout --'
 alias gc='git commit'
