@@ -78,4 +78,7 @@ if [[ -z $SERVER ]]; then
         alsa-utils \
         dictd dict-gcide \
         arc-gtk-theme
+
+    # fonts
+    $pacaur -S ttf-fira-{mono,sans} ttf-dejavu ttf-liberation ttf-font-awesome
 fi
