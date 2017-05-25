@@ -5,6 +5,7 @@ import email
 import os
 import sys
 import re
+import html
 from shlex import quote
 
 ICON = ""
@@ -41,7 +42,7 @@ def recent_messages(address, password):
 def notify(sender, subject):
     if not sender[0].isalnum() and "<" in sender:
         sender = sender.split("<")[1].split(">")[0]
-    os.system("/usr/bin/notify-send {} {}".format(quote("<b>{}</b>".format(sender)), quote(subject)))
+    os.system("/usr/bin/notify-send {} {}".format(quote("<b>{}</b>".format(html.escape(sender))), quote(html.escape(subject))))
 
 def ding():
     os.system("/usr/bin/aplay -N -q '{}'".format(os.path.expanduser("~/.config/polybar/sounds/robinhood76-music-box.wav")))
