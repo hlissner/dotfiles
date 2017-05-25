@@ -1,0 +1,1 @@
+path=(~/.cabal/bin $path)
