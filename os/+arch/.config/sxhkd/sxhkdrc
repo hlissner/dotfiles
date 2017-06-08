@@ -101,12 +101,6 @@ super + {_,shift + }Tab
 super + bracket{left,right}
     bspc desktop -f focused#{prev,next}.local
 
-# focus the older or newer node in the focus history
-super + {o,i}
-    bspc wm -h off; \
-    bspc node {older,newer} -f; \
-    bspc wm -h on
-
 super + ctrl + {_,shift +}{1-9,0}
     bspc {desktop -f,node -d} {1-9,10}
 

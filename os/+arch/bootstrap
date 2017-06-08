@@ -27,7 +27,6 @@ set -e
 # hostname
 read -rp "Hostname:\t" host
 
-
 #
 echo "$host" > "$MOUNT/etc/hostname"
 

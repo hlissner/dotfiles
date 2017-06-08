@@ -19,7 +19,7 @@ Emacs.font: Fira Mono 10
 ! urxvt
 URxvt*.buffered:               true
 URxvt*.cursorBlink:            true
-URxvt*.underlineColor:         yellow
+URxvt*.underlineColor:         grey
 URxvt*.borderless:             1
 URxvt*.internalBorder:         6
 URxvt*.scrollBar:              false
@@ -60,7 +60,7 @@ rofi.color-active: #20232a, #9ba2af, #20232a, #20232a, #7fa1ed
 ! 262930
 
 ! special
-*.background:   #22252c
+*.background:   #12151c
 *.foreground:   #e8eae9
 *.cursorColor:  #81a2be
 
