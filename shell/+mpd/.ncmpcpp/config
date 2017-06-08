@@ -179,12 +179,12 @@ message_delay_time = 2
 #alternative_header_first_line_format = $b$1$aqqu$/a$9 {%t}|{%f} $1$atqq$/a$9$/b
 #alternative_header_second_line_format = {{$4$b%a$/b$9}{ - $7%b$9}{ ($4%y$9)}}|{%D}
 #
-now_playing_prefix = "$8$b$0 >"
+now_playing_prefix = "$8$b$0>"
 now_playing_suffix = $9$/b
 #
 #browser_playlist_prefix = "$2playlist$9 "
 #
-selected_item_prefix = " +$6"
+selected_item_prefix = "+$6"
 #selected_item_suffix = $9
 #
 # modified_item_prefix = $3> $9
@@ -273,7 +273,8 @@ volume_change_step = 10
 ## be used to build 'empty' part of progressbar.
 ##
 #progressbar_look = =>
-progressbar_boldness = yes
+# progressbar_boldness
+# progressbar_color =
 #
 ## Available values: database, playlist.
 ##
@@ -418,11 +419,13 @@ state_flags_color = default
 main_window_color = yellow
 color1 = white
 color2 = green
-main_window_highlight_color = yellow
+# main_window_highlight_color = yellow
 progressbar_color = black
-progressbar_elapsed_color = blue
+progressbar_elapsed_color = blue:b
 statusbar_color = default
 alternative_ui_separator_color = black
-active_column_color = red
+current_item_prefix = $(yellow)$r
+current_item_suffix = $/r$(end)
+# active_column_color = red
 window_border_color = blue
 active_window_border = red
