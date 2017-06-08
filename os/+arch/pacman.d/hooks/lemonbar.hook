@@ -1,12 +1,12 @@
 [Trigger]
-Operation=Install
-Operation=Upgrade
-Operation=Remove
-Type=Package
-Target=*
+Operation = Install
+Operation = Upgrade
+Operation = Remove
+Type = Package
+Target = *
 
 [Action]
-Description="Updating lemonbar"
-When=PostTransaction
-Exec="/home/hlissner/.config/panel/panel-pacman-hook"
+Description = Updating lemonbar
+When = PostTransaction
+Exec = /home/hlissner/.config/panel/panel-pacman-hook
 

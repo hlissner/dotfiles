@@ -406,8 +406,9 @@ menu-2-1-exec = menu-open-0
 type = custom/ipc
 format = <output>
 format-padding = 3
-hook-0 = ~/.config/polybar/modules/updates
+hook-0 = /home/hlissner/.config/polybar/modules/updates
 initial = 1
+click-left = polybar-msg -p %pid% hook pkg 1
 
 [module/mail]
 type = custom/script
@@ -415,13 +416,13 @@ interval = 300
 format = <label>
 format-padding = 3
 format-prefix-foreground = ${colors.foreground-alt}
-exec = ~/.config/polybar/modules/mail
+exec = /home/hlissner/.config/polybar/modules/mail
 
 [module/redshift]
 type = custom/script
 interval = 30
 format-padding = 3
-exec = ~/.config/polybar/modules/redshift
+exec = /home/hlissner/.config/polybar/modules/redshift
 exec-if = "pgrep redshift >/dev/null"
 
 ; vim:ft=dosini
