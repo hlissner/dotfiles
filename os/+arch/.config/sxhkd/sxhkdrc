@@ -18,7 +18,9 @@ super + space
         || urxvt -name urxvt-fuzzy -geometry 100x26 -e $SHELL -c fzf-apps
 # password manager
 super + alt + backslash
-    fzf-pass
+    xdotool search --onlyvisible --classname urxvt-fuzzy windowunmap \
+        || xdotool search --classname urxvt-fuzzy windowmap \
+        || urxvt -name urxvt-fuzzy -geometry 100x26 -e $SHELL -c fzf-pass
 # make sxhkd reload its configuration files:
 super + Escape
     pkill -USR1 -x sxhkd
