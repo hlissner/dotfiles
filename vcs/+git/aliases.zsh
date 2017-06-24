@@ -1,4 +1,4 @@
-is-callable hub && alias git='hub'
+is-callable hub && alias git='noglob hub' || alias git='noglob git'
 
 # g = git status
 # g ... = git $@
@@ -20,9 +20,9 @@ alias gcm='noglob git commit -S -m'
 alias gcma='noglob git commit --amend -S -m'
 alias gcf='noglob git commit -S --fixup'
 alias gC='git commit'
-alias gCm='noglob git commit -m'
-alias gCma='noglob git commit --amend -m'
-alias gCf='noglob git commit --fixup'
+alias gCm='git commit -m'
+alias gCma='git commit --amend -m'
+alias gCf='git commit --fixup'
 alias gcl='git clone'
 alias gcp='git cherry-pick -S'
 alias gd='git diff'
