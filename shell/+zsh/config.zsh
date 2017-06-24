@@ -5,7 +5,7 @@ ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 # Treat these characters as part of a word.
 WORDCHARS='_-*?[]~&.;!#$%^(){}<>'
 
-setopt BRACE_CCL          # Allow brace character class list expansion.
+unsetopt BRACE_CCL        # Allow brace character class list expansion.
 setopt COMBINING_CHARS    # Combine zero-length punc chars (accents) with base char
 setopt RC_QUOTES          # Allow 'Henry''s Garage' instead of 'Henry'\''s Garage'
 setopt HASH_LIST_ALL
