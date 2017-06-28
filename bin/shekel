@@ -1,0 +1,130 @@
+#!/usr/bin/env python3
+
+# A shell script that converts one currency to another.
+#
+# Usage: shekel AMOUNT FROM TO
+#
+# FROM and TO are either currency codes or a fuzzy substring (requires iterfzf
+# and fzf).
+#
+#   Examples:
+#     shekel 200 USD CAD
+#   Don't remember the currency code? Use fuzzy search:
+#     shekel 200 USD british
+#   This will spawn an fzf session (requires the iterfzf package and fzf)
+#
+# Requires: iterfzf (optional)
+
+import sys
+import os
+import json
+from urllib import request
+from datetime import datetime
+from base64 import b64encode
+
+try:
+    from iterfzf import iterfzf
+except:
+    pass
+
+
+API_KEY = "92a7ccb3b6038a7151fc15e99f2de83d" # please use your own!
+API_URL = "http://apilayer.net/api/live?access_key={}&currencies={},{}"
+DB_URL = "https://raw.githubusercontent.com/hlissner/lb6-actions/master/Convert%20Currency.lbaction/Contents/Resources/currencies.json"
+
+DEFAULT_CODE = "CAD"
+CACHE_FILE = os.path.expanduser("~/.cache/shekel-hist")
+CACHE_TTL = 3600
+CACHE = {}
+
+def _request(url, *args):
+    try:
+        real_url = url.format(*map(request.quote, map(str, args)))
+        resp = request.urlopen(real_url).read().decode('utf-8')
+        data = json.loads(resp)
+        if data['success']:
+            return data["quotes"]
+        raise Exception(data['error']['info'])
+    except IOError:
+        print("IOError")
+
+def _cache(key, value):
+    CACHE[key] = {
+        'time': datetime.now().timestamp(),
+        'value': value
+    }
+
+def cache(from_code, to_code, fn, ttl=CACHE_TTL):
+    key = "-".join([from_code, to_code])
+    if key not in CACHE or CACHE[key]['time'] > CACHE[key]['time'] + ttl:
+        value = fn()
+        if value is not None:
+            _cache(key, value)
+            _cache("-".join([to_code, from_code]), value)
+    return CACHE[key]['value']
+
+def get_rate(from_code, to_code=DEFAULT_CODE):
+    if from_code == to_code:
+        raise ValueError("Trying to convert currency to itself ({})".format(from_code))
+    elif from_code is None or to_code is None:
+        return None
+    rates = cache(
+        from_code,
+        to_code,
+        lambda: _request(API_URL, API_KEY, from_code, to_code)
+    )
+    src = rates["USD" + from_code]
+    dest = rates["USD" + to_code]
+    return (1 / src) * dest
+
+def parse(codes, db):
+    for i, code in enumerate(codes):
+        if len(code) == 3 and code.isupper():
+            continue
+        resp = iterfzf(currencies(), query=code)
+        if resp is None:
+            codes[i] = None
+        else:
+            codes[i] = resp.split("  ")[0]
+
+    return codes
+
+def currencies():
+    for curr in CACHE['_DB']:
+        yield "{}  {}".format(curr['id'], curr['currencyName'])
+
+def usage():
+    print("Usage: {} AMOUNT FROM [TO]".format(sys.argv[0]))
+
+#
+if __name__ == '__main__':
+    refresh = False
+    if "-f" in sys.argv:
+        refresh = True
+        sys.argv.remove('-f')
+
+    if len(sys.argv) < 3:
+        usage()
+        sys.exit(1)
+
+    if refresh:
+        CACHE = {}
+    else:
+        if os.path.isfile(CACHE_FILE):
+            with open(CACHE_FILE, 'r') as f:
+                CACHE = json.load(f)
+    if "_DB" not in CACHE:
+        CACHE['_DB'] = json.loads(request.urlopen(DB_URL).read().decode('utf-8'))
+
+    amount, codes = float(sys.argv[1]), parse(sys.argv[2:4], CACHE['_DB'])
+    rate = get_rate(*codes)
+    if rate is None:
+        print("Aborted")
+    else:
+        converted_amount = amount * rate
+        print("{:.6f} {}".format(converted_amount, codes[1]))
+
+    with open(CACHE_FILE, 'w') as f:
+        json.dump(CACHE, f)
+
+    sys.exit(0)
