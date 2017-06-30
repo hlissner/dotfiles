@@ -43,7 +43,4 @@ alias gt='git tag'
 alias gtd='git tag -d'
 alias gta='git tag -a'
 alias gl='git log --graph --pretty="format:%C(yellow)%h%Creset %C(red)%G?%Creset%C(green)%d%Creset %s %Cblue(%cr) %C(bold blue)<%aN>%Creset"'
-alias gls='gl --stat'
-alias gL='git log --oneline --decorate --graph'
-alias gLs='git log --oneline --decorate --graph --stat'
-
+alias gL='gl --stat'
