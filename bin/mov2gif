@@ -15,7 +15,7 @@ PALETTE="/tmp/palette.png"
 
 usage() {
     cat <<EOL
-Usage: $0 [-fsSth] SOURCE_FILE [destfile]
+Usage: ${0##*/} [-fsSth] SOURCE_FILE [destfile]
 
     -f [FPS]       set frames per second
     -s [hh:mm:ss]  set starting time (like -ss in ffmpeg)
