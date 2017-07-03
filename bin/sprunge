@@ -6,7 +6,7 @@ set -e
 
 usage() {
     more <<EOL
-Usage: $0 [-l LANG] [FILE]
+Usage: ${0##*/} [-l LANG] [FILE]
 
 Uploads text files/input to sprunge.us, and image/binaries to transfer.sh.
 
@@ -15,8 +15,8 @@ Options:
   -h        This information.
 
 Examples:
-  $0 script.py
-  $0 -l py sometext
+  ${0##*/} script.py
+  ${0##*/} -l py sometext
   echo "Hello world" | bin
   echo "puts 'Hi'" | bin -l rb
 EOL
