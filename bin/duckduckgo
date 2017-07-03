@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
-query=$(urlencode <<< "$*")
+# Runs a duckduckgo.com search.
+#
+# Requires: uri (script in the same folder)
+
+query=$(uri <<< "$*")
 echo "Opening https://duckduckgo.com/?q=$query"
 open "https://duckduckgo.com/?q=$query"
