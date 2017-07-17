@@ -25,8 +25,9 @@ xset r rate 350 45
 run feh --no-fehbg --image-bg black --bg-center "$HOME/wallpaper"
 
 # essentials
-run sxhkd &      # keyboard daemon
-run dunst &      # notifications
+export SXHKD_SHELL=bash  # likely faster than default SHELL
+run sxhkd &  # keyboard daemon
+run dunst &  # notifications
 
 # perdy effects + transparency
 [[ -f ~/.config/compton.conf ]] && run compton &
