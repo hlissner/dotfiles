@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
-npm=$(which npm)
-[[ -w $npm ]] || npm="sudo $npm"
-$npm -g update
+(
+    cd "$NVM_DIR"
+    git fetch origin
+    git checkout $(git describe --abbrev=0 --tags --match "v[0-9]*" origin)
+) && . "$NVM_DIR/nvm.sh"
+
+nvm run node update -g

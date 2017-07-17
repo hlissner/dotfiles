@@ -1,12 +1,10 @@
 #!/usr/bin/env bash
 
-case $OSTYPE in
-    darwin*)
-        brew install node
-        ;;
-    linux*)
-        if [[ -f /etc/arch-release ]]; then
-            sudo pacman --needed --noconfirm -S nodejs npm
-        fi
-        ;;
-esac
+if [[ ! -d ~/.nvm ]]; then
+    git clone https://github.com/creationix/nvm ~/.nvm
+    cd $HOME/.nvm && git checkout v0.33.2
+    export NVM_DIR="$HOME/.nvm"
+    . $HOME/.nvm/nvm.sh
+
+    nvm install node
+fi
