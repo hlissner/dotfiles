@@ -44,7 +44,6 @@
 	unadd = reset HEAD
 	ammend = commit --amend
 	exec = "!exec "
-	squash = rebase -i origin/master
 	orphan = checkout --orphan
 
 	# data analysis
