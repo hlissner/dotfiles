@@ -5,7 +5,6 @@ ENABLED_DIR="$DOTFILES/.enabled.d"
 is-callable() { command -v "$1" >/dev/null; }
 is-interactive() { [[ $- == *i* ]]; }
 is-root() { [[ "$UID" -eq 0 ]]; }
-is-ssh()  { [[ $SSH_CONNECTION ]]; }
 
 info()    { printf "\r[ \033[00;34m..\033[0m ] $1\n"; }
 success() { printf "\r\033[2K[ \033[00;32mOK\033[0m ] $1\n"; }
