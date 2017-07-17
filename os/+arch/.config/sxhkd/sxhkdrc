@@ -33,7 +33,7 @@ super + Escape
 Pause
     mpc -q toggle
 super + Pause
-    zzz
+    ~/.dotfiles/bin/zzz
 Print
     maim -s ~/screenshots/$(date +%F-%T).png && notify-send "Screenshot saved"
 super + Print
@@ -45,14 +45,14 @@ XF86Audio{Play,Pause}
 XF86Audio{Prev,Next}
     mpc -q {prev,next}
 XF86Audio{LowerVolume,RaiseVolume}
-    vol {-,+}
+    ~/.dotfiles/os/+arch/bin/vol {-,+}
 XF86AudioMute
-    vol toggle
+    ~/.dotfiles/os/+arch/bin/vol toggle
 super + XF86Eject
     zzz
 
 super + {Down,Up}
-    vol {-,+}
+    ~/.dotfiles/os/+arch/bin/vol {-,+}
 super + {Left,Right}
     mpc {prev,next}
 
@@ -74,7 +74,7 @@ super + {_,shift + }q
 #
 
 super + {ctrl,shift + } f
-    {bspc.sh m,bspc node -t \~floating}
+    {~/.dotfiles/os/+arch/bin/bspc.sh m,bspc node -t \~floating}
 
 super + shift + p
     bspc node -t \~pseudo_tiled
@@ -89,7 +89,7 @@ super + ctrl + {x,y,z}
 
 # focus/swap the node in the given direction
 super + {_,shift +,ctrl +,shift + ctrl +}{h,j,k,l}
-    bspc.sh {f,s,F,S} {west,south,north,east}
+    ~/.dotfiles/os/+arch/bin/bspc.sh {f,s,F,S} {west,south,north,east}
 
 # focus the node for the given path jump
 super + {p,b,comma,period}
@@ -97,7 +97,7 @@ super + {p,b,comma,period}
 
 # focus the next/previous node
 super + {_,shift + }Tab
-    bspc.sh F {east,west}
+    ~/.dotfiles/os/+arch/bin/bspc.sh F {east,west}
 
 # focus monitor or send to the given desktop
 super + bracket{left,right}
