@@ -14,6 +14,7 @@ fpath=(
 )
 
 export LESS='-g -i -M -R -S -w -z-4'
+export SHELL=$(which zsh)
 if is-callable lesspipe; then
     export LESSOPEN='| /usr/bin/env lesspipe %s 2>&-'
 fi
