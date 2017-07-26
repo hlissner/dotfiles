@@ -1,4 +1,3 @@
-
 export NVM_DIR="$HOME/.nvm"
 
 # [[ -s "$NVM_DIR/nvm.sh" ]] && . "$NVM_DIR/nvm.sh"
@@ -8,6 +7,3 @@ export NVM_DIR="$HOME/.nvm"
 # NOTE This assumes you use the `node` nvm alias, e.g. `nvm install node`
 npmpaths=( $HOME/.nvm/versions/node/*/bin(On) )
 path=("${npmpaths[1]}" $path)
-
-# Local binaries take priority
-path=(./node_modules/.bin $path)
