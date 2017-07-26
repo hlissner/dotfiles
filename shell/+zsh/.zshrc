@@ -14,7 +14,7 @@ if ! zgen saved; then
     zgen load zsh-users/zsh-history-substring-search
     zgen load zsh-users/zsh-completions src
 
-    is-ssh || zgen load zsh-users/zsh-syntax-highlighting
+    [[ $SSH_CONNECTION ]] || zgen load zsh-users/zsh-syntax-highlighting
 
     zgen save
 fi
