@@ -6,7 +6,8 @@ case $OSTYPE in
         ;;
     linux*)
         if [[ -f /etc/arch-release ]]; then
-            sudo pacman --needed --noconfirm -S cabal-install ghc
+            pacaur --needed --noconfirm -S stack ncurses5-compat-lib
+            stack setup
         fi
         ;;
 esac
