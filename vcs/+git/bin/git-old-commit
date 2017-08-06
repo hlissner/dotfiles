@@ -7,5 +7,6 @@
 #
 # Example: git old-commit "-5 years -2 months -11 days -1 hours -19 seconds" "commit message here"
 
-D="$(date --date='-5 years -2 months -11 days -1 hours -19 seconds')"
-GIT_COMMITTER_DATE="$D" GIT_AUTHOR_DATE="$D" git commit -m "$2"
+D="$(date --date="$1")"
+shift
+GIT_COMMITTER_DATE="$D" GIT_AUTHOR_DATE="$D" git commit $@
