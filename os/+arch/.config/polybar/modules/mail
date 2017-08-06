@@ -6,6 +6,7 @@ import os
 import sys
 import re
 import html
+import socket
 from shlex import quote
 
 ICON = ""
@@ -18,6 +19,15 @@ COLOR_ERR = "D08770"
 
 
 #
+def internet_is_on():
+    try:
+        host = socket.gethostbyname("www.google.com")
+        s = socket.create_connection((host, 80), 2)
+        return True
+    except:
+        pass
+    return False
+
 def recent_messages(address, password):
     obj = imaplib.IMAP4_SSL('imap.gmail.com', 993)
     obj.login(address, password)
@@ -51,6 +61,10 @@ def ding():
 #
 if __name__ == '__main__':
     if os.path.isfile(CONFIG_FILE):
+        if not internet_is_on():
+            print("%{{F#{}}}{} !".format(COLOR_ERR, ICON))
+            sys.exit(2)
+
         cache = []
         if os.path.isfile(CACHE_FILE):
             with open(CACHE_FILE, 'r') as fp:
