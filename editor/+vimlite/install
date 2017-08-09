@@ -13,3 +13,4 @@ case $OSTYPE in
         ;;
 esac
 
+[[ -f ~/.vimrc ]] || wget -O ~/.vimrc https://raw.githubusercontent.com/hlissner/.vim/master/vimrc.mini

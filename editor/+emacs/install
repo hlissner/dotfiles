@@ -14,5 +14,6 @@ case $OSTYPE in
 esac
 
 if [[ ! -d "$HOME/.emacs.d" ]]; then
-    git clone --recursive "https://github.com/hlissner/.emacs.d" "$HOME/.emacs.d"
+    git clone --recursive "https://github.com/hlissner/.emacs.d" ~/.emacs.d
+    cd ~/.emacs.d && YES=1 make install
 fi

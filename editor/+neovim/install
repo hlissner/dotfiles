@@ -2,7 +2,7 @@
 
 case $OSTYPE in
     darwin*)
-        command -v nvim >/dev/null || brew install --HEAD neovim/neovim/neovim
+        command -v nvim >/dev/null || brew install neovim
         ;;
     linux*)
         if [[ -f /etc/arch-release ]]; then
@@ -15,9 +15,6 @@ esac
 
 if [[ ! -d "$HOME/.vim" ]]; then
     git clone --recursive "https://github.com/hlissner/.vim" "$HOME/.vim"
-fi
-
-if [[ -f "$HOME/.vim/Makefile" ]]; then
-    cd "$HOME/.vim" && make install && make neovim
+    cd "$HOME/.vim" && make install
 fi
 
