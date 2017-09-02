@@ -2,7 +2,7 @@
     alignment = left
     allow_markup = yes
     bounce_freq = 0
-    browser = /usr/bin/chromium
+    browser = /usr/bin/firefox -new-tab
     dmenu = /usr/bin/rofi -dmenu -p dunst:
     follow = none
     font = Fira Sans 12
