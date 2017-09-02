@@ -1,19 +1,21 @@
+[![MIT](https://img.shields.io/badge/license-MIT-green.svg?style=flat-square)](./LICENSE)
+
 # Henrik's dotfiles
-[![MIT](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
 
 <img src="http://i.giphy.com/ZHlGzvZb130nm.gif" align="right" />
 
-My dotfiles. Fuel for my madness. Designed for MacOS, Arch Linux and the various
-debian-based boxes I frequently ssh into.
+Fuel for my madness. Designed for Arch Linux, MacOS, and various remotes I
+frequent.
 
-It is organized into topics, some with their own READMEs. Check them out for more
-targeted information. The `./boostrap` script is used to install and update them.
+It is organized into topics, some with their own READMEs. Check them out for
+more targeted information. The `./bootstrap` script is used to deploy and update
+them.
 
 ## Bootstrap
 
 `bootstrap` is my idempotent dotfile deployment script.
 
-e.g. `./bootstrap os/arch shell/{zsh,tmux} dev/python`
+e.g. `./bootstrap os/+arch shell/+{zsh,tmux} dev/+pyenv`
 
 ```
 Usage: bootstrap [-iuldypLSU] [topic1[ topic2[ ...]]]
@@ -38,10 +40,11 @@ ln -sfv $topic/.* ~/
 ln -sfv $topic/.{config,local}/* ~/.{config,local}/
 
 # 2. Track enabled topics in ~/.dotfiles/.enabled.d.
-# 3. If topic is enabled, run its update script. Otherwise, run its install script
 if [[ -e ~/.dotfiles/.enabled.d/$topic ]]; then
+    # 3a. If topic is already enabled, run update script
     $topic/update
 else
+    # 3b. Otherwise, run install script
     ln -sfv $topic ~/.dotfiles/.enabled.d/
     $topic/install
 fi
@@ -49,8 +52,8 @@ fi
 
 ## Clean
 
-`clean` will delete broken symlinks in `$HOME`, and can "disable" all topics by removing
-their symlinks in `.enabled.d/`.
+`clean` deletes broken symlinks in `$HOME`. If passed `-u`, it will remove all
+symlinks in `.enabled.d/`, marking all topics as "disabled".
 
 ```
 Usage: clean [-du]
