@@ -55,6 +55,8 @@ fi
 $pacaur -S ripgrep tmux hub gist bc keybase-bin cronie
 sudo systemctl enable cronie.service
 
+echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.d/99-sysctl.conf && sudo sysctl --system
+
 if [[ -z $SERVER ]]; then
     if exists crontab; then
         [[ -f $PWD/crontab ]] && crontab "$PWD/crontab"
