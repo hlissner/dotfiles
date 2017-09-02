@@ -84,6 +84,7 @@ bspc rule -a mpv state=floating center=on
 bspc rule -a Vlc state=floating monitor=C center=on
 bspc rule -a love state=floating center=on sticky=on
 bspc rule -a SimpleScreenRecorder state=floating center=on sticky=on
+bspc rule -a Pinentry state=floating center=on
 
 # Special apps
 bspc rule -a URxvt:urxvt-scratch state=floating sticky=on center=on monitor=C
