@@ -28,9 +28,6 @@ else
     now=$(${date} +%s)
     then=$(${date} --$arg="$*" +%s)
 
-    # Show full target date
-    echo $(${date} --date="@$then")
-
     t=$(( $now - $then ))
 fi
 
