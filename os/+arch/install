@@ -75,11 +75,13 @@ if [[ -z $SERVER ]]; then
         bspwm sxhkd compton rvxt-unicode rvxt-unicode-terminfo \
         xcb-proto polybar \
         dunst libnotify \
-        feh sxiv maim slop-opengl neofetch-git pass youtube-dl xdotool \
+        feh sxiv maim slop-opengl neofetch-git pass youtube-dl xdotool at \
         redshift chromium chromium-widevine \
         alsa-utils \
         dictd dict-gcide \
         arc-gtk-theme
+
+    sudo systemctl enable atd.service
 
     # fonts
     $pacaur -S ttf-fira-{mono,sans} ttf-dejavu ttf-liberation ttf-font-awesome
