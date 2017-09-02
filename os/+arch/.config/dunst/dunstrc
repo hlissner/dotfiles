@@ -25,7 +25,7 @@
     sort = yes
     startup_notification = false
     sticky_history = yes
-    transparency = 1
+    transparency = 0
     word_wrap = yes
     # Align icons left/right/off
     icon_position = right
@@ -33,24 +33,26 @@
     icon_folders = /usr/share/icons/hicolor/32x32/apps/:/usr/share/icons/Adwaita/32x32/actions/
 
 [frame]
-    width = 0
-    color = "81a2be"
+    width = 4
+    color = "#98C379"
 
 [shortcuts]
     context = ctrl+shift+period
 
 [urgency_low]
-    background = "#22252c"
-    foreground = "#FFFFFF"
-    timeout = 5
+    # IMPORTANT: colors have to be defined in quotation marks.
+    # Otherwise the "#" and following would be interpreted as a comment.
+    background = "#282c34"
+    foreground = "#bbc2cf"
+    timeout = 10
 
 [urgency_normal]
-    background = "#22252c"
-    foreground = "#FFFFFF"
-    timeout = 5
+    background = "#282c34"
+    foreground = "#bbc2cf"
+    timeout = 20
 
 [urgency_critical]
-   background = "#44252c"
-   foreground = "#D46A6A"
-    timeout = 5
+    background = "#2B0000"
+    foreground = "#bbc2cf"
+    timeout = 0
 
