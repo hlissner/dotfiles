@@ -248,7 +248,7 @@ song_columns_list_format = (3f)[8]{NEr:#} (45)[5]{t|f:Title} (25)[13]{a|A:Artist
 ## Note: Custom command that will be executed each
 ## time song changes. Useful for notifications etc.
 ##
-execute_on_song_change = "notify-song.sh"
+execute_on_song_change = "mpd-notify-song.sh"
 #playlist_show_mpd_host = no
 playlist_show_remaining_time = yes
 playlist_shorten_total_times = yes
