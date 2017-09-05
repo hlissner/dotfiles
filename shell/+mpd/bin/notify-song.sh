@@ -55,7 +55,7 @@ case $OSTYPE in
         terminal-notifier -title "$rating$title" -message "by $artist :: $album" -appIcon "/Applications/iTunes.app/Contents/Resources/iTunes.icns" &
         ;;
     linux*)
-        [[ $rating ]] && rating="$rating\n"
+        [[ $rating ]] && rating="$rating<br />"
         notify-send --icon="media-playback-start" --app-name="ncmpcpp" "$rating$title" "${artist}\n<i>${album}</i>" &
         ;;
 esac >/dev/null 2>&1
