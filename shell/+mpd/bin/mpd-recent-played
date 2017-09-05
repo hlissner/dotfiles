@@ -6,5 +6,5 @@
 # mpc clear
 # mpc add $(mpc-recent-played | cut -f2)
 
-grep played "$HOME/.config/mpd/mpd.log" | sed 's/ : player: played "(.+)"/\t\1/g' | tail -n${1:-20}
+grep played "$HOME/.config/mpd/mpd.log" | sed -r 's/ : player: played "(.+)"/\t\1/g' | tail -n${1:-20}
 
