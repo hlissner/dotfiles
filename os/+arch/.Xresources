@@ -25,7 +25,6 @@ URxvt*.internalBorder:         6
 URxvt*.scrollBar:              false
 URxvt*.secondaryScroll:        true
 URxvt*.saveLines:              5000
-URxvt*.letterSpace:            -2
 URxvt*.loginShell:             false
 URxvt*.perl-ext-common:        default,matcher
 URxvt*.matcher.button:         1
@@ -33,6 +32,7 @@ URxvt*.url-launcher:           firefox
 URxvt*.matcher.rend.0:         Uline Bold fg5
 URxvt*.font:                   xft:Fira Mono:size=9
 urxvt-scratch.font:            xft:Fira Mono:size=10
+URxvt*.letterSpace:            -1
 urxvt-fuzzy.font:              xft:Fira Mono:size=14
 urxvt-fuzzy.internalBorder:    15
 
