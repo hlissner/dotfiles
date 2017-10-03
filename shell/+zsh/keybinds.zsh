@@ -1,7 +1,7 @@
-# Ran into an issue where the surround module wasn't working if KEYTIMEOUT is <= 10.
-# Specifically, (delete|change)-surround immediately abort into insert mode if
-# KEYTIMEOUT <= 8, and if <= 10, then add-surround would do the same. At 11, all these
-# issues vanish. Very strange!
+# The surround module wasn't working if KEYTIMEOUT was <= 10. Specifically,
+# (delete|change)-surround immediately abort into insert mode if KEYTIMEOUT <=
+# 8. If <= 10, then add-surround does the same. At 11, all these issues vanish.
+# Very strange!
 export KEYTIMEOUT=15
 
 autoload -U is-at-least
@@ -53,7 +53,6 @@ bindkey -M viins '^a' beginning-of-line
 bindkey -M viins '^e' end-of-line
 bindkey -M viins '^d' push-line-or-edit
 
-bindkey -M viins ' '  magic-space
 bindkey -M vicmd '^k' kill-line
 bindkey -M vicmd 'H'  run-help
 
@@ -66,13 +65,13 @@ bindkey '^[[B' history-substring-search-down
 
 # C-z to background *and* foreground processes
 fancy-ctrl-z () {
-  if [[ $#BUFFER -eq 0 ]]; then
-    BUFFER="fg"
-    zle accept-line
-  else
-    zle push-input
-    zle clear-screen
-  fi
+    if [[ $#BUFFER -eq 0 ]]; then
+        BUFFER="fg"
+        zle accept-line
+    else
+        zle push-input
+        zle clear-screen
+    fi
 }
 zle -N fancy-ctrl-z
 bindkey '^Z' fancy-ctrl-z
@@ -106,8 +105,8 @@ fi
 
 # Vim's C-x C-l in zsh
 history-beginning-search-backward-then-append() {
-  zle history-beginning-search-backward
-  zle vi-add-eol
+    zle history-beginning-search-backward
+    zle vi-add-eol
 }
 zle -N history-beginning-search-backward-then-append
 bindkey -M viins '^x^l' history-beginning-search-backward-then-append
@@ -124,18 +123,3 @@ bindkey -M viins '^X,' _history-complete-newer \
                  '^X/' _history-complete-older \
                  '^X`' _bash_complete-word
 
-# In-place search insertion
-autoload -Uz narrow-to-region
-function _history-incremental-preserving-pattern-search-backward
-{
-  local state
-  MARK=CURSOR  # magick, else multiple ^R don't work
-  narrow-to-region -p "$LBUFFER${BUFFER:+>>}" -P "${BUFFER:+<<}$RBUFFER" -S state
-  zle end-of-history
-  zle history-incremental-pattern-search-backward
-  narrow-to-region -R state
-}
-zle -N _history-incremental-preserving-pattern-search-backward
-bindkey "^R" _history-incremental-preserving-pattern-search-backward
-bindkey -M isearch "^R" history-incremental-pattern-search-backward
-bindkey "^S" history-incremental-pattern-search-forward

@@ -1,3 +1,6 @@
+## Plugin config
+AUTOPAIR_SPC_WIDGET=magic-space
+
 ## General
 # Treat these characters as part of a word.
 WORDCHARS='_-*?[]~&.;!#$%^(){}<>'
@@ -20,9 +23,9 @@ unsetopt HUP              # Don't kill jobs on shell exit.
 unsetopt CHECK_JOBS       # Don't report on jobs when shell exit.
 
 ## History
-HISTFILE="$CACHE_DIR/zhistory"
-HISTSIZE=10000                   # Max events to store in internal history.
-SAVEHIST=10000                   # Max events to store in history file.
+HISTFILE="${CACHE_DIR}/zhistory"
+HISTSIZE=1000                    # Max events to store in internal history.
+SAVEHIST=1000                    # Max events to store in history file.
 
 setopt BANG_HIST                 # Don't treat '!' specially during expansion.
 setopt EXTENDED_HISTORY          # Write the history file in the ':start:elapsed;command' format.

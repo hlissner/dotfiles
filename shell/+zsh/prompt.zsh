@@ -1,14 +1,11 @@
 #!/usr/bin/env zsh
-# Based off Pure <https://github.com/sindresorhus/pure>
+# Loosely based off Pure <https://github.com/sindresorhus/pure>
 
 _strlen() { echo ${#${(S%%)1//$~%([BSUbfksu]|([FB]|){*})/}}; }
 
 # fastest possible way to check if repo is dirty
 prompt_git_dirty() {
     is-callable git || return
-
-    # disable auth prompting on git 2.3+
-    GIT_TERMINAL_PROMPT=0
 
     # check if we're in a git repo
     [[ "$(command git rev-parse --is-inside-work-tree 2>/dev/null)" == "true" ]] || return
@@ -27,12 +24,16 @@ prompt_git_dirty() {
 prompt_hook_precmd() {
     vcs_info # get git info
     # Newline before prompt, except on init
-    [[ -n "$_DONE" ]] && print ""; _DONE=1
+    [[ $PROMPT_DONE ]] && print ""; PROMPT_DONE=1
 }
 
 ## Initialization ######################
 prompt_init() {
-    ZLE_RPROMPT_INDENT=0  # prevent the extra space in the rprompt
+    # prevent the extra space in the rprompt
+    [[ $EMACS ]] || ZLE_RPROMPT_INDENT=0
+    # prevent percentage showing up
+    # if output doesn't end with a newline
+    export PROMPT_EOL_MARK=
 
     # prompt_opts=(cr subst percent)
     setopt PROMPTSUBST
@@ -55,11 +56,10 @@ prompt_init() {
     zstyle ':vcs_info:*' enable git
     zstyle ':vcs_info:*' use-simple true
     zstyle ':vcs_info:*' max-exports 2
-    zstyle ':vcs_info:git*' formats ':%b'
-    zstyle ':vcs_info:git*' actionformats ':%b (%a)'
+    zstyle ':vcs_info:git*' formats '%b'
+    zstyle ':vcs_info:git*' actionformats '%b (%a)'
 
     # show username@host if logged in through SSH
-    prompt_username=
     [[ $SSH_CONNECTION ]] && prompt_username='%F{magenta}%n%F{244}@%m '
 
     RPROMPT='%F{cyan}%~ %F{magenta}${vcs_info_msg_0_}$(prompt_git_dirty)%f'
