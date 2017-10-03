@@ -1,6 +1,3 @@
-## Plugins
-ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
-
 ## General
 # Treat these characters as part of a word.
 WORDCHARS='_-*?[]~&.;!#$%^(){}<>'

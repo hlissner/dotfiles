@@ -12,9 +12,12 @@ if ! zgen saved; then
 
     zgen load hlissner/zsh-autopair "autopair.zsh"
     zgen load zsh-users/zsh-history-substring-search
+    zgen load zdharma/history-search-multi-word
     zgen load zsh-users/zsh-completions src
 
-    [[ $SSH_CONNECTION ]] || zgen load zsh-users/zsh-syntax-highlighting
+    if [[ -z $SSH_CONNECTION ]]; then
+        zgen load zdharma/fast-syntax-highlighting
+    fi
 
     zgen save
 fi
