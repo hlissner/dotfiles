@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 
-# Encode/decode HTML entities in stdin or given file(s).
+"""
+Encode/decode HTML entities in stdin or given file(s).
+"""
 
-import getopt
-import sys
-import os
+import argparse
 import fileinput
 import html
 from html.entities import entitydefs
+from pathlib import Path
 
 ENTITIES = {value: key for key, value in entitydefs.items()}
+
 
 def encode(text):
     t = ""
@@ -23,33 +25,19 @@ def encode(text):
 def decode(text):
     return html.unescape(text)
 
-def usage():
-    # TODO Improve this
-    print("Usage: {} [-edh] file1[ file2[ ...]]".format(os.path.basename(sys.argv[0])))
-
 
 if __name__ == '__main__':
-    COMMANDS = {
-        "-e": encode,
-        "-d": decode
-    }
+    opts = argparse.ArgumentParser(description="Encodes (or decodes) HTML entities in text.")
+    opts.add_argument('file', nargs="?", help="File to encode/decode")
+    opts.add_argument('-d', '--decode', action='store_true', help="Decode the given files/input")
+    args = opts.parse_args()
 
-    try:
-        optlist, args = getopt.getopt(sys.argv[1:], 'edh')
-        sys.argv = [sys.argv[0]] + args
-    except getopt.GetoptError as err:
-        print(err)
-        sys.exit(1)
+    if "file" in args and args.file:
+        text = Path(args.file).read_text()
+    else:
+        text = "\n".join([line for line in fileinput.input()]).strip()
 
-    action = encode
-    for o, a in optlist:
-        if o in COMMANDS:
-            action = COMMANDS[o]
-        elif o == '-h':
-            usage()
-            sys.exit()
-        else:
-            assert False, "unhandled option"
-
-    input = "\n".join([line for line in fileinput.input()]).strip()
-    print(action(input))
+    if args.decode:
+        print(decode(text))
+    else:
+        print(encode(text))

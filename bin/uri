@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
-# Encode/decode url strings in stdin or the given file(s).
+"""
+Encode/decode url strings in stdin or the given file(s).
+"""
 
 import getopt
 import fileinput
@@ -11,32 +13,13 @@ try:
 except ImportError:
     from urllib import quote_plus, quote, unquote_plus, unquote
 
-#
-def encode(text, plus=False):
-    return quote(text.strip())
-
-def encode_plus(text):
-    return quote_plus(text.strip())
-
-def decode(text):
-    return unquote(text.strip())
-
-def decode_plus(text):
-    return unquote_plus(text.strip())
 
 def usage():
-    # TODO Improve this
+    """Print out help for this script"""
     print("Usage: {} [-edEDh] file1[ file2[ ...]]".format(os.path.basename(sys.argv[0])))
 
-#
-if __name__ == '__main__':
-    COMMANDS = {
-        "-e": encode,
-        "-E": encode_plus,
-        "-d": decode,
-        "-D": decode_plus
-    }
 
+def main(commands):
     try:
         optlist, args = getopt.getopt(sys.argv[1:], 'edEDh')
         sys.argv = [sys.argv[0]] + args
@@ -44,15 +27,23 @@ if __name__ == '__main__':
         print(err)
         sys.exit(1)
 
-    action = encode
-    for o, a in optlist:
-        if o in COMMANDS:
-            action = COMMANDS[o]
-        elif o == '-h':
+    action = quote
+    for flag, _ in optlist:
+        if flag in commands:
+            action = commands[flag]
+        elif flag == '-h':
             usage()
             sys.exit()
         else:
             assert False, "unhandled option"
 
-    input = "\n".join([line for line in fileinput.input()])
-    print(action(input))
+    print(action("\n".join([line for line in fileinput.input()]).strip()))
+
+
+if __name__ == '__main__':
+    main({
+        "-e": quote,
+        "-E": quote_plus,
+        "-d": unquote,
+        "-D": unquote_plus
+    })
