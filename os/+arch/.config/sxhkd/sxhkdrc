@@ -22,7 +22,7 @@ super + alt + backslash
         || xdotool search --classname urxvt-fuzzy windowmap \
         || urxvt -name urxvt-fuzzy -geometry 100x26 -e $SHELL -c fzf-pass
 # make sxhkd reload its configuration files:
-super + Escape
+super + ctrl + shift + Escape
     pkill -USR1 -x sxhkd
 
 
