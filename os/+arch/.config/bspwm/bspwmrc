@@ -78,7 +78,7 @@ fi
 bspc rule -r '*'
 
 # Floating fixes
-bspc rule -a Emacs:org-capture state=floating
+bspc rule -a Emacs:org* state=floating
 bspc rule -a mplayer2 state=floating
 bspc rule -a mpv state=floating center=on
 bspc rule -a Vlc state=floating monitor=C center=on
