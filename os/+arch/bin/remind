@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-if ! pgrep atd >/dev/null; then
-    >&2 echo "atd isn't running"
-    exit 1
-fi
-
-msg=$1
-shift
-echo "notify-send 'Reminder' '$msg'" | at $@
