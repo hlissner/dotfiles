@@ -1,1 +1,1 @@
-path=($HOME/.emacs.d/bin $path)
+path=($HOME/.emacs.d/bin $HOME/.cask/bin $path)
