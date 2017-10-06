@@ -1,6 +1,3 @@
-## Plugin config
-AUTOPAIR_SPC_WIDGET=magic-space
-
 ## General
 # Treat these characters as part of a word.
 WORDCHARS='_-*?[]~&.;!#$%^(){}<>'

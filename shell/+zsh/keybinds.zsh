@@ -9,6 +9,7 @@ autoload -U is-at-least
 ## vi-mode ###############
 bindkey -v
 bindkey -M viins 'jk' vi-cmd-mode
+bindkey -M viins ' ' magic-space
 # bindkey -M viins '^I' expand-or-complete-prefix
 
 # surround

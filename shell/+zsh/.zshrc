@@ -3,6 +3,8 @@
 # By Henrik Lissner <henrik@lissner.net>
 
 if is-interactive; then
+    AUTOPAIR_INHIBIT_INIT=1
+
     repo "tarjoilija/zgen" "$HOME/.zgen"
     source "$HOME/.zgen/zgen.zsh"
     if ! zgen saved; then
@@ -10,7 +12,7 @@ if is-interactive; then
 
         cache-clear
 
-        zgen load hlissner/zsh-autopair "autopair.zsh"
+        zgen load hlissner/zsh-autopair
         zgen load zsh-users/zsh-history-substring-search
         zgen load zdharma/history-search-multi-word
         zgen load zsh-users/zsh-completions src
@@ -27,6 +29,7 @@ if is-interactive; then
     load shell/+zsh/prompt.zsh
 
     cache fasd --init posix-alias zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zsh-wcomp-install
+    autopair-init
 fi
 loadall aliases.zsh
 
