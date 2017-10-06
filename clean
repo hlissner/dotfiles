@@ -8,7 +8,13 @@
 #   -d  Do a dry run (only output commands, no changes)
 #   -u  Uninstall all enabled topics
 
-_run() { [[ $DRYRUN ]] && echo "$@" || $@; }
+_run() {
+    if [[ $DRYRUN ]]; then
+        echo "$@"
+    else
+        $@
+    fi
+}
 
 uninstall=
 while getopts du opt; do
@@ -24,13 +30,13 @@ shift $((OPTIND-1))
 
 # Remove enabled topics
 if [[ $uninstall ]]; then
-    _run rm -v "$(cd $(dirname $0) && pwd -P)"/.enabled.d/*
+    _run rm -v "$(cd "$(dirname "$0")" && pwd -P)"/.enabled.d/*
 fi
 
 # Remove dead links
 shopt -s nullglob
 links=( $HOME/.* $HOME/.*/* )
-for link in ${links[@]}; do
+for link in "${links[@]}"; do
     if [[ -h "$link" && ! -e "$link" ]]; then
         _run rm -vf "$link"
     fi

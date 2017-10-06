@@ -7,9 +7,13 @@
 # 2. run $topic/install the first time
 # 3. run $topic/update on consecutive runs
 
+CWD="$(cd "$(dirname "$0")" && pwd)"
+pushd "$CWD" >/dev/null
 set -e
-source "$(cd $(dirname $0) && pwd -P)/shell/common.sh"
 shopt -s nullglob
+
+# shellcheck source=shell/common.sh
+source "shell/common.sh"
 
 #
 blue="\033[34m"
@@ -22,7 +26,7 @@ nc="\033[0m"
 #
 
 _run() {
-    local cmd="${@//$DOTFILES\//}"
+    local cmd="${*//$DOTFILES\//}"
     cmd="${cmd//$HOME/~}"
     local clr=""
     case $cmd in
@@ -40,7 +44,7 @@ _link() {
         if [[ $yes ]]; then
             [[ $yes = 1 ]] && choice=y || choice=n
         else
-            read -n 1 -p "? ${1##*/} exists in $2 -- overwrite? [y/n] " choice
+            read -r -n 1 -p "? ${1##*/} exists in $2 -- overwrite? [y/n] " choice
             echo
         fi
         case $choice in
@@ -57,6 +61,7 @@ _link() {
 
 
 ##
+export SERVER=
 install=1
 link=1
 update=1
@@ -99,10 +104,8 @@ done
 shift $((OPTIND-1))
 
 #
-CWD=$(cd $(dirname $0) && pwd -P)
-ENABLED_DIR="$CWD/.enabled.d"
-pushd $CWD >/dev/null
-for topic in ${@:-$(ls -1 "$ENABLED_DIR" | sed 's%_%/%')}; do
+ENABLED_DIR=".enabled.d"
+for topic in "${@:-$(ls -1 "$ENABLED_DIR" | sed 's%_%/%')}"; do
     [[ -d $topic ]] || continue
 
     echo -e "${green}${topic}${nc}"
