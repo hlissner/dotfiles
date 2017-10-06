@@ -15,8 +15,8 @@ prompt_git_dirty() {
     local r=$(command git rev-list --right-only --count HEAD...@'{u}' 2>/dev/null)
     local l=$(command git rev-list --left-only --count HEAD...@'{u}' 2>/dev/null)
 
-    (( ${r:-0} > 0 )) && echo -n " %F{green}${r}⇣"
-    (( ${l:-0} > 0 )) && echo -n " %F{yellow}${l}⇡"
+    (( ${r:-0} > 0 )) && echo -n " %F{green}${r}-"
+    (( ${l:-0} > 0 )) && echo -n " %F{yellow}${l}+"
     echo -n '%f'
 }
 
@@ -45,7 +45,7 @@ prompt_init() {
     zle-keymap-select() {
         case $KEYMAP in
             vicmd)      PROMPT_SYMBOL="%F{magenta}## " ;;
-            main|viins) PROMPT_SYMBOL="%(?.%F{blue}.%F{red})λ " ;;
+            main|viins) PROMPT_SYMBOL="%(?.%F{cyan}.%F{red})λ " ;;
         esac
         zle reset-prompt
         zle -R
@@ -62,8 +62,8 @@ prompt_init() {
     # show username@host if logged in through SSH
     [[ $SSH_CONNECTION ]] && prompt_username='%F{magenta}%n%F{244}@%m '
 
-    RPROMPT='%F{cyan}%~ %F{magenta}${vcs_info_msg_0_}$(prompt_git_dirty)%f'
-    PROMPT='${prompt_username}${PROMPT_SYMBOL:-$ }'
+    RPROMPT=' %F{magenta}${vcs_info_msg_0_}$(prompt_git_dirty)%f'
+    PROMPT='%F{blue}%~ ${prompt_username}${PROMPT_SYMBOL:-$ }'
 }
 
 prompt_init "$@"
