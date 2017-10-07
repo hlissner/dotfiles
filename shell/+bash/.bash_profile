@@ -18,6 +18,7 @@ PATH="$DOTFILES/bin:/usr/local/{bin,sbin}:$PATH"
 for bin in "$ENABLED_DIR"/*/bin; do
     [[ -e "$bin" ]] && PATH="$bin:$PATH"
 done
+PATH="$HOME/bin:$PATH"
 export PATH
 
 

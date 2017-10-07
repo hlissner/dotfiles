@@ -8,6 +8,8 @@ path=( $DOTFILES/bin "$ENABLED_DIR"/*/bin /usr/local/{,s}bin $path )
 load shell/+zsh/config.zsh
 loadall env.zsh
 
+path=( $HOME/bin $path )
+
 fpath=(
     $DOTFILES/shell/+zsh/completions
     $fpath
