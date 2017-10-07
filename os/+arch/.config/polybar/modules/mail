@@ -1,94 +1,93 @@
 #!/usr/bin/env python3
 
 import imaplib
-import email
 import os
 import sys
-import re
-import html
 import socket
-from shlex import quote
+from pathlib import Path
 
 ICON = ""
 CONFIG_FILE = os.path.expanduser("~/.private/config/email")
 CACHE_FILE = "/tmp/polybar-mail"
 
-COLOR_HL = "B48EAD"
-COLOR_NONE = "65737E"
-COLOR_ERR = "D08770"
-
+COLOR_HL = "3E86B8"
+COLOR_NONE = "5C6370"
+COLOR_ERR = "CC626A"
 
 #
 def internet_is_on():
     try:
         host = socket.gethostbyname("www.google.com")
-        s = socket.create_connection((host, 80), 2)
+        socket.create_connection((host, 80), 2)
         return True
     except:
         pass
     return False
 
-def recent_messages(address, password):
-    obj = imaplib.IMAP4_SSL('imap.gmail.com', 993)
-    obj.login(address, password)
-    try:
-        obj.select('Inbox')
-        ret, resp = obj.search(None, '(UNSEEN)')
-        if ret == 'OK':
-            uids = resp[0].split()
-            if uids:
-                ret, data = obj.fetch(b",".join(uids), '(BODY.PEEK[])')
-                if ret == 'OK':
-                    for m in filter(lambda x: len(x) > 1, data):
-                        yield email.message_from_string(m[1].decode('utf-8'))
-                else:
-                    print("Error: fetch")
-        else:
-            print("Error: lookup")
-    finally:
-        obj.close()
-        obj.logout()
 
-def notify(sender, subject):
-    if not sender[0].isalnum() and "<" in sender:
-        sender = sender.split("<")[1].split(">")[0]
-    os.system("/usr/bin/notify-send {} {}".format(quote("<b>{}</b>".format(html.escape(sender))), quote(html.escape(subject))))
+def unread_count(address, password):
+    imap = imaplib.IMAP4_SSL('imap.gmail.com', 993)
+    imap.login(address, password)
+    imap.select('INBOX')
+
+    status, resp = imap.search(None, 'UNSEEN')
+    imap.close()
+    imap.logout()
+
+    return len(resp[0].split())
+
 
 def ding():
     os.system("/usr/bin/aplay -N -q '{}'".format(os.path.expanduser("~/.config/polybar/sounds/robinhood76-music-box.wav")))
 
 
+# def unread_messages(address, password):
+#     try:
+#         imap = imaplib.IMAP4_SSL('imap.gmail.com', 993)
+#         imap.login(address, password)
+#         imap.select('INBOX')
+#         ret, resp = obj.search(None, '(UNSEEN)')
+#         if ret == 'OK':
+#             uids = resp[0].split()
+#             if uids:
+#                 # ret, data = obj.fetch(b",".join(uids), '(BODY.PEEK[])')
+#                 if ret == 'OK':
+#                     for m in filter(lambda x: len(x) > 1, data):
+#                         yield email.message_from_string(m[1].decode('utf-8'))
+#                 else:
+#                     print("Error: fetch")
+#         else:
+#             print("Error: lookup")
+#     finally:
+#         imap.close()
+#         imap.logout()
+
 #
-if __name__ == '__main__':
-    if os.path.isfile(CONFIG_FILE):
-        if not internet_is_on():
-            print("%{{F#{}}}{} !".format(COLOR_ERR, ICON))
-            sys.exit(2)
-
-        cache = []
-        if os.path.isfile(CACHE_FILE):
-            with open(CACHE_FILE, 'r') as fp:
-                cache = fp.read().strip().split("\n")
-
+def main():
+    if os.path.isfile(CONFIG_FILE) and internet_is_on():
         with open(CONFIG_FILE, 'r') as fp:
             accounts = [line.strip().split(",") for line in fp if line]
 
+        cache = Path(CACHE_FILE)
+        cache_text = cache.read_text()
+        last_total = int(cache.read_text() if cache_text else 0)
+
         total = 0
-        unique = 0
         for addr, pwd in accounts:
-            for msg in recent_messages(addr, pwd):
-                total += 1
-                if msg['Message-Id'] not in cache:
-                    notify(msg['From'], msg['Subject'])
-                    cache.append(msg['Message-Id'].strip())
-                    unique += 1
+            total += unread_count(addr, pwd)
+
+        if total != last_total:
+            ding()
 
         color = COLOR_HL if total > 0 else COLOR_NONE
         print("%{{u#{}}}%{{F#{}}}{} {}".format(color, color, ICON, total))
-        if unique > 0:
-            ding()
-        with open(CACHE_FILE, 'w') as fp:
-            fp.write("\n".join(cache[-75:]))
+
+        cache.write_text(str(total))
     else:
-        print("%{{F#{}}}{} -".format(COLOR_ERR, ICON))
+        print("%{{F#{}}}{} !".format(COLOR_ERR, ICON))
         sys.exit(1)
+
+
+#
+if __name__ == '__main__':
+    main()
