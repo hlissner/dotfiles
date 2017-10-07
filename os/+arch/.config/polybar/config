@@ -39,18 +39,17 @@ underline-color = #00f
 border-bottom-size = 0
 
 padding-left = 0
-padding-right = 0
-module-margin-left = 0
-module-margin-right = 0
+padding-right = 2
+module-margin-left = 2
+module-margin-right = 2
 
 font-0 = "Fira Sans:style=Bold:size=10;1"
 font-1 = "Fira Mono:style=Bold:size=10;1"
-font-2 = FontAwesome:fontformat=truetype:size=11;1
+font-2 = "FontAwesome:fontformat=truetype:size=11;1"
 
 modules-left = bspwm
 modules-center = date
-modules-right = wlp eth pkg mail volume redshift
-; modules-right = wlp eth pkg volume redshift
+modules-right = pkg mail wlan eth volume redshift
 
 enable-ipc = true
 
@@ -133,7 +132,8 @@ label-urgent-foreground = ${xrdb:color9}
 label-urgent-padding = 3
 
 label-empty = %icon%
-label-empty-foreground = #88282a2e
+; label-empty-foreground = #88282a2e
+label-empty-foreground = #18e5e8e6
 label-empty-padding = 3
 
 [module/i3]
@@ -168,21 +168,22 @@ label-visible-padding = ${self.label-focused-padding}
 type = internal/mpd
 host = /home/hlissner/.config/mpd/mpd.sock
 
-format-online = <label-song>  <icon-prev> <icon-stop> <toggle> <icon-next>  <icon-random>
+format-online = <label-song> <toggle>
+format-padding = 5
 
-label-song-maxlen = 35
+label-song-maxlen = 45
 label-song-ellipsis = true
 
-icon-prev = 
-icon-seekb = 
-icon-stop = 
-icon-play = 
-icon-pause = 
-icon-next = 
-icon-seekf = 
+icon-prev = 
+icon-seekb = 
+icon-stop = 
+icon-play = 
+icon-pause = 
+icon-next = 
+icon-seekf = 
 
-icon-random = 
-icon-repeat = 
+icon-random = 
+icon-repeat = 
 
 toggle-on-foreground = ${colors.primary}
 toggle-off-foreground = #66
@@ -222,23 +223,26 @@ label = %percentage_used%
 
 [module/wlan]
 type = internal/network
-interface =
+interface = ${env:WLP:wlp3s0}
 interval = 3.0
 
-format-connected = <ramp-signal> <label-connected>
-format-connected-underline = #9f78e1
-format-disconnected-underline = ${self.format-connected-underline}
+format-connected = <ramp-signal>
+format-disconnected-underline = ${colors.alert}
 
-label-connected = %essid%
-label-disconnected = %ifname% disconnected
-label-disconnected-foreground = ${colors.foreground-alt}
+label-connected =
+label-disconnected = !
+label-disconnected-foreground = ${xrdb:color1}
 
-ramp-signal-0 = 
-ramp-signal-1 = 
-ramp-signal-2 = 
-ramp-signal-3 = 
-ramp-signal-4 = 
-ramp-signal-foreground = ${colors.foreground-alt}
+ramp-signal-0 = 
+ramp-signal-0-foreground = #22e5e8e6
+ramp-signal-1 = 
+ramp-signal-1-foreground = ${xrdb:color3}
+ramp-signal-2 = 
+ramp-signal-2-foreground = ${xrdb:color11}
+ramp-signal-3 = 
+ramp-signal-3-foreground = #ffe5e8e6
+ramp-signal-4 = 
+ramp-signal-4-foreground = ${xrdb:color2}
 
 [module/eth]
 type = internal/network
@@ -253,21 +257,6 @@ label-connected = %local_ip%
 format-disconnected-underline = ${self.format-connected-underline}
 label-disconnected = %ifname% disconnected
 label-disconnected-foreground = ${colors.foreground-alt}
-
-[module/wlp]
-type = internal/network
-interface = ${env:WLP:wlp3s0}
-interval = 4.0
-
-; format-connected-underline = #55aa55
-; format-connected-prefix = " "
-format-connected-foreground-foreground = ${colors.foreground-alt}
-label-connected = %local_ip%
-
-format-disconnected-underline = ${self.format-connected-underline}
-label-disconnected = %ifname% disconnected
-label-disconnected-foreground = ${colors.foreground-alt}
-
 
 [module/date]
 type = internal/date
@@ -405,24 +394,22 @@ menu-2-1-exec = menu-open-0
 [module/pkg]
 type = custom/ipc
 format = <output>
-format-padding = 3
-hook-0 = /home/hlissner/.config/polybar/modules/updates
+hook-0 = ~/.config/polybar/modules/updates
 initial = 1
 click-left = polybar-msg -p %pid% hook pkg 1
 
 [module/mail]
-type = custom/script
-interval = 300
-format = <label>
-format-padding = 3
-format-prefix-foreground = ${colors.foreground-alt}
-exec = /home/hlissner/.config/polybar/modules/mail
+type = custom/ipc
+format = <output>
+hook-0 = ~/.config/polybar/modules/mail
+initial = 1
+click-left = polybar-msg -p %pid% hook mail 1
 
 [module/redshift]
 type = custom/script
 interval = 30
-format-padding = 3
-exec = /home/hlissner/.config/polybar/modules/redshift
+label-padding = 1
+exec = ~/.config/polybar/modules/redshift
 exec-if = "pgrep redshift >/dev/null"
 
 ; vim:ft=dosini
