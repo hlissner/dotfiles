@@ -14,7 +14,6 @@ Xcursor.size: 32
 Emacs.toolBar: 0
 Emacs.menuBar: 0
 Emacs.verticalScrollBars: off
-Emacs.font: Fira Mono 10
 
 ! urxvt
 URxvt*.buffered:               true
@@ -30,9 +29,9 @@ URxvt*.perl-ext-common:        default,matcher
 URxvt*.matcher.button:         1
 URxvt*.url-launcher:           firefox
 URxvt*.matcher.rend.0:         Uline Bold fg5
-URxvt*.font:                   xft:Fira Mono:size=9
-urxvt-scratch.font:            xft:Fira Mono:size=10
 URxvt*.letterSpace:            -1
+URxvt*.font:                   xft:Fira Mono:size=8
+urxvt-scratch.font:            xft:Fira Mono:size=9
 urxvt-fuzzy.font:              xft:Fira Mono:size=14
 urxvt-fuzzy.internalBorder:    15
 
@@ -60,31 +59,31 @@ rofi.color-active: #20232a, #9ba2af, #20232a, #20232a, #7fa1ed
 ! 262930
 
 ! special
-*.background:   #12151c
-*.foreground:   #e8eae9
-*.cursorColor:  #81a2be
+*.foreground:  #ABB2BF
+*.background:  #282c34
+*.cursorColor: #5C6370
 
 ! black
-*.color0:       #282a2e
-*.color8:       #474b51
+*.color0:  #1E2127
+*.color8:  #5C6370
 ! red
-*.color1:       #a54242
-*.color9:       #cc6666
+*.color1:  #CC626A
+*.color9:  #E06C75
 ! green
-*.color2:       #8c9440
-*.color10:      #b5bd68
+*.color2:  #98C379
+*.color10: #A7D685
 ! yellow
-*.color3:       #de935f
-*.color11:      #f0c674
+*.color3:  #da8548
+*.color11: #ECBE7B
 ! blue
-*.color4:       #8fb1cd
-*.color12:      #b1d2ee
+*.color4:  #3E86B8
+*.color12: #51afef
 ! magenta
-*.color5:       #85678f
-*.color13:      #b294bb
+*.color5:  #a9a1e1
+*.color13: #C678DD
 ! cyan
-*.color6:       #5e8d87
-*.color14:      #8abeb7
+*.color6:  #4db5bd
+*.color14: #56B6C2
 ! white
-*.color7:       #606870
-*.color15:      #f5f8f6
+*.color7:  #ABB2BF
+*.color15: #FFFFFF
