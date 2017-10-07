@@ -11,7 +11,7 @@ CONFIG_FILE = os.path.expanduser("~/.private/config/email")
 CACHE_FILE = "/tmp/polybar-mail"
 
 COLOR_HL = "3E86B8"
-COLOR_NONE = "5C6370"
+COLOR_NONE = "22e5e8e6"
 COLOR_ERR = "CC626A"
 
 #
@@ -80,7 +80,10 @@ def main():
             ding()
 
         color = COLOR_HL if total > 0 else COLOR_NONE
-        print("%{{u#{}}}%{{F#{}}}{} {}".format(color, color, ICON, total))
+        if total == 0:
+            print("%{{u#{}}}%{{F#{}}}{} ".format(color, color, ICON))
+        else:
+            print("%{{u#{}}}%{{F#{}}}{} {}".format(color, color, ICON, total))
 
         cache.write_text(str(total))
     else:

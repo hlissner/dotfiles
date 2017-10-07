@@ -4,13 +4,14 @@ aur=$(cower -u | wc -l)
 
 last=$(</tmp/polybar-updates)
 check=$((pac + aur))
+icon=""
 if [[ "$check" != "0" ]]; then
-    echo "%{F#e5e8e6}%{F-} $pac,$aur"
+    echo "%{F#e5e8e6}${icon}%{F-} $pac,$aur"
     if [[ $last != "$pac$aur" ]]; then
         notify-send "$((pac+aur)) updates available"
         aplay -N -q ~/.config/polybar/sounds/robni7-news-ting.wav
         echo "$pac$aur" >/tmp/polybar-updates
     fi
 else
-    echo "%{F#22e5e8e6}%{F-} "
+    echo "%{F#22e5e8e6}${icon}%{F-} "
 fi

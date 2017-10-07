@@ -49,7 +49,7 @@ font-2 = "FontAwesome:fontformat=truetype:size=11;1"
 
 modules-left = bspwm
 modules-center = date
-modules-right = pkg mail wlan eth volume redshift
+modules-right = pkg mail wlan eth volume app-redshift app-rslsync
 
 enable-ipc = true
 
@@ -230,18 +230,18 @@ format-connected = <ramp-signal>
 format-disconnected-underline = ${colors.alert}
 
 label-connected =
-label-disconnected = !
+label-disconnected = !
 label-disconnected-foreground = ${xrdb:color1}
 
-ramp-signal-0 = 
+ramp-signal-0 = 
 ramp-signal-0-foreground = #22e5e8e6
-ramp-signal-1 = 
+ramp-signal-1 = 
 ramp-signal-1-foreground = ${xrdb:color3}
-ramp-signal-2 = 
+ramp-signal-2 = 
 ramp-signal-2-foreground = ${xrdb:color11}
-ramp-signal-3 = 
+ramp-signal-3 = 
 ramp-signal-3-foreground = #ffe5e8e6
-ramp-signal-4 = 
+ramp-signal-4 = 
 ramp-signal-4-foreground = ${xrdb:color2}
 
 [module/eth]
@@ -405,11 +405,18 @@ hook-0 = ~/.config/polybar/modules/mail
 initial = 1
 click-left = polybar-msg -p %pid% hook mail 1
 
-[module/redshift]
+[module/app-redshift]
 type = custom/script
-interval = 30
+interval = 120
 label-padding = 1
-exec = ~/.config/polybar/modules/redshift
+exec = ~/.config/polybar/modules/app-redshift
 exec-if = "pgrep redshift >/dev/null"
+
+[module/app-rslsync]
+type = custom/script
+interval = 60
+label-padding = 1
+exec = ~/.config/polybar/modules/app-rslsync
+exec-if = "pgrep rslsync >/dev/null"
 
 ; vim:ft=dosini
