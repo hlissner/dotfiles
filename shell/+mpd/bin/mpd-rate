@@ -37,8 +37,8 @@ _clear_playlists() {
 _display_stars() {
     # Display new rating
     stars=""
-    star_filled_icon="★"
-    star_empty_icon="[2m[37m☆[0m"
+    star_filled_icon='\033[0;32m*\033[0m'
+    star_empty_icon='\033[0;30m*\033[0m'
     for ((i=1;i<=5;i++)); do
         if (( "$1" >= "$i" )); then
             stars="${stars}${star_filled_icon}"
@@ -46,7 +46,7 @@ _display_stars() {
             stars="${stars}${star_empty_icon}"
         fi
     done
-    echo "$stars"
+    printf "$stars\n"
 }
 
 
