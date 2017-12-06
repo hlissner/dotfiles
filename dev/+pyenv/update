@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-if [[ -d $HOME/.pyenv ]]; then
-    cd $HOME/.pyenv && git pull
-    for plugin in $HOME/.pyenv/plugins/*/; do
-        cd "$plugin" && git pull
-    done
-fi

@@ -1,8 +1,0 @@
-#!/bin/bash
-
-if [[ -d "$HOME/.rbenv" ]]; then
-    >&2 echo "~/.rbenv already exists, can't install."
-else
-    git clone https://github.com/rbenv/rbenv.git $HOME/.rbenv
-    git clone https://github.com/rbenv/ruby-build.git $HOME/.rbenv/plugins/ruby-build
-fi
