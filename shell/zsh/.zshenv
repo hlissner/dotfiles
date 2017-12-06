@@ -3,7 +3,7 @@ source $(cd ${${(%):-%x}:A:h}/../.. && pwd -P)/env
 
 # Move ZDOTDIR from $HOME to reduce dotfile pollution.
 export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
-export ZGEN_DIR="$XDG_CACHE_HOME/zgen"
+export ZGEN_SOURCE="$XDG_CACHE_HOME/zgen"
 
 # paths
 typeset -gU cdpath fpath mailpath path

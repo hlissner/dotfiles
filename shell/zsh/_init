@@ -19,8 +19,8 @@ install() {
 }
 
 update() {
-  if [[ -e $ZGEN_DIR/zgen.zsh ]]; then
-    source $ZGEN_DIR/zgen.zsh
+  if [[ -e $ZGEN_SOURCE/zgen.zsh ]]; then
+    source $ZGEN_SOURCE/zgen.zsh
     zgen selfupdate
     zgen update
   fi

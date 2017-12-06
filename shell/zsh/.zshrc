@@ -1,22 +1,22 @@
 export ZGEN_AUTOLOAD_COMPINIT=0
 AUTOPAIR_INHIBIT_INIT=1
 
-_load_repo tarjoilija/zgen $ZGEN_DIR zgen.zsh
+_load_repo tarjoilija/zgen $ZGEN_SOURCE zgen.zsh
 if ! zgen saved; then
-    echo "Creating zgen save"
-    .cache-clear
+  echo "Creating zgen save"
+  _cache_clear
 
-    zgen load hlissner/zsh-autopair autopair.zsh
-    zgen load zsh-users/zsh-history-substring-search
-    zgen load zdharma/history-search-multi-word
-    zgen load zsh-users/zsh-completions src
-    zgen load junegunn/fzf shell  # completions
+  zgen load hlissner/zsh-autopair autopair.zsh develop
+  zgen load zsh-users/zsh-history-substring-search
+  zgen load zdharma/history-search-multi-word
+  zgen load zsh-users/zsh-completions src
+  zgen load junegunn/fzf shell  # completions
 
-    if [[ -z $SSH_CONNECTION ]]; then
-        zgen load zdharma/fast-syntax-highlighting
-    fi
+  if [[ -z $SSH_CONNECTION ]]; then
+    zgen load zdharma/fast-syntax-highlighting
+  fi
 
-    zgen save
+  zgen save
 fi
 
 
