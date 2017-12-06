@@ -1,0 +1,22 @@
+#!/usr/bin/env zsh
+source ${0:A:h}/../../deploy
+
+install() {
+  # Install revolver
+  curl -L https://raw.githubusercontent.com/molovo/revolver/master/revolver >$XDG_BIN_HOME/revolver
+  # Install ZUnit into $path
+  curl -L https://github.com/zunit-zsh/zunit/releases/download/v0.8.1/zunit >$XDG_BIN_HOME/zunit
+  # Optional, install ZUnit ZSH completion into $fpath
+  curl -L https://github.com/zunit-zsh/zunit/releases/download/v0.8.1/zunit.zsh-completion >$ZDOTDIR/functions/_zunit
+}
+
+# update() {}
+
+# link() {}
+
+clean() {
+  rm -fv $XDG_BIN_HOME/{zunit,revolver}
+  rm -fv $ZDOTDIR/functions/_zunit
+}
+
+init "$@"
