@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-if [[ -d "$HOME/.vim" ]]; then
-    cd "$HOME/.vim"
-    make update
-fi

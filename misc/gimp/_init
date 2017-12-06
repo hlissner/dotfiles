@@ -1,0 +1,28 @@
+#!/usr/bin/env zsh
+source ${0:A:h}/../../deploy
+source ${0:A:h}/env.zsh
+
+install() {
+  case $(_os) in
+    macos)  brew cask install gimp ;;       # TODO Install resynthesizer
+    arch)   sudo pacman --needed --noconfirm -S gimp gimp-plugin-resynthesizer ;;
+    debian) sudo apt-get install -y gimp ;; # TODO Install resynthesizer
+  esac
+}
+
+# update() {}
+
+link() {
+  rm -rfv ~/.gimp-2.8
+  mklink *rc $GIMP2_DIRECTORY/
+  for dir in *(/N); do
+    rm -rf $GIMP2_DIRECTORY/$dir
+    mklink $dir $GIMP2_DIRECTORY/$dir
+  done
+}
+
+clean() {
+  rm -rf $GIMP2_DIRECTORY
+}
+
+init "$@"

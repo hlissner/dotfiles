@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+# bspc-swap
+# swaps current window with the next window in a direction. If -m is set, moves
+# window to the next monitor in that direction.
+#
+# Makes swapping nodes more intuitive.
+#
+# Usage: bspc-swap (west|south|north|east) (1|0)
+# Example:
+#   + bspc-swap south
+#   + bspc-swap -m west
+
+set -e
+
+leap=
+if [[ $1 == -m ]]; then
+    leap=1
+    dir=$2
+else
+    dir=$1
+fi
+
+case $dir in west|south|north|east) ;;
+    *) >&2 echo "Not a valid direction: $dir"
+        exit 1
+esac
+
+if [[ $leap ]]; then
+    # move window to monitor in direction
+    old_id=$(bspc query -N -n focused)
+    if [[ $(bspc query -M -m "$dir") ]]; then
+        bspc node -m "$dir"
+        bspc node -f "$old_id"
+    fi
+else
+    # move window in direction
+    old_id=$(bspc query -N -n focused)
+    if bspc node -s "$dir.local"; then
+        bspc node -f "$old_id"
+    elif [[ $(bspc query -M -m "$dir") ]]; then
+        bspc node -m "$dir"
+        bspc node -f "$old_id"
+    fi
+fi

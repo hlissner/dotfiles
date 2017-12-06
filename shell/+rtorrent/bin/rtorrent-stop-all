@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-# Pause all torrents from outside rtorrent, in case rtorrent is crashing on
-# startup.
-
-for i in ~/rtorrent/.session/*.torrent.rtorrent; do
-    sed -i -re 's/5:statei1e/5:statei0e' $i
-done

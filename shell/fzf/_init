@@ -1,0 +1,18 @@
+#!/usr/bin/env zsh
+source ${0:A:h}/../../deploy
+
+install() {
+  case $(_os) in
+    macos)  brew install fzf ;;
+    arch)   sudo pacman --needed --noconfirm -S fzf ;;
+    debian) sudo apt-get install -y fzf ;;
+  esac
+}
+
+# update() {}
+
+# link() {}
+
+# clean() {}
+
+init "$@"

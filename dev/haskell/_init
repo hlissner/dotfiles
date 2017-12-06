@@ -1,0 +1,22 @@
+#!/usr/bin/env zsh
+source ${0:A:h}/../../deploy
+source env.zsh
+
+install() {
+  case $(_os) in
+    macos) brew install stack ghc ;;
+    arch)  pacaur --needed --noedit --noconfirm -S ghc stack-static ;;
+  esac
+  stack config set system-ghc --global true
+  stack setup && stack install ShellCheck ghc-mod
+}
+
+update() {
+  stack update
+}
+
+# link() {}
+
+# clean() {}
+
+init "$@"

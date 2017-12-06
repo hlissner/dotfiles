@@ -73,10 +73,7 @@ class CurrencyCache():
         return None
 
     def _set(self, key, value):
-        self.cache[key] = {
-            'time': datetime.now().timestamp(),
-            'value': value
-        }
+        self.cache[key] = {'time': datetime.now().timestamp(), 'value': value}
 
 
 def _request_currency_rate(url=API_URL, *args):

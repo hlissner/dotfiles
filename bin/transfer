@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 
-# Upload file to transfer.sh
+# Upload file/stdin to transfer.sh
 url="https://transfer.sh"
 tmpfile=$(mktemp -t transferXXX)
 if [[ -t 0 ]]; then
-    basefile=$(basename "$1" | sed -e 's/[^a-zA-Z0-9._-]/-/g')
-    curl --progress-bar --upload-file "$1" "$url/$basefile" >> $tmpfile
+  basefile=$(basename "$1" | sed -e 's/[^a-zA-Z0-9._-]/-/g')
+  curl --progress-bar --upload-file "$1" "$url/$basefile" >>"$tmpfile"
 else
-    curl --progress-bar --upload-file "-" "$url/$1" >> $tmpfile
+  curl --progress-bar --upload-file "-" "$url/$1" >>"$tmpfile"
 fi
 
-cat $tmpfile
-rm -f $tmpfile
+cat "$tmpfile"
+rm -f "$tmpfile"
 
 # vim:set ft=sh:

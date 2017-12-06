@@ -1,0 +1,23 @@
+#!/usr/bin/env zsh
+source ${0:A:h}/../../deploy
+
+wee=${0:A:h}/bin/wee
+
+install() {
+  case $(_os) in
+    macos)  brew install weechat ;;
+    arch)   sudo pacman --needed --noconfirm -S weechat ;;
+    debian) sudo apt-get install -y weechat ;; # NOTE untested
+  esac
+
+  # NOTE: init.sh needs to be run separately, afterward
+  echo "Don't forget to run weechat/scripts/bootstrap.sh while weechat is open"
+}
+
+# update() {}
+
+# link() {}
+
+# clean() {}
+
+init "$@"

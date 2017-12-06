@@ -1,0 +1,38 @@
+#!/usr/bin/env zsh
+source ${0:A:h}/../../deploy
+source .zshenv
+
+install() {
+  case $(_os) in
+    macos)  brew install zsh fasd ;;
+    arch)   sudo pacman --needed --noconfirm -S zsh fasd ;;
+    debian) sudo add-apt-repository ppa:aacebedo/fasd
+            sudo apt-get update && sudo apt-get install -y zsh fasd
+            ;;
+  esac
+
+  [[ $SHELL == */zsh ]] || chsh -s $(which zsh) $(whoami)
+
+  local zsh="$(which zsh)"
+  grep $zsh /etc/shells &>/dev/null || sudo tee -a /etc/shells <<<$zsh
+  sudo tee /etc/zsh/zshenv <<<"export ZDOTDIR='$ZDOTDIR'"
+}
+
+update() {
+  if [[ -e $ZGEN_DIR/zgen.zsh ]]; then
+    source $ZGEN_DIR/zgen.zsh
+    zgen selfupdate
+    zgen update
+  fi
+}
+
+link() {
+  mklink .zsh* $ZDOTDIR/
+  mklink functions $ZDOTDIR/
+}
+
+clean() {
+  rm -rfv $ZDOTDIR
+}
+
+init "$@"

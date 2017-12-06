@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+# Fetches the FIELD in ENTRY. It expects pass fields to be colon-delimited.
+
+if (( $# != 2 )); then
+  >&2 echo "Expected two arguments"
+  >&2 echo "pass get ENTRY FIELD"
+  exit 1
+fi
+
+entry=$1
+field=$2
+
+secrets="$(pass show $entry)"
+if [[ ! $secrets ]]; then
+  notify-send --urgency=critical "Failed to retrieve $entry"
+  exit 2
+fi
+
+if [[ $field == password || -z $field ]]; then
+  printf "%s" "$(head -n1 <<<"$secrets")"
+else
+  printf "%s" "$(awk -v "key=$field:" '$1 == key {print $2}' <<<"$secrets")"
+fi | xsel -i -b -t 15000
+
+#
+echo "Copied $entry:$field to clipboard for 15s"

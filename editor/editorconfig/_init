@@ -1,0 +1,21 @@
+#!/usr/bin/env zsh
+source ${0:A:h}/../../deploy
+
+install() {
+  case $(_os) in
+    macos) brew install editorconfig ;;
+    arch)  pacaur --noedit --needed --noconfirm -S editorconfig-core-c ;;
+  esac
+}
+
+# update() {}
+
+link() {
+  mklink .editorconfig ~/.editorconfig
+}
+
+clean() {
+  rm -fv ~/.editorconfig
+}
+
+init "$@"

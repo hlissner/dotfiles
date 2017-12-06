@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+
+# I frequently discover that there are crappy songs hidden in my music library.
+# I ain't havin' none o' that! So I file them away in my 1-star.m3u playlist.
+# This script reads that playlist, delete those songs, and cleans up any empty
+# folders it leaves behind. It will also remove duplicates from all playlists.
+#
+# Usage: cleanup-music
+
+set -e
+shopt -s nullglob
+
+music_dir=$(awk '/music_directory/ { print gensub(/"/, "", "g", $2); }' "$HOME/.config/mpd/mpd.conf")
+music_dir="${music_dir/#\~/$HOME}"
+playlist_dir=$(awk '/playlist_directory/ { print gensub(/"/, "", "g", $2); }' "$HOME/.config/mpd/mpd.conf")
+playlist_dir="${playlist_dir/#\~/$HOME}"
+
+playlist_file="${playlist_dir}/1-star.m3u"
+
+# Delete designated songs
+IFS=$'\n'
+declare -a to_delete=()
+while read -r song; do
+  songpath="${music_dir}/${song}"
+  [[ -f $songpath ]] && to_delete+=("$songpath")
+done < "$playlist_file"
+
+if (( ${#to_delete[@]} == 0 )); then
+  echo "Nothing to delete"
+  exit
+fi
+
+# List songs to delete and ask for confirmation
+printf "Deleting %s songs:\n\n%s\n\nConfirm? (y/n) " \
+  "${#to_delete[@]}" \
+  "$(IFS=$'\n'; printf "%s" "${to_delete[*]}")"
+read -r confirm
+case $confirm in
+  y|Y)
+    echo "Deleting..."
+    for file in "${to_delete[@]}"; do
+      rm -fv "$file"
+    done
+    ;;
+  n|N) echo "Aborted"; exit ;;
+  *) echo "Invalid" ;;
+esac
+:>"$playlist_file"
+
+# Remove duplicates across playlists
+for playlist in ${playlist_dir}/*.m3u; do
+  awk '!seen[$0]++' "${playlist}" > "${playlist}.tmp"
+  if [[ -f "${playlist}.tmp" ]]; then
+    rm -f "$playlist"
+    mv "${playlist}.tmp" "$playlist"
+  fi
+done
+
+# Remove empty directories
+find "$music_dir" -type d -empty -delete

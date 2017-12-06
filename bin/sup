@@ -1,0 +1,233 @@
+#!/usr/bin/env zsh
+# Upload to various file hosts
+
+# colors
+c0=$(tput sgr0)
+c1=$(tput setaf 1)
+c2=$(tput setaf 2)
+# filename to use for screenshots
+local_temp=$(mktemp)
+
+# screenshot functions
+cap_fullscreen() {
+	local_file="$local_temp.png"
+	mv $local_temp $local_file
+	maim -u $local_file
+}
+
+cap_selection() {
+	local_file="$local_temp.png"
+	mv $local_temp $local_file
+	maim -s -u $local_file
+}
+
+cap_window() {
+	mv $local_temp $local_temp.png
+	maim -i $(xprop -root _NET_ACTIVE_WINDOW | grep -o '0x.*') --hidecursor
+}
+
+# delay
+delay_seconds='0'
+# hosts and shorteners
+host='uguu'
+shortener=
+hosts='uguu teknik 0x0 mixtape ptpb lewd'
+shorteners='waaai 0x0'
+
+##
+usage() {
+  cat <<EOF
+Upload to various file hosts
+
+Usage: ${0:A:t} [options]
+
+Options:
+  -d SECS  Delay the screenshot by the specified number of seconds.
+  -f       Take a fullscreen screenshot.
+  -h       Show this help message.
+  -l URL   Upload the file at the provided URL.
+  -o       Select a host to use. Can be uguu, teknik, 0x0, ptpb, mixtape or lewd.
+  -p PATH  Custom path to save the image to. Saves the image as "%Y-%m-%d %H-%M-%S.png".
+  -s       Take a selection screenshot.
+  -S       Select a shortener to use. Can be waaai or 0x0.
+  -u FILE  Upload a file.
+  -w       Take a screenshot of the current window.
+  -x       Do not notify dbus, update the log, or modify the clipboard.
+
+EOF
+}
+
+delay() {
+	for (( i=delay_seconds; i>0; --i )); do
+		echo "$i..."
+		sleep 1
+	done
+}
+
+screenshot() {
+	if [[ $doFullscreen ]]; then
+		cap_fullscreen
+	elif [[ $doSelection ]]; then
+		cap_selection &>/dev/null
+		if ! [[ -s $local_file ]]; then
+			$(rm "$local_file" 2> /dev/null)
+			exit
+		fi
+	elif [[ $doWindow ]]; then
+		cap_window
+	elif [[ $doURL ]]; then
+    local urlext
+		if [[ -f /usr/share/mime/globs ]]; then
+			urlext=$(curl -sf --head "${remoteURL}" | grep 'Content-Type: ' | head -1 | grep -Po '(?<=\ )[^\;]*')
+			urlext=$(echo "${urlext}" | sed -e "s/\\r//")
+			urlext=$(cat /usr/share/mime/globs | grep "${urlext}" | sort -r | head -1 | grep -Po '(?<=\.)[^\n]*')
+		else
+			urlext="$(basename ${remoteURL})"
+			urlext=${urlext#*.}
+		fi
+		local_file="${local_temp}.${urlext}"
+		$(curl -sf "${remoteURL}" > "${local_file}")
+	fi
+}
+
+upload() {
+	for (( i = 1; i <= 3; i++ )); do
+		echo -n "Try #${i}... "
+
+		case "${host}" in
+			teknik) hostURL='https://api.teknik.io/v1/Upload' ;;
+			0x0) hostURL='https://0x0.st/' ;;
+			uguu) hostURL='https://uguu.se/api.php?d=upload-tool' ;;
+			ptpb) hostURL='https://ptpb.pw/' ;;
+			mixtape) hostURL='https://mixtape.moe/upload.php' ;;
+			lewd) hostURL='https://lewd.se/api.php?d=upload-tool' ;;
+		esac
+
+		case "${shortener}" in
+			waaai) shortenerURL='https://api.waa.ai/shorten' ;;
+			0x0) shortenerURL='http://0x0.st/' ;;
+			ptpb) shortenerURL='https://ptpb.pw/u'
+		esac
+
+		if [ "${host}" = 'uguu' ]; then
+			uploadResult="$(curl -sf -F file="@${local_file}" "${hostURL}")"
+		elif [ "${host}" = '0x0' ]; then
+			uploadResult="$(curl -sf -F file="@${local_file}" "${hostURL}")"
+		elif [ "${host}" = 'teknik' ]; then
+			uploadResult="$(curl -sf -F file="@${local_file}" "${hostURL}")"
+			uploadResult="${uploadResult##*url\":\"}"
+			uploadResult="${uploadResult%%\"*}"
+		elif [ "${host}" = 'mixtape' ]; then
+			uploadResult="$(curl -sf -F files[]="@${local_file}" "${hostURL}")"
+			uploadResult="$(echo "${uploadResult}" | grep -Eo '"url":"[A-Za-z0-9]+.*",' | sed 's/"url":"//;s/",//')"
+			uploadResult="$(echo "${uploadResult//\\\//\/}")"
+		elif [ "${host}" = 'ptpb' ]; then
+			uploadResult="$(curl -sf -F c="@${local_file}" "${hostURL}")"
+			uploadResult="${uploadResult##*url: }"
+			uploadResult="${uploadResult%%$'\n'*}"
+		elif [ "${host}" = 'lewd' ]; then
+			uploadResult="$(curl -sf -F file="@${local_file}" "${hostURL}")"
+		fi
+
+		if [ "${shortener}" = 'waaai' ]; then
+			tempResult="$(curl -sf -F url="${uploadResult}" "${shortenerURL}")"
+			shortCode="${tempResult##*short_code\":\"}"
+			shortCode="${shortCode%%\"*}"
+			shortenerResult="https://waa.ai/${shortCode}"
+			shortenerExtension="${tempResult##*extension\":}"
+			shortenerExtension="${shortenerExtension%%\}*}"
+			if [[ $shortenerExtension == true ]]; then
+				shortenerExtension=${shortenerExtension##\"}
+				shortenerExtension=${shortenerExtension%%\"}
+				shortenerResult="${shortenerResult}.${shortenerExtension}"
+			fi
+		elif [[ $shortener == '0x0' ]]; then
+			shortenerResult="$(curl -sf -F shorten="${uploadResult}" "${shortenerURL}")"
+		elif [[ $shortener == 'ptpb' ]]; then
+			shortenerResult="$(curl -sf -F c=@- "${shortenerURL}" <<< "${uploadResult}")"
+		fi
+
+		if [[ $shortener ]]; then
+			finalResult="$shortenerResult"
+		else
+			finalResult="$uploadResult"
+		fi
+
+		if [[ $? == 0 ]]; then
+			# copy to clipboard, log, and notify (unless $noComms is set)
+			if [ ! "${noComms}" ]; then
+					echo -n "${finalResult}" | xclip -selection primary
+					echo -n "${finalResult}" | xclip -selection clipboard
+					echo "$(date +"%D %R") | "${file}" | "${finalResult}"" >> ~/.uguush.log
+					notify-send 'uguu~' "${finalResult}"
+			fi
+		fi
+
+		echo "[${c2}OK${c0}]"
+		echo "File has been uploaded: ${finalResult}"
+
+		# if we took a screenshot, remove the temporary file
+		if [[ -z $doFile ]]; then
+			rm $local_file
+		fi
+
+		exit
+	done
+}
+
+path() {
+	if [[ $saveToPath == true ]]; then
+		cp $local_file "$pathToSave/$(basename "$local_file")"
+	fi
+}
+
+
+##
+while getopts :d:fho:p:su:wxS:l: opt; do
+	case $opt in
+    d) # set delay value
+       delay_seconds="$OPTARG" ;;
+    f) # take fullscreen shot
+       doFullscreen='true' ;;
+    h) # print help
+			 usage
+			 exit 0 ;;
+		o) # set host
+			 [[ "${hosts}" =~ "$OPTARG" ]] && host="$OPTARG" || exit 1 ;;
+		s) # take shot of selection
+			 doSelection='true' ;;
+		u) # change $file to the specified file with -u
+			 doFile='true'
+			 local_file="$OPTARG" ;;
+		w) # take shot of current window
+			 doWindow='true' ;;
+		x) # do not notify dbus, update log, or modify clipboard
+			 noComms='true' ;;
+		S) # set shortener
+			 [[ $shorteners =~ "$OPTARG" ]] && shortener="$OPTARG" || exit 1 ;;
+		l) # set url to upload
+			 doURL='true'
+			 remoteURL="${OPTARG}" ;;
+		p) # set path to save file
+			 saveToPath='true'
+			 pathToSave="${OPTARG}" ;;
+		*) # print help and EXIT_FAILURE
+			 usage
+			 exit 1 ;;
+	esac
+done
+
+# show usage if no arguments are given
+if (( $# < 1 )); then
+	usage
+	exit 1
+fi
+
+delay
+screenshot
+path
+upload
+
+# if the program doesn't exit at the for-loop, the upload failed
+>&2 echo 'File was not uploaded, did you specify a valid filename?'
+exit 1

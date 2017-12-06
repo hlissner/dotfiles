@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 # A simple script that losslessly optimizes image files given to it.
 #
@@ -13,57 +13,59 @@
 #   GIFs: gifsicle
 
 set -e
+unset CDPATH
 
 LOSSY=
 
 usage() {
-    cat <<EOL
-Usage: ${0##*/} [-lh] IMAGE [IMAGE2 [IMAGE3 [...]]]
+  cat <<EOL
+Usage: ${0:A:t} [-lh] IMAGE [IMAGE2 [IMAGE3 [...]]]
 
-    -l    enable lossy compression
-    -h    this help
+  -l    enable lossy compression
+  -h    this help
 EOL
 }
 
 while getopts hl opt; do
-    case $opt in
-        h) usage; exit;;
-        l) LOSSY=1;;
-        :) >&2 echo "$OPTARG requires an argument"; usage; exit 1;;
-        *) >&2 echo "Not a valid arg: $opt"; usage; exit 1;;
-    esac
+  case $opt in
+    h) usage; exit;;
+    l) LOSSY=1;;
+    :) >&2 echo "$OPTARG requires an argument"; usage; exit 1;;
+    *) >&2 echo "Not a valid arg: $opt";        usage; exit 1;;
+  esac
 done
 shift $((OPTIND-1))
 
 _filesize() {
-    case $OSTYPE in
-        darwin*) stat -c%s "$1" ;;
-        *) stat --printf="%s" "$1" ;;
-    esac
+  case $OSTYPE in
+    darwin*) stat -c%s "$1" ;;
+    *) stat --printf="%s" "$1" ;;
+  esac
 }
 
 for file in $@; do
-    if [[ -d $file ]]; then
-        imgoptim $file/*
-    elif [[ -f $file ]]; then
-        pre_size=$(_filesize "$file")
-        case ${file##*.} in
-            png)
-                [[ $LOSSY ]] && pngquant $file
-                optipng -nc -nb -o7 $file
-                ;;
-            gif)
-                gifsicle --batch --optimize=3 "$file"
-                ;;
-            jpg|jpeg)
-                [[ $LOSSY ]] && jpegoptim --max=90 "$file"
-                jpegtran -copy none -optimize -progressive -outfile "$file" "$file"
-                ;;
-            *)  printf "Unrecognized file '$file': ignored"
-                ;;
-        esac
-        post_size=$(_filesize "$file")
-        perc=$(echo "((${pre_size} - ${post_size}) / ${pre_size}) * 100" | bc -l)
-        printf "* %s: %d => %d (%.2f%% reduction)\n" "$file" "${pre_size}" "${post_size}" "$perc"
-    fi
+  if [[ -d $file ]]; then
+    imgoptim $file/*
+  elif [[ -f $file ]]; then
+    pre_size=$(_filesize "$file")
+    case ${file##*.} in
+      png)
+        [[ $LOSSY ]] && pngquant $file
+        optipng -nc -nb -o7 $file
+        ;;
+      gif)
+        gifsicle --batch --optimize=3 "$file"
+        ;;
+      jpg|jpeg)
+        [[ $LOSSY ]] && jpegoptim --max=90 "$file"
+        jpegtran -copy none -optimize -progressive -outfile "$file" "$file"
+        ;;
+      *)
+        printf "Unrecognized file '$file': ignored"
+        ;;
+    esac
+    post_size=$(_filesize "$file")
+    perc=$(echo "((${pre_size} - ${post_size}) / ${pre_size}) * 100" | bc -l)
+    printf "* %s: %d => %d (%.2f%% reduction)\n" "$file" "${pre_size}" "${post_size}" "$perc"
+  fi
 done

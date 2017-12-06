@@ -3,28 +3,28 @@
 # If -f, then put computer to sleep.
 # Otherwise, lock screen and turn off monitor.
 
-if [[ $1 = -h ]]; then
-    bin=${0##*/}
-    echo "Usage: $bin [-f]"
-    echo
-    echo "  $bin       # put display to sleep"
-    echo "  $bin -f    # put computer to sleep"
-elif [[ $1 = -f ]]; then
-    echo "Going to sleep..."
-    case $OSTYPE in
-        darwin*) pmset sleepnow ;;
-        linux*)  systemctl suspend ;;
-    esac
+if [[ $1 == -h ]]; then
+  bin=${0##*/}
+  echo "Usage: $bin [-f]"
+  echo
+  echo "  $bin       # put display to sleep"
+  echo "  $bin -f    # put computer to sleep"
+elif [[ $1 == -f ]]; then
+  echo "Going to sleep..."
+  case $OSTYPE in
+    darwin*) pmset sleepnow ;;
+    linux*)  systemctl suspend ;;
+  esac
 else
-    echo "Shutting my eyes..."
-    case $OSTYPE in
-        darwin*) sleep 1; pmset displaysleepnow ;;
-        linux*)
-            if command -v slock >/dev/null; then
-                pgrep slock >/dev/null || slock &
-            fi
-            sleep 1
-            xset dpms force off
-            ;;
-    esac
+  echo "Shutting my eyes..."
+  case $OSTYPE in
+    darwin*) sleep 1; pmset displaysleepnow ;;
+    linux*)
+      if command -v slock >/dev/null; then
+        pgrep slock >/dev/null || slock &
+      fi
+      sleep 1
+      xset dpms force off
+      ;;
+  esac
 fi

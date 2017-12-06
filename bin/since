@@ -2,54 +2,54 @@
 set -e
 (( $# > 0 )) || exit
 
-# Displays the time since $1 in a human readable format (e.g. 4h 25m 55s). If given a
-# file, the modified time is used. If $1 == "--", then this script acts as a converter,
-# converting $2 into human a readable format, e.g. since -- 72 #=> 1m 12s
+# Displays the time since $1 in a human readable format (e.g. 4h 25m 55s). If
+# given a file, the modified time is used. If $1 == "--", then this script acts
+# as a converter, converting $2 into human a readable format, e.g. since -- 72
+# #=> 1m 12s
 
 # TODO: A help fallback
-# TODO: Options parsing
+# TODO: Options parsing?
 
 # `date` on OSX does not have the --date parameter
 date=date
 if [[ $OSTYPE == darwin* ]]; then
-    date=gdate
+  date=gdate
 elif ! command -v $date >/dev/null; then
-    echo "Unsupported system"
-    exit 1
+  echo "Unsupported system"
+  exit 1
 fi
 
 # If given a file, give time since last modification
-(( $# == 1 )) && [[ -f $@ ]] && arg=reference || arg=date
+(( $# == 1 )) && [[ -f $1 ]] && arg=reference || arg=date
 
-args="$*"
 if [[ $1 == -- ]]; then
-    t="$2"
+  t="$2"
 else
-    now=$(${date} +%s)
-    then=$(${date} --$arg="$*" +%s)
+  now=$($date +%s)
+  then=$($date --$arg="$*" +%s)
 
-    t=$(( $now - $then ))
+  t=$(( now - then ))
 fi
 
 # Bash doesn't support floating point arithmetic like zsh does, therefore:
 bc <<EOF
-    define abs(i) {
-        if (i < 0) return (-i)
-        return (i)
-    }
+  define abs(i) {
+    if (i < 0) return (-i)
+    return (i)
+  }
 
-    t = abs($t)
+  t = abs($t)
 
-    weeks = t / 60 / 60 / 24 / 7
-    days = t / 60 / 60 / 24 % 7
-    hours = t / 60 / 60 % 24
-    minutes = t / 60 % 60
-    seconds = t % 60
+  weeks = t / 60 / 60 / 24 / 7
+  days = t / 60 / 60 / 24 % 7
+  hours = t / 60 / 60 % 24
+  minutes = t / 60 % 60
+  seconds = t % 60
 
-    if (weeks > 0) print weeks, "w "
-    if (days > 0) print days, "d "
-    if (hours > 0) print hours, "h "
-    if (minutes > 0) print minutes, "m "
-    print seconds, "s"
+  if (weeks > 0) print weeks, "w "
+  if (days > 0) print days, "d "
+  if (hours > 0) print hours, "h "
+  if (minutes > 0) print minutes, "m "
+  print seconds, "s"
 EOF
 

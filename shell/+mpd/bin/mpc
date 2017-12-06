@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-/usr/bin/mpc -h ~/.config/mpd/mpd.sock $@

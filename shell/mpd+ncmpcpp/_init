@@ -1,0 +1,32 @@
+#!/usr/bin/env zsh
+source ${0:A:h}/../../deploy
+source env.zsh
+
+MPD_HOME="${MPD_HOST%/*}"
+NCMPCPP_HOME="$XDG_CONFIG_HOME/ncmpcpp"
+
+install() {
+  case $(_os) in
+    macos) brew install mpd mpc
+           brew install ncmpcpp --with-clock --with-visualizer --with-outputs
+           ;;
+    arch)  sudo pacman --needed --noconfirm -S mpd mpc ncmpcpp ;;
+    # debian) ;;
+  esac
+}
+
+# update() {}
+
+link() {
+  [[ $OSTYPE == darwin* ]] && local os=macos
+  mklink mpd.${os:-linux}.conf $MPD_HOME/mpd.conf
+  mklink ncmpcpp/* $NCMPCPP_HOME/
+}
+
+clean() {
+  rm -fv $NCMPCPP_HOME
+  rm -fv $MPD_HOME/mpd.conf
+  rmdir $MPD_HOME
+}
+
+init "$@"

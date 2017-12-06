@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# Retrieves a git commit's SHA, useful for a variety of git commands.
+#
+# Examples:
+#  + git checkout `fzf-git-sha`
+#  + git commit --fixup `fzf-git-sha`
+
+commits=$(git log --color=always --abbrev-commit --reverse --format="%C(auto)%h%d %s %C(black)%C(bold)%cr") &&
+  commit=$(echo "$commits" | fzf --tac +s +m -e --ansi) &&
+  echo -n $(echo "$commit" | sed "s/ .*//")

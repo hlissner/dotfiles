@@ -1,0 +1,3 @@
+#!/bin/bash
+# A shim to make firefox believe HOME is elsewhere
+HOME="$XDG_DATA_HOME/mozilla" exec /usr/bin/firefox "$@"

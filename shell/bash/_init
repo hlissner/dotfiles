@@ -1,0 +1,22 @@
+#!/usr/bin/env zsh
+source ${0:A:h}/../../deploy
+
+install() {
+  case $(_os) in
+    macos)  brew install bash ;;
+    # arch) ;;  # NOTE Already installed
+    debian) sudo apt-get install -y bash ;;
+  esac
+}
+
+# update() { }
+
+link() {
+  mklink .bash* ~/
+}
+
+clean() {
+  rm -fv ~/.bash{rc,_profile}
+}
+
+init "$@"

@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-[[ -f ~/.emacs.d/Makefile ]] && { cd ~/.emacs.d && YES=1 make update; }
-

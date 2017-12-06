@@ -1,0 +1,22 @@
+#!/usr/bin/env zsh
+icon=""
+if [[ $1 == "1" ]]; then
+    echo "%{F#555856}${icon}%{F-}"
+    exit
+fi
+
+pac=$(checkupdates | wc -l)
+aur=$(cower -u | wc -l)
+
+[[ -f /tmp/polybar-updates ]] && last=$(</tmp/polybar-updates)
+check=$((pac + aur))
+if [[ "$check" != "0" ]]; then
+    echo "%{F#b5bd68}${icon}$pac+$aur%{F-}"
+    if [[ $last != "$pac$aur" ]]; then
+        notify-send "$((pac+aur)) updates available"
+        aplay -N -q $DOTFILES_ASSETS/sounds/updates.ogg
+        echo "$pac$aur" >/tmp/polybar-updates
+    fi
+else
+    echo "%{F#555856}${icon}%{F-}"
+fi

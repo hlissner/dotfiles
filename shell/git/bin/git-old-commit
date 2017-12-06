@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# Commits to a local git repository with a timestamp different from when it was
+# actually committed. I use this to push old projects with more relevant dates
+# (i.e. when they were authored) and to correct clerical mistakes involving lost
+# or accidental commits.
+#
+# Example: git old-commit "-5 years -2 months -11 days -1 hours -19 seconds" "commit message here"
+
+D="$(date --date="$1")"; shift
+GIT_COMMITTER_DATE="$D" GIT_AUTHOR_DATE="$D" git commit "$@"

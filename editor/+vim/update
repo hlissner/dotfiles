@@ -1,2 +1,0 @@
-#!/usr/bin/env bash
-[[ -d ~/.vim ]] && { cd ~/.vim && make update; }

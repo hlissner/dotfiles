@@ -1,0 +1,10 @@
+#!/usr/bin/env zsh
+# Rehashes all (rb|py|nod|lua|*)env environments
+
+for env in $XDG_CONFIG_HOME/*env(N); do
+  local bin=${env##*/}
+  if _is_callable $bin; then
+    echo "Rehashing $bin"
+    $bin rehash
+  fi
+done

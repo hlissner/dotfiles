@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+# Uses fzf as an application launcher.
+#
+# Requires: fzf, lnch
+
+FZF_DEFAULT_OPTS="--prompt='open > ' $FZF_DEFAULT_OPTS"
+case $OSTYPE in
+  darwin*)
+    cmd=$(find -L {,~}/Applications -iname '*.app' -maxdepth 2 -type d 2>/dev/null | sort -u | fzf)
+    [[ $cmd ]] && open "$cmd"
+    ;;
+  linux*)
+    cmd=$(echo -n "$PATH" | xargs -d: -I{} -r -- find -L {} -maxdepth 1 -mindepth 1 -type f -executable -printf '%P\n' 2>/dev/null | sort -u | fzf)
+    if [[ ! $cmd ]]; then
+      return
+    elif [[ $cmd == fzf-* ]]; then
+      $cmd
+    elif ! command -v lnch >/dev/null; then
+      >&2 echo "lnch not installed, run 'go get github.com/oem/lnch'"
+      exit 1
+    else
+      # disowns the subprocess from the parent shell (i.e. if that shell gets
+      # closed, the subprocess will survive).
+      lnch "$cmd"
+
+      # OPTIONAL: requires shell/+tmux
+      if command -v tmux-session-name >/dev/null; then
+        # If this was used from a scratch tmux terminal, close it
+        [[ "$(tmux-session-name)" == scratch ]] && tmux kill-session -t scratch
+      fi
+    fi
+    ;;
+esac

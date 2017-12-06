@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+xcolor() {
+    xrdb -query | awk "/^\*\.$1:/ {print \$2}" | sed -E 's/^[^#]+//'
+}
+
+COLOR_FG=$(xcolor foreground)
+COLOR_BG=$(xcolor background)
+for ((i=0;i<=15;i++)); do
+    eval "COLOR_$i=\$(xcolor color$i)"
+done
+

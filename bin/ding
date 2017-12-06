@@ -1,6 +1,6 @@
-#!/usr/bin/env bash
-DEFAULT="$HOME/.dotfiles/sounds/${1:-Titan.ogg}"
+#!/usr/bin/env zsh
+DEFAULT="$DOTFILES_ASSETS/sounds/${1:-Titan.ogg}"
 case $OSTYPE in
-    darwin*) afplay "$DEFAULT" ;;
-    linux*)  paplay "$DEFAULT" ;;
+  darwin*) afplay $DEFAULT ;;
+  linux*)  paplay $DEFAULT ;;
 esac

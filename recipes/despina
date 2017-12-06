@@ -1,6 +1,0 @@
-os/arch
-vcs/*
-shell/zsh
-editor/{emacs,neovim}
-dev/*
-browser

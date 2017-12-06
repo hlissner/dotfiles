@@ -1,0 +1,36 @@
+[user]
+	name = Henrik Lissner
+	email = henrik@lissner.net
+
+[core]
+	pager = diff-so-fancy | less --tabs=4 -RFX
+	whitespace = trailing-space
+[color]
+	ui = auto
+[github]
+	user = hlissner
+[rebase]
+	autosquash = true
+[push]
+	default = current
+[merge]
+    ff = onlt
+	log = true
+
+[alias]
+	amend = commit --amend
+	exec = "!exec "
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
+	ls = ls-files
+	orphan = checkout --orphan
+	unadd = reset HEAD
+	undo-commit = reset --soft "HEAD^"
+	# data analysis
+	ranked-authors = !git authors | sort | uniq -c | sort -n
+	emails = !git log --format="%aE" | sort -u
+	email-domains = !git log --format="%aE" | awk -F'@' '{print $2}' | sort -u
+[filter "lfs"]
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f

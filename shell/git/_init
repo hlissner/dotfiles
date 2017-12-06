@@ -1,0 +1,28 @@
+#!/usr/bin/env zsh
+source ${0:A:h}/../../deploy
+GIT_DIR="$XDG_CONFIG_HOME/git"
+
+install() {
+  case $(_os) in
+    macos)  brew install git git-lfs hub diff-so-fancy git-standup git-extras ;;
+    arch)   pacaur --needed --noconfirm --noedit -S git hub git-lfs diff-so-fancy git-standup-git git-extras ;;
+    debian)
+      sudo apt-get install -y git hub diff-so-fancy git-standup git-extras
+      curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+      sudo apt-get install -y git-fls
+      git lfs install
+      ;;
+  esac
+}
+
+# update() {}
+
+link() {
+  mklink {config,ignore} $GIT_DIR/
+}
+
+clean() {
+  rm -rfv $GIT_DIR
+}
+
+init "$@"

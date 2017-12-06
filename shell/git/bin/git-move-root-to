@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Moves the git project's root to another folder
+
+git filter-branch \
+    --subdirectory-filter "$@" \
+    --tag-name-filter cat \
+    --prune-empty -- --all

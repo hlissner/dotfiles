@@ -1,0 +1,21 @@
+#!/usr/bin/env zsh
+source ${0:A:h}/../../deploy
+
+install() {
+  case $(_os) in
+    macos) brew cask install virtualbox
+           brew install docker docker-compose docker-machine
+           docker-machine create -d virtualbox dev
+           ;;
+    arch)  sudo pacman --needed --noconfirm -S docker docker-compose ;;
+    # debian) sudo apt-get install -y docker docker-compose ;; FIXME
+  esac
+}
+
+# update() {}
+
+# link() {}
+
+# clean() {}
+
+init "$@"

@@ -1,0 +1,84 @@
+#!/usr/bin/env zsh
+source ${0:A:h}/../../deploy
+
+install() {
+  if ! nc -z 8.8.8.8 53 >/dev/null 2>&1; then
+    >&2 echo "No internet connection"
+    return 1
+  elif ! sudo pacman -Syu --noconfirm; then
+    >&2 echo "Could not update pacman"
+    return 2
+  fi
+
+  # Core essentials
+  sudo pacman --needed --noconfirm -S wget git curl tree rsync dnsutils
+
+  # Set up pacaur (AUR helper)
+  if ! _is_callable pacaur; then
+    TEMP="$(mktemp -d)"
+    pushd $TEMP
+    for pkg in cower pacaur; do
+      if [[ ! "$(pacman -Qs $pkg)" ]]; then
+        curl -o PKGBUILD https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=$pkg && \
+          makepkg PKGBUILD --needed --noconfirm --skippgpcheck -sri
+      fi
+    done
+    popd
+    rm -rf $TEMP
+
+    if ! _is_callable pacaur; then
+      >&2 echo "Pacaur was not successfully installed"
+      return 3
+    fi
+  fi
+
+  pacaur --needed --noconfirm --noedit -S \
+    wget curl ripgrep the_silver_searcher bc cronie youtube-dl \
+    xorg-server xorg-xinit xorg-xlsfonts xorg-xfd xdotool \
+    lightdm lightdm-mini-greeter \
+    bspwm sxhkd compton dunst xcb-proto polybar libnotify \
+    rvxt-unicode rvxt-unicode-terminfo \
+    slop feh maim ffmpeg zbar \
+    keybase-bin pass pass-otp \
+    neofetch glances inxi dfc \
+    ttf-fira-{mono,sans} ttf-font-awesome tamsym-font siji-git \
+    adwaita-icon-theme adwaita-slim-gtk-theme
+
+  # install crontab
+  sudo systemctl enable cronie
+  crontab ./crontab
+
+  # raise inotify limit
+  sudo tee -a /etc/sysctl.d/99-sysctl.conf <<<"fs.inotify.max_user_watches=524288"
+
+  # set up lightdm + minigreeter
+  sudo systemctl enable lightdm
+  sudo sed -i \
+    -e "s@^#?\(greeter-session=\).+@\1lightdm-mini-greeter@" \
+    -e "s@^#?\(user-session=\).+@\1bspwm@" \
+    /etc/lightdm/lightdm.conf
+  sudo sed -i \
+    -e "s@^\(user = \).+@\1${USER}@" \
+    -e "s@^\(show-password-label = \).+@\1false@" \
+    -e "s@^\(background-color = \).+@\1\"#000000\"@;" \
+    /etc/lightdm/lightdm-mini-greeter.conf
+}
+
+update() {
+  _is_callable pacaur && local pac=pacaur
+  ${pac:-sudo pacman} -Syu --noconfirm
+}
+
+link() {
+  mklink xprofile ~/.xprofile
+  mklink config/* $XDG_CONFIG_HOME/
+  mklink fonts/* $XDG_DATA_HOME/fonts/
+  mklink -s pacman/*.hook /etc/pacman.d/hooks/
+}
+
+clean() {
+  rm -fv $XDG_DATA_HOME/fonts/*(@N)
+  sudo rm -fv /etc/pacman.d/hooks/*(@N)
+}
+
+init "$@"

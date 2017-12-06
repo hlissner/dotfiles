@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# Add files (relative to working directory) to current playlist.
+
+local files=()
+for file in $@; do
+  files+="$(realpath --relative-to="$HOME/music" "$file")"
+done
+mpc add ${files[@]}

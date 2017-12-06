@@ -8,7 +8,6 @@ import argparse
 import fileinput
 import html
 from html.entities import entitydefs
-from pathlib import Path
 
 ENTITIES = {value: key for key, value in entitydefs.items()}
 
@@ -28,16 +27,10 @@ def decode(text):
 
 if __name__ == '__main__':
     opts = argparse.ArgumentParser(description="Encodes (or decodes) HTML entities in text.")
-    opts.add_argument('file', nargs="?", help="File to encode/decode")
+    opts.add_argument('file', type=str, nargs="*", help="File to encode/decode")
     opts.add_argument('-d', '--decode', action='store_true', help="Decode the given files/input")
     args = opts.parse_args()
 
-    if "file" in args and args.file:
-        text = Path(args.file).read_text()
-    else:
-        text = "\n".join([line for line in fileinput.input()]).strip()
-
-    if args.decode:
-        print(decode(text))
-    else:
-        print(encode(text))
+    text = [line for line in fileinput.input(args.file)]
+    action = decode if args.decode else encode
+    print(action("\n".join(text).strip()))

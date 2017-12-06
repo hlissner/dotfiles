@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-/home/hlissner/.config/panel/panel-notify :updates &
-exit

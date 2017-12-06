@@ -1,0 +1,23 @@
+#!/usr/bin/env zsh
+source ${0:A:h}/../../deploy
+
+QUTEBROWSER_HOME=$XDG_CONFIG_HOME/qutebrowser
+
+install() {
+  case $(_os) in
+    macos) brew cask install qutebrowser ;;
+    arch)  pacaur --needed --noconfirm --noedit -S qutebrowser ;;
+  esac
+}
+
+# update() {}
+
+link() {
+  mklink config.py $QUTEBROWSER_HOME/
+}
+
+clean() {
+  rm -rfv $QUTEBROWSER_HOME
+}
+
+init "$@"

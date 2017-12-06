@@ -1,0 +1,17 @@
+# field          allowed values
+# -----          --------------
+# minute         0-59
+# hour           0-23
+# day of month   1-31
+# month          1-12 (or names, see below)
+# day of week    0-7 (0 or 7 is Sun, or use names)
+#------------------------------------------------------------
+# m  hr d  m  w  cmd
+# 0  *  *  *  *  ...
+
+# Polybar
+0 * * * * polybar-msg hook pkg 1
+*/5 * * * * polybar-msg hook mail 1
+
+# Personal
+0 * * * * DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send "It is $(date +\%H:\%M)"

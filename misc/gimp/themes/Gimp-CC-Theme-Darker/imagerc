@@ -1,0 +1,451 @@
+#############################
+#
+# GIMP CC THEME 'Darkest'
+#
+# Draekko
+#
+#############################
+
+style "gimp-icons" {
+
+    ########################################################################
+    #
+    # Tools Icons
+    #
+    ########################################################################
+
+    stock["gimp-tool-move"] = {
+    	{ "images/move-tool.png", *, *, "gtk-button" },
+    	{ "images/move-tool.png", *, *, * }
+    }
+
+    stock["gimp-tool-rect-select"] = {
+    	{ "images/rectangual-selection-tool.png", *, *, "gtk-button" },
+    	{ "images/rectangual-selection-tool.png", *, *, * }
+    }
+
+    stock["gimp-tool-ellipse-select"] = {
+    	{ "images/elliptical-selection-tool.png", *, *, "gtk-button" },
+    	{ "images/elliptical-selection-tool.png", *, *, * }
+    }
+
+    stock["gimp-tool-free-select"] = {
+    	{ "images/lasso-tool.png", *, *, "gtk-button" },
+    	{ "images/lasso-tool.png", *, *, * }    
+    }
+
+    stock["gimp-tool-foreground-select"] = {
+    	{ "images/foreground-selection-tool.png", *, *, "gtk-button"},
+    	{ "images/foreground-selection-tool.png", *, *, *}
+    }
+
+    stock["gimp-tool-fuzzy-select"] = {
+    	{ "images/magic-wand-tool.png", *, *, "gtk-button" },
+    	{ "images/magic-wand-tool.png", *, *, * }
+    }
+
+    stock["gimp-tool-by-color-select"] = {
+    	{ "images/stock-tool-by-color-select-22.png", *, *, "gtk-button" },
+    	{ "images/stock-tool-by-color-select-22.png", *, *, * }
+    }
+
+    stock["gimp-tool-crop"] = {
+    	{ "images/crop-tool.png", *, *, "gtk-button" },
+    	{ "images/crop-tool.png", *, *, * }
+    }
+
+    stock["gimp-tool-color-picker"] = {
+    	{ "images/color-picker-tool.png", *, *, "gtk-button" },
+    	{ "images/color-picker-tool.png", *, *, * }
+    }
+
+    stock["gimp-tool-heal"] = {
+    	{ "images/healing-brush-tool.png", *, *, "gtk-button" },
+    	{ "images/healing-brush-tool.png", *, *, * }
+    }
+
+    stock["gimp-tool-paintbrush"] = {
+    	{ "images/brush-tool.png", *, *, "gtk-button" },
+    	{ "images/brush-tool.png", *, *, * }
+    }
+
+    stock["gimp-tool-clone"] = {
+    	{ "images/clone-stamp-tool.png", *, *, "gtk-button"},
+    	{ "images/clone-stamp-tool.png", *, *, *}
+    }
+
+    stock["gimp-tool-measure"] = 
+    {
+          { "images/measure-tool.png", *, *, "gtk-button" },
+          { "images/measure-tool.png", *, *, * }
+    }
+    
+    stock["gimp-tool-eraser"] = {
+    	{ "images/eraser-tool.png", *, *, "gtk-button" },
+    	{ "images/eraser-tool.png", *, *, * }
+    }
+
+    stock["gimp-tool-pencil"] = {
+    	{ "images/pencil-tool.png", *, *, "gtk-button" },
+    	{ "images/pencil-tool.png", *, *, * }
+    }
+
+    stock["gimp-tool-align"] = {
+        { "images/layer-align.png", *, *, "gtk-button"},
+    	{ "images/layer-align.png", *, *, *}
+    }
+
+    #stock["gimp-flip-vertical"] = {
+    #	{ "images/stock-flip-vertical-c22.png", *, *, "gtk-button" },
+    #    { "images/stock-flip-vertical-c22.png", *, *, * }
+    #}
+
+    #stock["gimp-flip-horizontal"] = {
+    #    { "images/stock-flip-horizontal-c22.png", *, *, "gtk-button" },
+    #    { "images/stock-flip-horizontal-c22.png", *, *, * }
+    #}
+
+    #stock["gimp-histogram"] = {
+	#    { "images/stock-histogram-c22.png", *, *, "gtk-button" },
+	#    { "images/stock-histogram-c22.png", *, *, * }
+    #}   
+
+    #stock["gimp-color-pick-from-screen"] = {
+    #	{ "images/stock-tool-color-balance-22.png", *, *, "gtk-button" },
+    #	{ "images/stock-color-pick-from-screen-c22.png", *, *, * }
+    #}
+
+    #stock["gimp-edit"] = {
+    #    { "images/stock-edit-c22.png", *, *, "gtk-button" },
+    #    { "images/stock-edit-c22.png", *, *, * }
+    #}
+
+    #stock["gimp-tool-brightness-contrast"] = {
+    #    { "images/stock-tool-brightness-contrast-c22.png", *, *, "gtk-button" },
+    #    { "images/stock-tool-brightness-contrast-c22.png", *, *, * }
+    #}
+
+    stock["gimp-tool-airbrush"] = {
+    	{ "images/airbrush-tool.png", *, *, "gtk-button" },
+    	{ "images/airbrush-tool.png", *, *, * }
+    }
+
+    stock["gimp-tool-blend"] = {
+    	{ "images/gradient-tool.png", *, *, "gtk-button" },
+    	{ "images/gradient-tool.png", *, *, * }
+    }
+
+    stock["gimp-tool-bucket-fill"] = {
+    	{ "images/paint-bucket-tool.png", *, *, "gtk-button"},
+    	{ "images/paint-bucket-tool.png", *, *, *}
+    }
+
+    stock["gimp-tool-blur"] = {
+        { "images/blur-tool.png", *, *, "gtk-button" },
+	    { "images/blur-tool.png", *, *, * }
+    }
+
+    stock["gimp-tool-dodge"] = {
+    	{ "images/dodge-tool.png", *, *, "gtk-button" },
+    	{ "images/dodge-tool.png", *, *, * }
+    }
+    stock["gimp-tool-smudge"] = {   
+	    { "images/smudge-tool.png", *, *, "gtk-button" },
+	    { "images/smudge-tool.png", *, *, * }
+    }
+
+    stock["gimp-tool-path"] = {   
+	    { "images/pen-tool.png", *, *, "gtk-button" },
+    	{ "images/pen-tool.png", *, *, * }
+    }
+
+    stock["gimp-tool-text"] = {
+	    { "images/type-tool.png", *, *, "gtk-button" },
+    	{ "images/type-tool.png", *, *, * }
+    }
+
+    stock["gimp-tool-zoom"] = {
+	    { "images/zoom-tool.png", *, *, "gtk-button" },
+	    { "images/zoom-tool.png", *, *, * }
+    }
+
+    #stock["gimp-stock-zoom-follow-window"] = {
+    #    { "images/stock-zoom-follow-window-22.png", *, *, "gtk-button" },
+    #    { "images/stock-zoom-follow-window-c22.png", *, *, * }
+    #}
+
+    stock["gimp-tool-cage"] = {
+        { "images/stock-tool-cage-22.png", *, *, "gtk-button" },
+        { "images/stock-tool-cage-22.png", *, *, * }
+    }
+
+    stock["gimp-tool-color-balance"] = {
+        { "images/stock-tool-color-balance-c22.png", *, *, "gtk-button" },
+        { "images/stock-tool-color-balance-c22.png", *, *, * }
+    }
+
+    #stock["gimp-tool-curves"] = {
+    #    { "images/stock-tool-curves-22.png", *, *, "gtk-button" },
+    #    { "images/stock-tool-curves-c22.png", *, *, * }
+    #}
+    
+    stock["gimp-tool-flip"] = {
+        { "images/stock-tool-flip-22.png", *, *, "gtk-button" },
+        { "images/stock-tool-flip-22.png", *, *, *  }
+    }
+  
+    stock["gimp-tool-ink"] = {
+        { "images/stock-tool-ink-22.png", *, *, "gtk-button" },
+        { "images/stock-tool-ink-22.png", *, *, * }
+    }
+
+    stock["gimp-tool-iscissors"] = {
+    	{ "images/magnetic-lasso-tool.png", *, *, "gtk-button" },
+	    { "images/magnetic-lasso-tool.png", *, *, * }
+    }
+
+    # Icons in the Color menu
+    stock["gimp-tool-levels"] = {
+        { "images/stock-tool-levels-c22.png", *, *, "gtk-button" },
+        { "images/stock-tool-levels-c22.png", *, *, * }
+    }
+    
+    stock["gimp-tool-colorize"] = {
+        { "images/stock-tool-colorize-22.png", *, *, "gtk-button" },
+        { "images/stock-tool-colorize-22.png", *, *, * }
+    }
+
+    stock["gimp-tool-hue-saturation"] = {
+        { "images/stock-tool-hue-saturation-22.png", *, *, "gtk-button" },
+        { "images/stock-tool-hue-saturation-22.png", *, *, * }
+    }
+ 
+    stock["gimp-tool-perspective-clone"] = {
+        { "images/perspective-clone-tool.png", *, *, "gtk-button" },
+        { "images/perspective-clone-tool.png", *, *, * }
+    }
+
+    stock["gimp-tool-perspective"] = {
+        { "images/stock-tool-perspective-22.png", *, *, "gtk-button" },
+        { "images/stock-tool-perspective-22.png", *, *, * }
+    }
+
+    #stock["gimp-tool-posterize"] = {
+    #    { "images/stock-tool-posterize-c22.png", *, *, "gtk-button" },
+    #    { "images/stock-tool-posterize-c22.png", *, *, * }
+    #}
+  
+    stock["gimp-tool-rotate"] = {
+        { "images/stock-tool-rotate-22.png", *, *, "gtk-button" },
+        { "images/stock-tool-rotate-22.png", *, *, * }
+    }
+
+    stock["gimp-tool-scale"] = {
+        { "images/stock-tool-scale-22.png", *, *, "gtk-button" },
+        { "images/stock-tool-scale-22.png", *, *, * }
+    }
+
+    stock["gimp-tool-shear"] = {
+        { "images/stock-tool-shear-22.png", *, *, "gtk-button" },
+        { "images/stock-tool-shear-22.png", *, *, * }
+    }
+
+    stock["gimp-tool-threshold"] = {
+        { "images/stock-tool-threshold-c22.png", *, *, "gtk-button" },
+        { "images/stock-tool-threshold-c22.png", *, *, * }
+    }
+
+    ########################################################################
+    #
+    # UI Icons
+    #
+    ########################################################################
+
+    stock["gimp-close"] = {
+        { "ui/gimp-close.png", *, *, "gtk-button" },
+        { "ui/gimp-close.png", *, *, "gtk-dialog" },
+        { "ui/gimp-close.png", *, *, "gtk-menu" },
+        { "ui/gimp-close.png", *, *, * }
+    }
+
+    stock["gimp-menu-left"] = {
+        { "ui/gimp-menu-left.png", *, *, "gtk-button" },
+        { "ui/gimp-menu-left.png", *, *, "gtk-dialog" },
+        { "ui/gimp-menu-left.png", *, *, "gtk-menu" },
+        { "ui/gimp-menu-left.png", *, *, * }
+    }
+
+    stock["gimp-menu-right"] = {
+        { "ui/gimp-menu-right.png", *, *, "gtk-button" },
+        { "ui/gimp-menu-right.png", *, *, "gtk-dialog" },
+        { "ui/gimp-menu-right.png", *, *, "gtk-menu" },
+        { "ui/gimp-menu-right.png", *, *, * }
+    }
+
+    stock["gimp-navigation"] = {
+        { "ui/gimp-tool-move.png", *, *, "gtk-button" },
+        { "ui/gimp-tool-move.png", *, *, "gtk-dialog" },
+        { "ui/gimp-tool-move.png", *, *, "gtk-menu" },
+        { "ui/gimp-tool-move.png", *, *, * }
+    }
+
+    stock["gimp-move-to-screen"] = {
+        { "ui/gimp-tool-move.png", *, *, "gtk-button" },
+        { "ui/gimp-tool-move.png", *, *, "gtk-dialog" },
+        { "ui/gimp-tool-move.png", *, *, "gtk-menu" },
+        { "ui/gimp-tool-move.png", *, *, * }
+    }
+
+    stock["gimp-image"] = {
+       { "ui/gimp-image-16.png", *, *, "gtk-button" },
+       { "ui/gimp-image-16.png", *, *, *            },
+       { "ui/gimp-image-24.png", *, *, "gtk-button" },
+       { "ui/gimp-image-24.png", *, *, *            },
+       { "ui/gimp-image-32.png", *, *, "gtk-button" },
+       { "ui/gimp-image-32.png", *, *, *            },
+       { "ui/gimp-image-48.png", *, *, "gtk-button" },
+       { "ui/gimp-image-48.png", *, *, *            }
+    }
+
+    stock["gimp-linked"] = {
+        { "ui/gimp-linked-12.png", *, *, "gtk-button" },
+        { "ui/gimp-linked-12.png", *, *, *            },
+        { "ui/gimp-linked-20.png", *, *, "gtk-button" },
+        { "ui/gimp-linked-20.png", *, *, *            }
+    }
+
+    stock["gimp-visible"] = {
+        { "ui/gimp-visible-eye-12.png", *, *, "gtk-button" },
+        { "ui/gimp-visible-eye-12.png", *, *, *            },
+        { "ui/gimp-visible-eye-16.png", *, *, "gtk-button" },
+        { "ui/gimp-visible-eye-16.png", *, *, *            },
+        { "ui/gimp-visible-eye-20.png", *, *, "gtk-button" },
+        { "ui/gimp-visible-eye-20.png", *, *, *            }
+    }
+
+
+    stock["gimp-tool-n-point-deformation"] = {
+        { "ui/gimp-tool-n-point-deformation-16.png", *, *, "gtk-button" },
+        { "ui/gimp-tool-n-point-deformation-16.png", *, *, *            },
+        { "ui/gimp-tool-n-point-deformation-22.png", *, *, "gtk-button" },
+        { "ui/gimp-tool-n-point-deformation-22.png", *, *, *            }
+    }
+
+    stock["gimp-tool-seamless-clone"] = {
+        { "ui/gimp-tool-seamless-clone-16.png", *, *, "gtk-button" },
+        { "ui/gimp-tool-seamless-clone-16.png", *, *, *            },
+        { "ui/gimp-tool-seamless-clone-22.png", *, *, "gtk-button" },
+        { "ui/gimp-tool-seamless-clone-22.png", *, *, *            }
+    }
+
+    stock["gimp-tool-unified-transform"] = {
+        { "ui/gimp-tool-unified-transform-16.png", *, *, "gtk-button" },
+        { "ui/gimp-tool-unified-transform-16.png", *, *, *            },
+        { "ui/gimp-tool-unified-transform-22.png", *, *, "gtk-button" },
+        { "ui/gimp-tool-unified-transform-22.png", *, *, *            }
+    }
+
+    stock["gimp-tool-mybrush"] = {
+        { "ui/gimp-tool-mybrush-16.png", *, *, "gtk-button" },
+        { "ui/gimp-tool-mybrush-16.png", *, *, *            },
+        { "ui/gimp-tool-mybrush-22.png", *, *, "gtk-button" },
+        { "ui/gimp-tool-mybrush-22.png", *, *, *            }
+    }
+
+    stock["gimp-info"] = {{"ui/gimp-bulb-16.png"}}   
+    stock["gimp-duplicate"] = {{ "ui/gimp-duplicate.png" }}
+    stock["gtk-delete"] = {{"ui/gimp-delete.png"}} 
+    stock["gimp-anchor"] = {{ "ui/gimp-anchor.png" }}
+    stock["gtk-refresh"] = {{"ui/gimp-refresh.png"}}
+    stock["gtk-refresh"] = {{"ui/gimp-refresh.png"}}
+    stock["gtk-new"] = {{"ui/gimp-new.png"}}
+    stock["gtk-directory"] = {{"ui/gimp-layer-group.png"}}
+    stock["gtk-open"] = {{"ui/gimp-layer-group.png"}}
+    stock["gtk-go-up"] = {{"ui/gimp-go-up.png"}}
+    stock["gtk-go-down"] = {{"ui/gimp-go-down.png"}}
+    stock["gtk-edit"] = {{"ui/gimp-edit.png"}}
+    stock["gtk-revert-to-saved"] = {{"ui/gimp-restore.png"}}
+    stock["gtk-save"] = {{"ui/gimp-save.png"}}
+    stock["gimp-reset"] = {{"ui/gimp-stock-reset.png"}}
+    stock["gimp-invert"] = {{"ui/gimp-invert.png"}}
+    stock["gimp-selection-all"] = {{"ui/gimp-all.png"}}
+    stock["gimp-selection-none"] = {{"ui/gimp-none.png"}}
+    stock["gimp-selection-replace"] = {{"ui/gimp-square.png"}}
+    stock["gimp-selection-to-channel"] = {{"ui/gimp-save.png"}}
+    stock["gimp-selection-to-path"] = {{"ui/gimp-selection-to-path.png"}}
+    stock["gimp-selection-stroke"] = {{"ui/gimp-selection-stroke.png"}}
+
+    stock["gimp-selection"] = {{"ui/gimp-selection.png"}}
+    stock["gimp-selection-add"] = {{"ui/gimp-selection-add.png"}}
+    stock["gimp-selection-border"] = {{"ui/gimp-selection-border.png"}}
+    stock["gimp-selection-grow"] = {{"ui/gimp-selection-grow.png"}}
+    stock["gimp-selection-intersect"] = {{"ui/gimp-selection-intersect.png"}}
+    stock["gimp-selection-shrink"] = {{"ui/gimp-selection-shrink.png"}}
+    stock["gimp-selection-stroke"] = {{"ui/gimp-selection-stroke.png"}}
+    stock["gimp-selection-subtract"] = {{"ui/gimp-selection-subtract.png"}}
+
+    stock["gimp-path"] = {{"ui/gimp-path.png"}}
+    stock["gimp-paths"] = {{"ui/gimp-paths.png"}}
+    stock["gimp-path-stroke"] = {{"ui/gimp-path-stroke.png"}}
+    stock["gtk-undo"] = {{"ui/gimp-undo.png"}}
+    stock["gtk-redo"] = {{"ui/gimp-redo.png"}}
+    stock["gtk-clear"] = {{"ui/gimp-clear.png"}}
+    stock["gtk-add"] = {{"ui/gimp-new.png"}}
+    stock["gtk-zoom-100"] = {{ "ui/gimp-zoom-one.png"}}
+    stock["gtk-zoom-fit"] = {{ "ui/gimp-zoom.png"}}
+    stock["gimp-zoom-follow-window"] = {{ "ui/gimp-zoom-fit-12.png"}}
+    stock["gtk-zoom-in"] = {{ "ui/gimp-zoom-in.png"}}
+    stock["gtk-zoom-out"] = {{ "ui/gimp-zoom-out.png"}}
+    stock["gtk-remove"] = {{"ui/gimp-remove.png"}} 
+    stock["gtk-goto-bottom"] = {{"ui/gimp-go-down.png"}}    
+    stock["gtk-goto-top"] = {{"ui/gimp-go-up.png"}} 
+    stock["gtk-save"] = {{"ui/gimp-save-file.png"}} 
+    stock["gtk-save-as"] = {{"ui/gimp-save-file.png"}} 
+    stock["gimp-edit"] = {{"ui/gimp-edit.png"}}
+    stock["gtk-quit"] = {{"ui/gimp-quit.png"}}
+    stock["gimp-web"] = {{"ui/gimp-web.png"}}
+    stock["gimp-layer"] = {{"ui/gimp-layers.png"}}
+    stock["gimp-layers"] = {{"ui/gimp-layers.png"}}
+    stock["gtk-page-setup"] = {{"ui/gimp-page-setup.png"}}    
+    stock["gtk-print"] = {{"ui/gimp-print.png"}}  
+    stock["gtk-close"] = {{"ui/gimp-close-view.png"}} 
+    #stock["gimp-close"] = {{"ui/gimp-close-circle.png"}} 
+    stock["gtk-info"] = {{"ui/gimp-info-64.png"}}   
+    stock["gimp-plugin"] = {{"ui/gimp-plug.png"}}
+    stock["gimp-undo-history"] = {{"ui/gimp-undo-circle.png"}}
+    stock["gtk-about"] = {{"ui/gimp-star.png"}}
+    stock["gtk-help"] = {{"ui/gimp-question-64.png"}}     
+    stock["gimp-gegl"] = {{"ui/gimp-gegl-22.png"}}
+    stock["gimp-shape-circle"] = {{"ui/gimp-shape-circle.png"}}
+    stock["gimp-shape-diamond"] = {{"ui/gimp-shape-diamond.png"}}
+    stock["gimp-shape-square"] = {{"ui/gimp-shape-square.png"}}
+    stock["gimp-dynamics"] = {{"ui/gimp-dynamics.png"}}
+    stock["gimp-display-filter"] = {{"ui/gimp-display-filter.png"}}
+    stock["gimp-display-filter-colorblind"] = {{"ui/gimp-display-filter-colorblind.png"}}
+    stock["gimp-display-filter-contrast"] = {{ "ui/gimp-display-filter-contrast.png"}}
+    stock["gimp-display-filter-lcms"] = {{ "ui/gimp-display-filter-lcms.png"}}
+    stock["gimp-display-filter-proof"] = {{ "ui/gimp-display-filter-proof.png"}}
+    #stock["gimp-visible"] = {{"ui/gimp-visible-eye-16.png"}}
+    stock["gimp-resize"] = {{"ui/gimp-resize.png"}}
+    stock["gimp-rotate-90"] = {{"ui/gimp-rotate-90.png"}}
+    stock["gimp-rotate-180"] = {{"ui/gimp-rotate-180.png"}}
+    stock["gimp-rotate-270"] = {{"ui/gimp-rotate-270.png"}}
+    stock["gimp-join-bevel"] = {{"ui/gimp-join-bevel.png"}}
+    stock["gimp-join-miter"] = {{ "ui/gimp-join-miter.png"}}
+    stock["gimp-join-round"] = {{"ui/gimp-join-round.png"}}
+    stock["gimp-flip-horizontal"] = {{"ui/gimp-flip-horizontal.png"}}
+    stock["gimp-flip-vertical"] = {{"ui/gimp-flip-vertical.png"}}
+    stock["gimp-layer-to-imagesize"] = {{"ui/gimp-layer-to-imagesize.png"}}
+    stock["gimp-scale"] = {{ "ui/gimp-scale.png" }}
+    stock["gimp-sample-point"] = {{"ui/gimp-sample-point.png"}}
+    stock["gimp-tool-unified-transform"] = {{"ui/gimp-tool-unified-transform.png"}}
+    stock["gimp-colormap"] = {{ "ui/gimp-colormap.png" }}
+    stock["gimp-channels"] = {{ "ui/gimp-channels.png" }}
+    stock["gimp-histogram"] = {{"ui/gimp-histogram.png"}}
+    stock["gimp-histogram-linear"] = {{"ui/gimp-histogram-linear.png"}}
+    stock["gimp-histogram-logarithmic"] = {{"ui/gimp-histogram-logarithmic.png"}}
+
+}
+
+class "GtkWidget" style "gimp-icons"
+

@@ -1,0 +1,23 @@
+#!/usr/bin/env zsh
+source ${0:A:h}/../../deploy
+source env.zsh
+
+install() {
+  case $(_os) in
+    macos) brew install rust
+           cargo install racer
+           ;;
+    arch)  pacaur --needed --noconfirm -S rust rust-doc rust-racer ;;
+  esac
+  _ensure_repo rust-lang/rust $RUST_SRC_PATH
+}
+
+update() {
+  cd $RUST_SRC_PATH && git pull
+}
+
+# link() {}
+
+# clean() {}
+
+init "$@"

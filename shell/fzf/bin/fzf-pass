@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+#
+# Prompts for a pass entry, then for a specific field. Similar to passmenu, but
+# uses fzf, and can resume from a previous session.
+#
+# Example: fzf-pass [RESUME]
+#
+
+set -e
+shopt -s nullglob globstar
+
+if [[ $1 == -r ]]; then
+    resume=1; shift
+fi
+url=$@
+
+LAST_ENTRY_FILE=/tmp/_upm
+if [[ $resume && -f $LAST_ENTRY_FILE ]]; then
+  entry="$(<$LAST_ENTRY_FILE)"
+  last=1
+else
+  prefix=${PASSWORD_STORE_DIR-~/.password-store}
+  password_files=( "$prefix"/**/*.gpg  )
+  password_files=( "${password_files[@]#"$prefix"/}"  )
+  password_files=( "${password_files[@]%.gpg}" )
+  entry=$(printf "%s\n" "${password_files[@]}" | fzf --query="$url" --prompt='pass > ')
+fi
+
+if [[ -z $entry ]]; then
+  notify-send --urgency=critical "Failed to select $entry"
+  exit 1
+fi
+
+echo "$entry" >/tmp/_upm
+secrets="$(pass show "$entry")"
+if [[ $secrets ]]; then
+  fields=$(awk -F': ' 'NR>1 && !/^otpauth:/ {print $1}' <<<"$secrets")
+  field=$(printf "password\n%s\n" "${fields[@]}" | fzf --prompt="pass ($entry) > ")
+
+  if [[ $field == password ]]; then
+    printf "%s" "$(head -n1 <<<"$secrets")"
+  else
+    printf "%s" "$(awk -v "key=$field:" '$1 == key {print $2}' <<<"$secrets")"
+  fi | xsel -i -b -t 15000
+  notify-send --urgency=low "<b>$entry -> $field</b>" "Copied to clipboard for 15s"
+else
+  notify-send --urgency=critical "Failed to retrieve $entry"
+  exit 2
+fi

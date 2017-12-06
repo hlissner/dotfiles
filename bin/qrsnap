@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+# Snaps a screenshot of a QR code and decodes it.
+#
+# Requires: zbar, maim (on linux)
+
+set -e
+unset CDPATH
+TMP=$(mktemp _qrXXX)
+case $OSTYPE in
+  darwin*) screencapture -i -x -t png "$TMP" ;;
+  linux*)  maim -s "$TMP" ;;
+  *) >&2 echo "Help!"; exit 1 ;;
+esac
+(( $? == 0 )) && zbarimg -q --raw "$TMP"
+rm -f "$TMP"
