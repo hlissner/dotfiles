@@ -4,14 +4,15 @@ A tidy `$HOME` is a tidy mind.
 
 ![Oct-2017 Screenshot of Arch Linux](assets/screenshots/OCT2017.png)
 
-My dotfiles are organized into 2-level topics (e.g. `shell/zsh`), and strive for
-minimum `$HOME` presence (adhering to XDG standards as much as possible).
+These are my dotfiles, designed primarily for Arch Linux, MacOS and debian. They
+are my specific breed of madness, split into 2-level topics (e.g. `shell/zsh`)
+that strive for minimum `$HOME` presence (adhering to XDG standards where
+possible).
 
-+ Arch Linux
-  + wm: bspwm
-  + shell: zsh
-  + font: kakwafont
-  + bar: polybar
++ wm: bspwm
++ shell: zsh
++ font: kakwafont
++ bar: polybar
 
 ## Quick start
 
@@ -48,9 +49,11 @@ Usage: deploy [-acdlLit] [TOPIC...]
 ```
 
 e.g.
-+ `deploy base/arch shell/{zsh,tmux}`: enables base/arch, shell/zsh, & shell/tmux
++ `deploy base/arch shell/{zsh,tmux}`: enables base/arch, shell/zsh & shell/tmux
 + `deploy -d shell/zsh`: disables shell/zsh & cleans up after it
 + `deploy -l shell/zsh`: refresh links for shell/zsh (inhibits init script)
++ `deploy -l`: relink all enabled topics
++ `deploy -L`: list all enabled topics
 
 Here's a breakdown of what the script does:
 
@@ -68,5 +71,5 @@ fi
 
 ## Relevant projects
 
-+ [doom-emacs](https://github.com/hlissner/doom-emacs) (pulled by `editor/emacs`)
-+ [.vim](https://github.com/hlissner/.vim) (pulled by `editor/{neo,}vim`)
++ [DOOM Emacs](https://github.com/hlissner/doom-emacs) (pulled by `editor/emacs`)
++ [My vim config](https://github.com/hlissner/.vim) (pulled by `editor/{neo,}vim`)
