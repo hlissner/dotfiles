@@ -27,7 +27,7 @@ mod4 + ctrl + shift + Escape
 #
 
 Print
-    maim -s ~/screenshots/$(date +%F-%T).png && notify-send "Screenshot saved"
+    ssclip
 mod4 + Print
     maim ~/screenshots/$(date +%F-%T).png && notify-send "Fullscreen screenshot saved"
 mod4 + shift + Print
