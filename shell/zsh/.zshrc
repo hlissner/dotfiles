@@ -1,7 +1,7 @@
 export ZGEN_AUTOLOAD_COMPINIT=0
 AUTOPAIR_INHIBIT_INIT=1
 
-_load_repo tarjoilija/zgen $ZGEN_SOURCE zgen.zsh
+_load_repo tarjoilija/zgen $ZGEN_DIR zgen.zsh
 if ! zgen saved; then
   echo "Creating zgen save"
   _cache_clear
