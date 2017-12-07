@@ -57,7 +57,7 @@ def main():
         gpg = gnupg.GPG()
         gpgdata = gpg.decrypt(secrets.read_bytes())
         if not gpgdata.ok:
-            raise IOError("Couldn't decrypt secrets")
+            raise IOError("Couldn't decrypt secrets: {}".format(gpgdata.status))
         accounts = [line.split(':') for line in gpgdata.data.decode('utf-8').strip().split('\n')]
 
         last_total = 0
