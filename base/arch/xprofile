@@ -15,7 +15,7 @@ ARCH=$DOTS/base/arch
 [[ -e ~/wallpaper ]] && feh --no-fehbg --image-bg black --bg-center ~/wallpaper
 
 # Let me know
-paplay $DOTFILES_ASSETS/sounds/startup.ogg &
+$DOTS/bin/ding startup
 
 # autostart programs
 {

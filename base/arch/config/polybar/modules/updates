@@ -14,7 +14,7 @@ if [[ "$check" != "0" ]]; then
     echo "%{F#b5bd68}${icon}$pac+$aur%{F-}"
     if [[ $last != "$pac$aur" ]]; then
         notify-send "$((pac+aur)) updates available"
-        paplay $DOTFILES_ASSETS/sounds/updates.ogg &
+        ding updates
         echo "$pac$aur" >/tmp/polybar-updates
     fi
 else
