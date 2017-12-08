@@ -6,6 +6,7 @@ if maim -s >"$tmp"; then
         ding && \
         notify-send "Screenshot saved"
 else
-    notify-send "Screenshot aborted"
+    notify-send -u low "Screenshot aborted"
+    ding error
 fi
 rm -f "$tmp"
