@@ -53,9 +53,9 @@
 
 !! Settings
 ! font rendering
-Xft.hinting: 0
-Xft.antialias: 1
-Xft.autohint: 1
+!Xft.hinting: 0
+!Xft.antialias: 1
+!Xft.autohint: 1
 Xft.hintstyle: hintslight
 Xft.lcdfilter: lcddefault
 Xft.rgba: rgb
@@ -78,8 +78,8 @@ URxvt*.cursorBlink:            true
 URxvt*.underlineColor:         grey
 URxvt*.depth:                  32
 URxvt*.borderless:             1
-URxvt*.lineSpace:              1
-URxvt*.letterSpace:            0
+! URxvt*.lineSpace:              1
+! URxvt*.letterSpace:            0
 URxvt.iso14755:                false
 URxvt.iso14755_52:             false
 URxvt*.internalBorder:         14
@@ -94,18 +94,18 @@ URxvt*.url-launcher:           firefox
 !URxvt.keysym.Shift-Control-V:  perl:clipboard:paste
 URxvt.clipboard.autocopy:      true
 
-URxvt*.font:                   xft:kakwa kakwafont:pixelsize=12
-urxvt-scratch.font:            xft:Misc Tamsyn:pixelsize=16
-urxvt-fuzzy.font:              xft:Misc Tamsyn:pixelsize=18
-urxvt-fuzzy.boldFont:          xft:Misc Tamsyn:pixelsize=18
-urxvt-fuzzy.lineSpace:         4
+! URxvt*.font:                   xft:kakwa kakwafont:pixelsize=12
+! urxvt-scratch.font:            xft:Misc Tamsyn:pixelsize=16
+! urxvt-fuzzy.font:              xft:Misc Tamsyn:pixelsize=18
+! urxvt-fuzzy.boldFont:          xft:Misc Tamsyn:pixelsize=18
+! urxvt-fuzzy.lineSpace:         4
 
 urxvt-stream.lineSpace:        0
 urxvt-stream.letterSpace:      -1
 urxvt-stream.font:             xft:Fira Mono:pixelsize=17
 
-! URxvt*.lineSpace:              0
-! URxvt*.letterSpace:            -1
-! URxvt*.font:                   xft:Fira Mono:pixelsize=14
-! urxvt-scratch.font:            xft:Fira Mono:pixelsize=18
-! urxvt-fuzzy.font:              xft:Fira Mono:pixelsize=20
+URxvt*.lineSpace:              0
+URxvt*.letterSpace:            -1
+URxvt*.font:                   xft:Fira Mono:pixelsize=11
+urxvt-scratch.font:            xft:Fira Mono:pixelsize=16
+urxvt-fuzzy.font:              xft:Fira Mono:pixelsize=20
