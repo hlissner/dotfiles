@@ -46,7 +46,7 @@ function mklink {
     local dosudo=1
     shift
   fi
-  local flags="-sv${OVERWRITE:+f}"
+  local flags="-svf"
   local srcs=( ${@:1:-1} )
   local dest=${@[-1]}
   if [[ $dest == */ && ! -d $dest ]]; then
@@ -97,7 +97,7 @@ function topic-init {
 
     if [[ $LINK ]] || ! topic-enabled-p $topic; then
       local op=install
-      OVERWRITE=1 mklink $tpath $tsympath
+      mklink $tpath $tsympath
       _topic-do $topic link
     fi
 
