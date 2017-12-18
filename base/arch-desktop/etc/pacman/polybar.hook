@@ -6,5 +6,5 @@ Target = *
 [Action]
 Description = "Updating polybar"
 When = PostTransaction
-Exec = /home/hlissner/.config/polybar/msg.sh
+Exec = /usr/bin/polybar-msg hook pkg 1
 

@@ -1,11 +1,11 @@
 [Trigger]
-Operation=Install
-Operation=Upgrade
-Operation=Remove
-Type=Package
-Target=nvidia
+Operation = Install
+Operation = Upgrade
+Operation = Remove
+Type = Package
+Target = nvidia
 
 [Action]
-Depends=mkinitcpio
-When=PostTransaction
-Exec="/usr/bin/mkinitcpio -p linux"
+Depends = mkinitcpio
+When = PostTransaction
+Exec = /usr/bin/mkinitcpio -p linux
