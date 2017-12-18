@@ -7,7 +7,7 @@ export XAUTHORITY="$XDG_RUNTIME_DIR/Xauthority"
 [[ -e ~/.Xauthority ]] && mv -f ~/.Xauthority "$XAUTHORITY"
 
 #
-ARCH=$DOTS/base/arch
+ARCH=$DOTS/base/arch-desktop
 [[ -f $ARCH/Xresources ]] && xrdb    $ARCH/Xresources
 [[ -f $ARCH/Xmodmap    ]] && xmodmap $ARCH/Xmodmap
 
