@@ -21,26 +21,26 @@ bin="${0##*/}"
 
 flags=
 while getopts p:i:l: opt; do
-    case $opt in
-        p) flags+=" -p $OPTARG" ;;
-        i) flags+=" -i $OPTARG" ;;
-        l) flags+=" -l $OPTARG" ;;
-        *) >&2 echo "Invalid option $OPTARG"
-           exit 1
-           ;;
-    esac
+  case $opt in
+    p) flags+=" -p $OPTARG" ;;
+    i) flags+=" -i $OPTARG" ;;
+    l) flags+=" -l $OPTARG" ;;
+    *) >&2 echo "Invalid option $OPTARG"
+       exit 1
+       ;;
+  esac
 done
 shift $((OPTIND-1))
 
 target="$1"
 if [[ $target ]]; then
-    if [[ -t 0 ]]; then
-        pb | $bin $target
-    else
-        ssh $flags -qt "$target" "pb" && echo "Sent to $target"
-    fi
+  if [[ -t 0 ]]; then
+    pb | $bin $target
+  else
+    ssh $flags -qt "$target" "pb" && echo "Sent to $target"
+  fi
 else
-    pb
+  pb
 fi
 
 # vim:set ft=sh:

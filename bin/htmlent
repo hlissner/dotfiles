@@ -15,10 +15,10 @@ ENTITIES = {value: key for key, value in entitydefs.items()}
 def encode(text):
     t = ""
     for c in text:
-            if c in ENTITIES:
-                    t += "&" + ENTITIES[c] + ";"
-            else:
-                    t += c
+        if c in ENTITIES:
+            t += "&" + ENTITIES[c] + ";"
+        else:
+            t += c
     return t
 
 def decode(text):
