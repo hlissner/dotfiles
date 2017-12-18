@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-# A simple script that losslessly optimizes image files given to it.
+# Optimize image files (losslessly by default)
 #
 # Examples:
 #   imgoptim image.jpg image.png image.gif
@@ -11,13 +11,14 @@
 #   PNGs: optipng, pngquant (lossy)
 #   JPGs: jpegtran, jpegoptim (lossy)
 #   GIFs: gifsicle
+#
+# Packages (same name on homebrew & arch linux)
+#   optipng [pngquant] libjpeg-turbo [jpegoptim] gifsicle
 
 set -e
 unset CDPATH
 
-LOSSY=
-
-usage() {
+_usage() {
   cat <<EOL
 Usage: ${0:A:t} [-lh] IMAGE [IMAGE2 [IMAGE3 [...]]]
 
@@ -26,22 +27,36 @@ Usage: ${0:A:t} [-lh] IMAGE [IMAGE2 [IMAGE3 [...]]]
 EOL
 }
 
-while getopts hl opt; do
-  case $opt in
-    h) usage; exit;;
-    l) LOSSY=1;;
-    :) >&2 echo "$OPTARG requires an argument"; usage; exit 1;;
-    *) >&2 echo "Not a valid arg: $opt";        usage; exit 1;;
-  esac
-done
-shift $((OPTIND-1))
-
 _filesize() {
   case $OSTYPE in
     darwin*) stat -c%s "$1" ;;
     *) stat --printf="%s" "$1" ;;
   esac
 }
+
+#
+while getopts hl opt; do
+  case $opt in
+    h) _usage; exit;;
+    l) lossy=1;;
+    :) >&2 echo "$OPTARG requires an argument"; _usage; exit 1;;
+    *) >&2 echo "Not a valid arg: $opt";        _usage; exit 1;;
+  esac
+done
+shift $((OPTIND-1))
+
+cmds=( optipng jpegtran gifsicle )
+[[ $lossy ]] && cmds=( $cmds pngquant jpegoptim )
+for cmd in "optipng jpegtran gifsicle"; do
+  if ! command -v $cmd >/dev/null; then
+    >&2 echo "$cmd isn't installed"
+    error=1
+  fi
+done
+if [[ $error ]]; then
+  >&2 echo "There were errors, aborting"
+  exit 1
+fi
 
 for file in $@; do
   if [[ -d $file ]]; then
@@ -50,14 +65,14 @@ for file in $@; do
     pre_size=$(_filesize "$file")
     case ${file##*.} in
       png)
-        [[ $LOSSY ]] && pngquant $file
+        [[ $lossy ]] && pngquant $file
         optipng -nc -nb -o7 $file
         ;;
       gif)
         gifsicle --batch --optimize=3 "$file"
         ;;
       jpg|jpeg)
-        [[ $LOSSY ]] && jpegoptim --max=90 "$file"
+        [[ $lossy ]] && jpegoptim --max=90 "$file"
         jpegtran -copy none -optimize -progressive -outfile "$file" "$file"
         ;;
       *)
