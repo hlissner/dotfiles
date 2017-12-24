@@ -36,13 +36,12 @@ echo "$entry" >/tmp/_upm
 secrets="$(pass show "$entry")"
 if [[ $secrets ]]; then
   fields=$(awk -F': ' 'NR>1 && !/^otpauth:/ {print $1}' <<<"$secrets")
-  field=$(printf "password\n%s\n" "${fields[@]}" | fzf --prompt="pass ($entry) > ")
-
-  if [[ $field == password ]]; then
-    printf "%s" "$(head -n1 <<<"$secrets")"
-  else
-    printf "%s" "$(awk -v "key=$field:" '$1 == key {print $2}' <<<"$secrets")"
-  fi | xsel -i -b -t 15000
+  field=$(printf "password\n%s\notp\n" "${fields[@]}" | fzf --prompt="pass ($entry) > ")
+  case $field in
+    password) printf "%s" "$(head -n1 <<<"$secrets")" ;;
+    otp) printf "%s" "$(pass otp "$entry")" ;;
+    *) printf "%s" "$(awk -v "key=$field:" '$1 == key {print $2}' <<<"$secrets")" ;;
+  esac | xsel -i -b -t 15000
   notify-send --urgency=low "<b>$entry -> $field</b>" "Copied to clipboard for 15s"
 else
   notify-send --urgency=critical "Failed to retrieve $entry"
