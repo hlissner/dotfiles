@@ -1,3 +1,9 @@
+alias docker='sudo docker'
+alias docker-compose='sudo docker-compose'
+
+alias dkc=docker-compose
+alias dkm=docker-machine
+
 dk() {
   case $(_os) in
     macos) if [[ -z $DOCKER_HOST ]]; then
@@ -6,8 +12,5 @@ dk() {
            ;;
     arch)  systemctl -q is-active docker || sudo systemctl start docker ;;
   esac
-  sudo docker $@
+  docker $@
 }; compdef dk=docker
-
-alias dkc=docker-compose
-alias dkm=docker-machine
