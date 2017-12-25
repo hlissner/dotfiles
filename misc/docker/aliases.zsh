@@ -1,5 +1,5 @@
 dk() {
-  case $(.os) in
+  case $(_os) in
     macos) if [[ -z $DOCKER_HOST ]]; then
              docker-machine start dev && eval $(docker-machine env)
            fi
