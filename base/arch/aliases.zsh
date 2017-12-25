@@ -3,6 +3,7 @@ alias ls="${aliases[ls]:-ls} --color=auto --group-directories-first"
 alias kb=keybase
 alias sc=systemctl
 alias ssc='sudo systemctl'
+alias ufw='sudo ufw'
 
 alias pac=pacaur
 alias pacu='pacaur -Syu'   # upgrade
