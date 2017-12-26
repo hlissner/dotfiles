@@ -47,7 +47,7 @@ shift $((OPTIND-1))
 
 cmds=( optipng jpegtran gifsicle )
 [[ $lossy ]] && cmds=( $cmds pngquant jpegoptim )
-for cmd in "optipng jpegtran gifsicle"; do
+for cmd in ${cmds[@]}; do
   if ! command -v $cmd >/dev/null; then
     >&2 echo "$cmd isn't installed"
     error=1
