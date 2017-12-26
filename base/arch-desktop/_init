@@ -22,7 +22,7 @@ install() {
     keybase-bin pass pass-otp \
     neofetch glances inxi dfc youtube-dl \
     ttf-fira-{mono,sans} ttf-font-awesome tamsym-font siji-git \
-    adwaita-icon-theme adwaita-slim-gtk-theme
+    arc-gtk-theme qt5-styleplugins
 
   # install crontab
   crontab ./crontab
