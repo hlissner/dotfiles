@@ -2,6 +2,7 @@ alias ls="${aliases[ls]:-ls} --color=auto --group-directories-first"
 
 alias kb=keybase
 alias sc=systemctl
+alias jc=journalctl
 alias ssc='sudo systemctl'
 alias ufw='sudo ufw'
 
