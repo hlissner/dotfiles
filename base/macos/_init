@@ -8,9 +8,9 @@ install() {
   fi
 
   brew install \
-    wget curl tree coreutils bash \
+    wget curl tree coreutils bash gnupg2 \
     the_silver_searcher ripgrep ffmpeg keybase \
-    neofetch youtube-dl
+    neofetch youtube-dl pinentry-mac
 
   # pass-otp
   brew install pass oath-toolkit
