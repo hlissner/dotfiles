@@ -3,9 +3,12 @@ source ${0:A:h}/../../deploy
 source .zshenv
 
 install() {
+  local zshenv=/etc/zshenv
   case $(_os) in
     macos)  brew install zsh fasd ;;
-    arch)   sudo pacman --needed --noconfirm -S zsh fasd ;;
+    arch)   sudo pacman --needed --noconfirm -S zsh fasd
+            zshenv=/etc/zsh/zshenv
+            ;;
     debian) sudo add-apt-repository ppa:aacebedo/fasd
             sudo apt-get update && sudo apt-get install -y zsh fasd
             ;;
@@ -15,7 +18,7 @@ install() {
 
   local zsh="$(which zsh)"
   grep $zsh /etc/shells &>/dev/null || sudo tee -a /etc/shells <<<$zsh
-  sudo tee /etc/zsh/zshenv <<<"export ZDOTDIR='$ZDOTDIR'"
+  sudo tee $zshenv <<<"export ZDOTDIR='$ZDOTDIR'"
 }
 
 update() {
@@ -29,10 +32,12 @@ update() {
 link() {
   mklink .zsh* $ZDOTDIR/
   mklink functions $ZDOTDIR/
+  [[ $(_os) == macos ]] && mklink .zshenv ~/.zshenv
 }
 
 clean() {
   rm -rfv $ZDOTDIR
+  [[ $(_os) == macos ]] && rm -f ~/.zshenv
 }
 
 init "$@"
