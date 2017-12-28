@@ -10,6 +10,9 @@ export LIBRARY_PATH="/usr/local/lib"
 # export LDFLAGS="-L/usr/local/lib"
 
 export LESS='-g -i -M -R -S -w -z-4'
-if is-callable lesspipe; then
+if _is_callable lesspipe; then
   export LESSOPEN='| /usr/bin/env lesspipe %s 2>&-'
 fi
+
+#
+path=( /usr/local/{s,}bin $path  )
