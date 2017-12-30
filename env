@@ -6,17 +6,12 @@ export XDG_CACHE_HOME=~/.cache
 export XDG_CONFIG_HOME=~/.config
 export XDG_DATA_HOME=~/.local/share
 export XDG_BIN_HOME=~/.local/bin
-if [[ $OSTYPE == darwin* ]]; then
-  export XDG_RUNTIME_DIR=/private/tmp/$UID
-else
-  export XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/run/user/$UID}
-fi
 
 export DOTFILES="$(cd $(dirname "${BASH_SOURCE:-${(%):-%x}}") && pwd -P)"
 export DOTFILES_DATA="$XDG_DATA_HOME/dotfiles"
 export DOTFILES_ASSETS="$DOTFILES/assets"
 
-for dir in "$XDG_CACHE_HOME" "$XDG_CONFIG_HOME" "$XDG_DATA_HOME" "$XDG_BIN_HOME" "$XDG_RUNTIME_DIR" "$DOTFILES_DATA"; do
+for dir in "$XDG_CACHE_HOME" "$XDG_CONFIG_HOME" "$XDG_DATA_HOME" "$XDG_BIN_HOME" "$DOTFILES_DATA"; do
   [[ -d $dir ]] || mkdir -p "$dir"
 done
 
