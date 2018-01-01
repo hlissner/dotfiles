@@ -61,7 +61,7 @@ function _ensure_repo {
     elif [[ $target =~ "^[^/]+$" ]]; then
       url=git@github.com:$USER/$target.git
     fi
-    [[ ${dest%/*} ]] && mkdir -p ${dest%/*}
+    [[ -n ${dest%/*} ]] && mkdir -p ${dest%/*}
     git clone --recursive "$url" "$dest" || return 1
   fi
 }

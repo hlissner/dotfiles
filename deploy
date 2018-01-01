@@ -95,7 +95,7 @@ function topic-init {
       echo-ok "$topic: added $topic/bin to PATH, temporarily"
     fi
 
-    if [[ $LINK ]] || ! topic-enabled-p $topic; then
+    if [[ -n $LINK ]] || ! topic-enabled-p $topic; then
       local op=install
       mklink $tpath $tsympath
       _topic-do $topic link
@@ -120,7 +120,7 @@ function topic-remove {
       continue
     fi
 
-    [[ $INHIBIT_INIT ]] || _topic-do $topic clean
+    [[ -z $INHIBIT_INIT ]] && _topic-do $topic clean
     _exec rm -f "$(topic-path $topic)" && \
       echo-ok "Removed $topic" || \
       echo-fail "Couldn't remove $topic"
@@ -182,16 +182,16 @@ EOL
   done
   shift $((OPTIND-1))
 
-  if [[ $LIST ]]; then
+  if [[ -n $LIST ]]; then
     _topics | tr ' ' $'\n'
   else
     pushd -qL "$DOTFILES"
-    if [[ $REMOVE ]]; then
+    if [[ -n $REMOVE ]]; then
       topic-remove ${TARGETS:-$@}
     else
       topic-init ${TARGETS:-$@}
     fi
-    [[ $CLEAN ]] && clean
+    [[ -n $CLEAN ]] && clean
     popd -q
   fi
 fi
