@@ -7,7 +7,10 @@ install() {
   case $(_os) in
     macos)  _is_callable nvim || brew install neovim ;;
     arch)   pacaur --needed --noconfirm --noedit -S make neovim python-neovim ;;
-    debian) sudo apt-get install -y neovim python3-neovim ;;
+    debian)
+      sudo add-apt-repository ppa:neovim-ppa/unstable
+      sudo apt-get install -y neovim
+      ;;
   esac
 
   _ensure_repo hlissner/.vim $NVIM_INSTALL_DIR && \
