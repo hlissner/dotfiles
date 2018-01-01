@@ -5,6 +5,7 @@ install() {
   case $(_os) in
     macos) brew install editorconfig ;;
     arch)  pacaur --noedit --needed --noconfirm -S editorconfig-core-c ;;
+    debian) sudo apt-get install -y editorconfig ;;
   esac
 }
 
