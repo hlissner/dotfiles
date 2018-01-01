@@ -32,7 +32,7 @@ function _topic-do {
   fi
 }
 function _topics {
-  local topics=( "$DOTFILES_DATA"/*.topic(N) )
+  local topics; topics=( "$DOTFILES_DATA"/*.topic(N) )
   echo ${${${topics[@]#$DOTFILES_DATA/}%.topic}/$SEP//}
 }
 
@@ -47,8 +47,8 @@ function mklink {
     shift
   fi
   local flags="-svf"
-  local srcs=( ${@:1:-1} )
   local dest=${@[-1]}
+  local srcs; srcs=( ${@:1:-1} )
   if [[ $dest == */ && ! -d $dest ]]; then
     mkdir -p $dest
   elif [[ ! -d ${dest%/*} ]]; then
@@ -91,7 +91,7 @@ function topic-init {
     local tpath="$DOTFILES/$topic"
     local tsympath="$(topic-path $topic)"
     if [[ -d "$topic/bin" ]]; then
-      export path=( $tpath/bin $path )
+      export path; path=( $tpath/bin $path )
       echo-ok "$topic: added $topic/bin to PATH, temporarily"
     fi
 
@@ -128,8 +128,8 @@ function topic-remove {
 }
 
 function clean {
-  local paths=( $XDG_CACHE_HOME $XDG_CONFIG_HOME $XDG_DATA_HOME $XDG_BIN_HOME )
-  local links=( ~/.*(-@DN) ${^paths}/**(-@DN))
+  local paths; paths=( $XDG_CACHE_HOME $XDG_CONFIG_HOME $XDG_DATA_HOME $XDG_BIN_HOME )
+  local links; links=( ~/.*(-@DN) ${^paths}/**(-@DN))
   if [[ ${#links[@]} > 1 ]]; then
     echo-info "Removing dead dotfile symlinks..."
     for link in "${links[@]}"; do
@@ -140,7 +140,7 @@ function clean {
   fi
 
   # Remove empty dotfile folders
-  local dirs=( ${^paths}/**(N/^F) ~/.*(N/^F) )
+  local dirs; dirs=( ${^paths}/**(N/^F) ~/.*(N/^F) )
   if [[ ${#dirs[@]} > 1 ]]; then
     echo-info "Removing empty dotfile directories..."
     for dir in "${dirs[@]}"; do
