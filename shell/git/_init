@@ -12,6 +12,7 @@ install() {
       if [[ ! -e $XDG_BIN_HOME/hub ]]; then
         wget -O hub.tgz $(curl -s https://api.github.com/repos/github/hub/releases/latest | grep browser_download_url | cut -d '"' -f 4 | grep linux-amd64)
         tar xzvf hub.tgz && cd hub-linux-*(/) && cp bin/hub $XDG_BIN_HOME/hub
+        wget -O $XDG_BIN_HOME/_hub https://raw.githubusercontent.com/github/hub/master/etc/hub.zsh_completion
       fi
       # Install diff-so-fancy
       if [[ ! -e $XDG_BIN_HOME/diff-so-fancy ]]; then
