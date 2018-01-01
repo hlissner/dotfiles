@@ -6,7 +6,7 @@ if [[ $1 == -w ]]; then
   shift
 fi
 
-if [[ $wan ]]; then
+if [[ -n $wan ]]; then
   dig +short myip.opendns.com @resolver1.opendns.com
 else
   IF=$(netstat -rn | awk '/^0.0.0.0/ {thif=substr($0,74,10); print thif;} /^default.*UG/ {thif=substr($0,65,10); print thif;}')

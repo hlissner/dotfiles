@@ -7,7 +7,7 @@ if command -v xdg-open >/dev/null; then
   open=xdg-open
 elif command -v open >/dev/null; then
   open=open
-elif [[ $BROWSER ]]; then
+elif [[ -n $BROWSER ]]; then
   open=firefox
 else
   >&2 echo "No program to open urls with"

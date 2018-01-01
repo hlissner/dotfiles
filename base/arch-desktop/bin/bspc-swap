@@ -26,7 +26,7 @@ case $dir in west|south|north|east) ;;
         exit 1
 esac
 
-if [[ $leap ]]; then
+if [[ -n $leap ]]; then
     # move window to monitor in direction
     old_id=$(bspc query -N -n focused)
     if [[ $(bspc query -M -m "$dir") ]]; then
@@ -38,7 +38,7 @@ else
     old_id=$(bspc query -N -n focused)
     if bspc node -s "$dir.local"; then
         bspc node -f "$old_id"
-    elif [[ $(bspc query -M -m "$dir") ]]; then
+    elif [[ -n $(bspc query -M -m "$dir") ]]; then
         bspc node -m "$dir"
         bspc node -f "$old_id"
     fi

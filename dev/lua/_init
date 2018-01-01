@@ -9,7 +9,7 @@ install() {
 }
 
 update() {
-  if [[ $LUAENV_ROOT ]]; then
+  if [[ -n $LUAENV_ROOT ]]; then
     cd $LUAENV_ROOT && git pull
     for ver in $LUAENV_ROOT/plugins/*(/); do
       cd $ver && git pull

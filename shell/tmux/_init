@@ -9,7 +9,7 @@ install() {
     debian) sudo apt-get install -y tmux ;;
   esac
 
-  [[ $TMUXIFIER ]] && _ensure_repo jimeh/tmuxifier $TMUXIFIER
+  [[ -n $TMUXIFIER ]] && _ensure_repo jimeh/tmuxifier $TMUXIFIER
 }
 
 update() {

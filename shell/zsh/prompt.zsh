@@ -23,13 +23,13 @@ prompt_git_dirty() {
 prompt_hook_precmd() {
   vcs_info # get git info
   # Newline before prompt, except on init
-  [[ $PROMPT_DONE ]] && print ""; PROMPT_DONE=1
+  [[ -n $PROMPT_DONE ]] && print ""; PROMPT_DONE=1
 }
 
 ## Initialization ######################
 prompt_init() {
   # prevent the extra space in the rprompt
-  [[ $EMACS ]] || ZLE_RPROMPT_INDENT=0
+  [[ -n $EMACS ]] || ZLE_RPROMPT_INDENT=0
   # prevent percentage showing up
   # if output doesn't end with a newline
   export PROMPT_EOL_MARK=
@@ -59,7 +59,7 @@ prompt_init() {
   zstyle ':vcs_info:git*' actionformats ' %b (%a)'
 
   # show username@host if logged in through SSH
-  if [[ $SSH_CONNECTION ]]; then
+  if [[ -n $SSH_CONNECTION ]]; then
     prompt_username='%m '
     if [[ $(whoami) != hlissner ]]; then
       prompt_username="%n.$prompt_username"

@@ -8,11 +8,11 @@ FZF_DEFAULT_OPTS="--prompt='open > ' $FZF_DEFAULT_OPTS"
 case $OSTYPE in
   darwin*)
     cmd=$(find -L {,~}/Applications -iname '*.app' -maxdepth 2 -type d 2>/dev/null | sort -u | fzf)
-    [[ $cmd ]] && open "$cmd"
+    [[ -n $cmd ]] && open "$cmd"
     ;;
   linux*)
     cmd=$(echo -n "$PATH" | xargs -d: -I{} -r -- find -L {} -maxdepth 1 -mindepth 1 -type f -executable -printf '%P\n' 2>/dev/null | sort -u | fzf)
-    if [[ ! $cmd ]]; then
+    if [[ -z $cmd ]]; then
       return
     elif [[ $cmd == fzf-* ]]; then
       $cmd

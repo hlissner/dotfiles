@@ -8,7 +8,7 @@ install() {
 }
 
 update() {
-  if [[ $NODENV_ROOT ]]; then
+  if [[ -n $NODENV_ROOT ]]; then
     cd $NODENV_ROOT && git pull
     for ver in $NODENV_ROOT/plugins/*(/); do
       cd $ver && git pull

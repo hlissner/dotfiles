@@ -3,7 +3,7 @@ SCRID=urxvt-scratch
 focused=$(xdotool getactivewindow)
 scratch=$(xdotool search --onlyvisible --classname $SCRID)
 
-if [[ $scratch ]]; then
+if [[ -n $scratch ]]; then
     if [[ $focused == $scratch ]]; then
         tmux kill-session -t scratch
     else

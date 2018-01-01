@@ -33,7 +33,7 @@ done
 shift $((OPTIND-1))
 
 target="$1"
-if [[ $target ]]; then
+if [[ -n $target ]]; then
   if [[ -t 0 ]]; then
     pb | $bin $target
   else

@@ -8,7 +8,7 @@ install() {
 }
 
 update() {
-  if [[ $RBENV_ROOT ]]; then
+  if [[ -n $RBENV_ROOT ]]; then
     cd $RBENV_ROOT && git pull
     for ver in $RBENV_ROOT/plugins/*(/N); do
       cd $ver && git pull

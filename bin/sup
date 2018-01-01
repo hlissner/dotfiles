@@ -65,17 +65,17 @@ delay() {
 }
 
 screenshot() {
-	if [[ $doFullscreen ]]; then
+	if [[ -n $doFullscreen ]]; then
 		cap_fullscreen
-	elif [[ $doSelection ]]; then
+	elif [[ -n $doSelection ]]; then
 		cap_selection &>/dev/null
 		if ! [[ -s $local_file ]]; then
 			$(rm "$local_file" 2> /dev/null)
 			exit
 		fi
-	elif [[ $doWindow ]]; then
+	elif [[ -n $doWindow ]]; then
 		cap_window
-	elif [[ $doURL ]]; then
+	elif [[ -n $doURL ]]; then
     local urlext
 		if [[ -f /usr/share/mime/globs ]]; then
 			urlext=$(curl -sf --head "${remoteURL}" | grep 'Content-Type: ' | head -1 | grep -Po '(?<=\ )[^\;]*')
@@ -147,7 +147,7 @@ upload() {
 			shortenerResult="$(curl -sf -F c=@- "${shortenerURL}" <<< "${uploadResult}")"
 		fi
 
-		if [[ $shortener ]]; then
+		if [[ -n $shortener ]]; then
 			finalResult="$shortenerResult"
 		else
 			finalResult="$uploadResult"

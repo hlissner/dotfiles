@@ -7,7 +7,7 @@
 
 # Get firefox's current url; requires "Hostname in title" plugin for firefox
 win=$(xdotool getactivewindow)
-if [[ $win ]]; then
+if [[ -n $win ]]; then
     winname=$(xdotool getwindowname $win)
     if [[ $winname =~ " - Mozilla Firefox$" ]]; then
         url=${winname% - Mozilla*}
@@ -26,4 +26,4 @@ urxvt -name urxvt-fuzzy \
       -e $SHELL \
       -c "fzf-pass $@ $url"
 
-[[ $win ]] && xdotool windowactivate $win
+[[ -n $win ]] && xdotool windowactivate $win

@@ -24,7 +24,7 @@ case $dir in west|south|north|east) ;;
         exit 1
 esac
 
-if [[ $leap ]]; then
+if [[ -n $leap ]]; then
     # jump to monitor in direction
     bspc monitor -f "$dir"
 else

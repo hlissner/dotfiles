@@ -34,7 +34,7 @@ case $(grep "$file" "$playlist_dir"/*-star.m3u) in
   */4-star.m3u:*) starn=4 ;;
   */5-star.m3u:*) starn=5 ;;
 esac
-if [[ $starn ]]; then
+if [[ -n $starn ]]; then
   star_filled_icon="★"
   star_empty_icon="☆"
   if [[ $OSTYPE == linux* ]]; then
@@ -53,12 +53,12 @@ fi
 
 case $OSTYPE in
   darwin*)
-    [[ $rating ]] && rating="[$rating] "
+    [[ -n $rating ]] && rating="[$rating] "
     killall terminal-notifier
     terminal-notifier -title "$rating$title" -message "by $artist :: $album" -appIcon "/Applications/iTunes.app/Contents/Resources/iTunes.icns" &
     ;;
   linux*)
-    [[ $rating ]] && rating="$rating<br />"
+    [[ -n $rating ]] && rating="$rating<br />"
     notify-send --urgency=low --icon="media-playback-start" --app-name="ncmpcpp" "$rating<b>$title</b>" "${artist}\n<i>${album}</i>" &
     ;;
 esac >/dev/null 2>&1

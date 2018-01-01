@@ -46,14 +46,14 @@ done
 shift $((OPTIND-1))
 
 cmds=( optipng jpegtran gifsicle )
-[[ $lossy ]] && cmds=( $cmds pngquant jpegoptim )
+[[ -n $lossy ]] && cmds=( $cmds pngquant jpegoptim )
 for cmd in ${cmds[@]}; do
   if ! command -v $cmd >/dev/null; then
     >&2 echo "$cmd isn't installed"
     error=1
   fi
 done
-if [[ $error ]]; then
+if [[ -n $error ]]; then
   >&2 echo "There were errors, aborting"
   exit 1
 fi
@@ -65,14 +65,14 @@ for file in $@; do
     pre_size=$(_filesize "$file")
     case ${file##*.} in
       png)
-        [[ $lossy ]] && pngquant $file
+        [[ -n $lossy ]] && pngquant $file
         optipng -nc -nb -o7 $file
         ;;
       gif)
         gifsicle --batch --optimize=3 "$file"
         ;;
       jpg|jpeg)
-        [[ $lossy ]] && jpegoptim --max=90 "$file"
+        [[ -n $lossy ]] && jpegoptim --max=90 "$file"
         jpegtran -copy none -optimize -progressive -outfile "$file" "$file"
         ;;
       *)

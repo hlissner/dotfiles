@@ -16,7 +16,7 @@ fi
 url=$@
 
 LAST_ENTRY_FILE=/tmp/_upm
-if [[ $resume && -f $LAST_ENTRY_FILE ]]; then
+if [[ -n $resume && -f $LAST_ENTRY_FILE ]]; then
   entry="$(<$LAST_ENTRY_FILE)"
   last=1
 else
@@ -34,7 +34,7 @@ fi
 
 echo "$entry" >/tmp/_upm
 secrets="$(pass show "$entry")"
-if [[ $secrets ]]; then
+if [[ -n $secrets ]]; then
   fields=$(awk -F': ' 'NR>1 && !/^otpauth:/ {print $1}' <<<"$secrets")
   field=$(printf "password\n%s\notp\n" "${fields[@]}" | fzf --prompt="pass ($entry) > ")
   case $field in

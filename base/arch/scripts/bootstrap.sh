@@ -41,13 +41,13 @@ pac dosfstools ntfs-3g exfat-utils hfsprogs
 
 # networking support
 WIRELESS_DEV=$(ip link | grep wlp | awk '{print $2}'| sed 's/://' | sed '1!d')
-if [[ $WIRELESS_DEV ]]; then
+if [[ -n $WIRELESS_DEV ]]; then
     echo "==> ${WIRELESS_DEV} interface detected"
     pac iw wireless_tools wpa_actiond wpa_supplicant dialog netctl
 fi
 
 WIRED_DEV=$(ip link | grep "en[sop]" | awk '{print $2}'| sed 's/://' | sed '1!d')
-if [[ $WIRED_DEV ]]; then
+if [[ -n $WIRED_DEV ]]; then
     echo "==> ${WIRED_DEV} interface detected"
     arch "systemctl enable dhcpcd@${WIRED_DEV}.service"
 fi
