@@ -7,10 +7,22 @@ install() {
     macos)  brew install git git-lfs hub diff-so-fancy git-standup git-extras ;;
     arch)   pacaur --needed --noconfirm --noedit -S git hub git-lfs diff-so-fancy git-standup-git git-extras ;;
     debian)
-      sudo apt-get install -y git hub diff-so-fancy git-standup git-extras
-      curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
-      sudo apt-get install -y git-fls
-      git lfs install
+      sudo apt-get install -y git
+      # Install hub
+      if [[ ! -e $XDG_BIN_HOME/hub ]]; then
+        wget -O hub.tgz $(curl -s https://api.github.com/repos/github/hub/releases/latest | grep browser_download_url | cut -d '"' -f 4 | grep linux-amd64)
+        tar xzvf hub.tgz && cd hub-linux-*(/) && cp bin/hub $XDG_BIN_HOME/hub
+      fi
+      # Install diff-so-fancy
+      if [[ ! -e $XDG_BIN_HOME/diff-so-fancy ]]; then
+        wget -O $XDG_BIN_HOME/diff-so-fancy https://raw.githubusercontent.com/so-fancy/diff-so-fancy/master/third_party/build_fatpack/diff-so-fancy
+        chmod +x $XDG_BIN_HOME/diff-so-fancy
+      fi
+      # Install git-lfs
+      if ! command -v git-lfs >/dev/null; then
+        curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+        sudo apt-get install -y git-lfs && git lfs install
+      fi
       ;;
   esac
 }
