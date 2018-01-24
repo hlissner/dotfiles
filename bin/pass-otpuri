@@ -1,31 +1,11 @@
 #!/usr/bin/env bash
 
-# Generates an OTP-auth url (written for pass-otp)
+# Interactively generates an OTP-auth url (written for pass-otp)
 #
 # Example: passotpuri LABEL SECRET [QUERYSTRING]
 
-type=totp
-issuer=
-while getopts tih opt; do
-  case $opt in
-    t) type="$OPTARG" ;;
-    i) issuer="$OPTARG" ;;
-    h) cat <<EOL
-Usage: $0 [-iuldypLSU] [topic1] [topic2] [...]
+read -p "Enter the label or issuer:" label
+read -p "Enter its OTP secret:" secret
+read -p "Enter type (leave blank for totp):" type
 
-    -t  Set type (defaults to totp)
-    -i  Issuer
-EOL
-       exit
-       ;;
-    *) >&2 echo "Aborted."
-       exit 1   ;;
-  esac
-done
-shift $((OPTIND-1))
-
-label="$1"
-secret="$2"
-args="${3:+&$3}"
-
-echo "otpauth://$type/$label?secret=$secret&issuer=${issuer:-$label}$args"
+echo "otpauth://${type:-totp}/$label?secret=$secret&issuer=${issuer:-$label}"
