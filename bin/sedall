@@ -12,7 +12,7 @@ main() {
   shift 2
 
   for item in $(ag -l --nocolor "$search" "$@"); do
-    sed -i "s%${search//%/\\%}%${replace//%/\\%}%g" "$item"
+    sed -ir "s%${search//%/\\%}%${replace//%/\\%}%g" "$item"
   done
 }
 
