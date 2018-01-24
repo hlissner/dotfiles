@@ -13,7 +13,7 @@ case $OSTYPE in
   linux*)
     cmd=$(echo -n "$PATH" | xargs -d: -I{} -r -- find -L {} -maxdepth 1 -mindepth 1 -type f -executable -printf '%P\n' 2>/dev/null | sort -u | fzf)
     if [[ -z $cmd ]]; then
-      return
+      exit
     elif [[ $cmd == fzf-* ]]; then
       $cmd
     elif ! command -v lnch >/dev/null; then
