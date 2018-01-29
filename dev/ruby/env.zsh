@@ -8,4 +8,4 @@ export SPEC_OPTS="--color --order random"
 
 export RBENV_ROOT="$XDG_DATA_HOME/rbenv"
 path=( $RBENV_ROOT/bin $path )
-.cache rbenv init - --no-rehash
+_cache rbenv init - --no-rehash
