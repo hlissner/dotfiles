@@ -26,6 +26,7 @@ update() {
 
 link() {
   mklink tmux*.conf $TMUX_HOME/
+  mklink scripts    $TMUX_HOME/scripts
   mklink layouts    $TMUXIFIER_LAYOUT_PATH
 }
 
