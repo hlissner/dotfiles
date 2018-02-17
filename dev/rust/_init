@@ -4,16 +4,16 @@ source env.zsh
 
 install() {
   case $(_os) in
-    macos) brew install rust
-           cargo install racer
-           ;;
-    arch)  pacaur --needed --noconfirm -S rust rust-doc rust-racer ;;
+    macos) brew install rustup ;;
+    arch)  pacaur --needed --noconfirm -S rustup ;;
   esac
-  _ensure_repo rust-lang/rust $RUST_SRC_PATH
+  rustup install stable
+  rustup component add rust-src
+  cargo install racer
 }
 
 update() {
-  cd $RUST_SRC_PATH && git pull
+  rustup update
 }
 
 # link() {}
