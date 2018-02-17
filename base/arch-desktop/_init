@@ -22,7 +22,10 @@ install() {
     keybase-bin pass pass-otp \
     neofetch glances inxi dfc youtube-dl \
     ttf-fira-{mono,sans} ttf-font-awesome tamsym-font siji-git \
-    arc-gtk-theme qt5-styleplugins
+    arc-gtk-theme qt5-styleplugins \
+    evince
+
+  xdg-mime default evince.desktop application/pdf
 
   # install crontab
   crontab ./crontab
