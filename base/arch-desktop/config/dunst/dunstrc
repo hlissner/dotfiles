@@ -9,7 +9,7 @@
     # font = Misc Tamsyn 12
     format = "%s\n%b"
     # geometry [{width}]x{height}][+/-{x}+/-{y}]
-    geometry = "345x15-21+21"
+    geometry = "365x15-21+21"
     history_length = 20
     horizontal_padding = 16
     idle_threshold = 120
