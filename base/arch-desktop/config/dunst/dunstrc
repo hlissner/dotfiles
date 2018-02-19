@@ -32,7 +32,7 @@
     # Align icons left/right/off
     icon_position = right
     # Paths to default icons.
-    icon_folders = /usr/share/icons/hicolor/32x32/apps/:/usr/share/icons/Adwaita/32x32/actions/
+    icon_path = /usr/share/icons/hicolor/32x32/apps/:/usr/share/icons/Adwaita/32x32/actions/
     frame_width = 0
     frame_color = "#131416"
 
