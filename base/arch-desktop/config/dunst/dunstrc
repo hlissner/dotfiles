@@ -28,6 +28,7 @@
     sticky_history = yes
     transparency = 1
     word_wrap = yes
+    max_icon_size = 64
     # Align icons left/right/off
     icon_position = right
     # Paths to default icons.
