@@ -18,7 +18,7 @@ install() {
 
   local zsh="$(which zsh)"
   grep $zsh /etc/shells &>/dev/null || sudo tee -a /etc/shells <<<$zsh
-  sudo tee $zshenv <<<"export ZDOTDIR='$ZDOTDIR'"
+  sudo tee $zshenv <<<"export ZDOTDIR=\"${ZDOTDIR/$HOME/\$HOME}\""
 }
 
 update() {
