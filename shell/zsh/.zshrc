@@ -19,20 +19,19 @@ if ! zgen saved; then
   zgen save
 fi
 
-
+_load shell/zsh/prompt.zsh
 _load shell/zsh/config.zsh
 _load shell/zsh/completion.zsh
 _load shell/zsh/keybinds.zsh
-_load shell/zsh/prompt.zsh
+
+#
+autoload -Uz compinit && compinit -d $ZSH_CACHE/zcompdump
+_load_all aliases.zsh
 
 #
 export _FASD_DATA="$XDG_CACHE_HOME/fasd"
 export _FASD_VIMINFO="$XDG_CACHE_HOME/viminfo"
 _cache fasd --init posix-alias zsh-{hook,{c,w}comp{,-install}}
 autopair-init
-
-#
-autoload -Uz compinit && compinit -d $ZSH_CACHE/zcompdump
-_load_all aliases.zsh
 
 # vim:set ft=sh:
