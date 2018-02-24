@@ -39,6 +39,8 @@ mod4 + {Pause,XF86Eject}
     zzz             # sleep display
 mod4 + shift + Pause
     zzz -f          # sleep computer
+Scroll_Lock
+    vol toggle
 
 # Media Keys
 XF86Audio{Play,Pause}
