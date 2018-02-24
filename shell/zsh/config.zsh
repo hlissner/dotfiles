@@ -10,6 +10,7 @@ unsetopt CORRECT_ALL
 unsetopt NOMATCH
 unsetopt MAIL_WARNING     # Don't print a warning message if a mail file has been accessed.
 unsetopt BEEP             # Hush now, quiet now.
+setopt IGNOREEOF
 
 ## Jobs
 setopt LONG_LIST_JOBS     # List jobs in the long format by default.
