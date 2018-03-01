@@ -3,11 +3,12 @@ source ${0:A:h}/../../deploy
 source .zshenv
 
 install() {
-  local zshenv=/etc/zshenv
+  local zshenv=/etc/zsh/zshenv
   case $(_os) in
-    macos)  brew install zsh fasd ;;
+    macos)  brew install zsh fasd
+            zshenv=/etc/zshenv
+            ;;
     arch)   sudo pacman --needed --noconfirm -S zsh fasd
-            zshenv=/etc/zsh/zshenv
             ;;
     debian) sudo add-apt-repository ppa:aacebedo/fasd
             sudo apt-get update && sudo apt-get install -y zsh fasd
