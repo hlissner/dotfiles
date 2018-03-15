@@ -96,8 +96,8 @@ mod4 + shift + {_,ctrl +}{h,j,k,l}
     bspc-swap {_,-m }{west,south,north,east}
 
 # focus the node for the given path jump
-mod4 + {p,b,comma,period}
-    bspc node -f @{parent,brother,first,second}
+mod4 + {p,comma,period}
+    bspc node -f @{parent,first,second}
 
 # focus monitor or send to the given desktop
 mod4 + bracket{left,right}
