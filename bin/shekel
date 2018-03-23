@@ -10,11 +10,6 @@ fzf).
 
   Examples:
     shekel 200 USD CAD
-  Don't remember the currency code? Use fuzzy search:
-    shekel 200 USD british
-  This will spawn an fzf session (requires the iterfzf package and fzf)
-
-Requires: iterfzf (optional)
 """
 
 import argparse
@@ -24,32 +19,23 @@ from urllib import request
 from datetime import datetime
 from pathlib import Path
 
-try:
-    from iterfzf import iterfzf
-except ImportError:
-    pass
-
 
 API_KEY = "92a7ccb3b6038a7151fc15e99f2de83d"  # please use your own!
 API_URL = "http://apilayer.net/api/live?access_key={}&currencies={},{}"
-DB_URL = "https://gist.githubusercontent.com/hlissner/f843823949d7c7453b51c6b52b2e1c16/raw/15a1bc7590be40cd78acfd133ecededbc0871610/currencies.json"
 
 DEFAULT_CODES = ('CAD', 'USD')
 CACHE_FILE = "/tmp/shekel-hist"
 CACHE_TTL = 3600
 
 class CurrencyCache():
-    def __init__(self, path=CACHE_FILE, ttl=CACHE_TTL, db_url=DB_URL):
+    def __init__(self, path=CACHE_FILE, ttl=CACHE_TTL):
         self.path = Path(path)
         self.ttl = ttl
 
         cache = {}
         if self.path.exists():
             cache = json.loads(self.path.read_text())
-        if "_DB" not in cache:
-            cache['_DB'] = json.loads(request.urlopen(db_url).read().decode('utf-8'))
         self.cache = cache
-        self.data = self.cache['_DB']
 
     def __enter__(self):
         return self
@@ -90,23 +76,6 @@ def format_currency(curr):
     return "{}  {}".format(curr['id'], curr['currencyName'])
 
 
-def parse(query, db={}):
-    """
-    Parses QUERY to see if it's an ISO 4217 currency code. Otherwise, treat it
-    like a fuzzy query and prompt the user with a completion list of currencies.
-
-    :param query: An ISO 4217 currency code or a search query
-    :param db: The currency database to use
-    :returns: An ISO 4217 currency code
-    """
-    if len(query) == 3 and query.isupper():
-        return query
-    code = iterfzf(map(format_currency, db), query=query)
-    if code is None:
-        raise KeyboardInterrupt
-    return code.split("  ")[0]
-
-
 def currency_rate(from_code, to_code):
     """
     Retrieves the exchange rate between two currencies.
@@ -120,7 +89,11 @@ def currency_rate(from_code, to_code):
     elif not from_code or not to_code:
         return None
     rates = _request_currency_rate(API_URL, API_KEY, from_code, to_code)
-    return (1 / rates["USD" + from_code]) * rates["USD" + to_code]
+    try:
+        return (1 / rates["USD" + from_code]) * rates["USD" + to_code]
+    except KeyError as e:
+        print("Could not find currency named {}".format(from_code))
+        return None
 
 
 def each_currency_rate(from_code, to_codes, refresh=False):
@@ -131,15 +104,15 @@ def each_currency_rate(from_code, to_codes, refresh=False):
     :param to_codes: a list of ISO 4217 currency codes to convert to
     :yields: a tuple containg (TO_CODE, EXCHANGE_RATE)
     """
-    with CurrencyCache(path=CACHE_FILE, ttl=CACHE_TTL, db_url=DB_URL) as cache:
+    with CurrencyCache(path=CACHE_FILE, ttl=CACHE_TTL) as cache:
         if refresh:
             cache.clear()
         for code in to_codes:
-            code = parse(code, db=cache.data)
             rate = cache.get(from_code, code)
             if not rate:
                 rate = currency_rate(from_code, code)
-                cache.store(from_code, code, rate)
+                if rate:
+                    cache.store(from_code, code, rate)
             if not rate:
                 yield (None, None)
             else:
@@ -162,9 +135,6 @@ def main():
         for code, rate in each_currency_rate(args.src, args.dest, refresh=args.refresh):
             if code:
                 print("{:.4f} {}".format(rate * args.amount, code))
-            else:
-                print("Failed to convert {} to {}".format(args.src, code),
-                      file=sys.stderr)
     except KeyboardInterrupt:
         print("Aborted!")
         sys.exit(1)
