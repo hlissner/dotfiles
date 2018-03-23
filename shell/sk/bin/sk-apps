@@ -1,20 +1,21 @@
 #!/usr/bin/env bash
 
-# Uses fzf as an application launcher.
+# Uses skim as an application launcher.
 #
-# Requires: fzf, lnch
+# Requires: skim, lnch
 
-FZF_DEFAULT_OPTS="--prompt='open > ' $FZF_DEFAULT_OPTS"
+_do_sk() { sk --prompt='open > '; }
+
 case $OSTYPE in
   darwin*)
-    cmd=$(find -L {,~}/Applications -iname '*.app' -maxdepth 2 -type d 2>/dev/null | sort -u | fzf)
+    cmd=$(find -L {,~}/Applications -iname '*.app' -maxdepth 2 -type d 2>/dev/null | sort -u | _do_sk)
     [[ -n $cmd ]] && open "$cmd"
     ;;
   linux*)
-    cmd=$(echo -n "$PATH" | xargs -d: -I{} -r -- find -L {} -maxdepth 1 -mindepth 1 -type f -executable -printf '%P\n' 2>/dev/null | sort -u | fzf)
+    cmd=$(echo -n "$PATH" | xargs -d: -I{} -r -- find -L {} -maxdepth 1 -mindepth 1 -type f -executable -printf '%P\n' 2>/dev/null | sort -u | _do_sk)
     if [[ -z $cmd ]]; then
       exit
-    elif [[ $cmd == fzf-* ]]; then
+    elif [[ $cmd == sk-* ]]; then
       $cmd
     elif ! command -v lnch >/dev/null; then
       >&2 echo "lnch not installed, run 'go get github.com/oem/lnch'"

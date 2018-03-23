@@ -2,9 +2,9 @@
 
 #
 # Prompts for a pass entry, then for a specific field. Similar to passmenu, but
-# uses fzf, and can resume from a previous session.
+# uses sk, and can resume from a previous session.
 #
-# Example: fzf-pass [RESUME]
+# Example: sk-pass [RESUME]
 #
 
 set -e
@@ -18,13 +18,12 @@ url=$@
 LAST_ENTRY_FILE=/tmp/_upm
 if [[ -n $resume && -f $LAST_ENTRY_FILE ]]; then
   entry="$(<$LAST_ENTRY_FILE)"
-  last=1
 else
   prefix=${PASSWORD_STORE_DIR-~/.password-store}
   password_files=( "$prefix"/**/*.gpg  )
   password_files=( "${password_files[@]#"$prefix"/}"  )
   password_files=( "${password_files[@]%.gpg}" )
-  entry=$(printf "%s\n" "${password_files[@]}" | fzf --query="$url" --prompt='pass > ')
+  entry=$(printf "%s\n" "${password_files[@]}" | sk --query="$url" --prompt='pass > ')
 fi
 
 if [[ -z $entry ]]; then
@@ -36,7 +35,7 @@ echo "$entry" >/tmp/_upm
 secrets="$(pass show "$entry")"
 if [[ -n $secrets ]]; then
   fields=$(awk -F': ' 'NR>1 && !/^otpauth:/ {print $1}' <<<"$secrets")
-  field=$(printf "password\n%s\notp\n" "${fields[@]}" | fzf --prompt="pass ($entry) > ")
+  field=$(printf "password\n%s\notp\n" "${fields[@]}" | sk --prompt="pass ($entry) > ")
   case $field in
     password) printf "%s" "$(head -n1 <<<"$secrets")" ;;
     otp) printf "%s" "$(pass otp "$entry")" ;;

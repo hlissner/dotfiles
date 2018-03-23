@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 # Performs an online search. Uses the last used provider, otherwise prompts for
-# one with fzf.
+# one with skim.
 
 provider="$1"; shift
 query="$*"
@@ -19,7 +19,7 @@ providers+=('Youtube' 'https://youtube.com/results?aq=f&oq=&search_query=%s')
 providers+=('Wolfram alpha' 'https://wolframalpha.com/input/?i=%s')
 providers+=('Wikipedia' 'https://wikipedia.org/search-redirect.php?language=en&go=Go&search=%s')
 
-pick=$(printf "%s\n" "${(@k)providers}" | fzf --query="$provider" --prompt='provider > ' -1 -0)
+pick=$(printf "%s\n" "${(@k)providers}" | sk --query="$provider" --prompt='provider > ' -1 -0)
 if [[ -z $pick ]]; then
   >&2 echo 'No provider selected. Aborting.'
   exit 1

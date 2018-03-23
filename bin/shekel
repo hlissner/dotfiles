@@ -5,8 +5,7 @@ A shell script that converts one currency to another.
 
 Usage: shekel [-rh] AMOUNT FROM TO [TO ...]
 
-FROM and TO are either currency codes or a fuzzy substring (requires iterfzf and
-fzf).
+FROM and TO are currency codes.
 
   Examples:
     shekel 200 USD CAD
