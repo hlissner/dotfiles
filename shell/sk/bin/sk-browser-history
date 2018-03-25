@@ -9,14 +9,17 @@ sep='{{::}}'
 [[ $OSTYPE == linux* ]] && open='xdg-open' || open='open'
 
 _do_skim() {
-  for url in $(awk -F "$sep" '{printf "%s, %s\n", $1, $2}' | skim --prompt='history > ' --multi | sed 's#.*\(https*://\)#\1#'); do
+  for url in $(awk -F "$sep" '{printf "%s, %s\n", $1, $2}' | sk --prompt='history > ' --multi | sed 's#.*\(https*://\)#\1#'); do
     $open "$url" &
   done
 }
 
 case ${BROWSER:-firefox} in
   firefox)
-    for dir in ~/.mozilla/firefox/*.default ~/.config/firefox/.mozilla/firefox/*.default ~/Library/Application\ Support/Firefox/Profiles/*.default; do
+    for dir in ~/.mozilla/firefox/*.default \
+               $XDG_CONFIG_HOME/firefox/.mozilla/firefox/*.default \
+               $XDG_DATA_HOME/mozilla/firefox/*.default \
+               ~/Library/Application\ Support/Firefox/Profiles/*.default; do
       if [[ -d "$dir" ]]; then
         sqlite3 -separator $sep "$dir/places.sqlite" \
           "SELECT DISTINCT title, url FROM moz_places \

@@ -8,14 +8,17 @@
 [[ $OSTYPE == linux* ]] && open='xdg-open' || open='open'
 
 _do_sk() {
-  for url in $(awk -F "$1" '{printf "%s, %s\n", $1, $2}' | skim --prompt='bookmarks > ' --multi | sed 's#.*\(https*://\)#\1#'); do
+  for url in $(awk -F "$1" '{printf "%s, %s\n", $1, $2}' | sk --prompt='bookmarks > ' --multi | sed 's#.*\(https*://\)#\1#'); do
     $open "$url" &
   done
 }
 
 case ${BROWSER:-firefox} in
   firefox)
-    for dir in ~/.mozilla/firefox/*.default ~/.config/firefox/.mozilla/firefox/*.default ~/Library/Application\ Support/Firefox/Profiles/*.default; do
+    for dir in ~/.mozilla/firefox/*.default \
+               $XDG_CONFIG_HOME/firefox/.mozilla/firefox/*.default \
+               $XDG_DATA_HOME/mozilla/firefox/*.default \
+               ~/Library/Application\ Support/Firefox/Profiles/*.default; do
       if [[ -d "$dir" ]]; then
         sep='{{::}}'
         sqlite3 -separator $sep "$dir/places.sqlite" \

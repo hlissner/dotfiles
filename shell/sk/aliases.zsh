@@ -1,5 +1,5 @@
-alias skgcf='noglob git commit -S --fixup `skim-git-sha`'
-alias skgl=skim-git-log
+alias skgcf='noglob git commit -S --fixup `sk-git-sha`'
+alias skgl=sk-git-log
 
-alias bm=skim-browser-bookmarks
-alias hist=skim-browser-history
+alias bm=sk-browser-bookmarks
+alias hist=sk-browser-history
