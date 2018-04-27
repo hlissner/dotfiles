@@ -27,7 +27,6 @@ bspc config split_ratio          0.50
 bspc config gapless_monocle      true
 bspc config borderless_monocle   true
 bspc config paddingless_monocle  true
-bspc config click_to_focus       true
 
 bspc config pointer_modifier mod4
 bspc config pointer_action1 move
