@@ -11,6 +11,6 @@ if [[ -z $SSH_AGENT_PID ]] || ! ps $SSH_AGENT_PID >/dev/null; then
 fi
 
 _is_running gpg-agent || {
-  gpg-agent --daemon >"$XDG_RUNTIME_DIR/gpg-agent-env"
+  gpg-agent --pinentry-program /usr/bin/pinentry-gtk-2 --daemon >"$XDG_RUNTIME_DIR/gpg-agent-env"
 }
 _source "$XDG_RUNTIME_DIR/gpg-agent-env" >/dev/null
