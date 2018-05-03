@@ -14,14 +14,14 @@ install() {
   fi
 
   pacaur --needed --noconfirm --noedit -S \
-    xorg-server xorg-xinit xorg-xlsfonts xorg-xfd xdotool \
+    xorg-server xorg-xrandr xorg-xinit xorg-xlsfonts xorg-xfd xdotool \
     lightdm lightdm-mini-greeter \
     bspwm sxhkd compton dunst xcb-proto polybar libnotify \
     rvxt-unicode rvxt-unicode-terminfo \
     slop feh maim ffmpeg zbar \
     keybase-bin pass pass-otp \
     neofetch glances inxi dfc youtube-dl \
-    ttf-fira-{mono,sans} ttf-font-awesome tamsym-font siji-git \
+    ttf-fira-{mono,sans} ttf-font-awesome tamsyn-font siji-git \
     arc-gtk-theme qt5-styleplugins \
     evince
 
