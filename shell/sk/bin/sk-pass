@@ -10,6 +10,13 @@
 set -e
 shopt -s nullglob globstar
 
+for prog in xsel notify-send pass; do
+  if ! command -v "$prog" >/dev/null; then
+    >&2 echo "$prog not installed, aborting"
+    exit 1
+  fi
+done
+
 if [[ $1 == -r ]]; then
     resume=1; shift
 fi
