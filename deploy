@@ -128,7 +128,7 @@ function topic-remove {
 }
 
 function clean {
-  local paths; paths=( $XDG_CACHE_HOME $XDG_CONFIG_HOME $XDG_DATA_HOME $XDG_BIN_HOME )
+  local paths; paths=( $XDG_CACHE_HOME $XDG_CONFIG_HOME $XDG_DATA_HOME $XDG_BIN_HOME $DOTFILES_DATA )
   local links; links=( ~/.*(-@DN) ${^paths}/**(-@DN))
   if [[ ${#links[@]} > 1 ]]; then
     echo-info "Removing dead dotfile symlinks..."
