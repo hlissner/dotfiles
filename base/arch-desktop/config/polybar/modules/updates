@@ -5,8 +5,8 @@ if [[ $1 == "1" ]]; then
     exit
 fi
 
-pac=$(checkupdates | wc -l)
-aur=$(cower -u | wc -l)
+pac=$(checkupdates 2>/dev/null | wc -l)
+aur=$(yay -Pn 2>/dev/null)
 
 [[ -f /tmp/polybar-updates ]] && last=$(</tmp/polybar-updates)
 check=$((pac + aur))

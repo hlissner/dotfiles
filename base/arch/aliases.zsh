@@ -6,10 +6,8 @@ alias jc=journalctl
 alias ssc='sudo systemctl'
 alias ufw='sudo ufw'
 
-alias pac=pacaur
-alias pacu='pacaur -Syu'   # upgrade
-alias pacc='pacaur -Sc'    # clean pacman
-alias paco='pacaur -Qtdq'  # orphaned packages
+alias yayc='yay -Sc'    # clean pacman
+alias yayo='yay -Qtdq'  # orphaned packages
 
 alias reboot='sudo systemctl reboot'
 alias shutdown='sudo systemctl poweroff'

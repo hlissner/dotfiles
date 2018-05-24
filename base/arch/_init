@@ -13,31 +13,26 @@ install() {
   # Core essentials
   sudo pacman --needed --noconfirm -S wget git curl tree rsync dnsutils
 
-  # Set up pacaur (AUR helper)
-  if ! _is_callable pacaur; then
-    TEMP="$(mktemp -d)"
-    pushd $TEMP
-    for pkg in cower pacaur; do
-      if [[ ! "$(pacman -Qs $pkg)" ]]; then
-        curl -o PKGBUILD https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=$pkg && \
-          makepkg PKGBUILD --needed --noconfirm --skippgpcheck -sri
-      fi
-    done
+  # Set up yay (AUR helper)
+  if ! _is_callable yay; then
+    git clone https://aur.archlinux.org/yay.git /tmp/yay
+    pushd /tmp/yay
+    makepkg -si
     popd
-    rm -rf $TEMP
+    rm -rf /tmp/yay
 
-    if ! _is_callable pacaur; then
-      >&2 echo "Pacaur was not successfully installed"
+    if ! _is_callable yay; then
+      >&2 echo "Yay was not successfully installed"
       return 3
     fi
   fi
 
-  pacaur --needed --noconfirm --noedit -S ripgrep the_silver_searcher bc cronie
+  yay --needed --noconfirm -S ripgrep the_silver_searcher bc cronie
   sudo systemctl enable cronie
 }
 
 update() {
-  _is_callable pacaur && local pac=pacaur
+  _is_callable yay && local pac=yay
   ${pac:-sudo pacman} -Syu --noconfirm
 }
 

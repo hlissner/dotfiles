@@ -8,7 +8,7 @@ install() {
         brew install cmake bear gdb
         echo "Note: gdb requires additional setup on MacOS, see https://sourceware.org/gdb/wiki/BuildingOnDarwin"
         ;;
-    arch) pacaur --needed --noconfirm -S cmake bear gdb ;;
+    arch) yay --needed --noconfirm -S cmake bear gdb ;;
   esac
 }
 

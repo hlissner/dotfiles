@@ -5,7 +5,7 @@ source env.zsh
 install() {
   case $(_os) in
     macos) brew install go ;;
-    arch)  pacaur --needed --noconfirm -S go ;;
+    arch)  yay --needed --noconfirm -S go ;;
   esac
 
   update

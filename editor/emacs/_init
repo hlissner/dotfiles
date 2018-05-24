@@ -6,7 +6,7 @@ install() {
     macos)  brew tap d12frosted/emacs-plus
             brew install emacs-plus --without-spacemacs-icon
             ;;
-    arch)   pacaur --needed --noconfirm --noedit -S make emacs ;;
+    arch)   yay --needed --noconfirm -S make emacs ;;
     debian) sudo apt-get install -y make emacs ;;
   esac
 

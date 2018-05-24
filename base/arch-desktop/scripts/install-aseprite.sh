@@ -6,7 +6,7 @@ if command -v aseprite >/dev/null; then
 fi
 
 set -e
-pacaur --needed --noconfirm --noedit -S ninja cmake libxcursor
+yay --needed --noconfirm -S ninja cmake libxcursor
 rm -rf /tmp/aseprite
 if git clone --recursive https://github.com/aseprite/aseprite /tmp/aseprite; then
   mkdir /tmp/aseprite/build && cd /tmp/aseprite/build

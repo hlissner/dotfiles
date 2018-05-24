@@ -6,7 +6,7 @@ install() {
   case $(_os) in
     macos)  brew install git git-lfs hub diff-so-fancy git-standup git-extras git-flow-avh ;;
     arch)
-        pacaur --needed --noconfirm --noedit -S git hub \
+        yay --needed --noconfirm -S git hub \
             git-lfs diff-so-fancy git-standup-git git-extras \
             gitflow-avh ;;
     debian)

@@ -9,7 +9,7 @@ install() {
       ;;
     linux*)
       if [[ -f /etc/arch-release ]]; then
-        pacaur --noedit --needed --noconfirm -S offlineimap mu
+        yay --needed --noconfirm -S offlineimap mu
       fi
       ;;
   esac

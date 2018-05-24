@@ -6,7 +6,7 @@ install() {
   # TODO Install android SDK
   case $(_os) in
     macos) brew cask install java gradle ;;
-    arch)  pacaur --needed --noedit --noconfirm -S jdk8-openjdk gradle ;;
+    arch)  yay --needed --noconfirm -S jdk8-openjdk gradle ;;
   esac
 }
 

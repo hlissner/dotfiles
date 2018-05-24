@@ -6,7 +6,7 @@ VIM_INSTALL_DIR="$XDG_CONFIG_HOME/vim"
 install() {
   case $(_os) in
     macos)  _is_callable vim || brew install vim ;;
-    arch)   pacaur --needed --noconfirm --noedit -S vim ;;
+    arch)   yay --needed --noconfirm -S vim ;;
     debian) sudo apt-get install -y vim ;;
   esac
 

@@ -8,12 +8,12 @@ install() {
   elif ! sudo pacman -Syu --noconfirm; then
     >&2 echo "Could not update pacman"
     return 2
-  elif ! _is_callable pacaur; then
+  elif ! _is_callable yay; then
     >&2 echo "Could not find pacaur"
     return 3
   fi
 
-  pacaur --needed --noconfirm --noedit -S \
+  yay --needed --noconfirm -S \
     xorg-server xorg-xrandr xorg-xinit xorg-xlsfonts xorg-xfd xdotool \
     lightdm lightdm-mini-greeter \
     bspwm sxhkd compton dunst xcb-proto polybar libnotify \

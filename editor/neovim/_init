@@ -6,7 +6,7 @@ NVIM_INSTALL_DIR="$XDG_CONFIG_HOME/nvim"
 install() {
   case $(_os) in
     macos)  _is_callable nvim || brew install neovim ;;
-    arch)   pacaur --needed --noconfirm --noedit -S make neovim python-neovim ;;
+    arch)   yay --needed --noconfirm -S make neovim python-neovim ;;
     debian)
       sudo add-apt-repository ppa:neovim-ppa/unstable
       sudo apt-get install -y neovim

@@ -6,7 +6,7 @@ QUTEBROWSER_HOME=$XDG_CONFIG_HOME/qutebrowser
 install() {
   case $(_os) in
     macos) brew cask install qutebrowser ;;
-    arch)  pacaur --needed --noconfirm --noedit -S qutebrowser ;;
+    arch)  yay --needed --noconfirm -S qutebrowser ;;
   esac
 }
 
