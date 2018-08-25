@@ -9,6 +9,10 @@ mod4 + ctrl + shift + Return
     urxvt -name urxvt-stream
 mod4 + grave
     urxvt-scratch-window
+mod4 + ctrl + grave
+    emacsclient -e nil && bspc rule -a 'Emacs' -o state=floating && emacs-anywhere
+mod4 + ctrl + shift + grave
+    bspc rule -a 'Emacs' -o state=floating && org-capture
 mod4 + space
     urxvt-app-launcher
 mod4 + backslash
