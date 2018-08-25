@@ -11,7 +11,7 @@ install() {
     arch) yay --needed --noconfirm -S ghc-static stack-bin ;;
   esac
   stack config set system-ghc --global true
-  stack setup && stack install ShellCheck
+  stack setup
 }
 
 update() {
