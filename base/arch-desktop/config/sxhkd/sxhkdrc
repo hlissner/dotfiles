@@ -31,7 +31,7 @@ Print
 mod4 + Print
     maim ~/screenshots/$(date +%F-%T).png && notify-send "Fullscreen screenshot saved"
 mod4 + shift + Print
-    maim -d 3 ~/screenshots/$(date +%F-%T).png && notify-send "Screenshot saved"
+    rec -s ~/screenshots/$(date +%F-%T).mp4
 
 Pause
     mpc -q toggle   # play/pause music
