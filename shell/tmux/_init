@@ -10,6 +10,7 @@ install() {
   esac
 
   [[ -n $TMUXIFIER ]] && _ensure_repo jimeh/tmuxifier $TMUXIFIER
+  _ensure_repo tmux-plugins/tpm $TMUX_PLUGINS_HOME/tpm
 }
 
 update() {
