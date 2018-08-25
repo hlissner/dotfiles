@@ -17,7 +17,7 @@ done
 
 
 ## Library
-function _is_interactive { [[ $- == *i* ]]; }
+function _is_interactive { [[ $- == *i* || -n $EMACS ]]; }
 
 function _is_running {
   for prc in "$@"; do
