@@ -17,7 +17,7 @@ install() {
     xorg-server xorg-xrandr xorg-xinit xorg-xlsfonts xorg-xfd xdotool \
     lightdm lightdm-mini-greeter \
     bspwm sxhkd compton dunst xcb-proto polybar libnotify \
-    rvxt-unicode rvxt-unicode-terminfo \
+    rxvt-unicode rxvt-unicode-terminfo \
     slop feh maim ffmpeg zbar \
     keybase-bin pass pass-otp \
     neofetch glances inxi dfc youtube-dl \
