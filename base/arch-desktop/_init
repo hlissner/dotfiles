@@ -36,14 +36,14 @@ install() {
   # set up lightdm + minigreeter
   sudo systemctl enable lightdm
   sudo sed -i \
-    -e "s@^#?\(greeter-session=\).+@\1lightdm-mini-greeter@" \
-    -e "s@^#?\(user-session=\).+@\1bspwm@" \
-    /etc/lightdm/lightdm.conf
+      -e "s@^#\?\(greeter-session=\).\+@\1lightdm-mini-greeter@" \
+      -e "s@^#\?\(user-session=\).\+@\1bspwm@" \
+      /etc/lightdm/lightdm.conf
   sudo sed -i \
-    -e "s@^\(user = \).+@\1${USER}@" \
-    -e "s@^\(show-password-label = \).+@\1false@" \
-    -e "s@^\(background-color = \).+@\1\"#000000\"@;" \
-    /etc/lightdm/lightdm-mini-greeter.conf
+      -e "s@^\(user = \).\+@\1${USER}@" \
+      -e "s@^\(show-password-label = \).\+@\1false@" \
+      -e "s@^\(background-color = \).\+@\1\"#000000\"@;" \
+      /etc/lightdm/lightdm-mini-greeter.conf
 }
 
 # update() {}
