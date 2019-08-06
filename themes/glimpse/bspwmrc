@@ -12,4 +12,4 @@ bspc config focused_border_color "#f0c674"
 
 # Extra padding for polybar
 bspc config -m $MONITOR window_gap 12
-bspc config -m $MONITOR bottom_padding 34
+bspc config -m $MONITOR bottom_padding 28
