@@ -1,5 +1,0 @@
-#!/usr/bin/env zsh
-# A script run by devmon/udevil when a device is mounted or unmounted, notifying me.
-
-DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send -a "devmon" "Device change" "$2"
-ding

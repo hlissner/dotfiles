@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-
-# Interactively select a process to kill.
-
-pid=$(ps -ef | sed 1d | sk -m | awk '{print $2}')
-
-if [[ -n $pid ]]; then
-  xargs kill -${1:-9} <<< "$pid"
-fi

@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-id=$(echo $TMUX | sed 's/.*,//g')
-res=$(tmux ls -F '#{session_id}:#{session_name}' | grep -e "^\$$id:")
-
-[[ -z $res ]] && exit 1
-echo "${res#\$$id:}"

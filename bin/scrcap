@@ -1,0 +1,17 @@
+#!/usr/bin/env nix-shell
+#! nix-shell -i bash -p maim slop xclip libnotify
+
+# A script that takes a screenshot (prompts you for what region/window to
+# capture) and stores it in the clipboard.
+
+tmp=$(mktemp)
+
+# Delay for long enough that we can refocus the targeted window
+if maim --delay=${1:-0.6} -us >"$tmp"; then
+  xclip -selection clipboard -t image/png "$tmp" &&
+    notify-send "Screenshot saved"
+else
+  notify-send -u low "Aborted screenshot"
+fi
+
+rm -f "$tmp"

@@ -1,8 +1,0 @@
-#!/usr/bin/env zsh
-export MONITOR=$(xrandr -q | grep 'primary' | cut -d' ' -f1)
-
-bspc config -m $MONITOR window_gap     4
-bspc config -m $MONITOR bottom_padding 158
-bspc config -m $MONITOR top_padding    0
-bspc config -m $MONITOR left_padding   0
-bspc config -m $MONITOR right_padding  0

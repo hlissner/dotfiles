@@ -1,0 +1,9 @@
+#!/usr/bin/env nix-shell
+#! nix-shell -i bash -p xdotool
+
+while true; do
+    xdotool mousedown 1
+    sleep 0.01
+    xdotool mouseup 1
+    sleep 0.01
+done

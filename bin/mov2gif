@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/usr/bin/env nix-shell
+#! nix-shell -i bash -p ffmpeg gifsicle
 
 # Uses ffmpeg to convert a video file to a gif file. Optimizes the final result
 # with gifsicle.
@@ -69,6 +70,4 @@ flags="fps=${fps}$scale"
 ffmpeg -v warning $start $duration -i "$src" -vf "$flags,palettegen=stats_mode=full" -y "$PALETTE"
 ffmpeg -v warning $start $duration -i "$src" -i "$PALETTE" -lavfi "$flags [x]; [x][1:v] paletteuse" -y "$dest"
 
-if command -v gifsicle >/dev/null; then
-  gifsicle -O3 "$dest" -o "$dest"
-fi
+gifsicle -O3 "$dest" -o "$dest"

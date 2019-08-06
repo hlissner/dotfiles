@@ -1,0 +1,4 @@
+configuration {
+	m: "-1";
+	theme: "~/.config/rofi/theme";
+}

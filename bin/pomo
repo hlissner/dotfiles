@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-# A minimalistic pomodoro timer.
-# e.g. pomo 25 "Hello!"
-sleep $((${1:-25} * 60)) && notify-send "($(date +%H:%M)) ${2:-Break time!}" && ding &

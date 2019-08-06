@@ -1,0 +1,66 @@
+!! Colors
+#define blk  #21242b
+#define bblk #969896
+#define red  #cc6666
+#define bred #de935f
+#define grn  #b5bd68
+#define bgrn #757d28
+#define ylw  #f0c674
+#define bylw #f9a03f
+#define blu  #81a2be
+#define bblu #2a8fed
+#define mag  #b294bb
+#define bmag #bc77a8
+#define cyn  #8abeb7
+#define bcyn #a3685a
+#define wht  #c5c8c6
+#define bwht #ffffff
+#define bg blk
+#define fg wht
+
+*.foreground:  fg
+*.background:  bg
+*.cursorColor: mag
+
+*.color0:  blk
+*.color8:  bblk
+*.color1:  red
+*.color9:  bred
+*.color2:  grn
+*.color10: bgrn
+*.color3:  ylw
+*.color11: bylw
+*.color4:  blu
+*.color12: bblu
+*.color5:  mag
+*.color13: bmag
+*.color6:  cyn
+*.color14: bcyn
+*.color7:  wht
+*.color15: bwht
+
+! greys
+*.color234: #1d2021
+*.color235: #282828
+*.color236: #32302f
+*.color237: #3c3836
+*.color239: #504945
+*.color240: #544c49
+*.color241: #665c54
+
+
+!! Fonts
+st.font: Fira Code:pixelsize=13
+rofi.font: Fira Code 15
+
+
+!! Rofi
+rofi.padding: 12
+!                  bg             fg       bgalt          hlbg     hlfg
+rofi.color-normal: argb:00292d35, #bbc2cf, #292d35, #141411, #f8f8f2
+rofi.color-urgent: argb:00292d35, #bbc2cf, #292d35, #f92672, #f8f8f2
+rofi.color-active: argb:00292d35, #bbc2cf, #292d35, #141411, #a6e22a
+!                  bg             border   sep
+rofi.color-window: argb:ee292d35, argb:00bbc2cf, #292d35
+! Separator style (none, dash, solid)
+rofi.separator-style: solid

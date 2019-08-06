@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-xdotool search --onlyvisible --classname urxvt-fuzzy windowkill
-xdotool search --classname urxvt-fuzzy windowmap \
-    || urxvt -name urxvt-fuzzy -geometry 80x18 -e $SHELL -c sk-apps

@@ -1,0 +1,80 @@
+super + alt + Escape
+	bspc quit
+
+super + {_,shift + }q
+	bspc node -{c,k}
+
+super + t
+	bspc desktop -l next
+
+super + apostrophe
+	bspc window -s last
+
+# focus/swap the node in the given direction
+super + {_,ctrl +}{h,j,k,l}
+	~/.dotfiles/bin/bspc/focus {_,-m }{west,south,north,east}
+
+super + shift + {_,ctrl +}{h,j,k,l}
+	~/.dotfiles/bin/bspc/swap {_,-m }{west,south,north,east}
+
+super + {_,shift +}{1-9,0}
+	bspc {desktop -f,node -d} {1-9,10}
+
+super + Return
+	st
+
+super + grave
+	st-scratch
+
+super + space
+	rofi -monitor -4 -show run
+
+super + backslash
+	rofi-pass
+
+super + Escape
+	pkill -USR1 -x sxhkd
+
+{Prior,Next}
+	:
+
+
+#
+##
+
+# Toggle floating/fullscreen
+super + {_,ctrl + }f
+	bspc node -t ~{floating,fullscreen}
+
+
+#
+## Media keys
+
+Print
+	scrcap
+super + Print
+	scrrec -s ~/recordings/$(date +%F-%T).mp4
+super + ctrl + Print
+	scrcap -f
+
+XF86MonBrightnessUp
+	light -A 5
+XF86MonBrightnessDown
+	light -U 5
+
+XF86AudioMute
+	amixer -q set Master toggle
+
+XF86AudioLowerVolume
+	amixer -q set Master 10%- unmute
+
+XF86AudioRaiseVolume
+	amixer -q set Master 10%+ unmute
+
+XF86Audio{Play,Pause}
+	mpc -q toggle
+XF86Audio{Prev,Next}
+	mpc -q {prev,next}
+
+# X86Search
+
