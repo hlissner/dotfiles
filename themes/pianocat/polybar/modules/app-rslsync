@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+icon=""
+
+if pgrep -x rslsync &> /dev/null; then
+    echo "%{F#e5e8e6}$icon"
+else
+    echo "%{F#65737E}$icon"
+fi
