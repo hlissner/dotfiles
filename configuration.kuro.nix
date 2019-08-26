@@ -1,6 +1,6 @@
 # Kuro -- my desktop
 
-{ config, ... }:
+{ config, pkgs, ... }:
 
 {
   imports = [
@@ -40,4 +40,10 @@
   networking.networkmanager.enable = true;
 
   services.xserver.videoDrivers = [ "nvidiaBeta" ];
+
+  # For ergodox ez
+  environment = {
+    systemPackages = [ pkgs.teensy-loader-cli ];
+    shellAliases.teensyload = "sudo teensy-loader-cli -w -v --mcu=atmega32u4";
+  };
 }
