@@ -39,9 +39,6 @@ alias ssc='sudo systemctl'
 alias y='xclip -selection clipboard -in'
 alias p='xclip -selection clipboard -out'
 
- # e.g. find . -name .gitattributes | map dirname
-alias map='xargs -n1'
-
 
 ### Tools
 autoload -U zmv
