@@ -1,20 +1,33 @@
 #!/usr/bin/env bash
 DOTFILES="$(cd $(dirname "${BASH_SOURCE:-${(%):-%x}}") && pwd -P)"
-PREFIX="${PREFIX:-/mnt/etc/nixos}"
+PREFIX="${PREFIX:-/mnt}"
+NIXOSPREFIX="${PREFIX}/etc/nixos"
 HOST=${1:-${HOST:-kuro}}
 
 set -e
 if [[ ! -f "$DOTFILES/configuration.$HOST.nix" ]]; then
   >&2 echo "No configuration exists for host '$HOST'"
+  exit 1
+elif [[ ! -f "$NIXOSPREFIX/hardware-configuration.nix" ]]; then
+  >&2 echo "No hardware-configuration.nix file exists in $NIXOSPREFIX"
+  >&2 echo "Did you forget to set up your partitions?"
   exit 2
 fi
 
-mkdir -p "$PREFIX"
-sudo ln -sf "$DOTFILES/configuration.$HOST.nix" "$PREFIX/configuration.nix"
+mkdir -p "$NIXOSPREFIX"
+cat << EOF > "$NIXOSPREFIX/configuration.nix"
+{ config, ... }:
+{
+  imports = [
+    ../dotfiles/configuration.$HOST.nix
+    ./hardware-configuration.nix
+  ]
+}
+EOF
 
-sudo nix-channel --add https://nixos.org/channels/nixos-19.03 nixos
-sudo nix-channel --add https://github.com/rycee/home-manager/archive/master.tar.gz home-manager
-sudo nix-channel --update
+nix-channel --add https://nixos.org/channels/nixos-19.03 nixos
+nix-channel --add https://github.com/rycee/home-manager/archive/master.tar.gz home-manager
+nix-channel --update
 
-sudo nixos-generate-config --root "$PREFIX"
-sudo nixos-install --root "$PREFIX" -I "config=$DOTFILES"
+nixos-generate-config --root "$PREFIX"
+nixos-install --root "$PREFIX" -I "config=$DOTFILES"
