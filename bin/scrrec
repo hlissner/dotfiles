@@ -7,13 +7,21 @@
 # mov2gif script included in this repo (which is powered by gifsicle and
 # ffmpeg).
 #
-# Usage: rec somefile.mp4
-#        rec another.gif
+# Usage: scrrec somefile.mp4
+#        scrrec another.gif
 
-if [[ $1 == -s ]]; then
-  is_script=1
-  shift
-fi
+is_script=
+geom=
+delay=1
+while getopts sg:d: opt; do
+  case $opt in
+    s) is_script=1 ;;
+    g) geom="$OPTARG" ;;
+    d) delay="$OPTARG" ;;
+  esac
+done
+shift $((OPTIND-1))
+
 
 if [[ -f /tmp/_stop ]]; then
   echo q > /tmp/_stop
@@ -25,7 +33,11 @@ if [[ -f /tmp/_stop ]]; then
   exit 0
 fi
 
-read -r X Y W H < <(slop -f "%x %y %w %h")
+if [[ $geom ]]; then
+  read -r W H X Y <<<"${geom//[x+]/ }"
+else
+  read -r X Y W H < <(slop -n -f "%x %y %w %h")
+fi
 dest=${1:-./rec.mp4}
 if [[ $dest == *.gif ]]; then
   echo "Detected gif"
@@ -35,14 +47,16 @@ fi
 if [[ $is_script ]]; then
   echo "Starting"
   touch /tmp/_stop
-  ffmpeg -y -f x11grab -s "$W"x"$H" -i :0.0+$X,$Y -framerate 30 "${mp4dest:-$dest}" </tmp/_stop
+  ffmpeg -y -f x11grab -ss $delay -s "$W"x"$H" -i :0.0+$X,$Y -framerate 30 "${mp4dest:-$dest}" </tmp/_stop
   rm -f /tmp/_stop
 else
-  ffmpeg -y -f x11grab -s "$W"x"$H" -i :0.0+$X,$Y -framerate 30 "${mp4dest:-$dest}"
+  ffmpeg -y -f x11grab -ss $delay -s "$W"x"$H" -i :0.0+$X,$Y -framerate 30 "${mp4dest:-$dest}"
 fi
 
 if [[ -f $mp4dest ]]; then
   mov2gif "$mp4dest" "$dest" && rm -fv "$mp4dest"
 fi
+
+echo "Finishing up"
 
 # vim:set ft=sh shiftwidth=2:
