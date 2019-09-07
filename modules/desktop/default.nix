@@ -5,9 +5,12 @@
     redshift
     xclip
     xdotool
-    mpv      # video player
-    feh      # image viewer
-    evince   # pdf reader
+    ffmpeg
+    mpv       # video player
+    feh       # image viewer
+
+    # Useful apps
+    evince    # pdf reader
     discord
   ];
 
