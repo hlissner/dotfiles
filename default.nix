@@ -7,20 +7,22 @@
   imports = [
     <nixpkgs/nixos/modules/installer/scan/not-detected.nix>
     <home-manager/nixos>
-    /etc/nixos/hardware-configuration.nix
   ];
 
-  nix.nixPath = options.nix.nixPath.default ++ [
-    "config=/etc/dotfiles/config"
-  ];
+  nix = {
+    nixPath = options.nix.nixPath.default ++ [
+      "config=/etc/dotfiles/config"
+    ];
+    autoOptimiseStore = true;
+    trustedUsers = [ "root" "@wheel" ];
+  };
+  nixpkgs.config.allowUnfree = true;
 
   # Nothing in /tmp should survive a reboot
   boot.cleanTmpDir = true;
   # Use simple bootloader; I prefer the on-demand BIOs boot menu
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-
-  nixpkgs.config.allowUnfree = true;
 
   environment = {
     systemPackages = with pkgs; [
@@ -57,7 +59,6 @@
   # time.timeZone = "Europe/Copenhagen";
 
   # Set up hlissner user account
-  nix.trustedUsers = [ "root" "@wheel" ];
   users.users.hlissner = {
     isNormalUser = true;
     uid = 1000;
