@@ -27,6 +27,7 @@ EOF
 
 nix-channel --add https://nixos.org/channels/nixos-19.03 nixos
 nix-channel --add https://github.com/rycee/home-manager/archive/master.tar.gz home-manager
+nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs-unstable
 nix-channel --update
 
 nixos-generate-config --root "$PREFIX"
