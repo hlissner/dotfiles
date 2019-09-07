@@ -1,5 +1,7 @@
 { config, lib, pkgs, ... }:
 
+let unstable = import <nixpkgs-unstable> {};
+in
 {
   environment.systemPackages = with pkgs; [
     (lib.mkIf (config.programs.gnupg.agent.enable) pinentry_emacs)
@@ -7,7 +9,7 @@
     editorconfig-core-c
     (ripgrep.override {withPCRE2 = true;})
     # Doom Emacs + dependencies
-    emacs
+    unstable.emacs
     sqlite                          # :tools (lookup +docsets)
     texlive.combined.scheme-medium  # :lang org -- for latex previews
     ccls                            # :lang (cc +lsp)
