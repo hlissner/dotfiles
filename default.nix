@@ -57,6 +57,13 @@
 
   time.timeZone = "America/Toronto";
   # time.timeZone = "Europe/Copenhagen";
+  location = (if config.time.timeZone == "America/Toronto" then {
+    latitude = 43.70011;
+    longitude = -79.4163;
+  } else if config.time.timeZone == "Europe/Copenhagen" then {
+    latitude = 55.88;
+    longitude = 12.5;
+  } else {});
 
   # Set up hlissner user account
   users.users.hlissner = {
@@ -75,5 +82,5 @@
   # compatible, in order to avoid breaking some software such as database
   # servers. You should change this only after NixOS release notes say you
   # should.
-  system.stateVersion = "19.03"; # Did you read the comment?
+  system.stateVersion = "19.09"; # Did you read the comment?
 }

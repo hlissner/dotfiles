@@ -37,7 +37,7 @@
                 xdotool windowactivate $scratch
             fi
         else
-            st -t $SCRID -n $SCRID -c $SCRID \
+            xst -t $SCRID -n $SCRID -c $SCRID \
               -f "$(xrdb -query | grep 'st-scratch\.font' | cut -f2)" \
               -g 100x26 \
               -e $SHELL
@@ -58,7 +58,7 @@
     compton = {
       enable = true;
       backend = "glx";
-      vSync = "opengl-swc";
+      vSync = true;
       inactiveOpacity = "0.90";
     };
   };

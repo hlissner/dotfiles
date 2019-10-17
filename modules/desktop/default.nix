@@ -22,16 +22,7 @@
       enable = true;
       libinput.disableWhileTyping = true;
     };
-
-    redshift = (if config.time.timeZone == "America/Toronto" then {
-      enable = true;
-      latitude = "43.70011";
-      longitude = "-79.4163";
-    } else if config.time.timeZone == "Europe/Copenhagen" then {
-      enable = true;
-      latitude = "55.88";
-      longitude = "12.5";
-    } else {});
+    redshift.enable = true;
   };
 
   fonts = {
