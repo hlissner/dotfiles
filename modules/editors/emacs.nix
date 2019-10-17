@@ -6,6 +6,7 @@ in
   environment.systemPackages = with pkgs; [
     (lib.mkIf (config.programs.gnupg.agent.enable) pinentry_emacs)
 
+    zstd
     editorconfig-core-c
     (ripgrep.override {withPCRE2 = true;})
     # Doom Emacs + dependencies
