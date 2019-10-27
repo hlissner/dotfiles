@@ -16,12 +16,17 @@ in {
     ./modules/dev
     ./modules/graphics/aseprite.nix
     ./modules/graphics/gimp.nix
+    ./modules/editors/emacs.nix
+    ./modules/editors/vim.nix
     ./modules/shell/direnv.nix
     ./modules/shell/git.nix
     ./modules/shell/gnupg.nix
     ./modules/shell/pass.nix
     ./modules/shell/zsh.nix
     # ./modules/video/obs.nix
+
+    #
+    ./modules/services/syncthing
 
     # Themes
     ./themes/pianocat
