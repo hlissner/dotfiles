@@ -26,7 +26,7 @@ in {
     # ./modules/video/obs.nix
 
     #
-    ./modules/services/syncthing
+    ./modules/services/syncthing.nix
 
     # Themes
     ./themes/pianocat
