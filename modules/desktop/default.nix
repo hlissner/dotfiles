@@ -18,10 +18,7 @@
   hardware.pulseaudio.enable = true;
 
   services = {
-    xserver = {
-      enable = true;
-      libinput.disableWhileTyping = true;
-    };
+    xserver.enable = true;
     redshift.enable = true;
   };
 
