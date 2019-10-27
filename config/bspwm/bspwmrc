@@ -17,7 +17,7 @@ bspc rule -r '*'
 bspc rule -a 'Emacs:org*' state=floating
 bspc rule -a mpv state=floating center=on
 bspc rule -a Pinentry state=floating center=on
-bspc rule -a Emacs split_ratio=0.32 border=off state=fullscreen
+bspc rule -a Emacs split_ratio=0.32 state=fullscreen
 bspc rule -a Firefox split_ratio=0.32
 bspc rule -a feh state=fullscreen
 bspc rule -a st-scratch state=floating sticky=on center=on
