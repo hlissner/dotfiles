@@ -60,6 +60,7 @@
       backend = "glx";
       vSync = true;
       inactiveOpacity = "0.90";
+      opacityRules = ["100:class_g = 'Firefox'"];
     };
   };
 
