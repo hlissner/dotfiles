@@ -15,4 +15,6 @@
 
   networking.hostName = "ao";
   networking.networkmanager.enable = true;
+
+  services.syncthing.guiAddress = "192.168.1.10:8384";
 }
