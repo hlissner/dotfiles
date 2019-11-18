@@ -45,7 +45,7 @@
     # };
   };
 
-  services.acme.certs = {
+  security.acme.certs = {
     "v0.io".email = "henrik@lissner.net";
     "dl.v0.io".email = "henrik@lissner.net";
     # "git.v0.io".email = "henrik@lissner.net";
