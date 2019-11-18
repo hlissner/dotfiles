@@ -30,7 +30,8 @@ alias ll='exa -l'
 alias la='LC_COLLATE=C exa -la'
 alias mk=make
 
-alias rsyncd='rsync -vaP --delete'
+alias rcp='rsync -vaP --delete'
+alias rmirror='rsync -rtvu --delete'
 alias gurl='curl --compressed'
 
 alias sc=systemctl
