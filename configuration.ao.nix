@@ -89,9 +89,10 @@
           # from Plex.
           proxy_buffering off;
         '';
+        locations."= /".return = "302 https://plex.v0.io/web/index.html";
         locations."/" = {
           proxyWebsockets = true;
-          proxyPass = "http://192.168.1.13:32400/web";
+          proxyPass = "http://192.168.1.13:32400";
         };
       };
     };
