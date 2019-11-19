@@ -6,7 +6,7 @@
     openFirewall = true;
   };
 
-  services.sonarr = {
+  services.radarr = {
     enable = true;
     openFirewall = true;
   };
