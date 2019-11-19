@@ -69,7 +69,7 @@
   users.users.hlissner = {
     isNormalUser = true;
     uid = 1000;
-    extraGroups = [ "wheel" "video" "networkmanager" ];
+    extraGroups = [ "wheel" "video" "networkmanager" "vboxusers" ];
     shell = pkgs.zsh;
   };
 
