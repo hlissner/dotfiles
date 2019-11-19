@@ -12,4 +12,5 @@
   };
 
   services.transmission.enable = true;
+  networking.firewall.allowedTCPPorts = [ 9091 ];
 }
