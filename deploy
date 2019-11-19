@@ -25,10 +25,10 @@ cat << EOF > "$NIXOSPREFIX/configuration.nix"
 }
 EOF
 
-nix-channel --add https://nixos.org/channels/nixos-19.03 nixos
+nix-channel --add https://nixos.org/channels/nixos-19.09 nixos
 nix-channel --add https://github.com/rycee/home-manager/archive/master.tar.gz home-manager
 nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs-unstable
 nix-channel --update
 
 nixos-generate-config --root "$PREFIX"
-nixos-install --root "$PREFIX" -I "config=$DOTFILES"
+nixos-install --root "$PREFIX" -I "config=$DOTFILES/config"
