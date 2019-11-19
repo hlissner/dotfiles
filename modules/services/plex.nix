@@ -6,11 +6,6 @@
     openFirewall = true;
   };
 
-  services.radarr = {
-    enable = true;
-    openFirewall = true;
-  };
-
   services.transmission = {
     enable = true;
     settings.rpc-whitelist = "127.0.0.1,192.168.*.*";
