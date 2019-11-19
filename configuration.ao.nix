@@ -55,4 +55,14 @@
     "dl.v0.io".email = "henrik@lissner.net";
     "git.v0.io".email = "henrik@lissner.net";
   };
+
+  services.gitea = {
+    appName = "V-NOUGHT";
+    domain = "v0.io";
+    rootUrl = "https://git.v0.io/";
+    extraConfig = ''
+      [server]
+      SSH_DOMAIN = v0.io
+    '';
+  };
 }

@@ -1,6 +1,7 @@
 { config, lib, pkgs, ... }:
 
 {
+  # I prefer git@... ssh addresses over gitea@...
   users.users.git = {
     useDefaultShell = true;
     home = "/var/lib/gitea";
@@ -11,19 +12,14 @@
     enable = true;
     log.level = "Info";
 
-    appName = "V-NOUGHT";
     database = {
       user = "git";
       type = "postgres";
     };
-    domain = "v0.io";
-    rootUrl = "https://git.v0.io/";
-    cookieSecure = true;
     useWizard = false;
     disableRegistration = true;
-    extraConfig = ''
-      [server]
-      SSH_DOMAIN = v0.io
-    '';
+
+    # We're assuming SSL-only connectivity
+    cookieSecure = true;
   };
 }
