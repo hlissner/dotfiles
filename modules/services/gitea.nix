@@ -12,6 +12,7 @@
     enable = true;
     log.level = "Info";
 
+    user = "git";
     database = {
       user = "git";
       type = "postgres";
