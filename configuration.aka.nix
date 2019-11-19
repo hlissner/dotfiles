@@ -5,7 +5,7 @@
 
 {
   imports = [
-    ../.  # import common settings
+    ./.  # import common settings
 
     ./modules/services/ssh.nix
     ./modules/services/nginx.nix
