@@ -50,7 +50,7 @@
       ne = "nix-env";
       nu = "sudo nix-channel --update && sudo nixos-rebuild -I config=$HOME/.dotfiles/config switch";
       nre = "sudo nixos-rebuild -I config=$HOME/.dotfiles/config";
-      ngc = "nix-collect-garbage -d && sudo nix-collect-garbage -d";
+      ngc = "sudo nix-collect-garbage -d";
     };
   };
 
