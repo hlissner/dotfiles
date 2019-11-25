@@ -34,7 +34,6 @@
       unzip
       bc
       # Support for extra filesystems
-      bashmount  # convenient mounting
       sshfs
       exfat
       ntfs3g
