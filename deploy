@@ -21,7 +21,7 @@ cat << EOF > "$NIXOSPREFIX/configuration.nix"
   imports = [
     ../dotfiles/configuration.$HOST.nix
     ./hardware-configuration.nix
-  ]
+  ];
 }
 EOF
 
