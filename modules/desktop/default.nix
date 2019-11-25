@@ -12,6 +12,7 @@
     # Useful apps
     evince    # pdf reader
     discord
+    spotify
   ];
 
   sound.enable = true;
