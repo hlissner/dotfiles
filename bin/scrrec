@@ -1,5 +1,4 @@
-#!/usr/bin/env nix-shell
-#! nix-shell -i bash -p ffmpeg slop
+#!/usr/bin/env bash
 
 # Select a region and record it.
 #

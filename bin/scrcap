@@ -1,5 +1,4 @@
-#!/usr/bin/env nix-shell
-#! nix-shell -i bash -p maim slop
+#!/usr/bin/env bash
 
 # A script that takes a screenshot (prompts you for what region/window to
 # capture) and stores it in the clipboard.

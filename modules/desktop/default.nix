@@ -8,6 +8,8 @@
     ffmpeg
     mpv       # video player
     feh       # image viewer
+    maim
+    slop
 
     # Useful apps
     evince    # pdf reader
