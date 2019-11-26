@@ -24,10 +24,10 @@ super + Return
 	xst
 
 super + grave
-	st-scratch
+	emacsclient -a "" -e "(open-scratch-frame)"
 
 super + space
-	rofi -monitor -4 -show run
+	rofi -monitor -4 -show drun -show-icons
 
 super + backslash
 	rofi-pass

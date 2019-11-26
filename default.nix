@@ -27,12 +27,13 @@
   environment = {
     systemPackages = with pkgs; [
       # Just the bear necessities~
+      libqalculate
       coreutils
       git
-      wget
-      vim
+      killall
       unzip
-      bc
+      vim
+      wget
       # Support for extra filesystems
       sshfs
       exfat
