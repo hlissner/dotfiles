@@ -7,6 +7,7 @@ if ! zgen saved; then
   zgen load zsh-users/zsh-history-substring-search
   zgen load zdharma/history-search-multi-word
   zgen load zsh-users/zsh-completions src
+  zgen load junegunn/fzf shell
 
   if [[ -z $SSH_CONNECTION ]]; then
     zgen load zdharma/fast-syntax-highlighting
@@ -41,6 +42,14 @@ function _cache {
   fi
   source $cache || rm -f $cache
 }
+
+# fd > find
+if command -v fd >/dev/null; then
+  export FZF_DEFAULT_OPTS="--reverse"
+  export FZF_DEFAULT_COMMAND="fd . $HOME"
+  export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+  export FZF_ALT_C_COMMAND="fd -t d . $HOME"
+fi
 
 _cache fasd --init posix-alias zsh-{hook,{c,w}comp{,-install}}
 _cache direnv hook zsh

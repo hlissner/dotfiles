@@ -18,6 +18,7 @@ in
       bat
       exa
       fd
+      fzf
       tmux
       htop
       tree
