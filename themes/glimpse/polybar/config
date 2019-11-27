@@ -63,8 +63,7 @@ font-2 = "Siji:pixelsize=10;2"
 ; modules-left = volume pad cpu memory pad pkg mail
 modules-left = volume pad cpu memory
 modules-center = bspwm
-; modules-right = battery wlan app-rslsync app-redshift pad date
-modules-right = battery wlan app-redshift pad date
+modules-right = battery wlan syncthing redshift pad date
 
 ;tray-position = center
 ;tray-padding = 2
@@ -303,34 +302,19 @@ type = custom/text
 content = "   "
 content-foreground = ${colors.fg-alt}
 
-[module/pkg]
-type = custom/ipc
-hook-0 = ~/.config/polybar/modules/updates
-initial = 1
-click-left = polybar-msg -p %pid% hook pkg 1
+[module/redshift]
+type = custom/script
+exec = ~/.config/polybar/modules/redshift
+exec-if = pgrep -x redshift
+interval = 60
 format-padding = 1
 
-[module/mail]
-type = custom/ipc
-hook-0 = ~/.config/polybar/modules/mail
-initial = 1
-click-left = polybar-msg -p %pid% hook mail 1
-format-padding-right = 1
-
-[module/app-redshift]
+[module/syncthing]
 type = custom/script
 exec = echo 1
-exec-if = pgrep -x redshift
-format = ""
-format-foreground = ${colors.icons}
-interval = 2
-
-[module/app-rslsync]
-type = custom/script
-exec = echo 1
-exec-if = pgrep -x rslsync
+exec-if = systemctl is-active syncthing
 format = ""
 format-foreground = ${colors.icons}
-interval = 60
+interval = 30
 
 ; vim:ft=dosini
