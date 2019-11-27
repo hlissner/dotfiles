@@ -116,3 +116,57 @@ zstyle ':completion:*:(ssh|scp|rsync):*:hosts-host' ignored-patterns '*(.|:)*' l
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-domain' ignored-patterns '<->.<->.<->.<->' '^[-[:alnum:]]##(.[-[:alnum:]]##)##' '*@*'
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
 
+# fzf
+if command -v fzf >/dev/null; then
+  # fuzzy completion with 'z' when called without args
+  unalias z 2> /dev/null
+  z() {
+    [ $# -gt 0 ] && _z "$*" && return
+    cd "$(_z -l 2>&1 | fzf --height 40% --nth 2.. --reverse --inline-info +s --tac --query "${*##-* }" | sed 's/^[0-9,.]* *//')"
+  }
+
+  __git_log () {
+    # format str implies:
+    #  --abbrev-commit
+    #  --decorate
+    git log \
+      --color=always \
+      --graph \
+      --all \
+      --date=short \
+      --format="%C(bold blue)%h%C(reset) %C(green)%ad%C(reset) | %C(white)%s %C(red)[%an] %C(bold yellow)%d"
+  }
+
+  _fzf_complete_git() {
+    ARGS="$@"
+
+    # these are commands I commonly call on commit hashes.
+    # cp->cherry-pick, co->checkout
+
+    if [[ $ARGS == 'git cp'* || \
+          $ARGS == 'git cherry-pick'* || \
+          $ARGS == 'git co'* || \
+          $ARGS == 'git checkout'* || \
+          $ARGS == 'git reset'* || \
+          $ARGS == 'git show'* || \
+          $ARGS == 'git log'* ]]; then
+      _fzf_complete "--reverse --multi" "$@" < <(__git_log)
+    else
+      eval "zle ${fzf_default_completion:-expand-or-complete}"
+    fi
+  }
+
+  _fzf_complete_git_post() {
+    sed -e 's/^[^a-z0-9]*//' | awk '{print $1}'
+  }
+
+  # pass completion suggested by @d4ndo (#362) (slightly modified)
+  _fzf_complete_pass() {
+    _fzf_complete '+m' "$@" < <(
+      local pwdir=${PASSWORD_STORE_DIR-~/.password-store/}
+      find "$pwdir" -name "*.gpg" -print |
+          sed -e "s#${pwdir}/\{0,1\}##" |
+          sed -e 's/\(.*\)\.gpg/\1/'
+    )
+  }
+fi
