@@ -10,6 +10,7 @@
 
     ./modules/audio/audacity.nix
     ./modules/audio/lmms.nix
+    ./modules/audio/spotify.nix
     ./modules/browser/firefox.nix
     ./modules/dev
     ./modules/editors/emacs.nix

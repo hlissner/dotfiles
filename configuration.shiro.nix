@@ -12,6 +12,7 @@ in {
 
     ./modules/desktop/bspwm.nix
 
+    ./modules/audio/spotify.nix
     ./modules/browser/firefox.nix
     ./modules/dev
     ./modules/graphics/aseprite.nix

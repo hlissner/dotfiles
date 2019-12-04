@@ -14,7 +14,6 @@
     # Useful apps
     evince    # pdf reader
     (callPackage <packages/ripcord.nix> {})
-    spotify
   ];
 
   sound.enable = true;
