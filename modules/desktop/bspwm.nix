@@ -8,17 +8,34 @@
 
   environment = {
     systemPackages = with pkgs; [
-      xst  # st + nice-to-have extensions
-
       lightdm
       bspwm
       dunst
       libnotify
-
       (polybar.override {
         pulseSupport = true;
         nlSupport = true;
       })
+
+      xst  # st + nice-to-have extensions
+      (writeScriptBin "st-scratch" ''
+        #!${stdenv.shell}
+        SCRID=st-scratch
+        focused=$(xdotool getactivewindow)
+        scratch=$(xdotool search --onlyvisible --classname $SCRID)
+        if [[ -n $scratch ]]; then
+            if [[ $focused == $scratch ]]; then
+                xdotool windowkill $scratch
+            else
+                xdotool windowactivate $scratch
+            fi
+        else
+            xst -t $SCRID -n $SCRID -c $SCRID \
+              -f "$(xrdb -query | grep 'st-scratch\.font' | cut -f2)" \
+              -g 100x26 \
+              -e $SHELL
+        fi
+      '')
     ];
   };
 

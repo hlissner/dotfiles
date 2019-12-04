@@ -24,7 +24,10 @@ super + Return
 	xst
 
 super + grave
-	emacsclient -a "" -e "(open-scratch-frame)"
+	st-scratch
+
+super + shift + grave
+	emacsclient -e '(open-scratch-frame)'
 
 super + space
 	rofi -monitor -4 -show drun -show-icons
