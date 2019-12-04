@@ -12,6 +12,7 @@
   nix = {
     nixPath = options.nix.nixPath.default ++ [
       "config=/etc/dotfiles/config"
+      "packages=/etc/dotfiles/packages"
     ];
     autoOptimiseStore = true;
     trustedUsers = [ "root" "@wheel" ];
