@@ -18,8 +18,13 @@ if [[ $1 == -m ]]; then
     leap=1; shift
 fi
 dir=$1
+opposite=
 
-case $dir in west|south|north|east) ;;
+case $dir in
+    west)  opposite=east  ;;
+    east)  opposite=west  ;;
+    north) opposite=north ;;
+    south) opposite=south ;;
     *) >&2 echo "Not a valid direction: $dir"
         exit 1
 esac
@@ -32,6 +37,8 @@ else
     if ! bspc node -f "$dir.local"; then
         if [[ $(bspc query -M -m "$dir") ]]; then
             bspc monitor -f "$dir"
+            # Ensure we start at the edge of the window we arrived from
+            while bspc node -f "$opposite.local"; do :; done
         fi
     fi
 fi
