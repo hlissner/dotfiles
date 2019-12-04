@@ -1,6 +1,6 @@
 [colors]
 bg = ${xrdb:background}
-fg = ${xrdb:foreground}
+fg = ${xrdb:color4}
 black = ${xrdb:color0}
 bblack = ${xrdb:color8}
 red = ${xrdb:color1}
@@ -19,7 +19,7 @@ white = ${xrdb:color7}
 bwhite = ${xrdb:color15}
 
 bg-alt = #0F1013
-fg-alt = #25282a
+fg-alt = #25283a
 icons = #555856
 alert = ${colors.red}
 
@@ -86,8 +86,8 @@ format = <label-state> <label-mode>
 label-padding = 1
 
 label-focused = %icon%
-label-focused-background = #33000000
-label-focused-foreground = ${colors.green}
+label-focused-background = #44000000
+label-focused-foreground = ${colors.blue}
 ; label-focused-underline = ${colors.magenta}
 ; label-focused-foreground = ${xrdb:color2}
 label-focused-padding = 1

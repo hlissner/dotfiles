@@ -17,6 +17,7 @@
     autoOptimiseStore = true;
     trustedUsers = [ "root" "@wheel" ];
   };
+  # Forgive me Stallman senpai
   nixpkgs.config.allowUnfree = true;
 
   # Nothing in /tmp should survive a reboot
@@ -41,7 +42,9 @@
       ntfs3g
       hfsprogs
     ];
-    variables = {
+    # These are the defaults, but some applications are buggy when these lack
+    # explicit values.
+    sessionVariables = {
       XDG_CONFIG_HOME = "$HOME/.config";
       XDG_CACHE_HOME = "$HOME/.cache";
       XDG_DATA_HOME = "$HOME/.local/share";

@@ -42,7 +42,7 @@ prompt_init() {
   zle-keymap-select() {
     case $KEYMAP in
       vicmd)      PROMPT_SYMBOL="%F{magenta}« " ;;
-      main|viins) PROMPT_SYMBOL="%(?.%F{green}.%F{red})λ " ;;
+      main|viins) PROMPT_SYMBOL="%(?.%F{blue}.%F{red})λ " ;;
     esac
     zle reset-prompt
     zle -R
@@ -65,7 +65,7 @@ prompt_init() {
   fi
 
   RPROMPT='%F{blue}%~%F{magenta}${vcs_info_msg_0_}$(prompt_git_dirty)%f'
-  PROMPT='%F{blue}${prompt_username}%f${PROMPT_SYMBOL:-$ }'
+  PROMPT='%F{green}${prompt_username}%f${PROMPT_SYMBOL:-$ }'
 }
 
 prompt_init "$@"

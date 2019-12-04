@@ -1,14 +1,14 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 bspc config borderless_monocle true
 bspc config gapless_monocle true
 
-bspc config border_width 2
-bspc config window_gap 8
+bspc config border_width 1
+bspc config window_gap 12
 
-bspc config normal_border_color "#131519"
-bspc config active_border_color "#131519"
-bspc config focused_border_color "#f0c674"
+bspc config normal_border_color "#11141b"
+bspc config active_border_color "#21242b"
+bspc config focused_border_color "#798cb3"
 
 # Extra padding for polybar
 bspc config -m $MONITOR window_gap 12

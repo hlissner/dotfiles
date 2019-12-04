@@ -30,10 +30,10 @@ super + shift + grave
 	emacsclient -e '(open-scratch-frame)'
 
 super + space
-	rofi -monitor -4 -show drun -show-icons
+	~/.config/rofi/bin/appmenu
 
 super + backslash
-	rofi-pass
+	~/.config/rofi/bin/passmenu
 
 super + Escape
 	pkill -USR1 -x sxhkd

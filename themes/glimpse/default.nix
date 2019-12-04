@@ -3,25 +3,61 @@
 {
   imports = [ ../. ]; # Load framework for themes
 
-  environment.systemPackages = with pkgs; [ arc-theme ];
+  environment.systemPackages = with pkgs; [
+    nordic
+    paper-icon-theme # for rofi
+  ];
 
-  services.xserver.displayManager.lightdm.background = "${./wallpaper.png}";
+  fonts.fonts = [ pkgs.nerdfonts ];
+
+  services.compton = {
+    activeOpacity = "0.96";
+    inactiveOpacity = "0.75";
+    opacityRules = [
+      "100:class_g = 'Firefox'"
+      "100:class_g = 'Gimp'"
+      "100:class_g = 'feh'"
+      "100:class_g = 'mpv'"
+    ];
+    settings = {
+      blur-background = true;
+      blur-background-frame = true;
+      blur-background-fixed = true;
+      blur-kern = "7x7box";
+      blur-strength = 340;
+      blur-background-exclude = [
+        "window_type = 'dock'"
+        "window_type = 'desktop'"
+      ];
+    };
+  };
+
+  services.xserver.displayManager.lightdm = {
+    background = "${./wallpaper.blurred.jpg}";
+    greeters.mini.extraConfig = ''
+      text-color = "#bbc2cf"
+      window-color = "#29323d"
+      border-color = "#29323d"
+    '';
+  };
+
   home-manager.users.hlissner = {
-    home.file.".background-image".source = ./wallpaper.png;
+    home.file.".background-image".source = ./wallpaper.jpg;
 
     xdg.configFile = {
       "xtheme/90-theme".source = ./Xresources;
       "dunst/dunstrc".source = ./dunstrc;
       "bspwm/rc.d/theme".source = ./bspwmrc;
       "bspwm/rc.d/polybar".source = ./polybar/run.sh;
-      "rofi/theme".source = ./rofi.theme;
       "polybar" = { source = ./polybar; recursive = true; };
+      "rofi/theme" = { source = ./rofi; recursive = true; };
+      "zsh/prompt.zsh".source = ./zsh/prompt.zsh;
 
       # GTK
       "gtk-3.0/settings.ini".text = ''
         [Settings]
-        gtk-theme-name=Arc-Dark
-        gtk-icon-theme-name=Arc-Dark
+        gtk-theme-name=Nordic-blue
+        gtk-icon-theme-name=Paper
         gtk-fallback-icon-theme=gnome
         gtk-application-prefer-dark-theme=true
         gtk-cursor-theme-name=Numix
@@ -32,15 +68,15 @@
 
       # GTK2 global theme (widget and icon theme)
       "gtk-2.0/gtkrc".text = ''
-        gtk-theme-name="Arc-Dark"
-        gtk-icon-theme-name="adwaita"
+        gtk-theme-name="Nordic-blue"
+        gtk-icon-theme-name="Paper-Mono-Dark"
         gtk-font-name="Sans 10"
       '';
 
       # QT4/5 global theme
       "Trolltech.conf".text = ''
         [Qt]
-        style=Arc-Dark
+        style=Nordic-blue
       '';
     };
   };

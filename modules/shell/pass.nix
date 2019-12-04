@@ -7,7 +7,6 @@
         exts.pass-otp
         exts.pass-genphrase
       ]))
-      (lib.mkIf (config.services.xserver.enable) rofi-pass)
     ];
 
     variables.PASSWORD_STORE_DIR = "$HOME/.secrets/password-store";

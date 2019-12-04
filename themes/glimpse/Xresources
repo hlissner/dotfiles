@@ -1,19 +1,19 @@
 !! Colors
-#define blk  #131519
+#define blk  #101216
 #define bblk #969896
 #define red  #cc6666
 #define bred #de935f
-#define grn  #b5bd68
+#define grn  #8BD49C
 #define bgrn #757d28
 #define ylw  #f0c674
 #define bylw #f9a03f
-#define blu  #81a2be
+#define blu  #5EC4FF
 #define bblu #2a8fed
-#define mag  #b294bb
+#define mag  #E27E8D
 #define bmag #bc77a8
 #define cyn  #8abeb7
 #define bcyn #a3685a
-#define wht  #c5c8c6
+#define wht  #bbc2cf
 #define bwht #ffffff
 #define bg blk
 #define fg wht
@@ -48,22 +48,8 @@
 *.color240: #544c49
 *.color241: #665c54
 
-st.opacity: 245
 
-
-!! Fonts
-rofi.font: Fira Code 15
+!! xst
+st.opacity: 200
 st.font: Fira Code:pixelsize=12
 st-scratch.font: Fira Code:pixelsize=15
-
-
-!! Rofi
-rofi.padding: 12
-!                  bg             fg       bgalt    hlbg     hlfg
-rofi.color-normal: argb:00131519, #bbc2cf, #131519, #191b1f, #f0c674
-rofi.color-urgent: argb:00131519, #bbc2cf, #131519, #191b1f, #f0c674
-rofi.color-active: argb:00131519, #bbc2cf, #131519, #191b1f, #f0c674
-!                  bg             border   sep
-rofi.color-window: argb:ee131519, argb:00bbc2cf, #292d35
-! Separator style (none, dash, solid)
-rofi.separator-style: solid

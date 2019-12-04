@@ -1,4 +1,12 @@
-### ReDefs
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias -- -='cd -'
+
+alias q=exit
+alias clr=clear
+alias sudo='sudo '
+
 alias rm='rm -i'
 alias cp='cp -i'
 alias mv='mv -i'
@@ -11,17 +19,6 @@ alias bc='bc -lq'
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
-
-
-### convenience
-alias ..='cd ..'
-alias ...='cd ../..'
-alias ....='cd ../../..'
-alias -- -='cd -'
-
-alias q=exit
-alias clr=clear
-alias sudo='sudo '
 
 if command -v exa >/dev/null; then
   alias exa='exa --group-directories-first'
@@ -50,7 +47,6 @@ alias nc=nix-channel
 alias ngc=nix-garbage-collect
 alias nre=nixos-rebuild
 
-### Tools
 autoload -U zmv
 
 take() {

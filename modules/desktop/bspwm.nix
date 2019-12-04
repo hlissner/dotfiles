@@ -46,16 +46,20 @@
   services = {
     xserver = {
       desktopManager.xterm.enable = false;
-      displayManager.lightdm.enable = true;
       windowManager.bspwm.enable = true;
+      displayManager.lightdm = {
+        enable = true;
+        greeters.mini = {
+          enable = true;
+          user = "hlissner";
+        };
+      };
     };
 
     compton = {
       enable = true;
       backend = "glx";
       vSync = true;
-      inactiveOpacity = "0.90";
-      opacityRules = ["100:class_g = 'Firefox'"];
     };
   };
 
