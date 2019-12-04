@@ -47,13 +47,6 @@
       XDG_DATA_HOME = "$HOME/.local/share";
       XDG_BIN_HOME = "$HOME/.local/bin";
     };
-    shellAliases = {
-      nix-env = "NIXPKGS_ALLOW_UNFREE=1 nix-env";
-      ne = "nix-env";
-      nu = "sudo nix-channel --update && sudo nixos-rebuild -I config=$HOME/.dotfiles/config switch";
-      nre = "sudo nixos-rebuild -I config=$HOME/.dotfiles/config";
-      ngc = "sudo nix-collect-garbage -d";
-    };
   };
 
   time.timeZone = "America/Toronto";

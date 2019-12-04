@@ -38,12 +38,17 @@ alias rcp='rsync -vaP --delete'
 alias rmirror='rsync -rtvu --delete'
 alias gurl='curl --compressed'
 
-alias sc=systemctl
-alias ssc='sudo systemctl'
-
 alias y='xclip -selection clipboard -in'
 alias p='xclip -selection clipboard -out'
 
+alias sc=systemctl
+alias ssc='sudo systemctl'
+
+alias nix-env='NIXPKGS_ALLOW_UNFREE=1 nix-env'
+alias ne=nix-env
+alias nc=nix-channel
+alias ngc=nix-garbage-collect
+alias nre=nixos-rebuild
 
 ### Tools
 autoload -U zmv
