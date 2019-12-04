@@ -58,7 +58,7 @@ Print
 super + Print
 	scrrec -s ~/recordings/$(date +%F-%T).mp4
 super + ctrl + Print
-	scrcap -f
+	scrrec -s ~/recordings/$(date +%F-%T).gif
 
 XF86MonBrightnessUp
 	light -A 5
