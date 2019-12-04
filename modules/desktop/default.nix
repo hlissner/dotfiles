@@ -13,7 +13,7 @@
 
     # Useful apps
     evince    # pdf reader
-    discord
+    (callPackage <packages/ripcord.nix> {})
     spotify
   ];
 
