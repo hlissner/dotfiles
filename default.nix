@@ -44,7 +44,7 @@
     ];
     # These are the defaults, but some applications are buggy when these lack
     # explicit values.
-    sessionVariables = {
+    variables = {
       XDG_CONFIG_HOME = "$HOME/.config";
       XDG_CACHE_HOME = "$HOME/.cache";
       XDG_DATA_HOME = "$HOME/.local/share";

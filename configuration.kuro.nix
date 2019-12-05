@@ -41,7 +41,7 @@
   networking.hostName = "kuro";
   networking.networkmanager.enable = true;
 
-  services.xserver.videoDrivers = [ "nvidiaBeta" ];
+  services.xserver.videoDrivers = [ "nvidia" ];
 
   # For ergodox ez
   environment = {

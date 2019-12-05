@@ -4,9 +4,7 @@
   environment = {
     extraInit = ''
       export GNUPGHOME="$XDG_CONFIG_HOME/gnupg"
-      if [ ! -d "$GNUPGHOME" ]; then
-         mkdir -p "$GNUPGHOME" -m 700
-      fi
+      mkdir -p "$GNUPGHOME" -m 700
     '';
 
     systemPackages = with pkgs; [
