@@ -36,8 +36,9 @@
     background = "${./wallpaper.blurred.jpg}";
     greeters.mini.extraConfig = ''
       text-color = "#bbc2cf"
-      window-color = "#29323d"
-      border-color = "#29323d"
+      password-background-color = "#29323d"
+      window-color = "#0b1117"
+      border-color = "#0b1117"
     '';
   };
 
