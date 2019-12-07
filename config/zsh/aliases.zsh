@@ -42,8 +42,8 @@ alias sc=systemctl
 alias ssc='sudo systemctl'
 
 alias nix-env='NIXPKGS_ALLOW_UNFREE=1 nix-env'
-alias ne=nix-env
-alias nc=nix-channel
+alias nen=nix-env
+alias nch=nix-channel
 alias ngc='nix-collect-garbage -d'
 alias nre='sudo nixos-rebuild'
 alias nup='sudo nix-channel --update && nre'
