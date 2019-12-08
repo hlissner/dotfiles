@@ -32,6 +32,9 @@ super + shift + grave
 super + space
 	~/.config/rofi/bin/appmenu
 
+super + Tab
+	~/.config/rofi/bin/windowmenu
+
 super + backslash
 	~/.config/rofi/bin/passmenu
 

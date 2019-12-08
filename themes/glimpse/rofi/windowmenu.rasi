@@ -1,0 +1,16 @@
+/* -*- mode: css; -*- */
+
+@import "appmenu.rasi"
+
+#prompt {
+  background-color: #bbc2cf;
+}
+
+#entry {
+  text-color: #bbc2cf;
+}
+
+#element.selected {
+  text-color: #bbc2cf;
+  border-color: #bbc2cf;
+}
