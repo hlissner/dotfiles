@@ -14,10 +14,6 @@ else
   if [ ! -f "$DOTFILES/configuration.$HOST.nix" ]; then
     >&2 echo "No configuration exists for host '$HOST'"
     exit 1
-  elif [ ! -f "$NIXOSPREFIX/hardware-configuration.nix" ]; then
-    >&2 echo "No hardware-configuration.nix file exists in $NIXOSPREFIX"
-    >&2 echo "Did you forget to set up your partitions?"
-    exit 2
   fi
 
   mkdir -p "$NIXOSPREFIX"
