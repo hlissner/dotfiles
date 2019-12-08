@@ -13,6 +13,14 @@
         #! ${pkgs.bash}/bin/bash
         firefox --private-window "$@"
       '')
+      (makeDesktopItem {
+        name = "firefox-private";
+        desktopName = "Firefox (Private)";
+        genericName = "Open a private Firefox window";
+        icon = "firefox";
+        exec = "${firefox-bin}/bin/firefox --private-window";
+        categories = "Network";
+      })
     ];
   };
 }

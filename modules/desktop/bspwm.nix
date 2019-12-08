@@ -36,6 +36,14 @@
               -e $SHELL
         fi
       '')
+      (makeDesktopItem {
+        name = "xst";
+        desktopName = "Suckless Terminal";
+        genericName = "Default terminal";
+        icon = "xterm";
+        exec = "${xst}/bin/xst";
+        categories = "Development;System;Utility";
+      })
     ];
   };
 
