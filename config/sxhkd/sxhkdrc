@@ -12,10 +12,10 @@ super + apostrophe
 
 # focus/swap the node in the given direction
 super + {_,ctrl +}{h,j,k,l}
-	~/.dotfiles/bin/bspc/focus {_,-m }{west,south,north,east}
+	bspc-focus {_,-m }{west,south,north,east}
 
 super + shift + {_,ctrl +}{h,j,k,l}
-	~/.dotfiles/bin/bspc/swap {_,-m }{west,south,north,east}
+	bspc-swap {_,-m }{west,south,north,east}
 
 super + {_,shift +}{1-9,0}
 	bspc {desktop -f,node -d} {1-9,10}
@@ -30,13 +30,13 @@ super + shift + grave
 	emacsclient -e '(open-scratch-frame)'
 
 super + space
-	~/.config/rofi/bin/appmenu
+	rofi-appmenu
 
 super + Tab
-	~/.config/rofi/bin/windowmenu
+	rofi-windowmenu
 
 super + backslash
-	~/.config/rofi/bin/passmenu
+	rofi-passmenu
 
 super + Escape
 	pkill -USR1 -x sxhkd

@@ -11,6 +11,6 @@
 }
 
 #element.selected {
-    text-color: #c678dd;
-    border-color: #c678dd;
+  text-color: #c678dd;
+  border-color: #c678dd;
 }
