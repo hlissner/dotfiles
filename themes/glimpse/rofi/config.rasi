@@ -4,6 +4,7 @@ configuration {
   cycle:            true;
   hide-scrollbar:   true;
   disable-history:  false;
+  monitor:          -4;
   /*
   modi:             "drun";
   display-drun:     "apps";

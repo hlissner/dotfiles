@@ -1,9 +1,6 @@
 #!/usr/bin/env sh
-rofi \
-    -monitor -4 \
-    -no-lazy-grab \
-    -show drun \
-    -modi drun,run \
-    -display-drun apps \
-    -show-icons \
-    -theme theme/appmenu.rasi
+rofi -show drun \
+     -modi drun,run \
+     -display-drun apps \
+     -show-icons \
+     -theme theme/appmenu.rasi
