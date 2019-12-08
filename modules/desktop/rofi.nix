@@ -5,9 +5,17 @@
     systemPackages = with pkgs; [
       (writeScriptBin "rofi" ''
         #!${stdenv.shell}
-        exec ${rofi}/bin/rofi -terminal xst -m -1 $@
+        exec ${rofi}/bin/rofi -terminal xst -m -1 "$@"
         '')
       rofi
+
+      (makeDesktopItem {
+        name = "browsermenu";
+        desktopName = "Open Bookmark in Firefox";
+        icon = "firefox";
+        exec = "/home/hlissner/.config/rofi/bin/browsermenu";
+        categories = "Network";
+      })
     ];
 
     # shellAliases = {};
