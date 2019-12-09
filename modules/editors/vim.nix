@@ -14,6 +14,6 @@
   };
 
   home-manager.users.hlissner.xdg.configFile = {
-    "vim" = { source = <config/vim>; recursive = true; };
+    "zsh/rc.d/aliases.vim.zsh".source = <config/vim/aliases.zsh>;
   };
 }
