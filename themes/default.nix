@@ -3,7 +3,6 @@
 {
   environment.variables = {
     GTK_DATA_PREFIX = [ "${config.system.path}" ];
-    GTK2_RC_FILES = "$HOME/.config/gtk-2.0/gtkrc";
     QT_QPA_PLATFORMTHEME = "gtk2";
   };
 
@@ -13,6 +12,7 @@
   };
 
   services.xserver.displayManager.sessionCommands = ''
+    export GTK2_RC_FILES="$XDG_CONFIG_HOME/gtk-2.0/gtkrc"
     source "$XDG_CONFIG_HOME"/xsession/*.sh
     xrdb -merge "$XDG_CONFIG_HOME"/xtheme/*
   '';
