@@ -1,5 +1,4 @@
-#!/usr/bin/env nix-shell
-#! nix-shell -i bash -p xdotool
+#!/usr/bin/env bash
 
 while true; do
     xdotool mousedown 1
