@@ -1,6 +1,0 @@
-#!/usr/bin/env sh
-DIR="$(fd -L --type d . $HOME | rofi -dmenu)"
-if [ -d "$DIR" ]; then
-    cd "$DIR"
-    xst
-fi

@@ -1,2 +1,0 @@
-#!/usr/bin/env bash
-rofi -show calc -modi "calc:qalc +u8"
