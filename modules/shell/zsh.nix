@@ -14,6 +14,10 @@
       htop
       tree
     ];
+    variables = {
+      ZDOTDIR = "$XDG_CONFIG_HOME/zsh";
+      ZSH_CACHE = "$XDG_CACHE_HOME/zsh";
+    };
   };
 
   programs.zsh = {

@@ -2,11 +2,6 @@
 
 {
   environment = {
-    sessionVariables = {
-      BROWSER = "firefox";
-      XDG_DESKTOP_DIR = "$HOME"; # prevent firefox creating ~/Desktop
-    };
-
     systemPackages = with pkgs; [
       firefox-bin
       (pkgs.writeScriptBin "firefox-private" ''
@@ -22,5 +17,9 @@
         categories = "Network";
       })
     ];
+    variables = {
+      BROWSER = "firefox";
+      XDG_DESKTOP_DIR = "$HOME"; # prevent firefox creating ~/Desktop
+    };
   };
 }

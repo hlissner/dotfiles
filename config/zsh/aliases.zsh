@@ -48,6 +48,11 @@ alias ngc='nix-collect-garbage -d'
 alias nre='sudo nixos-rebuild'
 alias nup='sudo nix-channel --update && nre'
 
+if command -v nvim >/dev/null; then
+  alias vim=nvim
+  alias v=nvim
+fi
+
 autoload -U zmv
 
 take() {

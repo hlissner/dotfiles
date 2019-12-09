@@ -10,7 +10,7 @@ in
       #!${stdenv.shell}
       if ! pgrep -x spotifyd >/dev/null; then
         spotifyd --backend pulseaudio \
-                 --cache_path ~/.cache/spotifyd \
+                 --cache_path "$HOME/.cache/spotifyd" \
                  --username accounts@v0.io \
                  --password $(pass www/spotify.com)
       fi
