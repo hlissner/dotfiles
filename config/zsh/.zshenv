@@ -6,6 +6,5 @@ for file in $XDG_CONFIG_HOME/zsh/rc.d/env.*.zsh(N); do
   source $file
 done
 
-if [[ -f ~/.config/zsh/env ]]; then
-  source ~/.config/zsh/env
-fi
+# If you have host-local configuration, this is where you'd put it
+[ -f ~/.config/zsh/env ] && source ~/.config/zsh/env

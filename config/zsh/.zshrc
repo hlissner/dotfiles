@@ -25,11 +25,6 @@ for file in $XDG_CONFIG_HOME/zsh/rc.d/aliases.*.zsh(N); do
   source $file
 done
 
-if [[ -f ~/.config/zsh/rc ]]; then
-  source ~/.config/zsh/rc
-fi
-
-
 ##
 function _cache {
   command -v "$1" >/dev/null || return 1
@@ -58,3 +53,7 @@ _cache direnv hook zsh
 ##
 autoload -Uz compinit && compinit -u -d $ZSH_CACHE/zcompdump
 autopair-init
+
+
+# If you have host-local configuration, this is where you'd put it
+[ -f ~/.config/zsh/rc ] && source ~/.config/zsh/rc
