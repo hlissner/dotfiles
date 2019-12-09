@@ -31,7 +31,6 @@
         exec = "${<config/rofi>}/bin/rofi-filemenu -x";
         categories = "System;Utility";
       })
-
     ];
   };
 
