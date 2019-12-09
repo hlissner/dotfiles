@@ -31,6 +31,25 @@
         exec = "${<config/rofi>}/bin/rofi-filemenu -x";
         categories = "System;Utility";
       })
+
+      (makeDesktopItem {
+        name = "reboot";
+        desktopName = "System: Reboot";
+        icon = "system-reboot";
+        exec = "systemctl reboot";
+      })
+      (makeDesktopItem {
+        name = "shutdown";
+        desktopName = "System: Shut Down";
+        icon = "system-shutdown";
+        exec = "systemctl shutdown";
+      })
+      (makeDesktopItem {
+        name = "sleep";
+        desktopName = "System: Sleep";
+        icon = "system-suspend";
+        exec = "systemctl suspend";
+      })
     ];
   };
 
