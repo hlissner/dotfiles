@@ -23,7 +23,6 @@
     ./modules/shell/direnv.nix
     ./modules/shell/git.nix
     ./modules/shell/gnupg.nix
-    ./modules/shell/ncmpcpp.nix
     ./modules/shell/pass.nix
     ./modules/shell/surfraw.nix
     ./modules/shell/zsh.nix
@@ -31,7 +30,6 @@
     # ./modules/video/obs.nix
 
     # Services
-    ./modules/services/mpd.nix
     ./modules/services/syncthing.nix
 
     # Themes
