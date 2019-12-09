@@ -22,7 +22,7 @@
         name = "xst";
         desktopName = "Suckless Terminal";
         genericName = "Default terminal";
-        icon = "xterm";
+        icon = "utilities-terminal";
         exec = "${xst}/bin/xst";
         categories = "Development;System;Utility";
       })

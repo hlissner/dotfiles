@@ -13,7 +13,7 @@
       (makeDesktopItem {
         name = "rofi-browsermenu";
         desktopName = "Open Bookmark in Firefox";
-        icon = "firefox";
+        icon = "bookmark-new-symbolic";
         exec = "${<config/rofi>}/bin/rofi-browsermenu";
         categories = "Network;Utility";
       })
