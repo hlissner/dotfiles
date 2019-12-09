@@ -23,6 +23,7 @@ bspc rule -a feh state=fullscreen
 bspc rule -a 'Emacs:org*' state=floating
 bspc rule -a 'Emacs:scratch' state=floating
 bspc rule -a st-scratch state=floating sticky=on center=on
+bspc rule -a st-calc state=floating sticky=on center=on
 
 
 #
