@@ -20,7 +20,8 @@ in
   fonts.fonts = [ pkgs.emacs-all-the-icons-fonts ];
 
   home-manager.users.hlissner.xdg.configFile = {
-    "zsh/rc.d/aliases.emacs.zsh".source = <config/emacs/aliases.zsh>;
-    "zsh/rc.d/env.emacs.zsh".source = <config/emacs/env.zsh>;
+    # Avoid "emacs" because Emacs HEAD respects XDG conventions and we're only
+    # using this directory to store extra zsh config for my nix dotfiles.
+    "emacscfg" = { source = <config/emacs>; recursive = true; };
   };
 }

@@ -21,7 +21,7 @@ source $ZDOTDIR/config.zsh
 source $ZDOTDIR/keybinds.zsh
 source $ZDOTDIR/completion.zsh
 source $ZDOTDIR/aliases.zsh
-for file in $XDG_CONFIG_HOME/zsh/rc.d/aliases.*.zsh(N); do
+for file in $XDG_CONFIG_HOME/*/aliases.zsh(N); do
   source $file
 done
 

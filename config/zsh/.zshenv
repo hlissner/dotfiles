@@ -2,7 +2,7 @@ for dir in $XDG_CONFIG_HOME/*/bin(N); do
   export PATH="$dir:$PATH"
 done
 
-for file in $XDG_CONFIG_HOME/zsh/rc.d/env.*.zsh(N); do
+for file in $XDG_CONFIG_HOME/*/env.zsh(N); do
   source $file
 done
 
