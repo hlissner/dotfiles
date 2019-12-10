@@ -1,6 +1,11 @@
-# Stop term/shell echoing back my input
-if [[ -n $INSIDE_EMACS ]]; then
+# Stop TRAMP (in Emacs) from hanging or term/shell from echoing back commands
+if [[ $TERM == dumb || -n $INSIDE_EMACS ]]; then
   unsetopt zle
+  unsetopt prompt_cr
+  unsetopt prompt_subst
+  whence -w precmd >/dev/null && unfunction precmd
+  whence -w preexec >/dev/null && unfunction preexec
+  PS1='$ '
 fi
 
 ## General

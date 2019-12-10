@@ -16,44 +16,46 @@ if ! zgen saved; then
   zgen save
 fi
 
-source $ZDOTDIR/prompt.zsh
 source $ZDOTDIR/config.zsh
-source $ZDOTDIR/keybinds.zsh
-source $ZDOTDIR/completion.zsh
-source $ZDOTDIR/aliases.zsh
-for file in $XDG_CONFIG_HOME/zsh/rc.d/aliases.*.zsh(N); do
-  source $file
-done
+if [[ $TERM != dumb ]]; then
+  source $ZDOTDIR/prompt.zsh
+  source $ZDOTDIR/keybinds.zsh
+  source $ZDOTDIR/completion.zsh
+  source $ZDOTDIR/aliases.zsh
+  for file in $XDG_CONFIG_HOME/zsh/rc.d/aliases.*.zsh(N); do
+    source $file
+  done
 
-##
-function _cache {
-  command -v "$1" >/dev/null || return 1
-  local cache_dir="$XDG_CACHE_HOME/${SHELL##*/}"
-  local cache="$cache_dir/$1"
-  if [[ ! -f $cache || ! -s $cache ]]; then
-    echo "Caching $1"
-    mkdir -p $cache_dir
-    "$@" >$cache
+  ##
+  function _cache {
+    command -v "$1" >/dev/null || return 1
+    local cache_dir="$XDG_CACHE_HOME/${SHELL##*/}"
+    local cache="$cache_dir/$1"
+    if [[ ! -f $cache || ! -s $cache ]]; then
+      echo "Caching $1"
+      mkdir -p $cache_dir
+      "$@" >$cache
+    fi
+    source $cache || rm -f $cache
+  }
+
+  # fd > find
+  if command -v fd >/dev/null; then
+    export FZF_DEFAULT_OPTS="--reverse --ansi"
+    export FZF_DEFAULT_COMMAND="fd ."
+    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+    export FZF_ALT_C_COMMAND="fd -t d . $HOME"
   fi
-  source $cache || rm -f $cache
-}
 
-# fd > find
-if command -v fd >/dev/null; then
-  export FZF_DEFAULT_OPTS="--reverse --ansi"
-  export FZF_DEFAULT_COMMAND="fd ."
-  export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-  export FZF_ALT_C_COMMAND="fd -t d . $HOME"
+  _cache fasd --init posix-alias zsh-{hook,{c,w}comp{,-install}}
+  _cache direnv hook zsh
+
+
+  ##
+  autoload -Uz compinit && compinit -u -d $ZSH_CACHE/zcompdump
+  autopair-init
+
+
+  # If you have host-local configuration, this is where you'd put it
+  [ -f ~/.config/zsh/rc ] && source ~/.config/zsh/rc
 fi
-
-_cache fasd --init posix-alias zsh-{hook,{c,w}comp{,-install}}
-_cache direnv hook zsh
-
-
-##
-autoload -Uz compinit && compinit -u -d $ZSH_CACHE/zcompdump
-autopair-init
-
-
-# If you have host-local configuration, this is where you'd put it
-[ -f ~/.config/zsh/rc ] && source ~/.config/zsh/rc
