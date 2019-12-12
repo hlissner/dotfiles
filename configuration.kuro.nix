@@ -33,7 +33,7 @@
     ./modules/services/syncthing.nix
 
     # Themes
-    ./themes/glimpse
+    ./themes/aquanaut
   ];
 
   networking.hostName = "kuro";
