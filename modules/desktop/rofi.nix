@@ -15,21 +15,18 @@
         desktopName = "Open Bookmark in Firefox";
         icon = "bookmark-new-symbolic";
         exec = "${<config/rofi>}/bin/rofi-browsermenu";
-        categories = "Network;Utility";
       })
       (makeDesktopItem {
         name = "rofi-filemenu";
         desktopName = "Open Directory in Terminal";
         icon = "folder";
         exec = "${<config/rofi>}/bin/rofi-filemenu";
-        categories = "System;Utility";
       })
       (makeDesktopItem {
         name = "rofi-filemenu-scratch";
         desktopName = "Open Directory in Scratch Terminal";
         icon = "folder";
         exec = "${<config/rofi>}/bin/rofi-filemenu -x";
-        categories = "System;Utility";
       })
 
       (makeDesktopItem {
