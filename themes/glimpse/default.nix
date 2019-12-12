@@ -61,7 +61,7 @@
         gtk-icon-theme-name=Paper
         gtk-fallback-icon-theme=gnome
         gtk-application-prefer-dark-theme=true
-        gtk-cursor-theme-name=Numix
+        gtk-cursor-theme-name=Paper
         gtk-xft-hinting=1
         gtk-xft-hintstyle=hintfull
         gtk-xft-rgba=none
