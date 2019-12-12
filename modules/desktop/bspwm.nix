@@ -3,7 +3,13 @@
 {
   imports = [
     ./.
+
+    # My launcher
     ./rofi.nix
+
+    # I often need a thumbnail browser to show off, peruse or organize photos,
+    # design work, or digital art.
+    ./thunar.nix
   ];
 
   environment = {
