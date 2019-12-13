@@ -17,8 +17,16 @@
     autoOptimiseStore = true;
     trustedUsers = [ "root" "@wheel" ];
   };
-  # Forgive me Stallman senpai
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config = {
+    # Forgive me Stallman senpai
+    allowUnfree = true;
+
+    packageOverrides = pkgs: {
+      unstable = import <nixpkgs-unstable> {
+        config = config.nixpkgs.config;
+      };
+    };
+  };
 
   # Nothing in /tmp should survive a reboot
   boot.cleanTmpDir = true;
