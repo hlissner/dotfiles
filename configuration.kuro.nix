@@ -13,6 +13,7 @@
     ./modules/audio/spotify.nix
     ./modules/browser/firefox.nix
     ./modules/dev
+    ./modules/dev/rust.nix
     ./modules/editors/emacs.nix
     ./modules/editors/vim.nix
     ./modules/gaming/steam.nix
