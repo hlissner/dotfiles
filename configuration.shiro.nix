@@ -37,9 +37,12 @@ in {
   networking.wireless.enable = true;
 
   # Optimize power use
-  environment.systemPackages = [ pkgs.powertop pkgs.acpi ];
+  environment.systemPackages = [ pkgs.acpi ];
   services.tlp.enable = true;
-  powerManagement.powertop.enable = true;
+  powerManagement = {
+    powertop.enable = true;
+    cpuFreqGovernor = "ondemand";
+  };
 
   # Monitor backlight control
   programs.light.enable = true;
