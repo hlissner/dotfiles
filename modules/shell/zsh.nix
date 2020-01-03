@@ -13,6 +13,7 @@
       tmux
       htop
       tree
+      tldr
     ];
     variables = {
       ZDOTDIR = "$XDG_CONFIG_HOME/zsh";
