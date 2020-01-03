@@ -56,11 +56,11 @@ super + {_,ctrl + }f
 #
 ## Media keys
 
-Print
+Print                   # screenshot region
 	scrcap
-super + Print
+super + Print           # screencast region to mp4
 	scrrec -s ~/recordings/$(date +%F-%T).mp4
-super + ctrl + Print
+super + ctrl + Print    # screencast region to gif
 	scrrec -s ~/recordings/$(date +%F-%T).gif
 
 XF86MonBrightnessUp
