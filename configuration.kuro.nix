@@ -25,7 +25,6 @@
     ./modules/shell/git.nix
     ./modules/shell/gnupg.nix
     ./modules/shell/pass.nix
-    ./modules/shell/surfraw.nix
     ./modules/shell/zsh.nix
     # ./modules/video/kdenlive.nix
     # ./modules/video/obs.nix
