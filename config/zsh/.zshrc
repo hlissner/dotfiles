@@ -1,3 +1,6 @@
+if [[ ! -d "$ZGEN_DIR" ]]; then
+  git clone https://github.com/tarjoilija/zgen "$ZGEN_DIR"
+fi
 source $ZGEN_SOURCE
 
 if ! zgen saved; then

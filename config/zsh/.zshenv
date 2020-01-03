@@ -1,8 +1,5 @@
 export ZGEN_DIR="$XDG_CACHE_HOME/zgen"
 export ZGEN_SOURCE="$ZGEN_DIR/zgen.zsh"
-if [[ ! -d "$ZGEN_DIR" ]]; then
-  git clone https://github.com/tarjoilija/zgen "$ZGEN_DIR"
-fi
 
 for dir in $XDG_CONFIG_HOME/*/bin(N); do
   export PATH="$dir:$PATH"
