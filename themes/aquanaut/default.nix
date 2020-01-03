@@ -11,11 +11,16 @@
   fonts.fonts = [ pkgs.nerdfonts ];
 
   services.compton = {
+    backend = "glx";
     activeOpacity = "0.96";
     inactiveOpacity = "0.75";
     opacityRules = [
       "100:class_g = 'Firefox'"
       "100:class_g = 'Gimp'"
+      "100:class_g = 'inkscape'"
+      "100:class_g = 'aseprite'"
+      "100:class_g = 'krita'"
+      "100:class_g = 'Peek'"
       "100:class_g = 'feh'"
       "100:class_g = 'mpv'"
     ];
@@ -28,6 +33,8 @@
       blur-background-exclude = [
         "window_type = 'dock'"
         "window_type = 'desktop'"
+        "class_g = 'Peek'"
+        "_GTK_FRAME_EXTENTS@:c"
       ];
     };
   };
