@@ -13,7 +13,6 @@
 
     # Useful apps
     evince    # pdf reader
-    (callPackage <packages/ripcord.nix> {})
   ];
 
   sound.enable = true;
