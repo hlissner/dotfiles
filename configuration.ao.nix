@@ -15,6 +15,8 @@
     ./modules/shell/zsh.nix
   ];
 
+  time.timeZone = "America/Toronto";
+
   networking.hostName = "ao";
   networking.networkmanager.enable = true;
 

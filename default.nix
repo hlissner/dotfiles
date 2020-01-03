@@ -60,8 +60,6 @@
     };
   };
 
-  time.timeZone = "America/Toronto";
-  # time.timeZone = "Europe/Copenhagen";
   location = (if config.time.timeZone == "America/Toronto" then {
     latitude = 43.70011;
     longitude = -79.4163;

@@ -30,8 +30,11 @@ in {
     ./modules/services/syncthing.nix
 
     # Themes
-    ./themes/pianocat
+    ./themes/aquanaut
   ];
+
+  time.timeZone = "America/Toronto";
+  # time.timeZone = "Europe/Copenhagen";
 
   networking.hostName = "shiro";
   networking.wireless.enable = true;

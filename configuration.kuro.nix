@@ -39,6 +39,7 @@
   networking.hostName = "kuro";
   networking.networkmanager.enable = true;
 
+  time.timeZone = "America/Toronto";
   services.xserver.videoDrivers = [ "nvidia" ];
 
   # For ergodox ez
