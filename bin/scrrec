@@ -12,50 +12,82 @@
 is_script=
 geom=
 delay=1
-while getopts sg:d: opt; do
+count=3
+fps=30
+compton=1
+stopfile=/tmp/_stop
+while getopts spg:d:c: opt; do
   case $opt in
     s) is_script=1 ;;
+    c) count=$OPTARG ;;
+    p) compton= ;;
+    f) fps=$OPTARG ;;
     g) geom="$OPTARG" ;;
     d) delay="$OPTARG" ;;
   esac
 done
 shift $((OPTIND-1))
 
-
-if [[ -f /tmp/_stop ]]; then
-  echo q > /tmp/_stop
-  if [[ $is_script ]]; then
-    >&2 echo "Nope"
+##
+select_region() {
+  if [[ $geom ]]; then
+    echo "${geom//[x+]/ }"
   else
-    echo "Stopped previous recording"
+    slop -n -f "%x %y %w %h"
   fi
+}
+
+countdown() {
+  if (( count > 0 )); then
+    for ((i=count;i>0;i--)); do
+      if [[ $is_script ]]; then
+        echo "Recording in $i"
+      else
+        notify-send -u critical -t 1000 "Recording in $i"
+      fi
+      sleep 1
+    done
+  elif [[ $is_script ]]; then
+    echo "Started recording..."
+  else
+    notify-send -u critical "Starting recording..."
+  fi
+}
+
+recording-start() {
+  local X Y W H
+  read -r X Y W H < <(select_region)
+  local ffmpeg_opts="-y -f x11grab -show_region 1 -ss $delay -s ${W}x${H} -i :0.0+${X},${Y} -framerate ${fps}"
+  local dest=${1:-./rec.mp4}
+  local mp4dest
+  [[ $dest == *.gif ]] && mp4dest="${dest%.*}.mp4"
+  countdown
+  touch $stopfile
+  ffmpeg $ffmpeg_opts "${mp4dest:-$dest}" <$stopfile
+  rm -f $stopfile
+  if [[ -f "$mp4dest" ]]; then
+    mov2gif "$mp4dest" "$dest" && rm -fv "$mp4dest"
+  fi
+  echo "$dest" | xclip -selection clipboard -in
+  notify-send "Screencast saved to $dest" "Copied to clipboard!"
+}
+
+
+# If a recording session is already active, stop that one.
+if [[ $is_script && -f $stopfile ]]; then
+  echo q > $stopfile
+  echo "Stopped previous recording"
   exit 0
 fi
 
-if [[ $geom ]]; then
-  read -r W H X Y <<<"${geom//[x+]/ }"
-else
-  read -r X Y W H < <(slop -n -f "%x %y %w %h")
+# Compton with blur and/or transparencies cause unbearable flickering in
+# recordings, so temporarily disable it.
+if systemctl is-enabled --user compton >/dev/null; then
+  systemctl --user stop compton
 fi
-dest=${1:-./rec.mp4}
-if [[ $dest == *.gif ]]; then
-  echo "Detected gif"
-  mp4dest="${dest%.*}.mp4"
+recording-start "$dest"
+if systemctl is-enabled --user compton >/dev/null; then
+  systemctl --user start compton
 fi
-
-if [[ $is_script ]]; then
-  echo "Starting"
-  touch /tmp/_stop
-  ffmpeg -y -f x11grab -ss $delay -s "$W"x"$H" -i :0.0+$X,$Y -framerate 30 "${mp4dest:-$dest}" </tmp/_stop
-  rm -f /tmp/_stop
-else
-  ffmpeg -y -f x11grab -ss $delay -s "$W"x"$H" -i :0.0+$X,$Y -framerate 30 "${mp4dest:-$dest}"
-fi
-
-if [[ -f $mp4dest ]]; then
-  mov2gif "$mp4dest" "$dest" && rm -fv "$mp4dest"
-fi
-
-echo "Finishing up"
 
 # vim:set ft=sh shiftwidth=2:
