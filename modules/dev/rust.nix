@@ -3,7 +3,6 @@
 {
   environment.systemPackages = with pkgs; [
     rustup
-    rls
   ];
 
   home.xdg.configFile = {
