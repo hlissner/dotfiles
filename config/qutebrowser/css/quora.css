@@ -1,0 +1,237 @@
+[qb-domain$="quora.com"] {
+  /* Quora Theme v1.2.10 (2018-06-08)
+    * https://github.com/StylishThemes/Quora-Dark
+    * https://userstyles.org/styles/104706
+    * License: http://sam.zoy.org/wtfpl/
+    */
+  /* action buttons */
+  /* text selection */
+  /*** background ***/
+  /* overlay */
+  /*** text color ***/
+  /*** borders ***/
+  /* outline */
+  /* arrow */
+  /*** Red ***/
+  /*** Green ***/
+  /*** Blue ***/
+  /*** Brown ***/
+  /*** hide text selection popup ***/
+  /*** Make the popup answer's background transparent black. ***/
+  /*** Make the answer hover colour a dark black one. ***/
+  /*** Make ask question buttons necessarily red, and their text gray ***/
+  /*** Darken related question link underline color ***/ }
+  [qb-domain$="quora.com"] * {
+    text-shadow: none !important;
+    box-shadow: none !important; }
+  [qb-domain$="quora.com"] html, [qb-domain$="quora.com"] body:not(.logged_out_page_big_signup) {
+    background-color: #222 !important;
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEYAAABGBAMAAACDAP+3AAAAGFBMVEUfHx8eHh4dHR0bGxshISEiIiIlJSUjIyM9IpsJAAAFjUlEQVR4AT3UuZLcOBaF4QuI2XJxboIhF/eQFe1WovoBAAqccpkaZpc5+4yrXa8/RGpx/lrIXPjFCYjTp9z8REqF4VYNWB3Av3zQJ6b6xBwlKB/9kRkCjXVwGH3ziK5UcjFHVkmgY6osiBsGDFfseqq2ZbTz7E00qBDpzOxnD7ToABeros1vM6MX0rBQaG1ith1A/HJkvkHxsPGJ82dP8vVCyWmbyPTaAfGzg40bgIdrv2f3pBVPycUcufx+BSUUWDuCZi6zBqdM50ElKYPODqtLDjc31rBb9CZ59lbN/JScuMxHLUBcGiy6QRH9zpwgZGhRj8qSydPVgNNVgbWqYX3HbM9K2rqTnKVmsmwKWzc1ffEd20+Zq3Ji65kl6TSjALNvzmJt4Pi2f1etytGJmy5erLAgbNY4bjykC3YCLIS3nSZMKgwRsBarWgjdeVzIEDzpTkoOUArTF4WFXYHwxY585sT0nmTYMxmXfs8fzwswfnam8TMU49bvqSRnyRPnqlno4tVQQiH2A9Za8tNTfXQ0lxbSxUaZna0uLlj9Q0XzD96CpsOZUftolINKBWJpAOoAJC0T6QqZnOtfvcfJFcDrD4Cuy5Hng316XrqzJ204HynyHwWed6i+XGF40Uw2T7Lc71HyssngEOrgONfBY7wvW0UZdVAma5xmSNjRp3xkvKJkW6aSg7PK4K0+mbKqYB0WYBgWwxCXiS74zBCVlEFpYQDEwjcA1qccb5yO6ZL8ozt/h3wHSCdWzLuqxU2ZZ9ev9MvRMbMvV9BQgN0qrFjlkzPQanI9nuaGCokVK2LV1Y2egyY1aFQGxjM9I7RBBAgyGEJtpKHP0lUySSeWCpyKHMT2pmM/vyP55u2Rw5lcSeabAfgiG5TPDX3uP3QvcoSipJXQByUCjS4C8VXqxEEZOJxzmJoyogFNJBRsCJs2XmoWWrWFqTsnbwtSn43gNFTTob9/SEpaPJNhUBKDGoZGCMINxvBv8vuKbb//lg/sK0wfPgBica/QsSk5F3KK4Ui6Yw+uv4+DWEOFbhdPOnbY5PLFpzrZMhakeqomY0Vz0TO+elQGTWdCk1IYFAOaoZg0IJQhT+YreXF+yia+O1cgtGufjXxQw28f85RPXfd15zv13ABoD15kB7FKJ/7pbHKP6+9TgNgkVj68NeV8Tp24f7OOndCgJzR3RNJBPNFReCmstMVqvjjzBoeK4GOFoBN32CPxu+4TwwBDa4DJTe/OU9c9ku7EGyfOVxh+fw9g/AATxPqKTEXJKEdCIBkB4iBUlO6MjUrWi6M5Kz31YAqFsYaCeB0KJC5d1+foo3LQWSfRaDrwdAQrMEC27yDZXJf7TlOJ2Bczr1di3OWvZB6XrvvqPuWJPDk9dAHgm7LvuZJTEdKqO3J3XgostArEnvkqgUznx3PX7cSzz1FXZyvakTA4XVVMbCPFPK1cFj66S0WoqQI1XG2uoU7CMPquO2VaUDJFQMdVgXKD2bpz6ufzzxXbxszHQ9fGO/F7A998yBQG6cShE+P+Pk7t1FwfF1QHN1Eui1VapRxCdj8tCtI1bog1Fo011Sx9u3o6c9bufI6wAT26Av9xJ+WWpTKbbBPp3K/1LbC4Vuhv396RCbJw4untjxVPndj+dIB9dVD8z2dylZ+6vMeJwbYChHJkvHV2J3fdHsJPASeHhrXq6QheXu1nBhUr5u6ryT0I13BFKD01ViZ/n3oaziRG7c6Ayg7g1LPeztNdT36ueMqcN4XGv3finjfv+7I/kMJ4d046MUanOA1QtMH1kLlfFasm99NiutSw63yNDeH4zeL1Uu8XKHNfcThPSSNwchGMbgUETScwkCcK77pH2jsgrAssvVyB8FLJ7GrmwyD8eVqsHoY/FwIv9T7lPu9+Yf8/9+w4nS1ma78AAAAASUVORK5CYII=) !important;
+    background-clip: border-box !important;
+    background-origin: padding-box !important;
+    background-attachment: scroll !important;
+    background-repeat: repeat !important;
+    background-size: auto !important;
+    background-position: left top !important; }
+  [qb-domain$="quora.com"] .AddQuestionFromHeaderDialogButton, [qb-domain$="quora.com"] .submit_button, [qb-domain$="quora.com"] .primary_button,
+  [qb-domain$="quora.com"] .MoreStoriesIndicator {
+    background-color: #4183C4 !important;
+    border-color: #4183C4 !important;
+    color: #e2e2e2 !important; }
+  [qb-domain$="quora.com"] .AddQuestionFromHeaderDialogButton:hover, [qb-domain$="quora.com"] .submit_button:hover,
+  [qb-domain$="quora.com"] .primary_button:hover, [qb-domain$="quora.com"] .MoreStoriesIndicator:hover {
+    opacity: .8 !important; }
+  [qb-domain$="quora.com"] ::selection {
+    background-color: #4183C4 !important;
+    color: #efefef !important; }
+  [qb-domain$="quora.com"] ::-moz-selection {
+    background-color: #4183C4 !important;
+    color: #efefef !important; }
+  [qb-domain$="quora.com"] .ActionBar, [qb-domain$="quora.com"] .FeedStoryTimestamp, [qb-domain$="quora.com"] .FeedStoryTimestamp hr, [qb-domain$="quora.com"] .interval_timestamp,
+  [qb-domain$="quora.com"] .feed_item, [qb-domain$="quora.com"] .NotificationItem.seen, [qb-domain$="quora.com"] .edit_faq_link, [qb-domain$="quora.com"] .title a,
+  [qb-domain$="quora.com"] .editor_toolbar .modifier.overflow_show:before,
+  [qb-domain$="quora.com"] .editor_toolbar .modifier.overflow_hide:before,
+  [qb-domain$="quora.com"] .FollowSuggestionCard.InlineFollowSuggestionCard, [qb-domain$="quora.com"] .seen, [qb-domain$="quora.com"] .Message, [qb-domain$="quora.com"] .ObjectCard,
+  [qb-domain$="quora.com"] .ObjectCard-footer, [qb-domain$="quora.com"] .ContentFeedTabs li.active a, [qb-domain$="quora.com"] .SiteHeader .dropdown,
+  [qb-domain$="quora.com"] .hover_highlight:hover, [qb-domain$="quora.com"] .question_related.list, [qb-domain$="quora.com"] .Modal .modal_header,
+  [qb-domain$="quora.com"] .Modal .modal_content .modal_non_exp, [qb-domain$="quora.com"] .Modal .modal_content,
+  [qb-domain$="quora.com"] .answer_editor.on_draft_page .AnswerEditorHeader,
+  [qb-domain$="quora.com"] .answer_editor.on_draft_page .form_buttons, [qb-domain$="quora.com"] .MessagesMain .header,
+  [qb-domain$="quora.com"] .MessagesMain .threads_and_messages .threads, [qb-domain$="quora.com"] .MessagesThreadItem,
+  [qb-domain$="quora.com"] .NewInboxThreadComposeMessageBox, [qb-domain$="quora.com"] .PinnedTopicHeader, [qb-domain$="quora.com"] .full_bundle,
+  [qb-domain$="quora.com"] .AnswerReadLaterListItem, [qb-domain$="quora.com"] .StatsMain .ContentListWrapper, [qb-domain$="quora.com"] .ContentListItem,
+  [qb-domain$="quora.com"] .AllContentLink, [qb-domain$="quora.com"] .AskQuestionPromptBundle, [qb-domain$="quora.com"] .LoggedOutFooter,
+  [qb-domain$="quora.com"] .AMAFeedDividerItem h3, [qb-domain$="quora.com"] .layout_1col_main_card {
+    background: transparent !important; }
+  [qb-domain$="quora.com"] .check_wrapper.complete .check, [qb-domain$="quora.com"] .QuestionMain .right_col_fixable,
+  [qb-domain$="quora.com"] .RelatedQuestions, [qb-domain$="quora.com"] .RelatedQuestionsAdWrapper, [qb-domain$="quora.com"] .AddQuestionPrompt,
+  [qb-domain$="quora.com"] .StoryItemToggleModal, [qb-domain$="quora.com"] .AMACoverPhoto, [qb-domain$="quora.com"] .landing_photo {
+    background-color: transparent !important; }
+  [qb-domain$="quora.com"] .is_removable .remove_link {
+    background-image: none !important; }
+  [qb-domain$="quora.com"] input, [qb-domain$="quora.com"] textarea, [qb-domain$="quora.com"] .fake_editor, [qb-domain$="quora.com"] .qtext_editor.pretty_q, [qb-domain$="quora.com"] .qtext_editor_content,
+  [qb-domain$="quora.com"] .write_answer, [qb-domain$="quora.com"] .inline_login_profile_box, [qb-domain$="quora.com"] .qtext_button_qimg a,
+  [qb-domain$="quora.com"] .tooltip_contents, [qb-domain$="quora.com"] .codeblock, [qb-domain$="quora.com"] .remove_upvote, [qb-domain$="quora.com"] .ExistingUserNuxProgressBar,
+  [qb-domain$="quora.com"] .QuestionActionBarA2APrompt, [qb-domain$="quora.com"] .ViewsOnProfile .nux, [qb-domain$="quora.com"] .modal_wrapper,
+  [qb-domain$="quora.com"] pre.prettyprint, [qb-domain$="quora.com"] .Editor .doc, [qb-domain$="quora.com"] .Editor.Comment, [qb-domain$="quora.com"] .LogOperation .revision,
+  [qb-domain$="quora.com"] .ContentFeedTabs li a, [qb-domain$="quora.com"] .quiet_notifs_banner, [qb-domain$="quora.com"] .LookupBarSelector .instruction,
+  [qb-domain$="quora.com"] .new_user_checklist .title, [qb-domain$="quora.com"] .Carousel .left, [qb-domain$="quora.com"] .Carousel .right,
+  [qb-domain$="quora.com"] .StoryItemToggleModal.read_item, [qb-domain$="quora.com"] .notif_dropdown_empty_state, [qb-domain$="quora.com"] .individual_bio,
+  [qb-domain$="quora.com"] .AMACoverBar, [qb-domain$="quora.com"] .selector_result.ask_new_question .AskQuestionButton,
+  [qb-domain$="quora.com"] .icon_action_bar.sticky {
+    background-color: #181818 !important; }
+  [qb-domain$="quora.com"] .SiteHeader, [qb-domain$="quora.com"] .answer_header_and_editor, [qb-domain$="quora.com"] .LoggedOutContentPageFeed,
+  [qb-domain$="quora.com"] .hover_menu_contents, [qb-domain$="quora.com"] .notifications_header_bar, [qb-domain$="quora.com"] .dialog_wrapper,
+  [qb-domain$="quora.com"] .new_user_checklist, [qb-domain$="quora.com"] .results_frame li, [qb-domain$="quora.com"] .container, [qb-domain$="quora.com"] .FeedBottomIndicator,
+  [qb-domain$="quora.com"] .ActionBar.sticky, [qb-domain$="quora.com"] .ExistingUserNuxSidebar, [qb-domain$="quora.com"] .hover_menu_item,
+  [qb-domain$="quora.com"] .Announcement .footer, [qb-domain$="quora.com"] .EditableList .nav_item_selected a,
+  [qb-domain$="quora.com"] .EditableList .StaticListItem > .selected, [qb-domain$="quora.com"] .ask_interstitial,
+  [qb-domain$="quora.com"] .ViewsOnHovercard, [qb-domain$="quora.com"] .search_input:before, [qb-domain$="quora.com"] .editor_toolbar,
+  [qb-domain$="quora.com"] .NewGridQuestionPage .header .shared_form, [qb-domain$="quora.com"] .ProgressBar, [qb-domain$="quora.com"] .AnswerTagSection,
+  [qb-domain$="quora.com"] .CompleteProfileSection, [qb-domain$="quora.com"] .Next, [qb-domain$="quora.com"] .add_experience_cta, [qb-domain$="quora.com"] .ViewsOnProfile:hover,
+  [qb-domain$="quora.com"] .banner_answer, [qb-domain$="quora.com"] .prettyprint .linenums li:before, [qb-domain$="quora.com"] .heads_up_item,
+  [qb-domain$="quora.com"] .QuestionBannerReason, [qb-domain$="quora.com"] .Selector .SelectorResults, [qb-domain$="quora.com"] .Carousel .left:hover,
+  [qb-domain$="quora.com"] .Carousel .right:hover, [qb-domain$="quora.com"] .graphs .detail .x_label, [qb-domain$="quora.com"] .graphs .detail .item,
+  [qb-domain$="quora.com"] div.fixable_clone .PinnedTopicHeader.fixable_fixed,
+  [qb-domain$="quora.com"] .AnswerSurvey {
+    background: #222 !important; }
+  [qb-domain$="quora.com"] .topic_pill, [qb-domain$="quora.com"] .ViewMoreLink a, [qb-domain$="quora.com"] .BelowQuestionAddPrompt,
+  [qb-domain$="quora.com"] .CookieBanner .wrapper,
+  [qb-domain$="quora.com"] .CookieBanner .dismiss {
+    background-color: #222 !important; }
+  [qb-domain$="quora.com"] .threaded_comments, [qb-domain$="quora.com"] .comment_replies_show_child_link,
+  [qb-domain$="quora.com"] .AnswerBase.undesirable_answer, [qb-domain$="quora.com"] .CompleteProfileBanner,
+  [qb-domain$="quora.com"] .topic_expert_application_form, [qb-domain$="quora.com"] .comments_preview_toggle, [qb-domain$="quora.com"] .show_child_link,
+  [qb-domain$="quora.com"] .modal_nux_background, [qb-domain$="quora.com"] .modal_signup_background {
+    background-color: rgba(34, 34, 34, 0.6) !important; }
+  [qb-domain$="quora.com"] .ContentPageFeed {
+    background-color: rgba(34, 34, 34, 0.3) !important; }
+  [qb-domain$="quora.com"] .read_more_link, [qb-domain$="quora.com"] .unseen, [qb-domain$="quora.com"] .action_button, [qb-domain$="quora.com"] .NextButton, [qb-domain$="quora.com"] .modal_footer,
+  [qb-domain$="quora.com"] .AnswerPageViewMoreLink, [qb-domain$="quora.com"] .multifeed_header .modal_related_answers .view_more {
+    background: #242424 !important; }
+  [qb-domain$="quora.com"] .count, [qb-domain$="quora.com"] .ContentPageFeedStoryItem, [qb-domain$="quora.com"] .nav_item_link.hover, [qb-domain$="quora.com"] .nav_item_link:hover,
+  [qb-domain$="quora.com"] .nav_item_link:active, [qb-domain$="quora.com"] li.selected, [qb-domain$="quora.com"] .follow_state_badge,
+  [qb-domain$="quora.com"] .NotificationsClearLink, [qb-domain$="quora.com"] .LegalNavLinks, [qb-domain$="quora.com"] .hover_menu_item:hover,
+  [qb-domain$="quora.com"] .MoveAnswerBanner, [qb-domain$="quora.com"] .ActionBar .primary_action, [qb-domain$="quora.com"] .ReAskButton.button,
+  [qb-domain$="quora.com"] .AskToAnswerModalLink, [qb-domain$="quora.com"] .MostWantedBadge,
+  [qb-domain$="quora.com"] .CollapsedAnswersSectionCollapsed:not(.CollapsedAnswersSectionUncollapsed) .content,
+  [qb-domain$="quora.com"] .RequestAnswersDrawer .inner, [qb-domain$="quora.com"] .RADToggle.is_active, [qb-domain$="quora.com"] .Announcement {
+    background-color: #282828 !important; }
+  [qb-domain$="quora.com"] .menu_list_item a:hover, [qb-domain$="quora.com"] .completed:hover, [qb-domain$="quora.com"] .menu_list_header:hover,
+  [qb-domain$="quora.com"] .AnswerEditorHeader, [qb-domain$="quora.com"] .AddQuestionLookupBarButton,
+  [qb-domain$="quora.com"] .SelectorResults .selector_highlighted:not(.unselectable),
+  [qb-domain$="quora.com"] .AnswerPageViewMoreLink .view_more_link:hover,
+  [qb-domain$="quora.com"] .multifeed_header .modal_related_answers .view_more .view_more_link:hover,
+  [qb-domain$="quora.com"] .content_white_button, [qb-domain$="quora.com"] .survey_button, [qb-domain$="quora.com"] .icon_action_bar-button:hover,
+  [qb-domain$="quora.com"] .outer_content .new_actionbar_content_button:hover,
+  [qb-domain$="quora.com"] .Bundle .view_all_button:hover, [qb-domain$="quora.com"] .Bundle .more_button:hover,
+  [qb-domain$="quora.com"] a[target="_blank"]:hover {
+    background-color: #333 !important; }
+  [qb-domain$="quora.com"] .count:before, [qb-domain$="quora.com"] .qtext_hr {
+    background-color: #444 !important; }
+  [qb-domain$="quora.com"] .ContentPageFeedStoryItem:hover .feed_item_overlay,
+  [qb-domain$="quora.com"] .dialog:not(.dialog_nux):not(.modal_signup_dialog):after {
+    background: rgba(0, 0, 0, 0.5) !important; }
+  [qb-domain$="quora.com"] a, [qb-domain$="quora.com"] a span, [qb-domain$="quora.com"] a:hover .TopicName, [qb-domain$="quora.com"] .is_removable .remove_link:hover {
+    color: #4183C4 !important; }
+  [qb-domain$="quora.com"] h1, [qb-domain$="quora.com"] h2, [qb-domain$="quora.com"] h3, [qb-domain$="quora.com"] h4, [qb-domain$="quora.com"] h5, [qb-domain$="quora.com"] h6, [qb-domain$="quora.com"] blockquote, [qb-domain$="quora.com"] div, [qb-domain$="quora.com"] div > span, [qb-domain$="quora.com"] span > span, [qb-domain$="quora.com"] li, [qb-domain$="quora.com"] input,
+  [qb-domain$="quora.com"] textarea, [qb-domain$="quora.com"] a.submit_button span, [qb-domain$="quora.com"] a.primary_button span, [qb-domain$="quora.com"] interval_timestamp,
+  [qb-domain$="quora.com"] .tooltip_contents span, [qb-domain$="quora.com"] .nav_item_link .badge, [qb-domain$="quora.com"] .hover_menu_header_link,
+  [qb-domain$="quora.com"] .topic_pill a, [qb-domain$="quora.com"] .ViewMoreLink a, [qb-domain$="quora.com"] .is_removable .remove_link,
+  [qb-domain$="quora.com"] .NotifsNavItem .NotifsNavBadge, [qb-domain$="quora.com"] .LookupBarAskQuestionModalButton .button_text {
+    color: #c0c0c0 !important; }
+  [qb-domain$="quora.com"] .faded, [qb-domain$="quora.com"] .add_upvote, [qb-domain$="quora.com"] .add_upvote .count, [qb-domain$="quora.com"] .remove_upvote, [qb-domain$="quora.com"] .remove_upvote .count,
+  [qb-domain$="quora.com"] .table_cell_wrapper a span {
+    color: #949494 !important; }
+  [qb-domain$="quora.com"] .graphs text {
+    fill: #eee !important; }
+  [qb-domain$="quora.com"] .graphs rect:hover {
+    fill: #357 !important; }
+  [qb-domain$="quora.com"] .dialog .close_modal, [qb-domain$="quora.com"] .pagedlist_item.pagedlist_invisible,
+  [qb-domain$="quora.com"] .comment_highlight_wrapper, [qb-domain$="quora.com"] .hover_menu_above li:first-child:after,
+  [qb-domain$="quora.com"] .ContentFeedTabs li.active a {
+    border-color: transparent !important; }
+  [qb-domain$="quora.com"] .search_focused .selector_input.text, [qb-domain$="quora.com"] .ask_bar .LookupBarSelector textarea {
+    border-color: #4183C4 !important; }
+  [qb-domain$="quora.com"] h1, [qb-domain$="quora.com"] h2, [qb-domain$="quora.com"] h3, [qb-domain$="quora.com"] table, [qb-domain$="quora.com"] table th, [qb-domain$="quora.com"] hr, [qb-domain$="quora.com"] ul, [qb-domain$="quora.com"] li, [qb-domain$="quora.com"] div, [qb-domain$="quora.com"] span, [qb-domain$="quora.com"] p, [qb-domain$="quora.com"] blockquote, [qb-domain$="quora.com"] a,
+  [qb-domain$="quora.com"] .hover_menu_contents, [qb-domain$="quora.com"] .question_box, [qb-domain$="quora.com"] .show_reply_box_link,
+  [qb-domain$="quora.com"] .QuestionActionBarA2APrompt, [qb-domain$="quora.com"] input, [qb-domain$="quora.com"] .seen, [qb-domain$="quora.com"] .Carousel .left, [qb-domain$="quora.com"] .Carousel .right,
+  [qb-domain$="quora.com"] .AMAFeedDividerItem:before {
+    border-color: #333 !important; }
+  [qb-domain$="quora.com"] .ActionBar .primary_action:hover, [qb-domain$="quora.com"] .primary_item a:hover,
+  [qb-domain$="quora.com"] .AddQuestionLookupBarButton:hover {
+    border-color: #555 !important; }
+  [qb-domain$="quora.com"] .Carousel .left, [qb-domain$="quora.com"] .Carousel .right {
+    outline-color: #333 !important; }
+  [qb-domain$="quora.com"] .hover_menu_contents li:first-child:after,
+  [qb-domain$="quora.com"] .MoreHoverMenuContents > ul > li:first-child:after, [qb-domain$="quora.com"] .hover_menu:before,
+  [qb-domain$="quora.com"] .hover_menu:after, [qb-domain$="quora.com"] .header_hover_menu:after, [qb-domain$="quora.com"] .results_wrapper:before,
+  [qb-domain$="quora.com"] .resistance_wrapper:after, [qb-domain$="quora.com"] .comment_replies_show_child_link:before,
+  [qb-domain$="quora.com"] .comment_replies_show_child_link:after, [qb-domain$="quora.com"] .results_wrapper:after,
+  [qb-domain$="quora.com"] .action_bar_button_nub:before {
+    border-bottom-color: #333 !important; }
+  [qb-domain$="quora.com"] .hover_menu_above:before, [qb-domain$="quora.com"] .hover_menu_above:after, [qb-domain$="quora.com"] .hover_menu.show_nub:after,
+  [qb-domain$="quora.com"] .hover_menu_above li:last-child:before,
+  [qb-domain$="quora.com"] .hover_menu .menu_list_item:hover:before {
+    border-top-color: #333 !important;
+    border-bottom-color: transparent !important; }
+  [qb-domain$="quora.com"] .hover_menu_above li:last-child:after,
+  [qb-domain$="quora.com"] .tooltip .tooltip_contents.nub_bottom:after {
+    border-top-color: #222 !important;
+    border-bottom-color: transparent !important; }
+  [qb-domain$="quora.com"] .HomeNavListHoverMenu:before {
+    border-right-color: #222 !important; }
+  [qb-domain$="quora.com"] .action_bar_button_nub:after, [qb-domain$="quora.com"] .hover_menu.show_nub:before,
+  [qb-domain$="quora.com"] .menu .menu_list_item:before, [qb-domain$="quora.com"] .hover_menu .menu_list_item:before {
+    border-bottom-color: #282828 !important; }
+  [qb-domain$="quora.com"] .diffdelete {
+    background-color: #300 !important; }
+  [qb-domain$="quora.com"] .follow_button {
+    background: #041 !important;
+    border-color: #062 !important;
+    color: #0a3 !important; }
+  [qb-domain$="quora.com"] .follow_button .count {
+    background: #041 !important;
+    color: #aaa !important; }
+  [qb-domain$="quora.com"] .diffinsert {
+    background: #020 !important; }
+  [qb-domain$="quora.com"] .notifications_banner, [qb-domain$="quora.com"] .add_upvote, [qb-domain$="quora.com"] .User.Button, [qb-domain$="quora.com"] .follow_button,
+  [qb-domain$="quora.com"] .ama_a2a_question, [qb-domain$="quora.com"] .Topic.Button, [qb-domain$="quora.com"] .Session.Button, [qb-domain$="quora.com"] .PileOnRequest.Button {
+    background: #182030 !important;
+    border: 1px solid #246 !important; }
+  [qb-domain$="quora.com"] .add_upvote .count, [qb-domain$="quora.com"] .User.Button .count, [qb-domain$="quora.com"] .Editor .drop_zone, [qb-domain$="quora.com"] .view_answer,
+  [qb-domain$="quora.com"] .InviteToFollow, [qb-domain$="quora.com"] .WriteAnswer, [qb-domain$="quora.com"] .ReAsk.Button:not(.link), [qb-domain$="quora.com"] .follow_button,
+  [qb-domain$="quora.com"] .Topic.Button, [qb-domain$="quora.com"] .RequestAnswer, [qb-domain$="quora.com"] .Topic.Button .count, [qb-domain$="quora.com"] .RequestAnswer .count,
+  [qb-domain$="quora.com"] .link:hover, [qb-domain$="quora.com"] .filter_option_link:hover, [qb-domain$="quora.com"] .filter_option_link.selected,
+  [qb-domain$="quora.com"] .RADToggle, [qb-domain$="quora.com"] .NotificationsClearButton, [qb-domain$="quora.com"] .link.selected {
+    background-color: #182030 !important; }
+  [qb-domain$="quora.com"] .Editor .drop_zone, [qb-domain$="quora.com"] .view_answer, [qb-domain$="quora.com"] .InviteToFollow, [qb-domain$="quora.com"] .WriteAnswer,
+  [qb-domain$="quora.com"] .ReAsk.Button:not(.link), [qb-domain$="quora.com"] .follow_button, [qb-domain$="quora.com"] .Topic.Button, [qb-domain$="quora.com"] .RequestAnswer,
+  [qb-domain$="quora.com"] .RADToggle {
+    border-color: #246 !important; }
+  [qb-domain$="quora.com"] .graphs rect {
+    fill: #246 !important; }
+  [qb-domain$="quora.com"] .InteractionModeBanner > div, [qb-domain$="quora.com"] .ErrorBanner > div, [qb-domain$="quora.com"] .BrowserWarning > div,
+  [qb-domain$="quora.com"] .ReAskPrompt, [qb-domain$="quora.com"] .PMsg .contents {
+    background: #321 !important;
+    border-color: #542 !important;
+    color: #b74 !important; }
+  [qb-domain$="quora.com"] .ReAskPrompt:before, [qb-domain$="quora.com"] .ReAskPrompt:after {
+    border-bottom-color: #542 !important; }
+  [qb-domain$="quora.com"] .quote_hover_menu {
+    display: none !important; }
+  [qb-domain$="quora.com"] .modal_overlay.feed_desktop_modal,
+  [qb-domain$="quora.com"] .MessagesThreadItem:hover,
+  [qb-domain$="quora.com"] .MessagesThreadItem.active {
+    background: rgba(0, 0, 0, 0.9); }
+  [qb-domain$="quora.com"] .toggle_modal_inline.inline_modal_highlight:hover {
+    background-color: #050505; }
+  [qb-domain$="quora.com"] .matched_term {
+    background-color: rgba(187, 85, 0, 0.4) !important;
+    background-color: rgba(65, 131, 196, 0.4) !important; }
+  [qb-domain$="quora.com"] .AskQuestionButton .button_text {
+    color: #efefef !important; }
+  [qb-domain$="quora.com"] .BelowQuestionAddPrompt .AskQuestionButton {
+    background-color: #b92b27 !important; }
+  [qb-domain$="quora.com"] .question_link:hover .ui_story_title {
+    text-decoration-color: #c0c0c0 !important; }

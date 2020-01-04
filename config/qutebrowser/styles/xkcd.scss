@@ -1,0 +1,86 @@
+[qb-domain$="xkcd.com"] {
+    body {
+        background: #161616 !important;
+        color: #FAFAFA !important;
+    }
+
+    img, div[class="self"] {
+        filter: hue-rotate(180deg) invert(100%) !important;
+        -webkit-filter: hue-rotate(180deg) invert(100%) !important;
+    }
+
+    /*Exceptions*/
+    img[alt="Stargazing"], img[alt="Flashlights"], img[alt="Google Maps"], img[alt="Alternative Energy Revolution"], img[alt="Man Page"] {
+        filter: invert(0%) !important;
+        -webkit-filter: invert(0%) !important;
+    }
+
+    .box {
+        background: #000 !important;
+    }
+
+    #topLeft a {
+        color: #CCCCCC !important;
+    }
+
+    ul.comicNav li a {
+        background: transparent linear-gradient(#3C3C3C, #2E2E2E) repeat scroll 0% 0% !important;
+    }
+}
+
+
+[qb-domain="imgs.xkcd.com"] {
+    img {
+        filter: hue-rotate(180deg) invert(100%) !important;
+        -webkit-filter: hue-rotate(180deg) invert(100%) !important;
+    }
+
+    /*Exceptions*/
+    img[alt="https://imgs.xkcd.com/comics/stargazing.png"],
+    img[alt="https://imgs.xkcd.com/comics/flashlights.png"],
+    img[alt="https://imgs.xkcd.com/comics/google_maps.png"],
+    img[alt="https://imgs.xkcd.com/comics/alternative_energy_revolution.jpg"],
+    img[alt="https://imgs.xkcd.com/comics/man_page.png"] {
+        filter: invert(0%) !important;
+        -webkit-filter: invert(0%) !important;
+    }
+}
+
+
+[qb-domain="m-xkcd.com"] {
+    body {
+        background: #161616 !important;
+    }
+
+    #title {
+        color: #FAFAFA !important;
+    }
+
+    #altTextLink {
+        color: #CCCCCC !important;
+    }
+
+    #news {
+        color: #FAFAFA !important;
+    }
+
+    ul#footerLinks li a {
+        background: transparent linear-gradient(#3C3C3C, #2E2E2E) repeat scroll 0% 0% !important;
+    }
+
+    #altText {
+        background: #131313 !important;
+        color: #FAFAFA !important;
+    }
+
+    img {
+        filter: hue-rotate(180deg) invert(100%) !important;
+        -webkit-filter: hue-rotate(180deg) invert(100%) !important;
+    }
+
+    /*Exceptions*/
+    img[alt="Stargazing"], img[alt="Flashlights"], img[alt="Google Maps"], img[alt="Alternative Energy Revolution"], img[alt="Man Page"] {
+        filter: invert(0%) !important;
+        -webkit-filter: invert(0%) !important;
+    }
+}

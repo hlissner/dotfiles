@@ -1,0 +1,52 @@
+[qb-domain$="xkcd.com"] {
+  /*Exceptions*/ }
+  [qb-domain$="xkcd.com"] body {
+    background: #161616 !important;
+    color: #FAFAFA !important; }
+  [qb-domain$="xkcd.com"] img, [qb-domain$="xkcd.com"] div[class="self"] {
+    filter: hue-rotate(180deg) invert(100%) !important;
+    -webkit-filter: hue-rotate(180deg) invert(100%) !important; }
+  [qb-domain$="xkcd.com"] img[alt="Stargazing"], [qb-domain$="xkcd.com"] img[alt="Flashlights"], [qb-domain$="xkcd.com"] img[alt="Google Maps"], [qb-domain$="xkcd.com"] img[alt="Alternative Energy Revolution"], [qb-domain$="xkcd.com"] img[alt="Man Page"] {
+    filter: invert(0%) !important;
+    -webkit-filter: invert(0%) !important; }
+  [qb-domain$="xkcd.com"] .box {
+    background: #000 !important; }
+  [qb-domain$="xkcd.com"] #topLeft a {
+    color: #CCCCCC !important; }
+  [qb-domain$="xkcd.com"] ul.comicNav li a {
+    background: transparent linear-gradient(#3C3C3C, #2E2E2E) repeat scroll 0% 0% !important; }
+
+[qb-domain="imgs.xkcd.com"] {
+  /*Exceptions*/ }
+  [qb-domain="imgs.xkcd.com"] img {
+    filter: hue-rotate(180deg) invert(100%) !important;
+    -webkit-filter: hue-rotate(180deg) invert(100%) !important; }
+  [qb-domain="imgs.xkcd.com"] img[alt="https://imgs.xkcd.com/comics/stargazing.png"],
+  [qb-domain="imgs.xkcd.com"] img[alt="https://imgs.xkcd.com/comics/flashlights.png"],
+  [qb-domain="imgs.xkcd.com"] img[alt="https://imgs.xkcd.com/comics/google_maps.png"],
+  [qb-domain="imgs.xkcd.com"] img[alt="https://imgs.xkcd.com/comics/alternative_energy_revolution.jpg"],
+  [qb-domain="imgs.xkcd.com"] img[alt="https://imgs.xkcd.com/comics/man_page.png"] {
+    filter: invert(0%) !important;
+    -webkit-filter: invert(0%) !important; }
+
+[qb-domain="m-xkcd.com"] {
+  /*Exceptions*/ }
+  [qb-domain="m-xkcd.com"] body {
+    background: #161616 !important; }
+  [qb-domain="m-xkcd.com"] #title {
+    color: #FAFAFA !important; }
+  [qb-domain="m-xkcd.com"] #altTextLink {
+    color: #CCCCCC !important; }
+  [qb-domain="m-xkcd.com"] #news {
+    color: #FAFAFA !important; }
+  [qb-domain="m-xkcd.com"] ul#footerLinks li a {
+    background: transparent linear-gradient(#3C3C3C, #2E2E2E) repeat scroll 0% 0% !important; }
+  [qb-domain="m-xkcd.com"] #altText {
+    background: #131313 !important;
+    color: #FAFAFA !important; }
+  [qb-domain="m-xkcd.com"] img {
+    filter: hue-rotate(180deg) invert(100%) !important;
+    -webkit-filter: hue-rotate(180deg) invert(100%) !important; }
+  [qb-domain="m-xkcd.com"] img[alt="Stargazing"], [qb-domain="m-xkcd.com"] img[alt="Flashlights"], [qb-domain="m-xkcd.com"] img[alt="Google Maps"], [qb-domain="m-xkcd.com"] img[alt="Alternative Energy Revolution"], [qb-domain="m-xkcd.com"] img[alt="Man Page"] {
+    filter: invert(0%) !important;
+    -webkit-filter: invert(0%) !important; }
