@@ -17,7 +17,7 @@
 
   fonts.fonts = [ pkgs.emacs-all-the-icons-fonts ];
 
-  home-manager.users.hlissner.xdg.configFile = {
+  home.xdg.configFile = {
     "zsh/rc.d/aliases.emacs.zsh".source = <config/emacs/aliases.zsh>;
     "zsh/rc.d/env.emacs.zsh".source = <config/emacs/env.zsh>;
   };

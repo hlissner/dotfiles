@@ -49,7 +49,7 @@
     '';
   };
 
-  home-manager.users.hlissner = {
+  home = {
     home.file.".background-image".source = ./wallpaper.jpg;
 
     xdg.configFile = {

@@ -1,12 +1,12 @@
 # Common configuration across systems. This should be required by
 # configuration.$HOSTNAME.nix files.
 
-{ config, pkgs, options, ... }:
+{ pkgs, options, config, ... }:
 
 {
   imports = [
     <nixpkgs/nixos/modules/installer/scan/not-detected.nix>
-    <home-manager/nixos>
+    ./settings.nix
   ];
 
   nix = {
@@ -76,7 +76,7 @@
     shell = pkgs.zsh;
   };
 
-  home-manager.users.hlissner = {
+  home = {
     xdg.enable = true;
     home.file."bin" = { source = ./bin; recursive = true; };
   };

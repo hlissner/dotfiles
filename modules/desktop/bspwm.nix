@@ -95,7 +95,7 @@
     };
   };
 
-  home-manager.users.hlissner.xdg.configFile = {
+  home.xdg.configFile = {
     "sxhkd".source = <config/sxhkd>;
 
     # link recursively so other modules can link files in their folders
