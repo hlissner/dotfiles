@@ -37,7 +37,6 @@ in {
   ];
 
   theme.wallpaper = <my/assets/wallpapers/aquanaut.2560x1440.jpg>;
-  networking.hostName = "shiro";
   networking.wireless.enable = true;
 
   time.timeZone = "America/Toronto";

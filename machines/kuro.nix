@@ -33,7 +33,6 @@
     <my/modules/themes/aquanaut>
   ];
 
-  networking.hostName = "kuro";
   networking.networkmanager.enable = true;
   time.timeZone = "America/Toronto";
 

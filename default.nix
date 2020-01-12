@@ -3,6 +3,8 @@
 device:
 { pkgs, options, lib, config, ... }:
 {
+  networking.hostName = device;
+
   imports = [
     <nixpkgs/nixos/modules/installer/scan/not-detected.nix>
     /etc/nixos/hardware-configuration.nix
