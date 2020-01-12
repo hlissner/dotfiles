@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/usr/bin/env cached-nix-shell
+#! nix-shell -i bash -p maim slop
 
 # A script that takes a screenshot (prompts you for what region/window to
 # capture) and stores it in the clipboard.
@@ -8,7 +9,7 @@ cleanup() { rm -f "$tmp"; }
 trap cleanup EXIT
 
 # Delay for long enough that we can refocus the targeted window
-if maim --delay=${1:-0.6} -us >"$tmp"; then
+if maim --delay=${2:-1} -us >"$tmp"; then
   xclip -selection clipboard -t image/png "$tmp" &&
     notify-send "Screenshot saved"
 else
