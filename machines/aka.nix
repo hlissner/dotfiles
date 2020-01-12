@@ -2,18 +2,18 @@
 # access to my work files from anywhere.
 
 { config, ... }:
-
 {
   imports = [
     ./.  # import common settings
 
-    ./modules/services/ssh.nix
-    ./modules/services/plex.nix
-    ./modules/shell/zsh.nix
+    <my/modules/services/ssh.nix>
+    # ./modules/services/plex.nix
+    <my/modules/services/jellyfin.nix>
+    <my/modules/shell/zsh.nix>
   ];
-
-  time.timeZone = "America/Toronto";
 
   networking.hostName = "aka";
   networking.networkmanager.enable = true;
+
+  time.timeZone = "America/Toronto";
 }

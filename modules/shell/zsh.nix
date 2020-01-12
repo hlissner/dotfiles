@@ -1,24 +1,23 @@
 { config, pkgs, libs, ... }:
 
 {
-  environment = {
-    systemPackages = with pkgs; [
+  my = {
+    packages = with pkgs; [
       zsh
       nix-zsh-completions
-      fasd
       bat
       exa
+      fasd
       fd
       fzf
-      tmux
       htop
-      tree
       tldr
+      tree
     ];
-    variables = {
-      ZDOTDIR = "$XDG_CONFIG_HOME/zsh";
-      ZSH_CACHE = "$XDG_CACHE_HOME/zsh";
-    };
+    env.ZDOTDIR   = "$XDG_CONFIG_HOME/zsh";
+    env.ZSH_CACHE = "$XDG_CACHE_HOME/zsh";
+
+    home.xdg.configFile."zsh" = { source = <my/config/zsh>; recursive = true; };
   };
 
   programs.zsh = {
@@ -26,14 +25,5 @@
     enableCompletion = true;
     enableGlobalCompInit = false; # I'll do it myself
     promptInit = "";
-  };
-
-  home.xdg.configFile = {
-    # link recursively so other modules can link files in this folder,
-    # particularly in zsh/rc.d/*.zsh
-    "zsh" = {
-      source = <config/zsh>;
-      recursive = true;
-    };
   };
 }

@@ -1,6 +1,5 @@
-if [[ ! -d "$ZGEN_DIR" ]]; then
+[ -d "$ZGEN_DIR" ] || \
   git clone https://github.com/tarjoilija/zgen "$ZGEN_DIR"
-fi
 source $ZGEN_SOURCE
 
 if ! zgen saved; then
@@ -12,7 +11,7 @@ if ! zgen saved; then
   zgen load zsh-users/zsh-completions src
   zgen load junegunn/fzf shell
 
-  if [[ -z $SSH_CONNECTION ]]; then
+  if [ -z "$SSH_CONNECTION" ]; then
     zgen load zdharma/fast-syntax-highlighting
   fi
 
@@ -25,9 +24,6 @@ if [[ $TERM != dumb ]]; then
   source $ZDOTDIR/keybinds.zsh
   source $ZDOTDIR/completion.zsh
   source $ZDOTDIR/aliases.zsh
-  for file in $XDG_CONFIG_HOME/zsh/rc.d/aliases.*.zsh(N); do
-    source $file
-  done
 
   ##
   function _cache {
@@ -49,16 +45,15 @@ if [[ $TERM != dumb ]]; then
     export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
     export FZF_ALT_C_COMMAND="fd -t d . $HOME"
   fi
-
   _cache fasd --init posix-alias zsh-{hook,{c,w}comp{,-install}}
-  _cache direnv hook zsh
 
+  ## TODO
+  source $ZDOTDIR/extra.zshrc
 
   ##
   autoload -Uz compinit && compinit -u -d $ZSH_CACHE/zcompdump
   autopair-init
 
-
   # If you have host-local configuration, this is where you'd put it
-  [ -f ~/.config/zsh/rc ] && source ~/.config/zsh/rc
+  [ -f ~/.zshrc ] && source ~/.zshrc
 fi

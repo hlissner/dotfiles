@@ -12,10 +12,10 @@ super + apostrophe
 
 # focus/swap the node in the given direction
 super + {_,ctrl +}{h,j,k,l}
-	~/.config/bspwm/bin/bspc-focus {_,-m }{west,south,north,east}
+	bspc-focus {_,-m }{west,south,north,east}
 
 super + shift + {_,ctrl +}{h,j,k,l}
-	~/.config/bspwm/bin/bspc-swap {_,-m }{west,south,north,east}
+	bspc-swap {_,-m }{west,south,north,east}
 
 super + {_,shift +}{1-9,0}
 	bspc {desktop -f,node -d} {1-9,10}
@@ -30,13 +30,13 @@ super + shift + grave
 	emacsclient -e '(open-scratch-frame)'
 
 super + space
-	~/.config/rofi/bin/rofi-appmenu
+	rofi-appmenu
 
 super + Tab
-	~/.config/rofi/bin/rofi-windowmenu
+	rofi-windowmenu
 
 super + backslash
-	~/.config/rofi/bin/rofi-passmenu
+	rofi-passmenu
 
 super + Escape
 	pkill -USR1 -x sxhkd
@@ -56,11 +56,14 @@ super + {_,ctrl + }f
 #
 ## Media keys
 
-Print                   # screenshot region
+# screenshot region
+Print
 	scrcap
-super + Print           # screencast region to mp4
+# screencast region to mp4
+super + Print
 	scrrec -s ~/recordings/$(date +%F-%T).mp4
-super + ctrl + Print    # screencast region to gif
+# screencast region to gif
+super + ctrl + Print
 	scrrec -s ~/recordings/$(date +%F-%T).gif
 
 XF86MonBrightnessUp

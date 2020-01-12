@@ -1,15 +1,12 @@
 { config, lib, pkgs, ... }:
 
 {
-  environment.systemPackages = with pkgs; [
-    redshift
+  my.packages = with pkgs; [
+    libqalculate
     xclip
     xdotool
-    ffmpeg
     mpv       # video player
     feh       # image viewer
-    maim
-    slop
 
     # Useful apps
     evince    # pdf reader
@@ -22,6 +19,15 @@
     xserver.enable = true;
     redshift.enable = true;
   };
+
+  # For redshift
+  location = (if config.time.timeZone == "America/Toronto" then {
+    latitude = 43.70011;
+    longitude = -79.4163;
+  } else if config.time.timeZone == "Europe/Copenhagen" then {
+    latitude = 55.88;
+    longitude = 12.5;
+  } else {});
 
   fonts = {
     enableFontDir = true;

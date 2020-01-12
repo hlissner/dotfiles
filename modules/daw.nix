@@ -5,7 +5,7 @@
 
 { config, lib, pkgs, ... }:
 {
-  environment.systemPackages = with pkgs; [
+  my.packages = with pkgs; [
     audacity   # for recording and remastering audio
     # lmms     # for making music
     sunvox     # for making music (where LMMS is overkill)
@@ -13,6 +13,6 @@
     # Build our own LMMS because the built-in nixpkg is broken, due to a 'Could
     # not find the Qt platform plugin "xcb" in ""' error on startup:
     # https://github.com/NixOS/nixpkgs/issues/76074
-    (callPackage <packages/lmms.nix> {})
+    (callPackage <my/packages/lmms.nix> {})
   ];
 }

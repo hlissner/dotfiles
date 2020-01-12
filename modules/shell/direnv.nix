@@ -1,8 +1,10 @@
 { config, lib, pkgs, ... }:
 
 {
-  environment.systemPackages = with pkgs; [
-    direnv
-    (import <nixpkgs-unstable> {}).lorri
-  ];
+  services.lorri.enable = true;
+
+  my = {
+    packages = [ pkgs.direnv ];
+    zsh.rc = "_cache direnv hook zsh";
+  };
 }

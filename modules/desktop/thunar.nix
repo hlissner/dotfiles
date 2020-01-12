@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 {
-  environment.systemPackages = with pkgs; [
+  my.packages = with pkgs; [
     xfce.thunar
     xfce.tumbler # for thumbnails
   ];

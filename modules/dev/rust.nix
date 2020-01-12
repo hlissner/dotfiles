@@ -1,12 +1,10 @@
 { config, lib, pkgs, ... }:
 
 {
-  environment.systemPackages = with pkgs; [
-    rustup
-  ];
-
-  home.xdg.configFile = {
-    "zsh/rc.d/aliases.rust.zsh".source = <config/rust/aliases.zsh>;
-    "zsh/rc.d/env.rust.zsh".source = <config/rust/env.zsh>;
+  my = {
+    packages = with pkgs; [ rustup ];
+    env.CARGO_HOME = "$XDG_DATA_HOME/cargo";
+    env.RUSTUP_HOME = "$XDG_DATA_HOME/rustup";
+    env.PATH = [ "$CARGO_HOME/bin" ];
   };
 }

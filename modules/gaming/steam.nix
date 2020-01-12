@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 {
-  environment.systemPackages = with pkgs; [
+  my.packages = with pkgs; [
     steam
     steam-run-native  # for GOG or humblebundle games
   ];

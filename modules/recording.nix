@@ -9,9 +9,7 @@
 
 { config, lib, pkgs, ... }:
 {
-  environment.systemPackages = with pkgs; [
-    slop       # for selecting arbitrary regions on screen
-    ffmpeg     # for recording gifs/mp4s quickly
+  my.packages = with pkgs; [
     audacity   # for recording and remastering audio
     obs-studio # for streaming to twitch/recording for youtube
     handbrake  # for encoding footage

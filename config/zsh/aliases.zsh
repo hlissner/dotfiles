@@ -13,13 +13,6 @@ alias mv='mv -i'
 
 alias mkdir='mkdir -p'
 alias wget='wget -c'
-alias rg='noglob rg'
-alias bc='bc -lq'
-
-alias grep='grep --color=auto'
-alias fgrep='fgrep --color=auto'
-alias egrep='egrep --color=auto'
-
 if command -v exa >/dev/null; then
   alias exa='exa --group-directories-first'
   alias l='exa -1'

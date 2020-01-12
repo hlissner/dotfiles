@@ -3,9 +3,10 @@
 {
   imports = [ ./. ];
 
-  environment.systemPackages = with pkgs; [
+  my.packages = with pkgs; [
     clang
     gcc
     cmake
+    llvmPackages.libcxx
   ];
 }

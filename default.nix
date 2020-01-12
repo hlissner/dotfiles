@@ -1,87 +1,37 @@
-# Common configuration across systems. This should be required by
-# configuration.$HOSTNAME.nix files.
+# ...
 
-{ pkgs, options, config, ... }:
-
+device:
+{ pkgs, options, lib, config, ... }:
 {
   imports = [
     <nixpkgs/nixos/modules/installer/scan/not-detected.nix>
-    ./settings.nix
+    /etc/nixos/hardware-configuration.nix
+
+    ./options/my.nix
+    ./options/secrets.nix
+    ./secrets.nix
+    "${./machines}/${device}.nix"
   ];
 
+  ###
   nix = {
     nixPath = options.nix.nixPath.default ++ [
-      "config=/etc/dotfiles/config"
-      "packages=/etc/dotfiles/packages"
+      "my=/etc/dotfiles"
     ];
     autoOptimiseStore = true;
-    trustedUsers = [ "root" "@wheel" ];
+    trustedUsers = [ "root" ];
   };
-  nixpkgs.config = {
-    # Forgive me Stallman senpai
-    allowUnfree = true;
 
+  nixpkgs.config = {
+    allowUnfree = true;  # forgive me Stallman senpai
+    # Occasionally, "stable" packages are broken or incomplete, so access to the
+    # bleeding edge is necessary, as a last resort.
     packageOverrides = pkgs: {
       unstable = import <nixpkgs-unstable> {
         config = config.nixpkgs.config;
       };
     };
   };
-
-  # Nothing in /tmp should survive a reboot
-  boot.cleanTmpDir = true;
-  # Use simple bootloader; I prefer the on-demand BIOs boot menu
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-
-  environment = {
-    systemPackages = with pkgs; [
-      # Just the bear necessities~
-      libqalculate
-      coreutils
-      git
-      killall
-      unzip
-      vim
-      wget
-      # Support for extra filesystems
-      sshfs
-      exfat
-      ntfs3g
-      hfsprogs
-    ];
-    # These are the defaults, but some applications are buggy when these lack
-    # explicit values.
-    variables = {
-      XDG_CONFIG_HOME = "$HOME/.config";
-      XDG_CACHE_HOME = "$HOME/.cache";
-      XDG_DATA_HOME = "$HOME/.local/share";
-      XDG_BIN_HOME = "$HOME/.local/bin";
-    };
-  };
-
-  location = (if config.time.timeZone == "America/Toronto" then {
-    latitude = 43.70011;
-    longitude = -79.4163;
-  } else if config.time.timeZone == "Europe/Copenhagen" then {
-    latitude = 55.88;
-    longitude = 12.5;
-  } else {});
-
-  # Set up hlissner user account
-  users.users.hlissner = {
-    isNormalUser = true;
-    uid = 1000;
-    extraGroups = [ "wheel" "video" "networkmanager" "vboxusers" ];
-    shell = pkgs.zsh;
-  };
-
-  home = {
-    xdg.enable = true;
-    home.file."bin" = { source = ./bin; recursive = true; };
-  };
-
-  networking.firewall.enable = true;
 
   # This value determines the NixOS release with which your system is to be
   # compatible, in order to avoid breaking some software such as database
