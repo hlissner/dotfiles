@@ -49,6 +49,12 @@ with lib;
       description = "...";
     };
 
+    setup = mkOption {
+      type = types.lines;
+      default = "";
+      description = "...";
+    };
+
     zsh = {
       rc = mkOption {
         type = types.lines;
@@ -70,7 +76,6 @@ with lib;
     my.user.packages = config.my.packages;
     my.env.PATH = [ "$PATH" ];
 
-    environment.shellAliases = config.my.alias;
     environment.extraInit =
       let exportLines = mapAttrsToList (n: v: "export ${n}=\"${v}\"") config.my.env;
       in ''
@@ -78,7 +83,14 @@ with lib;
         ${config.my.init}
       '';
 
-    my.home.xdg.configFile."zsh/extra.zshrc".text = config.my.zsh.rc;
+    my.home.xdg.configFile."zsh/extra.zshrc".text =
+      let aliasLines = mapAttrsToList (n: v: "alias ${n}=\"${v}\"") config.my.alias;
+      in ''
+         ${concatStringsSep "\n" aliasLines}
+         ${config.my.zsh.rc}
+      '';
     my.home.xdg.configFile."zsh/extra.zshenv".text = config.my.zsh.env;
+
+    system.userActivationScripts.mySetup = config.my.setup;
   };
 }
