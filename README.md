@@ -24,6 +24,7 @@ HOST=hostname make install
 + `make upgrade` = `nix-channel --update && nixos-rebuild switch`
 + `make install` = `nixos-generate-config --root $PREFIX && nixos-install
   --root $PREFIX`
++ `make gc` = `nix-collect-garbage -d` (use sudo to clear system profile)
 
 ## Overview
 
