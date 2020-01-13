@@ -37,9 +37,9 @@ device:
 
   environment.systemPackages = with pkgs; [
     # cached-nix-shell, for instant nix-shell scripts
-    # (callPackage
-    #   (builtins.fetchTarball
-    #     https://github.com/xzfc/cached-nix-shell/archive/master.tar.gz) {})
+    (callPackage
+      (builtins.fetchTarball
+        https://github.com/xzfc/cached-nix-shell/archive/master.tar.gz) {})
   ];
 
   # This value determines the NixOS release with which your system is to be
