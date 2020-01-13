@@ -51,7 +51,7 @@
     "bspwm/rc.d/theme".source   = ./bspwmrc;
     "dunst/dunstrc".source      = ./dunstrc;
     "polybar" = { source = ./polybar; recursive = true; };
-    "rofi/theme".source         = ./rofi;
+    "rofi/theme" = { source = ./rofi; recursive = true; };
     "tmux/theme".source         = ./tmux.conf;
     "xtheme/90-theme".source    = ./Xresources;
     "zsh/prompt.zsh".source     = ./zsh/prompt.zsh;
