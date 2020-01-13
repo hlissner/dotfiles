@@ -21,6 +21,9 @@ upgrade: update switch
 switch:
 	@sudo nixos-rebuild $(FLAGS) switch
 
+gc:
+	@nix-collect-garbage -d
+
 clean:
 	@rm -f secrets.nix
 
