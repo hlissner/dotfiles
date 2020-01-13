@@ -12,6 +12,10 @@ install: result channels update config
 	@nixos-generate-config --root "$(PREFIX)"
 	@nixos-install --root "$(PREFIX)"
 
+install-linode: result channels update
+	@sudo mkdir -p "$(NIXOS_PREFIX)"
+	@echo "(import $(PWD)/dotfiles \"linode\") \"$$(hostname)\"" | sudo tee "$(NIXOS_PREFIX)/configuration.nix"
+
 upgrade: update switch
 
 switch:
