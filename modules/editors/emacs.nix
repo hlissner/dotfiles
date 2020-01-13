@@ -26,6 +26,15 @@
 
     env.PATH = [ "$HOME/.emacs.d/bin" ];
     zsh.rc = lib.readFile <my/config/emacs/aliases.zsh>;
+    setup = ''
+      if [ ! -d "$HOME/.emacs.d" ]; then
+        ${pkgs.git}/bin/git clone https://github.com/hlissner/doom-emacs "$HOME/.emacs.d"
+      fi
+      if [ ! -d "$XDG_CONFIG_HOME/doom" ]; then
+        ${pkgs.git}/bin/git clone https://github.com/hlissner/doom-emacs-private "$XDG_CONFIG_HOME/doom"
+      fi
+      $HOME/.emacs.d/bin/doom sync
+    '';
   };
 
   fonts.fonts = [
