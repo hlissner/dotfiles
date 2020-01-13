@@ -22,9 +22,6 @@
       # Module dependencies
       sqlite                          # :tools (lookup +docsets)
       texlive.combined.scheme-medium  # :lang org -- for latex previews
-      ccls                            # :lang (cc +lsp)
-      nodePackages.javascript-typescript-langserver # :lang (javascript +lsp)
-      rls
     ];
 
     env.PATH = [ "$HOME/.emacs.d/bin" ];

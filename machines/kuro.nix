@@ -15,7 +15,7 @@
     <my/modules/vm.nix>         # virtualbox for testing
 
     <my/modules/browser/firefox.nix>
-    <my/modules/dev/cpp.nix>
+    <my/modules/dev/cc.nix>
     <my/modules/dev/rust.nix>
     <my/modules/editors/emacs.nix>
     <my/modules/editors/vim.nix>

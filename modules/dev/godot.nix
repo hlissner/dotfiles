@@ -4,7 +4,7 @@
 
 { config, lib, pkgs, ... }:
 {
-  environment.systemPackages = with pkgs; [
+  my.packages = with pkgs; [
     godot
   ];
 }
