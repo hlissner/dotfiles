@@ -1,11 +1,8 @@
-# I use OBS to capture footage/stream and DaVinci Resolve for editing (on my
-# Windows system -- it will run on windows, but there is no way to automate its
-# installation, what with their devs regsitration-gating their free download).
+# modules/recording.nix
 #
-# I also use ffmpeg for small casts/gifs, but this module is for the heavy duty
-# stuff.
-#
-# This module is best paired with ./audio-editing.nix
+# OBS to capture footage/stream, DaVinci Resolve for editing (on my Windows
+# system -- it will run on linux, but it can't be automated on nix, what with
+# their devs registration-gating their free download).
 
 { config, lib, pkgs, ... }:
 {

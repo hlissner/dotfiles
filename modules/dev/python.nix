@@ -1,5 +1,10 @@
-{ config, lib, pkgs, ... }:
+# modules/dev/python.nix --- https://godotengine.org/
+#
+# Python's ecosystem repulses me. The list of environment "managers" exhausts
+# me. The Py2->3 transition make trainwrecks jealous. But SciPy, NumPy, iPython
+# and Jupyter can have my babies. Every single one.
 
+{ lib, pkgs, ... }:
 {
   my = {
     packages = with pkgs; [

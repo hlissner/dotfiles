@@ -1,4 +1,4 @@
-# Ao -- my home development server
+# Ao -- my home development and user-facing server
 
 { config, ... }:
 {

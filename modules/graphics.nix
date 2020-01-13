@@ -1,7 +1,8 @@
-# It's difficult to be an artist/designer on Linux. I miss adobe and my tablets
-# don't work without a lot of heart-ache. I set up a second computer just for
-# adobe work (and gaming) to address this, so why do I install these programs on
-# linux? Because sometimes I need to do some quick work right there and then.
+# modules/graphics.nix
+#
+# The hardest part about switching to linux was sacrifices adobe. It is so bad I
+# have a second computer dedicated to adobe (and gaming). Still, I can still
+# manage half of my design work on open source alternatives.
 
 { config, lib, pkgs, ... }:
 {

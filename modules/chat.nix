@@ -1,5 +1,7 @@
+# modules/chat.nix
+#
 # Even neckbeards have a social life. Not that I have one. A neckbeard, I mean.
-# But when I do have either, then discord and weechat (or Emacs) are my go-to.
+# But when I do have either, then discord and weechat are my go-to.
 
 { config, lib, pkgs, ... }:
 {

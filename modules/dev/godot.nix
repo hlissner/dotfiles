@@ -1,8 +1,9 @@
-# I gamedev as a hobby. For making games, I mainly use C++ or Rust (and
-# occasionally Lua). However, when I need to prototype an idea, I reach for
-# godot (or JS, if I want it to be playable for others).
+# modules/dev/godot.nix --- https://godotengine.org/
+#
+# Gamedev is my hobby. C++ or Rust are my main drivers (and occasionally Lua),
+# but to prototype (for 3D, mainly) I'll occasionally reach for godot.
 
-{ config, lib, pkgs, ... }:
+{ pkgs, ... }:
 {
   my.packages = with pkgs; [
     godot

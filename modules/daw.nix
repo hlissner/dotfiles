@@ -1,7 +1,9 @@
-# I make music for my games. LMMS is my DAW. Fruityloops too, on my Windows
-# system, but I'm slowly phasing it out for open-source alternatives. When I'm
-# in the mood for a quick chiptune, I fire up sunvox instead -- it runs
-# absolutely anywhere, even on my ipad and phone.
+# modules/music.nix
+#
+# I make music for my games. LMMS is my DAW; or will be, once I've weened myself
+# off of Fruityloops. When I'm in the mood for a quicky I fire up sunvox
+# instead. It runs absolutely anywhere, even on my ipad and phone. As if I'd
+# ever need to.
 
 { config, lib, pkgs, ... }:
 {

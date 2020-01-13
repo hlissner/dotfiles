@@ -1,5 +1,9 @@
-{ config, lib, pkgs, ... }:
+# modules/browser/firefox.nix --- https://www.mozilla.org/en-US/firefox
+#
+# Oh firefox, gateway to the interwebs, devourer of ram. Give onto me your
+# infinite knowledge and shelter me from ads.
 
+{ config, lib, pkgs, ... }:
 {
   my.packages = with pkgs; [
     firefox-bin (pkgs.writeScriptBin "firefox-private" ''

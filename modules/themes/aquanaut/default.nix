@@ -1,18 +1,17 @@
-# We trained for this. The waves shudder and glare at me through its bright
-# tapestry. The clouds see me off as gravity lures me in lazily. How long have I
-# been down here? I imagined Jenny leading the team back on a rescue mission and
-# it upsets me. It was not worth the risk. We knew what we signed up for.
+# We trained for this. The waves shudder. They glare at me through its bright
+# tapestry as I sink. How long have I been down here? I imagined Jenny leading
+# the team back to rescue me and it upsets me. It wasn't worth the risk. We knew
+# what we signed up for.
 #
-# I hear glass crack. The sea depths hold my waist in a vice. Its strength
-# squeezing between the kelvar pockets of my suit. It's hard to breathe. If I
-# cut off the oxygen supply perhaps it'd be a nicer way to go.
+# The sea's strength squeezes between the kelvar pockets of my suit. Glass
+# cracks. It's hard to breathe. Cutting off the oxygen might be a nicer way to
+# go...
 #
 # When did I get so creative?
 #
-# I can't see further than three feet. Snowflake fractures creep along my visor.
-# Would Jorgen be relieved to have a dorm bunk to himself? HQ packs us into our
-# subs like sardines. I'll miss his snoring. Maybe I'll catch up on all that
-# missed sleep.
+# I can't see further than three feet. Snowflakes fracture across my visor.
+# Jorgen better be happy he gets our room all to himself now. I'll miss his
+# snoring. Maybe now's the time to catch up on all that lost sleep.
 
 { config, pkgs, ... }:
 {

@@ -1,5 +1,9 @@
-{ config, lib, pkgs, ... }:
+# modules/dev/node.nix --- https://nodejs.org/en/
+#
+# JS is one of those "when it's good, it's alright, when it's bad, it's a
+# disaster" languages.
 
+{ pkgs, ... }:
 {
   imports = [ ./. ];
 

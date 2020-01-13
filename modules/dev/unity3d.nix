@@ -1,7 +1,8 @@
-# I don't often use Unity, but I've worked with others who do. I'll commonly
-# reach for it for group projects.
+# modules/dev/unity3d.nix --- https://unity.com
+#
+# I don't use Unity often, but when I do, it's in a team or with students.
 
-{ config, lib, pkgs, ... }:
+{ pkgs, ... }:
 {
   my.packages = with pkgs; [
     unity3d
