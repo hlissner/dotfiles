@@ -44,7 +44,7 @@ $(NIXOS_PREFIX)/configuration.nix:
 	@echo "import $(PWD)/dotfiles \"$$(hostname)\"" | sudo tee "$(NIXOS_PREFIX)/configuration.nix"
 
 secrets.nix: secrets.nix.gpg
-	gpg -dq $< > $@
+	@nix-shell -p gnupg --run "gpg -dq $< > $@"
 
 
 # Convenience aliases
