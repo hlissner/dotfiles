@@ -1,5 +1,4 @@
-# My HTPC. Runs all my user-facing services and gives me ssh
-# access to my work files from anywhere.
+# My HTPC. Mostly so family can organize their media collection.
 
 { config, ... }:
 {
@@ -7,8 +6,8 @@
     ./.  # import common settings
 
     <my/modules/services/ssh.nix>
-    # ./modules/services/plex.nix
-    <my/modules/services/jellyfin.nix>
+    ./modules/services/plex.nix
+    # <my/modules/services/jellyfin.nix>
     <my/modules/shell/zsh.nix>
   ];
 

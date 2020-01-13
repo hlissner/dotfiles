@@ -10,6 +10,11 @@ with lib;
       default = "hlissner";
     };
 
+    email = mkOption {
+      type = types.str;
+      default = "henrik@lissner.net";
+    };
+
     home = mkOption {
       type = options.home-manager.users.type.functor.wrapped;
       default = {};
