@@ -19,7 +19,11 @@
     env.ZDOTDIR   = "$XDG_CONFIG_HOME/zsh";
     env.ZSH_CACHE = "$XDG_CACHE_HOME/zsh";
 
-    home.xdg.configFile."zsh" = { source = <my/config/zsh>; recursive = true; };
+    # Write it recursively so other modules can write files to it
+    home.xdg.configFile."zsh" = {
+      source = <my/config/zsh>;
+      recursive = true;
+    };
   };
 
   programs.zsh = {
