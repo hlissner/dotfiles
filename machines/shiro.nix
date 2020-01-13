@@ -38,6 +38,7 @@ in {
 
   theme.wallpaper = <my/assets/wallpapers/aquanaut.2560x1440.jpg>;
   networking.wireless.enable = true;
+  hardware.opengl.enable = true;
 
   time.timeZone = "America/Toronto";
   # time.timeZone = "Europe/Copenhagen";

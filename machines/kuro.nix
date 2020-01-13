@@ -39,6 +39,7 @@
   ## Hardware
   # GPU
   services.xserver.videoDrivers = [ "nvidia" ];
+  hardware.opengl.enable = true;
   # For ergodox ez
   my.packages = [ pkgs.teensy-loader-cli ];
   my.alias.teensyload = "sudo teensy-loader-cli -w -v --mcu=atmega32u4";
