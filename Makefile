@@ -25,7 +25,7 @@ gc:
 	@nix-collect-garbage -d
 
 clean:
-	@rm -f secrets.nix
+	@rm -f secrets.nix result
 
 
 # Parts
