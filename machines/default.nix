@@ -50,7 +50,6 @@
     XDG_DATA_HOME = "$HOME/.local/share";
     XDG_BIN_HOME = "$HOME/.local/bin";
   };
-  nix.trustedUsers = [ config.my.username ];
 
   ### Universal defaults
   networking.firewall.enable = true;
