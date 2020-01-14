@@ -14,16 +14,41 @@ white whale and annihilate what vestiges of my social life remain.
 ## Quick start
 
 ```sh
-# Make sure your partitions are set up by this point
-git clone https://github.com/hlissner/dotfiles /etc/dotfiles
-HOST=hostname make install
+# Assumes your partitions are set up and root is mounted on /mnt
+curl https://raw.githubusercontent.com/hlissner/dotfiles/nixos/deploy | sh
 ```
+
+This is equivalent to:
+
+```sh
+DOTFILES=/home/$USER/.dotfiles
+git clone https://github.com/hlissner/dotfiles $DOTFILES
+ln -s /etc/dotfiles $DOTFILES
+chown -R $USER:users $DOTFILES
+
+# make channels
+nix-channel --add "https://nixos.org/channels/nixos-${NIXOS_VERSION}" nixos
+nix-channel --add "https://github.com/rycee/home-manager/archive/release-${NIXOS_VERSION}.tar.gz" home-manager
+nix-channel --add "https://nixos.org/channels/nixpkgs-unstable" nixpkgs-unstable
+
+# make /etc/nixos/configuration.nix
+nixos-generate-config --root /mnt
+echo "import /etc/dotfiles \"$$(hostname)\"" >/mnt/etc/nixos/configuration.nix
+
+# make secrets.nix
+nix-shell -p gnupg --run "gpg -dq secrets.nix.gpg >secrets.nix"
+
+# make install
+nixos-install --root /mnt -I "my=/etc/dotfiles"
+```
+
+### Management
 
 + `make` = `nixos-rebuild test`
 + `make switch` = `nixos-rebuild switch`
 + `make upgrade` = `nix-channel --update && nixos-rebuild switch`
-+ `make install` = `nixos-generate-config --root $PREFIX && nixos-install
-  --root $PREFIX`
++ `make install` = `nixos-generate-config --root $PREFIX && nixos-install --root
+  $PREFIX`
 + `make gc` = `nix-collect-garbage -d` (use sudo to clear system profile)
 
 ## Overview
@@ -32,7 +57,7 @@ HOST=hostname make install
 + Shell: zsh
 + DE/WM: bspwm + polybar
 + Editor: [Doom Emacs][doom-emacs] (and occasionally [vim][vimrc])
-+ Terminal: st + extensions
++ Terminal: st
 + Browser: firefox (waiting for qutebrowser to mature)
 
 

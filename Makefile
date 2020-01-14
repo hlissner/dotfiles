@@ -5,18 +5,16 @@ FLAGS         := -I "my=$(PWD)" $(FLAGS)
 COMMAND       := test
 
 # The real Labowski
-all: channels config secrets.nix
+all: channels secrets.nix
 	@sudo nixos-rebuild $(FLAGS) $(COMMAND)
 
-install: result channels update config
-	@nixos-generate-config --root "$(PREFIX)"
-	@nixos-install --root "$(PREFIX)"
-
-install-linode: result channels update
-	@sudo mkdir -p "$(NIXOS_PREFIX)"
-	@echo "(import $(PWD)/dotfiles \"linode\") \"$$(hostname)\"" | sudo tee "$(NIXOS_PREFIX)/configuration.nix"
+install: channels update config
+	@sudo nixos-install --root "$(PREFIX)" $(FLAGS)
 
 upgrade: update switch
+
+update:
+	@sudo nix-channel --update
 
 switch:
 	@sudo nixos-rebuild $(FLAGS) switch
@@ -29,9 +27,6 @@ clean:
 
 
 # Parts
-update:
-	@sudo nix-channel --update
-
 config: $(NIXOS_PREFIX)/configuration.nix
 
 channels:
@@ -40,8 +35,8 @@ channels:
 	@sudo nix-channel --add "https://nixos.org/channels/nixpkgs-unstable" nixpkgs-unstable
 
 $(NIXOS_PREFIX)/configuration.nix:
-	@sudo mkdir -p "$(NIXOS_PREFIX)"
-	@echo "import $(PWD)/dotfiles \"$$(hostname)\"" | sudo tee "$(NIXOS_PREFIX)/configuration.nix"
+	@sudo nixos-generate-config --root "$(PREFIX)"
+	@echo "import $(PWD)/dotfiles \"$(HOST)\"" | sudo tee "$(NIXOS_PREFIX)/configuration.nix"
 
 secrets.nix: secrets.nix.gpg
 	@nix-shell -p gnupg --run "gpg -dq $< > $@"

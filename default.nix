@@ -3,7 +3,7 @@
 device:
 { pkgs, options, lib, config, ... }:
 {
-  networking.hostName = device;
+  networking.hostName = lib.mkDefault device;
 
   imports = [
     <nixpkgs/nixos/modules/installer/scan/not-detected.nix>

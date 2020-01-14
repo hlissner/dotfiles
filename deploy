@@ -1,0 +1,29 @@
+#!/usr/bin/env nix-shell
+#! nix-shell -i bash -p git gnumake
+
+set -e   # bail if an error occurs
+if [ $EUID -nq 0 ]; then
+  >&2 echo "Must be run as root"
+  exit 1
+fi
+
+USER=${USER:-hlissner}
+HOST=${1:-${HOST:-kuro}}
+
+DOTFILES="/home/$USER/.dotfiles"
+if [ ! -d /etc/dotfiles ]; then
+  git clone https://github.com/hlissner/dotfiles "$DOTFILES"
+  chown -R $USER:users "$DOTFILES"
+fi
+ln -sf "$DOTFILES" /etc/dotfiles
+
+if [ ! -f "$DOTFILES/machines/$HOST.nix" ]; then
+  >&2 echo "No configuration exists for host '$HOST'"
+  exit 1
+fi
+
+if [ -n "$LINODE" ]; then
+  ARGS="\"$HOST\""
+  HOST=linode
+fi
+make -C "$DOTFILES" install

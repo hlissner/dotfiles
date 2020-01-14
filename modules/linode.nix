@@ -27,7 +27,6 @@
 #
 # 5. Reboot into profile.
 
-host:
 { config, lib, pkgs, ... }:
 {
   environment.systemPackages =
@@ -39,7 +38,6 @@ host:
     <my/modules/shell/git.nix>
     <my/modules/shell/zsh.nix>
     <my/modules/services/ssh.nix>
-    "./${host}.nix"
   ];
 
   # GRUB
