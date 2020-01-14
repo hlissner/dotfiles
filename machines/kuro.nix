@@ -17,7 +17,8 @@
     <my/modules/graphics.nix>   # art & design
     <my/modules/vm.nix>         # virtualbox for testing
 
-    <my/modules/browser/firefox.nix>
+    # <my/modules/browser/firefox.nix>
+    <my/modules/browser/vivaldi.nix>
     <my/modules/dev/cc.nix>
     <my/modules/dev/rust.nix>
     <my/modules/editors/emacs.nix>
