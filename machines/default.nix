@@ -52,7 +52,7 @@
     XDG_BIN_HOME    = "$HOME/.local/bin";
   };
 
-  # Conform more programs to XDG conventions. The rest are handle by their
+  # Conform more programs to XDG conventions. The rest are handled by their
   # respective modules.
   my.env = {
     __GL_SHADER_DISK_CACHE_PATH = "$XDG_CACHE_HOME/nv";

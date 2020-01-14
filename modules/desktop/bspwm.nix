@@ -114,7 +114,22 @@
     home.xdg.configFile = {
       "sxhkd".source = <my/config/sxhkd>;
       # link recursively so other modules can link files in their folders
-      "bspwm" = { source = <my/config/bspwm>; recursive = true; };
+      "bspwm" = {
+        source = <my/config/bspwm>;
+        recursive = true;
+      };
     };
+
+    env.XAUTHORITY = "/tmp/Xauthority";
+    init = ''
+      [ -e ~/.Xauthority ] && mv -f ~/.Xauthority "$XAUTHORITY"
+    '';
   };
+
+  system.activationScripts.clearHome = ''
+    pushd /home/${config.my.username}
+    rm -rf .compose-cache .nv .pki .dbus .fehbg
+    [ -s .xsession-errors ] || rm -f .xsession-errors*
+    popd
+  '';
 }
