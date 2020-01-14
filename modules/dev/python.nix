@@ -23,6 +23,8 @@
     env.PYLINTHOME      = "$XDG_DATA_HOME/pylint";
     env.PYLINTRC        = "$XDG_CONFIG_HOME/pylint/pylintrc";
     env.PYTHONSTARTUP   = "$XDG_CONFIG_HOME/python/pythonrc";
+    env.PYTHON_EGG_CACHE = "$XDG_CACHE_HOME/python-eggs";
+    env.JUPYTER_CONFIG_DIR = "$XDG_CONFIG_HOME/jupyter";
 
     zsh.rc = lib.readFile <my/config/python/aliases.zsh>;
 
