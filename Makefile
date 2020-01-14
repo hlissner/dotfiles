@@ -44,7 +44,6 @@ secrets.nix: secrets.nix.gpg
 
 # Convenience aliases
 i: install
-t: test
 s: switch
 up: upgrade
 
