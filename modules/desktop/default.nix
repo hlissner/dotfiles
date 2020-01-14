@@ -9,6 +9,7 @@
     feh       # image viewer
 
     # Useful apps
+    calibri   # managing my ebooks
     evince    # pdf reader
   ];
 
