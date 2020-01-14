@@ -5,6 +5,9 @@
   imports = [
     ./.  # import common settings
 
+    <my/modules/hardware/nvidia.nix>
+    <my/modules/hardware/ergodox.nix>
+
     <my/modules/desktop/bspwm.nix>
 
     <my/modules/chat.nix>       # discord, mainly
@@ -36,23 +39,10 @@
   networking.networkmanager.enable = true;
   time.timeZone = "America/Toronto";
 
-  ## Hardware
-  # GPU
-  services.xserver.videoDrivers = [ "nvidia" ];
-  hardware.opengl.enable = true;
-  # For ergodox ez
-  my.packages = [ pkgs.teensy-loader-cli ];
-  my.alias.teensyload = "sudo teensy-loader-cli -w -v --mcu=atmega32u4";
-  # For my intuos4 pro. My cintiq doesn't work on Linux though :(
-  services.xserver.wacom.enable = true;
-
-  # TODO Move this to udev
-  # my.init = ''
-  #   # lock tablet to main display
-  #   if xinput list --id-only "Wacom Intuos Pro S Pen stylus" 2>&1 >/dev/null; then
-  #     xinput map-to-output $(xinput list --id-only "Wacom Intuos Pro S Pen stylus") DVI-I-1
-  #     xinput map-to-output $(xinput list --id-only "Wacom Intuos Pro S Pen eraser") DVI-I-1
-  #     xinput map-to-output $(xinput list --id-only "Wacom Intuos Pro S Pen cursor") DVI-I-1
-  #   fi
-  # '';
+  # Mouse settings
+  services.xserver.libinput = {
+    enable = true;
+    middleEmulation = true;
+    scrollButton = 3;
+  };
 }
