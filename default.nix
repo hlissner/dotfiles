@@ -10,8 +10,6 @@ device:
     /etc/nixos/hardware-configuration.nix
 
     ./options/my.nix
-    ./options/secrets.nix
-    ./secrets.nix
     "${./machines}/${device}.nix"
   ];
 
