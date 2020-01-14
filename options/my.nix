@@ -18,7 +18,7 @@ with lib;
     home = mkOption {
       type = options.home-manager.users.type.functor.wrapped;
       default = {};
-      description = "A convenience alias for home-manager.users.{my.username}."
+      description = "A convenience alias for home-manager.users.{my.username}.";
     };
 
     user = mkOption {
