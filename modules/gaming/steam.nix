@@ -2,8 +2,16 @@
 
 {
   my.packages = with pkgs; [
-    steam
-    steam-run-native  # for GOG or humblebundle games
+    # Get steam to keep its garbage out of $HOME
+    (writeScriptBin "steam" ''
+      #!${stdenv.shell}
+      HOME="$XDG_DATA_HOME/steamlib" exec ${steam}/bin/steam "$@"
+      '')
+    # for GOG and humblebundle games
+    (writeScriptBin "steam-run" ''
+      #!${stdenv.shell}
+      HOME="$XDG_DATA_HOME/steamlib" exec ${steam-run-native}/bin/steam-run "$@"
+      '')
     xboxdrv  # driver for 360 controller
   ];
 
