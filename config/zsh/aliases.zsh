@@ -6,22 +6,11 @@ alias -- -='cd -'
 alias q=exit
 alias clr=clear
 alias sudo='sudo '
-
 alias rm='rm -i'
 alias cp='cp -i'
 alias mv='mv -i'
-
 alias mkdir='mkdir -p'
 alias wget='wget -c'
-if command -v exa >/dev/null; then
-  alias exa='exa --group-directories-first'
-  alias l='exa -1'
-  alias ll='exa -l'
-  alias la='LC_COLLATE=C exa -la'
-else
-  alias l='ls -1'
-  alias ll='ls -l'
-fi
 
 alias mk=make
 alias rcp='rsync -vaP --delete'
@@ -30,21 +19,6 @@ alias gurl='curl --compressed'
 
 alias y='xclip -selection clipboard -in'
 alias p='xclip -selection clipboard -out'
-
-alias sc=systemctl
-alias ssc='sudo systemctl'
-
-alias nix-env='NIXPKGS_ALLOW_UNFREE=1 nix-env'
-alias nen=nix-env
-alias nch=nix-channel
-alias ngc='nix-collect-garbage -d'
-alias nre='sudo nixos-rebuild'
-alias nup='sudo nix-channel --update && nre'
-
-if command -v nvim >/dev/null; then
-  alias vim=nvim
-  alias v=nvim
-fi
 
 autoload -U zmv
 

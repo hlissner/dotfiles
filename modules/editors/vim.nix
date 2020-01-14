@@ -12,6 +12,8 @@
     env.EDITOR = "nvim";
     env.VIMINIT = "let \\$MYVIMRC='\\$XDG_CONFIG_HOME/nvim/init.vim' | source \\$MYVIMRC";
 
+    alias.v = "nvim";
+
     # My vim config is too stateful to manage with nix
     init = ''
       if [ ! -d "$XDG_CONFIG_HOME/nvim" ]; then

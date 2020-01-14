@@ -15,6 +15,18 @@
 
   sound.enable = true;
   hardware.pulseaudio.enable = true;
+  # Prevents ~/.esd_auth files by disabling the esound protocol module for
+  # pulseaudio, which I likely don't need. Is there a better way?
+  hardware.pulseaudio.configFile =
+    let paConfigFile =
+          with pkgs; runCommand "disablePulseaudioEsoundModule"
+            { buildInputs = [ pulseaudio ]; } ''
+              mkdir "$out"
+              cp ${pulseaudio}/etc/pulse/default.pa "$out/default.pa"
+              sed -i -e 's|load-module module-esound-protocol-unix|# ...|' "$out/default.pa"
+            '';
+      in lib.mkIf config.hardware.pulseaudio.enable
+        "${paConfigFile}/default.pa";
 
   services = {
     xserver.enable = true;

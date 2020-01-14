@@ -34,6 +34,12 @@
       extraGroups = [ "wheel" "video" "networkmanager" ];
       shell = pkgs.zsh;
     };
+
+    alias.nix-env = "NIXPKGS_ALLOW_UNFREE=1 nix-env";
+    alias.nen = "nix-env";
+    alias.sc = "systemctl";
+    alias.ssc = "sudo systemctl";
+    alias.dots = "make -C ~/.dotfiles";
   };
 
 
@@ -62,17 +68,4 @@
     LESSHISTFILE = "$XDG_CACHE_HOME/lesshst";
     WGETRC = "$XDG_CACHE_HOME/wgetrc";
   };
-
-  # Prevents ~/.esd_auth files by disabling the esound protocol module for
-  # pulseaudio, which I likely don't need. Is there a better way?
-  hardware.pulseaudio.configFile =
-    let paConfigFile =
-          with pkgs; runCommand "disablePulseaudioEsoundModule"
-            { buildInputs = [ pulseaudio ]; } ''
-              mkdir "$out"
-              cp ${pulseaudio}/etc/pulse/default.pa "$out/default.pa"
-              sed -i -e 's|load-module module-esound-protocol-unix|# ...|' "$out/default.pa"
-            '';
-      in lib.mkIf config.hardware.pulseaudio.enable
-        "${paConfigFile}/default.pa";
 }

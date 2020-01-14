@@ -24,6 +24,11 @@
       source = <my/config/zsh>;
       recursive = true;
     };
+
+    alias.exa = "exa --group-directories-first";
+    alias.l   = "exa -1";
+    alias.ll  = "exa -l";
+    alias.la  = "LC_COLLATE=C exa -la";
   };
 
   programs.zsh = {
