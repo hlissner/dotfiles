@@ -3,7 +3,7 @@
 { config, lib, pkgs, ... }:
 {
   # Nothing in /tmp should survive a reboot
-  boot.cleanTmpDir = true;
+  boot.tmpOnTmpfs = true;
   # Use simple bootloader; I prefer the on-demand BIOs boot menu
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
