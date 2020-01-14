@@ -6,22 +6,39 @@
 {
   my = {
     packages = with pkgs; [
-      # Doom dependencies
+      ## Doom dependencies
       emacs
       git
       (ripgrep.override {withPCRE2 = true;})
-      # Optional dependencies
+
+      ## Optional dependencies
       editorconfig-core-c # per-project style config
       fd                  # faster projectile indexing
-      imagemagick         # for image-dired
       gnutls              # for TLS connectivity
+      imagemagick         # for image-dired
       (lib.mkIf (config.programs.gnupg.agent.enable)
         pinentry_emacs)   # in-emacs gnupg prompts
       zstd                # for undo-tree compression
-      ffmpeg              # for screen recording emacs
-      # Module dependencies
-      sqlite                          # :tools (lookup +docsets)
-      texlive.combined.scheme-medium  # :lang org -- for latex previews
+
+      ## Module dependencies
+      # :checkers spell
+      aspell
+      aspellDicts.en
+      aspellDicts.en-computers
+      aspellDicts.en-science
+      # :checkers grammar
+      languagetool
+      # :tools lookup
+      sqlite
+      # :lang cc
+      ccls
+      # :lang javascript
+      nodePackages.javascript-typescript-langserver
+      # :lang latex & :lang org (latex previews)
+      texlive.combined.scheme-medium
+      # :lang rust
+      rustfmt
+      rls
     ];
 
     env.PATH = [ "$HOME/.emacs.d/bin" ];

@@ -15,6 +15,5 @@
     gdb
     cmake
     llvmPackages.libcxx
-    ccls
   ];
 }

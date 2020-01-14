@@ -10,7 +10,6 @@
   my = {
     packages = with pkgs; [
       nodejs
-      nodePackages.javascript-typescript-langserver
     ];
 
     env.NPM_CONFIG_USERCONFIG = "$XDG_CONFIG_HOME/npm/config";
