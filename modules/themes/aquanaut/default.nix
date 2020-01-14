@@ -1,17 +1,4 @@
-# We trained for this. The waves shudder. They glare at me through its bright
-# tapestry as I sink. How long have I been down here? I imagined Jenny leading
-# the team back to rescue me and it upsets me. It wasn't worth the risk. We knew
-# what we signed up for.
-#
-# The sea's strength squeezes between the kelvar pockets of my suit. Glass
-# cracks. It's hard to breathe. Cutting off the oxygen might be a nicer way to
-# go...
-#
-# When did I get so creative?
-#
-# I can't see further than three feet. Snowflakes fracture across my visor.
-# Jorgen better be happy he gets our room all to himself now. I'll miss his
-# snoring. Maybe now's the time to catch up on all that lost sleep.
+# modules/themes/aquanaut/default.nix --- a sea-blue linux theme
 
 { config, pkgs, ... }:
 {
