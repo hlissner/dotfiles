@@ -18,18 +18,24 @@ with lib;
     home = mkOption {
       type = options.home-manager.users.type.functor.wrapped;
       default = {};
+      description = "A convenience alias for home-manager.users.{my.username}."
     };
 
     user = mkOption {
       type = types.submodule;
       default = {};
-      description = "My users.users.NAME submodule";
+      description = "A convenience alias for users.users.{my.username}.";
     };
 
     env = mkOption {
       type = with types; attrsOf (either (either str path) (listOf (either str path)));
       default = {};
-      description = "...";
+      description = ''
+        An map of environment variables that are set later than
+        environment.variables or environment.sessionVariables. This is insurance
+        that XDG variables (and other essentials) are initialized by the time
+        these are set.
+      '';
       apply = mapAttrs
         (n: v: if isList v
                then concatMapStringsSep ":" (x: toString x) v
@@ -39,7 +45,7 @@ with lib;
     alias = mkOption {
       type = with types; nullOr (attrsOf (nullOr (either str path)));
       default = {};
-      description = "...";
+      description = "Shell-independent aliases for interactive shells.";
     };
 
     packages = mkOption {
@@ -51,19 +57,28 @@ with lib;
     init = mkOption {
       type = types.lines;
       default = "";
-      description = "...";
+      description = ''
+        An init script that runs after the environment has been rebuilt or
+        booted. Anything done here should be idempotent and inexpensive.
+      '';
     };
 
     zsh = {
       rc = mkOption {
         type = types.lines;
         default = "";
-        description = "...";
+        description = ''
+          Zsh lines to be written to $XDG_CONFIG_HOME/zsh/extra.zshrc and
+          sourced by $XDG_CONFIG_HOME/zsh/.zshrc
+        '';
       };
       env = mkOption {
         type = types.lines;
         default = "";
-        description = "...";
+        description = ''
+          Zsh lines to be written to $XDG_CONFIG_HOME/zsh/extra.zshenv and
+          sourced by $XDG_CONFIG_HOME/zsh/.zshenv
+        '';
       };
     };
   };
