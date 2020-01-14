@@ -54,12 +54,6 @@ with lib;
       description = "...";
     };
 
-    setup = mkOption {
-      type = types.lines;
-      default = "";
-      description = "...";
-    };
-
     zsh = {
       rc = mkOption {
         type = types.lines;
@@ -95,7 +89,5 @@ with lib;
          ${config.my.zsh.rc}
       '';
     my.home.xdg.configFile."zsh/extra.zshenv".text = config.my.zsh.env;
-
-    system.userActivationScripts.mySetup = config.my.setup;
   };
 }

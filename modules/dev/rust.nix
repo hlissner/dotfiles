@@ -24,9 +24,11 @@
     alias.rsp = "rustup";
     alias.ca  = "cargo";
 
-    setup = ''
-      ${pkgs.rustup}/bin/rustup update nightly
-      ${pkgs.rustup}/bin/rustup default nightly
+    init = ''
+      if [ ! -d "$RUSTUP_HOME" ]; then
+        ${pkgs.rustup}/bin/rustup update nightly
+        ${pkgs.rustup}/bin/rustup default nightly
+      fi
     '';
   };
 }
