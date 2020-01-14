@@ -6,18 +6,20 @@
 
 { config, lib, pkgs, ... }:
 {
-  my.packages = with pkgs; [
-    font-manager     # so many damned fonts...
+  my = {
+    packages = with pkgs; [
+      font-manager     # so many damned fonts...
 
-    imagemagick      # for image manipulation from the shell
-    aseprite-unfree  # pixel art
-    inkscape         # illustrator & indesign
-    krita            # replaces photoshop
-    gimp             # replaces photoshop
-    gimpPlugins.resynthesizer2  # content-aware scaling in gimp
-  ];
+      imagemagick      # for image manipulation from the shell
+      aseprite-unfree  # pixel art
+      inkscape         # illustrator & indesign
+      krita            # replaces photoshop
+      gimp             # replaces photoshop
+      gimpPlugins.resynthesizer2  # content-aware scaling in gimp
+    ];
 
-  my.home.xdg.configFile = {
-    "GIMP/2.10" = { source = <my/config/gimp>; recursive = true; };
+    home.xdg.configFile = {
+      "GIMP/2.10" = { source = <my/config/gimp>; recursive = true; };
+    };
   };
 }
