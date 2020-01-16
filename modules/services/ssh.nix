@@ -6,6 +6,12 @@
     forwardX11 = true;
     permitRootLogin = "no";
     passwordAuthentication = false;
+
+    # Allow local LAN to connect with passwords
+    extraConfig = ''
+      Match address 192.168.0.0/24
+      PasswordAuthentication yes
+    '';
   };
 
   users.users.hlissner.openssh.authorizedKeys.keys = [
