@@ -3,15 +3,16 @@
 { pkgs, config, ... }:
 {
   imports = [
-    ./.  # import common settings
-
+    ../personal.nix
+    ./hardware-configuration.nix
+    ## Apps
+    <modules/shell/git.nix>
+    <modules/shell/zsh.nix>
+    ## Services
     <modules/services/ssh.nix>
     <modules/services/nginx.nix>
     <modules/services/gitea.nix>
     <modules/services/syncthing.nix>
-
-    <modules/shell/git.nix>
-    <modules/shell/zsh.nix>
   ];
 
   networking.networkmanager.enable = true;
