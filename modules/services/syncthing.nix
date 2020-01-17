@@ -17,38 +17,42 @@
         midori.id = "BOFH5JP-A3MPTJA-EGIZVWV-URHUTSJ-2ZXCAA2-XMZPPSR-GLMOQFL-ZX7DGQP";
       };
       folders =
-        let ifEnabledDevice = devices: lib.elem config.networking.hostName devices;
+        let deviceEnabled = devices: lib.elem config.networking.hostName devices;
+            deviceType = devices:
+              if (deviceEnabled devices)
+              then "sendreceive"
+              else "receiveonly";
         in {
           archive = rec {
             devices = [ "kuro"         "ao"       "midori" ];
             path = "/home/${config.my.username}/archive";
             watch = false;
             rescanInterval = 3600 * 6;
-            type = lib.mkIf (! ifEnabledDevice ["kuro"]) "recieveonly";
-            enable = ifEnabledDevice devices;
+            type = deviceType ["kuro"];
+            enable = deviceEnabled devices;
           };
           share = rec {
             devices = [ "kuro" "shiro" "ao" "aka" "midori" ];
             path = "/home/${config.my.username}/share";
             watch = true;
             rescanInterval = 3600 * 6;
-            enable = ifEnabledDevice devices;
+            enable = deviceEnabled devices;
           };
           projects = rec {
             devices = [ "kuro" "shiro" "ao"       "midori" ];
             path = "/home/${config.my.username}/projects";
             watch = false;
             rescanInterval = 3600 * 2;
-            type = lib.mkIf (ifEnabledDevice ["ao"]) "recieveonly";
-            enable = ifEnabledDevice devices;
+            type = deviceType ["ao"];
+            enable = deviceEnabled devices;
           };
           secrets = rec {
             devices = [ "kuro" "shiro" "ao" "aka"        ];
             path = "/home/${config.my.username}/.secrets";
             watch = true;
             rescanInterval = 3600;
-            type = lib.mkIf (! ifEnabledDevice ["kuro" "shiro"]) "recieveonly";
-            enable = ifEnabledDevice devices;
+            type = deviceType ["kuro" "shiro"];
+            enable = deviceEnabled devices;
           };
         };
     };
