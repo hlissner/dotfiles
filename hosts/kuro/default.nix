@@ -22,7 +22,7 @@
     <modules/shell/tmux.nix>
     <modules/shell/zsh.nix>
     ## Project-based
-    # <modules/chat>       # discord, mainly
+    <modules/chat.nix>       # discord, mainly
     <modules/recording.nix>  # recording video & audio
     <modules/daw.nix>        # making music
     <modules/music.nix>      # playing music
