@@ -20,6 +20,15 @@ update:
 switch:
 	@sudo nixos-rebuild $(FLAGS) switch
 
+boot:
+	@sudo nixos-rebuild $(FLAGS) boot
+
+rollback:
+	@sudo nixos-rebuild $(FLAGS) --rollback $(COMMAND)
+
+dry:
+	@sudo nixos-rebuild $(FLAGS) dry-build
+
 gc:
 	@nix-collect-garbage -d
 
