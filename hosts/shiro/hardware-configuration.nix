@@ -5,11 +5,11 @@
 
 {
   imports = [
+    <nixpkgs/nixos/modules/installer/scan/not-detected.nix>
     (let nixos-hardware =
            builtins.fetchTarball
              https://github.com/NixOS/nixos-hardware/archive/master.tar.gz;
      in "${nixos-hardware}/dell/xps/13-9370")
-    <nixpkgs/nixos/modules/installer/scan/not-detected.nix>
   ];
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "nvme" "rtsx_pci_sdmmc" ];
@@ -22,21 +22,30 @@
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
 
   ## SSDs
-  services.fstrim.enable = true;
+  # services.fstrim.enable = true;
 
   fileSystems = {
     "/" = {
-      device = "/dev/disk/by-uuid/nixos";
+      device = "/dev/disk/by-label/nixos";
       fsType = "ext4";
+      options = [ "noatime" ];
     };
     "/boot" = {
-      device = "/dev/disk/by-uuid/BOOT";
+      device = "/dev/disk/by-label/BOOT";
       fsType = "vfat";
     };
     "/home" = {
-      device = "/dev/disk/by-uuid/home";
+      device = "/dev/disk/by-label/home";
       fsType = "ext4";
+      options = [ "noatime" ];
     };
   };
   swapDevices = [ { device = "/dev/disk/by-label/swap"; }];
+  # Encrypted /home
+  boot.initrd.luks.devices = [{
+    name = "home";
+    device = "/dev/nvme0n1p8";
+    preLVM = true;
+    allowDiscards = true;
+  }];
 }

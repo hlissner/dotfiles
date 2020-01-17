@@ -41,13 +41,4 @@
   powerManagement.powertop.enable = true;
   # Monitor backlight control
   programs.light.enable = true;
-  # Encrypted /home
-  boot.initrd.luks.devices = [
-    {
-      name = "home";
-      device = "/dev/nvme0n1p8";
-      preLVM = true;
-      allowDiscards = true;
-    }
-  ];
 }
