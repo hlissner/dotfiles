@@ -22,6 +22,8 @@
     alias.l   = "exa -1";
     alias.ll  = "exa -l";
     alias.la  = "LC_COLLATE=C exa -la";
+    alias.sc = "systemctl";
+    alias.ssc = "sudo systemctl";
 
     # Write it recursively so other modules can write files to it
     home.xdg.configFile."zsh" = {

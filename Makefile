@@ -1,9 +1,7 @@
 NIXOS_VERSION := 19.09
 NIXOS_PREFIX  := $(PREFIX)/etc/nixos
 COMMAND       := test
-FLAGS         := -I "nixpkgs-overlays=$$(pwd)/overlays.nix" \
-				 -I "config=$$(pwd)/config" \
-				 -I "modules=$$(pwd)/modules" $(FLAGS)
+FLAGS         := -I "config=$$(pwd)/config" -I "modules=$$(pwd)/modules" $(FLAGS)
 
 # The real Labowski
 all: channels
