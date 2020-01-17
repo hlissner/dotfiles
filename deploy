@@ -8,7 +8,7 @@ if [ $EUID -nq 0 ]; then
 fi
 
 USER=${USER:-hlissner}
-HOST=${1:-${HOST:-kuro}}
+HOST=${1:-${HOST:-$(hostname)}}
 
 DOTFILES="/home/$USER/.dotfiles"
 if [ ! -d /etc/dotfiles ]; then
@@ -20,10 +20,5 @@ ln -sf "$DOTFILES" /etc/dotfiles
 if [ ! -f "$DOTFILES/machines/$HOST.nix" ]; then
   >&2 echo "No configuration exists for host '$HOST'"
   exit 1
-fi
-
-if [ -n "$LINODE" ]; then
-  ARGS="\"$HOST\""
-  HOST=linode
 fi
 make -C "$DOTFILES" install

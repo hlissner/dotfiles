@@ -1,19 +1,17 @@
-{ config, options, lib, pkgs, ... }:
+# modules/themes/options.nix
 
+{ options, config, lib, pkgs, ... }:
 with lib;
 {
   options.theme = {
     wallpaper = mkOption {
       type = with types; nullOr (either str path);
-      default = null;
-      description = "The wallpaper to use";
     };
 
     # TODO Colors?
   };
 
   config = {
-    # Set up wallpaper and blur/darken it for lock/login screen
     my.home.home.file.".background-image".source = config.theme.wallpaper;
     services.xserver.displayManager.lightdm.background =
       let blurredWallpaper =

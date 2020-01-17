@@ -5,10 +5,12 @@
   imports = [
     ./.  # import common settings
 
-    <my/modules/services/ssh.nix>
-    ./modules/services/plex.nix
-    # <my/modules/services/jellyfin.nix>
-    <my/modules/shell/zsh.nix>
+    <modules/shell/zsh.nix>
+
+    <modules/services/ssh.nix>
+    <modules/services/plex.nix>
+    # <modules/services/jellyfin.nix>
+    <modules/services/syncthing.nix>
   ];
 
   networking.networkmanager.enable = true;

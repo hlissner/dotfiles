@@ -1,17 +1,17 @@
 # Ao -- my home development and user-facing server
 
-{ config, ... }:
+{ pkgs, config, ... }:
 {
   imports = [
     ./.  # import common settings
 
-    <my/modules/services/ssh.nix>
-    <my/modules/services/nginx.nix>
-    <my/modules/services/gitea.nix>
-    <my/modules/services/syncthing.nix>
+    <modules/services/ssh.nix>
+    <modules/services/nginx.nix>
+    <modules/services/gitea.nix>
+    <modules/services/syncthing.nix>
 
-    <my/modules/shell/git.nix>
-    <my/modules/shell/zsh.nix>
+    <modules/shell/git.nix>
+    <modules/shell/zsh.nix>
   ];
 
   networking.networkmanager.enable = true;
@@ -153,6 +153,20 @@
     extraConfig = ''
       [server]
       SSH_DOMAIN = v0.io
+    '';
+  };
+
+  services.fail2ban = {
+    enable = true;
+    jails.DEFAULT = ''
+      ignoreip = 127.0.0.1/8,192.168.1.0/24
+      bantime = 3600
+      maxretry = 5
+    '';
+    jails.sshd = ''
+      filter = sshd
+      action = iptables[name=ssh, port=22, protocl=tcp]
+      enabled = true
     '';
   };
 }

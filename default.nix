@@ -1,4 +1,4 @@
-# ...
+# default.nix --- my dotfile bootstrapper
 
 device:
 { pkgs, options, lib, config, ... }:
@@ -6,39 +6,27 @@ device:
   networking.hostName = lib.mkDefault device;
 
   imports = [
-    <nixpkgs/nixos/modules/installer/scan/not-detected.nix>
-    /etc/nixos/hardware-configuration.nix
-
-    ./options/my.nix
-    "${./machines}/${device}.nix"
+    ./options.nix
+    "${./hosts}/${device}"
   ];
 
-  ###
-  nix = {
-    nixPath = options.nix.nixPath.default ++ [
-      "my=/etc/dotfiles"
-    ];
-    autoOptimiseStore = true;
-    trustedUsers = [ "root" ];
-  };
-
-  nixpkgs.config = {
-    allowUnfree = true;  # forgive me Stallman senpai
-    # Occasionally, "stable" packages are broken or incomplete, so access to the
-    # bleeding edge is necessary, as a last resort.
-    packageOverrides = pkgs: {
-      unstable = import <nixpkgs-unstable> {
-        config = config.nixpkgs.config;
-      };
-    };
-  };
-
-  environment.systemPackages = with pkgs; [
-    # cached-nix-shell, for instant nix-shell scripts
-    (callPackage
-      (builtins.fetchTarball
-        https://github.com/xzfc/cached-nix-shell/archive/master.tar.gz) {})
+  ### NixOS
+  nix.autoOptimiseStore = true;
+  nix.nixPath = options.nix.nixPath.default ++ [
+    # So we can use absolute import paths
+    "config=/etc/dotfiles/config"
+    "modules=/etc/dotfiles/modules"
+    # We define nixpkgs-overlays so our overlays will be available to
+    # nix-shell/nix-build outside of rebuilding...
+    "nixpkgs-overlays=/etc/dotfiles/overlays.nix"
   ];
+  # ...but we still need to set nixpkgs.overlays to make them visible to the
+  # rebuild process, however...
+  nixpkgs.overlays = import ./overlays.nix;
+  nixpkgs.config.allowUnfree = true;  # forgive me Stallman senpai
+
+  # For instant nix-shell scripts
+  environment.systemPackages = [ pkgs.my.cached-nix-shell ];
 
   # This value determines the NixOS release with which your system is to be
   # compatible, in order to avoid breaking some software such as database

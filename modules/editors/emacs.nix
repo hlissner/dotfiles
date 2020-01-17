@@ -42,7 +42,7 @@
     ];
 
     env.PATH = [ "$HOME/.emacs.d/bin" ];
-    zsh.rc = lib.readFile <my/config/emacs/aliases.zsh>;
+    zsh.rc = lib.readFile <config/emacs/aliases.zsh>;
 
     # My emacs config is too stateful to manage with nix
     init = ''

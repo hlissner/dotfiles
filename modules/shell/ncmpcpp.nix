@@ -13,7 +13,7 @@
   my.alias.mpcsp = "mpc searchplay any";
 
   my.home.xdg.configFile = {
-    "ncmpcpp/config".source = <my/config/ncmpcpp/config>;
-    "ncmpcpp/bindings".source = <my/config/ncmpcpp/bindings>;
+    "ncmpcpp/config".source = <config/ncmpcpp/config>;
+    "ncmpcpp/bindings".source = <config/ncmpcpp/bindings>;
   };
 }

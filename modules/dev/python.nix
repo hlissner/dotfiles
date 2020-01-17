@@ -26,7 +26,7 @@
     env.PYTHON_EGG_CACHE = "$XDG_CACHE_HOME/python-eggs";
     env.JUPYTER_CONFIG_DIR = "$XDG_CONFIG_HOME/jupyter";
 
-    zsh.rc = lib.readFile <my/config/python/aliases.zsh>;
+    zsh.rc = lib.readFile <config/python/aliases.zsh>;
 
     alias.py  = "python";
     alias.py2 = "python2";

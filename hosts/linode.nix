@@ -33,11 +33,11 @@
     with pkgs; [ inetutils mtr sysstat git ];
 
   imports = [
-    ../.
-    <my/modules/editors/vim.nix>
-    <my/modules/shell/git.nix>
-    <my/modules/shell/zsh.nix>
-    <my/modules/services/ssh.nix>
+    ./.
+    <modules/editors/vim.nix>
+    <modules/shell/git.nix>
+    <modules/shell/zsh.nix>
+    <modules/services/ssh.nix>
   ];
 
   # GRUB
@@ -62,6 +62,4 @@
   networking.useDHCP = false;
   networking.usePredictableInterfaceNames = false;
   networking.interfaces.eth0.useDHCP = true;
-
-  time.timeZone = "America/Toronto";
 }

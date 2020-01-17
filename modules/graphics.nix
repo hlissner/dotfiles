@@ -19,7 +19,7 @@
     ];
 
     home.xdg.configFile = {
-      "GIMP/2.10" = { source = <my/config/gimp>; recursive = true; };
+      "GIMP/2.10" = { source = <config/gimp>; recursive = true; };
     };
   };
 }

@@ -19,8 +19,8 @@
 
     zsh.rc = ''
       _cache tmuxifier init -
-      ${lib.readFile <my/config/tmux/aliases.zsh>}
+      ${lib.readFile <config/tmux/aliases.zsh>}
     '';
-    home.xdg.configFile."tmux" = { source = <my/config/tmux>; recursive = true; };
+    home.xdg.configFile."tmux" = { source = <config/tmux>; recursive = true; };
   };
 }

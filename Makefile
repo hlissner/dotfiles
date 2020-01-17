@@ -1,8 +1,9 @@
 NIXOS_VERSION := 19.09
 NIXOS_PREFIX  := $(PREFIX)/etc/nixos
-
-FLAGS         := -I "my=$(PWD)" $(FLAGS)
 COMMAND       := test
+FLAGS         := -I "nixpkgs-overlays=$$(pwd)/overlays.nix" \
+				 -I "config=$$(pwd)/config" \
+				 -I "modules=$$(pwd)/modules" $(FLAGS)
 
 # The real Labowski
 all: channels
@@ -36,7 +37,7 @@ channels:
 
 $(NIXOS_PREFIX)/configuration.nix:
 	@sudo nixos-generate-config --root "$(PREFIX)"
-	@echo "import $(PWD)/dotfiles \"$(HOST)\"" | sudo tee "$(NIXOS_PREFIX)/configuration.nix"
+	@echo "(import /etc/dotfiles \"$$(hostname)\")" | sudo tee "$(NIXOS_PREFIX)/configuration.nix"
 
 
 # Convenience aliases
@@ -45,4 +46,4 @@ s: switch
 up: upgrade
 
 
-.PHONY: update config channels test upgrade install
+.PHONY: config

@@ -1,6 +1,6 @@
 # modules/themes/aquanaut/default.nix --- a sea-blue linux theme
 
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 {
   imports = [ ../. ]; # Load framework for themes
 
@@ -32,6 +32,7 @@
     nordic
     paper-icon-theme # for rofi
   ];
+  my.zsh.rc = lib.readFile ./zsh/prompt.zsh;
   my.home.xdg.configFile = {
     "bspwm/rc.d/polybar".source = ./polybar/run.sh;
     "bspwm/rc.d/theme".source   = ./bspwmrc;
@@ -40,7 +41,6 @@
     "rofi/theme" = { source = ./rofi; recursive = true; };
     "tmux/theme".source         = ./tmux.conf;
     "xtheme/90-theme".source    = ./Xresources;
-    "zsh/prompt.zsh".source     = ./zsh/prompt.zsh;
     # GTK
     "gtk-3.0/settings.ini".text = ''
       [Settings]

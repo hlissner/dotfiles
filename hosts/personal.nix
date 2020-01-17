@@ -1,50 +1,32 @@
-# ...
+# hosts/personal.nix --- settings common to my personal systems
 
-{ config, options, lib, pkgs, ... }:
+{ pkgs, ... }:
 {
+  imports = [ ./. ];
+
+  environment.systemPackages = with pkgs; [
+    # Support for more filesystems
+    exfat
+    ntfs3g
+    hfsprogs
+  ];
+
   # Nothing in /tmp should survive a reboot
   boot.tmpOnTmpfs = true;
   # Use simple bootloader; I prefer the on-demand BIOs boot menu
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  # Just the bear necessities~
-  environment.systemPackages = with pkgs; [
-    coreutils
-    git
-    killall
-    unzip
-    vim
-    wget
-    # Support for extra filesystems
-    sshfs
-    exfat
-    ntfs3g
-    hfsprogs
-  ];
-
-  ###
-  # My user settings
-  my = {
-    username = "hlissner";
-    env.PATH = [ <my/bin> ];
-    user = {
-      isNormalUser = true;
-      uid = 1000;
-      extraGroups = [ "wheel" "video" "networkmanager" ];
-      shell = pkgs.zsh;
-    };
-
-    alias.nix-env = "NIXPKGS_ALLOW_UNFREE=1 nix-env";
-    alias.nen = "nix-env";
-    alias.sc = "systemctl";
-    alias.ssc = "sudo systemctl";
-    alias.dots = "make -C ~/.dotfiles";
-  };
-
-
   ### Universal defaults
   networking.firewall.enable = true;
+  networking.hosts = {
+    "192.168.1.2"  = [ "ao" ];
+    "192.168.1.3"  = [ "aka" ];
+    "192.168.1.10" = [ "kuro" ];
+    "192.168.1.11" = [ "shiro" ];
+    "192.168.1.12" = [ "midori" ];
+  };
+
 
   ### A tidy $HOME is a tidy mind.
   # Obey XDG conventions;
@@ -57,7 +39,6 @@
     XDG_DATA_HOME   = "$HOME/.local/share";
     XDG_BIN_HOME    = "$HOME/.local/bin";
   };
-
   # Conform more programs to XDG conventions. The rest are handled by their
   # respective modules.
   my.env = {
