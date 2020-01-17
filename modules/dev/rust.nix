@@ -21,12 +21,5 @@
     alias.rs  = "rustc";
     alias.rsp = "rustup";
     alias.ca  = "cargo";
-
-    init = ''
-      if [ ! -d "$RUSTUP_HOME" ]; then
-        ${pkgs.rustup}/bin/rustup update nightly
-        ${pkgs.rustup}/bin/rustup default nightly
-      fi
-    '';
   };
 }

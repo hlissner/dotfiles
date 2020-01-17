@@ -13,12 +13,5 @@
     env.VIMINIT = "let \\$MYVIMRC='\\$XDG_CONFIG_HOME/nvim/init.vim' | source \\$MYVIMRC";
 
     alias.v = "nvim";
-
-    # My vim config is too stateful to manage with nix
-    init = ''
-      if [ ! -d "$XDG_CONFIG_HOME/nvim" ]; then
-        ${pkgs.git}/bin/git clone https://github.com/hlissner/.vim "$XDG_CONFIG_HOME/nvim"
-      fi
-    '';
   };
 }

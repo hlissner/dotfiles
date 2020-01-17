@@ -43,16 +43,6 @@
 
     env.PATH = [ "$HOME/.emacs.d/bin" ];
     zsh.rc = lib.readFile <config/emacs/aliases.zsh>;
-
-    # My emacs config is too stateful to manage with nix
-    init = ''
-      if [ ! -d "$HOME/.emacs.d" ]; then
-        ${pkgs.git}/bin/git clone https://github.com/hlissner/doom-emacs "$HOME/.emacs.d"
-      fi
-      if [ ! -d "$XDG_CONFIG_HOME/doom" ]; then
-        ${pkgs.git}/bin/git clone https://github.com/hlissner/doom-emacs-private "$XDG_CONFIG_HOME/doom"
-      fi
-    '';
   };
 
   fonts.fonts = [
