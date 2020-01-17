@@ -5,10 +5,6 @@
   imports = [
     ../personal.nix   # common settings
     ./hardware-configuration.nix
-    (let nixos-hardware =
-           builtins.fetchTarball
-             https://github.com/NixOS/nixos-hardware/archive/master.tar.gz;
-     in "${nixos-hardware}/dell/xps/13-9370")
     ## Dekstop environment
     <modules/desktop/bspwm.nix>
     ## Apps
