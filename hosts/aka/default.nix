@@ -3,10 +3,11 @@
 { config, ... }:
 {
   imports = [
-    ./.  # import common settings
-
+    ../personal.nix   # common settings
+    ./hardware-configuration.nix
+    ## Apps
     <modules/shell/zsh.nix>
-
+    ## Services
     <modules/services/ssh.nix>
     <modules/services/plex.nix>
     # <modules/services/jellyfin.nix>
