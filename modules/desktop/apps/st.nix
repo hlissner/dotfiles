@@ -3,6 +3,9 @@
 {
   services.xserver.desktopManager.xterm.enable = false;
 
+  # xst-256color isn't supported over ssh, so revert to a known one
+  my.zsh.rc = ''[ "$TERM" = xst-256color ] && export TERM=xterm-256color'';
+
   my.packages = with pkgs; [
     libqalculate # calculator cli w/ currency & unit conversion
 
