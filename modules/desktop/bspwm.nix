@@ -2,14 +2,16 @@
 
 {
   imports = [
+    ./. # common settings
     # My launcher
     ./apps/rofi.nix
-
     # I often need a thumbnail browser to show off, peruse or organize photos,
     # design work, or digital art.
     ./apps/thunar.nix
-
+    #
     ./apps/redshift.nix
+    #
+    ./apps/st.nix
   ];
 
   environment.systemPackages = with pkgs; [
@@ -26,7 +28,6 @@
   services = {
     xserver = {
       enable = true;
-      desktopManager.xterm.enable = false;
       windowManager.bspwm.enable = true;
       displayManager.lightdm = {
         enable = true;
