@@ -12,6 +12,11 @@
   ## CPU
   nix.maxJobs = lib.mkDefault 2;
 
+  ## Networking
+  networking.useDHCP = false;
+  networking.interfaces.enp0s10.useDHCP = true;
+
+  ## Harddrives
   fileSystems = {
     "/" = {
       device = "/dev/disk/by-uuid/nixos";
