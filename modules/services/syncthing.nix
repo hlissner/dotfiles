@@ -43,7 +43,7 @@
             path = "/home/${config.my.username}/projects";
             watch = false;
             rescanInterval = 3600 * 2;
-            type = deviceType ["ao"];
+            type = deviceType ["kuro" "shiro"];
             enable = deviceEnabled devices;
           };
           secrets = rec {
