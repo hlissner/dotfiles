@@ -19,7 +19,7 @@
       folders =
         let deviceEnabled = devices: lib.elem config.networking.hostName devices;
             deviceType = devices:
-              if (deviceEnabled devices)
+              if deviceEnabled devices
               then "sendreceive"
               else "receiveonly";
         in {

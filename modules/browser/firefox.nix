@@ -7,8 +7,8 @@
 {
   my.packages = with pkgs; [
     firefox-bin (pkgs.writeScriptBin "firefox-private" ''
-      #! ${pkgs.bash}/bin/bash
-      firefox --private-window "$@"
+      #!${stdenv.shell}
+      ${firefox}/bin/firefox --private-window "$@"
     '')
     (makeDesktopItem {
       name = "firefox-private";
