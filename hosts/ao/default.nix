@@ -19,7 +19,7 @@
   time.timeZone = "America/Toronto";
 
   # syncthing
-  services.syncthing.guiAddress = "192.168.1.10:8384";
+  services.syncthing.guiAddress = "192.168.1.2:8384";
   networking.firewall.allowedTCPPorts = [ 8384 ];
 
   # nginx hosts
