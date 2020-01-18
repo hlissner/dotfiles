@@ -1,6 +1,6 @@
 # Ao -- my home development and user-facing server
 
-{ pkgs, config, ... }:
+{ pkgs, config, lib, ... }:
 {
   imports = [
     ../personal.nix
@@ -14,6 +14,8 @@
     <modules/services/gitea.nix>
     <modules/services/syncthing.nix>
   ];
+
+  my.zsh.rc = lib.readFile <modules/themes/aquanaut/zsh/prompt.zsh>;
 
   networking.networkmanager.enable = true;
   time.timeZone = "America/Toronto";
