@@ -19,14 +19,14 @@
   ## Harddrives
   fileSystems = {
     "/" = {
-      device = "/dev/disk/by-uuid/nixos";
+      device = "/dev/disk/by-label/nixos";
       fsType = "ext4";
       options = [ "noatime" ];
     };
     "/boot" = {
-      device = "/dev/disk/by-uuid/boot";
+      device = "/dev/disk/by-label/boot";
       fsType = "vfat";
     };
   };
-  swapDevices = [{ device = "/dev/disk/by-uuid/swap"; }];
+  swapDevices = [{ device = "/dev/disk/by-label/swap"; }];
 }
