@@ -20,10 +20,6 @@
   networking.networkmanager.enable = true;
   time.timeZone = "America/Toronto";
 
-  # syncthing
-  services.syncthing.guiAddress = "192.168.1.2:8384";
-  networking.firewall.allowedTCPPorts = [ 8384 ];
-
   # nginx hosts
   services.nginx = {
     user = config.my.username;
