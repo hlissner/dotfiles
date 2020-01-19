@@ -20,7 +20,7 @@
 
     alias.exa = "exa --group-directories-first";
     alias.l   = "exa -1";
-    alias.ll  = "exa -l";
+    alias.ll  = "exa -lg";
     alias.la  = "LC_COLLATE=C exa -la";
     alias.sc = "systemctl";
     alias.ssc = "sudo systemctl";
