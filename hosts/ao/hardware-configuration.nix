@@ -23,6 +23,11 @@
       device = "/dev/disk/by-label/boot";
       fsType = "vfat";
     };
+    "/mnt/data" = {
+      device = "/dev/disk/by-label/data";
+      fsType = "ext4";
+      options = [ "noatime" ];
+    };
   };
   swapDevices = [{ device = "/dev/disk/by-label/swap"; }];
 }
