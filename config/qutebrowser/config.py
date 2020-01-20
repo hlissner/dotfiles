@@ -2,7 +2,7 @@ import os
 import glob
 
 ## Per-domain settings
-c.content.user_stylesheets = glob.glob(os.path.expanduser('~/.config/qutebrowser/css/*.css'))
+c.content.user_stylesheets = glob.glob(os.path.expanduser('~/.local/share/qutebrowser/userstyles.css'))
 
 
 ## General config

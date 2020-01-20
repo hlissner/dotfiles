@@ -12,9 +12,26 @@
       source = <config/qutebrowser>;
       recursive = true;
     };
-    dataFile."qutebrowser/greasemonkey" = {
-      source = <config/qutebrowser/greasemonkey>;
-      recursive = true;
+    dataFile = {
+      "qutebrowser/greasemonkey" = {
+        source = <config/qutebrowser/greasemonkey>;
+        recursive = true;
+      };
+      "qutebrowser/userstyles.css".source =
+        let compiledStyles =
+              with pkgs; runCommand "compileUserStyles"
+                { buildInputs = [ sass ]; } ''
+                  mkdir "$out"
+                  for file in ${<config/qutebrowser/styles>}/*.scss; do
+                    scss --sourcemap=none \
+                         --no-cache \
+                         --style compressed \
+                         --default-encoding utf-8 \
+                         "$file" \
+                         >>"$out/userstyles.css"
+                  done
+                '';
+        in "${compiledStyles}/userstyles.css";
     };
   };
 }
