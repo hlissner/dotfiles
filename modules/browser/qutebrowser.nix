@@ -5,7 +5,22 @@
 
 { config, lib, pkgs, ... }:
 {
-  my.packages = [ pkgs.qutebrowser ];
+  my.packages = with pkgs; [
+    qutebrowser
+    (pkgs.writeScriptBin "qutebrowser-private" ''
+      #!${stdenv.shell}
+      ${qutebrowser}/bin/qutebrowser ":open -p $@"
+    '')
+    (makeDesktopItem {
+      name = "qutebrowser-private";
+      desktopName = "Qutebrowser (Private)";
+      genericName = "Open a private Qutebrowser window";
+      icon = "qutebrowser";
+      exec = "${qutebrowser}/bin/qutebrowser ':open -p'";
+      categories = "Network";
+    })
+
+  ];
   my.env.BROWSER = "qutebrowser";
   my.home.xdg = {
     configFile."qutebrowser" = {
