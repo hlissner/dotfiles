@@ -3,6 +3,7 @@
 {
   my.packages = with pkgs; [
     vivaldi
+    vivaldi-widevine
     (pkgs.writeScriptBin "vivaldi-private" ''
       #!${stdenv.shell}
       ${vivaldi}/bin/vivaldi --incognito "$@"
