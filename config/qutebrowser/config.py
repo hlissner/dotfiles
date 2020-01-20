@@ -125,7 +125,7 @@ c.content.host_blocking.lists = [
 c.content.host_blocking.whitelist = []
 
 c.downloads.position = 'bottom'
-c.downloads.location.directory = os.path.expanduser("~/dl")
+c.downloads.location.directory = os.path.expanduser("~/share/dl")
 c.downloads.location.prompt = False
 # c.downloads.location.remember = True
 # c.downloads.location.suggestion = 'path'
