@@ -1,8 +1,9 @@
 # modules/graphics.nix
 #
-# The hardest part about switching to linux was sacrifices adobe. It is so bad I
-# have a second computer dedicated to adobe (and gaming). Still, I can still
-# manage half of my design work on open source alternatives.
+# The hardest part about switching to linux? Sacrificing Adobe. It really is
+# difficult to replace and its open source alternatives don't *quite* cut it,
+# but enough that I can do a fraction of it on Linux. For the rest I have a
+# second computer dedicated to design work (and gaming).
 
 { config, lib, pkgs, ... }:
 {

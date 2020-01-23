@@ -12,6 +12,8 @@
   my.alias.mpcs = "mpc search any";
   my.alias.mpcsp = "mpc searchplay any";
 
+  # Symlink these one at a time because ncmpcpp writes other files to
+  # ~/.config/ncmpcpp, so it needs to be writeable.
   my.home.xdg.configFile = {
     "ncmpcpp/config".source = <config/ncmpcpp/config>;
     "ncmpcpp/bindings".source = <config/ncmpcpp/bindings>;

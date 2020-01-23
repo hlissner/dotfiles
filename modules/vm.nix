@@ -7,7 +7,7 @@
 {
   virtualisation.virtualbox.host = {
     enable = true;
-    enableExtensionPack = true;
+    enableExtensionPack = true; # urg, takes so long to build
   };
 
   my.user.extraGroups = [ "vboxusers" ];

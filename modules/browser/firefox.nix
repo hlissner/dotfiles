@@ -6,7 +6,8 @@
 { config, lib, pkgs, ... }:
 {
   my.packages = with pkgs; [
-    firefox-bin (pkgs.writeScriptBin "firefox-private" ''
+    firefox-bin
+    (pkgs.writeScriptBin "firefox-private" ''
       #!${stdenv.shell}
       ${firefox}/bin/firefox --private-window "$@"
     '')

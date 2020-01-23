@@ -19,7 +19,6 @@
       exec = "${qutebrowser}/bin/qutebrowser ':open -p'";
       categories = "Network";
     })
-
   ];
   my.env.BROWSER = "qutebrowser";
   my.home.xdg = {

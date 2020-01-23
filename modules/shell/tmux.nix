@@ -4,8 +4,7 @@
   my = {
     packages = with pkgs; [
       # The developer of tmux chooses not to add XDG support for religious
-      # reasons (see tmux/tmux#142). Fortunately, nix offers a simple
-      # workaround:
+      # reasons (see tmux/tmux#142). Fortunately, nix makes this easy:
       (writeScriptBin "tmux" ''
         #!${stdenv.shell}
         exec ${tmux}/bin/tmux -f "$TMUX_HOME/config" "$@"
