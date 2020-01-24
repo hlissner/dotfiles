@@ -8,8 +8,7 @@
     ## Desktop/shell environment
     <modules/desktop/bspwm.nix>
     ## Apps
-    # <modules/browser/firefox.nix>
-    <modules/browser/vivaldi.nix>
+    <modules/browser/firefox.nix>
     <modules/dev/cc.nix>
     <modules/dev/rust.nix>
     <modules/editors/emacs.nix>
