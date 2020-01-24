@@ -2,6 +2,7 @@
 
 {
   environment.systemPackages = with pkgs; [
-    epsxe  # PSX emulator
+    epsxe      # PSX
+    desmume    # DS
   ];
 }
