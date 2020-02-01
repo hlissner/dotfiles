@@ -11,7 +11,7 @@
     #
     ./apps/redshift.nix
     #
-    ./apps/st.nix
+    ./apps/urxvt.nix
   ];
 
   environment.systemPackages = with pkgs; [
@@ -29,6 +29,7 @@
     xserver = {
       enable = true;
       windowManager.bspwm.enable = true;
+      desktopManager.xterm.enable = lib.mkDefault false;
       displayManager.lightdm = {
         enable = true;
         greeters.mini = {

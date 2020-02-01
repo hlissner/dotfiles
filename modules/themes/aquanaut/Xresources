@@ -49,7 +49,28 @@
 *.color241: #665c54
 
 
-!! xst
-st.opacity: 200
-st.font: Fira Code:pixelsize=12
-st-scratch.font: Fira Code:pixelsize=15
+!! urxvt
+URxvt*depth:                   32
+URxvt*.background:             [80]#101216
+! URxvt*.termName:               xterm-256color
+URxvt*.buffered:               true
+URxvt*.cursorBlink:            true
+URxvt*.underlineColor:         grey
+URxvt*.borderless:             1
+URxvt.iso14755:                false
+URxvt.iso14755_52:             false
+URxvt*.internalBorder:         10
+URxvt*.scrollBar:              false
+URxvt*.saveLines:              5000
+URxvt*.loginShell:             false
+URxvt.perl-ext-common:         default,matcher
+URxvt*.matcher.button:         1
+URxvt*.matcher.rend.0:         Uline Bold fg5
+URxvt.clipboard.autocopy:      true
+
+! fonts
+URxvt*.lineSpace:              0
+URxvt*.letterSpace:            0
+URxvt*.font:                   xft:Fira Code:pixelsize=12
+urxvt-scratch.font:            xft:Fira Code:pixelsize=16
+urxvt-calc.font:               xft:Fira Code:pixelsize=22
