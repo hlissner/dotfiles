@@ -20,6 +20,13 @@
       _cache tmuxifier init -
       ${lib.readFile <config/tmux/aliases.zsh>}
     '';
-    home.xdg.configFile."tmux" = { source = <config/tmux>; recursive = true; };
+    home.xdg.configFile = {
+      "tmux" = { source = <config/tmux>; recursive = true; };
+      "tmux/plugins".text = ''
+        run-shell ${pkgs.tmuxPlugins.copycat}/share/tmux-plugins/copycat/copycat.tmux
+        run-shell ${pkgs.tmuxPlugins.prefix-highlight}/share/tmux-plugins/prefix-highlight/prefix_highlight.tmux
+        run-shell ${pkgs.tmuxPlugins.yank}/share/tmux-plugins/yank/yank.tmux
+      '';
+    };
   };
 }

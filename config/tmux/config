@@ -90,7 +90,7 @@ bind - break-pane
 bind _ join-pane
 
 # reload config without killing server
-bind r source-file $TMUX_HOME/tmux.conf \; display-message "  Config reloaded..".
+bind r source-file ~/.dotfiles/config/tmux/config \; display-message "  Config reloaded..".
 bind ^r refresh-client
 
 
@@ -100,13 +100,13 @@ bind ^r refresh-client
 
 bind Enter copy-mode # enter copy mode
 bind b list-buffers  # list paster buffers
-bind p paste-buffer  # paste from the top pate buffer
+bind p paste-buffer  # paste from the top paste buffer
 bind P choose-buffer # choose which buffer to paste from
 
 bind -T copy-mode-vi v send -X begin-selection
 bind -T copy-mode-vi C-v send -X rectangle-toggle
-bind -T copy-mode-vi y send -X copy-selection
 bind -T copy-mode-vi Escape send -X cancel
+bind -T copy-mode-vi C-g send -X cancel
 bind -T copy-mode-vi H send -X start-of-line
 bind -T copy-mode-vi L send -X end-of-line
 
@@ -114,5 +114,9 @@ bind -T copy-mode-vi L send -X end-of-line
 ########################################
 # Local config                         #
 ########################################
+set -g @open-editor 'C-e'
+set -g @open-S 'https://www.duckduckgo.com/'
+
+source $TMUX_HOME/plugins
 if '[ -f $TMUX_HOME/theme ]' 'source $TMUX_HOME/theme'
 if '[ -f ~/.tmux.conf ]' 'source ~/.tmux.conf'
