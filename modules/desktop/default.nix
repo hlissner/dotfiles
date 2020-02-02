@@ -14,8 +14,6 @@
     ./apps/urxvt.nix
   ];
 
-  my.env.TERMINAL = "urxvt";
-
   services.xserver = {
     enable = true;
     desktopManager.xterm.enable = lib.mkDefault false;
