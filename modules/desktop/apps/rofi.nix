@@ -2,7 +2,7 @@
 
 {
   my = {
-    env.PATH = [ <config/rofi/bin> ];
+    env.PATH = [ <bin/rofi> ];
     # link recursively so other modules can link files in its folder
     home.xdg.configFile."rofi" = {
       source = <config/rofi>;

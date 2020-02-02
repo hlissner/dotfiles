@@ -14,6 +14,7 @@ device:
   nix.autoOptimiseStore = true;
   nix.nixPath = options.nix.nixPath.default ++ [
     # So we can use absolute import paths
+    "bin=/etc/dotfiles/bin"
     "config=/etc/dotfiles/config"
     "modules=/etc/dotfiles/modules"
   ];
