@@ -21,7 +21,7 @@ super + {_,shift +}{1-9,0}
 	bspc {desktop -f,node -d} {1-9,10}
 
 super + Return
-	urxvt -e bash -c "tmux new || tmux attach"
+	xst -e bash -c "tmux new || tmux attach"
 
 super + grave
 	scratch

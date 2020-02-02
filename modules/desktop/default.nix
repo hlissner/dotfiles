@@ -10,8 +10,8 @@
 
     ## Terminal
     # ./apps/alacritty.nix
-    # ./apps/st.nix
-    ./apps/urxvt.nix
+    ./apps/st.nix
+    # ./apps/urxvt.nix
   ];
 
   services.xserver = {

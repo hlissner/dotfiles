@@ -100,15 +100,16 @@ bind ^r refresh-client
 
 bind Enter copy-mode # enter copy mode
 bind b list-buffers  # list paster buffers
+bind B choose-buffer # choose which buffer to paste from
 bind p paste-buffer  # paste from the top paste buffer
-bind P choose-buffer # choose which buffer to paste from
+bind P run "xclip -selection clipboard -o | tmux load-buffer - ; tmux paste-buffer"
 
-bind -T copy-mode-vi v send -X begin-selection
-bind -T copy-mode-vi C-v send -X rectangle-toggle
-bind -T copy-mode-vi Escape send -X cancel
-bind -T copy-mode-vi C-g send -X cancel
-bind -T copy-mode-vi H send -X start-of-line
-bind -T copy-mode-vi L send -X end-of-line
+bind -T copy-mode-vi v send-keys -X begin-selection
+bind -T copy-mode-vi C-v send-keys -X rectangle-toggle
+bind -T copy-mode-vi Escape send-keys -X cancel
+bind -T copy-mode-vi C-g send-keys -X cancel
+bind -T copy-mode-vi H send-keys -X start-of-line
+bind -T copy-mode-vi L send-keys -X end-of-line
 
 
 ########################################
