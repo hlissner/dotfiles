@@ -17,17 +17,18 @@ setw -g pane-base-index 1
 set  -g display-time 1500
 set  -g display-panes-time 800
 # Address vim-mode switching delay (http://superuser.com/a/252717/65504)
-set  -s escape-time       0
-set -sg repeat-time       600
-set  -g history-limit     10000
+set  -s escape-time   0
+set -sg repeat-time   600
+set  -g history-limit 10000
 # Rather than constraining window size to the maximum size of any client
 # connected to the *session*, constrain window size to the maximum size of any
 # client connected to *that window*. Much more reasonable.
 setw -g aggressive-resize off
 # For terminals that support them, propagate these events to programs that
 # understand them.
-set  -s focus-events      on
-
+set  -s focus-events on
+# Enable mouse + mouse wheel
+set  -g mouse on
 
 ########################################
 # Keybinds                             #
