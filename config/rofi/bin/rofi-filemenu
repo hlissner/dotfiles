@@ -3,7 +3,7 @@ DIR="$(fd -L --type d . $HOME | rofi -dmenu -i -p files -columns 1 -theme theme/
 if [ -d "$DIR" ]; then
   cd "$DIR"
   if [[ $1 == "-x" ]]; then
-    st-scratch
+    scratch
   else
     xst
   fi

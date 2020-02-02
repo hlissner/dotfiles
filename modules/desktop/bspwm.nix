@@ -2,21 +2,11 @@
 
 {
   imports = [
-    ./. # common settings
-    # My launcher
-    ./apps/rofi.nix
-    # I often need a thumbnail browser to show off, peruse or organize photos,
-    # design work, or digital art.
-    ./apps/thunar.nix
-    #
-    ./apps/redshift.nix
-    #
-    ./apps/urxvt.nix
+    ./.  # common settings
   ];
 
   environment.systemPackages = with pkgs; [
     lightdm
-    bspwm
     dunst
     libnotify
     (polybar.override {
@@ -26,24 +16,17 @@
   ];
 
   services = {
-    xserver = {
-      enable = true;
-      windowManager.bspwm.enable = true;
-      desktopManager.xterm.enable = lib.mkDefault false;
-      displayManager.lightdm = {
-        enable = true;
-        greeters.mini = {
-          enable = true;
-          user = config.my.username;
-        };
-      };
-    };
     compton.enable = true;
+    xserver = {
+      windowManager.default = "bspwm";
+      windowManager.bspwm.enable = true;
+      displayManager.lightdm.enable = true;
+      displayManager.lightdm.greeters.mini.enable = true;
+    };
   };
 
-  # For polybar
   my = {
-    env.PATH = [ <config/bspwm/bin> ];
+    env.PATH = [ <bin/bspwm> ];
     home.xdg.configFile = {
       "sxhkd".source = <config/sxhkd>;
       # link recursively so other modules can link files in their folders

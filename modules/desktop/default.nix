@@ -1,16 +1,36 @@
 { config, lib, pkgs, ... }:
 
 {
-  my = {
-    packages = with pkgs; [
-      calibre   # managing my ebooks
-      evince    # pdf reader
-      feh       # image viewer
-      mpv       # video player
-      xclip
-      xdotool
-    ];
+  imports = [
+    ## Desktop apps
+    ./apps/redshift.nix
+    ./apps/rofi.nix     # My launcher
+    ./apps/thunar.nix   # I often need a thumbnail browser to show off, peruse
+                        # or organize photos, design work, or digital art.
+
+    ## Terminal
+    # ./apps/alacritty.nix
+    # ./apps/st.nix
+    ./apps/urxvt.nix
+  ];
+
+  my.env.TERMINAL = "urxvt";
+
+  services.xserver = {
+    enable = true;
+    desktopManager.xterm.enable = lib.mkDefault false;
+    displayManager.lightdm.greeters.mini.user = config.my.username;
   };
+
+  my.packages = with pkgs; [
+    calibre   # managing my ebooks
+    evince    # pdf reader
+    feh       # image viewer
+    mpv       # video player
+    xclip
+    xdotool
+    libqalculate  # calculator cli w/ currency conversion
+  ];
 
   ## Sound
   sound.enable = true;
