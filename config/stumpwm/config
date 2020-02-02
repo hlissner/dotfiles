@@ -1,0 +1,71 @@
+;; -*- lisp -*-
+;;
+;; Author:  Henrik Lissner <henrik@lissner.net>
+;; URL:     https://github.com/hlissner/doom-emacs
+;;
+;;;
+(in-package :stumpwm)
+;; (swank:create-server
+;;  :dont-close t
+;;  :port swank::default-server-port)
+
+;;;
+(defvar *config-dir* "~/.dotfiles/config/stumpwm")
+
+(defcommand reload-dotfiles () ()
+  (load (concat *config-dir* "/config"))
+  (message "Config reloaded"))
+(define-key *top-map* (kbd "s-r") "reload-dotfiles")
+
+(load (concat *config-dir* "/core/core.lisp"))
+
+
+(defun show-key-seq (key seq val)
+  (message (print-key-seq (reverse seq))))
+(add-hook *key-press-hook* 'show-key-seq)
+
+
+
+;;; Config
+(setf *mouse-focus-policy* :click)
+(set-font "-CTDB-Fira Code-normal-normal-normal-*-12-*-*-*-m-0-iso10646-1")
+
+
+;;; Keybinds
+(set-prefix-key (kbd "C-z"))
+(define-key *top-map* (kbd "C-RET") "exec urxvt")
+
+(let ((map *top-map*))
+  ;; (gnew "a")
+  ;; (gnew "b")
+  ;; (gnew "c")
+  (dotimes (i 9)
+    (define-key map (kbd (format nil "s-~D" i))
+      (format nil "gselect ~D" i))
+    (define-key map (kbd (format nil "s-S-~D" i))
+      (format nil "gmove ~D" i))))
+
+;; Window management
+(define-key *top-map* (kbd "s-h") "move-focus left")
+(define-key *top-map* (kbd "s-j") "move-focus down")
+(define-key *top-map* (kbd "s-k") "move-focus up")
+(define-key *top-map* (kbd "s-l") "move-focus right")
+
+(define-key *top-map* (kbd "s-H") "move-window left")
+(define-key *top-map* (kbd "s-J") "move-window down")
+(define-key *top-map* (kbd "s-K") "move-window up")
+(define-key *top-map* (kbd "s-L") "move-window right")
+
+(define-key *top-map* (kbd "s-RET") "exec urxvt")
+(define-key *top-map* (kbd "s-SPC") "exec rofi-appmenu")
+(define-key *top-map* (kbd "s-`")   "exec scratch")
+
+
+(defvar *window-manipulation-map* (make-sparse-keymap))
+
+(define-key *top-map* (kbd "s-w") *window-manipulation-map*)
+(let ((map *window-manipulation-map*))
+  (define-key map (kbd "s-c") "remove-split")
+  (define-key map (kbd "s-d") "delete-window")
+  (define-key map (kbd "s-s") "hsplit")
+  (define-key map (kbd "s-v") "vsplit"))

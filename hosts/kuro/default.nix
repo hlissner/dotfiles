@@ -7,10 +7,12 @@
     ./hardware-configuration.nix
     ## Desktop/shell environment
     <modules/desktop/bspwm.nix>
+    # <modules/desktop/stumpwm.nix>
     ## Apps
     <modules/browser/firefox.nix>
     <modules/dev/cc.nix>
     <modules/dev/rust.nix>
+    # <modules/dev/common-lisp.nix>
     <modules/editors/emacs.nix>
     <modules/editors/vim.nix>
     <modules/gaming/steam.nix>
