@@ -17,12 +17,12 @@ elif command -v alacritty >/dev/null; then
 elif command -v urxvt >/dev/null; then
     urxvt -name $SCRID \
           -geometry 100x26 \
-          -e $SHELL -c '${tmux}/bin/tmux new-session -A -s scratch -n scratch'
+          -e $SHELL -c "$CMD"
 elif command -v xst >/dev/null; then
     xst -t $SCRID -n $SCRID -c $SCRID \
-        -f "$(xrdb -query | grep 'st-scratch\.font' | cut -f2)" \
+        -f "$(xrdb -query | grep 'scratch\.font' | cut -f2)" \
         -g 100x26 \
-        -e $SHELL
+        -e $SHELL -c "$CMD"
 else
     >&2 echo "No shell to launch the scratch terminal with"
     exit 1
