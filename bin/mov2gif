@@ -4,12 +4,13 @@
 # Uses ffmpeg to convert a video file to a gif file. Optimizes the final result
 # with gifsicle.
 #
-# Requires: ffmpeg
-# Optional: gifsicle
+# Requires: ffmpeg gifsicle
 #
 # Example:
 #   vid2gif some-vid.mp4 output.gif
 #   vid2gif -f 10 -s 00:00:10 -t 00:00:05 some-vid.mp4 output.gif
+
+shift # Get rid of extraneous nix-shell argument
 
 set -e
 PALETTE="/tmp/palette.png"

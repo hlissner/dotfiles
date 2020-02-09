@@ -11,7 +11,7 @@ trap cleanup EXIT
 # Delay for long enough that we can refocus the targeted window
 if maim --delay=${2:-1} -us >"$tmp"; then
   xclip -selection clipboard -t image/png "$tmp" &&
-    notify-send "Screenshot saved"
+    notify-send "Screenshot saved" "Copied image to clipboard"
 else
   notify-send -u low "Aborted screenshot"
 fi

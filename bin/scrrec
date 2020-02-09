@@ -10,6 +10,8 @@
 # Usage: scrrec somefile.mp4
 #        scrrec another.gif
 
+shift # Get rid of extraneous nix-shell argument
+
 is_script=
 geom=
 delay=1
@@ -41,16 +43,16 @@ countdown() {
   if (( count > 0 )); then
     for ((i=count;i>0;i--)); do
       if [[ $is_script ]]; then
-        echo "Recording in $i"
-      else
         notify-send -u critical -t 1000 "Recording in $i"
+      else
+        echo "Recording in $i"
       fi
       sleep 1
     done
   elif [[ $is_script ]]; then
-    echo "Started recording..."
-  else
     notify-send -u critical "Starting recording..."
+  else
+    echo "Started recording..."
   fi
 }
 
@@ -67,7 +69,7 @@ recording-start() {
     mov2gif "$mp4dest" "$dest" && rm -fv "$mp4dest"
   fi
   echo "$dest" | xclip -selection clipboard -in
-  notify-send "Screencast saved to $dest" "Copied to clipboard!"
+  notify-send "Screencast successful" "Saved to $dest\nAnd copied to your clipboard!"
 }
 
 
@@ -91,6 +93,6 @@ cleanup() { [[ $compton ]] && systemctl --user start compton; }
 trap cleanup EXIT
 
 # Let 'er rip
-recording-start "$dest" "$X" "$Y" "$W" "$H"
+recording-start "$1" "$X" "$Y" "$W" "$H"
 
 # vim:set ft=sh shiftwidth=2:
