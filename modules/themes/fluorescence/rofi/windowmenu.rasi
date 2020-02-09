@@ -1,0 +1,19 @@
+/* -*- mode: css; -*- */
+
+@import "config.rasi"
+
+inputbar {
+  width: 25%;
+}
+
+textbox-icon {
+  str: " 缾 ";
+}
+
+prompt {
+  enabled: false;
+}
+
+element {
+  font: "Fira Code 12";
+}

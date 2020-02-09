@@ -6,10 +6,11 @@
 # Example: passmenu [RESUME]
 
 ROFI_CMD='rofi -dmenu -theme theme/passmenu.rasi'
+ROFI_MSG_CMD='rofi -theme theme/passmenu.rasi -markup -e'
 set -e
 shopt -s nullglob globstar
 
-for prog in xclip notify-send pass; do
+for prog in xclip pass; do
   if ! command -v "$prog" >/dev/null; then
     >&2 echo "$prog not installed, aborting"
     exit 1
@@ -42,11 +43,11 @@ else
   password_files=( "$prefix"/**/*.gpg  )
   password_files=( "${password_files[@]#"$prefix"/}"  )
   password_files=( "${password_files[@]%.gpg}" )
-  entry=$(printf "%s\n" "${password_files[@]}" | $ROFI_CMD -p pass -filter "$url")
+  entry=$(printf "%s\n" "${password_files[@]}" | $ROFI_CMD -p "..." -filter "$url")
 fi
 
 if [[ -z $entry ]]; then
-  notify-send --urgency=critical "Failed to select $entry"
+  $ROFI_MSG_CMD "<span foreground="red">Failed to select $entry</span>"
   exit 1
 fi
 
@@ -54,14 +55,14 @@ echo "$entry" >/tmp/_upm
 secrets="$(pass show "$entry")"
 if [[ -n $secrets ]]; then
   fields=$(awk -F': ' 'NR>1 && !/^otpauth:/ {print $1}' <<<"$secrets")
-  field=$(printf "password\n%s\notp\n" "${fields[@]}" | $ROFI_CMD -p "pass ($entry) > ")
+  field=$(printf "password\n%s\notp\n" "${fields[@]}" | $ROFI_CMD -p "$entry")
   case $field in
     password) pass -c "$entry" ;;
     otp) printf "%s" "$(pass otp -c "$entry")" ;;
     *) printf "%s" "$(awk -v "key=$field:" '$1 == key {print $2}' <<<"$secrets")" | xclip -selection clipboard -in ;;
   esac
-  notify-send --urgency=low "<b>$entry/$field</b>" "Copied to clipboard for 45s"
+  $ROFI_MSG_CMD "Copied <b>$entry/$field</b> to clipboard for 45s"
 else
-  notify-send --urgency=critical "Failed to retrieve $entry"
+  $ROFI_MSG_CMD "<span foreground="red">Failed to retrieve $entry</span>"
   exit 2
 fi

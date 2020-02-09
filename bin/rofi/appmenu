@@ -1,6 +1,5 @@
 #!/usr/bin/env sh
 rofi -show drun \
      -modi drun,run \
-     -display-drun apps \
      -show-icons \
      -theme theme/appmenu.rasi

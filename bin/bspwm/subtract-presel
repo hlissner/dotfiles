@@ -1,0 +1,101 @@
+#!/usr/bin/env cached-nix-shell
+#! nix-shell -i zsh -p jshon wmutils-core
+
+# Script: bspc-subtract-presel
+# Author: Henrik Lissner (w/ credit to @Chrysostomus)
+# Usage:
+#   bspc-resize-to-presel
+#
+# (Adapted from Chrysostomus/bspwm-scripts/bin/resizetopresel.sh)
+#
+# This script resizes the current window by "subtracting" the bspwm preselection
+# on the current node. In English, that means this will reduce the window's
+# width by 20%:
+#
+#   bspc node -p east -o 0.2 && bspc-subtract-presel
+#
+# NOTE: We use zsh for this because bash chokes on float arithmetic.
+
+# Check if the brother node is a receptacle
+if [[ $(bspc query -T -n @brother/ | jshon -e client) = null ]]; then
+  # Yep, it's a receptacle. Get the real dimensions
+  eval $(grep "window_gap" ~/.config/bspwm/rc.d/theme | tr -cd [0-9])
+  # Get orientation
+  wattr xywh $(pfw) | read focused_x focused_y focused_width focused_height
+  receptacle_y=$(bspc query -T -n @brother/ | jshon -e rectangle -e y)
+  if [[ "$focused_y" -eq "$receptacle_y" ]]; then
+    receptacle_width=$(bspc query -T -n @brother/ | jshon -e rectangle -e width)
+    receptacle_x=$(bspc query -T -n @brother/ | jshon -e rectangle -e x)
+    # receptacle and window have the same height, so they are side by side
+    if [[ receptacle_x -gt focused_x ]]; then
+      echo "receptacle is right of the window"
+      # get the true window dimension
+      true_dim=$(( receptacle_width + gap ))
+      # kill the repectacle
+      for i in $(bspc query -N -n .leaf.!window.local); do bspc node $i -k; done
+      # resize the window
+      bspc node @east -r -$true_dim || bspc node @west -r +$true_dim
+    else
+        echo "receptacle is left of the window"
+        # get the true window dimension
+        true_dim=$(( receptacle_width + gap ))
+        # kill the repectacle
+        for i in $(bspc query -N -n .leaf.!window.local); do bspc node $i -k; done
+        # resize the window
+        bspc node @west -r +$true_dim || bspc node @east -r -$true_dim
+    fi
+  else
+      receptacle_height=$(bspc query -T -n @brother/ | jshon -e rectangle -e height)
+      # width is necessarily equal if height is not, because the nodes are
+      # brothers Window are on the top of each other
+      if [[ receptacle_y -gt focused_y ]]; then
+        echo "receptacle is below the window"
+        # get the true window dimension
+        true_dim=$(( receptacle_height + gap))
+        # kill the repectacle
+        for i in $(bspc query -N -n .leaf.!window.local); do bspc node $i -k; done
+        # resize the window
+        bspc node @south -r -$true_dim || bspc node @north -r +$true_dim
+      else
+          echo "receptacle is above the window"
+          # get the true window dimension
+          true_dim=$(( receptacle_height + gap))
+          # kill the repectacle
+          for i in $(bspc query -N -n .leaf.!window.local); do bspc node $i -k; done
+          # resize the window
+          bspc node @north -r +$true_dim || bspc node @south -r -$true_dim
+      fi
+  fi
+  echo $true_dim
+  exit 0
+fi
+
+# If the focused window is not preselected, do nothing
+[[ "$(bspc query -T -n focused | jshon -e presel)" == null ]] && exit 0
+
+dir=$(bspc query -T -n focused | jshon -e presel -e splitDir | tr -d \")
+ratio=$(bspc query -T -n focused | jshon -e presel -e splitRatio)
+case "$dir" in
+  west)
+    cur=$(bspc query -T -n focused | jshon -e rectangle -e width)
+    bspc node @west -r +$((${cur}*${ratio})) || \
+        bspc node @east -r -$((${cur}*${ratio}))
+    ;;
+  east)
+    cur=$(bspc query -T -n focused | jshon -e rectangle -e width)
+    bspc node @east -r -$((${cur}*(1.0-${ratio}))) || \
+        bspc node @west -r +$((${cur}*${ratio}))
+    ;;
+
+  north)
+    cur=$(bspc query -T -n focused | jshon -e rectangle -e height)
+    bspc node @north -r +$((${cur}*${ratio})) || \
+        bspc node @south -r -$((${cur}*${ratio}))
+    ;;
+  south)
+    cur=$(bspc query -T -n focused | jshon -e rectangle -e height)
+    bspc node @south -r -$(( ${cur} * (1.0 - ${ratio}) )) || \
+        bspc node @north -r +$(( ${cur} * ${ratio} ))
+esac
+
+bspc node -p cancel

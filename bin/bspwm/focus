@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+# Script: bspc-focus
+# Author: Henrik Lissner
+# Usage:
+#   bspc-focus [-m] (west|south|north|east)
+#   bspc-focus south
+#   bspc-focus -m west
+#
+# Focus the next window in direction. If -m is supplied, jump to the next
+# monitor in that direction.
+#
+# The behavior of the base 'bspc node -f' is odd when crossing screens. It will
+# focus the last selected window on that screen, rather than the window on the
+# connecting edge, which is unintuitive.
+
+set -e
+
+leap=
+if [[ $1 == -m ]]; then
+    leap=1; shift
+fi
+dir=$1
+opposite=
+
+case $dir in
+  west)  opposite=east  ;;
+  east)  opposite=west  ;;
+  north) opposite=north ;;
+  south) opposite=south ;;
+  *) >&2 echo "Not a valid direction: $dir"
+     exit 1
+esac
+
+if [[ -n $leap ]]; then
+  # jump to monitor in direction
+  bspc monitor -f "$dir"
+else
+  # jump to window in direction (unless at edge of last monitor)
+  if ! bspc node -f "$dir.local"; then
+    if [[ $(bspc query -M -m "$dir") ]]; then
+      bspc monitor -f "$dir"
+      # Ensure we start at the edge of the window we arrived from
+      while bspc node -f "$opposite.local"; do :; done
+    fi
+  fi
+fi

@@ -2,7 +2,6 @@
 
 {
   my = {
-    env.PATH = [ <bin/rofi> ];
     # link recursively so other modules can link files in its folder
     home.xdg.configFile."rofi" = {
       source = <config/rofi>;
@@ -17,22 +16,22 @@
 
       # Fake rofi dmenu entries
       (makeDesktopItem {
-        name = "rofi-browsermenu";
+        name = "rofi-bookmarkmenu";
         desktopName = "Open Bookmark in Browser";
         icon = "bookmark-new-symbolic";
-        exec = "${<config/rofi>}/bin/rofi-browsermenu";
+        exec = "${<bin/rofi/bookmarkmenu>}";
       })
       (makeDesktopItem {
         name = "rofi-filemenu";
         desktopName = "Open Directory in Terminal";
         icon = "folder";
-        exec = "${<config/rofi>}/bin/rofi-filemenu";
+        exec = "${<bin/rofi/filemenu>}";
       })
       (makeDesktopItem {
         name = "rofi-filemenu-scratch";
         desktopName = "Open Directory in Scratch Terminal";
         icon = "folder";
-        exec = "${<config/rofi>}/bin/rofi-filemenu -x";
+        exec = "${<bin/rofi/filemenu>} -x";
       })
 
       (makeDesktopItem {

@@ -1,2 +1,0 @@
-#!/usr/bin/env sh
-rofi -show window -show-icons -theme theme/windowmenu.rasi

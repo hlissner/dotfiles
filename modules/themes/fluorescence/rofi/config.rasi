@@ -1,0 +1,114 @@
+/* -*- mode: css; -*- */
+configuration {
+  icon-theme:       "Paper";
+  cycle:            true;
+  disable-history:  false;
+  monitor:          "-4";
+}
+
+* {
+  accent:   #bd93f9;
+  bg:       #1E2029FA;
+  bg-light: #1c1c1c;
+  bg-focus: #282a36;
+  bg-dark:  #181a23;
+  fg:       #bbc2cf;
+  fg-list:  #bbc2cf;
+  on:       #8BD49C;
+  off:      #cc6666;
+
+  magenta: #bd93f9;
+  blue:    #61bfff;
+
+  text-font:        "Fira Sans 16";
+  text-mono-font:   "Fira Code 14";
+  icon-font:        "Hurmit Nerd Font Mono 26";
+
+  background-color: transparent;
+  text-color: @fg-list;
+  font: @text-font;
+  border-color: @bg-dark;
+}
+
+
+/**** Layout ****/
+window {
+  width:    34%;
+  y-offset: -25%;
+  anchor:   north;
+  location: center;
+  border: 1px;
+  border-radius: 6px;
+  children: [ inputbar, listview ];
+}
+listview {
+  lines: 16;
+  fixed-height: false;
+  /* reverse: true; */
+  margin: -2px 0 0;
+  columns: 1;
+  scrollbar: true;
+  spacing: 1px;
+}
+scrollbar {
+  handle-width: 1px;
+}
+inputbar {
+  children: [ textbox-icon, prompt, entry ];
+  border: 0 0 1px;
+}
+textbox-icon, prompt {
+  padding: 11px;
+  expand: false;
+  border: 0 1px 0 0;
+  margin: 0 -2px 0 0;
+}
+textbox-icon {
+  padding: 7px -6px 0;
+}
+entry, element {
+  padding: 11px 14px;
+}
+textbox {
+  padding: 24px;
+  margin: 20px;
+}
+
+
+/**** Looks ****/
+scrollbar {
+  background-color: @bg-dark;
+  handle-color: @accent;
+  border-color: @bg-dark;
+}
+listview, inputbar {
+  background-color: @bg-dark;
+}
+textbox-icon, prompt, entry {
+  text-color: @accent;
+}
+prompt, entry {
+  background-color: @bg-focus;
+}
+textbox-icon, prompt {
+  background-color: #2f313d;
+}
+prompt {
+  background-color: @bg-focus;
+}
+textbox-icon {
+  font: @icon-font;
+}
+entry {
+  font: @text-font-mono;
+  text-color: @fg;
+}
+
+element {
+  background-color: @bg;
+  text-color: @fg;
+}
+element selected {
+  background-color: @bg-dark;
+  text-color: @accent;
+}

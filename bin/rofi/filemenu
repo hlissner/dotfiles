@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
-DIR="$(fd -L --type d . $HOME | rofi -dmenu -i -p files -columns 1 -theme theme/appmenu.rasi)"
+cd $HOME
+DIR="$(fd -L -d 4 --type d . | rofi -dmenu -i -p "~/" -theme theme/filemenu.rasi)"
 if [ -d "$DIR" ]; then
   cd "$DIR"
   if [[ $1 == "-x" ]]; then

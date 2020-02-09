@@ -1,0 +1,31 @@
+#!/usr/bin/env sh
+
+rofi_command="rofi -theme theme/powermenu.rasi"
+
+### Options ###
+power_off="\tShutdown"
+reboot="\tReboot"
+lock="\tLock"
+suspend="鈴\tSleep"
+log_out="\tLogout"
+# Variable passed to rofi
+options="$power_off\n$reboot\n$lock\n$suspend\n$log_out"
+
+case "$(echo -e "$options" | $rofi_command -dmenu -selected-row 2)" in
+    $power_off)
+        systemctl poweroff
+        ;;
+    $reboot)
+        systemctl reboot
+        ;;
+    $lock)
+        zzz
+        ;;
+    $suspend)
+        dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Pause
+        systemctl suspend
+        ;;
+    $log_out)
+        bspc quit
+        ;;
+esac

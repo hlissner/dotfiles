@@ -10,18 +10,11 @@ super + t
 super + apostrophe
 	bspc window -s last
 
-# focus/swap the node in the given direction
-super + {_,ctrl +}{h,j,k,l}
-	bspc-focus {_,-m }{west,south,north,east}
-
-super + shift + {_,ctrl +}{h,j,k,l}
-	bspc-swap {_,-m }{west,south,north,east}
-
-super + {_,shift +}{1-9,0}
-	bspc {desktop -f,node -d} {1-9,10}
-
 super + Return
 	xst -e bash -c "tmux new || tmux attach"
+
+ctrl + super + Return
+	xst
 
 super + grave
 	scratch
@@ -30,13 +23,16 @@ super + shift + grave
 	emacsclient -e '(open-scratch-frame)'
 
 super + space
-	rofi-appmenu
+	~/.dotfiles/bin/rofi/appmenu
 
 super + Tab
-	rofi-windowmenu
+	~/.dotfiles/bin/rofi/windowmenu
 
 super + backslash
-	rofi-passmenu
+	~/.dotfiles/bin/rofi/passmenu
+
+super + slash
+	~/.dotfiles/bin/rofi/filemenu -x
 
 super + Escape
 	pkill -USR1 -x sxhkd
@@ -48,9 +44,45 @@ super + Escape
 #
 ##
 
-# Toggle floating/fullscreen
+## Toggle floating/fullscreen
 super + {_,ctrl + }f
 	bspc node -t ~{floating,fullscreen}
+
+
+super + {_,ctrl +}{h,j,k,l}
+	~/.dotfiles/bin/bspwm/focus {_,-m }{west,south,north,east}
+
+super + shift + {_,ctrl +}{h,j,k,l}
+	~/.dotfiles/bin/bspwm/swap {_,-m }{west,south,north,east}
+
+
+## Resize by preselection
+super + alt + {1-9}
+	~/.dotfiles/bin/bspwm/presel 0.{1-9}
+
+super + alt + {h,j,k,l}
+	bspc node -p {west,south,north,east}
+
+super + alt + Return
+	~/.dotfiles/bin/bspwm/subtract-presel
+
+super + alt + Delete
+	bspc node -p cancel
+
+super + {_,shift +}{1-9,0}
+	bspc {desktop -f,node -d} {1-9,10};
+
+# expand a window by moving one of its side outward
+super + {Left,Down,Up,Right}
+	bspc node -z {left -40 0,bottom 0 40,top 0 -40,right 40 0}
+
+# contract a window by moving one of its side inward
+super + ctrl + {Left,Down,Up,Right}
+	bspc node -z {right -40 0,top 0 40,bottom 0 -40,left 40 0}
+
+# move a floating window
+super + shift + {Left,Down,Up,Right}
+	bspc node -v {-40 0,0 40,0 -40,40 0}
 
 
 #
@@ -61,10 +93,10 @@ Print
 	scrcap
 # screencast region to mp4
 super + Print
-	scrrec -s ~/shared/$(date +%F-%T).mp4
+	scrrec -s ~/recordings/$(date +%F-%T).mp4
 # screencast region to gif
 super + ctrl + Print
-	scrrec -s ~/shared/$(date +%F-%T).gif
+	scrrec -s ~/recordings/$(date +%F-%T).gif
 
 XF86MonBrightnessUp
 	light -A 5

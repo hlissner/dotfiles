@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 SCRID=scratch
-CMD='tmux new-session -A -s scratch -n scratch'
+CMD=${1:-'tmux new-session -A -s scratch -n scratch'}
 focused=$(xdotool getactivewindow)
 scratch=$(xdotool search --onlyvisible --classname $SCRID)
 if [[ -n $scratch ]]; then
@@ -12,16 +12,13 @@ if [[ -n $scratch ]]; then
     fi
 elif command -v alacritty >/dev/null; then
     alacritty --class $SCRID \
-        -d 90 26 \
         -e $SHELL -c "$CMD"
 elif command -v urxvt >/dev/null; then
     urxvt -name $SCRID \
-          -geometry 100x26 \
           -e $SHELL -c "$CMD"
 elif command -v xst >/dev/null; then
     xst -t $SCRID -n $SCRID -c $SCRID \
         -f "$(xrdb -query | grep 'scratch\.font' | cut -f2)" \
-        -g 100x26 \
         -e $SHELL -c "$CMD"
 else
     >&2 echo "No shell to launch the scratch terminal with"

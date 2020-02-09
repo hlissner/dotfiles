@@ -1,0 +1,14 @@
+/* -*- mode: css; -*- */
+
+@import "config.rasi"
+
+window {
+  width: 44%;
+}
+textbox-icon {
+  str: " 爵 ";
+}
+
+prompt {
+  enabled: false;
+}

@@ -1,0 +1,23 @@
+/** -*- mode: css; -*-
+ * This theme is intended for a 5 items wide menu on a 1920x1080 pixels resolution.
+ * You may have to tweak values such as the window padding if you have a different resolution.
+ */
+@import "appmenu.rasi"
+
+window {
+  children: [ listview ];
+  width: 500px;
+}
+
+listview {
+  scrollbar: false;
+}
+
+element {
+  padding: 30px;
+  background-color: @bg-light;
+}
+element.selected {
+  background-color: @accent;
+  text-color: @bg;
+}

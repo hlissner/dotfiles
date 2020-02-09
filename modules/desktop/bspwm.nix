@@ -25,15 +25,12 @@
     };
   };
 
-  my = {
-    env.PATH = [ <bin/bspwm> ];
-    home.xdg.configFile = {
-      "sxhkd".source = <config/sxhkd>;
-      # link recursively so other modules can link files in their folders
-      "bspwm" = {
-        source = <config/bspwm>;
-        recursive = true;
-      };
+  my.home.xdg.configFile = {
+    "sxhkd".source = <config/sxhkd>;
+    # link recursively so other modules can link files in their folders
+    "bspwm" = {
+      source = <config/bspwm>;
+      recursive = true;
     };
   };
 }

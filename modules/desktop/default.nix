@@ -5,8 +5,11 @@
     ## Desktop apps
     ./apps/redshift.nix
     ./apps/rofi.nix     # My launcher
-    ./apps/thunar.nix   # I often need a thumbnail browser to show off, peruse
-                        # or organize photos, design work, or digital art.
+
+    # I often need a thumbnail browser to show off, peruse or organize photos,
+    # design work, or digital art.
+    # ./apps/nautilus.nix
+    ./apps/thunar.nix
 
     ## Terminal
     # ./apps/alacritty.nix
@@ -28,6 +31,13 @@
     xclip
     xdotool
     libqalculate  # calculator cli w/ currency conversion
+    (makeDesktopItem {
+      name = "scratch-calc";
+      desktopName = "Calculator";
+      icon = "calc";
+      exec = "scratch '${tmux}/bin/tmux new-session -s calc -n calc qalc'";
+      categories = "Development";
+    })
   ];
 
   ## Sound
@@ -59,8 +69,8 @@
     backend = "glx";
     vSync = true;
     opacityRules = [
-      "100:class_g = 'Firefox'"
-      "100:class_g = 'Vivaldi-stable'"
+      # "100:class_g = 'Firefox'"
+      # "100:class_g = 'Vivaldi-stable'"
       "100:class_g = 'VirtualBox Machine'"
       # Art/image programs where we need fidelity
       "100:class_g = 'Gimp'"
@@ -69,10 +79,18 @@
       "100:class_g = 'krita'"
       "100:class_g = 'feh'"
       "100:class_g = 'mpv'"
+      "100:class_g = 'Rofi'"
+      "100:class_g = 'Peek'"
+      "99:_NET_WM_STATE@:32a = '_NET_WM_STATE_FULLSCREEN'"
+    ];
+    shadowExclude = [
+      # Put shadows on notifications, the scratch popup and rofi only
+      "! name~='(scratch|Dunst)$'"
     ];
     settings.blur-background-exclude = [
       "window_type = 'dock'"
       "window_type = 'desktop'"
+      "class_g = 'Rofi'"
       "_GTK_FRAME_EXTENTS@:c"
     ];
   };

@@ -32,7 +32,7 @@
     ## Services
     <modules/services/syncthing.nix>
     ## Theme
-    <modules/themes/aquanaut>
+    <modules/themes/fluorescence>
   ];
 
   networking.networkmanager.enable = true;

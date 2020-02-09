@@ -1,0 +1,79 @@
+!! Colors
+#define blk  #1E2029
+#define bblk #282a36
+#define red  #ffb86c
+#define bred #de935f
+#define grn  #50fa7b
+#define bgrn #0189cc
+#define ylw  #f0c674
+#define bylw #f9a03f
+#define blu  #61bfff
+#define bblu #8be9fd
+#define mag  #bd93f9
+#define bmag #ff79c6
+#define cyn  #8be9fd
+#define bcyn #0189cc
+#define wht  #f8f8f2
+#define bwht #e2e2dc
+#define bg blk
+#define fg wht
+
+*.foreground:  fg
+*.background:  bg
+*.cursorColor: mag
+
+*.color0:  blk
+*.color8:  bblk
+*.color1:  red
+*.color9:  bred
+*.color2:  grn
+*.color10: bgrn
+*.color3:  ylw
+*.color11: bylw
+*.color4:  blu
+*.color12: bblu
+*.color5:  mag
+*.color13: bmag
+*.color6:  cyn
+*.color14: bcyn
+*.color7:  wht
+*.color15: bwht
+
+! greys
+*.color234: #1E2029
+*.color235: #282a36
+*.color236: #373844
+*.color237: #44475a
+*.color239: #565761
+*.color240: #6272a4
+*.color241: #b6b6b2
+
+
+!! general
+scratch.font: Fira Code:pixelsize=16
+
+
+!! xst
+st.font: Fira Code:pixelsize=12
+
+
+!! urxvt
+URxvt*depth:                   32
+URxvt*.background:             blk
+URxvt*.borderless:             1
+URxvt*.buffered:               true
+URxvt*.cursorBlink:            true
+URxvt*.font:                   xft:Fira Code:pixelsize=12
+URxvt*.internalBorder:         10
+URxvt*.letterSpace:            0
+URxvt*.lineSpace:              0
+URxvt*.loginShell:             false
+URxvt*.matcher.button:         1
+URxvt*.matcher.rend.0:         Uline Bold fg5
+URxvt*.saveLines:              5000
+URxvt*.scrollBar:              false
+URxvt*.underlineColor:         grey
+URxvt.clipboard.autocopy:      true
+URxvt.iso14755:                false
+URxvt.iso14755_52:             false
+URxvt.perl-ext-common:         default,matcher
