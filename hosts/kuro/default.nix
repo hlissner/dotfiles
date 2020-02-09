@@ -21,6 +21,7 @@
     <modules/shell/gnupg.nix>
     <modules/shell/pass.nix>
     <modules/shell/tmux.nix>
+    <modules/shell/ranger.nix>
     <modules/shell/zsh.nix>
     ## Project-based
     <modules/chat.nix>       # discord, mainly
