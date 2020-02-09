@@ -51,7 +51,13 @@
         name = "sleep";
         desktopName = "System: Sleep";
         icon = "system-suspend";
-        exec = "systemctl suspend";
+        exec = "zzz -f";
+      })
+      (makeDesktopItem {
+        name = "lock-display";
+        desktopName = "Lock screen";
+        icon = "system-lock-screen";
+        exec = "zzz";
       })
     ];
   };
