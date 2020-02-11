@@ -2,6 +2,14 @@
 
 A tidy `$HOME` is a tidy mind.
 
+![Me looking busy](/../screenshots/fluorescence/fakebusy.png?raw=true)
+
+<p align="center">
+<span><img src="/../screenshots/fluorescence/desktop.png?raw=true" height="188" /></span>
+<span><img src="/../screenshots/fluorescence/rofi.png?raw=true" height="188" /></span>
+<span><img src="/../screenshots/fluorescence/tiling.png?raw=true" height="188" /></span>
+</p>
+
 It takes a touch of madness to use nixOS. I arrived here because there are a few
 special computers in my life, local and remote, and maintaining them was
 busywork I wouldn't wish on my worst enemy. 
