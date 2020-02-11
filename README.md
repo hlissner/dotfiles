@@ -1,6 +1,12 @@
 # Mein dotfiles
 
-A tidy `$HOME` is a tidy mind.
+There are a few, special computers in my life; local and remote. Maintaining
+them was busywork no sane individual wants to do. NixOS tempted me with the
+promise of glorious reproducibility, and declared its declarative-ness with
+enough chutzpah to make anime real again.
+
+XDG conventions in hand, I set out to conquer my white whale and annihilate what
+vestiges of my social life remain.
 
 ![Me looking busy](/../screenshots/fluorescence/fakebusy.png?raw=true)
 
@@ -10,14 +16,13 @@ A tidy `$HOME` is a tidy mind.
 <span><img src="/../screenshots/fluorescence/tiling.png?raw=true" height="188" /></span>
 </p>
 
-It takes a touch of madness to use nixOS. I arrived here because there are a few
-special computers in my life, local and remote, and maintaining them was
-busywork I wouldn't wish on my worst enemy. 
-
-Nix, with its luscious tendrils, drew me in with a promise of glorious
-reproducibility and declared its declarative-ness with enough chutzpah to make
-anime real again. So, with XDG conventions in hand, I set out to conquer my
-white whale and annihilate what vestiges of my social life remain.
++ **Operating System:** NixOS 19.09
++ **Shell:** zsh + zgen
++ **DE/WM:** bspwm + polybar
++ **Editor:** [Doom Emacs][doom-emacs] (and occasionally [vim][vimrc])
++ **Terminal:** st
++ **Launcher:** Rofi
++ **Browser:** Firefox
 
 ## Quick start
 
@@ -26,7 +31,7 @@ white whale and annihilate what vestiges of my social life remain.
 curl https://raw.githubusercontent.com/hlissner/dotfiles/nixos/deploy | sh
 ```
 
-This is equivalent to:
+Which is equivalent to:
 
 ```sh
 DOTFILES=/home/$USER/.dotfiles
@@ -58,15 +63,6 @@ nixos-install --root /mnt -I "my=/etc/dotfiles"
 + `make install` = `nixos-generate-config --root $PREFIX && nixos-install --root
   $PREFIX`
 + `make gc` = `nix-collect-garbage -d` (use sudo to clear system profile)
-
-## Overview
-
-+ OS: NixOS 19.09
-+ Shell: zsh
-+ DE/WM: bspwm + polybar
-+ Editor: [Doom Emacs][doom-emacs] (and occasionally [vim][vimrc])
-+ Terminal: st
-+ Browser: firefox (waiting for qutebrowser to mature)
 
 
 [doom-emacs]: https://github.com/hlissner/doom-emacs
