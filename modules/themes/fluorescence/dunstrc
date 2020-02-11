@@ -10,7 +10,7 @@ format = "<b>%s</b>\n%b"
 frame_color = "#1a1c25"
 frame_width = 1
 # geometry [{width}]x{height}][+/-{x}+/-{y}]
-geometry = "440x15-22+58"
+geometry = "440x15-26+26"
 history_length = 20
 horizontal_padding = 16
 icon_position = right
