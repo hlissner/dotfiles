@@ -17,12 +17,15 @@ vestiges of my social life remain.
 </p>
 
 + **Operating System:** NixOS 19.09
-+ **Shell:** zsh + zgen
-+ **DE/WM:** bspwm + polybar
++ **Shell:** zsh 5.7.1 + zgen
++ **DM:** lightdm + lightdm-mini-greeter
++ **WM:** bspwm + polybar
 + **Editor:** [Doom Emacs][doom-emacs] (and occasionally [vim][vimrc])
 + **Terminal:** st
-+ **Launcher:** Rofi
-+ **Browser:** Firefox
++ **Launcher:** rofi
++ **Browser:** firefox
++ **GTK Theme:** [Ant Dracula](https://github.com/EliverLara/Ant-Dracula)
++ **Icon Theme:** [Paper Mono Dark](https://github.com/snwh/paper-icon-theme)
 
 ## Quick start
 
