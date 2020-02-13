@@ -37,8 +37,9 @@ curl https://raw.githubusercontent.com/hlissner/dotfiles/nixos/deploy | sh
 Which is equivalent to:
 
 ```sh
+USER=${USER:-hlissner}
 DOTFILES=/home/$USER/.dotfiles
-git clone https://github.com/hlissner/dotfiles $DOTFILES
+git clone https://github.com/hlissner/dotfiles /etc/dotfiles
 ln -s /etc/dotfiles $DOTFILES
 chown -R $USER:users $DOTFILES
 
@@ -50,9 +51,6 @@ nix-channel --add "https://nixos.org/channels/nixpkgs-unstable" nixpkgs-unstable
 # make /etc/nixos/configuration.nix
 nixos-generate-config --root /mnt
 echo "import /etc/dotfiles \"$$(hostname)\"" >/mnt/etc/nixos/configuration.nix
-
-# make secrets.nix
-nix-shell -p gnupg --run "gpg -dq secrets.nix.gpg >secrets.nix"
 
 # make install
 nixos-install --root /mnt -I "my=/etc/dotfiles"
