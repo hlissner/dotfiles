@@ -10,8 +10,6 @@
 # Usage: scrrec somefile.mp4
 #        scrrec another.gif
 
-shift # Get rid of extraneous nix-shell argument
-
 is_script=
 geom=
 delay=1
@@ -62,25 +60,28 @@ recording-start() {
   local mp4dest=
   [[ $dest == *.gif ]] && mp4dest="${dest%.*}.mp4"
   countdown
-  touch $stopfile
-  ffmpeg $ffmpeg_opts "${mp4dest:-$dest}" <$stopfile
+  ffmpeg $ffmpeg_opts "${mp4dest:-$dest}" &
+  pid=$!
+  echo $pid >$stopfile
+  wait $pid
   rm -f $stopfile
   if [[ -f "$mp4dest" ]]; then
     mov2gif "$mp4dest" "$dest" && rm -fv "$mp4dest"
   fi
-  echo "$dest" | xclip -selection clipboard -in
+  echo -n "$dest" | xclip -selection clipboard -in
   notify-send "Screencast successful" "Saved to $dest\nAnd copied to your clipboard!"
 }
 
 
 # If a recording session is already active, stop that one.
-if [[ $is_script && -f $stopfile ]]; then
-  echo q > $stopfile
+if [[ -n "$is_script" && -f "$stopfile" ]]; then
+  kill $(cat $stopfile)
   echo "Stopped previous recording"
   exit 0
 fi
 
 read -r W H X Y < <(select-region)
+[[ -z "$W$H$X$Y" ]] && exit 1
 
 # Compton with blur and/or transparencies cause unbearable flickering in
 # recordings, so temporarily disable it.
