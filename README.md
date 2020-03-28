@@ -1,8 +1,8 @@
 # Mein dotfiles
 
 There are a few, special computers in my life; local and remote. Maintaining
-them was busywork no sane individual wants to do. NixOS tempted me with the
-promise of glorious reproducibility, and declared its declarative-ness with
+them is busywork I wouldn't wish on my worst enemy. NixOS tempted me with the
+promise of glorious reproducibility and declared its declarative-ness with
 enough chutzpah to make anime real again.
 
 XDG conventions in hand, I set out to conquer my white whale and annihilate what
