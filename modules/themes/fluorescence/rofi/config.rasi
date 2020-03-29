@@ -20,9 +20,9 @@ configuration {
   magenta: #bd93f9;
   blue:    #61bfff;
 
-  text-font:        "Fira Sans 16";
-  text-mono-font:   "Fira Code 14";
-  icon-font:        "Hurmit Nerd Font Mono 26";
+  text-font:      "Fira Sans 15";
+  text-mono-font: "Fira Code 13";
+  icon-font:      "Hurmit Nerd Font Mono 26";
 
   background-color: transparent;
   text-color: @fg-list;
@@ -33,29 +33,45 @@ configuration {
 
 /**** Layout ****/
 window {
-  width:    34%;
-  y-offset: -25%;
+  width:    1000px;
+  y-offset: -50px;
   anchor:   north;
   location: center;
   border: 1px;
-  border-radius: 6px;
+  border-radius: 6px 6px 0 0;
   children: [ inputbar, listview ];
+
 }
+
 listview {
-  lines: 16;
+  lines: 12;
   fixed-height: false;
   /* reverse: true; */
-  margin: -2px 0 0;
-  columns: 1;
+  columns: 2;
   scrollbar: true;
   spacing: 1px;
+  /* Remove strange gap between listview and inputbar */
+  margin: -2px 0 0;
 }
+
+/*
+  TODO Not supported in stable branch of rofi
+  @media only (max-height: 1080px) {
+    window {
+      y-offset: -30%;
+    }
+    listview {
+      lines: 14;
+    }
+  }
+*/
+
 scrollbar {
   handle-width: 1px;
 }
 inputbar {
   children: [ textbox-icon, prompt, entry ];
-  border: 0 0 1px;
+  border: 0 0 0;
 }
 textbox-icon, prompt {
   padding: 11px;
@@ -67,7 +83,7 @@ textbox-icon {
   padding: 7px -6px 0;
 }
 entry, element {
-  padding: 11px 14px;
+  padding: 10px 13px;
 }
 textbox {
   padding: 24px;

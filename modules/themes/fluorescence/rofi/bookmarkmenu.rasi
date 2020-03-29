@@ -2,9 +2,10 @@
 
 @import "config.rasi"
 
-window {
-  width: 44%;
+listview {
+  columns: 1;
 }
+
 textbox-icon {
   str: " 爵 ";
 }

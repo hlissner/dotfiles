@@ -69,7 +69,7 @@ font-2 = "Siji:pixelsize=10;2"
 ; modules-left = volume pad cpu memory pad pkg mail
 modules-left = pulseaudio pad cpu memory
 modules-center = bspwm
-modules-right = battery wlan syncthing redshift pad date
+modules-right = wlan syncthing redshift pad battery pad date
 
 ;tray-position = center
 ;tray-padding = 2
@@ -81,13 +81,13 @@ type = internal/bspwm
 pin-workspaces = true
 enable-click = true
 
-ws-icon-0 = 1;
-ws-icon-1 = 2;
-ws-icon-2 = 3;
-ws-icon-3 = 4;
-ws-icon-4 = 5;
-ws-icon-5 = 6;
-ws-icon-default = x
+# ws-icon-0 = 1;
+# ws-icon-1 = 2;
+# ws-icon-2 = 3;
+# ws-icon-3 = 4;
+# ws-icon-4 = 5;
+# ws-icon-5 = 6;
+ws-icon-default = 
 
 format = <label-state> <label-mode>
 label-padding = 1
@@ -291,13 +291,15 @@ format-full-underline = ${self.format-charging-underline}
 ramp-capacity-0 = 
 ramp-capacity-1 = 
 ramp-capacity-2 = 
-ramp-capacity-foreground = ${colors.fg-alt}
+ramp-capacity-0-foreground = ${colors.red}
+ramp-capacity-1-foreground = #575864
+ramp-capacity-2-foreground = ${colors.fg-alt}
 
 animation-charging-0 = 
 animation-charging-1 = 
 animation-charging-2 = 
-animation-charging-foreground = ${colors.fg-alt}
-animation-charging-framerate = 750
+animation-charging-framerate = 1000
+animation-charging-foreground = ${colors.fg}
 
 
 ;=====================================================
