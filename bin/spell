@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-# Find the correct spelling of a word. Uses (and requires) skim to select the
+# Find the correct spelling of a word. Uses (and requires) fzf to select the
 # correct word. This output can be piped to something like dict to find
 # definitions/synonyms.
 #
-# Requires: aspell, skim
+# Requires: aspell, fzf
 # Usage: spell mispeling
 # Example: dict $(spell mispeling)
 
@@ -14,7 +14,7 @@ if [[ "$result" == '*' ]]; then
 else
   words=$(echo "$result" | sed $'s/[:,] /\\\n/g' | tail -n +2)
   if (( $(wc -l <<< "$words") > 1 )) && command -v sk >/dev/null; then
-    sk <<< "$words"
+    fzf <<< "$words"
   else
     echo "$words"
   fi
