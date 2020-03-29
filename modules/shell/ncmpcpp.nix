@@ -1,21 +1,29 @@
-{ config, lib, pkgs, ... }:
-
+{ config, options, lib, pkgs, ... }:
+with lib;
 {
-  my.packages = with pkgs; [
-    (ncmpcpp.override { visualizerSupport = true; })
-  ];
+  options.modules.shell.ncmpcpp = {
+    enable = mkOption {
+      type = types.bool;
+      default = false;
+    };
+  };
 
-  my.env.MPD_HOME = "$XDG_CONFIG_HOME/mpd";
-  my.env.NCMPCPP_HOME = "$XDG_CONFIG_HOME/ncmpcpp";
+  config = mkIf config.modules.shell.ncmpcpp.enable {
+    my.packages = with pkgs; [
+      (ncmpcpp.override { visualizerSupport = true; })
+    ];
 
-  my.alias.rate = "mpd-rate";
-  my.alias.mpcs = "mpc search any";
-  my.alias.mpcsp = "mpc searchplay any";
+    my.alias.rate = "mpd-rate";
+    my.alias.mpcs = "mpc search any";
+    my.alias.mpcsp = "mpc searchplay any";
 
-  # Symlink these one at a time because ncmpcpp writes other files to
-  # ~/.config/ncmpcpp, so it needs to be writeable.
-  my.home.xdg.configFile = {
-    "ncmpcpp/config".source = <config/ncmpcpp/config>;
-    "ncmpcpp/bindings".source = <config/ncmpcpp/bindings>;
+    my.env.NCMPCPP_HOME = "$XDG_CONFIG_HOME/ncmpcpp";
+
+    # Symlink these one at a time because ncmpcpp writes other files to
+    # ~/.config/ncmpcpp, so it needs to be writeable.
+    my.home.xdg.configFile = {
+      "ncmpcpp/config".source = <config/ncmpcpp/config>;
+      "ncmpcpp/bindings".source = <config/ncmpcpp/bindings>;
+    };
   };
 }

@@ -1,4 +1,4 @@
-# hosts/default.nix --- settings common to all my systems
+# hosts/common.nix --- settings common to all my systems
 
 { pkgs, ... }:
 {
@@ -12,7 +12,6 @@
     wget
     sshfs
   ];
-
 
   ### My user settings
   my.username = "hlissner";

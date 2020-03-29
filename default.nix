@@ -6,7 +6,7 @@ device:
   networking.hostName = lib.mkDefault device;
 
   imports = [
-    ./options.nix
+    ./modules
     "${./hosts}/${device}"
   ];
 
@@ -16,15 +16,15 @@ device:
     # So we can use absolute import paths
     "bin=/etc/dotfiles/bin"
     "config=/etc/dotfiles/config"
-    "modules=/etc/dotfiles/modules"
   ];
-  # ...but we still need to set nixpkgs.overlays to make them visible to the
-  # rebuild process, however...
+  # Add custom packages & unstable channel, so they can be accessed via pkgs.*
   nixpkgs.overlays = import ./overlays.nix;
   nixpkgs.config.allowUnfree = true;  # forgive me Stallman senpai
 
-  # For instant nix-shell scripts
-  environment.systemPackages = [ pkgs.my.cached-nix-shell ];
+  environment.systemPackages = with pkgs; [
+    gnumake               # for our own makefile
+    my.cached-nix-shell   # for instant nix-shell scripts
+  ];
   environment.shellAliases = {
     nix-env = "NIXPKGS_ALLOW_UNFREE=1 nix-env";
     nix-shell = ''NIX_PATH="nixpkgs-overlays=/etc/dotfiles/overlays.nix:$NIX_PATH" nix-shell'';

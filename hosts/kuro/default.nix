@@ -1,40 +1,72 @@
 # Kuro -- my desktop
 
-{ pkgs, ... }:
+{ pkgs, options, config, ... }:
 {
   imports = [
     ../personal.nix   # common settings
     ./hardware-configuration.nix
-    ## Desktop/shell environment
-    <modules/desktop/bspwm.nix>
-    # <modules/desktop/stumpwm.nix>
-    ## Apps
-    <modules/browser/firefox.nix>
-    <modules/dev/cc.nix>
-    <modules/dev/rust.nix>
-    # <modules/dev/common-lisp.nix>
-    <modules/editors/emacs.nix>
-    <modules/editors/vim.nix>
-    <modules/gaming/steam.nix>
-    <modules/shell/direnv.nix>
-    <modules/shell/git.nix>
-    <modules/shell/gnupg.nix>
-    <modules/shell/pass.nix>
-    <modules/shell/tmux.nix>
-    <modules/shell/ranger.nix>
-    <modules/shell/zsh.nix>
-    ## Project-based
-    <modules/chat.nix>       # discord, mainly
-    <modules/recording.nix>  # recording video & audio
-    <modules/daw.nix>        # making music
-    <modules/music.nix>      # playing music
-    <modules/graphics.nix>   # art & design
-    <modules/vm.nix>         # virtualbox for testing
-    ## Services
-    <modules/services/syncthing.nix>
-    ## Theme
-    <modules/themes/fluorescence>
   ];
+
+  modules = {
+    desktop = {
+      bspwm.enable = true;
+
+      apps.rofi.enable = true;
+      apps.discord.enable = true;
+      # apps.skype.enable = true;
+      apps.daw.enable = true;        # making music
+      apps.graphics.enable = true;   # raster/vector/sprites
+      apps.recording.enable = true;  # recording screen/audio
+      apps.vm.enable = true;         # virtualbox for testing
+
+      term.default = "xst";
+      term.st.enable = true;
+
+      browsers.default = "firefox";
+      browsers.firefox.enable = true;
+      # browsers.qutebrowser.enable = true;
+
+      # gaming.emulators.psx.enable = true;
+      # gaming.steam.enable = true;
+      # gaming.factorio.enable = true;
+    };
+
+    editors = {
+      default = "nvim";
+      emacs.enable = true;
+      vim.enable = true;
+    };
+
+    dev = {
+      cc.enable = true;
+      common-lisp.enable = true;
+      rust.enable = true;
+      scala.enable = true;
+    };
+
+    media = {
+      mpv.enable = true;
+      spotify.enable = true;
+    };
+
+    shell = {
+      direnv.enable = true;
+      git.enable = true;
+      gnupg.enable = true;
+      # weechat.enable = true;
+      pass.enable = true;
+      tmux.enable = true;
+      ranger.enable = true;
+      zsh.enable = true;
+    };
+
+    services = {
+      syncthing.enable = true;
+    };
+
+    # themes.aquanaut.enable = true;
+    themes.fluorescence.enable = true;
+  };
 
   networking.networkmanager.enable = true;
   time.timeZone = "America/Toronto";

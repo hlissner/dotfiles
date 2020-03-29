@@ -1,15 +1,24 @@
-{ config, lib, pkgs, ... }:
-
+{ config, options, pkgs, lib, ... }:
+with lib;
 {
-  networking.firewall.allowedTCPPorts = [ 80 443 ];
+  options.modules.services.nginx = {
+    enable = mkOption {
+      type = types.bool;
+      default = false;
+    };
+  };
 
-  services.nginx = {
-    enable = true;
+  config = mkIf config.modules.services.nginx.enable {
+    networking.firewall.allowedTCPPorts = [ 80 443 ];
 
-    # Use recommended settings
-    recommendedGzipSettings = true;
-    recommendedOptimisation = true;
-    recommendedProxySettings = true;
-    recommendedTlsSettings = true;
+    services.nginx = {
+      enable = true;
+
+      # Use recommended settings
+      recommendedGzipSettings = true;
+      recommendedOptimisation = true;
+      recommendedProxySettings = true;
+      recommendedTlsSettings = true;
+    };
   };
 }

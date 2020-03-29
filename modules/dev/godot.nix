@@ -3,9 +3,19 @@
 # Gamedev is my hobby. C++ or Rust are my main drivers (and occasionally Lua),
 # but to prototype (for 3D, mainly) I'll occasionally reach for godot.
 
-{ pkgs, ... }:
+{ config, options, lib, pkgs, ... }:
+with lib;
 {
-  my.packages = with pkgs; [
-    godot
-  ];
+  options.modules.dev.godot = {
+    enable = mkOption {
+      type = types.bool;
+      default = false;
+    };
+  };
+
+  config = mkIf config.modules.dev.godot.enable {
+    my.packages = with pkgs; [
+      godot
+    ];
+  };
 }

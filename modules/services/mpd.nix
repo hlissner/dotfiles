@@ -5,6 +5,8 @@
     mpc_cli
   ];
 
+  my.env.MPD_HOME = "$XDG_CONFIG_HOME/mpd";
+
   services.mpd = {
     enable = true;
     musicDirectory = "/home/hlissner/music";

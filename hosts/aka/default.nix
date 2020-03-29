@@ -5,15 +5,15 @@
   imports = [
     ../personal.nix   # common settings
     ./hardware-configuration.nix
-    ## Apps
-    <modules/shell/zsh.nix>
-    ## Services
-    <modules/services/ssh.nix>
-    # <modules/services/plex.nix>
-    <modules/services/jellyfin.nix>
-    <modules/services/syncthing.nix>
-    <modules/services/calibre-server.nix>
   ];
+
+  modules = {
+    shell.zsh.enable = true;
+    services.calibre.enable = true;
+    services.jellyfin.enable = true;
+    services.ssh.enable = true;
+    services.syncthing.enable = true;
+  };
 
   my.zsh.rc = lib.readFile <modules/themes/aquanaut/zsh/prompt.zsh>;
 

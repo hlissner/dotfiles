@@ -7,19 +7,29 @@
 # is no formal proof of your claims for safety, but who said you have to solve
 # all the world's problems to be wonderful?
 
-{ lib, pkgs, ... }:
+{ config, options, lib, pkgs, ... }:
+with lib;
 {
-  my = {
-    packages = with pkgs; [
-      rustup
-    ];
+  options.modules.dev.rust = {
+    enable = mkOption {
+      type = types.bool;
+      default = false;
+    };
+  };
 
-    env.RUSTUP_HOME = "$XDG_DATA_HOME/rustup";
-    env.CARGO_HOME = "$XDG_DATA_HOME/cargo";
-    env.PATH = [ "$CARGO_HOME/bin" ];
+  config = mkIf config.modules.dev.rust.enable {
+    my = {
+      packages = with pkgs; [
+        rustup
+      ];
 
-    alias.rs  = "rustc";
-    alias.rsp = "rustup";
-    alias.ca  = "cargo";
+      env.RUSTUP_HOME = "$XDG_DATA_HOME/rustup";
+      env.CARGO_HOME = "$XDG_DATA_HOME/cargo";
+      env.PATH = [ "$CARGO_HOME/bin" ];
+
+      alias.rs  = "rustc";
+      alias.rsp = "rustup";
+      alias.ca  = "cargo";
+    };
   };
 }

@@ -1,10 +1,8 @@
 { config, lib, pkgs, ... }:
 
-# let unstable = import <nixos-unstable> {};
-# in
 {
   imports = [
-    ./.  # common settings
+    ./common.nix
   ];
 
   environment.systemPackages = with pkgs; [
@@ -15,7 +13,9 @@
 
   # unstable.services.picom.enable = true;
   services = {
+    redshift.enable = true;
     xserver = {
+      enable = true;
       windowManager.default = "stumpwm";
       windowManager.stumpwm.enable = true;
       displayManager.lightdm.enable = true;

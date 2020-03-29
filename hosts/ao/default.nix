@@ -5,15 +5,16 @@
   imports = [
     ../personal.nix
     ./hardware-configuration.nix
-    ## Apps
-    <modules/shell/git.nix>
-    <modules/shell/zsh.nix>
-    ## Services
-    <modules/services/ssh.nix>
-    <modules/services/nginx.nix>
-    <modules/services/gitea.nix>
-    <modules/services/syncthing.nix>
   ];
+
+  modules = {
+    shell.git.enable = true;
+    shell.zsh.enable = true;
+    services.ssh.enable = true;
+    services.nginx.enable = true;
+    services.gitea.enable = true;
+    services.syncthing.enable = true;
+  };
 
   my.zsh.rc = lib.readFile <modules/themes/aquanaut/zsh/prompt.zsh>;
 

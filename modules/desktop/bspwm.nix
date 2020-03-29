@@ -1,34 +1,43 @@
-{ config, lib, pkgs, ... }:
-
+{ config, options, lib, pkgs, ... }:
+with lib;
 {
   imports = [
-    ./.  # common settings
+    ./common.nix
   ];
 
-  environment.systemPackages = with pkgs; [
-    lightdm
-    dunst
-    libnotify
-    (polybar.override {
-      pulseSupport = true;
-      nlSupport = true;
-    })
-  ];
-
-  services = {
-    compton.enable = true;
-    xserver = {
-      windowManager.default = "bspwm";
-      windowManager.bspwm.enable = true;
-      displayManager.lightdm.enable = true;
-      displayManager.lightdm.greeters.mini.enable = true;
-    };
+  options.modules.desktop.bspwm = {
+    enable = mkOption { type = types.bool; default = false; };
   };
 
-  my.home.xdg.configFile = {
-    "sxhkd".source = <config/sxhkd>;
+  config = mkIf config.modules.desktop.bspwm.enable {
+    environment.systemPackages = with pkgs; [
+      lightdm
+      dunst
+      libnotify
+      (polybar.override {
+        pulseSupport = true;
+        nlSupport = true;
+      })
+    ];
+
+    services = {
+      compton.enable = true;
+      redshift.enable = true;
+      xserver = {
+        enable = true;
+        windowManager.default = "bspwm";
+        windowManager.bspwm = {
+          enable = true;
+          configFile = <config/bspwm/bspwmrc>;
+          sxhkd.configFile = <config/sxhkd/sxhkdrc>;
+        };
+        displayManager.lightdm.enable = true;
+        displayManager.lightdm.greeters.mini.enable = true;
+      };
+    };
+
     # link recursively so other modules can link files in their folders
-    "bspwm" = {
+    my.home.xdg.configFile."bspwm" = {
       source = <config/bspwm>;
       recursive = true;
     };
