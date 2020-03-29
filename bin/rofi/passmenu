@@ -6,7 +6,7 @@
 # Example: passmenu [RESUME]
 
 ROFI_CMD='rofi -dmenu -theme theme/passmenu.rasi'
-ROFI_MSG_CMD='rofi -theme theme/passmenu.rasi -markup -e'
+MSG_CMD='notify-send'
 set -e
 shopt -s nullglob globstar
 
@@ -47,7 +47,7 @@ else
 fi
 
 if [[ -z $entry ]]; then
-  $ROFI_MSG_CMD "<span foreground="red">Failed to select $entry</span>"
+  $MSG_CMD "Error!" "Failed to select $entry"
   exit 1
 fi
 
@@ -61,8 +61,8 @@ if [[ -n $secrets ]]; then
     otp) printf "%s" "$(pass otp -c "$entry")" ;;
     *) printf "%s" "$(awk -v "key=$field:" '$1 == key {print $2}' <<<"$secrets")" | xclip -selection clipboard -in ;;
   esac
-  $ROFI_MSG_CMD "Copied <b>$entry/$field</b> to clipboard for 45s"
+  $MSG_CMD "Success!" "Copied <b>$entry/$field</b> to clipboard for 45s"
 else
-  $ROFI_MSG_CMD "<span foreground="red">Failed to retrieve $entry</span>"
+  $MSG_CMD "Error!" "Failed to retrieve $entry"
   exit 2
 fi
