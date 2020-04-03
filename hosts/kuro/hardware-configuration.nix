@@ -19,6 +19,8 @@
   ## Ergodox
   my.packages = [ pkgs.teensy-loader-cli ];
   my.alias.teensyload = "sudo teensy-loader-cli -w -v --mcu=atmega32u4";
+  # Make ralt the compose key, so ralt+a+a = å or ralt+o+/ = ø
+  services.xserver.xkbOptions = "compose:ralt";
 
   ## GPU
   services.xserver.videoDrivers = [ "nvidia" ];
