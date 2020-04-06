@@ -41,7 +41,6 @@
       cc.enable = true;
       common-lisp.enable = true;
       rust.enable = true;
-      scala.enable = true;
     };
 
     media = {

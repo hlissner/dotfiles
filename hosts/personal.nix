@@ -49,9 +49,7 @@
     INPUTRC = "$XDG_CACHE_HOME/readline/inputrc";
     LESSHISTFILE = "$XDG_CACHE_HOME/lesshst";
     WGETRC = "$XDG_CACHE_HOME/wgetrc";
-    XAUTHORITY = "/tmp/Xauthority";
   };
-  my.init = "[ -e ~/.Xauthority ] && mv -f ~/.Xauthority \"$XAUTHORITY\"";
 
   # Prevents ~/.esd_auth files by disabling the esound protocol module for
   # pulseaudio, which I likely don't need. Is there a better way?
@@ -67,7 +65,7 @@
         "${paConfigFile}/default.pa";
 
   # Clean up leftovers, as much as we can
-  system.activationScripts.clearHome = ''
+  system.userActivationScripts.cleanupHome = ''
     pushd /home/${config.my.username}
     rm -rf .compose-cache .nv .pki .dbus .fehbg
     [ -s .xsession-errors ] || rm -f .xsession-errors*

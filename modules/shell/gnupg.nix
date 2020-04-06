@@ -16,8 +16,9 @@ in {
         pinentry
       ];
       env.GNUPGHOME = "$XDG_CONFIG_HOME/gnupg";
-      init = "mkdir -p \"$GNUPGHOME\" -m 700";
     };
+
+    system.activationScripts.setupGnuPG = "mkdir -p \"${config.my.env.GNUPGHOME}\" -m 700";
 
     programs.gnupg.agent = {
       enable = true;
