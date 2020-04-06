@@ -11,6 +11,10 @@ with lib;
       type = types.bool;
       default = false;
     };
+    profileName = mkOption {
+      type = types.str;
+      default = config.my.username;
+    };
   };
 
   config = mkIf config.modules.desktop.browsers.firefox.enable {
@@ -25,6 +29,24 @@ with lib;
         categories = "Network";
       })
     ];
+
     my.env.XDG_DESKTOP_DIR = "$HOME"; # (try to) prevent ~/Desktop
+
+    # Use a stable profile name so we can target it in themes
+    my.home.home.file =
+      let cfg = config.modules.desktop.browsers.firefox; in
+      {
+        ".mozilla/firefox/profiles.ini".text = ''
+          [Profile0]
+          Name=default
+          IsRelative=1
+          Path=${cfg.profileName}.default
+          Default=1
+
+          [General]
+          StartWithLastProfile=1
+          Version=2
+        '';
+      };
   };
 }
