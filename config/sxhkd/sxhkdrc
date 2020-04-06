@@ -113,11 +113,11 @@ XF86AudioRaiseVolume
 	amixer -q set Master 10%+ unmute
 
 XF86Audio{Play,Pause}
-	dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause
+	spt-send toggle
 XF86AudioNext
-	dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next
+	spt-send next
 XF86AudioPrev
-	dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous
+	spt-send prev
 
 # X86Search
 
