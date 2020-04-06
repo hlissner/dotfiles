@@ -25,21 +25,20 @@ with lib;
       redshift.enable = true;
       xserver = {
         enable = true;
-        windowManager.default = "bspwm";
-        windowManager.bspwm = {
-          enable = true;
-          configFile = <config/bspwm/bspwmrc>;
-          sxhkd.configFile = <config/sxhkd/sxhkdrc>;
-        };
         displayManager.lightdm.enable = true;
         displayManager.lightdm.greeters.mini.enable = true;
+        windowManager.default = "bspwm";
+        windowManager.bspwm.enable = true;
       };
     };
 
     # link recursively so other modules can link files in their folders
-    my.home.xdg.configFile."bspwm" = {
-      source = <config/bspwm>;
-      recursive = true;
+    my.home.xdg.configFile = {
+      "sxhkd".source = <config/sxhkd>;
+      "bspwm" = {
+        source = <config/bspwm>;
+        recursive = true;
+      };
     };
   };
 }
