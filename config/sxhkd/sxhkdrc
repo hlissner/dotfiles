@@ -13,7 +13,7 @@ super + apostrophe
 # Attach to a detached session. If none is available create a new one, rather
 # than attach to one that is already attached to elsewhere.
 super + Return
-	xst -e bash -c "(tmux ls | grep -vq attached && tmux at) || tmux"
+	xst -e bash -c "(tmux ls | grep -qEv 'attached|scratch' && tmux at) || tmux"
 
 ctrl + super + Return
 	xst
