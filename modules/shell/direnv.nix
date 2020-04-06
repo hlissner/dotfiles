@@ -9,7 +9,7 @@ with lib;
   config = mkIf config.modules.shell.direnv.enable {
     my = {
       packages = [ pkgs.direnv ];
-      zsh.rc = "_cache direnv hook zsh";
+      zsh.rc = ''eval "$(direnv hook zsh)"'';
     };
 
     services.lorri.enable = true;
