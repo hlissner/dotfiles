@@ -4,6 +4,7 @@ with lib;
   imports = [
     ./firefox.nix
     ./qutebrowser.nix
+    ./vimb.nix
     ./vivaldi.nix
   ];
 

@@ -25,6 +25,7 @@
       browsers.default = "firefox";
       browsers.firefox.enable = true;
       # browsers.qutebrowser.enable = true;
+      # browsers.vimb.enable = true;
 
       # gaming.emulators.psx.enable = true;
       # gaming.steam.enable = true;
