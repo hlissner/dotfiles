@@ -1,23 +1,3 @@
-# A tidy `$HOME` is a tidy mind
-
-+ Fanatical XDG compliance
-+ Closet Vim-_in_-Emacs evangelist
-+ Aesthetics are modularized into theme modules
-+ Tailored to a C++ GameDev hobbyist
-  + Love2D, godot, or phaser for rapid prototyping
-  + LMMS + Sunvox as my DAW
-  + GIMP & Aseprite for gfx
-+ Former Adobe cultist, trying real hard to like the open source alternatives.
-  + Photoshop -> GIMP & Krita
-  + Illustrator -> Inkscape
-  + InDesign or XD -> HTML + print stylesheets
-  + Premiere/After Effects -> [DaVinci
-    Resolve](https://www.blackmagicdesign.com/products/davinciresolve/) (how
-    dafuq is this free?)
-  + Animate/Flash -> [Aseprite](https://www.aseprite.org/)
-  + Audition -> Audacity
-+ *Works on my machine* ¯\\\_(ツ)_/¯
-
 ![Me looking busy](/../screenshots/fluorescence/fakebusy.png?raw=true)
 
 <p align="center">
@@ -25,6 +5,8 @@
 <span><img src="/../screenshots/fluorescence/rofi.png?raw=true" height="188" /></span>
 <span><img src="/../screenshots/fluorescence/tiling.png?raw=true" height="188" /></span>
 </p>
+
+# My dotfiles
 
 + **Operating System:** NixOS 19.09
 + **Shell:** zsh 5.7.1 + zgen
@@ -36,6 +18,8 @@
 + **Browser:** firefox
 + **GTK Theme:** [Ant Dracula](https://github.com/EliverLara/Ant-Dracula)
 + **Icon Theme:** [Paper Mono Dark](https://github.com/snwh/paper-icon-theme)
+
+*Works on my machine* ¯\\\_(ツ)_/¯
 
 ## Quick start
 
