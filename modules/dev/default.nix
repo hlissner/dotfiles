@@ -6,7 +6,7 @@
     ./cc.nix
     ./clojure.nix
     ./common-lisp.nix
-    # ./godot.nix
+    ./godot.nix
     # ./haskell.nix
     # ./latex.nix
     ./lua.nix
