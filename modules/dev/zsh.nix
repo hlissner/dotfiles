@@ -5,10 +5,20 @@
 # mortals to question the will of the ancient ones. If they want shell programs,
 # they get shell programs.
 
-{ pkgs, ... }:
+{ config, options, lib, pkgs, ... }:
+with lib;
 {
-  my.packages = with pkgs; [
-    shellcheck
-    my.zunit
-  ];
+  options.modules.dev.zsh = {
+    enable = mkOption {
+      type = types.bool;
+      default = false;
+    };
+  };
+
+  config = mkIf config.modules.dev.zsh.enable {
+    my.packages = with pkgs; [
+      shellcheck
+      my.zunit
+    ];
+  };
 }

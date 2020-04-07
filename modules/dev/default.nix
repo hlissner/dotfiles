@@ -15,7 +15,7 @@
     ./rust.nix
     ./scala.nix
     ./unity3d.nix
-    # ./zsh.nix
+    ./zsh.nix
   ];
 
   options = {};
