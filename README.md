@@ -1,12 +1,22 @@
-# Mein dotfiles
+# A tidy `$HOME` is a tidy mind
 
-There are a few, special computers in my life; local and remote. Maintaining
-them is busywork I wouldn't wish on my worst enemy. NixOS tempted me with the
-promise of glorious reproducibility and declared its declarative-ness with
-enough chutzpah to make anime real again.
-
-XDG conventions in hand, I set out to conquer my white whale and annihilate what
-vestiges of my social life remain.
++ Fanatical XDG compliance
++ Closet Vim-_in_-Emacs evangelist
++ Aesthetics are modularized into theme modules
++ Tailored to a C++ GameDev hobbyist
+  + Love2D, godot, or phaser for rapid prototyping
+  + LMMS + Sunvox as my DAW
+  + GIMP & Aseprite for gfx
++ Former Adobe cultist, trying real hard to like the open source alternatives.
+  + Photoshop -> GIMP & Krita
+  + Illustrator -> Inkscape
+  + InDesign or XD -> HTML + print stylesheets
+  + Premiere/After Effects -> [DaVinci
+    Resolve](https://www.blackmagicdesign.com/products/davinciresolve/) (how
+    dafuq is this free?)
+  + Animate/Flash -> [Aseprite](https://www.aseprite.org/)
+  + Audition -> Audacity
++ *Works on my machine ¯\_(ツ)_/¯*
 
 ![Me looking busy](/../screenshots/fluorescence/fakebusy.png?raw=true)
 
@@ -38,7 +48,10 @@ Which is equivalent to:
 
 ```sh
 USER=${USER:-hlissner}
+HOST=${HOST:-kuro}
+NIXOS_VERSION=19.09
 DOTFILES=/home/$USER/.dotfiles
+
 git clone https://github.com/hlissner/dotfiles /etc/dotfiles
 ln -s /etc/dotfiles $DOTFILES
 chown -R $USER:users $DOTFILES
