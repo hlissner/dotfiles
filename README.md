@@ -16,7 +16,7 @@
     dafuq is this free?)
   + Animate/Flash -> [Aseprite](https://www.aseprite.org/)
   + Audition -> Audacity
-+ *Works on my machine ¯\_(ツ)_/¯*
++ *Works on my machine* ¯\\\_(ツ)_/¯
 
 ![Me looking busy](/../screenshots/fluorescence/fakebusy.png?raw=true)
 
