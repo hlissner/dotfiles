@@ -42,6 +42,8 @@
       cc.enable = true;
       common-lisp.enable = true;
       rust.enable = true;
+      # lua.enable = true;
+      # lua.love2d.enable = true;
     };
 
     media = {
