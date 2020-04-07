@@ -14,7 +14,7 @@
     ./python.nix
     ./rust.nix
     ./scala.nix
-    # ./unity3d.nix
+    ./unity3d.nix
     # ./zsh.nix
   ];
 

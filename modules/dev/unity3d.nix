@@ -2,9 +2,19 @@
 #
 # I don't use Unity often, but when I do, it's in a team or with students.
 
-{ pkgs, ... }:
+{ config, options, lib, pkgs, ... }:
+with lib;
 {
-  my.packages = with pkgs; [
-    unity3d
-  ];
+  options.modules.dev.unity3d = {
+    enable = mkOption {
+      type = types.bool;
+      default = false;
+    };
+  };
+
+  config = mkIf config.modules.dev.unity3d.enable {
+    my.packages = with pkgs; [
+      unity3d
+    ];
+  };
 }
