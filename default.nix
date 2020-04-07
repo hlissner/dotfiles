@@ -1,6 +1,6 @@
 # default.nix --- my dotfile bootstrapper
 
-device:
+device: username:
 { pkgs, options, lib, config, ... }:
 {
   networking.hostName = lib.mkDefault device;
@@ -31,6 +31,15 @@ device:
     nsh = "nix-shell";
     nen = "nix-env";
     dots = "make -C ~/.dotfiles";
+  };
+
+  ### Primary user account
+  my.username = username;
+  my.user = {
+    isNormalUser = true;
+    uid = 1000;
+    extraGroups = [ "wheel" "video" "networkmanager" ];
+    shell = pkgs.zsh;
   };
 
   # This value determines the NixOS release with which your system is to be

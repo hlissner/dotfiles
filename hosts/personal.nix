@@ -2,8 +2,6 @@
 
 { config, lib, pkgs, ... }:
 {
-  imports = [ ./common.nix ];
-
   # Support for more filesystems
   environment.systemPackages = with pkgs; [
     exfat

@@ -50,7 +50,7 @@ nix-channel --add "https://nixos.org/channels/nixpkgs-unstable" nixpkgs-unstable
 
 # make /etc/nixos/configuration.nix
 nixos-generate-config --root /mnt
-echo "import /etc/dotfiles \"$$(hostname)\"" >/mnt/etc/nixos/configuration.nix
+echo "import /etc/dotfiles \"$$HOST\" \"$$USER\"" >/mnt/etc/nixos/configuration.nix
 
 # make install
 nixos-install --root /mnt -I "my=/etc/dotfiles"
