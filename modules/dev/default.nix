@@ -11,7 +11,7 @@
     # ./latex.nix
     # ./love2d.nix
     # ./node.nix
-    # ./python.nix
+    ./python.nix
     ./rust.nix
     ./scala.nix
     # ./unity3d.nix
