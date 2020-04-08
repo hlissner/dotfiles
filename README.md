@@ -25,7 +25,7 @@
 
 ```sh
 # Assumes your partitions are set up and root is mounted on /mnt
-curl https://raw.githubusercontent.com/hlissner/dotfiles/nixos/deploy | sh
+curl https://raw.githubusercontent.com/hlissner/dotfiles/master/deploy | sh
 ```
 
 Which is equivalent to:
