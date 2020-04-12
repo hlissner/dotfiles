@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Toggle a scratch terminal window. A scratch terminal is a disposable terminal
+# for one-off, quick commands that don't warrant a dedicated terminal.
+
 SCRID=scratch
 CMD=${1:-'tmux new-session -A -s scratch -n scratch'}
 focused=$(xdotool getactivewindow)
@@ -10,9 +13,6 @@ if [[ -n $scratch ]]; then
     else
         xdotool windowactivate $scratch
     fi
-elif command -v alacritty >/dev/null; then
-    alacritty --class $SCRID \
-        -e $SHELL -c "$CMD"
 elif command -v urxvt >/dev/null; then
     urxvt -name $SCRID \
           -e $SHELL -c "$CMD"
