@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/usr/bin/env cached-nix-shell
+#! nix-shell -i bash -p bc
 set -e
 (( $# > 0 )) || exit
 
@@ -10,28 +11,20 @@ set -e
 # TODO: A help fallback
 # TODO: Options parsing?
 
-# `date` on OSX does not have the --date parameter
-date=date
-if [[ $OSTYPE == darwin* ]]; then
-  date=gdate
-elif ! command -v $date >/dev/null; then
-  echo "Unsupported system"
-  exit 1
-fi
-
 # If given a file, give time since last modification
 (( $# == 1 )) && [[ -f $1 ]] && arg=reference || arg=date
 
 if [[ $1 == -- ]]; then
   t="$2"
 else
-  now=$($date +%s)
-  then=$($date --$arg="$*" +%s)
+  now=$(date +%s)
+  then=$(date --$arg="$*" +%s)
 
   t=$(( now - then ))
 fi
 
-# Bash doesn't support floating point arithmetic like zsh does, therefore:
+# Bash doesn't support floating point arithmetic like zsh does, so use bc to do
+# our arithmetic.
 bc <<EOF
   define abs(i) {
     if (i < 0) return (-i)
@@ -52,4 +45,3 @@ bc <<EOF
   if (minutes > 0) print minutes, "m "
   print seconds, "s"
 EOF
-
