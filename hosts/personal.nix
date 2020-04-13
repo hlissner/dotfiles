@@ -12,8 +12,18 @@
   # Nothing in /tmp should survive a reboot
   boot.tmpOnTmpfs = true;
   # Use simple bootloader; I prefer the on-demand BIOs boot menu
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader = {
+    timeout = 1;
+    efi.canTouchEfiVariables = true;
+    systemd-boot = {
+      enable = true;
+      # Fix a security hole in place for backwards compatibility. See desc in
+      # nixpkgs/nixos/modules/system/boot/loader/systemd-boot/systemd-boot.nix
+      editor = false;
+      # Limit number of generations to display in boot menu
+      configurationLimit = 10;
+    };
+  };
 
   ### Universal defaults
   networking.firewall.enable = true;
