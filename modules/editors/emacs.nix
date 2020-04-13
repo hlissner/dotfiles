@@ -16,7 +16,7 @@ with lib;
     my = {
       packages = with pkgs; [
         ## Doom dependencies
-        my.emacs27
+        emacsUnstable
         git
         (ripgrep.override {withPCRE2 = true;})
 
