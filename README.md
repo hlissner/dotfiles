@@ -25,7 +25,8 @@
 
 ```sh
 # Assumes your partitions are set up and root is mounted on /mnt
-curl https://raw.githubusercontent.com/hlissner/dotfiles/master/deploy | sh
+git clone https://github.com/hlissner/dotfiles /etc/dotfiles
+USER=hlissner HOST=kuro make -C /etc/dotfiles install
 ```
 
 Which is equivalent to:

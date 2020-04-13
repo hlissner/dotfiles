@@ -1,3 +1,6 @@
+USER := hlissner
+HOST := kuro
+
 NIXOS_VERSION := 19.09
 NIXOS_PREFIX  := $(PREFIX)/etc/nixos
 COMMAND       := test
@@ -54,6 +57,7 @@ channels:
 $(NIXOS_PREFIX)/configuration.nix:
 	@sudo nixos-generate-config --root "$(PREFIX)"
 	@echo "import /etc/dotfiles \"$${HOST:-$$(hostname)}\" \"$$USER\"" | sudo tee "$(NIXOS_PREFIX)/configuration.nix"
+	@[ -f machines/$(HOST).nix ] || echo "WARNING: hosts/$(HOST)/default.nix does not exist"
 
 
 # Convenience aliases
