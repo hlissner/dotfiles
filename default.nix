@@ -4,6 +4,7 @@ device: username:
 { pkgs, options, lib, config, ... }:
 {
   networking.hostName = lib.mkDefault device;
+  my.username = username;
 
   imports = [
     ./modules
@@ -22,6 +23,7 @@ device: username:
   nixpkgs.overlays = import ./packages;
   nixpkgs.config.allowUnfree = true;  # forgive me Stallman senpai
 
+  # These are the things I want installed on all my systems
   environment.systemPackages = with pkgs; [
     # Just the bear necessities~
     coreutils
@@ -43,8 +45,7 @@ device: username:
     dots = "make -C ~/.dotfiles";
   };
 
-  ### Primary user account
-  my.username = username;
+  # Default settings for primary user account
   my.user = {
     isNormalUser = true;
     uid = 1000;
