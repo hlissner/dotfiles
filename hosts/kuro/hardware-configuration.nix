@@ -12,6 +12,7 @@
   ## CPU
   nix.maxJobs = lib.mkDefault 8;
   powerManagement.cpuFreqGovernor = "performance";
+  hardware.cpu.intel.updateMicrocode = true;
 
   ## SSDs
   services.fstrim.enable = true;
