@@ -3,6 +3,7 @@
 {
   imports = [
     # ./calibre-server.nix
+    ./docker.nix
     # ./gitea.nix
     # ./jellyfin.nix
     # ./keybase.nix
