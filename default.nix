@@ -39,7 +39,7 @@ device: username:
   ];
   environment.shellAliases = {
     nix-env = "NIXPKGS_ALLOW_UNFREE=1 nix-env";
-    nix-shell = ''NIX_PATH="nixpkgs-overlays=/etc/dotfiles/overlays.nix:$NIX_PATH" nix-shell'';
+    nix-shell = ''NIX_PATH="nixpkgs-overlays=/etc/dotfiles/packages/default.nix:$NIX_PATH" nix-shell'';
     nsh = "nix-shell";
     nen = "nix-env";
     dots = "make -C ~/.dotfiles";
