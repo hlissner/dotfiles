@@ -1,3 +1,6 @@
+[![Made with Doom Emacs](https://img.shields.io/badge/Made_with-Doom_Emacs-blueviolet.svg?style=flat-square&logo=GNU%20Emacs&logoColor=white)](https://github.com/hlissner/doom-emacs)
+[![NixOS 20.03](https://img.shields.io/badge/NixOS-v20.03-blue.svg?style=flat-square&logo=NixOS&logoColor=white)](https://nixos.org)
+
 ![Me looking busy](/../screenshots/fluorescence/fakebusy.png?raw=true)
 
 <p align="center">
@@ -34,7 +37,7 @@ Which is equivalent to:
 ```sh
 USER=${USER:-hlissner}
 HOST=${HOST:-kuro}
-NIXOS_VERSION=19.09
+NIXOS_VERSION=20.03
 DOTFILES=/home/$USER/.dotfiles
 
 git clone https://github.com/hlissner/dotfiles /etc/dotfiles
