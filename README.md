@@ -11,8 +11,8 @@
 
 # My dotfiles
 
-+ **Operating System:** NixOS 19.09
-+ **Shell:** zsh 5.7.1 + zgen
++ **Operating System:** NixOS
++ **Shell:** zsh + zgen
 + **DM:** lightdm + lightdm-mini-greeter
 + **WM:** bspwm + polybar
 + **Editor:** [Doom Emacs][doom-emacs] (and occasionally [vim][vimrc])
@@ -29,7 +29,7 @@
 ```sh
 # Assumes your partitions are set up and root is mounted on /mnt
 git clone https://github.com/hlissner/dotfiles /etc/dotfiles
-USER=hlissner HOST=kuro make -C /etc/dotfiles install
+make -C /etc/dotfiles install
 ```
 
 Which is equivalent to:

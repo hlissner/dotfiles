@@ -1,4 +1,12 @@
-# default.nix --- my dotfile bootstrapper
+# default.nix --- the heart of my dotfiles
+#
+# Author:  Henrik Lissner <henrik@lissner.net>
+# URL:     https://github.com/hlissner/dotfiles
+# License: MIT
+#
+# This is ground zero, where the absolute essentials go, to be present on all
+# systems I use nixos on. Most of which are single user systems (the ones that
+# aren't are configured from their hosts/*/default.nix).
 
 device: username:
 { pkgs, options, lib, config, ... }:
@@ -45,7 +53,8 @@ device: username:
     dots = "make -C ~/.dotfiles";
   };
 
-  # Default settings for primary user account
+  # Default settings for primary user account. `my` is defined in
+  # modules/default.nix
   my.user = {
     isNormalUser = true;
     uid = 1000;
