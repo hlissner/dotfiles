@@ -61,7 +61,7 @@
     displayManager.lightdm.greeters.mini.user = config.my.username;
   };
 
-  services.compton = {
+  services.picom = {
     backend = "glx";
     vSync = true;
     opacityRules = [

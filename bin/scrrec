@@ -22,7 +22,7 @@ while getopts c:d:f:g:ps opt; do
     d) delay="$OPTARG" ;;
     f) fps=$OPTARG ;;
     g) geom="$OPTARG" ;;
-    p) compton= ;;
+    p) picom= ;;
     s) is_script=1 ;;
   esac
 done
@@ -83,14 +83,14 @@ fi
 read -r W H X Y < <(select-region)
 [[ -z "$W$H$X$Y" ]] && exit 1
 
-# Compton with blur and/or transparencies cause unbearable flickering in
+# picom with blur and/or transparencies cause unbearable flickering in
 # recordings, so temporarily disable it.
-compton=
-if systemctl is-enabled --user compton >/dev/null; then
-  systemctl --user stop compton
-  compton=1
+picom=
+if systemctl is-enabled --user picom >/dev/null; then
+  systemctl --user stop picom
+  picom=1
 fi
-cleanup() { [[ $compton ]] && systemctl --user start compton; }
+cleanup() { [[ $picom ]] && systemctl --user start picom; }
 trap cleanup EXIT
 
 # Let 'er rip

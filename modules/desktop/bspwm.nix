@@ -21,7 +21,7 @@ with lib;
     ];
 
     services = {
-      compton.enable = true;
+      picom.enable = true;
       redshift.enable = true;
       xserver = {
         enable = true;

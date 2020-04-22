@@ -22,7 +22,7 @@ let cfg = config.modules; in
       };
     };
 
-    services.compton = {
+    services.picom = {
       fade = true;
       fadeDelta = 1;
       fadeSteps = [ "0.01" "0.012" ];
