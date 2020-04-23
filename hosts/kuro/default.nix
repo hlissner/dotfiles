@@ -28,7 +28,7 @@
       # browsers.vimb.enable = true;
 
       # gaming.emulators.psx.enable = true;
-      # gaming.steam.enable = true;
+      gaming.steam.enable = true;
       # gaming.factorio.enable = true;
     };
 
