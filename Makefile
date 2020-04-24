@@ -19,7 +19,7 @@ install: channels update config move_to_home
 
 upgrade: update switch
 
-update:
+update: channels
 	@sudo nix-channel --update
 
 switch:
