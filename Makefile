@@ -49,7 +49,7 @@ clean:
 
 # Parts
 config: $(NIXOS_PREFIX)/configuration.nix
-move_to_home: $(NIXOS_PREFIX)/configuration.nix
+move_to_home: $(HOME)/.dotfiles
 
 channels:
 	@sudo nix-channel --add "https://nixos.org/channels/nixos-${NIXOS_VERSION}" nixos
