@@ -19,6 +19,7 @@ in {
       #      is cleaner than overriding the systemd unit.
       home.xdg.configFile."gnupg/gpg-agent.conf" = {
         text = ''
+          enable-ssh-support
           allow-emacs-pinentry
           default-cache-ttl ${toString gnupgCfg.cacheTTL}
           pinentry-program ${pkgs.pinentry.gtk2}/bin/pinentry
