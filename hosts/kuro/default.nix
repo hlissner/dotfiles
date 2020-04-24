@@ -29,7 +29,6 @@
 
       # gaming.emulators.psx.enable = true;
       gaming.steam.enable = true;
-      # gaming.factorio.enable = true;
     };
 
     editors = {
@@ -58,12 +57,13 @@
       # weechat.enable = true;
       pass.enable = true;
       tmux.enable = true;
-      ranger.enable = true;
+      # ranger.enable = true;
       zsh.enable = true;
     };
 
     services = {
-      syncthing.enable = true;
+      # syncthing.enable = true;
+      # docker.enable = true;
     };
 
     # themes.aquanaut.enable = true;
