@@ -43,10 +43,9 @@
   };
   swapDevices = [ { device = "/dev/disk/by-label/swap"; }];
   # Encrypted /home
-  boot.initrd.luks.devices = [{
-    name = "home";
+  boot.initrd.luks.devices.home = {
     device = "/dev/nvme0n1p8";
     preLVM = true;
     allowDiscards = true;
-  }];
+  };
 }
