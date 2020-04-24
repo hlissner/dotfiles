@@ -12,10 +12,10 @@ with lib;
   config = mkIf config.modules.desktop.apps.rofi.enable {
     my = {
       # link recursively so other modules can link files in its folder
-      home.xdg.configFile."rofi" = {
-        source = <config/rofi>;
-        recursive = true;
-      };
+      # home.xdg.configFile."rofi" = {
+      #   source = <config/rofi>;
+      #   recursive = true;
+      # };
 
       packages = with pkgs; [
         (writeScriptBin "rofi" ''
