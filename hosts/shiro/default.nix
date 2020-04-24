@@ -24,11 +24,9 @@
 
       browsers.default = "firefox";
       browsers.firefox.enable = true;
-      # browsers.qutebrowser.enable = true;
 
       # gaming.emulators.psx.enable = true;
       # gaming.steam.enable = true;
-      # gaming.factorio.enable = true;
     };
 
     editors = {
@@ -37,11 +35,13 @@
       vim.enable = true;
     };
 
-    # dev = {
-    #   cc.enable = true;
-    #   # common-lisp.enable = true;
-    #   rust.enable = true;
-    # };
+    dev = {
+      # cc.enable = true;
+      # common-lisp.enable = true;
+      # rust.enable = true;
+      # lua.enable = true;
+      # lua.love2d.enable = true;
+    };
 
     media = {
       mpv.enable = true;
@@ -55,7 +55,7 @@
       # weechat.enable = true;
       pass.enable = true;
       tmux.enable = true;
-      ranger.enable = true;
+      # ranger.enable = true;
       zsh.enable = true;
     };
 
