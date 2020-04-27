@@ -70,6 +70,7 @@
     themes.fluorescence.enable = true;
   };
 
+  programs.ssh.startAgent = true;
   networking.networkmanager.enable = true;
   time.timeZone = "America/Toronto";
 }

@@ -67,6 +67,7 @@
     themes.fluorescence.enable = true;
   };
 
+  programs.ssh.startAgent = true;
   networking.wireless.enable = true;
   hardware.opengl.enable = true;
 
