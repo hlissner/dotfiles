@@ -55,24 +55,6 @@ with lib;
         })
 
         (makeDesktopItem {
-          name = "reboot";
-          desktopName = "System: Reboot";
-          icon = "system-reboot";
-          exec = "systemctl reboot";
-        })
-        (makeDesktopItem {
-          name = "shutdown";
-          desktopName = "System: Shut Down";
-          icon = "system-shutdown";
-          exec = "systemctl shutdown";
-        })
-        (makeDesktopItem {
-          name = "sleep";
-          desktopName = "System: Sleep";
-          icon = "system-suspend";
-          exec = "${<bin/zzz>} -f";
-        })
-        (makeDesktopItem {
           name = "lock-display";
           desktopName = "Lock screen";
           icon = "system-lock-screen";
