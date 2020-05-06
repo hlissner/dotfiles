@@ -1,4 +1,4 @@
-@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+/* @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"); */
 
 @-moz-document url(chrome://browser/content/browser.xul),
                url(chrome://browser/content/browser.xhtml)
@@ -9,28 +9,15 @@
   #PersonalToolbar { -moz-box-ordinal-group: 2 !important; }
   #titlebar        { -moz-box-ordinal-group: 3 !important; }
 
-  /* Tabs at bottom of window */
-  /* #TabsToolbar { */
-  /*   transform: translateY(100vh) !important; */
-  /*   z-index: 999999 !important; */
-  /* } */
-  /* #navigator-toolbox { */
-  /*   margin-top: calc(0px - var(--tab-min-height)) !important; */
-  /* } */
-  /* #browser-panel { */
-  /*   padding-bottom: var(--tab-min-height) !important; */
-  /* } */
-
-  /* :root:not([tabsintitlebar]) #TabsToolbar              { -moz-box-ordinal-group: 0 !important; } */
-  /* :root:not([tabsintitlebar]) #toolbar-menubar          { -moz-box-ordinal-group: 1 !important; } */
-  /* :root:not([tabsintitlebar]) #nav-bar                  { -moz-box-ordinal-group: 2 !important; } */
-  /* :root:not([tabsintitlebar]) #PersonalToolbar          { -moz-box-ordinal-group: 3 !important; } */
-  /* :root:not([tabsintitlebar]) #navigator-toolbox::after { -moz-box-ordinal-group: 4 !important; } */
-
   /* Hide tabbar if only one tab */
   @import url(./css/tabs-hide-if-only-one.css);
 
-  /* Replace favicon on tabs with close button on hover */
+  /* Ensure tab doesn't show through auto-completion popup */
+  .tabbrowser-tab { z-index: 0 !important; }
+  /* Remove the colored overline on the focused tab */
+  .tabbrowser-tab .tab-line { background: none !important; }
+
+  /* Replace favicon on tabs with close button on mouse hover */
   .tabbrowser-tab:not(:hover) .tab-close-button,
   .tabbrowser-tab:not([pinned]):hover .tab-icon-image { display: none !important; }
   .tabbrowser-tab:not([pinned]):hover .tab-close-button { display:block !important; }
@@ -71,17 +58,10 @@
     min-height: 2px !important;
     margin-bottom: -2px !important;
     opacity: 0 !important;
-    overflow: hidden !important;
     border: none !important;
   }
 
-  #nav-bar:hover {
-    height: auto !important;
-    margin-bottom: 0px !important;
-    opacity: 1 !important;
-    overflow: hidden !important;
-  }
-
+  /* But unfocus it when we invoke it with ctrl+L */
   #nav-bar:focus-within {
     height: auto !important;
     margin-bottom: 0px !important;
