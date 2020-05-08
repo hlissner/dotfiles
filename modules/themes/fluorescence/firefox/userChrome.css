@@ -4,16 +4,16 @@
                url(chrome://browser/content/browser.xhtml)
 {
   /*** TAB BAR ***/
-  /* Tabs below the address bar */
-  #nav-bar         { -moz-box-ordinal-group: 1 !important; }
-  #PersonalToolbar { -moz-box-ordinal-group: 2 !important; }
-  #titlebar        { -moz-box-ordinal-group: 3 !important; }
+  /* Ensure tab doesn't show through auto-completion popup */
+  .tabbrowser-tab { z-index: 0 !important; }
+  /* Ensure tab "spacers" don't show through the completion window */
+  #tabbrowser-arrowscrollbox > spacer { z-index: -1 !important; }
+  #mainPopupSet { z-index: 9999 !important; }
 
   /* Hide tabbar if only one tab */
   @import url(./css/tabs-hide-if-only-one.css);
 
-  /* Ensure tab doesn't show through auto-completion popup */
-  .tabbrowser-tab { z-index: 0 !important; }
+
   /* Remove the colored overline on the focused tab */
   .tabbrowser-tab .tab-line { background: none !important; }
 
@@ -53,7 +53,7 @@
   /* Hide urlbar */
   #nav-bar {
     position: relative !important;
-    z-index: 1 !important;
+    z-index: 2 !important;
     height: 2px !important;
     min-height: 2px !important;
     margin-bottom: -2px !important;
@@ -69,11 +69,13 @@
     overflow: show !important;
   }
 
-  #content-deck{
-    position: relative !important;
-    z-index: 0 !important;
+  #urlbar-container {
+    min-height: 0 !important;
   }
 
+  #urlbar {
+    top: 0 !important;
+  }
 
   /*** Load local overrides ***/
   @import url(./userChrome.local.css);
