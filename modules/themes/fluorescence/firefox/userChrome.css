@@ -77,6 +77,10 @@
     top: 0 !important;
   }
 
+  #urlbar-input-container {
+    height: 28px !important;
+  }
+
   /*** Load local overrides ***/
   @import url(./userChrome.local.css);
 }
