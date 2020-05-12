@@ -45,7 +45,7 @@ with lib;
         # :lang javascript
         nodePackages.javascript-typescript-langserver
         # :lang latex & :lang org (latex previews)
-        texlive.combined.scheme-tetex
+        texlive.combined.scheme-medium
         # :lang rust
         rustfmt
         rls
