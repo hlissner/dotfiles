@@ -43,8 +43,9 @@ bind C-c send-prefix
 set -g status-keys vi
 set -g mode-keys   vi
 
-bind v split-window -h
-bind s split-window -v
+bind c new-window      -c "#{pane_current_path}"
+bind v split-window -h -c "#{pane_current_path}"
+bind s split-window -v -c "#{pane_current_path}"
 
 bind h select-pane -L
 bind j select-pane -D
