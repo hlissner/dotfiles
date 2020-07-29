@@ -8,6 +8,7 @@ if [[ $? -eq 0 ]]; then
     temp=${temp//K/}
 fi
 
+icon=""
 # OPTIONAL: Append ' ${temp}K' after $icon
 if [[ -z $temp ]]; then
     echo "%{F#65737E}$icon"       # Greyed out (not running)
@@ -18,4 +19,3 @@ elif [[ $temp -ge 4000 ]]; then
 else
     echo "%{F#D08770}$icon"       # Orange
 fi
-

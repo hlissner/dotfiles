@@ -67,9 +67,9 @@ font-1 = "Wuncon Siji:pixelsize=12;2"
 font-2 = "Siji:pixelsize=10;2"
 
 ; modules-left = volume pad cpu memory pad pkg mail
-modules-left = pulseaudio pad cpu memory
+modules-left = pulseaudio pad cpu memory pad fs
 modules-center = bspwm
-modules-right = wlan syncthing redshift pad battery pad date
+modules-right = syncthing redshift wlan pad network-up pad network-down pad battery pad date
 
 ;tray-position = center
 ;tray-padding = 2
@@ -127,6 +127,48 @@ format-prefix-padding = 1
 format-prefix-foreground = ${colors.accent}
 ; format-underline = ${xrdb:color4}
 
+[module/fs]
+type = internal/fs
+mount-0 = /
+mount-1 = /mnt/projects  ; for desktops
+mount-2 = /home          ; for laptop
+interval = 30
+
+; Available tags:
+;   <label-mounted> (default)
+;   <bar-free>
+;   <bar-used>
+;   <ramp-capacity>
+format-mounted = "<bar-used>"
+format-mounted-foreground = ${colors.accent}
+; Available tokens:
+;   %mountpoint%
+;   %type%
+;   %fsname%
+;   %percentage_free%
+;   %percentage_used%
+;   %total%
+;   %free%
+;   %used%
+; Default: %mountpoint% %percentage_free%%
+
+; Available tags:
+;   <label-unmounted> (default)
+format-unmounted =
+label-unmounted =
+label-unmounted-foreground = ${colors.fg-alt}
+
+bar-used-indicator =
+bar-used-width = 8
+bar-used-foreground-0 = ${colors.fg}
+bar-used-foreground-1 = ${colors.fg}
+bar-used-foreground-2 = ${colors.yellow}
+bar-used-foreground-3 = ${colors.alert}
+bar-used-foreground-4 = ${colors.alert}
+bar-used-fill = |
+bar-used-empty = ¦
+bar-used-empty-foreground = ${colors.fg-alt}
+
 [module/xwindow]
 type = internal/xwindow
 label = %title:0:80:...%
@@ -167,7 +209,7 @@ format-foreground = ${colors.accent}
 format-padding = 1
 
 bar-load-indicator =
-bar-load-width = 6
+bar-load-width = 8
 bar-load-foreground-0 = ${colors.fg}
 bar-load-foreground-1 = ${colors.fg}
 bar-load-foreground-2 = ${colors.yellow}
@@ -189,7 +231,7 @@ format-padding-left = 1
 
 ; Only applies if <bar-used> is used
 bar-used-indicator =
-bar-used-width = 6
+bar-used-width = 8
 bar-used-foreground-0 = ${colors.fg}
 bar-used-foreground-1 = ${colors.fg}
 bar-used-foreground-2 = ${colors.yellow}
@@ -205,8 +247,8 @@ interface = ${env:WLP:wlp3s0}
 interval = 3.0
 
 format-connected = <ramp-signal>
-format-disconnected = !
-format-disconnected-foreground = ${colors.red}
+format-disconnected =
+format-disconnected-foreground =
 
 ; label-connected =
 ; label-disconnected = !
@@ -223,19 +265,33 @@ ramp-signal-3-foreground = ${colors.accent}
 ramp-signal-4 = 
 ramp-signal-4-foreground = ${colors.fg}
 
-; [module/eth]
-; type = internal/network
-; interface = ${env:ETH:enp2s0}
-; interval = 4.0
-;
-; ; format-connected-underline = #55aa55
-; ; format-connected-prefix = " "
-; format-connected-foreground-foreground = ${colors.fg-alt}
-; label-connected = %local_ip%
-;
-; format-disconnected-underline = ${self.format-connected-underline}
-; label-disconnected = %ifname% disconnected
-; label-disconnected-foreground = ${colors.fg-alt}
+[module/network-up]
+type = internal/network
+interface = ${env:LAN:eno1}
+interval = 4.0
+label-connected = "%upspeed%"
+format-connected-prefix = " "
+format-connected-prefix-foreground = ${colors.accent}
+format-connected-foreground = ${colors.fg}
+format-connected-background =
+format-connected-underline =
+format-disconnected-prefix = " "
+format-disconnected-prefix-foreground = ${colors.alert}
+format-disconnected-foreground = ${colors.alert}
+
+[module/network-down]
+type = internal/network
+interface = ${env:LAN:eno1}
+interval = 4.0
+label-connected = "%downspeed%"
+format-connected-prefix = " "
+format-connected-prefix-foreground = ${colors.accent}
+format-connected-foreground = ${colors.fg}
+format-connected-background =
+format-connected-underline =
+format-disconnected-prefix = " "
+format-disconnected-prefix-foreground = ${colors.alert}
+format-disconnected-foreground = ${colors.alert}
 
 [module/pulseaudio]
 type = internal/pulseaudio
