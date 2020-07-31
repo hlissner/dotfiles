@@ -10,13 +10,17 @@ with lib;
       type = types.bool;
       default = false;
     };
+    pkg = mkOption {
+      type = types.package;
+      default = pkgs.emacsUnstable;
+    };
   };
 
   config = mkIf config.modules.editors.emacs.enable {
     my = {
       packages = with pkgs; [
         ## Doom dependencies
-        emacsUnstable
+        config.modules.editors.emacs.pkg
         git
         (ripgrep.override {withPCRE2 = true;})
         gnutls              # for TLS connectivity
