@@ -17,7 +17,9 @@ device: username:
   imports = [
     ./modules
     "${./hosts}/${device}"
-  ];
+  ] ++ (if builtins.pathExists(/etc/nixos/cachix.nix) then [
+    /etc/nixos/cachix.nix
+  ] else []);
 
   ### NixOS
   nix.autoOptimiseStore = true;
@@ -44,10 +46,14 @@ device: username:
 
     gnumake               # for our own makefile
     my.cached-nix-shell   # for instant nix-shell scripts
+    cachix                # less time buildin' mo time nixin'
+    (writeScriptBin "nix-shell" ''
+      #!${stdenv.shell}
+      NIX_PATH="nixpkgs-overlays=/etc/dotfiles/packages/default.nix:$NIX_PATH" ${nix}/bin/nix-shell "$@"
+    '')
   ];
   environment.shellAliases = {
     nix-env = "NIXPKGS_ALLOW_UNFREE=1 nix-env";
-    nix-shell = ''NIX_PATH="nixpkgs-overlays=/etc/dotfiles/packages/default.nix:$NIX_PATH" nix-shell'';
     nsh = "nix-shell";
     nen = "nix-env";
     dots = "make -C ~/.dotfiles";
