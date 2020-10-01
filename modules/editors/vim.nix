@@ -2,25 +2,26 @@
 # go-to. I am a vimmer at heart, after all.
 
 { config, options, lib, pkgs, ... }:
+
 with lib;
-{
+with lib.my;
+let cfg = config.modules.editors.vim;
+in {
   options.modules.editors.vim = {
-    enable = mkOption {
-      type = types.bool;
-      default = false;
-    };
+    enable = mkBoolOpt false;
   };
 
-  config = mkIf config.modules.editors.vim.enable {
-    my = {
-      packages = with pkgs; [
-        editorconfig-core-c
-        neovim
-      ];
+  config = mkIf cfg.enable {
+    user.packages = with pkgs; [
+      editorconfig-core-c
+      neovim
+    ];
 
-      env.VIMINIT = "let \\$MYVIMRC='\\$XDG_CONFIG_HOME/nvim/init.vim' | source \\$MYVIMRC";
-      alias.vim = "nvim";
-      alias.v = "nvim";
+    # env.VIMINIT = "let \\$MYVIMRC='\\$XDG_CONFIG_HOME/nvim/init.vim' | source \\$MYVIMRC";
+
+    environment.shellAliases = {
+      vim = "nvim";
+      v   = "nvim";
     };
   };
 }

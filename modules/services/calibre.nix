@@ -1,15 +1,16 @@
-{ config, options, pkgs, lib, ... }:
+{ options, config, lib, pkgs, ... }:
+
 with lib;
-{
+with lib.my;
+let cfg = config.modules.services.calibre;
+in {
   options.modules.services.calibre = {
-    enable = mkOption {
-      type = types.bool;
-      default = false;
-    };
+    enable = mkBoolOpt false;
   };
 
-  config = mkIf config.modules.services.calibre.enable {
+  config = mkIf cfg.enable {
     services.calibre-server.enable = true;
+
     networking.firewall.allowedTCPPorts = [ 8080 ];
   };
 }

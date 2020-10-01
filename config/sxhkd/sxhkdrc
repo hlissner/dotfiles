@@ -25,16 +25,16 @@ super + shift + grave
 	emacsclient -e '(open-scratch-frame)'
 
 super + space
-	~/.dotfiles/bin/rofi/appmenu
+	~/.config/dotfiles/bin/rofi/appmenu
 
 super + Tab
-	~/.dotfiles/bin/rofi/windowmenu
+	~/.config/dotfiles/bin/rofi/windowmenu
 
 super + backslash
-	~/.dotfiles/bin/rofi/passmenu
+	~/.config/dotfiles/bin/rofi/passmenu
 
 super + slash
-	~/.dotfiles/bin/rofi/filemenu -x
+	~/.config/dotfiles/bin/rofi/filemenu -x
 
 super + Escape
 	pkill -USR1 -x sxhkd
@@ -52,21 +52,21 @@ super + {_,ctrl + }f
 
 
 super + {_,ctrl +}{h,j,k,l}
-	~/.dotfiles/bin/bspwm/focus {_,-m }{west,south,north,east}
+	~/.config/dotfiles/bin/bspwm/focus {_,-m }{west,south,north,east}
 
 super + shift + {_,ctrl +}{h,j,k,l}
-	~/.dotfiles/bin/bspwm/swap {_,-m }{west,south,north,east}
+	~/.config/dotfiles/bin/bspwm/swap {_,-m }{west,south,north,east}
 
 
 ## Resize by preselection
 super + alt + {1-9}
-	~/.dotfiles/bin/bspwm/presel 0.{1-9}
+	~/.config/dotfiles/bin/bspwm/presel 0.{1-9}
 
 super + alt + {h,j,k,l}
 	bspc node -p {west,south,north,east}
 
 super + alt + Return
-	~/.dotfiles/bin/bspwm/subtract-presel
+	~/.config/dotfiles/bin/bspwm/subtract-presel
 
 super + alt + Delete
 	bspc node -p cancel

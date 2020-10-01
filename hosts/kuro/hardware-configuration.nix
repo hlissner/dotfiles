@@ -1,54 +1,54 @@
-{ config, pkgs, lib, ... }:
+{ config, lib, pkgs, modulesPath, ... }:
+
 {
-  imports = [
-    <nixpkgs/nixos/modules/installer/scan/not-detected.nix>
-  ];
+  imports = [ "${modulesPath}/installer/scan/not-detected.nix" ];
 
-  boot.initrd.availableKernelModules = [ "xhci_pci" "ehci_pci" "ahci" "usbhid" "uas" "usb_storage" "sd_mod" ];
-  boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-intel" ];
-  boot.extraModulePackages = [ ];
+  boot = {
+    initrd.availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
+    initrd.kernelModules = [];
+    extraModulePackages = [];
+    kernelModules = [
+      "kvm-amd"
+      "asix"  # REVIEW Remove me when 5.9 kernel is available
+    ];
+    kernelParams = [
+      # HACK Disables fixes for spectre, meltdown, L1TF and a number of CPU
+      #      vulnerabilities. This is not a good idea for mission critical or
+      #      server/headless builds, but on my lonely home system I prioritize
+      #      raw performance over security.  The gains are minor.
+      "mitigations=off"
+      # Limit ZFS cache to 8gb. Sure, this system has 64gb, but I don't want
+      # this biting me when I'm running multiple VMs.
+      "zfs.zfs_arc_max=8589934592"
+    ];
+  };
 
-  ## CPU
-  nix.maxJobs = lib.mkDefault 8;
+  # CPU
+  nix.maxJobs = lib.mkDefault 16;
   powerManagement.cpuFreqGovernor = "performance";
-  hardware.cpu.intel.updateMicrocode = true;
+  hardware.cpu.amd.updateMicrocode = true;
 
-  ## SSDs
-  services.fstrim.enable = true;
+  # Displays
+  services.xserver = {
+    monitorSection = ''
+      VendorName  "Unknown"
+      ModelName   "DELL U2515H"
+      HorizSync   30.0 - 113.0
+      VertRefresh 56.0 - 86.0
+      Option      "DPMS"
+    '';
+    screenSection = ''
+      Option "metamodes" "HDMI-0: nvidia-auto-select +1920+0, DVI-I-1: nvidia-auto-select +0+180, DVI-D-0: nvidia-auto-select +4480+180"
+      Option "SLI" "Off"
+      Option "MultiGPU" "Off"
+      Option "BaseMosaic" "off"
+      Option "Stereo" "0"
+      Option "nvidiaXineramaInfoOrder" "DFP-1"
+    '';
+  };
 
-  ## Ergodox
-  my.packages = [ pkgs.teensy-loader-cli ];
-  my.alias.teensyload = "sudo teensy-loader-cli -w -v --mcu=atmega32u4";
-  # Make ralt the compose key, so ralt+a+a = å or ralt+o+/ = ø
-  services.xserver.xkbOptions = "compose:ralt";
-
-  ## GPU
-  services.xserver.videoDrivers = [ "nvidia" ];
-  hardware.opengl.enable = true;
-  # Respect XDG conventions, damn it!
-  environment.systemPackages = with pkgs; [
-    (writeScriptBin "nvidia-settings" ''
-      #!${stdenv.shell}
-      mkdir -p "$XDG_CONFIG_HOME/nvidia"
-      exec ${config.boot.kernelPackages.nvidia_x11.settings}/bin/nvidia-settings --config="$XDG_CONFIG_HOME/nvidia/settings"
-    '')
-  ];
-
-  ## Tablet
-  # For my intuos4 pro. Doesn't work for cintiqs.
-  services.xserver.wacom.enable = true;
-  # TODO Move this to udev
-  # system.userActivationScripts.wacom.text = ''
-  #   # lock tablet to main display
-  #   if xinput list --id-only "Wacom Intuos Pro S Pen stylus" 2>&1 >/dev/null; then
-  #     xinput map-to-output $(xinput list --id-only "Wacom Intuos Pro S Pen stylus") DVI-I-1
-  #     xinput map-to-output $(xinput list --id-only "Wacom Intuos Pro S Pen eraser") DVI-I-1
-  #     xinput map-to-output $(xinput list --id-only "Wacom Intuos Pro S Pen cursor") DVI-I-1
-  #   fi
-  # '';
-
-  ### Harddrives
+  # Storage
+  networking.hostId = "edd9f26b";  # required by zfs
   fileSystems = {
     "/" = {
       device = "/dev/disk/by-label/nixos";
@@ -59,21 +59,27 @@
       device = "/dev/disk/by-label/BOOT";
       fsType = "vfat";
     };
-    "/mnt/projects" = {
-      device = "/dev/disk/by-label/projects";
+    "/home" = {
+      device = "/dev/disk/by-label/home";
       fsType = "ext4";
       options = [ "noatime" ];
     };
-    "/mnt/archive" = {
-      device = "/dev/disk/by-label/archive";
-      fsType = "ext4";
-      options = [ "noatime" ];
+    "/usr/backup" = {
+      device = "usr/backup";
+      fsType = "zfs";
     };
-    "/mnt/local" = {
-      device = "/dev/disk/by-label/local";
-      fsType = "ext4";
-      options = [ "noatime" ];
+    "/usr/media" = {
+      device = "usr/media";
+      fsType = "zfs";
+    };
+    "/usr/local" = {
+      device = "usr/local";
+      fsType = "zfs";
+    };
+    "/usr/share" = {
+      device = "usr/share";
+      fsType = "zfs";
     };
   };
-  swapDevices = [ { device = "/dev/disk/by-label/swap"; } ];
+  swapDevices = [];
 }

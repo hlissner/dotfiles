@@ -5,8 +5,7 @@
 # capture) and stores it in the clipboard.
 
 tmp=$(mktemp)
-cleanup() { rm -f "$tmp"; }
-trap cleanup EXIT
+trap "rm -f '$tmp'" EXIT
 
 # Delay for long enough that we can refocus the targeted window
 if maim --delay=${2:-1} -us >"$tmp"; then

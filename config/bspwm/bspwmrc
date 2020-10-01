@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# case $HOSTNAME in
+#   kuro)  export LAN=eno1   ;;
+#   shiro) export LAN=wlp3s0 ;;
+# esac
+
 export MONITOR=$(xrandr -q | grep primary | cut -d' ' -f1)
 export MONITORS=( $(xrandr -q | grep ' connected' | cut -d' ' -f1) )
 MONITOR=${MONITOR:-${MONITORS[0]}}

@@ -1,16 +1,16 @@
 # Finally, a decent open alternative to Plex!
 
-{ config, options, pkgs, lib, ... }:
+{ options, config, lib, pkgs, ... }:
+
 with lib;
-{
+with lib.my;
+let cfg = config.modules.services.jellyfin;
+in {
   options.modules.services.jellyfin = {
-    enable = mkOption {
-      type = types.bool;
-      default = false;
-    };
+    enable = mkBoolOpt false;
   };
 
-  config = mkIf config.modules.services.jellyfin.enable {
+  config = mkIf cfg.enable {
     services.jellyfin.enable = true;
 
     networking.firewall = {
@@ -18,6 +18,6 @@ with lib;
       allowedUDPPorts = [ 8096 ];
     };
 
-    my.user.extraGroups = [ "jellyfin" ];
+    user.extraGroups = [ "jellyfin" ];
   };
 }

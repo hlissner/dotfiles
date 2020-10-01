@@ -1,56 +1,15 @@
-{ config, options, lib, pkgs, ... }:
+# Theme modules are a special beast. They're the only modules that are deeply
+# intertwined with others, and are solely responsible for aesthetics. Disabling
+# a theme module should never leave a system non-functional.
+
+{ config, lib, ... }:
 
 with lib;
-{
-  imports = [
-      # aquanaut = callPackage (import ./aquanaut {});
-    ./fluorescence
-  ];
-
-  options.modules.theme = {
-    name    = mkOption { type = with types; nullOr str; default = null; };
-    version = mkOption { type = with types; nullOr str; default = null; };
-    path = mkOption {
-      type = with types; nullOr path;
-      default = null;
-    };
-
-    wallpaper = {
-      path = mkOption {
-        type = with types; nullOr str;
-        default = if config.modules.theme.path != null
-                  then "${config.modules.theme.path}/wallpaper.png"
-                  else null;
-      };
-
-      filter = {
-        enable = mkOption {
-          type = types.bool;
-          default = true;
-        };
-        options = mkOption {
-          type = types.str;
-          default = "-gaussian-blur 0x2 -modulate 70 -level 5%";
-        };
-      };
-    };
-  };
-
-  config = mkIf (config.modules.theme.wallpaper.path != null &&
-                 builtins.pathExists config.modules.theme.wallpaper.path) {
-    my.home.home.file.".background-image".source =
-      config.modules.theme.wallpaper.path;
-
-    services.xserver.displayManager.lightdm.background =
-      mkIf config.modules.theme.wallpaper.filter.enable
-        (let filteredPath = "wallpaper.filtered.png";
-             filteredWallpaper =
-               with pkgs; runCommand "filterWallpaper"
-                 { buildInputs = [ imagemagick ]; } ''
-                     mkdir "$out"
-                     convert ${config.modules.theme.wallpaper.filter.options} \
-                       ${config.modules.theme.wallpaper.path} $out/${filteredPath}
-                   '';
-         in "${filteredWallpaper}/${filteredPath}");
-  };
+with lib.my;
+let cfg = config.modules.themes;
+in {
+  assertions = [{
+    assertion = countAttrs (_: x: x.enable) cfg < 2;
+    message = "Can't have more than one theme enabled at a time";
+  }];
 }

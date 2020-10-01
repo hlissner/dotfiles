@@ -6,24 +6,21 @@
 # on a per-project basis.
 
 { config, options, lib, pkgs, ... }:
+
 with lib;
-{
+with lib.my;
+let cfg = config.modules.dev.lua;
+in {
   options.modules.dev.lua = {
-    enable = mkOption {
-      type = types.bool;
-      default = false;
-    };
+    enable = mkBoolOpt false;
+    love2D.enable = mkBoolOpt false;
   };
 
-  config = mkIf config.modules.dev.lua.enable {
-    my = {
-      packages = with pkgs; [
-        lua
-        luaPackages.moonscript
-        luarocks
-      ];
-
-      zsh.rc = ''eval "$(luarocks path --bin)"'';
-    };
+  config = mkIf cfg.enable {
+    user.packages = with pkgs; [
+      lua
+      luaPackages.moonscript
+      (mkIf cfg.love2D.enable love2d)
+    ];
   };
 }

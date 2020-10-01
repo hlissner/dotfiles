@@ -3,18 +3,19 @@
 # Qutebrowser is cute because it's not enough of a browser to be handsome.
 # Still, we can all tell he'll grow up to be one hell of a lady-killer.
 
-{ config, options, lib, pkgs, ... }:
+{ options, config, lib, pkgs, ... }:
+
 with lib;
-{
+with lib.my;
+let cfg = config.modules.desktop.browsers.qutebrowser;
+in {
   options.modules.desktop.browsers.qutebrowser = {
-    enable = mkOption {
-      type = types.bool;
-      default = false;
-    };
+    enable = mkBoolOpt false;
+    userStyles = mkOpt types.lines "";
   };
 
-  config = mkIf config.modules.desktop.browsers.qutebrowser.enable {
-    my.packages = with pkgs; [
+  config = mkIf cfg.enable {
+    user.packages = with pkgs; [
       qutebrowser
       (makeDesktopItem {
         name = "qutebrowser-private";
@@ -25,9 +26,13 @@ with lib;
         categories = "Network";
       })
     ];
-    my.home.xdg.configFile."qutebrowser" = {
-      source = <config/qutebrowser>;
-      recursive = true;
+
+    home = {
+      configFile."qutebrowser" = {
+        source = "${configDir}/qutebrowser";
+        recursive = true;
+      };
+      dataFile."qutebrowser/userstyles.css".text = userStyles;
     };
   };
 }

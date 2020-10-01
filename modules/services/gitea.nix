@@ -1,14 +1,14 @@
-{ config, options, pkgs, lib, ... }:
+{ options, config, lib, pkgs, ... }:
+
 with lib;
-{
+with lib.my;
+let cfg = config.modules.services.gitea;
+in {
   options.modules.services.gitea = {
-    enable = mkOption {
-      type = types.bool;
-      default = false;
-    };
+    enable = mkBoolOpt false;
   };
 
-  config = mkIf config.modules.services.gitea.enable {
+  config = mkIf cfg.enable {
     # I prefer git@... ssh addresses over gitea@...
     users.users.git = {
       useDefaultShell = true;

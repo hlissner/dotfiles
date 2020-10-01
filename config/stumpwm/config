@@ -10,7 +10,7 @@
 ;;  :port swank::default-server-port)
 
 ;;;
-(defvar *config-dir* "~/.dotfiles/config/stumpwm")
+(defvar *config-dir* "~/.config/dotfiles/config/stumpwm")
 
 (defcommand reload-dotfiles () ()
   (load (concat *config-dir* "/config"))

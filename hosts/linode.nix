@@ -14,10 +14,8 @@
 #      curl $url | dd of=/dev/sda
 #
 # 4. Install these dotfiles with
-#      git clone https://github.com/hlissner/dotfiles ~/.dotfiles
-#      ln -s ~/.dotfiles /etc/dotfiles
-#      cd ~/.dotfiles
-#      mk install-linode
+#      git clone https://github.com/hlissner/dotfiles ~/.config/dotfiles
+#      nixos-install --root "$(PREFIX)" --flake ~/.config/dotfiles#linode
 #
 # 4. Create a configuration profile:
 #    - Kernel: GRUB 2
@@ -28,16 +26,27 @@
 # 5. Reboot into profile.
 
 { config, lib, pkgs, ... }:
+
+let
+  inherit (lib) filter pathExists;
+in
 {
+  imports = filter pathExists ["/etc/nixos/configuration.nix"];
+
   environment.systemPackages =
     with pkgs; [ inetutils mtr sysstat git ];
 
-  imports = [
-    <modules/editors/vim.nix>
-    <modules/shell/git.nix>
-    <modules/shell/zsh.nix>
-    <modules/services/ssh.nix>
-  ];
+  modules = {
+    # editors = {
+    #   default = "nvim";
+    #   vim.enable = true;
+    # };
+    shell = {
+      # git.enable = true;
+      zsh.enable = true;
+    };
+    services.ssh.enable = true;
+  };
 
   # GRUB
   boot = {
@@ -58,7 +67,9 @@
     };
   };
 
-  networking.useDHCP = false;
-  networking.usePredictableInterfaceNames = false;
-  networking.interfaces.eth0.useDHCP = true;
+  networking = {
+    useDHCP = false;
+    usePredictableInterfaceNames = false;
+    interfaces.eth0.useDHCP = true;
+  };
 }

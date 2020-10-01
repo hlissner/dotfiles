@@ -1,13 +1,13 @@
-{ config, lib, ... }:
+{ config, lib, modulesPath, ... }:
 {
-  imports = [
-    <nixpkgs/nixos/modules/installer/scan/not-detected.nix>
-  ];
+  imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
 
-  boot.initrd.availableKernelModules = [ "ohci_pci" "ehci_pci" "ahci" "firewire_ohci" "usb_storage" "usbhid" "sd_mod" "sr_mod" "sdhci_pci" ];
-  boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-intel" "wl" ];
-  boot.extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
+  boot = {
+    initrd.availableKernelModules = [ "ohci_pci" "ehci_pci" "ahci" "firewire_ohci" "usb_storage" "usbhid" "sd_mod" "sr_mod" "sdhci_pci" ];
+    initrd.kernelModules = [ ];
+    kernelModules = [ "kvm-intel" "wl" ];
+    extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
+  };
 
   ## CPU
   nix.maxJobs = lib.mkDefault 2;

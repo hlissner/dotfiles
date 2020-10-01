@@ -92,7 +92,7 @@ bind - break-pane
 bind _ join-pane
 
 # reload config without killing server
-bind r source-file ~/.dotfiles/config/tmux/config \; display-message "  Config reloaded..".
+bind r source-file ~/.config/dotfiles/config/tmux/config \; display-message "  Config reloaded..".
 bind ^r refresh-client
 
 

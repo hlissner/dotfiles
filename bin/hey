@@ -1,0 +1,135 @@
+#!/usr/bin/env zsh
+
+# I don't believe the interface for Nix's utility scripts are very good. Guix's,
+# on the other hand, is excellent. Management of your OS is done by a single
+# program with simpler, more intuitive commands. This script is a rudimentary
+# attempt at giving me that.
+#
+#   dots cd|check      -> nix flake check $DOTFILES
+#   dots sh|show       -> nix flake show $DOTFILES
+#   dots u|update      -> nix flake update --recreate-lock-file $DOTFILES
+#   dots re|rebuild    -> nixos-rebuild --flake $DOTFILES#$HOSTNAME ${1:-build}
+#   dots rollback      -> dots rebuild --rollback switch
+#   dots vm            -> dots rebuild vm
+#   dots up|upgrade    -> dots update && dots rebuild switch
+#   dots gc            -> GC user profile, optimise nix store
+#   sudo dots gc       -> GC, optimise nix store, & delete old boot entries
+#   dots push REMOTE   -> push flake to remote (over SSH) and rebuild remotely
+#   dots gen|generations -> explore, manage, diff across generations (WIP)
+#
+# dots (with no sub-command) can also be used as an alternative to nix-env:
+#
+#   dots -q
+#   dots -iA nixos.htop
+#   dots -e htop
+
+set -e
+REMOTE=${REMOTE:-"~/.config/dotfiles"}
+DOTFILES="${0:a:h}/.."
+
+#
+function main {
+  function _do { [[ $DRYRUN ]] && echo "$@" || "$@" }
+
+  ### Helpers
+  function _usage {
+    echo "Usage: dots COMMAND [FLAGS...] [ARGS...]"
+    echo
+    echo "Available commands:"
+    echo "  init               TODO"
+    echo "  env (e)            TODO"
+    echo "  shell (sh)         TODO"
+    echo "  build (b)          TODO"
+    echo "  upgrade (up)       TODO"
+    echo "  rebuild (re)       TODO"
+    echo "  rollback           TODO"
+    echo "  gc                 TODO"
+    echo "  vm                 TODO"
+    echo "  repl               TODO"
+    echo "  push               Push thie config to a remote NixOS system and rebuild it"
+    echo "  generations (gen)  TODO"
+  }
+
+  function _rebuild {
+    # Move to $DOTFILES to prevent polluting the system with result links
+    pushd $DOTFILES >/dev/null
+    _do sudo nixos-rebuild --flake ".#$HOSTNAME" ${@:-build}
+    popd >/dev/null
+  }
+
+  function _update {
+    echo "Updating NixOS flake"
+    _do nix flake update --recreate-lock-file "$DOTFILES"
+  }
+
+  function _gc {
+    if [[ $EUID == 0 ]]; then
+      echo "Cleaning up your system..."
+      _do sudo nix-collect-garbage ${@:--d}
+      # nix-collect-garbage is a Nix tool, not a NixOS tool. It won't delete old
+      # boot entries until you do a nixos-rebuild (which means we'll always have
+      # 2 boot entries at any time). Instead, we properly delete them by
+      # reloading the current environment.
+      _do sudo nix-env --delete-generations old --profile /nix/var/nix/profiles/system
+      _do sudo /nix/var/nix/profiles/system/bin/switch-to-configuration switch
+    else
+      echo "Cleaning up your user profile..."
+      _do nix-collect-garbage ${@:--d}
+    fi
+    _do nix-store --optimise
+  }
+
+  ###
+  cmd="$1"
+  [[ $# > 0 ]] && shift
+  case "$cmd" in
+    # TODO Repl/shell for nixos+dotfiles
+    # sh|shell)    _do nix-shell "$@"             ;;
+    # repl)        _do nix develop "$@"           ;;
+
+    ch|check)    _do nix flake check "$DOTFILES";;
+    sh|show)     _do nix flake show "$DOTFILES" ;;
+
+    re|rebuild)  _rebuild "${@:-switch}"        ;;
+    rollback)    _rebuild --rollback switch     ;;
+    vm)          _rebuild "$@" vm               ;;
+
+    u|update)    _update "$@"                  ;;
+    up|upgrade)  _update && _rebuild switch    ;;
+
+    gc)          _gc "$@"                       ;;
+    push)
+      rsync -avzh ./ "$1:$REMOTE/"
+      ssh -t -l "$USERNAME" "$1" "$REMOTE/dots re" "${@[2,-1]}"
+      ;;
+
+    gen|generations)
+      profile=/nix/var/nix/profiles/system
+      case "$1" in
+        switch) >&2 echo "Targeted rollback not supported yet" ;;  # TODO Is this true?
+        diff)
+          to=/nix/var/nix/profiles/system-${2}-link
+          diff \
+            <(nix-store -q --references $profile) \
+            <(nix-store -q --references $to)
+          ;;
+        remove)
+          shift
+          _do sudo nix-env --delete-generations --profile $profile $@
+          ;;
+        "")
+          _do sudo nix-env --list-generations --profile $profile
+          ;;
+      esac
+      ;;
+
+    h|help|-h|--help) _usage ;;
+    -*) _do nix-env "$cmd" "$@" ;;
+    "") _usage ;;
+    *)  echo "Couldn't find command: $cmd" 1>&2
+        exit 1
+        ;;
+  esac
+}
+
+main "$@"

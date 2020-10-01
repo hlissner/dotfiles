@@ -1,15 +1,14 @@
-{ config, options, lib, pkgs, ... }:
-with lib;
-{
-  imports = [
-    ./common.nix
-  ];
+{ options, config, lib, pkgs, ... }:
 
+with lib;
+with lib.my;
+let cfg = config.modules.desktop.bspwm;
+in {
   options.modules.desktop.bspwm = {
-    enable = mkOption { type = types.bool; default = false; };
+    enable = mkBoolOpt false;
   };
 
-  config = mkIf config.modules.desktop.bspwm.enable {
+  config = mkIf cfg.enable {
     environment.systemPackages = with pkgs; [
       lightdm
       dunst
@@ -25,18 +24,29 @@ with lib;
       redshift.enable = true;
       xserver = {
         enable = true;
-        displayManager.defaultSession = "none+bspwm";
-        displayManager.lightdm.enable = true;
-        displayManager.lightdm.greeters.mini.enable = true;
+        displayManager = {
+          defaultSession = "none+bspwm";
+          lightdm.enable = true;
+          lightdm.greeters.mini.enable = true;
+        };
         windowManager.bspwm.enable = true;
       };
     };
 
+    systemd.user.services."dunst" = {
+      enable = true;
+      description = "";
+      wantedBy = [ "default.target" ];
+      serviceConfig.Restart = "always";
+      serviceConfig.RestartSec = 2;
+      serviceConfig.ExecStart = "${pkgs.dunst}/bin/dunst";
+    };
+
     # link recursively so other modules can link files in their folders
-    my.home.xdg.configFile = {
-      "sxhkd".source = <config/sxhkd>;
+    home.configFile = {
+      "sxhkd".source = "${configDir}/sxhkd";
       "bspwm" = {
-        source = <config/bspwm>;
+        source = "${configDir}/bspwm";
         recursive = true;
       };
     };

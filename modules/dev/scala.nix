@@ -1,16 +1,15 @@
+{ config, options, lib, pkgs, my, ... }:
 
-{ config, options, lib, pkgs, ... }:
 with lib;
-{
+with lib.my;
+let cfg = config.modules.dev.scala;
+in {
   options.modules.dev.scala = {
-    enable = mkOption {
-      type = types.bool;
-      default = false;
-    };
+    enable = mkBoolOpt false;
   };
 
-  config = mkIf config.modules.dev.scala.enable {
-    my.packages = with pkgs; [
+  config = mkIf cfg.enable {
+    user.packages = with pkgs; [
       scala
       jdk
       sbt

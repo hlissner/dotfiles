@@ -1,22 +1,22 @@
 { config, options, pkgs, lib, ... }:
+
 with lib;
-{
+with lib.my;
+let cfg = config.modules.shell.pass;
+in {
   options.modules.shell.pass = {
-    enable = mkOption {
-      type = types.bool;
-      default = false;
-    };
+    enable = mkBoolOpt false;
   };
 
-  config = mkIf config.modules.shell.pass.enable {
-    my = {
-      packages = with pkgs; [
-        (pass.withExtensions (exts: [
-          exts.pass-otp
-          exts.pass-genphrase
-        ]))
-      ];
-      env.PASSWORD_STORE_DIR = "$HOME/.secrets/password-store";
-    };
+  config = mkIf cfg.enable {
+    user.packages = with pkgs; [
+      (pass.withExtensions (exts: [
+        exts.pass-otp
+        exts.pass-genphrase
+      ] ++ (if config.modules.shell.gnupg.enable
+            then [ exts.pass-tomb ]
+            else [])))
+    ];
+    env.PASSWORD_STORE_DIR = "$HOME/.secrets/password-store";
   };
 }
