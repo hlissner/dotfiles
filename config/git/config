@@ -29,3 +29,15 @@
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	clean = git-lfs clean -- %f
+[url "https://github.com/"]
+    insteadOf = gh:
+[url "git@github.com:hlissner/"]
+    insteadOf = gh:/
+[url "https://gitlab.com/"]
+    insteadOf = gl:
+[url "https://gist.github.com/"]
+    insteadOf = gist:
+[url "https://bitbucket.org/"]
+    insteadOf = bb:
+[url "https://git.v0.com"]
+    insteadOf = v0:

@@ -11,6 +11,7 @@ in {
   config = mkIf cfg.enable {
     user.packages = with pkgs; [
       gitAndTools.gh
+      gitAndTools.git-open
       gitAndTools.diff-so-fancy
       (mkIf config.modules.shell.gnupg.enable
         gitAndTools.git-crypt)
