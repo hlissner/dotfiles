@@ -100,7 +100,7 @@ function main {
     gc)          _gc "$@"                       ;;
     push)
       rsync -avzh ./ "$1:$REMOTE/"
-      ssh -t -l "$USERNAME" "$1" "$REMOTE/dots re" "${@[2,-1]}"
+      ssh -t -l "$USERNAME" "$1" "$REMOTE/hey re" "${@[2,-1]}"
       ;;
 
     gen|generations)
