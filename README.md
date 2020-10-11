@@ -7,7 +7,7 @@
 
 **Hey,** you. You're finally awake. You were trying to configure your OS declaratively, right? Walked right into that NixOS ambush, same as us, and those dotfiles over there.
 
-<img src="https://raw.githubusercontent.com/hlissner/dotfiles/screenshots/fluorescence/fakebusy.png" width="100%" />
+<img src="/../screenshots/fluorescence/fakebusy.png" width="100%" />
 
 <p align="center">
 <span><img src="/../screenshots/fluorescence/desktop.png" height="178" /></span>
