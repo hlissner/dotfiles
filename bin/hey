@@ -37,15 +37,11 @@ function main {
     echo
     echo "Available commands:"
     echo "  init               TODO"
-    echo "  env (e)            TODO"
-    echo "  shell (sh)         TODO"
-    echo "  build (b)          TODO"
     echo "  upgrade (up)       TODO"
     echo "  rebuild (re)       TODO"
     echo "  rollback           TODO"
     echo "  gc                 TODO"
     echo "  vm                 TODO"
-    echo "  repl               TODO"
     echo "  push               Push thie config to a remote NixOS system and rebuild it"
     echo "  generations (gen)  TODO"
   }

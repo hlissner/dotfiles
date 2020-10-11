@@ -1,0 +1,35 @@
+#compdef hey
+
+_hey_dispatch () {
+    local cmd="$@"
+    local offset=$#
+    CURRENT=$((CURRENT-$offset))
+    words=($cmd "${words[$((2 + offset)),-1]}")
+    _$cmd
+}
+
+_hey_command_list () {
+    hey | sed '1,/Available commands:/d' | awk '{ print $1 }'
+}
+
+_hey () {
+    local -a commands
+    IFS=$'\n' commands=($(_hey_command_list))
+
+    if (( CURRENT == 2 )); then
+        _describe -t commands "hey commands" commands
+        return
+    fi
+    integer ret=1
+    case ${words[2]} in
+        ch|channel) _hey_dispatch nix-channel ;;
+        b|build)    _hey_dispatch nix-build ;;
+        ch|check)   _hey_dispatch nix flake check ;;
+        sh|show)    _hey_dispatch nix flake show ;;
+        -*)         _hey_dispatch nix-env ;;
+        *)          _message "Command not found: ${words[2]}" ;;
+    esac
+    return ret
+}
+
+_hey
