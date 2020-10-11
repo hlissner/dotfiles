@@ -10,9 +10,9 @@
 <img src="https://raw.githubusercontent.com/hlissner/dotfiles/screenshots/fluorescence/fakebusy.png" width="100%" />
 
 <p align="center">
-<span><img src="/../screenshots/fluorescence/desktop.png" height="187" /></span>
-<span><img src="/../screenshots/fluorescence/rofi.png" height="187" /></span>
-<span><img src="/../screenshots/fluorescence/tiling.png" height="187" /></span>
+<span><img src="/../screenshots/fluorescence/desktop.png" height="178" /></span>
+<span><img src="/../screenshots/fluorescence/rofi.png" height="178" /></span>
+<span><img src="/../screenshots/fluorescence/tiling.png" height="178" /></span>
 </p>
 
 ------
