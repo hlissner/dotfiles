@@ -27,7 +27,7 @@
     let
       inherit (builtins) baseNameOf;
       inherit (lib) nixosSystem mkIf removeSuffix attrNames attrValues;
-      inherit (lib.my) mapModules mapModulesRec mapModulesRec';
+      inherit (lib.my) dotFilesDir mapModules mapModulesRec mapModulesRec';
 
       system = "x86_64-linux";
 
@@ -69,13 +69,15 @@
               {
                 networking.hostName = removeSuffix ".nix" (baseNameOf modulePath);
                 environment.variables.NIXPKGS_ALLOW_UNFREE = "1";
+                environment.variables.DOTFILES = dotFilesDir;
                 nixpkgs.pkgs = pkgs;
                 nix = {
                   package = unstable.nixFlakes;
                   extraOptions = "experimental-features = nix-command flakes";
                   nixPath = [
                     "nixpkgs=${nixos}"
-                    "nixpkgs-overlays=${toString ./.}/overlays"
+                    "nixpkgs-overlays=${dotFilesDir}/overlays"
+                    "dotfiles=${dotFilesDir}"
                   ];
                   binaryCaches = [
                     "https://cache.nixos.org/"
