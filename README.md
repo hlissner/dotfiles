@@ -58,6 +58,11 @@ And I say, `bin/hey`. [What's going on?](http://hemansings.com/)
 
 ## Frequently asked questions
 
++ **Why NixOS?**
+
+  Because declarative, generational, and immutable configuration is a godsend
+  when you have a fleet of computers to manage.
+  
 + **How do I change the default username?**
 
   1. Set `USER` the first time you run `nixos-install`: `USER=myusername
