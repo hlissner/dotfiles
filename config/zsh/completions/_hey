@@ -26,6 +26,7 @@ _hey () {
         b|build)    _hey_dispatch nix-build ;;
         ch|check)   _hey_dispatch nix flake check ;;
         sh|show)    _hey_dispatch nix flake show ;;
+        s|search)   _hey_dispatch nix search nixpkgs ;;
         -*)         _hey_dispatch nix-env ;;
         *)          _message "Command not found: ${words[2]}" ;;
     esac

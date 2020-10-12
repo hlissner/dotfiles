@@ -10,6 +10,7 @@
 #   dots u|update      -> nix flake update --recreate-lock-file $DOTFILES
 #   dots re|rebuild    -> nixos-rebuild --flake $DOTFILES#$HOSTNAME ${1:-build}
 #   dots rollback      -> dots rebuild --rollback switch
+#   dots s|search      -> nix search nixpkgs $@
 #   dots vm            -> dots rebuild vm
 #   dots up|upgrade    -> dots update && dots rebuild switch
 #   dots gc            -> GC user profile, optimise nix store
@@ -90,8 +91,9 @@ function main {
     rollback)    _rebuild --rollback switch     ;;
     vm)          _rebuild "$@" vm               ;;
 
-    u|update)    _update "$@"                  ;;
-    up|upgrade)  _update && _rebuild switch    ;;
+    u|update)    _update "$@"                   ;;
+    up|upgrade)  _update && _rebuild switch     ;;
+    s|search)    nix search nixpkgs "$@"        ;;
 
     gc)          _gc "$@"                       ;;
     push)
