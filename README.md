@@ -44,7 +44,7 @@
 
 ## Management
 
-And I say, `bin/hey`. [What's going on?](https://www.youtube.com/watch?v=ZZ5LpwO-An4)
+And I say, `bin/hey`. [What's going on?](http://hemansings.com/)
 
 | Command           | Description                                                     |
 |-------------------|-----------------------------------------------------------------|
