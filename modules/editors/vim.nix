@@ -17,6 +17,7 @@ in {
       neovim
     ];
 
+    # This is for non-neovim, so it loads my nvim config
     # env.VIMINIT = "let \\$MYVIMRC='\\$XDG_CONFIG_HOME/nvim/init.vim' | source \\$MYVIMRC";
 
     environment.shellAliases = {

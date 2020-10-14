@@ -28,10 +28,17 @@
         repl $XDG_CONFIG_HOME/aspell/en.prepl;
       '';
       CUDA_CACHE_PATH = "$XDG_CACHE_HOME/nv";
-      HISTFILE = "$XDG_DATA_HOME/bash/history";
-      INPUTRC = "$XDG_CACHE_HOME/readline/inputrc";
-      LESSHISTFILE = "$XDG_CACHE_HOME/lesshst";
-      WGETRC = "$XDG_CACHE_HOME/wgetrc";
+      HISTFILE        = "$XDG_DATA_HOME/bash/history";
+      INPUTRC         = "$XDG_CACHE_HOME/readline/inputrc";
+      LESSHISTFILE    = "$XDG_CACHE_HOME/lesshst";
+      WGETRC          = "$XDG_CACHE_HOME/wgetrc";
+
+      # Tools I don't use
+      # SUBVERSION_HOME = "$XDG_CONFIG_HOME/subversion";
+      # BZRPATH         = "$XDG_CONFIG_HOME/bazaar";
+      # BZR_PLUGIN_PATH = "$XDG_DATA_HOME/bazaar";
+      # BZR_HOME        = "$XDG_CACHE_HOME/bazaar";
+      # ICEAUTHORITY    = "$XDG_CACHE_HOME/ICEauthority";
     };
 
     # Move ~/.Xauthority out of $HOME

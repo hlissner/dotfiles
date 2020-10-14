@@ -75,6 +75,7 @@
 
   ## Local config
   programs.ssh.startAgent = true;
+  services.openssh.startWhenNeeded = true;
 
   boot.loader.systemd-boot.enable = true;
   networking.wireless.enable = true;
