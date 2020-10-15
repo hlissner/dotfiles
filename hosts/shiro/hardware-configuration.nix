@@ -29,7 +29,9 @@
   # Power management
   environment.systemPackages = [ pkgs.acpi ];
   powerManagement.powertop.enable = true;
-  programs.light.enable = true;  # Monitor backlight control
+  # Monitor backlight control
+  programs.light.enable = true;
+  user.extraGroups = [ "video" ];
 
   # Storage
   fileSystems = {
