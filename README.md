@@ -35,7 +35,7 @@
 1. Yoink [NixOS 20.09][nixos] (must be newer than Sept 12, 2020 for `nixos-install --flake`).
 2. Boot into the installer.
 3. Do your partitions and mount your root to `/mnt`
-4. `git clone https://github.com/hlissner/dotfiles /etc/nixos`
+4. `git clone https://github.com/hlissner/dotfiles /mnt/etc/nixos`
 5. Install NixOS: `nixos-install --root /mnt --flake #XYZ`, where `XYZ` is your
    hostname.  Use `#generic` for a simple, universal config.
 6. OPTIONAL: Create a sub-directory in `hosts/` for your device. See [host/kuro]
