@@ -31,8 +31,12 @@ mkfs.ext4 -L home /dev/nvme0n1p3
 ** Set up VM SSDs
 #+BEGIN_SRC shell
 # 2x SSDs for VMs
-parted /dev/sdc -- mklabel gpt
-parted /dev/sde -- mklabel gpt
+parted /dev/sda -- mklabel gpt
+parted -a optimal /dev/sda -- mkpart primary 0% 100%
+parted /dev/sdb -- mklabel gpt
+parted -a optimal /dev/sdb -- mkpart primary 0% 100%
+mkfs.ext4 -L vm1 /dev/sda1
+mkfs.ext4 -L vm2 /dev/sdb1
 #+END_SRC
 
 ** Set up backup file system
@@ -45,7 +49,7 @@ zpool create -R /mnt \
     -O compression=lz4 \
     -O recordsize=1M \
     -o ashift=9 \
-    usr mirror /dev/sda /dev/sdb
+    usr mirror /dev/sdc /dev/sdd
 
 # aux
 zfs create -o mountpoint=legacy usr/media
@@ -58,11 +62,13 @@ zfs create -o mountpoint=legacy -o recordsize=128K usr/local
 #+BEGIN_SRC sh
 mount /dev/nvme0n1p2 /mnt
 
-mkdir -p /mnt/{home,boot,usr/{backup,media,share}}
+mkdir -p /mnt/{home,boot,usr/{backup,media,share,vm}}
 mount /dev/nvme0n1p1 /mnt/boot
 mount /dev/nvme0n1p3 /mnt/home
 mount -t zfs {usr,/mnt/usr}/backup
 mount -t zfs {usr,/mnt/usr}/media
 mount -t zfs {usr,/mnt/usr}/share
 mount -t zfs {usr,/mnt/usr}/local
+mount /dev/sda1 /usr/vm/windows
+mount /dev/sdb1 /usr/vm/macos
 #+END_SRC
