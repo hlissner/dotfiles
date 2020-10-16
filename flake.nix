@@ -76,6 +76,7 @@
                   extraOptions = "experimental-features = nix-command flakes";
                   nixPath = [
                     "nixpkgs=${nixos}"
+                    "nixpkgs-unstable=${nixos-unstable}"
                     "nixpkgs-overlays=${dotFilesDir}/overlays"
                     "dotfiles=${dotFilesDir}"
                   ];
