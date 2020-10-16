@@ -59,7 +59,7 @@ prompt_init() {
   # show username@host if logged in through SSH
   if [[ -n $SSH_CONNECTION ]]; then
     prompt_username='%m '
-    if [[ $(whoami) != hlissner ]]; then
+    if [[ $(whoami) != juuso ]]; then
       prompt_username="%n.$prompt_username"
     fi
   fi

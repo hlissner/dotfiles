@@ -176,7 +176,7 @@ label-padding-left = 2
 
 ; [module/mpd]
 ; type = internal/mpd
-; host = /home/hlissner/.config/mpd/mpd.sock
+; host = /home/juuso/.config/mpd/mpd.sock
 ;
 ; format-online = <label-song> <toggle>
 ; format-padding = 5
