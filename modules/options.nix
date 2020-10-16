@@ -28,7 +28,7 @@ with lib.my;
       description = "The primary user account";
       extraGroups = [ "wheel" ];
       isNormalUser = true;
-      name = "juuso"
+      name = "juuso";
       uid = 1000;
     };
 
