@@ -1,0 +1,9 @@
+#+TITLE: Shiro
+#+DATE:  September 13, 2020
+
+* Overview
+
+* Specs
+Dell 13" 9370
+
+* Installation

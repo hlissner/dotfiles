@@ -28,9 +28,7 @@ with lib.my;
       description = "The primary user account";
       extraGroups = [ "wheel" ];
       isNormalUser = true;
-      name = let name = builtins.getEnv "USER"; in
-             if elem name [ "" "root" ]
-             then "hlissner" else name;
+      name = "juuso"
       uid = 1000;
     };
 
