@@ -29,7 +29,7 @@ configuration {
   text-font:      "Fira Sans 15";
   text-mono-font: "Fira Code 13";
   /* icon-font:      "Hurmit Nerd Font Mono 26"; */
-  icon-font:      "FontAwesome 26";
+  icon-font:      "FontAwesome 22";
 
   background-color: transparent;
   text-color: @fg-list;
@@ -87,7 +87,7 @@ textbox-icon, prompt {
   margin: 0 -2px 0 0;
 }
 textbox-icon {
-  padding: 7px -6px 0;
+  padding: 7px 4px 0;
 }
 entry, element {
   padding: 10px 13px;
