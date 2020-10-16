@@ -5,24 +5,24 @@
 # program with simpler, more intuitive commands. This script is a rudimentary
 # attempt at giving me that.
 #
-#   dots cd|check      -> nix flake check $DOTFILES
-#   dots sh|show       -> nix flake show $DOTFILES
-#   dots u|update      -> nix flake update --recreate-lock-file $DOTFILES
-#   dots re|rebuild    -> nixos-rebuild --flake $DOTFILES#$HOSTNAME ${1:-build}
-#   dots rollback      -> dots rebuild --rollback switch
-#   dots s|search      -> nix search nixpkgs $@
-#   dots vm            -> dots rebuild vm
-#   dots up|upgrade    -> dots update && dots rebuild switch
-#   dots gc            -> GC user profile, optimise nix store
-#   sudo dots gc       -> GC, optimise nix store, & delete old boot entries
-#   dots push REMOTE   -> push flake to remote (over SSH) and rebuild remotely
-#   dots gen|generations -> explore, manage, diff across generations (WIP)
+#   hey cd|check      -> nix flake check $DOTFILES
+#   hey sh|show       -> nix flake show $DOTFILES
+#   hey u|update      -> nix flake update --recreate-lock-file $DOTFILES
+#   hey re|rebuild    -> nixos-rebuild --flake $DOTFILES#$HOSTNAME ${1:-build}
+#   hey rollback      -> hey rebuild --rollback switch
+#   hey s|search      -> nix search nixpkgs $@
+#   hey vm            -> hey rebuild vm
+#   hey up|upgrade    -> hey update && hey rebuild switch
+#   hey gc            -> GC user profile, optimise nix store
+#   sudo hey gc       -> GC, optimise nix store, & delete old boot entries
+#   hey push REMOTE   -> push flake to remote (over SSH) and rebuild remotely
+#   hey gen|generations -> explore, manage, diff across generations (WIP)
 #
-# dots (with no sub-command) can also be used as an alternative to nix-env:
+# hey (with no sub-command) can also be used as an alternative to nix-env:
 #
-#   dots -q
-#   dots -iA nixos.htop
-#   dots -e htop
+#   hey -q
+#   hey -iA nixos.htop
+#   hey -e htop
 
 set -e
 REMOTE=${REMOTE:-"~/.config/dotfiles"}
@@ -34,7 +34,7 @@ function main {
 
   ### Helpers
   function _usage {
-    echo "Usage: dots COMMAND [FLAGS...] [ARGS...]"
+    echo "Usage: hey COMMAND [FLAGS...] [ARGS...]"
     echo
     echo "Available commands:"
     echo "  init               TODO"
