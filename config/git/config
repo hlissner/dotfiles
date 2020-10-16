@@ -1,17 +1,8 @@
 [user]
-	name = Henrik Lissner
-	email = henrik@lissner.net
-	signingkey = 5F6C0EA160557395
-[commit]
-	gpgsign = true
-[core]
-	whitespace = trailing-space
+	name = Juuso Perälä
+	email = juuso.perala@boogiesoftware.com
 [github]
-	user = hlissner
-[rebase]
-	autosquash = true
-[push]
-	default = current
+	user = jumppp
 [alias]
 	amend = commit --amend
 	exec = "!exec "
@@ -31,7 +22,7 @@
 	clean = git-lfs clean -- %f
 [url "https://github.com/"]
     insteadOf = gh:
-[url "git@github.com:hlissner/"]
+[url "git@github.com:Jumpp/"]
     insteadOf = gh:/
 [url "https://gitlab.com/"]
     insteadOf = gl:
