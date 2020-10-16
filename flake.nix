@@ -78,6 +78,7 @@
                     "nixpkgs=${nixos}"
                     "nixpkgs-unstable=${nixos-unstable}"
                     "nixpkgs-overlays=${dotFilesDir}/overlays"
+                    "home-manager=${home-manager}"
                     "dotfiles=${dotFilesDir}"
                   ];
                   binaryCaches = [
