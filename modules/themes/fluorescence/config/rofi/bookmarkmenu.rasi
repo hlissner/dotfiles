@@ -7,7 +7,7 @@ listview {
 }
 
 textbox-icon {
-  str: " 爵 ";
+  str: "  ";
 }
 
 prompt {
