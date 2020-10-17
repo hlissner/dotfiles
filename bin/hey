@@ -45,6 +45,7 @@ function main {
     echo "  vm                 TODO"
     echo "  push               Push thie config to a remote NixOS system and rebuild it"
     echo "  generations (gen)  TODO"
+    echo "  swap               TODO"
   }
 
   function _rebuild {
@@ -74,6 +75,38 @@ function main {
       echo "Cleaning up your user profile..."
       _do nix-collect-garbage ${@:--d}
     fi
+  }
+
+  function _swap {
+    for target in $@; do
+      if [ -d "$target" ]; then
+        files=( "$target"/**/*.nix-store-backup )
+        links=( $(find "$target" -type l) )
+        if [[ "$files" ]]; then
+          echo "There are swapped files here. Unswapping!"
+          for file in $files[@]; do
+            _swap "$link"
+          done
+        else
+          echo "Swapping files in $target"
+          for link in $links[@]; do
+            if [[ "$(readlink $link)" == /nix/store/* ]]; then
+              _swap "$link"
+            fi
+          done
+        fi
+      elif [ -f "$target.nix-store-backup" ]; then
+        echo "Unswapping $target"
+        _do mv -i "$target.nix-store-backup" "$target"
+      elif [ -f "$target" ]; then
+        echo "Swapping $target"
+        _do mv "$target" "$target.nix-store-backup"
+        _do cp "$target.nix-store-backup" "$target"
+      else
+        >&2 echo "Not a valid target: $target"
+        exit 1
+      fi
+    done
   }
 
   ###
