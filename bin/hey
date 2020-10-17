@@ -63,6 +63,7 @@ function main {
     if [[ $EUID == 0 ]]; then
       echo "Cleaning up your system..."
       _do sudo nix-collect-garbage ${@:--d}
+      _do nix-store --optimise
       # nix-collect-garbage is a Nix tool, not a NixOS tool. It won't delete old
       # boot entries until you do a nixos-rebuild (which means we'll always have
       # 2 boot entries at any time). Instead, we properly delete them by
@@ -73,7 +74,6 @@ function main {
       echo "Cleaning up your user profile..."
       _do nix-collect-garbage ${@:--d}
     fi
-    _do nix-store --optimise
   }
 
   ###
