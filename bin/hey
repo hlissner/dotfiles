@@ -9,6 +9,7 @@
 #   hey sh|show       -> nix flake show $DOTFILES
 #   hey u|update      -> nix flake update --recreate-lock-file $DOTFILES
 #   hey re|rebuild    -> nixos-rebuild --flake $DOTFILES#$HOSTNAME ${1:-build}
+#   hey t|test        -> nixos-rebuild --flake $DOTFILES#$HOSTNAME --fast test
 #   hey rollback      -> hey rebuild --rollback switch
 #   hey s|search      -> nix search nixpkgs $@
 #   hey vm            -> hey rebuild vm
@@ -46,6 +47,7 @@ function main {
     echo "  search (s)         Searches nixpkgs for a package"
     echo "  show (sh)          Same as 'nix flake show \$DOTFILES'"
     echo "  swap               Swap nix-store link (or directory thereof) for tweaking"
+    echo "  test (t)           Quickly rebuild, for quick iteration"
     echo "  upgrade (up)       Update flake lockfile and rebuild"
     echo "  vm                 Build flake into a VM image"
   }
@@ -128,6 +130,7 @@ function main {
     ch|check)    _do nix flake check "$DOTFILES";;
     sh|show)     _do nix flake show "$DOTFILES" ;;
 
+    t|test)      _rebuild --fast test "$@"      ;;
     re|rebuild)  _rebuild "${@:-switch}"        ;;
     rollback)    _rebuild --rollback switch     ;;
     vm)          _rebuild "$@" vm               ;;
