@@ -37,15 +37,17 @@ function main {
     echo "Usage: hey COMMAND [FLAGS...] [ARGS...]"
     echo
     echo "Available commands:"
-    echo "  init               TODO"
-    echo "  upgrade (up)       TODO"
-    echo "  rebuild (re)       TODO"
-    echo "  rollback           TODO"
-    echo "  gc                 TODO"
-    echo "  vm                 TODO"
-    echo "  push               Push thie config to a remote NixOS system and rebuild it"
+    echo "  check (ch)         Same as 'nix flake check \$DOTFILES'"
+    echo "  gc                 Garbage collect and optimize store"
     echo "  generations (gen)  TODO"
-    echo "  swap               TODO"
+    echo "  push               Push thie config to a remote NixOS system and rebuild it"
+    echo "  rebuild (re)       Rebuild current system flake"
+    echo "  rollback           Roll back to last generation"
+    echo "  search (s)         Searches nixpkgs for a package"
+    echo "  show (sh)          Same as 'nix flake show \$DOTFILES'"
+    echo "  swap               Swap nix-store link (or directory thereof) for tweaking"
+    echo "  upgrade (up)       Update flake lockfile and rebuild"
+    echo "  vm                 Build flake into a VM image"
   }
 
   function _rebuild {
