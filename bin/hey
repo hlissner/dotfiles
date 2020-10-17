@@ -59,7 +59,13 @@ function main {
 
   function _update {
     echo "Updating NixOS flake"
-    _do nix flake update --recreate-lock-file "$DOTFILES"
+    if [[ "$@" ]]; then
+      for flake in $@; do
+        _do nix flake update --update-input "$flake" "$DOTFILES"
+      done
+    else
+      _do nix flake update --recreate-lock-file "$DOTFILES"
+    fi
   }
 
   function _gc {
