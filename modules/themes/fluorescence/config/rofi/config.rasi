@@ -29,7 +29,7 @@ configuration {
   text-font:      "Fira Sans 15";
   text-mono-font: "Fira Code 13";
   /* icon-font:      "Hurmit Nerd Font Mono 26"; */
-  icon-font:      "FontAwesome 22";
+  icon-font:      "FontAwesome 20";
 
   background-color: transparent;
   text-color: @fg-list;
