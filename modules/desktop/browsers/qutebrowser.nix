@@ -9,9 +9,9 @@ with lib;
 with lib.my;
 let cfg = config.modules.desktop.browsers.qutebrowser;
 in {
-  options.modules.desktop.browsers.qutebrowser = {
+  options.modules.desktop.browsers.qutebrowser = with types; {
     enable = mkBoolOpt false;
-    userStyles = mkOpt types.lines "";
+    userStyles = mkOpt lines "";
   };
 
   config = mkIf cfg.enable {
@@ -32,7 +32,7 @@ in {
         source = "${configDir}/qutebrowser";
         recursive = true;
       };
-      dataFile."qutebrowser/userstyles.css".text = userStyles;
+      dataFile."qutebrowser/userstyles.css".text = cfg.userStyles;
     };
   };
 }
