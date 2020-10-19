@@ -21,7 +21,8 @@ in {
 
     user.packages = with pkgs; [
       ## Doom dependencies
-      emacsUnstable       # 27.1
+      binutils       # native-comp needs 'as', provided by this
+      emacsGcc       # 28 + native-comp
       git
       (ripgrep.override {withPCRE2 = true;})
       gnutls              # for TLS connectivity
