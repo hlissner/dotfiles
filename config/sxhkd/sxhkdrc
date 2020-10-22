@@ -39,9 +39,6 @@ super + slash
 super + Escape
 	pkill -USR1 -x sxhkd
 
-{Prior,Next}
-	:
-
 
 #
 ##
