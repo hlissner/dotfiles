@@ -127,8 +127,8 @@ function main {
     # sh|shell)    _do nix-shell "$@"             ;;
     # repl)        _do nix develop "$@"           ;;
 
-    ch|check)    _do nix flake check "$DOTFILES";;
-    sh|show)     _do nix flake show "$DOTFILES" ;;
+    ch|check)    _do nix flake check "$@" "$DOTFILES";;
+    sh|show)     _do nix flake show "$@" "$DOTFILES" ;;
 
     t|test)      _rebuild --fast test "$@"      ;;
     re|rebuild)  _rebuild "${@:-switch}"        ;;
