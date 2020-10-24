@@ -15,7 +15,7 @@ with lib.my;
     # services.gitea.enable = true;
     # services.syncthing.enable = true;
 
-    themes.fluorescence.enable = true;
+    theme.active = "alucard";
   };
 
 

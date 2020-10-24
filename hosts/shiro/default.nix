@@ -69,7 +69,7 @@
       # syncthing.enable = true;
       ssh.enable = true;
     };
-    themes.fluorescence.enable = true;
+    theme.active = "alucard";
   };
 
 

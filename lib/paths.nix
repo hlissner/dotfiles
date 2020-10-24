@@ -8,7 +8,7 @@ rec {
   modulesDir  = "${dotFilesDir}/modules";
   configDir   = "${dotFilesDir}/config";
   binDir      = "${dotFilesDir}/bin";
-  themeDir    = "${modulesDir}/themes";
+  themesDir   = "${modulesDir}/themes";
   homeDir = "/home/${let name = getEnv "USERNAME"; in
                      if elem name [ "" "root" ]
                      then "hlissner" else name}";

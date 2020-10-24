@@ -130,6 +130,7 @@ function main {
     ch|check)    _do nix flake check "$@" "$DOTFILES";;
     sh|show)     _do nix flake show "$@" "$DOTFILES" ;;
 
+    theme)       THEME="$1" _rebuild --fast test ;;
     t|test)      _rebuild --fast test "$@"      ;;
     re|rebuild)  _rebuild "${@:-switch}"        ;;
     rollback)    _rebuild --rollback switch     ;;

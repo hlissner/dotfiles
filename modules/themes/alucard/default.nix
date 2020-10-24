@@ -74,23 +74,23 @@ in {
       '';
 
       # Other dotfiles
-      home.configFile = mkMerge [
+      home.configFile = with config.modules; mkMerge [
         {
           # Sourced from sessionCommands in modules/themes/default.nix
           "xtheme/90-theme".source = ./config/Xresources;
         }
-        (mkIf m.desktop.bspwm.enable {
+        (mkIf desktop.bspwm.enable {
           "bspwm/rc.d/polybar".source = ./config/polybar/run.sh;
           "bspwm/rc.d/theme".source = ./config/bspwmrc;
         })
-        (mkIf m.desktop.apps.rofi.enable {
+        (mkIf desktop.apps.rofi.enable {
           "rofi/theme" = { source = ./config/rofi; recursive = true; };
         })
-        (mkIf (m.desktop.bspwm.enable || m.desktop.stumpwm.enable) {
+        (mkIf (desktop.bspwm.enable || desktop.stumpwm.enable) {
           "polybar" = { source = ./config/polybar; recursive = true; };
           "dunst/dunstrc".source = ./config/dunstrc;
         })
-        (mkIf m.desktop.media.graphics.vector.enable {
+        (mkIf desktop.media.graphics.vector.enable {
           "inkscape/templates/default.svg".source = ./config/inkscape/default-template.svg;
         })
       ];

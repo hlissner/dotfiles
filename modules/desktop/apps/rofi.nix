@@ -28,7 +28,7 @@ in {
       #   themename=${my.theme.name}
       #   shift
       #   exec rofi \
-      #        -theme ${themeDir}/$themename/rofi/$themefile \
+      #        -theme ${themesDir}/$themename/rofi/$themefile \
       #        "$@"
       #   '')
 

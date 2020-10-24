@@ -115,23 +115,10 @@ in {
     env.QT_QPA_PLATFORMTHEME = "gtk2";
     qt5 = { style = "gtk2"; platformTheme = "gtk2"; };
 
-    services.xserver.displayManager.sessionCommands =
-      let cfg = config.services.xserver.desktopManager.wallpaper; in ''
-        # Also, read xresources files in ~/.config/xtheme/* and init scripts in
-        # ~/.config/xsessions/*, so I can centralize my theme config files.
-        export GTK2_RC_FILES="$XDG_CONFIG_HOME/gtk-2.0/gtkrc"
-        source "$XDG_CONFIG_HOME"/xsession/*.sh
-        xrdb -merge "$XDG_CONFIG_HOME"/xtheme/*
-
-        # Set the wallpaper ourselves so we don't need .background-image and/or
-        # .fehbg polluting $HOME
-        if [ -e "$XDG_DATA_HOME/wallpaper" ]; then
-          ${pkgs.feh}/bin/feh --bg-${cfg.mode} \
-            ${optionalString cfg.combineScreens "--no-xinerama"} \
-            --no-fehbg \
-            $XDG_DATA_HOME/wallpaper
-        fi
-      '';
+    services.xserver.displayManager.sessionCommands = ''
+      # GTK2_RC_FILES must be available to the display manager.
+      export GTK2_RC_FILES="$XDG_CONFIG_HOME/gtk-2.0/gtkrc"
+    '';
 
     # Clean up leftovers, as much as we can
     system.userActivationScripts.cleanupHome = ''

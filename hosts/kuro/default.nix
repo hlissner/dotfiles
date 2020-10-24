@@ -65,7 +65,7 @@
       # Needed occasionally to help the parental units with PC problems
       # teamviewer.enable = true;
     };
-    themes.fluorescence.enable = true;
+    theme.active = "alucard";
   };
 
 

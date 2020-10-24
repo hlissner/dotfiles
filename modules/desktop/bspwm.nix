@@ -9,6 +9,8 @@ in {
   };
 
   config = mkIf cfg.enable {
+    modules.theme.onReload.bspwm = "${pkgs.bspwm}/bin/bspc wm -r";
+
     environment.systemPackages = with pkgs; [
       lightdm
       dunst

@@ -39,7 +39,7 @@ in {
   config = mkIf (cfg.active != null) (mkMerge [
     # Read xresources files in ~/.config/xtheme/* to allow modular
     # configuration of Xresources.
-    (let xrdb = ''xrdb -merge "$XDG_CONFIG_HOME"/xtheme/*'';
+    (let xrdb = ''${pkgs.xorg.xrdb}/bin/xrdb -merge "$XDG_CONFIG_HOME"/xtheme/*'';
      in {
        services.xserver.displayManager.sessionCommands = xrdb;
        modules.theme.onReload.xtheme = xrdb;
@@ -104,21 +104,22 @@ in {
       services.xserver.displayManager.lightdm.background = cfg.loginWallpaper;
     })
 
-    (mkIf (cfg.onReload != {}) {
-      user.packages = [
-        (pkgs.writeScriptBin "reloadTheme" ''
-          #!${stdenv.shell}
-          echo "Reloading current theme: ${cfg.active}"
-          ${concatStrings "\n"
-            (mapAttrsToList (name: script: ''
-              echo "[${name}]"
-              ${script}
-            '') cfg.onReload)}
-        '')
-      ];
-      system.userActivationScripts.reloadTheme = ''
-        [ -z "$NORELOAD" ] && reloadTheme
-      '';
-    })
+    (mkIf (cfg.onReload != {})
+      (let reloadTheme =
+             with pkgs; (writeScriptBin "reloadTheme" ''
+               #!${stdenv.shell}
+               echo "Reloading current theme: ${cfg.active}"
+               ${concatStringsSep "\n"
+                 (mapAttrsToList (name: script: ''
+                   echo "[${name}]"
+                   ${script}
+                 '') cfg.onReload)}
+             '');
+       in {
+         user.packages = [ reloadTheme ];
+         system.userActivationScripts.reloadTheme = ''
+           [ -z "$NORELOAD" ] && ${reloadTheme}/bin/reloadTheme
+         '';
+       }))
   ]);
 }

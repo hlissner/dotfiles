@@ -120,6 +120,5 @@ bind -T copy-mode-vi L send-keys -X end-of-line
 set -g @open-editor 'C-e'
 set -g @open-S 'https://www.duckduckgo.com/'
 
-source $TMUX_HOME/plugins
-if '[ -f $TMUX_HOME/theme ]' 'source $TMUX_HOME/theme'
+source $TMUX_HOME/extraInit
 if '[ -f ~/.tmux.conf ]' 'source ~/.tmux.conf'
