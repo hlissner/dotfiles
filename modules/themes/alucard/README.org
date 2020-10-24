@@ -1,0 +1,14 @@
+#+TITLE:  Alucard
+#+AUTHOR: Henrik Lissner
+#+DATE:   October 1, 2019
+
+A regal dracula-inspired theme for piles of miserable secrets.
+
+* Wallpaper
+![Alucard wallpaper](config/wallpaper.jpg)
+
+* Screenshots
+![My desktop, pretending to look busy, with gaps](/../screenshots/alucard/fakebusy.png?raw=true)
+![My desktop, unfettered by windows](/../screenshots/alucard/desktop.png?raw=true)
+![My app launcher, rofi](/../screenshots/alucard/rofi.png?raw=true)
+![The gapless experience](/../screenshots/alucard/tiling.png?raw=true)
