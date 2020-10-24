@@ -3,17 +3,17 @@
 with lib;
 with lib.my;
 {
-  options = {
-    user = mkOpt types.attrs {};
+  options = with types; {
+    user = mkOpt attrs {};
 
-    home = with types; {
+    home = {
       file       = mkOpt' attrs {} "Files to place directly in $HOME";
       configFile = mkOpt' attrs {} "Files to place in $XDG_CONFIG_HOME";
       dataFile   = mkOpt' attrs {} "Files to place in $XDG_DATA_HOME";
     };
 
     env = mkOption {
-      type = with types; attrsOf (oneOf [ str path (listOf (either str path)) ]);
+      type = attrsOf (oneOf [ str path (listOf (either str path)) ]);
       apply = mapAttrs
         (n: v: if isList v
                then concatMapStringsSep ":" (x: toString x) v

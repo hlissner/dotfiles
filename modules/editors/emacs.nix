@@ -20,9 +20,11 @@ in {
     nixpkgs.overlays = [ inputs.emacs-overlay.overlay ];
 
     user.packages = with pkgs; [
-      ## Doom dependencies
+      ## Emacs itself
       binutils       # native-comp needs 'as', provided by this
       emacsGcc       # 28 + native-comp
+
+      ## Doom dependencies
       git
       (ripgrep.override {withPCRE2 = true;})
       gnutls              # for TLS connectivity
