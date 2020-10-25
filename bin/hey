@@ -10,8 +10,14 @@
 #   hey u|update      -> nix flake update --recreate-lock-file $DOTFILES
 #   hey re|rebuild    -> nixos-rebuild --flake $DOTFILES#$HOSTNAME ${1:-build}
 #   hey t|test        -> nixos-rebuild --flake $DOTFILES#$HOSTNAME --fast test
+#   hey theme $THEME  -> THEME=$THEME hey test (quick theme swapping)
 #   hey rollback      -> hey rebuild --rollback switch
 #   hey s|search      -> nix search nixpkgs $@
+#   hey swap $PATH    -> swaps all specified nix-store symlinks (or recursively
+#                        in a specified directory) with copies so they can be
+#                        modified in place (while tweaking). Run again to
+#                        restore the old link (careful, you'll lose work if you
+#                        don't save your changes elsewhere!)
 #   hey vm            -> hey rebuild vm
 #   hey up|upgrade    -> hey update && hey rebuild switch
 #   hey gc            -> GC user profile, optimise nix store
@@ -48,6 +54,7 @@ function main {
     echo "  show (sh)          Same as 'nix flake show \$DOTFILES'"
     echo "  swap               Swap nix-store link (or directory thereof) for tweaking"
     echo "  test (t)           Quickly rebuild, for quick iteration"
+    echo "  theme              Quickly swap to another theme"
     echo "  upgrade (up)       Update flake lockfile and rebuild"
     echo "  vm                 Build flake into a VM image"
   }
@@ -140,6 +147,7 @@ function main {
     up|upgrade)  _update && _rebuild switch     ;;
     s|search)    nix search nixpkgs "$@"        ;;
 
+    swap)        _swap $@                       ;;
     gc)          _gc "$@"                       ;;
     push)
       rsync -avzh ./ "$1:$REMOTE/"
