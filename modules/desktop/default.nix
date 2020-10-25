@@ -44,18 +44,10 @@ in {
       fonts = with pkgs; [
         ubuntu_font_family
         dejavu_fonts
-        fira-code
-        fira-code-symbols
         symbola
         noto-fonts
         noto-fonts-cjk
-        font-awesome-ttf
-        siji
       ];
-      fontconfig.defaultFonts = {
-        sansSerif = ["Fira Sans"];
-        monospace = ["Fira Code"];
-      };
     };
 
     ## Apps/Services
