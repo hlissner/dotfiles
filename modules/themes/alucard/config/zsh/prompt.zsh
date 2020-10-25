@@ -65,7 +65,7 @@ prompt_init() {
   fi
 
   RPROMPT='%F{blue}%~%F{magenta}${vcs_info_msg_0_}$(prompt_git_dirty)%f'
-  PROMPT='%F{magenta}${prompt_username}%f${PROMPT_SYMBOL:-$ }'
+  PROMPT='%F{magenta}${prompt_username}%f${PROMPT_SYMBOL:-$ }%f'
 }
 
 prompt_init "$@"
