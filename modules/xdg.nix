@@ -1,7 +1,7 @@
 # xdg.nix
 #
 # Set up and enforce XDG compliance. Other modules will take care of their own,
-# but this takes care of the general case.
+# but this takes care of the general cases.
 
 { config, home-manager, ... }:
 {
@@ -41,7 +41,7 @@
       # ICEAUTHORITY    = "$XDG_CACHE_HOME/ICEauthority";
     };
 
-    # Move ~/.Xauthority out of $HOME
+    # Move ~/.Xauthority out of $HOME (setting XAUTHORITY early isn't enough)
     extraInit = ''
       export XAUTHORITY=/tmp/Xauthority
       [ -e ~/.Xauthority ] && mv -f ~/.Xauthority "$XAUTHORITY"

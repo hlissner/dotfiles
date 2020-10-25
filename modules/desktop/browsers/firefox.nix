@@ -17,7 +17,7 @@ in {
       Firefox preferences to set in <filename>user.js</filename>
     '';
     extraConfig = mkOpt' lines "" ''
-      Extra preferences to dd to <filename>user.js</filename>
+      Extra lines to add to <filename>user.js</filename>
     '';
 
     userChrome  = mkOpt' lines "" "CSS Styles for Firefox's interface";
