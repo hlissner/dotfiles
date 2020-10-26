@@ -27,9 +27,7 @@
 
 { config, lib, pkgs, ... }:
 
-let
-  inherit (lib) filter pathExists;
-in
+with lib;
 {
   imports = filter pathExists ["/etc/nixos/configuration.nix"];
 

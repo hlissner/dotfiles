@@ -4,7 +4,10 @@
 
 with lib.my;
 {
-  imports = [ ./hardware-configuration.nix ];
+  imports = [
+    ../personal.nix
+    ./hardware-configuration.nix
+  ];
 
   ## Modules
   modules = {
@@ -20,7 +23,6 @@ with lib.my;
 
 
   ## Local config
-  boot.loader.systemd-boot.enable = true;
   networking.networkmanager.enable = true;
 
   # nginx hosts

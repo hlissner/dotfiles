@@ -1,6 +1,9 @@
 { ... }:
 {
-  imports = [ ./hardware-configuration.nix ];
+  imports = [
+    ../personal.nix
+    ./hardware-configuration.nix
+  ];
 
   ## Modules
   modules = {
@@ -73,7 +76,6 @@
   programs.ssh.startAgent = true;
   services.openssh.startWhenNeeded = true;
 
-  boot.loader.systemd-boot.enable = true;
   networking.networkmanager.enable = true;
   # The global useDHCP flag is deprecated, therefore explicitly set to false
   # here. Per-interface useDHCP will be mandatory in the future, so this

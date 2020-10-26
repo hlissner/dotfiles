@@ -2,7 +2,10 @@
 
 { ... }:
 {
-  imports = [ ./hardware-configuration.nix ];
+  imports = [
+    ../personal.nix
+    ./hardware-configuration.nix
+  ];
 
   ## Modules
   modules = {
@@ -77,7 +80,6 @@
   programs.ssh.startAgent = true;
   services.openssh.startWhenNeeded = true;
 
-  boot.loader.systemd-boot.enable = true;
   networking.wireless.enable = true;
   hardware.opengl.enable = true;
 
