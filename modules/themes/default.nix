@@ -51,11 +51,11 @@ in {
         "gtk-3.0/settings.ini".text = ''
           [Settings]
           ${optionalString (cfg.gtk.theme != "")
-            ''gtk-theme-name="${cfg.gtk.theme}"''}
+            ''gtk-theme-name=${cfg.gtk.theme}''}
           ${optionalString (cfg.gtk.iconTheme != "")
-            ''gtk-icon-theme-name="${cfg.gtk.iconTheme}"''}
+            ''gtk-icon-theme-name=${cfg.gtk.iconTheme}''}
           ${optionalString (cfg.gtk.cursorTheme != "")
-            ''gtk-cursor-theme-name="${cfg.gtk.cursorTheme}"''}
+            ''gtk-cursor-theme-name=${cfg.gtk.cursorTheme}''}
           gtk-fallback-icon-theme=gnome
           gtk-application-prefer-dark-theme=true
           gtk-xft-hinting=1
@@ -74,7 +74,7 @@ in {
         "Trolltech.conf".text = ''
           [Qt]
           ${optionalString (cfg.gtk.theme != "")
-            ''style="${cfg.gtk.theme}"''}
+            ''style=${cfg.gtk.theme}''}
         '';
       };
     }
