@@ -8,8 +8,8 @@
 #   hey cd|check      -> nix flake check $DOTFILES
 #   hey sh|show       -> nix flake show $DOTFILES
 #   hey u|update      -> nix flake update --recreate-lock-file $DOTFILES
-#   hey re|rebuild    -> nixos-rebuild --flake $DOTFILES#$HOSTNAME ${1:-build}
-#   hey t|test        -> nixos-rebuild --flake $DOTFILES#$HOSTNAME --fast test
+#   hey re|rebuild    -> nixos-rebuild --flake $DOTFILES#$HOST ${1:-build}
+#   hey t|test        -> nixos-rebuild --flake $DOTFILES#$HOST --fast test
 #   hey theme $THEME  -> THEME=$THEME hey test (quick theme swapping)
 #   hey rollback      -> hey rebuild --rollback switch
 #   hey s|search      -> nix search nixpkgs $@
@@ -62,7 +62,7 @@ function main {
   function _rebuild {
     # Move to $DOTFILES to prevent polluting the system with result links
     pushd $DOTFILES >/dev/null
-    _do sudo nixos-rebuild --flake ".#$HOSTNAME" ${@:-build}
+    _do sudo nixos-rebuild --flake ".#$HOST" ${@:-build}
     popd >/dev/null
   }
 
