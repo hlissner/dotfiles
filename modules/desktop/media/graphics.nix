@@ -28,7 +28,7 @@ in {
 
       # replaces illustrator & indesign
       (if cfg.vector.enable then [
-        unstable.inkscape
+        inkscape
       ] else []) ++
 
       # Replaces photoshop

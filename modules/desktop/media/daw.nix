@@ -19,7 +19,7 @@ in {
     user.packages = with pkgs; [
       # lmms on stable is broken due to 'Could not find the Qt platform plugin
       # "xcb" in ""' error: https://github.com/NixOS/nixpkgs/issues/76074
-      unstable.lmms   # for making music
+      lmms       # for making music
 
       audacity   # for recording and remastering audio
       # sunvox     # for making music (where LMMS is overkill)

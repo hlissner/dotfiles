@@ -12,42 +12,43 @@
 
   inputs = 
     {
-      # Core dependencies
-      nixos.url          = "nixpkgs/nixos-20.09";
-      nixos-unstable.url = "nixpkgs/nixos-unstable";
+      # Core dependencies.
+      # Two inputs so I can track them separately at different rates.
+      nixpkgs.url          = "nixpkgs/master";
+      nixpkgs-unstable.url = "nixpkgs/master";
+
       home-manager.url   = "github:rycee/home-manager/master";
-      home-manager.inputs.nixpkgs.follows = "nixos-unstable";
+      home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
       # Extras
       emacs-overlay.url  = "github:nix-community/emacs-overlay";
       nixos-hardware.url = "github:nixos/nixos-hardware";
     };
 
-  outputs = inputs @ { self, nixos, nixos-unstable, home-manager, ... }:
+  outputs = inputs @ { self, nixpkgs, nixpkgs-unstable, home-manager, ... }:
     let
-      inherit (builtins) baseNameOf;
-      inherit (lib) nixosSystem mkIf removeSuffix attrNames attrValues;
-      inherit (lib.my) dotFilesDir mapModules mapModulesRec mapHosts;
+      inherit (lib) attrValues;
+      inherit (lib.my) mapModules mapModulesRec mapHosts;
 
       system = "x86_64-linux";
-
-      lib = nixos.lib.extend
-        (self: super: { my = import ./lib { inherit pkgs inputs; lib = self; }; });
 
       mkPkgs = pkgs: extraOverlays: import pkgs {
         inherit system;
         config.allowUnfree = true;  # forgive me Stallman senpai
         overlays = extraOverlays ++ (attrValues self.overlays);
       };
-      pkgs = mkPkgs nixos [ self.overlay ];
-      unstable = mkPkgs nixos-unstable [];
+      pkgs  = mkPkgs nixpkgs [ self.overlay ];
+      uPkgs = mkPkgs nixpkgs-unstable [];
+
+      lib = nixpkgs.lib.extend
+        (self: super: { my = import ./lib { inherit pkgs inputs; lib = self; }; });
     in {
       lib = lib.my;
 
       overlay =
         final: prev: {
-          inherit unstable;
-          user = self.packages."${system}";
+          unstable = uPkgs;
+          my = self.packages."${system}";
         };
 
       overlays =
