@@ -9,21 +9,35 @@
 #    - /dev/sdc -> NixOS
 #
 # 3. Once booted into Finnix (step 2) pipe this script to sh:
-#      iso=<nixos-64bit-iso-url>
+#      iso=https://channels.nixos.org/nixos-20.09/latest-nixos-minimal-x86_64-linux.iso
 #      update-ca-certificates
 #      curl $url | dd of=/dev/sda
 #
-# 4. Install these dotfiles with
-#      git clone https://github.com/hlissner/dotfiles ~/.config/dotfiles
-#      nixos-install --root "$(PREFIX)" --flake ~/.config/dotfiles#linode
+# 4. Create two configuration profiles:
+#    - Installer
+#      - Kernel: Direct Disk
+#      - /dev/sda -> NixOS
+#      - /dev/sdb -> Swap
+#      - /dev/sdc -> Installer
+#      - Helpers: distro and auto network helpers = off
+#    - Boot
+#      - Kernel: GRUB 2
+#      - /dev/sda -> NixOS
+#      - /dev/sdb -> Swap
+#      - Helpers: distro and auto network helpers = off
 #
-# 4. Create a configuration profile:
-#    - Kernel: GRUB 2
-#    - /dev/sda -> NixOS
-#    - /dev/sdb -> Swap
-#    - Helpers: distro and auto network helpers = off
+# 5. Boot into installer profile.
 #
-# 5. Reboot into profile.
+# 6. Install dotfiles:
+#      mount /dev/sda /mnt
+#      swapon /dev/sdb
+#      nix-env -iA nixos.git
+#      nix-env -iA nixos.nixFlakes
+#      mkdir -p /mnt/home/hlissner
+#      git clone https://github.com/hlissner/dotfiles /mnt/home/hlissner/.config/dotfiles
+#      nixos-install --root "$(PREFIX)" --flake /mnt/home/hlissner/.config/dotfiles#linode
+#
+# 7. Reboot into "Boot" profile.
 
 { config, lib, pkgs, ... }:
 
