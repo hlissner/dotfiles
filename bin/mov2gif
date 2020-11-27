@@ -10,8 +10,6 @@
 #   vid2gif some-vid.mp4 output.gif
 #   vid2gif -f 10 -s 00:00:10 -t 00:00:05 some-vid.mp4 output.gif
 
-shift # Get rid of extraneous nix-shell argument
-
 set -e
 PALETTE="/tmp/palette.png"
 
@@ -68,7 +66,7 @@ flags="fps=${fps}$scale"
 
 # stats_mode=full favors motion, causing the resulting palette to better
 # accomodate fades and transitions.
-ffmpeg -v warning $start $duration -i "$src" -vf "$flags,palettegen=stats_mode=full" -y "$PALETTE"
-ffmpeg -v warning $start $duration -i "$src" -i "$PALETTE" -lavfi "$flags [x]; [x][1:v] paletteuse" -y "$dest"
+ffmpeg -v warning $start $duration -i "file:$src" -vf "$flags,palettegen=stats_mode=full" -y "$PALETTE"
+ffmpeg -v warning $start $duration -i "file:$src" -i "$PALETTE" -lavfi "$flags [x]; [x][1:v] paletteuse" -y "$dest"
 
 gifsicle -O3 "$dest" -o "$dest"

@@ -14,7 +14,6 @@
 #
 # NOTE: We use zsh for this because bash chokes on float arithmetic.
 
-shift  # nix-shell passes script path as $1
 ratio="$1"
 case "$(bspc query -T -n focused | jshon -e presel -e splitDir | tr -d \")" in
   west|north) bspc node -o $ratio ;;
