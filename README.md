@@ -72,7 +72,7 @@ And I say, `bin/hey`. [What's going on?](http://hemansings.com/)
   
 + **Why did you write bin/hey?**
 
-  I'm non-plussed about the user story for nix's CLI tools and thought fixing it
+  I'm nonplussed by the user story for nix's CLI tools and thought fixing it
   would be more productive than complaining about it on the internet. Then I
   thought, [why not do both](https://youtube.com/watch?v=vgk-lA12FBk)?
   
