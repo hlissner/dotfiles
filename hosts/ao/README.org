@@ -1,1 +1,9 @@
 #+TITLE: Ao
+#+DATE:  December 12, 2020
+
+* Overview
+Mac Mini 2014
+
+* Specs
+
+* Installation
