@@ -95,6 +95,8 @@ And I say, `bin/hey`. [What's going on?](http://hemansings.com/)
     [shamelessly](https://git.sr.ht/~dunklecat/nixos-config/tree)
     [rummaged](https://github.com/utdemir/dotfiles)
     [through](https://github.com/purcell/dotfiles).
+  + [Some notes about using Nix](https://github.com/justinwoo/nix-shorts)
+  + [What helped me figure out generators (for npm, yarn, python and haskell)](https://myme.no/posts/2020-01-26-nixos-for-development.html)
   + [What y'all will need when Nix drives you to drink.](https://www.youtube.com/watch?v=Eni9PPPPBpg)
 
 
