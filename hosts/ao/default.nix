@@ -33,12 +33,18 @@ with lib.my;
         default = true;
         enableACME = true;
         forceSSL = true;
-        locations."/".proxyPass = http://192.168.1.3:8000;
+        locations."/" = {
+          proxyPass = "https://192.168.1.3:8001";
+          extraConfig = ''
+            proxy_ssl_server_name on;
+            proxy_pass_header Authorization;
+          '';
+        };
       };
       "git.v0.io" = {
         enableACME = true;
         forceSSL = true;
-        locations."/".proxyPass = http://127.0.0.1:3000;
+        locations."/".proxyPass = "http://127.0.0.1:3000";
       };
       # "p.v0.io" = {
       #   enableACME = true;
