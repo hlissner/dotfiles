@@ -16,6 +16,7 @@ with lib.my;
     services.ssh.enable = true;
     services.nginx.enable = true;
     services.gitea.enable = true;
+    services.bitwarden.enable = true;
     # services.syncthing.enable = true;
 
     theme.active = "alucard";
@@ -31,8 +32,11 @@ with lib.my;
     virtualHosts = {
       "v0.io" = {
         default = true;
-        enableACME = true;
         forceSSL = true;
+        enableACME = true;
+        extraConfig = ''
+          client_max_body_size 128M;
+        '';
         locations."/" = {
           proxyPass = "https://192.168.1.3:8001";
           extraConfig = ''
@@ -42,15 +46,33 @@ with lib.my;
         };
       };
       "git.v0.io" = {
-        enableACME = true;
         forceSSL = true;
+        enableACME = true;
         locations."/".proxyPass = "http://127.0.0.1:3000";
       };
-      # "p.v0.io" = {
-      #   enableACME = true;
-      #   forceSSL = true;
-      #   locations."/".proxyPass = http://127.0.0.1:9001;
-      # };
+      "p.v0.io" = {
+        forceSSL = true;
+        enableACME = true;
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:8000";
+          extraConfig = ''
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+          '';
+        };
+        locations."/notifications/hub" = {
+          proxyPass = "http://127.0.0.1:3012";
+          extraConfig = ''
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+          '';
+        };
+        locations."/notifications/hub/negotiate" = {
+          proxyPass = "http://127.0.0.1:8001";
+        };
+      };
     };
   };
 
@@ -59,7 +81,7 @@ with lib.my;
     certs = let email = "henrik@lissner.net"; in {
       "v0.io".email = email;
       "git.v0.io".email = email;
-      # "p.v0.io".email = email;
+      "p.v0.io".email = email;
     };
   };
 
@@ -70,12 +92,17 @@ with lib.my;
     settings.server.SSH_DOMAIN = "v0.io";
   };
 
+  services.bitwarden_rs.config = {
+    signupsAllowed = false;
+    domain = "https://p.v0.io";
+    httpPort = 8002;
+  };
+
   services.fail2ban = {
     enable = true;
+    ignoreIP = [ "127.0.0.1/8" "192.168.1.0/24" ];
     jails.DEFAULT = ''
-      ignoreip = 127.0.0.1/8,192.168.1.0/24
       bantime = 3600
-      maxretry = 5
     '';
     jails.sshd = ''
       filter = sshd
