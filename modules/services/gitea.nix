@@ -21,15 +21,14 @@ in {
       log.level = "Info";
 
       user = "git";
-      database = {
-        user = "git";
-        type = "postgres";
-      };
+      database.user = "git";
       useWizard = false;
       disableRegistration = true;
 
       # We're assuming SSL-only connectivity
       cookieSecure = true;
     };
+
+    user.extraGroups = [ "gitea" ];
   };
 }
