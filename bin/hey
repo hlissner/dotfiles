@@ -62,7 +62,7 @@ function main {
   function _rebuild {
     # Move to $DOTFILES to prevent polluting the system with result links
     pushd $DOTFILES >/dev/null
-    _do sudo nixos-rebuild --flake ".#$HOST" ${@:-build}
+    _do sudo nixos-rebuild --flake ".#${HOSTNAME:-$HOST}" ${@:-build}
     popd >/dev/null
   }
 
