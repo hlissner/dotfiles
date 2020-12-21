@@ -130,9 +130,8 @@ function main {
   cmd="$1"
   [[ $# > 0 ]] && shift
   case "$cmd" in
-    # TODO Repl/shell for nixos+dotfiles
-    # sh|shell)    _do nix-shell "$@"             ;;
-    # repl)        _do nix develop "$@"           ;;
+    sh|shell)    _do nix develop "$DOTFILES" "$@"             ;;
+    repl)        _do nix repl "$DOTFILES/flake.nix" "<nixpkgs>" "$@"           ;;
 
     ch|check)    _do nix flake check "$@" "$DOTFILES";;
     sh|show)     _do nix flake show "$@" "$DOTFILES" ;;
