@@ -64,5 +64,6 @@ with inputs;
     vim
     wget
     gnumake
+    unzip
   ];
 }
