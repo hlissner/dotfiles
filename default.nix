@@ -27,7 +27,6 @@ with inputs;
       "dotfiles=${dotFilesDir}"
     ];
     binaryCaches = [
-      "https://cache.nixos.org/"
       "https://nix-community.cachix.org"
     ];
     binaryCachePublicKeys = [
