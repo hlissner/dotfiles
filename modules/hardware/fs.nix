@@ -18,9 +18,9 @@ in {
       # Support for more filesystems, mostly to support external drives
       environment.systemPackages = with pkgs; [
         sshfs
-        exfat
-        ntfs3g
-        hfsprogs
+        exfat     # Windows drives
+        ntfs3g    # Windows drives
+        hfsprogs  # MacOS drives
       ];
     }
 

@@ -2,8 +2,11 @@
 #+DATE:  September 13, 2020
 
 * Overview
+[[https://www.dell.com/support/manuals/en-ca/xps-13-9370-laptop/xps-13-9370-setupandspecs/specifications-for-xps-13-9370?guid=guid-c3a6ce65-b23d-41b2-b9c9-244850da6393&lang=en-us][Dell 13" 9370]]
 
 * Specs
-Dell 13" 9370
+| CPU   | Intel i7-8550U                |
+| RAM   | 16gb                          |
+| HDD   | 500gb NVMe                    |
 
 * Installation
