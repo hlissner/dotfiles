@@ -9,7 +9,7 @@
 #    - /dev/sdc -> NixOS
 #
 # 3. Once booted into Finnix (step 2) pipe this script to sh:
-#      iso=https://channels.nixos.org/nixos-unstable/latest-nixos-minimal-x86_64-linux.iso
+#      iso=https://channels.nixos.org/nixos-20.09/latest-nixos-minimal-x86_64-linux.iso
 #      update-ca-certificates
 #      curl -k $iso | dd bs=1M of=/dev/sda
 #
@@ -28,24 +28,31 @@
 #
 # 5. Boot into installer profile.
 #
-# 6. Install dotfiles:
-#      mount /dev/sda /mnt
-#      swapon /dev/sdb
+# 6. Generate hardware-configuration.nix
+#      e2label /dev/sda nixos
+#      swaplabel -L swap /dev/sdb
+#      mount /dev/disk/by-label/nixos /mnt
+#      swapon /dev/disk/by-label/swap
+#      nixos-generate-config --root /mnt
+#      vim /mnt/etc/nixos/hardware-configuration.nix   # change uuids to labels
+#
+# 7. Install dotfiles:
 #      nix-env -iA nixos.git nixos.nixFlakes
 #      mkdir -p /mnt/home/hlissner/.config
 #      cd /mnt/home/hlissner/.config
 #      git clone https://github.com/hlissner/dotfiles
-#      nixos-generate-config --root /mnt
 #      nixos-install --root /mnt --flake .#linode --impure
+#        OR (on older versions of nixos)
+#      nixos-install --root /mnt --flake .#linode --option pure-eval false
 #
-# 7. Reboot into "Boot" profile.
+# 8. Reboot into "Boot" profile.
 
-{ config, lib, pkgs, ... }:
+{ modulesPath, config, lib, pkgs, ... }:
 
 with lib;
 {
-  imports = filter pathExists [
-    /etc/nixos/hardware-configuration.nix
+  imports = [
+    "${modulesPath}/profiles/qemu-guest.nix"
   ];
 
   environment.systemPackages =
@@ -65,16 +72,27 @@ with lib;
 
   # GRUB
   boot = {
+    kernelModules = [];
+    # Needed for LISH (part 1)
     kernelParams = [ "console=ttyS0" ];
+    extraModulePackages = [];
+    initrd = {
+      availableKernelModules = [ "virtio_pci" "ahci" "sd_mod" ];
+      kernelModules = [];
+    };
     loader = {
       timeout = 10;
       grub = {
         enable = true;
         version = 2;
-        device = "nodev";
+        device = "/dev/sda";
         copyKernels = true;
-        fsIdentifier = "label";
+        fsIdentifier = "provided";
+        # Needed for LISH (part 2)
         extraConfig = "serial; terminal_input serial; terminal_output serial";
+        # GRUB will complain about blocklists when trying to install grub on a
+        # partition-less disk. This tells it to ignore the warning and carry on.
+        forceInstall = true;
       };
       # Disable globals
       systemd-boot.enable = false;
@@ -87,7 +105,12 @@ with lib;
     usePredictableInterfaceNames = false;
     interfaces.eth0 = {
       useDHCP = true;
-      preferTempAddress = false;
     };
   };
+
+  fileSystems."/" = {
+    device = "/dev/sda";
+    fsType = "ext4";
+  };
+  swapDevices = [ { device = "/dev/sdb"; } ];
 }
