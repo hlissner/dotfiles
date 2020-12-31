@@ -11,6 +11,6 @@
   boot.loader.systemd-boot.editor = false;
 
   # Change me later!
-  user.initialPassword = "nix";
-  users.users.root.initialPassword = "nix";
+  user.initialPassword = "nixos";
+  users.users.root.initialPassword = "nixos";
 }
