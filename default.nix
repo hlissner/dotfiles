@@ -51,7 +51,7 @@ with inputs;
   boot.kernelPackages = pkgs.linuxPackages_5_9;
 
   boot.loader = {
-    efi.canTouchEfiVariables = true;
+    efi.canTouchEfiVariables = mkDefault true;
     systemd-boot.configurationLimit = 10;
     systemd-boot.enable = mkDefault true;
   };

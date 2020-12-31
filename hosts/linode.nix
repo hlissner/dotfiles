@@ -9,9 +9,9 @@
 #    - /dev/sdc -> NixOS
 #
 # 3. Once booted into Finnix (step 2) pipe this script to sh:
-#      iso=https://channels.nixos.org/nixos-20.09/latest-nixos-minimal-x86_64-linux.iso
+#      iso=https://channels.nixos.org/nixos-unstable/latest-nixos-minimal-x86_64-linux.iso
 #      update-ca-certificates
-#      curl $url | dd of=/dev/sda
+#      curl -k $iso | dd bs=1M of=/dev/sda
 #
 # 4. Create two configuration profiles:
 #    - Installer
@@ -31,11 +31,12 @@
 # 6. Install dotfiles:
 #      mount /dev/sda /mnt
 #      swapon /dev/sdb
-#      nix-env -iA nixos.git
-#      nix-env -iA nixos.nixFlakes
-#      mkdir -p /mnt/home/hlissner
-#      git clone https://github.com/hlissner/dotfiles /mnt/home/hlissner/.config/dotfiles
-#      nixos-install --root "$(PREFIX)" --flake /mnt/home/hlissner/.config/dotfiles#linode
+#      nix-env -iA nixos.git nixos.nixFlakes
+#      mkdir -p /mnt/home/hlissner/.config
+#      cd /mnt/home/hlissner/.config
+#      git clone https://github.com/hlissner/dotfiles
+#      nixos-generate-config --root /mnt
+#      nixos-install --root /mnt --flake .#linode --impure
 #
 # 7. Reboot into "Boot" profile.
 
@@ -43,6 +44,10 @@
 
 with lib;
 {
+  imports = filter pathExists [
+    /etc/nixos/hardware-configuration.nix
+  ];
+
   environment.systemPackages =
     with pkgs; [ inetutils mtr sysstat git ];
 
@@ -68,7 +73,7 @@ with lib;
         version = 2;
         device = "nodev";
         copyKernels = true;
-        fsIdentifier = "provided";
+        fsIdentifier = "label";
         extraConfig = "serial; terminal_input serial; terminal_output serial";
       };
       # Disable globals
@@ -80,6 +85,9 @@ with lib;
   networking = {
     useDHCP = false;
     usePredictableInterfaceNames = false;
-    interfaces.eth0.useDHCP = true;
+    interfaces.eth0 = {
+      useDHCP = true;
+      preferTempAddress = false;
+    };
   };
 }
