@@ -11,6 +11,8 @@ in {
   config = mkIf cfg.enable {
     networking.firewall.allowedTCPPorts = [ 80 443 ];
 
+    user.extraGroups = [ "nginx" ];
+
     services.nginx = {
       enable = true;
 
