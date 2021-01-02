@@ -28,15 +28,17 @@
 
 ## Quick start
 
-1. Yoink [NixOS 20.09][nixos] (must be newer than Sept 12, 2020 for `nixos-install --flake`).
+1. Yoink the latest stable build of [NixOS 20.09][nixos].
 2. Boot into the installer.
-3. Do your partitions and mount your root to `/mnt`
-4. `git clone https://github.com/hlissner/dotfiles /mnt/etc/nixos`
-5. Install NixOS: `nixos-install --root /mnt --flake /mnt/etc/nixos#XYZ`, where
-   `XYZ` is your hostname.  Use `#generic` for a simple, universal config.
-6. OPTIONAL: Create a sub-directory in `hosts/` for your device. See [host/kuro]
-   as an example.
-7. Reboot!
+3. Do your partitions and mount your root to `/mnt` ([for example](hosts/kuro/README.org))
+4. Install these dotfiles:
+5. `nix-shell -p git nixFlakes`
+6. `git clone https://github.com/hlissner/dotfiles /mnt/etc/dotfiles`
+7. Install NixOS: `nixos-install --root /mnt --flake /mnt/etc/nixos#XYZ`, where
+   `XYZ` is [the host you want to install](hosts/).  Use `#generic` for a
+   simple, universal config, or create a sub-directory in `hosts/` for your device. See [host/kuro] for an example.
+8. Reboot!
+9. Change your `root` and `$USER` passwords!
 
 ## Management
 
@@ -62,13 +64,8 @@ And I say, `bin/hey`. [What's going on?](http://hemansings.com/)
 + **How do I change the default username?**
 
   1. Set `USER` the first time you run `nixos-install`: `USER=myusername
-     nixos-install --root /mnt --flake #XYZ`
+     nixos-install --root /mnt --flake /path/to/dotfiles#XYZ`
   2. Or change `"hlissner"` in modules/options.nix.
-
-+ **How do I "set up my partitions"?**
-
-  My main host [has a README](hosts/kuro/README.org) you can use as a reference.
-  I set up an EFI+GPT system and partitions with `parted` and `zfs`.
   
 + **Why did you write bin/hey?**
 

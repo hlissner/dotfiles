@@ -9,12 +9,14 @@ in {
   };
 
   config = mkIf cfg.enable {
-    # I prefer git@... ssh addresses over gitea@...
+    # Allows git@... clone addresses rather than gitea@...
     users.users.git = {
       useDefaultShell = true;
       home = "/var/lib/gitea";
       group = "gitea";
     };
+
+    user.extraGroups = [ "gitea" ];
 
     services.gitea = {
       enable = true;
@@ -29,8 +31,6 @@ in {
       log.level = "Info";
       settings.server.DISABLE_ROUTER_LOG = true;
     };
-
-    user.extraGroups = [ "gitea" ];
 
     services.fail2ban.jails.gitea = ''
       enabled = true

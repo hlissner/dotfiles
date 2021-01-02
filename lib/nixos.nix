@@ -14,7 +14,7 @@ in {
           networking.hostName = mkDefault (removeSuffix ".nix" (baseNameOf path));
         }
         (filterAttrs (n: v: !elem n [ "system" ]) attrs)
-        ../.
+        ../.   # /default.nix
         (import path)
       ];
     };
