@@ -26,10 +26,19 @@ in {
       # We're assuming SSL-only connectivity
       cookieSecure = true;
       # Only log what's important
-      log.level = "Error";
+      log.level = "Info";
       settings.server.DISABLE_ROUTER_LOG = true;
     };
 
     user.extraGroups = [ "gitea" ];
+
+    services.fail2ban.jails.gitea = ''
+      enabled = true
+      filter = gitea
+      logpath = ${config.services.gitea.log.rootPath}/gitea.log
+      bantime = 1800
+      findtime = 3600
+      banaction = %(banaction_allports)s
+    '';
   };
 }
