@@ -13,4 +13,7 @@
   # Change me later!
   user.initialPassword = "nixos";
   users.users.root.initialPassword = "nixos";
+
+  # So we don't have to do this later...
+  security.acme.acceptTerms = true;
 }
