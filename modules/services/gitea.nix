@@ -24,7 +24,6 @@ in {
       user = "git";
       database.user = "git";
 
-      disableRegistration = true;
       # We're assuming SSL-only connectivity
       cookieSecure = true;
       # Only log what's important
