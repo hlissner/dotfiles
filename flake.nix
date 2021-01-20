@@ -18,6 +18,8 @@
       nixpkgs-unstable.url = "nixpkgs/master";
       home-manager.url = "github:rycee/home-manager/master";
       home-manager.inputs.nixpkgs.follows = "nixpkgs";
+      agenix.url = "github:ryantm/agenix";
+      agenix.inputs.nixpkgs.follows = "nixpkgs";
 
       # Extras
       emacs-overlay.url  = "github:nix-community/emacs-overlay";
