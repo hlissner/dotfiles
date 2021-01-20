@@ -62,7 +62,11 @@ function main {
   function _rebuild {
     # Move to $DOTFILES to prevent polluting the system with result links
     pushd $DOTFILES >/dev/null
-    _do sudo nixos-rebuild --flake ".#${HOSTNAME:-$HOST}" ${@:-build}
+    # REVIEW Use --impure instead when it's in a stable release of nix
+    _do sudo nixos-rebuild \
+      --flake "${DOTFILES}#${HOSTNAME:-$HOST}" \
+      --option pure-eval no \
+      ${@:-build}
     popd >/dev/null
   }
 
