@@ -64,10 +64,21 @@
       devShell."${system}" =
         import ./shell.nix { inherit pkgs; };
 
-      templates.hey = {
-        path = ./.;
-        description = "A grossly incandescent nixos framework";
+      templates = {
+        full = {
+          path = ./.;
+          description = "A grossly incandescent nixos config";
+        };
+        minimal = {
+          path = ./templates/minimal;
+          description = "A grossly incandescent and minimal nixos config";
+        };
       };
-      defaultTemplate = self.templates.hey;
+      defaultTemplate = self.templates.minimal;
+
+      defaultApp."${system}" = {
+        type = "app";
+        program = ./bin/hey;
+      };
     };
 }
