@@ -113,7 +113,7 @@ in {
 
     # Clean up leftovers, as much as we can
     system.userActivationScripts.cleanupHome = ''
-      pushd "${homeDir}"
+      pushd "${config.user.home}"
       rm -rf .compose-cache .nv .pki .dbus .fehbg
       [ -s .xsession-errors ] || rm -f .xsession-errors*
       popd

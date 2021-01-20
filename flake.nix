@@ -59,7 +59,7 @@
         { dotfiles = import ./.; } // mapModulesRec ./modules import;
 
       nixosConfigurations =
-        mapHosts ./hosts { inherit system; };
+        mapHosts ./hosts {};
 
       devShell."${system}" =
         import ./shell.nix { inherit pkgs; };
