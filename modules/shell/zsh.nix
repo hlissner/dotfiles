@@ -44,6 +44,7 @@ in {
       fd
       fzf
       tldr
+      ripgrep
     ];
 
     env = {
