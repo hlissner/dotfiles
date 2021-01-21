@@ -65,7 +65,7 @@ function main {
     # Move to $DOTFILES to prevent polluting the system with result links
     pushd $DOTFILES >/dev/null
     # REVIEW Use --impure instead when it's in a stable release of nix
-    _do sudo nixos-rebuild \
+    _do nixos-rebuild \
       --flake "${DOTFILES}#${HOSTNAME:-$HOST}" \
       --option pure-eval no \
       ${@:-build}
@@ -136,38 +136,37 @@ function main {
   cmd="$1"
   [[ $# > 0 ]] && shift
   case "$cmd" in
-    sh|shell)    _do nix develop "$DOTFILES" "$@"             ;;
-    repl)        _do nix repl "$DOTFILES/flake.nix" "<nixpkgs>" "$@"           ;;
+    sh|shell)    _do nix develop "$DOTFILES" "$@" ;;
+    repl)        _do nix repl "$DOTFILES/flake.nix" "<nixpkgs>" "$@" ;;
 
-    ch|check)    _do nix flake check "$@" "$DOTFILES";;
-    sh|show)     _do nix flake show "$@" "$DOTFILES" ;;
+    ch|check)    _do nix flake check "$@" "$DOTFILES" ;;
+    sh|show)     _do nix flake show "$@" "$DOTFILES"  ;;
 
-    theme)       THEME="$1" _rebuild --fast test ;;
-    t|test)      _rebuild --fast test "$@"      ;;
-    re|rebuild)  _rebuild "${@:-switch}"        ;;
-    rollback)    _rebuild --rollback switch     ;;
-    vm)          _rebuild "$@" vm               ;;
+    theme)       THEME="$1" sudo _rebuild --fast test ;;
+    t|test)      sudo _rebuild --fast test "$@"       ;;
+    re|rebuild)  sudo _rebuild "${@:-switch}"         ;;
+    rollback)    sudo _rebuild --rollback switch      ;;
+    vm)          sudo _rebuild "$@" vm                ;;
 
-    u|update)    _update "$@"                   ;;
-    up|upgrade)  _update && _rebuild switch     ;;
-    s|search)    nix search nixpkgs "$@"        ;;
+    u|update)    _update "$@"                         ;;
+    up|upgrade)  _update && sudo _rebuild switch      ;;
+    s|search)    nix search nixpkgs "$@"              ;;
 
-    swap)        _swap $@                       ;;
-    gc)          _gc "$@"                       ;;
+    swap)        _swap $@ ;;
+    gc)          _gc "$@" ;;
     push)
       target=$1
       cmd=${2:-test}
-      # build then ssh in to switch/boot/test so we don't require root ssh
-      # access on the remote.
       echo "Enabling root ssh access on $target"
-      ssh -t "$target" "sudo mkdir -p /root/.ssh && sudo cp -f ~/.ssh/authorized_keys /root/.ssh/"
-      echo "Building $target ($cmd)"
-      HOSTNAME="${HOSTNAME:-$target}" _rebuild \
-        --build-host localhost \
-        --target-host "root@$target" \
-        $cmd
-      echo "Undoing root ssh access on $target"
-      ssh -t "root@$target" "rm -f /root/.ssh/authorized_keys"
+      if _do ssh -t "$target" "sudo mkdir -p /root/.ssh && sudo cp -f ~/.ssh/authorized_keys /root/.ssh/authorized_keys"; then
+        echo "Building $target ($cmd)"
+        HOSTNAME="${HOSTNAME:-$target}" _rebuild \
+          --build-host localhost \
+          --target-host "root@$target" \
+          $cmd
+        echo "Undoing root ssh access on $target"
+        _do ssh -t "root@$target" "rm -f /root/.ssh/authorized_keys"
+      fi
       ;;
 
     gen|generations)
