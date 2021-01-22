@@ -35,7 +35,14 @@
 #   hey -e htop
 
 set -e
-DOTFILES=$(cd "${0:a:h}/.." && pwd -P)
+if [[ -z $FLAKE ]]; then
+  for dir in /etc/nixos /etc/dotfiles; do
+    if [[ -f "$dir/flake.nix" ]]; then
+      FLAKE=$dir
+      break
+    fi
+  done
+fi
 
 #
 function main {
@@ -63,10 +70,10 @@ function main {
 
   function _rebuild {
     # Move to $DOTFILES to prevent polluting the system with result links
-    pushd $DOTFILES >/dev/null
+    pushd $FLAKE >/dev/null
     # REVIEW Use --impure instead when it's in a stable release of nix
-    _do nixos-rebuild \
-      --flake "${DOTFILES}#${HOSTNAME:-$HOST}" \
+    _do ${SUDO:+sudo} nixos-rebuild \
+      --flake "${FLAKE}#${HOSTNAME:-$HOST}" \
       --option pure-eval no \
       ${@:-build}
     popd >/dev/null
@@ -76,10 +83,10 @@ function main {
     echo "Updating NixOS flake"
     if [[ "$@" ]]; then
       for flake in $@; do
-        _do nix flake update --update-input "$flake" "$DOTFILES"
+        _do nix flake update --update-input "$flake" "$FLAKE"
       done
     else
-      _do nix flake update --recreate-lock-file "$DOTFILES"
+      _do nix flake update --recreate-lock-file "$FLAKE"
     fi
   }
 
@@ -136,39 +143,54 @@ function main {
   }
 
   ###
+  eval set -- $(getopt -n hey -o df:h: -l dryrun,flake:,host: -- "$@")
+  while :
+  do
+    case "$1" in
+      -d|--dryrun) DRYRUN=1;    shift   ;;
+      -f|--flake)  FLAKE=$2;    shift 2 ;;
+      -h|--host)   HOSTNAME=$2; shift 2 ;;
+      --) shift; break ;;
+    esac
+  done
+  if [[ ! -d $FLAKE ]]; then
+    >&2 echo "Couldn't find flake.nix in $FLAKE"
+    exit 1
+  fi
+
   cmd="$1"
   [[ $# > 0 ]] && shift
   case "$cmd" in
-    sh|shell)    _do nix develop "$DOTFILES" "$@" ;;
-    repl)        _do nix repl "$DOTFILES/flake.nix" "<nixpkgs>" "$@" ;;
+    sh|shell)    _do nix develop "$FLAKE" "$@" ;;
+    repl)        _do nix repl "$FLAKE/flake.nix" "<nixpkgs>" "$@" ;;
 
-    ch|check)    _do nix flake check "$@" "$DOTFILES" ;;
-    sh|show)     _do nix flake show "$@" "$DOTFILES"  ;;
+    ch|check)    _do nix flake check "$@" "$FLAKE"      ;;
+    sh|show)     _do nix flake show "$@" "$FLAKE"       ;;
 
-    theme)       THEME="$1" sudo _rebuild --fast test ;;
-    t|test)      sudo _rebuild --fast test "$@"       ;;
-    re|rebuild)  sudo _rebuild "${@:-switch}"         ;;
-    rollback)    sudo _rebuild --rollback switch      ;;
-    vm)          sudo _rebuild "$@" vm                ;;
+    theme)       THEME="$1" SUDO=1 _rebuild --fast test ;;
+    t|test)      SUDO=1 _rebuild --fast test "$@"       ;;
+    re|rebuild)  SUDO=1 _rebuild "${@:-switch}"         ;;
+    rollback)    SUDO=1 _rebuild --rollback switch      ;;
+    vm)          SUDO=1 _rebuild "$@" vm                ;;
 
-    u|update)    _update "$@"                         ;;
-    up|upgrade)  _update && sudo _rebuild switch      ;;
-    s|search)    nix search nixpkgs "$@"              ;;
+    u|update)    _update "$@"                           ;;
+    up|upgrade)  _update && SUDO=1 _rebuild switch      ;;
+    s|search)    nix search nixpkgs "$@"                ;;
 
-    swap)        _swap $@ ;;
+    swap)        _swap "$@" ;;
     gc)          _gc "$@" ;;
     push)
       target=$1
       cmd=${2:-test}
       echo "Enabling root ssh access on $target"
       if _do ssh -t "$target" "sudo mkdir -p /root/.ssh && sudo cp -f ~/.ssh/authorized_keys /root/.ssh/authorized_keys"; then
+        trap '_do ssh -t "root@$target" "rm -f /root/.ssh/authorized_keys"' EXIT
         echo "Building $target ($cmd)"
         HOSTNAME="${HOSTNAME:-$target}" _rebuild \
           --build-host localhost \
           --target-host "root@$target" \
           $cmd
         echo "Undoing root ssh access on $target"
-        _do ssh -t "root@$target" "rm -f /root/.ssh/authorized_keys"
       fi
       ;;
 
