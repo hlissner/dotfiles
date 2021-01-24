@@ -214,7 +214,7 @@ function main {
       esac
       ;;
 
-    h|help|-h|--help) _usage ;;
+    h|help) _usage ;;
     -*) _do nix-env "$cmd" "$@" ;;
     "") _usage ;;
     *)  echo "Couldn't find command: $cmd" 1>&2
