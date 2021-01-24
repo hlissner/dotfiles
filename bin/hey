@@ -217,8 +217,12 @@ function main {
     h|help) _usage ;;
     -*) _do nix-env "$cmd" "$@" ;;
     "") _usage ;;
-    *)  echo "Couldn't find command: $cmd" 1>&2
-        exit 1
+    *)  if command -v hey-$cmd >/dev/null; then
+          hey-$cmd $@
+        else
+          echo "Couldn't find command: $cmd" 1>&2
+          exit 1
+        fi
         ;;
   esac
 }
