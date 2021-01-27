@@ -67,18 +67,22 @@
     "/usr/backup" = {
       device = "usr/backup";
       fsType = "zfs";
+      options = [ "nofail" ];
     };
     "/usr/media" = {
       device = "usr/media";
       fsType = "zfs";
+      options = [ "nofail" ];
     };
     "/usr/local" = {
       device = "usr/local";
       fsType = "zfs";
+      options = [ "nofail" ];
     };
     "/usr/share" = {
       device = "usr/share";
       fsType = "zfs";
+      options = [ "nofail" ];
     };
   };
   swapDevices = [];
