@@ -39,5 +39,12 @@ in {
       findtime = 3600
       banaction = %(banaction_allports)s
     '';
+
+    modules.backup.targets.gitea = {
+      baseDir = config.users.users.git.home;
+      owner = "git";
+      targets = [ "repositories" "data" ];
+      suspendServices = [ "gitea" ];
+    };
   };
 }

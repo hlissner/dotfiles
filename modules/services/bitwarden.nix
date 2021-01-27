@@ -18,5 +18,12 @@ in {
       filter = bitwarden_rs
       port = 80,443,8002
     '';
+
+    modules.backup.targets.bitwarden = {
+      baseDir = "/var/lib/bitwarden_rs";
+      owner = "bitwarden_rs";
+      targets = [ "*" ];
+      suspendServices = [ "bitwarden_rs" ];
+    };
   };
 }
