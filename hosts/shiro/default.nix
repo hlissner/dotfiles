@@ -32,22 +32,14 @@
         default = "xst";
         st.enable = true;
       };
-      vm = {
-        # virtualbox.enable = true;
-      };
+      vm = {};
     };
     editors = {
       default = "nvim";
       emacs.enable = true;
       vim.enable = true;
     };
-    dev = {
-      # cc.enable = true;
-      # common-lisp.enable = true;
-      # rust.enable = true;
-      # lua.enable = true;
-      # lua.love2d.enable = true;
-    };
+    dev = {};
     hardware = {
       audio.enable = true;
       fs = {
@@ -56,13 +48,11 @@
       };
     };
     shell = {
+      bitwarden.enable = true;
       direnv.enable = true;
       git.enable = true;
       gnupg.enable = true;
-      # weechat.enable = true;
-      pass.enable = true;
       tmux.enable = true;
-      # ranger.enable = true;
       zsh.enable = true;
     };
     hardware = {
