@@ -7,10 +7,7 @@
     initrd.availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
     initrd.kernelModules = [];
     extraModulePackages = [];
-    kernelModules = [
-      "kvm-amd"
-      "asix"  # REVIEW Remove me when 5.9 kernel is available
-    ];
+    kernelModules = [ "kvm-amd" ];
     kernelParams = [
       # HACK Disables fixes for spectre, meltdown, L1TF and a number of CPU
       #      vulnerabilities. This is not a good idea for mission critical or
