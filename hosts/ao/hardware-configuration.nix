@@ -11,6 +11,7 @@
 
   ## CPU
   nix.maxJobs = lib.mkDefault 2;
+  powerManagement.cpuFreqGovernor = "ondemand";
 
   ## Harddrives
   fileSystems = {

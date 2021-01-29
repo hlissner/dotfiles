@@ -23,8 +23,10 @@
 
   # CPU
   nix.maxJobs = lib.mkDefault 8;
-  powerManagement.cpuFreqGovernor = lib.mkDefault "ondemand";
   hardware.cpu.intel.updateMicrocode = true;
+  # performance gives better battery life/perf than ondemand on sandy bridge and
+  # newer because of intel pstates.
+  powerManagement.cpuFreqGovernor = "performance";
 
   # Power management
   environment.systemPackages = [ pkgs.acpi ];
