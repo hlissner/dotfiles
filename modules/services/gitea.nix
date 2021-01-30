@@ -26,7 +26,7 @@ in {
 
       # We're assuming SSL-only connectivity
       cookieSecure = true;
-      # Only log what's important
+      # Only log what's important, but Info is necessary for fail2ban to work
       log.level = "Info";
       settings.server.DISABLE_ROUTER_LOG = true;
     };
@@ -34,7 +34,6 @@ in {
     services.fail2ban.jails.gitea = ''
       enabled = true
       filter = gitea
-      logpath = ${config.services.gitea.log.rootPath}/gitea.log
       banaction = %(banaction_allports)s
     '';
 
