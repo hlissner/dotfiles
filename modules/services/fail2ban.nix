@@ -12,11 +12,18 @@ in {
     services.fail2ban = {
       enable = true;
       ignoreIP = [ "127.0.0.1/16" "192.168.1.0/24" ];
-      jails.DEFAULT = ''
-        blocktype = DROP
-        bantime = 7200
-        findtime = 7200
-      '';
+      banaction-allports = "iptables-allports";
+      jails = {
+        DEFAULT = ''
+          blocktype = DROP
+          bantime = 6h
+          findtime = 15m
+        '';
+        sshd = ''
+          bantime = 24h
+          findtime = 1h
+        '';
+      };
     };
 
     # Extra filters

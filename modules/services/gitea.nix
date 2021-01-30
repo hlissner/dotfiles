@@ -35,8 +35,6 @@ in {
       enabled = true
       filter = gitea
       logpath = ${config.services.gitea.log.rootPath}/gitea.log
-      bantime = 1800
-      findtime = 3600
       banaction = %(banaction_allports)s
     '';
 
