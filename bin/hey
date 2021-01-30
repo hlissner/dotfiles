@@ -143,13 +143,14 @@ function main {
   }
 
   ###
-  eval set -- $(getopt -n hey -o df:h: -l dryrun,flake:,host: -- "$@")
+  eval set -- $(getopt -n hey -o df:h:ieAqp -l dryrun,flake:,host: -- "$@")
   while :
   do
     case "$1" in
       -d|--dryrun) DRYRUN=1;    shift   ;;
       -f|--flake)  FLAKE=$2;    shift 2 ;;
       -h|--host)   HOSTNAME=$2; shift 2 ;;
+      -i|-A|-q|-e|-p) _do nix-env "$@"; exit 0 ;;
       --) shift; break ;;
     esac
   done
@@ -215,7 +216,6 @@ function main {
       ;;
 
     h|help) _usage ;;
-    -*) _do nix-env "$cmd" "$@" ;;
     "") _usage ;;
     *)  if command -v hey-$cmd >/dev/null; then
           hey-$cmd $@
