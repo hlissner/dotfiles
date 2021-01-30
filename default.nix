@@ -55,6 +55,7 @@ with lib.my;
 
   # Just the bear necessities...
   environment.systemPackages = with pkgs; [
+    bind
     cached-nix-shell
     coreutils
     git
