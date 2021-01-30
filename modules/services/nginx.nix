@@ -21,6 +21,15 @@ in {
       recommendedOptimisation = true;
       recommendedProxySettings = true;
       recommendedTlsSettings = true;
+
+      # Reduce the permitted size of client requests, to reduce the likelihood
+      # of buffer overflow attacks. This can be tweaked on a per-vhost basis, as
+      # needed.
+      commonHttpConfig = ''
+        client_body_buffer_size  4k;       # default: 8k
+        client_max_body_size 1k;           # default: 1m
+        large_client_header_buffers 2 4k;  # default: 4 8k
+      '';
     };
   };
 }

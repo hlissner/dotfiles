@@ -20,6 +20,7 @@
   services.nginx.virtualHosts."p.v0.io" = {
     forceSSL = true;
     enableACME = true;
+    root = "/srv/www/p.v0.io";
     extraConfig = ''
       client_max_body_size 128M;
     '';

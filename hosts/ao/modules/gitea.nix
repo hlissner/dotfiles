@@ -26,6 +26,7 @@
   services.nginx.virtualHosts."git.v0.io" = {
     forceSSL = true;
     enableACME = true;
+    root = "/srv/www/git.v0.io";
     locations."/".proxyPass = "http://127.0.0.1:3000";
   };
 }
