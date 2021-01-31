@@ -19,7 +19,6 @@ in {
         factor = "4";
       };
       jails.DEFAULT = ''
-        maxretry = 5
         blocktype = DROP
         bantime = 1h
         findtime = 1h

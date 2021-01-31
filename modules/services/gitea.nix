@@ -49,6 +49,7 @@ in {
       enabled = true
       filter = gitea
       banaction = %(banaction_allports)s
+      maxretry = 5
     '';
 
     modules.backup.targets.gitea = {

@@ -17,6 +17,7 @@ in {
       enabled = true
       filter = bitwarden_rs
       port = 80,443,8002
+      maxretry = 5
     '';
 
     modules.backup.targets.bitwarden = {
