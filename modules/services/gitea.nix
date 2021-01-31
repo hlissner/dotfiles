@@ -1,3 +1,13 @@
+# modules/services/gitea.nix
+#
+# Gitea is essentially a self-hosted github. This modules configures it with the
+# expectation that it will be served over an SSL-secured reverse proxy (best
+# paired with my modules.services.nginx module).
+#
+# Resources
+#   Config: https://docs.gitea.io/en-us/config-cheat-sheet/
+#   API:    https://docs.gitea.io/en-us/api-usage/
+
 { options, config, lib, pkgs, ... }:
 
 with lib;

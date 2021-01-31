@@ -16,7 +16,6 @@
         HOST = "mail.gmail.com:465";
         USER = "hlissner@gmail.com";
         MAILER_TYPE = "smtp";
-        IS_TLS_ENABLED = "true";
       };
     };
     mailerPasswordFile = config.age.secrets.gitea-smtp.path;

@@ -27,6 +27,9 @@
 
   # Displays
   services.xserver = {
+    # This must be done manually to ensure my screen spaces are arranged exactly
+    # as I need them to be *and* the correct monitor is "primary". Using
+    # xrandrHeads does not work.
     monitorSection = ''
       VendorName  "Unknown"
       ModelName   "DELL U2515H"

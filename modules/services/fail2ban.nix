@@ -19,6 +19,8 @@ in {
           bantime = 6h
           findtime = 15m
         '';
+        # Harsher defaults for sshd because it's all key based. Auth failures
+        # are less likely to be legit here.
         sshd = ''
           bantime = 24h
           findtime = 1h
