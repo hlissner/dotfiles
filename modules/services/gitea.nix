@@ -38,7 +38,11 @@ in {
       cookieSecure = true;
       # Only log what's important, but Info is necessary for fail2ban to work
       log.level = "Info";
-      settings.server.DISABLE_ROUTER_LOG = true;
+      settings = {
+        server.DISABLE_ROUTER_LOG = true;
+        database.LOG_SQL = false;
+        service.ENABLE_BASIC_AUTHENTICATION = false;
+      };
     };
 
     services.fail2ban.jails.gitea = ''
