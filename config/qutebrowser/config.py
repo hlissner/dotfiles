@@ -434,9 +434,7 @@ config.bind('<Ctrl-F>', 'rl-forward-word', mode='prompt')
 # extra config files manually -- if they exists.
 for path in glob.glob(os.path.expanduser('~/.config/qutebrowser/extra/*.py')):
     try:
-        f = open(path)
-        exec(compile(f.read(), path, 'exec'))
-        theme_init(c)
-        f.close()
+        with open(path) as f:
+            exec(compile(f.read(), path, 'exec'))
     except IOError:
         pass
