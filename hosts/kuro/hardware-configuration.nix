@@ -84,6 +84,11 @@
       fsType = "zfs";
       options = [ "nofail" ];
     };
+    "/usr/drive" = {
+      device = "kiiro:/volume1/homes/hlissner/Drive";
+      fsType = "nfs";
+      options = [ "nofail" "noauto" "x-systemd.automount" ];
+    };
   };
   swapDevices = [];
 }

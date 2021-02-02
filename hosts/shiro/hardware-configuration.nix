@@ -51,6 +51,11 @@
       fsType = "ext4";
       options = [ "noatime" ];
     };
+    "/usr/drive" = {
+      device = "kiiro:/volume1/homes/hlissner/Drive";
+      fsType = "nfs";
+      options = [ "nofail" "noauto" "x-systemd.automount" ];
+    };
   };
   swapDevices = [ { device = "/dev/disk/by-label/swap"; }];
 
