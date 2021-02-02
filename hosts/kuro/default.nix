@@ -18,6 +18,7 @@
         default = "brave";
         brave.enable = true;
         firefox.enable = true;
+        qutebrowser.enable = true;
       };
       gaming = {
         steam.enable = true;

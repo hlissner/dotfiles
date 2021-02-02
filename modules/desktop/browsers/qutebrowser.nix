@@ -12,6 +12,7 @@ in {
   options.modules.desktop.browsers.qutebrowser = with types; {
     enable = mkBoolOpt false;
     userStyles = mkOpt lines "";
+    extraConfig = mkOpt lines "";
   };
 
   config = mkIf cfg.enable {
@@ -22,15 +23,18 @@ in {
         desktopName = "Qutebrowser (Private)";
         genericName = "Open a private Qutebrowser window";
         icon = "qutebrowser";
-        exec = "${qutebrowser}/bin/qutebrowser ':open -p'";
+        exec = ''${qutebrowser}/bin/qutebrowser ":open -p"'';
         categories = "Network";
       })
     ];
 
     home = {
-      configFile."qutebrowser" = {
-        source = "${configDir}/qutebrowser";
-        recursive = true;
+      configFile = {
+        "qutebrowser" = {
+          source = "${configDir}/qutebrowser";
+          recursive = true;
+        };
+        "qutebrowser/extra/00-extraConfig.py".text = cfg.extraConfig;
       };
       dataFile."qutebrowser/userstyles.css".text = cfg.userStyles;
     };
