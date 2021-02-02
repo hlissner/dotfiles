@@ -7,7 +7,7 @@
     appName = "V-NOUGHT";
     domain = "v0.io";
     rootUrl = "https://git.v0.io/";
-    disableRegistration = false;
+    disableRegistration = true;
     settings = {
       server.SSH_DOMAIN = "v0.io";
       mailer = {
@@ -19,7 +19,6 @@
       };
     };
     mailerPasswordFile = config.age.secrets.gitea-smtp.path;
-    database.type = "sqlite3";
   };
 
   services.nginx.virtualHosts."git.v0.io" = {

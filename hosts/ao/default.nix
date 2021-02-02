@@ -8,10 +8,8 @@ with lib.my;
     ../personal.nix
     ./hardware-configuration.nix
 
-    # ./modules/postgresql.nix
     ./modules/gitea.nix
     ./modules/bitwarden.nix
-    # ./modules/tinytinyrss.nix
   ];
 
 
