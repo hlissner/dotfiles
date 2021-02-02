@@ -30,6 +30,7 @@ in {
 
     services.gitea = {
       enable = true;
+      lfs.enable = true;
 
       user = "git";
       database.user = "git";
