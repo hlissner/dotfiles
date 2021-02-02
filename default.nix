@@ -36,7 +36,7 @@ with lib.my;
       useSandbox = true;
     };
   system.configurationRevision = with inputs; mkIf (self ? rev) self.rev;
-  system.stateVersion = "20.09";
+  system.stateVersion = "21.03";
 
 
   ## Some reasonable, global defaults
