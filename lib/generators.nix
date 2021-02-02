@@ -4,7 +4,7 @@ with builtins;
 with lib;
 {
   toCSSFile = file:
-    let fileName = baseNameOf file;
+    let fileName = removeSuffix ".scss" (baseNameOf file);
         compiledStyles =
           pkgs.runCommand "compileScssFile"
             { buildInputs = [ pkgs.sass ]; } ''
@@ -16,7 +16,7 @@ with lib;
                    "${file}" \
                    >>"$out/${fileName}.css"
             '';
-    in "${compiledStyles}/${fileName}";
+    in "${compiledStyles}/${fileName}.css";
 
   toFilteredImage = imageFile: options:
     let result = "result.png";

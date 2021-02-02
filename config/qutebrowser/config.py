@@ -1,35 +1,26 @@
 import os
 import glob
 
-## Per-domain settings
-c.content.user_stylesheets = glob.glob(os.path.expanduser('~/.local/share/qutebrowser/userstyles.css'))
-
+## Load settings applied with :set
+config.load_autoconfig()
 
 ## General config
-# c.confirm_quit = ['never']
-c.editor.command = ['emacsclient', '-c', '-a', ' ', '+{line}:{column}', '{}']
-
-
-# c.completion.height = '30%'
-# c.completion.web_history.max_items = 1500
-# # c.completion.cmd_history_max_items = 100
-# # c.completion.quick = True
-# c.completion.scrollbar.padding = 0
-# c.completion.scrollbar.width = 6
-# # c.completion.show = 'always'
-# # c.completion.shrink = False
-# # c.completion.timestamp_format = '%Y-%m-%d'
-# # c.completion.web_history.max_items = -1
-
-# c.content.notifications = False  # unavailable on QtWebEngine
-c.content.mute = True        # mute tabs by default
-c.content.autoplay = False   # don't autoplay videos
 c.content.default_encoding = 'utf-8'
-# c.content.developer_extras = True
 c.content.javascript.enabled = True
 c.content.local_storage = True
 c.content.plugins = True
-c.content.host_blocking.lists = [
+
+# c.confirm_quit = ['never']
+c.editor.command = ['emacsclient', '-c', '-a', ' ', '+{line}:{column}', '{}']
+
+## Security & privacy
+c.content.mute = True        # mute tabs by default
+c.content.autoplay = False   # don't autoplay videos
+
+## Adblocking
+# Use (superior) Brave adblock if available; fall back to host blocking
+c.content.blocking.method = "auto"
+c.content.blocking.hosts.lists = [
     'https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts',
     'https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&mimetype=plaintext'
     # 'https://www.malwaredomainlist.com/hostslist/hosts.txt',
@@ -37,54 +28,13 @@ c.content.host_blocking.lists = [
     # 'http://winhelp2002.mvps.org/hosts.zip',
     # 'http://malwaredomains.lehigh.edu/files/justdomains.zip',
 ]
-c.content.host_blocking.whitelist = []
+# c.content.blocking.whitelist = []
 
 c.downloads.position = 'bottom'
 c.downloads.location.directory = os.path.expanduser("~/dl")
 c.downloads.location.prompt = False
-# c.downloads.location.remember = True
-# c.downloads.location.suggestion = 'path'
-# c.downloads.open_dispatcher = None
 
 c.editor.encoding = 'utf-8'
-
-c.fonts.completion.category = 'bold 8pt monospace'
-c.fonts.completion.entry = '8pt monospace'
-c.fonts.debug_console = '8pt monospace'
-c.fonts.downloads = '8pt monospace'
-c.fonts.hints = 'bold 10pt monospace'
-c.fonts.keyhint = '8pt monospace'
-c.fonts.messages.error = '8pt monospace'
-c.fonts.messages.info = '8pt monospace'
-c.fonts.messages.warning = '8pt monospace'
-# c.fonts.monospace = '"xos4 Terminus", Terminus, Monospace, "DejaVu Sans Mono", Monaco, "Bitstream Vera Sans Mono", "Andale Mono", "Courier New", Courier, "Liberation Mono", monospace, Fixed, Consolas, Terminal'
-c.fonts.prompts = '8pt sans-serif'
-c.fonts.statusbar = '8pt monospace'
-# c.fonts.tabs = '8pt monospace'
-# c.fonts.web.family.cursive = ''
-# c.fonts.web.family.fantasy = ''
-# c.fonts.web.family.fixed = ''
-# c.fonts.web.family.sans_serif = ''
-# c.fonts.web.family.serif = ''
-# c.fonts.web.family.standard = ''
-# c.fonts.web.size.default = 14
-# c.fonts.web.size.default_fixed = 13
-# c.fonts.web.size.minimum = 0
-# c.fonts.web.size.minimum_logical = 6
-
-# c.hints.auto_follow = 'unique-match'
-# c.hints.auto_follow_timeout = 0
-# c.hints.border = '6px solid #18191b'
-# c.hints.chars = 'asdfghjkl'
-# c.hints.dictionary = '/usr/share/dict/words'
-# c.hints.find_implementation = 'python'
-# c.hints.hide_unmatched_rapid_hints = True
-# c.hints.min_chars = 1
-# c.hints.mode = 'letter'
-# c.hints.next_regexes = ['\\bnext\\b', '\\bmore\\b', '\\bnewer\\b', '\\b[>→≫]\\b', '\\b(>>|»)\\b', '\\bcontinue\\b']
-# c.hints.prev_regexes = ['\\bprev(ious)?\\b', '\\bback\\b', '\\bolder\\b', '\\b[<←≪]\\b', '\\b(<<|«)\\b']
-# c.hints.scatter = True
-# c.hints.uppercase = False
 
 
 ## Options
@@ -109,7 +59,6 @@ c.prompt.radius = 0
 # c.qt.args = []
 # c.qt.force_platform = None
 # c.qt.force_software_rendering = False
-c.scrolling.bar = 'when-searching'
 c.scrolling.smooth = False
 # c.session_default_name = None
 c.spellcheck.languages = ['en-US']
@@ -153,11 +102,9 @@ c.window.title_format = '{current_title} - {host} - qutebrowser'
 # c.zoom.text_only = False
 
 
-## Aliases
-# c.aliases["m"] = ":tab-mute"
-
-
+#
 ## Keybindings
+
 config.bind('zz', 'close')
 config.bind(';m', 'tab-mute')
 config.bind(';v', 'spawn mpv {url}')
@@ -428,13 +375,13 @@ config.bind('<Ctrl-F>', 'rl-forward-word', mode='prompt')
 ## Bindings for register mode
 # config.bind('<Escape>', 'leave-mode', mode='register')
 
+## Ex-commands
+# c.aliases["m"] = ":tab-mute"
+
+## Per-domain settings
+c.content.user_stylesheets = glob.glob(os.path.expanduser('~/.local/share/qutebrowser/userstyles.css'))
+
 
 ## Load theme
-# NixOS symlinks screw up python module scope for this file, so we must load
-# extra config files manually -- if they exists.
 for path in glob.glob(os.path.expanduser('~/.config/qutebrowser/extra/*.py')):
-    try:
-        with open(path) as f:
-            exec(compile(f.read(), path, 'exec'))
-    except IOError:
-        pass
+    config.source(path)

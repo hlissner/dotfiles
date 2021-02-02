@@ -31,41 +31,51 @@ padding = {
     'left': spacing['horizontal']
 }
 
-## Background color of the completion widget category headers.
+## UI
+# Scrollbar style; much less intrusive than the default
+c.scrolling.bar = "overlay"
+# Completion
+c.completion.shrink = True
+
+## Fonts
+c.fonts.default_family = "JetBrainsMono"
+c.fonts.default_size = "10pt"
+
+# Background color of the completion widget category headers.
 c.colors.completion.category.bg = palette['background']
-## Bottom border color of the completion widget category headers.
+# Bottom border color of the completion widget category headers.
 c.colors.completion.category.border.bottom = palette['border']
-## Top border color of the completion widget category headers.
+# Top border color of the completion widget category headers.
 c.colors.completion.category.border.top = palette['border']
-## Foreground color of completion widget category headers.
+# Foreground color of completion widget category headers.
 c.colors.completion.category.fg = palette['foreground']
-## Background color of the completion widget for even rows.
+# Background color of the completion widget for even rows.
 c.colors.completion.even.bg = palette['background']
-## Background color of the completion widget for odd rows.
+# Background color of the completion widget for odd rows.
 c.colors.completion.odd.bg = palette['background-alt']
-## Text color of the completion widget.
+# Text color of the completion widget.
 c.colors.completion.fg = palette['foreground']
-## Background color of the selected completion item.
+# Background color of the selected completion item.
 c.colors.completion.item.selected.bg = palette['selection']
-## Bottom border color of the selected completion item.
+# Bottom border color of the selected completion item.
 c.colors.completion.item.selected.border.bottom = palette['selection']
-## Top border color of the completion widget category headers.
+# Top border color of the completion widget category headers.
 c.colors.completion.item.selected.border.top = palette['selection']
-## Foreground color of the selected completion item.
+# Foreground color of the selected completion item.
 c.colors.completion.item.selected.fg = palette['foreground']
-## Foreground color of the matched text in the completion.
+# Foreground color of the matched text in the completion.
 c.colors.completion.match.fg = palette['orange']
-## Color of the scrollbar in completion view
+# Color of the scrollbar in completion view
 c.colors.completion.scrollbar.bg = palette['background']
-## Color of the scrollbar handle in completion view.
+# Color of the scrollbar handle in completion view.
 c.colors.completion.scrollbar.fg = palette['foreground']
-## Background color for the download bar.
+# Background color for the download bar.
 c.colors.downloads.bar.bg = palette['background']
-## Background color for downloads with errors.
+# Background color for downloads with errors.
 c.colors.downloads.error.bg = palette['background']
-## Foreground color for downloads with errors.
+# Foreground color for downloads with errors.
 c.colors.downloads.error.fg = palette['red']
-## Color gradient stop for download backgrounds.
+# Color gradient stop for download backgrounds.
 c.colors.downloads.stop.bg = palette['background']
 
 ## Color gradient interpolation system for download backgrounds.
@@ -78,105 +88,105 @@ c.colors.downloads.stop.bg = palette['background']
 c.colors.downloads.system.bg = 'none'
 
 ## Background color for hints. Note that you can use a `rgba(...)` value
-## for transparency.
+# for transparency.
 c.colors.hints.bg = palette['background']
-## Font color for hints.
+# Font color for hints.
 c.colors.hints.fg = palette['purple']
-## Hints
+# Hints
 c.hints.border = '1px solid ' + palette['background-alt']
-## Font color for the matched part of hints.
+# Font color for the matched part of hints.
 c.colors.hints.match.fg = palette['foreground-alt']
-## Background color of the keyhint widget.
+# Background color of the keyhint widget.
 c.colors.keyhint.bg = palette['background']
-## Text color for the keyhint widget.
+# Text color for the keyhint widget.
 c.colors.keyhint.fg = palette['purple']
-## Highlight color for keys to complete the current keychain.
+# Highlight color for keys to complete the current keychain.
 c.colors.keyhint.suffix.fg = palette['selection']
-## Background color of an error message.
+# Background color of an error message.
 c.colors.messages.error.bg = palette['background']
-## Border color of an error message.
+# Border color of an error message.
 c.colors.messages.error.border = palette['background-alt']
-## Foreground color of an error message.
+# Foreground color of an error message.
 c.colors.messages.error.fg = palette['red']
-## Background color of an info message.
+# Background color of an info message.
 c.colors.messages.info.bg = palette['background']
-## Border color of an info message.
+# Border color of an info message.
 c.colors.messages.info.border = palette['background-alt']
-## Foreground color an info message.
+# Foreground color an info message.
 c.colors.messages.info.fg = palette['comment']
-## Background color of a warning message.
+# Background color of a warning message.
 c.colors.messages.warning.bg = palette['background']
-## Border color of a warning message.
+# Border color of a warning message.
 c.colors.messages.warning.border = palette['background-alt']
-## Foreground color a warning message.
+# Foreground color a warning message.
 c.colors.messages.warning.fg = palette['red']
-## Background color for prompts.
+# Background color for prompts.
 c.colors.prompts.bg = palette['background']
-# ## Border used around UI elements in prompts.
+# Border used around UI elements in prompts.
 c.colors.prompts.border = '1px solid ' + palette['background-alt']
-## Foreground color for prompts.
+# Foreground color for prompts.
 c.colors.prompts.fg = palette['cyan']
-## Background color for the selected item in filename prompts.
+# Background color for the selected item in filename prompts.
 c.colors.prompts.selected.bg = palette['selection']
-## Background color of the statusbar in caret mode.
+# Background color of the statusbar in caret mode.
 c.colors.statusbar.caret.bg = palette['background']
-## Foreground color of the statusbar in caret mode.
+# Foreground color of the statusbar in caret mode.
 c.colors.statusbar.caret.fg = palette['orange']
-## Background color of the statusbar in caret mode with a selection.
+# Background color of the statusbar in caret mode with a selection.
 c.colors.statusbar.caret.selection.bg = palette['background']
-## Foreground color of the statusbar in caret mode with a selection.
+# Foreground color of the statusbar in caret mode with a selection.
 c.colors.statusbar.caret.selection.fg = palette['orange']
-## Background color of the statusbar in command mode.
+# Background color of the statusbar in command mode.
 c.colors.statusbar.command.bg = palette['background']
-## Foreground color of the statusbar in command mode.
+# Foreground color of the statusbar in command mode.
 c.colors.statusbar.command.fg = palette['pink']
-## Background color of the statusbar in private browsing + command mode.
+# Background color of the statusbar in private browsing + command mode.
 c.colors.statusbar.command.private.bg = palette['background']
-## Foreground color of the statusbar in private browsing + command mode.
+# Foreground color of the statusbar in private browsing + command mode.
 c.colors.statusbar.command.private.fg = palette['foreground-alt']
-## Background color of the statusbar in insert mode.
+# Background color of the statusbar in insert mode.
 c.colors.statusbar.insert.bg = palette['background-attention']
-## Foreground color of the statusbar in insert mode.
+# Foreground color of the statusbar in insert mode.
 c.colors.statusbar.insert.fg = palette['foreground-attention']
-## Background color of the statusbar.
+# Background color of the statusbar.
 c.colors.statusbar.normal.bg = palette['background']
-## Foreground color of the statusbar.
+# Foreground color of the statusbar.
 c.colors.statusbar.normal.fg = palette['foreground']
-## Background color of the statusbar in passthrough mode.
+# Background color of the statusbar in passthrough mode.
 c.colors.statusbar.passthrough.bg = palette['background']
-## Foreground color of the statusbar in passthrough mode.
+# Foreground color of the statusbar in passthrough mode.
 c.colors.statusbar.passthrough.fg = palette['orange']
-## Background color of the statusbar in private browsing mode.
+# Background color of the statusbar in private browsing mode.
 c.colors.statusbar.private.bg = palette['background-alt']
-## Foreground color of the statusbar in private browsing mode.
+# Foreground color of the statusbar in private browsing mode.
 c.colors.statusbar.private.fg = palette['foreground-alt']
-## Background color of the progress bar.
+# Background color of the progress bar.
 c.colors.statusbar.progress.bg = palette['background']
-## Foreground color of the URL in the statusbar on error.
+# Foreground color of the URL in the statusbar on error.
 c.colors.statusbar.url.error.fg = palette['red']
-## Default foreground color of the URL in the statusbar.
+# Default foreground color of the URL in the statusbar.
 c.colors.statusbar.url.fg = palette['foreground']
-## Foreground color of the URL in the statusbar for hovered links.
+# Foreground color of the URL in the statusbar for hovered links.
 c.colors.statusbar.url.hover.fg = palette['cyan']
-## Foreground color of the URL in the statusbar on successful load
+# Foreground color of the URL in the statusbar on successful load
 c.colors.statusbar.url.success.http.fg = palette['green']
-## Foreground color of the URL in the statusbar on successful load
+# Foreground color of the URL in the statusbar on successful load
 c.colors.statusbar.url.success.https.fg = palette['green']
-## Foreground color of the URL in the statusbar when there's a warning.
+# Foreground color of the URL in the statusbar when there's a warning.
 c.colors.statusbar.url.warn.fg = palette['yellow']
-## Status bar padding
+# Status bar padding
 c.statusbar.padding = padding
-## Background color of the tab bar.
+# Background color of the tab bar.
 c.colors.tabs.bar.bg = palette['selection']
-## Background color of unselected even tabs.
+# Background color of unselected even tabs.
 c.colors.tabs.even.bg = palette['selection']
-## Foreground color of unselected even tabs.
+# Foreground color of unselected even tabs.
 c.colors.tabs.even.fg = palette['foreground']
-## Color for the tab indicator on errors.
+# Color for the tab indicator on errors.
 c.colors.tabs.indicator.error = palette['red']
-## Color gradient start for the tab indicator.
+# Color gradient start for the tab indicator.
 c.colors.tabs.indicator.start = palette['orange']
-## Color gradient end for the tab indicator.
+# Color gradient end for the tab indicator.
 c.colors.tabs.indicator.stop = palette['green']
 
 ## Color gradient interpolation system for the tab indicator.
@@ -188,17 +198,17 @@ c.colors.tabs.indicator.stop = palette['green']
 ##   - none: Don't show a gradient.
 c.colors.tabs.indicator.system = 'none'
 
-## Background color of unselected odd tabs.
+# Background color of unselected odd tabs.
 c.colors.tabs.odd.bg = palette['selection']
-## Foreground color of unselected odd tabs.
+# Foreground color of unselected odd tabs.
 c.colors.tabs.odd.fg = palette['foreground']
-# ## Background color of selected even tabs.
+# Background color of selected even tabs.
 c.colors.tabs.selected.even.bg = palette['background']
-# ## Foreground color of selected even tabs.
+# Foreground color of selected even tabs.
 c.colors.tabs.selected.even.fg = palette['foreground']
-# ## Background color of selected odd tabs.
+# Background color of selected odd tabs.
 c.colors.tabs.selected.odd.bg = palette['background']
-# ## Foreground color of selected odd tabs.
+# Foreground color of selected odd tabs.
 c.colors.tabs.selected.odd.fg = palette['foreground']
 
 ## Tab padding
