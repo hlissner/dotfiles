@@ -51,7 +51,6 @@
       ergodox.enable = true;
       fs = {
         enable = true;
-        zfs.enable = true;
         ssd.enable = true;
       };
       nvidia.enable = true;
