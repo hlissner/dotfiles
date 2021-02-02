@@ -17,6 +17,18 @@
     ];
   };
 
+  # Modules
+  modules.hardware = {
+    audio.enable = true;
+    ergodox.enable = true;
+    fs = {
+      enable = true;
+      ssd.enable = true;
+    };
+    nvidia.enable = true;
+    sensors.enable = true;
+  };
+
   # CPU
   nix.maxJobs = lib.mkDefault 16;
   powerManagement.cpuFreqGovernor = "performance";

@@ -21,6 +21,15 @@
     kernelParams = [ "mitigations=off" ];
   };
 
+  # Modules
+  modules.hardware = {
+    audio.enable = true;
+    fs = {
+      enable = true;
+      ssd.enable = true;
+    };
+  };
+
   # CPU
   nix.maxJobs = lib.mkDefault 8;
   hardware.cpu.intel.updateMicrocode = true;

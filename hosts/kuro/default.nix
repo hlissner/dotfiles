@@ -46,16 +46,6 @@
       emacs.enable = true;
       vim.enable = true;
     };
-    hardware = {
-      audio.enable = true;
-      ergodox.enable = true;
-      fs = {
-        enable = true;
-        ssd.enable = true;
-      };
-      nvidia.enable = true;
-      sensors.enable = true;
-    };
     shell = {
       bitwarden.enable = true;
       direnv.enable = true;
