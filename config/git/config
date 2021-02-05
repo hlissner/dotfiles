@@ -3,6 +3,8 @@
 	email = henrik@lissner.net
 [core]
 	whitespace = trailing-space
+[init]
+	defaultBranch = main
 [github]
 	user = hlissner
 [rebase]
