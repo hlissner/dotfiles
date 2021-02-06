@@ -105,15 +105,24 @@ c.window.title_format = '{current_title} - {host} - qutebrowser'
 #
 ## Keybindings
 
-config.bind('zz', 'close')
-config.bind(';m', 'tab-mute')
-config.bind(';v', 'spawn mpv {url}')
-config.bind(';V', 'hint links spawn mpv {hint-url}')
-
 # Universal Emacsien C-g alias for Escape
 config.bind('<Ctrl-g>', 'clear-keychain ;; search ;; fullscreen --leave')
 for mode in ['caret', 'command', 'hint', 'insert', 'passthrough', 'prompt', 'register']:
-    config.bind('<Ctrl-g>', 'leave-mode', mode=mode)
+    config.bind('<Ctrl-g>', 'mode-leave', mode=mode)
+
+# ...
+config.bind('zz', 'close')
+config.bind('tm', 'tab-mute')
+config.bind('wi', 'devtools bottom')
+# ;v already bound to 'spawn mpv {url}'
+config.bind(';V', 'hint links spawn mpv {hint-url}')
+
+# Bitwarden integration
+config.bind(";p", ':spawn -u qute-bwmenu')
+config.bind(";P", 'spawn bwmenu')
+
+## Ex-commands
+
 
 ## Bindings for normal mode
 # config.bind("'", 'enter-mode jump_mark')
@@ -374,9 +383,6 @@ config.bind('<Ctrl-F>', 'rl-forward-word', mode='prompt')
 
 ## Bindings for register mode
 # config.bind('<Escape>', 'leave-mode', mode='register')
-
-## Ex-commands
-# c.aliases["m"] = ":tab-mute"
 
 ## Per-domain settings
 c.content.user_stylesheets = glob.glob(os.path.expanduser('~/.local/share/qutebrowser/userstyles.css'))

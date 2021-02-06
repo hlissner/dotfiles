@@ -1,7 +1,7 @@
 [qb-domain$="xkcd.com"] {
     body {
-        background: #161616 !important;
-        color: #FAFAFA !important;
+        background: #282a36 !important;
+        color: #f8f8f2 !important;
     }
 
     img, div[class="self"] {
@@ -16,11 +16,11 @@
     }
 
     .box {
-        background: #000 !important;
+        background: #1E2029 !important;
     }
 
     #topLeft a {
-        color: #CCCCCC !important;
+        color: #e0e0e0 !important;
     }
 
     ul.comicNav li a {
@@ -49,7 +49,7 @@
 
 [qb-domain="m-xkcd.com"] {
     body {
-        background: #161616 !important;
+        background: #282a36 !important;
     }
 
     #title {
