@@ -9,11 +9,12 @@ in {
   };
 
   config = mkIf cfg.enable {
-    user.packages = [ pkgs.teensy-loader-cli ];
-    # 'teensyload FILE' to load a new config into the ergodox
-    environment.shellAliases.teensyload =
-      "sudo teensy-loader-cli -w -v --mcu=atmega32u4";
-    # Make right-alt the compose key, so ralt+a+a = å or ralt+o+/ = ø
+    user.packages = [ pkgs.unstable.wally-cli ];
+
+    hardware.keyboard.zsa.enable = true;
+
+    user.extraGroups = [ "plugdev" ];
+
     services.xserver.xkbOptions = "compose:ralt";
   };
 }
