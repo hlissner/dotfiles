@@ -25,6 +25,7 @@ bspc rule -a Firefox split_ratio=0.32
 bspc rule -a feh state=fullscreen
 bspc rule -a 'Emacs:org*' state=floating
 bspc rule -a 'Emacs:scratch' state=floating
+bspc rule -a 'Emacs:emacs-everywhere' state=floating sticky=on
 bspc rule -a '*:scratch' state=floating sticky=on center=on border=off rectangle=1000x800+0+0
 
 #

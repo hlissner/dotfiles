@@ -25,7 +25,11 @@ super + grave
 # Open a disposable scratch buffer in a floating Emacs window, to run arbitrary
 # code or quickly note something down.
 super + shift + grave
-	emacsclient -e '(open-scratch-frame)'
+	emacsclient --eval "(open-scratch-frame)"
+
+# Invoke emacs-everywhere at point.
+super + e
+    emacsclient --eval "(emacs-everywhere)"
 
 super + space
 	$DOTFILES/bin/rofi/appmenu
