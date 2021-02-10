@@ -25,7 +25,7 @@ in {
         desktopName = "Qutebrowser (Private)";
         genericName = "Open a private Qutebrowser window";
         icon = "qutebrowser";
-        exec = ''${pkg}/bin/qutebrowser ":open -p"'';
+        exec = ''${pkg}/bin/qutebrowser -T -s content.private_browsing true'';
         categories = "Network";
       })
       # For Brave adblock in qutebrowser, which is significantly better than the

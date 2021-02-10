@@ -10,15 +10,13 @@ c.content.javascript.enabled = True
 c.content.local_storage = True
 c.content.plugins = True
 
-# c.confirm_quit = ['never']
-c.editor.command = ['emacsclient', '-c', '-a', ' ', '+{line}:{column}', '{}']
+c.editor.encoding = 'utf-8'
 
 ## Security & privacy
-c.content.mute = True        # mute tabs by default
 c.content.autoplay = False   # don't autoplay videos
 
 ## Adblocking
-# Use (superior) Brave adblock if available; fall back to host blocking
+# Use (superior) Brave adblock if available, or fall back to host blocking
 c.content.blocking.method = "auto"
 c.content.blocking.hosts.lists = [
     'https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts',
@@ -30,76 +28,22 @@ c.content.blocking.hosts.lists = [
 ]
 # c.content.blocking.whitelist = []
 
+## Options
 c.downloads.position = 'bottom'
 c.downloads.location.directory = os.path.expanduser("~/dl")
 c.downloads.location.prompt = False
-
-c.editor.encoding = 'utf-8'
-
-
-## Options
-# c.history_gap_interval = 30
-# c.ignore_case = 'smart'
-# c.input.forward_unbound_keys = 'auto'
-# c.input.insert_mode.auto_leave = True
+c.input.insert_mode.auto_leave = True
 c.input.insert_mode.auto_load = False
-# c.input.insert_mode.plugins = False
-# c.input.links_included_in_focus_chain = True
-# c.input.partial_timeout = 5000
-# c.input.rocker_gestures = False
-# c.input.spatial_navigation = False
-# c.keyhint.blacklist = []
-# c.keyhint.delay = 500
-# c.messages.timeout = 2000
-# c.messages.unfocused = False
+c.input.links_included_in_focus_chain = False
 c.new_instance_open_target = 'tab-silent'
-# c.new_instance_open_target_window = 'last-focused'
 c.prompt.filebrowser = False
 c.prompt.radius = 0
-# c.qt.args = []
-# c.qt.force_platform = None
-# c.qt.force_software_rendering = False
-c.scrolling.smooth = False
-# c.session_default_name = None
 c.spellcheck.languages = ['en-US']
-c.session.lazy_restore = False
-
-# c.statusbar.padding = {'top': 4, 'bottom': 4, 'left': 4, 'right': 4}
-# c.statusbar.hide = False
-# c.statusbar.position = 'bottom'
-
-# c.tabs.background = True
-# c.tabs.padding = {'top': 4, 'bottom': 4, 'left': 0, 'right': 3}
-# c.tabs.indicator.padding = {'top': 0, 'bottom': 0, 'left': 0, 'right': 5}
-# c.tabs.mousewheel_switching = False
-# c.tabs.close_mouse_button = 'middle'
-# c.tabs.favicons.scale = 1.0
-# c.tabs.favicons.show = True
-# c.tabs.last_close = 'ignore'
-# c.tabs.new_position.related = 'next'
-# c.tabs.new_position.unrelated = 'last'
-# c.tabs.position = 'top'
-# c.tabs.select_on_remove = 'next'
+c.session.lazy_restore = True
 c.tabs.show = 'multiple'
-c.tabs.title.format = '{current_title} - {host}'
+c.tabs.title.format = '{audio}{current_title} - {host}'
 c.tabs.title.format_pinned = ''
-c.tabs.indicator.width = 1
-# c.tabs.wrap = True
-
-# c.url.auto_search = 'naive'
-# c.url.default_page = 'https://start.duckduckgo.com/'
-# c.url.incdec_segments = ['path', 'query']
-# c.url.searchengines = {'DEFAULT': 'https://duckduckgo.com/?q={}'}
-# c.url.start_pages = ['https://start.duckduckgo.com']
-# c.url.yank_ignored_parameters = ['ref', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content']
-
-# c.window.hide_wayland_decoration = False
 c.window.title_format = '{current_title} - {host} - qutebrowser'
-
-# c.zoom.default = '100%'
-# c.zoom.levels = ['25%', '33%', '50%', '67%', '75%', '90%', '100%', '110%', '125%', '150%', '175%', '200%', '250%', '300%', '400%', '500%']
-# c.zoom.mouse_divider = 512
-# c.zoom.text_only = False
 
 
 #
@@ -114,12 +58,24 @@ for mode in ['caret', 'command', 'hint', 'insert', 'passthrough', 'prompt', 'reg
 config.bind('zz', 'close')
 config.bind('tm', 'tab-mute')
 config.bind('wi', 'devtools bottom')
+config.bind(';;', 'hint inputs --first')  # easier to reach than ;t
+config.bind(';e', 'hint inputs --first ;; fake-key <Ctrl+a> ;; :spawn nohup bspc rule -a "Emacs:*" -o state=floating sticky=on && emacsclient --eval "(emacs-everywhere)"')
 # ;v already bound to 'spawn mpv {url}'
 config.bind(';V', 'hint links spawn mpv {hint-url}')
 
+# Use external editor
+c.editor.command = ['emacsclient', '-c', '-F', '((name . "qutebrowser-editor"))', '+{line}:{column}', '{}']
+# Though we set it, I use the more specialzied emacs-everywhere instead
+config.bind('<Ctrl+E>',    'edit-text', mode='insert')
+config.bind('<Ctrl+E>',    'hint inputs --first ;; edit-text', mode='normal')
+config.bind('<Shift+Ins>', 'fake-key <Ctrl+V>', mode='insert')
+
 # Bitwarden integration
-config.bind(";p", ':spawn -u qute-bwmenu')
-config.bind(";P", 'spawn bwmenu')
+config.bind(";pp", 'spawn -u qute-bwmenu')
+config.bind(";pu", 'spawn -u qute-bwmenu --field username')
+config.bind(";ps", 'spawn -u qute-bwmenu --field password')
+config.bind(";po", 'spawn -u qute-bwmenu --field otp')
+config.bind(";pl", 'spawn -u qute-bwmenu --last')
 
 ## Ex-commands
 
@@ -343,7 +299,7 @@ config.bind('<Ctrl-F>', 'rl-forward-word', mode='command')
 # config.bind('<Ctrl-B>', 'hint all tab-bg', mode='hint')
 # config.bind('<Ctrl-F>', 'hint links', mode='hint')
 # config.bind('<Ctrl-R>', 'hint --rapid links tab-bg', mode='hint')
-# config.bind('<Escape>', 'leave-mode', mode='hint')
+# config.bind('<Escape>', 'mode-leave', mode='hint')
 # config.bind('<Return>', 'follow-hint', mode='hint')
 
 ## Bindings for insert mode

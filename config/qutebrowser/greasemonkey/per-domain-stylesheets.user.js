@@ -8,7 +8,7 @@
 // @author      Henrik Lissner
 // ==/UserScript==
 
-(function IIFE() {
+(function () {
 	'use strict';
 
 	document.addEventListener('readystatechange', function onReadyStateChange() {
