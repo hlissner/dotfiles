@@ -18,9 +18,12 @@ super + Return
 ctrl + super + Return
 	xst
 
+# Open a disposable, floating terminal window, for quick shell commands.
 super + grave
 	scratch
 
+# Open a disposable scratch buffer in a floating Emacs window, to run arbitrary
+# code or quickly note something down.
 super + shift + grave
 	emacsclient -e '(open-scratch-frame)'
 

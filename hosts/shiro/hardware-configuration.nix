@@ -16,8 +16,8 @@
     extraModulePackages = [ ];
     # HACK Disables fixes for spectre, meltdown, L1TF and a number of CPU
     #      vulnerabilities. This is not a good idea for mission critical or
-    #      server/headless builds, but on my lonely home system I prioritize raw
-    #      performance over security.  The gains are minor.
+    #      server/headless builds, but Kuro isn't either. I'll prioritize raw
+    #      performance over security here, though the gains are minor.
     kernelParams = [ "mitigations=off" ];
   };
 
