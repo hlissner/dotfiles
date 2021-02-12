@@ -41,6 +41,16 @@ mkfs.ext4 -L vm2 /dev/sdb1
 
 ** Set up backup file system
 #+BEGIN_SRC sh
+parted /dev/sda -- mklabel gpt
+parted /dev/sda -- mkpart primary ext4 0% 100%
+mkfs.ext4 -L store /dev/sda
+#+END_SRC
+
+** +Set up backup file system+
+Backup was moved to an NAS, so this is no longer needed. It's kept as a
+reference.
+
+#+BEGIN_SRC sh
 # 2x 1TB mirrored backup
 zpool create -R /mnt \
     -O mountpoint=none \
