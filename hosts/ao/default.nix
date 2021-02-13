@@ -37,10 +37,20 @@ with lib.my;
     default = true;
     forceSSL = true;
     enableACME = true;
-    locations."/".extraConfig = ''
+    locations."~* \.(?:ico|css|map|js|gif|jpe?g|png|ttf|woff)$".extraConfig = ''
+      access_log off;
+      expires 30d;
+      add_header Pragma public;
+      add_header Cache-Control "public, mustrevalidate, proxy-revalidate";
       proxy_pass https://kiiro:8001;
+      proxy_buffering off;
+    '';
+    locations."/".extraConfig = ''
+      client_max_body_size 10m
       proxy_ssl_server_name on;
       proxy_pass_header Authorization;
+      proxy_pass https://kiiro:8001;
+      proxy_buffering off;
     '';
   };
 
