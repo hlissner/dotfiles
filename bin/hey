@@ -1,230 +1,368 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env cached-nix-shell
+#! nix-shell -p ruby -i "ruby -S" --quiet
 
-# I don't like the user story for Nix's binaries, unlike Guix's.  So I wrote
-# this to abstract away the unneeded complexity for everyday maintenance of my
-# NixOS config.
-#
-#   hey cd|check
-#     nix flake check $DOTFILES
-#   hey sh|show
-#     nix flake show $DOTFILES
-#   hey u|update [INPUT...]
-#     nix flake update --recreate-lock-file $DOTFILES
-#   hey re|rebuild [ARGS...]
-#     nixos-rebuild --flake $DOTFILES#$HOST ${@:-build}
-#   hey t|test        -> nixos-rebuild --flake $DOTFILES#$HOST --fast test
-#   hey theme $THEME  -> THEME=$THEME hey test (quick theme swapping)
-#   hey rollback      -> hey rebuild --rollback switch
-#   hey s|search      -> nix search nixpkgs $@
-#   hey swap $PATH    -> swaps all specified nix-store symlinks (or recursively
-#                        in a specified directory) with copies so they can be
-#                        modified in place (while tweaking). Run again to
-#                        restore the old link (careful, you'll lose work if you
-#                        don't save your changes elsewhere!)
-#   hey vm            -> hey rebuild vm
-#   hey up|upgrade    -> hey update && hey rebuild switch
-#   hey gc            -> GC user profile, optimise nix store
-#   sudo hey gc       -> GC, optimise nix store, & delete old boot entries
-#   hey push REMOTE   -> 1. Build machine locally, 2. Copy result to remote, 3. Activate config on remote
-#   hey gen|generations -> explore, manage, diff across generations (WIP)
-#
-# hey (with no sub-command) can also be used as an alternative to nix-env:
-#
-#   hey -q
-#   hey -iA nixos.htop
-#   hey -e htop
+DESC = <<~DESC
+  Nix's CLI has a poor user story, in my opinion. It could be better; Guix is a
+  good role model here. I wrote this script to abstract the more common
+  workflows, like rebuilding (nixos-rebuild), cleaning up (nix-collect-garbage),
+  package/env management (nix-env), updating, rolling back, etc. As well as some
+  utility operations (like managing generations, building remotely, or swapping
+  themes on the fly).
 
-set -e
-if [[ -z $FLAKE ]]; then
-  for dir in /etc/nixos /etc/dotfiles; do
-    if [[ -f "$dir/flake.nix" ]]; then
-      FLAKE=$dir
-      break
-    fi
-  done
-fi
+  Because I can go months without shaving yaks in NixOS, exact flags or details
+  are often and easily forgotten. This spares me that fumbling phase and also
+  serves as a reference.
 
-#
-function main {
-  function _do { [[ $DRYRUN ]] && echo "$@" || "$@" }
+  Note: `hey` can also be used as a shortcut for nix-env:
 
-  ### Helpers
-  function _usage {
-    echo "Usage: hey COMMAND [FLAGS...] [ARGS...]"
-    echo
-    echo "Available commands:"
-    echo "  check (ch)         Same as 'nix flake check \$DOTFILES'"
-    echo "  gc                 Garbage collect and optimize store"
-    echo "  generations (gen)  TODO"
-    echo "  push               Push thie config to a remote NixOS system and rebuild it"
-    echo "  rebuild (re)       Rebuild current system flake"
-    echo "  rollback           Roll back to last generation"
-    echo "  search (s)         Searches nixpkgs for a package"
-    echo "  show (sh)          Same as 'nix flake show \$DOTFILES'"
-    echo "  swap               Swap nix-store link (or directory thereof) for tweaking"
-    echo "  test (t)           Quickly rebuild, for quick iteration"
-    echo "  theme              Quickly swap to another theme"
-    echo "  upgrade (up)       Update flake lockfile and rebuild"
-    echo "  vm                 Build flake into a VM image"
-  }
+    hey -q
+    hey -iA nixos.htop
+    hey -e htop
+DESC
 
-  function _rebuild {
-    # Move to $DOTFILES to prevent polluting the system with result links
-    pushd $FLAKE >/dev/null
-    # REVIEW Use --impure instead when it's in a stable release of nix
-    _do ${SUDO:+sudo} nixos-rebuild \
-      --flake "${FLAKE}#${HOSTNAME:-$HOST}" \
-      --option pure-eval no \
-      ${@:-build}
-    popd >/dev/null
-  }
+require 'shellwords'
+require 'optparse'
 
-  function _update {
-    echo "Updating NixOS flake"
-    if [[ "$@" ]]; then
-      for flake in $@; do
-        _do nix flake update --update-input "$flake" "$FLAKE"
-      done
+module Hey
+  extend self
+  Command = Struct.new(:name, :desc, :args, :opts, :fn)
+
+  @@opts = { flake: File.expand_path('../', File.dirname(__FILE__)) }
+  @@alias = {}
+  @@commands = {}
+  @@cli = nil
+  def self.defcmd names, &block
+    names = (names.kind_of?(Array) ? names : [names]).map(&:to_s)
+    names.drop(1).each { |n| @@alias[n] = names.first }
+    cli = Command.new names.first, [], []
+    cli.opts = OptionParser.new do |opt|
+      opt.banner = "Usage: #{opt.program_name} #{cli.name} [options]"
+      opt.separator "\nOptions:"
+      opt.on_tail('-h', '--help', 'Prints this help') { puts opt; exit }
+    end
+    @@cli = cli
+    fn = block.call cli
+    cli.fn = lambda do |args|
+      begin
+        cli.opts.banner +=
+          (cli.args ? " #{cli.args.join ' '}" : "") +
+          (cli.desc ? "\n\n#{cli.desc[0]}\n\n#{cli.desc[1..].join "\n"}" : "")
+        cli.opts.order!(args, into: @@opts)
+        fn.call args
+      ensure @@cli = nil end
+    end
+    @@commands[cli.name] = @@cli
+  end
+  def self.opts(*args) @@cli.opts.on(*args) end
+  def self.args(*args) @@cli.args = args end
+  def self.desc(*args) @@cli.desc = args end
+  def self.sh(args, sudo: false, noerror: false)
+    raise ArgumentError unless args.kind_of?(Array)
+    args.unshift('sudo') if sudo
+    if @@opts[:dryrun]
+      print args.compact
+      return true
     else
-      _do nix flake update --recreate-lock-file "$FLAKE"
-    fi
-  }
+      result = system "#{args.compact.shelljoin} 2>&1"
+      noerror ? result : exit($?.exitstatus)
+    end
+  end
+  def self.rebuild(*args, sudo: false)
+    sh ["nixos-rebuild",
+        "--flake", @@opts[:flake],
+        "--option", "pure-eval", "no",
+        *args], sudo: sudo
+  end
 
-  function _gc {
-    if [[ $EUID == 0 ]]; then
-      echo "Cleaning up your system..."
-      _do nix-collect-garbage ${@:--d}
-      _do nix-store --optimise
-      # Clear out left-over secrets. The switch-to-configuration call below will
-      # regenerate them.
-      [[ -d /run/secrets ]] && _do rm -f /run/secrets/*
-      # nix-collect-garbage is a Nix tool, not a NixOS tool. It won't delete old
-      # boot entries until you do a nixos-rebuild (which means we'll always have
-      # 2 boot entries at any time). Instead, we properly delete them by
-      # reloading the current environment.
-      _do nix-env --delete-generations old --profile /nix/var/nix/profiles/system
-      _do /nix/var/nix/profiles/system/bin/switch-to-configuration switch
-    else
-      echo "Cleaning up your user profile..."
-      _do nix-collect-garbage ${@:--d}
-    fi
-  }
+  #
+  defcmd [:shell, :sh] do
+    desc "Open a nix-shell with the dotfiles loaded"
+    lambda do |args|
+      sh ["nix", "develop", args.first || @@opts[:flake]]
+    end
+  end
 
-  function _swap {
-    for target in $@; do
-      if [ -d "$target" ]; then
-        files=( "$target"/**/*.nix-store-backup )
-        links=( $(find "$target" -type l) )
-        if [[ "$files" ]]; then
-          echo "There are swapped files here. Unswapping!"
-          for file in $files[@]; do
-            _swap "$link"
-          done
+  defcmd :repl do
+    desc "Open a nix-repl with nixpkgs and dotfiles preloaded"
+    lambda do |args|
+      sh ["nix", "repl", @@opts[:flake], "<nixpkgs>", *args]
+    end
+  end
+
+  defcmd [:check, :ch] do
+    desc "Run 'nix flake check' on your dotfiles"
+    lambda do |args|
+      sh ["nix", "flake", "check", @@opts[:flake]]
+    end
+  end
+
+  defcmd :show do
+    desc "[ARGS...]", "Run 'nix flake show' on your dotfiles"
+    lambda do |args|
+      sh ["nix", "flake", "show", @@opts[:flake]]
+    end
+  end
+
+  defcmd :theme do
+    desc 'Quickly swap to another theme module'
+    args "THEME_NAME"
+    lambda do |args|
+      ENV["THEME"] = args.shift
+      rebuild "--fast", "test"
+    end
+  end
+
+  defcmd [:test, :t] do
+    desc "Quickly rebuild, for quick iteration"
+    lambda do |args|
+      rebuild "--fast", "test", *args
+    end
+  end
+
+  defcmd [:rebuild, :re] do
+    desc "Rebuild the current system's flake"
+    opts       '--build-host HOST',  "TODO"
+    opts       '--target-host HOST', "TODO"
+    opts       '--host HOST',        "TODO"
+    opts       '--user',             "TODO"
+    opts       '--fast',             "TODO"
+    lambda do |args|
+      Dir.chdir(@@opts[:flake]) do
+        @@opts[:host] ||= ENV["HOST"] || `hostname`.rstrip
+        args = ["switch"] unless args.length > 0
+        rebuild(*(@@opts[:"build-host"]  ? ["--build-host",  @@opts[:"build-host"]]  : []),
+                *(@@opts[:"target-host"] ? ["--target-host", @@opts[:"target-host"]] : []),
+                @@opts[:fast]  ? "--fast"       : nil,
+                @@opts[:debug] ? "--show-trace" : nil,
+                *args,
+                sudo: !@@opts[:user])
+      end
+    end
+  end
+
+  defcmd :rollback do
+    desc "Roll back to last generation"
+    lambda do |_args|
+      rebuild "--rollback", "switch"
+    end
+  end
+
+  defcmd [:update, :u] do
+    desc "Update specific flakes or all of them"
+    args "[INPUT...]"
+    lambda do |args|
+      args.each do |flake|
+        puts "Trying to update #{flake}..."
+        sh ["nix", "flake", "update", "--update-input", flake, @@opts[:flake]]
+      end.empty? and begin
+        puts "Updating all flakes.."
+        sh ["nix", "flake", "update", "--recreate-lock-file", @@opts[:flake]]
+      end
+    end
+  end
+
+  defcmd [:upgrade, :up] do
+    desc "Update all flakes and rebuild system"
+    lambda do |_args|
+      update
+      rebuild :switch
+    end
+  end
+
+  defcmd [:search, :s] do
+    desc "Search nixpkgs for a package"
+    lambda do |args|
+      sh ["nix", "search", "nixpkgs", *args]
+    end
+  end
+
+  defcmd :swap do
+    desc "Recursively swap nix-store links (or folders thereof) with copies.",
+         "The purpose is so you can have copies of your dotfiles that can be modified in",
+         "place (so you can iterate on them quickly instead of 'hey re'ing between",
+         "changes). Run again to restore the old link(s).\n",
+         "Warning: backup your copies, or they will be destroyed when restored!"
+    args "PATH", "[PATHS...]"
+    lambda do |args|
+      for target in args
+        if File.directory? target
+          files = Dir.glob("#{target}/**/*.nix-store-backup")
+          if files.length > 0
+            puts "There are swapped files here. Unswapping!"
+            call :swap, *files
+          else
+            puts "Swapping files in #{target}"
+            call :swap, *(Dir.glob("#{target}/**/*")
+                            .select { |f| File.symlink? f }
+                            .select { |l| File.readlink(l).match '^/nix/store/' })
+          end
+        elsif File.file? "#{target}.nix-store-backup"
+          puts "Unswapping #{target}"
+          sh [:mv, '-i', "#{target}.nix-store-backup", target]
+        elsif File.file? target
+          puts "Swapping #{target}"
+          sh [:mv, target, "#{target}.nix-store-backup"]
+          sh [:cp, "#{target}.nix-store-backup", target]
         else
-          echo "Swapping files in $target"
-          for link in $links[@]; do
-            if [[ "$(readlink $link)" == /nix/store/* ]]; then
-              _swap "$link"
-            fi
-          done
-        fi
-      elif [ -f "$target.nix-store-backup" ]; then
-        echo "Unswapping $target"
-        _do mv -i "$target.nix-store-backup" "$target"
-      elif [ -f "$target" ]; then
-        echo "Swapping $target"
-        _do mv "$target" "$target.nix-store-backup"
-        _do cp "$target.nix-store-backup" "$target"
-      else
-        >&2 echo "Not a valid target: $target"
-        exit 1
-      fi
-    done
-  }
-
-  ###
-  eval set -- $(getopt -n hey -o df:h:ieAqp -l dryrun,flake:,host: -- "$@")
-  while :
-  do
-    case "$1" in
-      -d|--dryrun) DRYRUN=1;    shift   ;;
-      -f|--flake)  FLAKE=$2;    shift 2 ;;
-      -h|--host)   HOSTNAME=$2; shift 2 ;;
-      -i|-A|-q|-e|-p) _do nix-env "$@"; exit 0 ;;
-      --) shift; break ;;
-    esac
-  done
-  if [[ ! -d $FLAKE ]]; then
-    >&2 echo "Couldn't find flake.nix in $FLAKE"
-    exit 1
-  fi
-
-  cmd="$1"
-  [[ $# > 0 ]] && shift
-  case "$cmd" in
-    sh|shell)    _do nix develop "$FLAKE" "$@" ;;
-    repl)        _do nix repl "$FLAKE/flake.nix" "<nixpkgs>" "$@" ;;
-
-    ch|check)    _do nix flake check "$@" "$FLAKE"      ;;
-    sh|show)     _do nix flake show "$@" "$FLAKE"       ;;
-
-    theme)       THEME="$1" SUDO=1 _rebuild --fast test ;;
-    t|test)      SUDO=1 _rebuild --fast test "$@"       ;;
-    re|rebuild)  SUDO=1 _rebuild "${@:-switch}"         ;;
-    rollback)    SUDO=1 _rebuild --rollback switch      ;;
-    vm)          SUDO=1 _rebuild "$@" vm                ;;
-
-    u|update)    _update "$@"                           ;;
-    up|upgrade)  _update && SUDO=1 _rebuild switch      ;;
-    s|search)    nix search nixpkgs "$@"                ;;
-
-    swap)        _swap "$@" ;;
-    gc)          _gc "$@" ;;
-    push)
-      target=$1
-      cmd=${2:-test}
-      echo "Enabling root ssh access on $target"
-      if _do ssh -t "$target" "sudo mkdir -p /root/.ssh && sudo cp -f ~/.ssh/authorized_keys /root/.ssh/authorized_keys"; then
-        trap '_do ssh -t "root@$target" "rm -f /root/.ssh/authorized_keys"' EXIT
-        echo "Building $target ($cmd)"
-        HOSTNAME="${HOSTNAME:-$target}" _rebuild \
-          --build-host localhost \
-          --target-host "root@$target" \
-          $cmd
-        echo "Undoing root ssh access on $target"
-      fi
-      ;;
-
-    gen|generations)
-      profile=/nix/var/nix/profiles/system
-      case "$1" in
-        switch) >&2 echo "Targeted rollback not supported yet" ;;  # TODO Is this true?
-        diff)
-          to=/nix/var/nix/profiles/system-${2}-link
-          diff \
-            <(nix-store -q --references $profile) \
-            <(nix-store -q --references $to)
-          ;;
-        remove)
-          shift
-          _do sudo nix-env --delete-generations --profile $profile $@
-          ;;
-        "")
-          _do sudo nix-env --list-generations --profile $profile
-          ;;
-      esac
-      ;;
-
-    h|help) _usage ;;
-    "") _usage ;;
-    *)  if command -v hey-$cmd >/dev/null; then
-          hey-$cmd $@
-        else
-          echo "Couldn't find command: $cmd" 1>&2
+          puts "Not a valid target: #{target}"
           exit 1
-        fi
-        ;;
-  esac
-}
+        end
+      end
+    end
+  end
 
-main "$@"
+  defcmd :gc do
+    desc "Garbage collect & optimize nix store"
+    opts "-a", "--all",         "GC both the user and system profiles"
+    opts "-s", "--system",      "Only GC the system profile"
+    lambda do |_args|
+      if @@opts[:all] or not @@opts[:root]
+        puts "Cleaning up your user profile..."
+        sh %w{nix-collect-garbage -d}
+      end
+      if @@opts[:all] or @@opts[:system]
+        puts "Cleaning up your system..."
+        sh %w{nix-collect-garbage -d}, sudo: true
+        sh %w{nix-store --optimise}, sudo: true
+        # Clear out left-over secrets. The switch-to-configuration call below will
+        # regenerate them.
+        if File.exists?("/run/secrets/*")
+          sh %w{rm -rf /run/secrets/*}, sudo: true
+        end
+        # nix-collect-garbage is a Nix tool, not a NixOS tool. It won't delete old
+        # boot entries until you do a nixos-rebuild (which means we'll always have
+        # 2 boot entries at any time). Instead, we properly delete them by
+        # reloading the current environment.
+        sh %w{nix-env --delete-generations old --profile /nix/var/nix/profiles/system}, sudo: true
+        sh %w{/nix/var/nix/profiles/system/bin/switch-to-configuration switch}, sudo: true
+      end
+    end
+  end
+
+  defcmd :ssh do
+    desc "Run a Hey command on a remote NixOS system",
+         "This command assumes that the remote system is built on these dotfiles, it is",
+         "dangerous to do this if that isn't the case."
+    args "HOST", "[COMMAND]"
+    opts '--host HOST', "The nixos config to build and deploy to HOST"
+    lambda do |args|
+      target, command = args.take(2)
+      if command.match /switch|test|boot/
+        puts "Enabling root ssh access on #{target}. Enter root password for remote system:"
+        if sh ["ssh", "-t", target,
+               "sudo mkdir -p /root/.ssh && sudo cp -f ~/.ssh/authorized_keys /root/.ssh/"],
+              noerror: true
+          begin
+            puts "Building #{target}"
+            call "rebuild", ["--user",
+                             "--host", @@opts[:host] || target,
+                             "--build-host",  "localhost",
+                             "--target-host", "root@#{target}",
+                             command || "test"]
+          ensure
+            puts "Undoing root ssh access on #{target}"
+            sh ["ssh", "-t", "root@#{target}", "rm -f /root/.ssh/authorized_keys"]
+          end
+        end
+      else
+        command = "nix run github:hlissner/dotfiles -- #{command}"
+        puts "Running '#{command}' on #{target}"
+        sh ["ssh", "-t", target, command]
+      end
+    end
+  end
+
+  # TODO Generalize this to nix profiles
+  defcmd [:generations, :gen] do
+    desc "Explore, manage, diff across generations"
+    opts       '--diff FROM TO',   "TODO"
+    opts '-r', '--remove PROFILE', "TODO"
+    lambda do |args|
+      profile = "/nix/var/nix/profiles/system"
+      case args.shift
+      when "diff"
+        from, to = *args
+        if from == to
+          puts "Comparing the same profile! Aborting..."
+          exit 1
+        elsif [from, to].compact.select do |gen|
+                File.exists? "#{profile}-#{gen}-link" or
+                  puts "Generation #{gen} does not exist!"
+              end.length != [from, to].compact.length
+          exit 2
+        end
+        from = from ? "#{profile}-#{from}-link" : profile
+        to   = to   ? "#{profile}-#{to}-link"   : profile
+        fromDevs = `nix-store -q --references #{from}`.split
+        toDevs   = `nix-store -q --references #{to}`.split
+        puts (fromDevs - toDevs).map { |d| "\e[31m-#{d}\e[0m" }
+        puts (toDevs - fromDevs).map { |d| "\e[32m+#{d}\e[0m" }
+      when /ls|list/
+        sh ["nix-env", "--list-generations", "--profile", profile], sudo: true
+      when "remove"
+        sh ["nix-env", "--delete-generations", "--profile", profile, *args], sudo: true
+      when "switch"
+        puts "Targeted rollback not supported yet"  # TODO Is this true?
+        exit 1
+      end
+    end
+  end
+
+  class UsageError < StandardError; end
+  defcmd [:help, :h] do
+    desc "Show usage information for this script or a subcommand"
+    args "[SUBCOMMAND]"
+    lambda do |args|
+      raise UsageError unless args.first
+      call args.first, ["-h", *args.drop(1)]
+    end
+  end
+
+  #
+  def self.call command, args
+    cmd = command.to_s
+    cmd = @@alias[cmd] while cmd and not @@commands.key?(cmd)
+    if cmd
+      @@commands[cmd].fn.call args
+    elsif command
+      puts "Couldn't recognize command '#{command}'"
+      exit 1
+    else
+      raise UsageError
+    end
+  end
+
+  def self.run args=[]
+    opts = OptionParser.new do |opt|
+      opt.banner = "Usage: hey [global-options] [command] [sub-options]\n\n" + DESC
+      opt.separator "\n\nAvailable Commands:"
+      opt.separator (@@commands.values
+                       .reject { |c| c.desc.empty? }
+                       .sort { |a,b| a.name <=> b.name }
+                       .map { |c| "  %-18s %s\n" % ["#{c.name} #{@@alias.key(c.name)}",
+                                                   c.desc[0]]})
+      opt.separator "\nOptions:"
+      opt.on('-d', '--dryrun',    "Don't change anything; preform dry run")
+      opt.on('-D', '--debug',     "Show trace on nix errors")
+      opt.on('-f', '--flake URI', "Change target flake to URI")
+      opt.on(*%w{-h --help},      "Display this help, or help for a specific command")
+      opt.on(*%w{-i -A -q -e -p}, "Forward to nix-env") { sh ["nix-env", *ARGV]; exit }
+    end
+    opts.order!(args, into: @@opts)
+
+    begin
+      args.unshift("help") if @@opts[:help]
+      if args.length == 0
+        puts "Error: No command specified!"
+        puts
+        raise UsageError
+      else
+        call args.first, args.drop(1)
+      end
+    rescue UsageError
+      puts opts
+    end
+  end
+end
+
+Hey.run ARGV.dup
