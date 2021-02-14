@@ -46,7 +46,7 @@ with lib.my;
       proxy_buffering off;
     '';
     locations."/".extraConfig = ''
-      client_max_body_size 10m
+      client_max_body_size 10m;
       proxy_ssl_server_name on;
       proxy_pass_header Authorization;
       proxy_pass https://kiiro:8001;
