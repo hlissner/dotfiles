@@ -122,11 +122,11 @@ module Hey
 
   defcmd [:rebuild, :re] do
     desc "Rebuild the current system's flake"
-    opts       '--build-host HOST',  "TODO"
-    opts       '--target-host HOST', "TODO"
-    opts       '--host HOST',        "TODO"
-    opts       '--user',             "TODO"
-    opts       '--fast',             "TODO"
+    opts       '--build-host HOST',  "Where to build the flake"
+    opts       '--target-host HOST', "Where to deploy the built derivations"
+    opts       '--host HOST',        "The target nixosConfiguration to build"
+    opts       '--user',             "Rebuild as user, rather than root"
+    opts       '--fast',             "Equivalent to --no-build-nix --show-trace for quick rebuilding"
     lambda do |args|
       Dir.chdir(@@opts[:flake]) do
         args = ["switch"] unless args.length > 0
@@ -241,25 +241,32 @@ module Hey
   end
 
   defcmd :ssh do
-    desc "Run a Hey command on a remote NixOS system",
-         "This command assumes that the remote system is built on these dotfiles, it is",
-         "dangerous to do this if that isn't the case."
+    desc "Run a bin/hey command on a remote NixOS system",
+         "If COMMAND is one of switch, test, or boot (if omitted, 'test' is assumed),",
+         "that host's config is built locally and then copied to the remote over ssh.",
+         "This will prompt you for your root password, as it temporarily opens root ssh",
+         "access (via your existing ssh key) to the remote -- which is immediately removed",
+         "upon completion.",
+         "",
+         "If COMMAND is anything else, it merely runs 'nix run github:hlissner/dotfiles",
+         "-- COMMAND' on the rmeote."
     args "HOST", "[COMMAND]"
     opts '--host HOST', "The nixos config to build and deploy to HOST"
     lambda do |args|
       target, command = args.take(2)
-      if command.match /switch|test|boot/
+      command ||= "test"
+      if command.match(/switch|test|boot/)
         puts "Enabling root ssh access on #{target}. Enter root password for remote system:"
         if sh ["ssh", "-t", target,
                "sudo mkdir -p /root/.ssh && sudo cp -f ~/.ssh/authorized_keys /root/.ssh/"],
               noerror: true
           begin
-            puts "Building #{target}"
+            puts "Building #{@@opts[:flake]}##{@@opts[:host] || target} for #{target}"
             call "rebuild", ["--user",
                              "--host", @@opts[:host] || target,
                              "--build-host",  "localhost",
                              "--target-host", "root@#{target}",
-                             command || "test"]
+                             command]
           ensure
             puts "Undoing root ssh access on #{target}"
             sh ["ssh", "-t", "root@#{target}", "rm -f /root/.ssh/authorized_keys"]
@@ -276,8 +283,8 @@ module Hey
   # TODO Generalize this to nix profiles
   defcmd [:generations, :gen] do
     desc "Explore, manage, diff across generations"
-    opts       '--diff FROM TO',   "TODO"
-    opts '-r', '--remove PROFILE', "TODO"
+    opts       '--diff FROM TO',   "Diff profiles FROM with TO (numbers)"
+    opts '-r', '--remove PROFILE', "Delete PROFILE from history"
     lambda do |args|
       profile = "/nix/var/nix/profiles/system"
       case args.shift
@@ -346,7 +353,7 @@ module Hey
       opt.on('-d', '--dryrun',    "Don't change anything; preform dry run")
       opt.on('-D', '--debug',     "Show trace on nix errors")
       opt.on('-f', '--flake URI', "Change target flake to URI")
-      opt.on(*%w{-h --help},      "Display this help, or help for a specific command")
+      opt.on('-h', '--help',      "Display this help, or help for a specific command")
       opt.on(*%w{-i -A -q -e -p}, "Forward to nix-env") { sh ["nix-env", *ARGV]; exit }
     end
     opts.order!(args, into: @@opts)
