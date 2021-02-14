@@ -67,9 +67,10 @@ module Hey
       noerror ? result : exit($?.exitstatus)
     end
   end
-  def self.rebuild(*args, sudo: false)
+  def self.rebuild(*args, sudo: false, host: nil)
+    host ||= ENV['HOST'] || `hostname`.rstrip
     sh ["nixos-rebuild",
-        "--flake", @@opts[:flake],
+        "--flake", "#{@@opts[:flake]}##{host}",
         "--option", "pure-eval", "no",
         *args], sudo: sudo
   end
@@ -128,14 +129,14 @@ module Hey
     opts       '--fast',             "TODO"
     lambda do |args|
       Dir.chdir(@@opts[:flake]) do
-        @@opts[:host] ||= ENV["HOST"] || `hostname`.rstrip
         args = ["switch"] unless args.length > 0
         rebuild(*(@@opts[:"build-host"]  ? ["--build-host",  @@opts[:"build-host"]]  : []),
                 *(@@opts[:"target-host"] ? ["--target-host", @@opts[:"target-host"]] : []),
                 @@opts[:fast]  ? "--fast"       : nil,
                 @@opts[:debug] ? "--show-trace" : nil,
                 *args,
-                sudo: !@@opts[:user])
+                sudo: !@@opts[:user],
+                host: @@opts[:host])
       end
     end
   end
