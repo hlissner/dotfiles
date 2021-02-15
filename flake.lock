@@ -8,11 +8,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1612839016,
-        "narHash": "sha256-EFF45ekZr38M8PsQyav1vlVJ9wMRqsBsdK7RMYkUFPY=",
+        "lastModified": 1613238393,
+        "narHash": "sha256-WDGdYpGbJgHhI7JdfPKv3q9cGYr4hxQf9mRyHIGnHOg=",
         "owner": "ryantm",
         "repo": "agenix",
-        "rev": "ddb81b8bdafa83a7aa210fc98ead4c78e7a70912",
+        "rev": "a704a85cbdceb5b6da2c29767dd7a1f446fde7a6",
         "type": "github"
       },
       "original": {
@@ -23,11 +23,11 @@
     },
     "emacs-overlay": {
       "locked": {
-        "lastModified": 1613219364,
-        "narHash": "sha256-Olz+Ul998pGYcwkLKnRyMz1OINqIE7Skc44t5wnuKx8=",
+        "lastModified": 1613305581,
+        "narHash": "sha256-zDKTD5q5Cka203tdbkdbJMZSIGPmsnH3pBxMJ55ebTU=",
         "owner": "nix-community",
         "repo": "emacs-overlay",
-        "rev": "372abc54ca3ec9c61b1fa3119ceb22c249f3714c",
+        "rev": "7868ad9dadc16ac8a46a294fab0e42bb2e208a83",
         "type": "github"
       },
       "original": {
@@ -89,11 +89,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1612369752,
-        "narHash": "sha256-JtncDAt+qqUvdaIEpXmLXveu/AeXOPOYGDbpPoG2zgA=",
+        "lastModified": 1613226215,
+        "narHash": "sha256-3rA5cGIrBHD6yeKhNhsF7/t461ww25oJY8KyBb0IhjU=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "7cbec40a09533dd9c525d6ab94dddfe77768101a",
+        "rev": "ff96a0fa5635770390b184ae74debea75c3fd534",
         "type": "github"
       },
       "original": {
@@ -104,11 +104,11 @@
     },
     "nixpkgs-unstable": {
       "locked": {
-        "lastModified": 1613226215,
-        "narHash": "sha256-3rA5cGIrBHD6yeKhNhsF7/t461ww25oJY8KyBb0IhjU=",
+        "lastModified": 1613348454,
+        "narHash": "sha256-mtqhUX00CWw1/ngpwjGb+cvuDRVMDJm4pUG0+ZahMRQ=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "ff96a0fa5635770390b184ae74debea75c3fd534",
+        "rev": "328eff7545bfd86447c2f2ad4bdd2c2f1d2c7758",
         "type": "github"
       },
       "original": {
@@ -124,7 +124,6 @@
         "home-manager": "home-manager",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
-        "nixpkgs-stable": "nixpkgs-stable",
         "nixpkgs-unstable": "nixpkgs-unstable"
       }
     }
