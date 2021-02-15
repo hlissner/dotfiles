@@ -11,14 +11,10 @@
 	autosquash = true
 [push]
 	default = current
+[pull]
+	rebase = true
 [alias]
-	amend = commit --amend
-	exec = "!exec "
-	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
-	ls = ls-files
-	orphan = checkout --orphan
 	unadd = reset HEAD
-	undo-commit = reset --soft "HEAD^"
 	# data analysis
 	ranked-authors = !git authors | sort | uniq -c | sort -n
 	emails = !git log --format="%aE" | sort -u
