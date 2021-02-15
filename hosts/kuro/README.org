@@ -41,9 +41,9 @@ mkfs.ext4 -L vm2 /dev/sdb1
 
 ** Set up backup file system
 #+BEGIN_SRC sh
-parted /dev/sda -- mklabel gpt
-parted /dev/sda -- mkpart primary ext4 0% 100%
-mkfs.ext4 -L store /dev/sda
+parted /dev/sdc -- mklabel gpt
+parted /dev/sdc -- mkpart primary ext4 0% 100%
+mkfs.ext4 -L store /dev/sdc
 #+END_SRC
 
 ** +Set up backup file system+
@@ -72,13 +72,14 @@ zfs create -o mountpoint=legacy -o recordsize=128K usr/local
 #+BEGIN_SRC sh
 mount /dev/nvme0n1p2 /mnt
 
-mkdir -p /mnt/{home,boot,usr/{backup,media,share,vm}}
+mkdir -p /mnt/{home,boot,usr/store}
 mount /dev/nvme0n1p1 /mnt/boot
 mount /dev/nvme0n1p3 /mnt/home
-mount -t zfs {usr,/mnt/usr}/backup
-mount -t zfs {usr,/mnt/usr}/media
-mount -t zfs {usr,/mnt/usr}/share
-mount -t zfs {usr,/mnt/usr}/local
+# mount -t zfs {usr,/mnt/usr}/backup
+# mount -t zfs {usr,/mnt/usr}/media
+# mount -t zfs {usr,/mnt/usr}/share
+# mount -t zfs {usr,/mnt/usr}/local
 mount /dev/sda1 /usr/vm/windows
 mount /dev/sdb1 /usr/vm/macos
+mount /dev/sdc2 /usr/store
 #+END_SRC
