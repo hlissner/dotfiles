@@ -44,15 +44,15 @@
 
 And I say, `bin/hey`. [What's going on?](http://hemansings.com/)
 
-| Command           | Description                                                     |
-|-------------------|-----------------------------------------------------------------|
-| `hey rebuild`     | Rebuild this flake (shortcut: `hey re`)                         |
-| `hey upgrade`     | Update flake lockfile and switch to it (shortcut: `hey up`)     |
-| `hey rollback`    | Roll back to previous system generation                         |
-| `hey gc`          | Runs `nix-collect-garbage -d`. Use sudo to clean system profile |
-| `hey push REMOTE` | Deploy these dotfiles to REMOTE (over ssh)                      |
-| `hey check`       | Run tests and checks for this flake                             |
-| `hey show`        | Show flake outputs of this repo                                 |
+| Command                    | Description                                                                |
+|----------------------------|----------------------------------------------------------------------------|
+| `hey check`                | Run tests and checks for this flake                                        |
+| `hey gc`                   | Runs `nix-collect-garbage -d`. Use `--all` to clean up system profile too. |
+| `hey rebuild`              | Rebuild this flake (shortcut: `hey re`)                                    |
+| `hey rollback`             | Roll back to previous system generation                                    |
+| `hey show`                 | Show flake outputs of this repo                                            |
+| `hey ssh REMOTE [COMMAND]` | Run a `bin/hey` command on REMOTE over ssh                                 |
+| `hey upgrade`              | Update flake lockfile and switch to it (shortcut: `hey up`)                |
 
 ## Frequently asked questions
 
