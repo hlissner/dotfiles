@@ -60,11 +60,12 @@ module Hey
     raise ArgumentError unless args.kind_of?(Array)
     args.unshift('sudo') if sudo
     if @@opts[:dryrun]
-      print args.compact
+      print "#{args.compact}\n"
       return true
     else
       result = system "#{args.compact.shelljoin} 2>&1"
-      noerror ? result : exit($?.exitstatus)
+      exit($?.exitstatus) unless noerror or result
+      return result
     end
   end
   def self.rebuild(*args, sudo: false, host: nil)
@@ -217,12 +218,12 @@ module Hey
     opts "-a", "--all",         "GC both the user and system profiles"
     opts "-s", "--system",      "Only GC the system profile"
     lambda do |_args|
-      if @@opts[:all] or not @@opts[:root]
+      if @@opts[:all] or not @@opts[:system]
         puts "Cleaning up your user profile..."
         sh %w{nix-collect-garbage -d}
       end
       if @@opts[:all] or @@opts[:system]
-        puts "Cleaning up your system..."
+        puts "Cleaning up your system profile..."
         sh %w{nix-collect-garbage -d}, sudo: true
         sh %w{nix-store --optimise}, sudo: true
         # Clear out left-over secrets. The switch-to-configuration call below will
