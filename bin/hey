@@ -215,8 +215,8 @@ module Hey
 
   defcmd :gc do
     desc "Garbage collect & optimize nix store"
-    opts "-a", "--all",         "GC both the user and system profiles"
-    opts "-s", "--system",      "Only GC the system profile"
+    opts "-a", "--all",    "GC both the user and system profiles"
+    opts "-s", "--system", "Only GC the system profile"
     lambda do |_args|
       if @@opts[:all] or not @@opts[:system]
         puts "Cleaning up your user profile..."
