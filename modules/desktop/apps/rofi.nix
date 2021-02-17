@@ -34,10 +34,16 @@ in {
 
       # Fake rofi dmenu entries
       (makeDesktopItem {
-        name = "rofi-bookmarkmenu";
+        name = "rofi-browsermenu";
         desktopName = "Open Bookmark in Browser";
         icon = "bookmark-new-symbolic";
-        exec = "${binDir}/rofi/bookmarkmenu";
+        exec = "${binDir}/rofi/browsermenu";
+      })
+      (makeDesktopItem {
+        name = "rofi-browsermenu-history";
+        desktopName = "Open Browser History";
+        icon = "accessories-clock";
+        exec = "${binDir}/rofi/browsermenu history";
       })
       (makeDesktopItem {
         name = "rofi-filemenu";

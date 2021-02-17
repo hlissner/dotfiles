@@ -1,0 +1,137 @@
+#!/usr/bin/env cached-nix-shell
+#! nix-shell -p ruby rubyPackages.sqlite3 -i "ruby -S" --quiet
+
+# Interactively select (in skim) an url from Firefox/Chrome/Chromium history to
+# open in your browser (depends on $BROWSER). Should work on Linux and MacOS.
+
+require 'shellwords'
+require 'sqlite3'
+require 'json'
+require 'fileutils'
+require 'cgi'
+
+def rofi items, *args
+  cmd = [*%w{rofi -dmenu -theme theme/bookmarkmenu.rasi -columns 1 -markup-rows -multi-select -p browser -i}, *args]
+  IO.popen(cmd.compact.shelljoin, "r+") do |pipe|
+    pipe.puts items.keys.join "\n"
+    pipe.close_write
+    (pipe.gets || "").split "\n"
+  end
+end
+
+def db file, command
+  copy = "/tmp/browsermenu-db-#{File.basename(file)}"
+  begin
+    # Copy the sqlite database because history/bookmark info is usually small
+    # and may be locked by an open browser.
+    unless File.exists? copy
+      FileUtils.cp file, copy
+      FileUtils.chmod 0400, copy, verbose: true
+    end
+    results = []
+    db = SQLite3::Database.open copy
+    db.execute(command).each { |r| results.push r }
+    results
+  ensure
+    File.delete copy
+  end
+end
+
+def walk_json children
+  result = []
+  for c in children
+    if c['children']
+      result += walk_json c['children']
+    else
+      result.push [ c['name'], c['url'] ]
+    end
+  end
+  result
+end
+
+def get_bookmarks browser
+  bookmarks = []
+  case browser
+  when :firefox
+    # In my nixos dotfiles I hardcode the default profile to $USER.profile,
+    # which makes this lookup easier, but means this script won't work on any
+    # other system.
+    user = ENV['USER']
+    ["#{ENV['HOME']}/.mozilla/firefox/#{user}.default",
+     "#{ENV['XDG_CONFIG_HOME']}/firefox/.mozilla/firefox/#{user}.default",
+     "#{ENV['XDG_DATA_HOME']}/mozilla/firefox/#{user}.default"].each do |dir|
+      if Dir.exists? dir
+        db "#{dir}/places.sqlite",
+           ["SELECT DISTINCT mb.title, mp.url FROM moz_bookmarks mb",
+            "INNER JOIN moz_places mp ON mp.id = mb.fk",
+            "WHERE mb.type = 1 AND mb.title IS NOT NULL",
+            "ORDER BY mp.frecency DESC",
+            "LIMIT 200"].join(' ')
+      end
+    end
+  when :brave
+    f = File.read "#{ENV['XDG_CONFIG_HOME']}/BraveSoftware/Brave-Browser/Default/Bookmarks"
+    data = JSON.parse f
+    walk_json data["roots"]["bookmark_bar"]["children"]
+  when :qutebrowser
+    bookmarks = File.readlines "#{ENV['XDG_CONFIG_HOME']}/qutebrowser/bookmarks/urls"
+    bookmarks.map { |s| s.strip.split(' ', 2).reverse }
+  end
+end
+
+def get_history browser
+  case browser
+  when :firefox
+    # In my nixos dotfiles I hardcode the default profile to $USER.profile,
+    # which makes this lookup easier, but means this script won't work on any
+    # other system.
+    user = ENV['USER']
+    ["#{ENV['HOME']}/.mozilla/firefox/#{user}.default",
+     "#{ENV['XDG_CONFIG_HOME']}/firefox/.mozilla/firefox/#{user}.default",
+     "#{ENV['XDG_DATA_HOME']}/mozilla/firefox/#{user}.default"].each do |dir|
+      if Dir.exists? dir
+        return db "#{dir}/places.sqlite",
+                  ["SELECT title, url",
+                   "FROM moz_places",
+                   "WHERE title<>''",
+                   "ORDER BY last_visit_date DESC"].join(' ')
+      end
+    end
+    return []
+  when :brave
+    db "#{ENV['XDG_CONFIG_HOME']}/BraveSoftware/Brave-Browser/Default/History",
+       "SELECT title, url FROM urls GROUP BY url ORDER BY last_visit_time DESC LIMIT 200"
+  when :qutebrowser
+    db "#{ENV['XDG_DATA_HOME']}/qutebrowser/history.sqlite",
+       ["SELECT title, url FROM History",
+        "WHERE title != ''",
+        "GROUP BY url",
+        "ORDER BY atime DESC"].join(' ')
+  end
+end
+
+def list urls
+  items = urls.map do |x|
+    x.map! { |x| CGI.escapeHTML x }
+    [x[0].empty? ?
+       "<b>#{x[1]}</b>" :
+       "<b>#{x[0]}</b> <span size=\"x-small\">#{x[1]}</span>",
+     x[1]]
+  end.to_h
+  selected = rofi items
+  selected.map { |key| items[key] }
+end
+
+type, browser = *ARGV
+browser = (browser || ENV['BROWSER']).to_sym
+urls = if type == 'history'
+  get_history browser
+else
+  get_bookmarks browser
+end
+urls = list urls
+if urls.empty?
+  puts "No URL selected. Aborting..."
+  exit 1
+end
+Process.detach fork { exec ENV['BROWSER'], *urls }
