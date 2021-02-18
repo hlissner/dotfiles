@@ -8,19 +8,7 @@
 *.swp
 .*.sw[a-z]
 *.un~
-Session.vim
 .netrwhist
-
-# Ignore tags (from etags and ctags)
-TAGS
-!TAGS/
-tags
-!tags/
-
-# Logs and databases #
-######################
-*.log
-*.cache
 
 # OS generated files #
 ######################
@@ -30,32 +18,19 @@ tags
 .Trash
 .Xauthority
 thumbs.db
-Icon?
 Thumbs.db
-.cache
-.pid
-.sock
+Icon?
 
 # Code stuffs #
 ###############
-.svn
-.git
-.swp
-.idea
-.*.swp
-*~
-.tags
-tags
-.sass-cache
-tmp
-.codekit-cache
-config.codekit
+.ccls-cache/
+.sass-cache/
+__pycache__/
 
 # Compiled thangs #
 ###################
 *.class
 *.exe
 *.o
-*.so
-*.dll
 *.pyc
+*.elc
