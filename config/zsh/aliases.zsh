@@ -24,10 +24,9 @@ alias reboot='sudo reboot'
 # A rsync that respects gitignore
 rcp() {
   rsync -azP --delete --delete-after \
-    --delete-excluded \
+    --include=.git/ \
     --filter=':- .gitignore' \
-    --exclude-from="$XDG_CONFIG_HOME/git/ignore" \
-    --include=.git \
+    --filter=":- $XDG_CONFIG_HOME/git/ignore" \
     "$@"
 }; compdef rcp=rsync
 rcpd() { rcp "$1/" "$2" }
