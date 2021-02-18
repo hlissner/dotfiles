@@ -1,8 +1,8 @@
 #!/usr/bin/env cached-nix-shell
 #! nix-shell -p ruby rubyPackages.sqlite3 -i "ruby -S" --quiet
 
-# Interactively select (in skim) an url from Firefox/Chrome/Chromium history to
-# open in your browser (depends on $BROWSER). Should work on Linux and MacOS.
+# Open your browser bookmarks or history in your default browser. Currently
+# works with Firefox, Brave, and qutebrowser.
 
 require 'shellwords'
 require 'sqlite3'
