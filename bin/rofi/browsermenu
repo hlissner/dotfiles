@@ -1,5 +1,5 @@
 #!/usr/bin/env cached-nix-shell
-#! nix-shell -p ruby rubyPackages.sqlite3 -i "ruby -S" --quiet
+#! nix-shell -p ruby_2_7 rubyPackages_2_7.sqlite3 -i "ruby -S" --quiet
 
 # Open your browser bookmarks or history in your default browser. Currently
 # works with Firefox, Brave, and qutebrowser.

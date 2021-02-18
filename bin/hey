@@ -1,5 +1,5 @@
 #!/usr/bin/env cached-nix-shell
-#! nix-shell -p ruby -i "ruby -S" --quiet
+#! nix-shell -p ruby_2_7 -i "ruby -S" --quiet
 
 DESC = <<~DESC
   Nix's CLI has a poor user story, in my opinion. It could be better; Guix is a
