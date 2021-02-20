@@ -1,5 +1,4 @@
 /* -*- mode: css; -*- */
-
 @import "config.rasi"
 
 listview {

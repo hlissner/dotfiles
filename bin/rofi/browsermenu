@@ -11,7 +11,7 @@ require 'fileutils'
 require 'cgi'
 
 def rofi items, *args
-  cmd = [*%w{rofi -dmenu -theme theme/bookmarkmenu.rasi -columns 1 -markup-rows -multi-select -p browser -i}, *args]
+  cmd = [*%w{rofi -dmenu -theme theme/bookmarkmenu.rasi -markup-rows -multi-select -p browser -i}, *args]
   IO.popen(cmd.compact.shelljoin, "r+") do |pipe|
     pipe.puts items.keys.join "\n"
     pipe.close_write
