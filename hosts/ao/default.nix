@@ -28,7 +28,6 @@ with lib.my;
     theme.active = "alucard";
   };
 
-
   ## Local config
   networking.networkmanager.enable = true;
 
