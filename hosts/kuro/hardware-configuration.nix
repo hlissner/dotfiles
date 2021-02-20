@@ -75,12 +75,18 @@
     "/usr/drive" = {
       device = "kiiro:/volume1/homes/hlissner/Drive";
       fsType = "nfs";
-      options = [ "nofail" "noauto" "x-systemd.automount" "x-systemd.idle-timeout=5min" ];
+      options = [
+        "nofail" "noauto" "noatime" "x-systemd.automount" "x-systemd.idle-timeout=5min"
+        "nodev" "nosuid" "noexec"
+      ];
     };
     "/usr/store" = {
       device = "/dev/disk/by-label/store";
       fsType = "ext4";
-      options = [ "noauto" "noatime" "x-systemd.automount" "x-systemd.idle-timeout=5min" ];
+      options = [
+        "noauto" "noatime" "x-systemd.automount" "x-systemd.idle-timeout=5min"
+        "nodev" "nosuid" "noexec"
+      ];
     };
   };
   swapDevices = [];
