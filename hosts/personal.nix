@@ -26,7 +26,12 @@ with lib;
     longitude = 12.5;
   } else {});
 
-  ##
+
+  # Refuse ICMP echo requests on my desktop/laptop; nobody has any business
+  # pinging them, unlike my servers.
+  boot.kernel.sysctl."net.ipv4.icmp_echo_ignore_broadcasts" = 1;
+
+  # So thw bitwarden CLI knows where to find my server.
   modules.shell.bitwarden.config.server = "p.v0.io";
 
   services.syncthing.declarative = {

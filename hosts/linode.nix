@@ -53,6 +53,7 @@ with lib;
 {
   imports = [
     "${modulesPath}/profiles/qemu-guest.nix"
+    ./server.nix
   ];
 
   environment.systemPackages =

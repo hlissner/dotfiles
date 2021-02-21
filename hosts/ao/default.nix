@@ -5,6 +5,7 @@
 with lib.my;
 {
   imports = [
+    ../server.nix
     ../personal.nix
     ./hardware-configuration.nix
 

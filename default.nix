@@ -45,12 +45,13 @@ with lib.my;
   fileSystems."/".device = mkDefault "/dev/disk/by-label/nixos";
 
   # Use the latest kernel
-  boot.kernelPackages = mkDefault pkgs.linuxPackages_5_10;
-
-  boot.loader = {
-    efi.canTouchEfiVariables = mkDefault true;
-    systemd-boot.configurationLimit = 10;
-    systemd-boot.enable = mkDefault true;
+  boot = {
+    kernelPackages = mkDefault pkgs.linuxPackages_5_10;
+    loader = {
+      efi.canTouchEfiVariables = mkDefault true;
+      systemd-boot.configurationLimit = 10;
+      systemd-boot.enable = mkDefault true;
+    };
   };
 
   # Just the bear necessities...
