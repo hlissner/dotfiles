@@ -351,10 +351,10 @@ module Hey
                        .map { |c| "  %-18s %s\n" % ["#{c.name} #{@@alias.key(c.name)}",
                                                    c.desc[0]]})
       opt.separator "\nOptions:"
-      opt.on('-d', '--dryrun',    "Don't change anything; preform dry run")
-      opt.on('-D', '--debug',     "Show trace on nix errors")
-      opt.on('-f', '--flake URI', "Change target flake to URI")
-      opt.on('-h', '--help',      "Display this help, or help for a specific command")
+      opt.on '-d', '--dryrun',    "Don't change anything; preform dry run"
+      opt.on '-D', '--debug',     "Show trace on nix errors"
+      opt.on '-f', '--flake URI', "Change target flake to URI"
+      opt.on '-h', '--help',      "Display this help, or help for a specific command"
       opt.on(*%w{-i -A -q -e -p}, "Forward to nix-env") { sh ["nix-env", *ARGV]; exit }
     end
     opts.order!(args, into: @@opts)
