@@ -33,7 +33,7 @@ with lib.my;
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       ];
       registry = registryInputs // { dotfiles.flake = inputs.self; };
-      useSandbox = true;
+      autoOptimiseStore = true;
     };
   system.configurationRevision = with inputs; mkIf (self ? rev) self.rev;
   system.stateVersion = "21.05";
