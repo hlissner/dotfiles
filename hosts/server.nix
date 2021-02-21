@@ -1,7 +1,18 @@
+# hosts/server.nix
+#
+# Only to be used for headless servers, at home or abroad, with more
+# security/automation-minded configuration.
+
 { config, lib, pkgs, ... }:
 
 {
   boot.kernelPackages = pkgs.linuxPackages_latest_hardened;
+
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 30d";
+  };
 
   systemd = {
     services.clear-log = {
