@@ -6,7 +6,7 @@ with lib.my;
 {
   imports = [
     ../server.nix
-    ../personal.nix
+    ../home.nix
     ./hardware-configuration.nix
 
     ./modules/gitea.nix
