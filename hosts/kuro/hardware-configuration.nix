@@ -10,9 +10,8 @@
     kernelModules = [ "kvm-amd" ];
     kernelParams = [
       # HACK Disables fixes for spectre, meltdown, L1TF and a number of CPU
-      #      vulnerabilities. This is not a good idea for mission critical or
-      #      server/headless builds, but on my lonely home system I prioritize
-      #      raw performance over security.  The gains are minor.
+      #      vulnerabilities. Don't copy this blindly! And especially not for
+      #      mission critical or server/headless builds exposed to the world.
       "mitigations=off"
     ];
   };
