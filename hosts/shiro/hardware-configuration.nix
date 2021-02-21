@@ -62,7 +62,7 @@
       device = "kiiro:/volume1/homes/hlissner/Drive";
       fsType = "nfs";
       options = [
-        "nofail" "noauto" "noatime" "x-systemd.automount"
+        "nofail" "noauto" "noatime" "x-systemd.automount" "x-systemd.idle-timeout=5min"
         "nodev" "nosuid" "noexec"
       ];
     };
