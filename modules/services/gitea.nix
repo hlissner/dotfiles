@@ -44,6 +44,12 @@ in {
         database.LOG_SQL = false;
         service.ENABLE_BASIC_AUTHENTICATION = false;
       };
+
+      dump = {
+        enable = true;
+        interval = "daily";
+        backupDir = "/run/backups/gitea";
+      };
     };
 
     services.fail2ban.jails.gitea = ''
@@ -52,12 +58,5 @@ in {
       banaction = %(banaction_allports)s
       maxretry = 5
     '';
-
-    modules.backup.targets.gitea = {
-      baseDir = config.users.users.git.home;
-      owner = "git";
-      targets = [ "repositories" "data" ];
-      suspendServices = [ "gitea" ];
-    };
   };
 }

@@ -9,7 +9,10 @@ in {
   };
 
   config = mkIf cfg.enable {
-    services.bitwarden_rs.enable = true;
+    services.bitwarden_rs = {
+      enable = true;
+      backupDir = "/run/backups/bitwarden_rs";
+    };
 
     user.extraGroups = [ "bitwarden_rs" ];
 
@@ -19,12 +22,5 @@ in {
       port = 80,443,8002
       maxretry = 5
     '';
-
-    modules.backup.targets.bitwarden = {
-      baseDir = "/var/lib/bitwarden_rs";
-      owner = "bitwarden_rs";
-      targets = [ "*" ];
-      suspendServices = [ "bitwarden_rs" ];
-    };
   };
 }
