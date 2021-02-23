@@ -37,8 +37,11 @@ super + space
 super + Tab
 	$DOTFILES/bin/rofi/windowmenu
 
-super + backslash
-	$DOTFILES/bin/rofi/passmenu
+super + p
+	$DOTFILES/bin/rofi/bwmenu
+
+super + shift + p
+	$DOTFILES/bin/rofi/bwmenu -r
 
 super + slash
 	$DOTFILES/bin/rofi/filemenu -x

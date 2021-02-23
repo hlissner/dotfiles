@@ -1,0 +1,257 @@
+#!/usr/bin/env cached-nix-shell
+#! nix-shell -p ruby_2_7 -i "ruby -S"
+
+# A rofi client for bitwarden. Similar to passmenu, but uses rofi. (Badly)
+# written in ruby because data persistence and frontend logic would be a pain to
+# write in bash or zsh. I'll refactor this later perhaps. Maybe.
+
+require 'shellwords'
+require 'json'
+require 'optparse'
+require 'uri'
+require 'base64'
+require 'fileutils'
+
+PersistentData = Struct.new(:path, :ttl, :pid, :data) do
+  DATADIR = "#{ENV['XDG_DATA_HOME']}/bwmenu"
+
+  def self.load name, ttl: nil
+    path = "#{DATADIR}/#{name}"
+    data = JSON::load(Base64.decode64(File.read(path))) if File.exists?(path)
+    d = PersistentData.new *(data || {}).values
+    d.path = path
+    d.ttl  = ttl
+    d
+  end
+
+  def expire
+    File.delete(self.path) if File.exists?(self.path)
+  end
+
+  def save data = nil, onfinish = nil
+    self.data = data if data
+    FileUtils.mkdir_p DATADIR unless File.directory?(DATADIR)
+    File.open(self.path, 'w') do |f|
+      f.chmod 0600
+      f.write Base64.encode64(self.to_h.to_json)
+    end
+    if self.pid and system("ps -f p #{self.pid}")
+      Process.kill self.pid
+    end
+    if self.ttl
+      self.pid = fork do
+        Signal.trap('TERM') { throw :terminate }
+        catch :terminate do
+          sleep self.ttl
+        end
+        onfinish.call(self, data) if onfinish.respond_to? :call
+        self.expire
+      end
+    end
+  end
+end
+
+module BW
+  extend self
+
+  EXE = {}
+  def self.bin exe
+    EXE[exe] = `which #{exe} 2>/dev/null`.rstrip unless EXE[exe]
+    raise "Couldn't find #{exe} in PATH" if EXE[exe].empty?
+    EXE[exe]
+  end
+
+  def self.sh *args, input: nil, sudo: false, nooutput: false
+    exe, *args = args.flatten.compact.map(&:to_s)
+    bin exe
+    cmd = [sudo ? "sudo" : nil, exe, *args.shelljoin].compact.join(' ')
+    $stderr.puts "$ #{cmd}"
+    if input
+      IO.popen(cmd, "r+") do |pipe|
+        pipe.puts input
+        pipe.close_write
+        (pipe.gets || "").rstrip unless nooutput
+      end
+    else
+      (`#{cmd}` || "").rstrip
+    end
+  end
+
+  def self.rofi items, *args
+    input = items.keys.join("\n") if items
+    result = sh(['rofi', '-dmenu', '-markup-rows',
+                 '-theme', 'theme/passmenu.rasi',
+                 *args],
+                input: input)
+    if items
+      items[result]
+    else
+      result
+    end
+  end
+
+  def self.notify message, title: nil, urgency: "normal"
+    sh 'notify-send', '-u', urgency, '-a', "Bitwarden", *[title, message].compact
+  end
+
+  def self.error message
+    $stderr.puts message
+    notify message, urgency: 'low'
+    exit 1
+  end
+
+  def self.bw *args
+    sh [:bw, '--session', @@session_id, *args]
+  end
+
+  def self.xclip *args, **opts
+    sh :xclip, '-selection', 'clipboard', *args, **opts
+  end
+
+  @@session = nil
+  @@session_id = nil
+  def self.run argv
+    opts = {}
+    OptionParser.new do |opt|
+      opt.banner = "Usage: bwmenu [options] [URL]"
+      opt.on       '--autolock TTL',   "How long to keep the vault open"
+      opt.on       '--autoclear TTL'   "How long to keep secrets in the clipboard"
+      opt.on       '--debug',          "Be more verbose"
+      opt.on '-f', '--field FIELD',    "Extract specific field from selected entry; accepts 'whole' for whole entry"
+      opt.on '-o', '--output',         "Write output to stdout rather than the clipboard"
+      opt.on       '--select',         "Select first entry"
+      opt.on       '--select-if-only', "Select first entry if only entry"
+      opt.on       '--default ID',     "Highlight item with ID by default"
+      opt.on '-r',                     "Resume where you last left off"
+    end.parse! argv, into: opts
+
+    clipboard_ttl = opts[:autoclear] || 20
+    vault_ttl     = opts[:autolock]  || 900
+
+    @@session = PersistentData.load :session, ttl: vault_ttl
+    if @@session.data
+      sid, data = @@session.data
+    else
+      pass = rofi nil, %w{-p Master\ Password -password -lines 0}
+      error "No password given. Aborting..." if pass.empty?
+      sid  = sh [:bw, :unlock, '--raw', pass]
+      error "Failed to unlock vault. Aborting..." unless $?.success?
+      @@session_id = sid
+      data = JSON.parse(bw(:list, :items))
+      @@session.save [sid, data]
+    end
+
+    last = PersistentData.load :last_id
+    last_id, last_field = last.data if last
+    if opts[:r] and last_id.data
+      selected = data.find { |u| u['id'] == last_id }
+    else
+      select_type = opts[:"select-if-only"] ? :if_only : opts[:select]
+      selected = list_items data, argv.first,
+                            default: opts[:default],
+                            select:  select_type
+    end
+
+    begin
+      error "Nothing selected. Aborting..." if selected.empty?
+      last_id = selected['id']
+      item = show_item selected, field: opts[:field]
+      if not item
+        error "Nothing selected. Aborting..." if selected.empty?
+      elsif item.respond_to? :call
+        item.call
+      elsif opts[:output]
+        puts item.rstrip
+      else
+        notify "Copied to clipboard for #{clipboard_ttl} seconds"
+        xclip '-in', input: item.rstrip, nooutput: true
+        clipboard = PersistentData.load :clipboard, ttl: clipboard_ttl
+        clipboard.save(
+          item.rstrip,
+          lambda { |_, data| xclip('-in', '/dev/null') if item.rstrip == xclip('-out') }
+        )
+      end
+    ensure
+      last.save [ last_id, last_field ]
+    end
+  end
+
+  #
+  def list_items data, query = nil, default: nil, select: false
+    rofiData = {}
+    rofiData["Sync Vault"]            = lambda { notify "Sync vault", bw(:sync) },
+    rofiData["Open Vault in Browser"] = lambda { sh ENV['BROWSER'], bw(:config, :server) }
+    data = data.map do |i|
+      default_id = i['id'] if i['id'] == default
+      icon = ["", "", "", ""][i['type'] - 1]
+      case i['type']
+      when 1  # logins
+        urls = (i['login']['uris'] || []).filter_map do |u|
+          return unless u['uri']
+          uri = URI(u['uri'])
+          not i['name'].include?((uri.hostname || uri.path).downcase) and
+            uri.hostname || uri.path
+        end
+        subtitle = urls.join ", " if i['type'] == 1
+        subtitle = " <span size=\"x-small\">(#{subtitle})</span>" unless urls.empty?
+      when 2  # secure notes
+      when 3  # cards
+        subtitle = " <span size=\"x-small\">(#{i['card']['brand'].downcase})</span>"
+      when 4  # identities
+      end
+      ["<span font_desc=\"Fira Code\" font_weight=\"bold\">#{icon} </span> <b>#{i['name']}</b>#{subtitle}", i]
+    end
+    case select
+    when :if_only
+      return data[0][1] if data.length == 1
+    when true
+      return data[0][1]
+    end
+    rofi rofiData.merge(data.to_h), '-p', 'Bitwarden', '-filter', (query || "")
+  end
+
+  def show_item item, field: nil
+    preamble = {}
+    data = {}
+    case item['type']
+    when 1  # logins
+      url = item['login']['uris'][0]['uri']
+      preamble[" Launch #{url}"] = lambda { sh ENV['BROWSER'], url }
+      data['Username'] = item['login']['username']
+      data['Password'] = item['login']['password']
+      data['TOTP'] = bw :get, :totp, item['id'] if item['totp']
+      return (data[field.capitalize] || item[field]) if field
+    when 2  # secure notes
+      data['Notes'] = item['notes']
+      return item[field] if field
+    when 3  # cards
+      cardInfo = item['card']
+      data['Card Type']     = cardInfo['brand']
+      data['Card Name']     = cardInfo['cardholderName']
+      data['Card Number']   = cardInfo['number']
+      data['Expiry Date']   = "#{cardInfo['expMonth']}/#{cardInfo['expYear']}"
+      data['Security Code'] = cardInfo['code']
+      return cardInfo[field] if field
+    when 4  # identities
+      item['identity'].each { |k,v| data[k] = v if v }
+      return item['identity'][field] if field
+    end
+    (item['fields'] || []).each do |field|
+      data[field['name']] = field['value']
+    end
+    maxLength = data.keys.map(&:length).max + 5
+    rofiData = {}
+    preamble.merge(data).each do |label, value|
+      if value.kind_of? String
+        valueLabel = value
+        valueLabel = value.gsub /./, '*' if label == 'Password'
+        rofiData["<span font_desc=\"Fira Code\" font_weight=\"bold\">%-#{maxLength}s</span> %s" % [label, valueLabel]] = value
+      else
+        rofiData[label] = value
+      end
+    end
+    rofi rofiData, '-p', item['name']
+  end
+end
+
+BW.run ARGV.dup
