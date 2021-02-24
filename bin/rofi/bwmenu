@@ -211,6 +211,7 @@ module BW
   end
 
   def show_item item, field: nil
+    return item.to_json if field == 'whole'
     preamble = {}
     data = {}
     case item['type']
