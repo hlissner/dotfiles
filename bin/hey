@@ -27,7 +27,7 @@ module Hey
   extend self
   Command = Struct.new(:name, :desc, :args, :opts, :fn)
 
-  @@opts = { flake: File.expand_path('../', File.dirname(__FILE__)) }
+  @@opts = {}
   @@alias = {}
   @@commands = {}
   @@cli = nil
@@ -358,6 +358,12 @@ module Hey
       opt.on(*%w{-i -A -q -e -p}, "Forward to nix-env") { sh ["nix-env", *ARGV]; exit }
     end
     opts.order!(args, into: @@opts)
+    if @@opts[:flake] and @@opts[:flake].include? "#"
+      @@opts[:flake], @@opts[:host] = @@opts[:flake].split '#'
+    end
+    if not @@opts[:flake] or @@opts[:flake].empty?
+      @@opts[:flake] = File.expand_path('../', File.dirname(__FILE__))
+    end
 
     begin
       args.unshift("help") if @@opts[:help]
