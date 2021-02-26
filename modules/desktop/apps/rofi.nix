@@ -37,32 +37,32 @@ in {
         name = "rofi-browsermenu";
         desktopName = "Open Bookmark in Browser";
         icon = "bookmark-new-symbolic";
-        exec = "${binDir}/rofi/browsermenu";
+        exec = "$DOTFILES_BIN/rofi/browsermenu";
       })
       (makeDesktopItem {
         name = "rofi-browsermenu-history";
         desktopName = "Open Browser History";
         icon = "accessories-clock";
-        exec = "${binDir}/rofi/browsermenu history";
+        exec = "$DOTFILES_BIN/rofi/browsermenu history";
       })
       (makeDesktopItem {
         name = "rofi-filemenu";
         desktopName = "Open Directory in Terminal";
         icon = "folder";
-        exec = "${binDir}/rofi/filemenu";
+        exec = "$DOTFILES_BIN/rofi/filemenu";
       })
       (makeDesktopItem {
         name = "rofi-filemenu-scratch";
         desktopName = "Open Directory in Scratch Terminal";
         icon = "folder";
-        exec = "${binDir}/rofi/filemenu -x";
+        exec = "$DOTFILES_BIN/rofi/filemenu -x";
       })
 
       (makeDesktopItem {
         name = "lock-display";
         desktopName = "Lock screen";
         icon = "system-lock-screen";
-        exec = "${binDir}/zzz";
+        exec = "$DOTFILES_BIN/zzz";
       })
     ];
   };

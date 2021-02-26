@@ -11,7 +11,11 @@ with lib.my;
 
   # Common config for all nixos machines; and to ensure the flake operates
   # soundly
-  environment.variables.DOTFILES = dotFilesDir;
+  environment.variables.DOTFILES = findFirst pathExists dotFilesDir [
+    "${config.user.home}/.config/dotfiles"
+    "/etc/dotfiles"
+  ];
+  environment.variables.DOTFILES_BIN = "$DOTFILES/bin";
 
   # Configure nix and nixpkgs
   environment.variables.NIXPKGS_ALLOW_UNFREE = "1";

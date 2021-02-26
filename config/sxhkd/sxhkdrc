@@ -32,19 +32,19 @@ super + e
     emacsclient --eval "(emacs-everywhere)"
 
 super + space
-	$DOTFILES/bin/rofi/appmenu
+	$DOTFILES_BIN/rofi/appmenu
 
 super + Tab
-	$DOTFILES/bin/rofi/windowmenu
+	$DOTFILES_BIN/rofi/windowmenu
 
 super + p
-	$DOTFILES/bin/rofi/bwmenu
+	$DOTFILES_BIN/rofi/bwmenu
 
 super + shift + p
-	$DOTFILES/bin/rofi/bwmenu -r
+	$DOTFILES_BIN/rofi/bwmenu -r
 
 super + slash
-	$DOTFILES/bin/rofi/filemenu -x
+	$DOTFILES_BIN/rofi/filemenu -x
 
 super + Escape
 	pkill -USR1 -x sxhkd
@@ -59,11 +59,10 @@ super + {_,ctrl + }f
 
 
 super + {_,ctrl +}{h,j,k,l}
-	$DOTFILES/bin/bspwm/focus {_,-m }{west,south,north,east}
+	$DOTFILES_BIN/bspwm/focus {_,-m }{west,south,north,east}
 
 super + shift + {_,ctrl +}{h,j,k,l}
-	$DOTFILES/bin/bspwm/swap {_,-m }{west,south,north,east}
-
+	$DOTFILES_BIN/bspwm/swap {_,-m }{west,south,north,east}
 
 ## Resize by preselection
 super + alt + {1-9}
