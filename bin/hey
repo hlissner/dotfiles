@@ -218,10 +218,6 @@ module Hey
     opts "-a", "--all",    "GC both the user and system profiles"
     opts "-s", "--system", "Only GC the system profile"
     lambda do |_args|
-      if @@opts[:all] or not @@opts[:system]
-        puts "Cleaning up your user profile..."
-        sh %w{nix-collect-garbage -d}
-      end
       if @@opts[:all] or @@opts[:system]
         puts "Cleaning up your system profile..."
         sh %w{nix-collect-garbage -d}, sudo: true
@@ -237,6 +233,10 @@ module Hey
         # reloading the current environment.
         sh %w{nix-env --delete-generations old --profile /nix/var/nix/profiles/system}, sudo: true
         sh %w{/nix/var/nix/profiles/system/bin/switch-to-configuration switch}, sudo: true
+      end
+      if @@opts[:all] or not @@opts[:system]
+        puts "Cleaning up your user profile..."
+        sh %w{nix-collect-garbage -d}
       end
     end
   end
