@@ -29,7 +29,7 @@ rcp() {
     --filter=":- $XDG_CONFIG_HOME/git/ignore" \
     "$@"
 }; compdef rcp=rsync
-rcpd() { rcp "$1/" "$2" }
+rcpu() { rcp --chmod=go= "$@" }
 
 alias y='xclip -selection clipboard -in'
 alias p='xclip -selection clipboard -out'
