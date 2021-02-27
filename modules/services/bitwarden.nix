@@ -22,5 +22,13 @@ in {
       port = 80,443,8002
       maxretry = 5
     '';
+
+    # HACK services.bitwarden_rs errors about permissions trying to create
+    #      backupDir in /run/backups, so we do it for it.
+    system.activationScripts.bitwardenCreateDirs = ''
+      DIR="${config.services.bitwarden_rs.backupDir}"
+      mkdir -m 750 -p "$DIR" || true
+      chown bitwarden_rs:bitwarden_rs "$DIR"
+    '';
   };
 }
