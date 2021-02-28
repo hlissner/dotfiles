@@ -1,11 +1,13 @@
-{ lib, stdenv, fetchzip, my, ... }:
+{ lib, stdenv, fetchFromGitHub, my, ... }:
 
 stdenv.mkDerivation {
   name = "adl";
 
-  src = fetchzip {
-    url = "https://github.com/RaitaroH/adl/archive/master.zip";
-    sha256 = "HtKSPD3g0y68A37N4HhOIorW4sPyOr4ei9wABFh4GYc=";
+  src = fetchFromGitHub {
+    owner = "RaitaroH";
+    repo = "adl";
+    rev = "7752e36f92cd6d6f00d4a7eccdde9cf141abb06e";
+    sha256 = "MmVPh8edSw/h+3uvYbYHQLX/66pY5Yk0v/OCL7RayBE=";
   };
 
   buildInputs = with my; [
