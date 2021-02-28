@@ -29,21 +29,37 @@ with lib;
   # So thw bitwarden CLI knows where to find my server.
   modules.shell.bitwarden.config.server = "p.v0.io";
 
-  services.syncthing.declarative = {
-    devices = {
-      kuro.id  = "4UJSUBN-V7LCISG-6ZE7SBN-YPXM5FQ-CE7CD2U-W4KZC7O-4HUZZSW-6DXAGQQ";
-      shiro.id = "G4DUO25-AMQQIWS-SRZE5TJ-43CCQZJ-5ULEZBS-P2LMZZU-V5JA5CS-6X7RLQK";
-      kiiro.id = "DPQT4XQ-Q4APAYJ-T7P4KMY-YBLDKLC-7AU5Y4S-VGT3DDT-TMZZEIX-GBA7DAM";
-    };
-    folders =
-      let mkShare = name: devices: type: path: rec {
-            inherit devices type path;
-            watch = false;
-            rescanInterval = 3600 * 4;
-            enabled = lib.elem config.networking.hostname devices;
-          };
-      in {
-        projects = mkShare "projects" [ "kuro" "shiro" ] "sendrecieve" "${config.user.home}/projects";
-      };
-  };
+
+  ## Not using syncthing atm
+  # services.syncthing.declarative = {
+  #   # Purge folders not declaratively configured!
+  #   overrideFolders = true;
+  #   overrideDevices = true;
+  #   devices = {
+  #     kuro.id  = "4UJSUBN-V7LCISG-6ZE7SBN-YPXM5FQ-CE7CD2U-W4KZC7O-4HUZZSW-6DXAGQQ";
+  #     shiro.id = "G4DUO25-AMQQIWS-SRZE5TJ-43CCQZJ-5ULEZBS-P2LMZZU-V5JA5CS-6X7RLQK";
+  #     kiiro.id = "3A6G2NR-WQMASWG-7EFUX6G-GJB6WYX-HYGDA7N-EYZYANY-NDRKI3W-32RQ4QG";
+  #   };
+  #   folders =
+  #     let mkShare = devices: type: paths: attrs: (rec {
+  #           inherit devices type;
+  #           path = if lib.isAttrs paths
+  #                  then paths."${config.networking.hostName}"
+  #                  else paths;
+  #           watch = false;
+  #           rescanInterval = 3600; # every hour
+  #           enable = lib.elem config.networking.hostName devices;
+  #         } // attrs);
+  #     in {
+  #       projects = mkShare [ "kuro" "shiro" ] "sendreceive" #         "${config.user.home}/projects"
+  #         { watch = true;
+  #           rescanInterval = 3600 * 4; }; # every 4 hours
+  #       serverBackup = mkShare [ "ao" "kiiro" ] "sendonly" "/run/backups"
+  #       mainBackup = mkShare [ "kuro" "kiiro" ] "sendreceive" #         "/usr/store"
+  #         { versioning = {
+  #             type = "staggered";
+  #             params.maxAge = "356";
+  #           }; };
+  #     };
+  # };
 }

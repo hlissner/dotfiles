@@ -76,7 +76,7 @@
   networking.useDHCP = false;
 
 
-  ## Backups
+  # Syncthing is a bit heavy handed for my needs, so rsync to my NAS instead.
   systemd = {
     services.backups = {
       description = "Back up personal files";

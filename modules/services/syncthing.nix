@@ -13,8 +13,8 @@ in {
       enable = true;
       openDefaultPorts = true;
       user = config.user.name;
-      configDir = "/home/${user}/.config/syncthing";
-      dataDir = "/home/${user}/.local/share/syncthing";
+      configDir = "${config.user.home}/.config/syncthing";
+      dataDir = "${config.user.home}/.local/share/syncthing";
     };
   };
 }
