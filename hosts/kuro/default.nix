@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, config, ... }:
 {
   imports = [
     ../home.nix
@@ -74,4 +74,48 @@
   # here. Per-interface useDHCP will be mandatory in the future, so this
   # generated config replicates the default behaviour.
   networking.useDHCP = false;
+
+
+  ## Backups
+  systemd = {
+    services.backups = {
+      description = "Back up personal files";
+      wants = [ "usr-drive.mount" ];
+      path  = [ pkgs.rsync ];
+      environment = {
+        SRC_DIR  = "/usr/store";
+        DEST_DIR = "/usr/drive";
+      };
+      script = ''
+        rcp() {
+          if [[ -d "$1" && -d "$2" ]]; then
+            echo "---- BACKUPING UP $1 TO $2 ----"
+            rsync -rlptPJ --delete --delete-after \
+                --include=.git/ \
+                --filter=':- .gitignore' \
+                --filter=':- $XDG_CONFIG_HOME/git/ignore' \
+                --chmod=go= \
+                "$1" "$2"
+          fi
+        }
+        rcp "$HOME/projects/" "$SRC_DIR/projects"
+        pushd "$SRC_DIR"
+        for dirname in *; do
+          rcp "$SRC_DIR/$dirname/" "$DEST_DIR/$dirname"
+        done
+      '';
+      serviceConfig = {
+        Type = "oneshot";
+        Nice = 19;
+        IOSchedulingClass = "idle";
+        User = config.user.name;
+        Group = "users";
+      };
+    };
+    timers.backup = {
+      wantedBy = [ "timers.target" ];
+      partOf = [ "backups.service" ];
+      timerConfig.OnCalendar = "8/2"; # every 4h from 8am
+    };
+  };
 }
