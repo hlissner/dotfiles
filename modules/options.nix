@@ -33,6 +33,7 @@ with lib.my;
         extraGroups = [ "wheel" ];
         isNormalUser = true;
         home = "/home/${name}";
+        group = "users";
         uid = 1000;
       };
 

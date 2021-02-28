@@ -1,4 +1,4 @@
-{ pkgs, config, ... }:
+{ pkgs, config, lib, ... }:
 {
   imports = [
     ../home.nix
@@ -76,10 +76,11 @@
   networking.useDHCP = false;
 
 
+  ## Personal backups
   # Syncthing is a bit heavy handed for my needs, so rsync to my NAS instead.
   systemd = {
     services.backups = {
-      description = "Back up personal files";
+      description = "Backup /usr/store to NAS";
       wants = [ "usr-drive.mount" ];
       path  = [ pkgs.rsync ];
       environment = {
@@ -90,32 +91,31 @@
         rcp() {
           if [[ -d "$1" && -d "$2" ]]; then
             echo "---- BACKUPING UP $1 TO $2 ----"
-            rsync -rlptPJ --delete --delete-after \
+            rsync -rlptPJ --chmod=go= --delete --delete-after \
+                --exclude=lost+found/ \
+                --exclude=@eaDir/ \
                 --include=.git/ \
                 --filter=':- .gitignore' \
                 --filter=':- $XDG_CONFIG_HOME/git/ignore' \
-                --chmod=go= \
                 "$1" "$2"
           fi
         }
-        rcp "$HOME/projects/" "$SRC_DIR/projects"
-        pushd "$SRC_DIR"
-        for dirname in *; do
-          rcp "$SRC_DIR/$dirname/" "$DEST_DIR/$dirname"
-        done
+        rcp "$HOME/projects/" "$DEST_DIR/projects"
+        rcp "$SRC_DIR/" "$DEST_DIR"
       '';
       serviceConfig = {
         Type = "oneshot";
         Nice = 19;
         IOSchedulingClass = "idle";
         User = config.user.name;
-        Group = "users";
+        Group = config.user.group;
       };
     };
-    timers.backup = {
+    timers.backups = {
       wantedBy = [ "timers.target" ];
       partOf = [ "backups.service" ];
-      timerConfig.OnCalendar = "8/2"; # every 4h from 8am
+      timerConfig.OnCalendar = "*-*-* 00,12:00:00";
+      timerConfig.Persistent = true;
     };
   };
 }
