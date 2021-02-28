@@ -17,6 +17,7 @@ in {
     raster.enable  = mkBoolOpt true;
     vector.enable  = mkBoolOpt true;
     sprites.enable = mkBoolOpt true;
+    models.enable  = mkBoolOpt false;
   };
 
   config = mkIf cfg.enable {
@@ -41,6 +42,11 @@ in {
       # Sprite sheets & animation
       (if cfg.sprites.enable then [
         aseprite-unfree
+      ] else []) ++
+
+      # 3D modelling
+      (if cfg.models.enable then [
+        blender
       ] else []);
 
     home.configFile = mkIf cfg.raster.enable {
