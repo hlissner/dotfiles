@@ -77,13 +77,6 @@ module Hey
   end
 
   #
-  defcmd [:shell, :sh] do
-    desc "Open a nix-shell with the dotfiles loaded"
-    lambda do |args|
-      sh ["nix", "develop", args.first || @@opts[:flake]]
-    end
-  end
-
   defcmd :repl do
     desc "Open a nix-repl with nixpkgs and dotfiles preloaded"
     lambda do |args|
