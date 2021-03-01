@@ -59,11 +59,12 @@ module Hey
   def self.sh(args, sudo: false, noerror: false)
     raise ArgumentError unless args.kind_of?(Array)
     args.unshift('sudo') if sudo
+    args.compact!
     if @@opts[:dryrun]
-      print "#{args.compact}\n"
+      print "#{args}\n"
       return true
     else
-      result = system "#{args.compact.shelljoin} 2>&1"
+      result = system "#{args.shelljoin} 2>&1"
       exit($?.exitstatus) unless noerror or result
       return result
     end
@@ -178,12 +179,12 @@ module Hey
   end
 
   defcmd :swap do
-    desc "Recursively swap nix-store links (or folders thereof) with copies.",
+    desc "Recursively swap nix-store symlinks with copies (or back).",
          "The purpose is so you can have copies of your dotfiles that can be modified in",
          "place (so you can iterate on them quickly instead of 'hey re'ing between",
          "changes). Run again to restore the old link(s).\n",
          "Warning: backup your copies, or they will be destroyed when restored!"
-    args "PATH", "[PATHS...]"
+    args "PATH", "[PATH...]"
     lambda do |args|
       for target in args
         if File.directory? target
@@ -347,8 +348,8 @@ module Hey
       opt.separator (@@commands.values
                        .reject { |c| c.desc.empty? }
                        .sort { |a,b| a.name <=> b.name }
-                       .map { |c| "  %-18s %s\n" % ["#{c.name} #{@@alias.key(c.name)}",
-                                                   c.desc[0]]})
+                       .map { |c| "  %-22s %s\n" % ["#{c.name} #{c.args.join ' '}",
+                                                    c.desc[0]]})
       opt.separator "\nOptions:"
       opt.on '-d', '--dryrun',    "Don't change anything; preform dry run"
       opt.on '-D', '--debug',     "Show trace on nix errors"
