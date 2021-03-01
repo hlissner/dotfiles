@@ -44,15 +44,33 @@
 
 And I say, `bin/hey`. [What's going on?](http://hemansings.com/)
 
-| Command                    | Description                                                                |
-|----------------------------|----------------------------------------------------------------------------|
-| `hey check`                | Run tests and checks for this flake                                        |
-| `hey gc`                   | Runs `nix-collect-garbage -d`. Use `--all` to clean up system profile too. |
-| `hey rebuild`              | Rebuild this flake (shortcut: `hey re`)                                    |
-| `hey rollback`             | Roll back to previous system generation                                    |
-| `hey show`                 | Show flake outputs of this repo                                            |
-| `hey ssh REMOTE [COMMAND]` | Run a `bin/hey` command on REMOTE over ssh                                 |
-| `hey upgrade`              | Update flake lockfile and switch to it (shortcut: `hey up`)                |
+```
+Usage: hey [global-options] [command] [sub-options]
+
+Available Commands:
+  check                  Run 'nix flake check' on your dotfiles
+  gc                     Garbage collect & optimize nix store
+  generations            Explore, manage, diff across generations
+  help [SUBCOMMAND]      Show usage information for this script or a subcommand
+  rebuild                Rebuild the current system's flake
+  repl                   Open a nix-repl with nixpkgs and dotfiles preloaded
+  rollback               Roll back to last generation
+  search                 Search nixpkgs for a package
+  show                   [ARGS...]
+  ssh HOST [COMMAND]     Run a bin/hey command on a remote NixOS system
+  swap PATH [PATH...]    Recursively swap nix-store symlinks with copies (or back).
+  test                   Quickly rebuild, for quick iteration
+  theme THEME_NAME       Quickly swap to another theme module
+  update [INPUT...]      Update specific flakes or all of them
+  upgrade                Update all flakes and rebuild system
+
+Options:
+    -d, --dryrun                     Don't change anything; preform dry run
+    -D, --debug                      Show trace on nix errors
+    -f, --flake URI                  Change target flake to URI
+    -h, --help                       Display this help, or help for a specific command
+    -i, -A, -q, -e, -p               Forward to nix-env
+```
 
 ## Frequently asked questions
 
@@ -61,24 +79,30 @@ And I say, `bin/hey`. [What's going on?](http://hemansings.com/)
   Because declarative, generational, and immutable configuration is a godsend
   when you have a fleet of computers to manage.
   
++ **How do you manage secrets?**
+
+  With [agenix].
+  
 + **How do I change the default username?**
 
-  1. Set `USER` the first time you run `nixos-install`: `USER=myusername
-     nixos-install --root /mnt --flake /path/to/dotfiles#XYZ`
+  1. Set the `USER` environment variable the first time you run `nixos-install`:
+     `USER=myusername nixos-install --root /mnt --flake /path/to/dotfiles#XYZ`
   2. Or change `"hlissner"` in modules/options.nix.
   
 + **Why did you write bin/hey?**
 
-  I'm nonplussed by the user story for nix's CLI tools and thought fixing it
-  would be more productive than complaining about it on the internet. Then I
-  thought, [why not do both](https://youtube.com/watch?v=vgk-lA12FBk)?
+  I envy Guix's CLI and want similar for NixOS, but its toolchain is spread
+  across many commands, none of which are as intuitive: `nix`,
+  `nix-collect-garbage`, `nixos-rebuild`, `nix-env`, `nix-shell`.
   
+  I don't claim `hey` is the answer, but everybody likes their own brew.
+ 
 + **How 2 flakes?**
 
   Would it be the NixOS experience if I gave you all the answers in one,
   convenient place?
   
-  No, but here are some resources that helped me:
+  No. Suffer my pain:
   
   + [A three-part tweag article that everyone's read.](https://www.tweag.io/blog/2020-05-25-flakes/)
   + [An overengineered config to scare off beginners.](https://github.com/nrdxp/nixflk)
@@ -101,3 +125,4 @@ And I say, `bin/hey`. [What's going on?](http://hemansings.com/)
 [vim]: https://github.com/hlissner/.vim
 [nixos]: https://releases.nixos.org/?prefix=nixos/unstable/
 [host/kuro]: https://github.com/hlissner/dotfiles/tree/master/hosts/kuro
+[agenix]: https://github.com/ryantm/agenix
