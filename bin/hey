@@ -87,7 +87,13 @@ module Hey
   defcmd :repl do
     desc "Open a nix-repl with nixpkgs and dotfiles preloaded"
     lambda do |args|
-      sh ["nix", "repl", "<nixpkgs>", *args]
+      tempfile = '/tmp/dotfiles-repl.nix'
+      File.write('/tmp/dotfiles-repl.nix', "(builtins.getFlake \"#{@@opts[:flake]}\")")
+      begin
+        sh ["nix", "repl", "<nixpkgs>", tempfile, *args]
+      ensure
+        File.delete tempfile
+      end
     end
   end
 
