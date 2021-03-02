@@ -10,6 +10,7 @@
 with lib;
 with lib.my;
 let cfg = config.modules.desktop.media.graphics;
+    configDir = config.dotfiles.configDir;
 in {
   options.modules.desktop.media.graphics = {
     enable         = mkBoolOpt false;

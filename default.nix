@@ -11,11 +11,8 @@ with lib.my;
 
   # Common config for all nixos machines; and to ensure the flake operates
   # soundly
-  environment.variables.DOTFILES = findFirst pathExists dotFilesDir [
-    "${config.user.home}/.config/dotfiles"
-    "/etc/dotfiles"
-  ];
-  environment.variables.DOTFILES_BIN = "$DOTFILES/bin";
+  environment.variables.DOTFILES = config.dotfiles.dir;
+  environment.variables.DOTFILES_BIN = config.dotfiles.binDir;
 
   # Configure nix and nixpkgs
   environment.variables.NIXPKGS_ALLOW_UNFREE = "1";
@@ -27,8 +24,8 @@ with lib.my;
       package = pkgs.nixFlakes;
       extraOptions = "experimental-features = nix-command flakes";
       nixPath = nixPathInputs ++ [
-        "nixpkgs-overlays=${dotFilesDir}/overlays"
-        "dotfiles=${dotFilesDir}"
+        "nixpkgs-overlays=${config.dotfiles.dir}/overlays"
+        "dotfiles=${config.dotfiles.dir}"
       ];
       binaryCaches = [
         "https://nix-community.cachix.org"

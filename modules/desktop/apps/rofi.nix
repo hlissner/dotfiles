@@ -21,48 +21,37 @@ in {
         exec ${pkgs.rofi}/bin/rofi -terminal xst -m -1 "$@"
       '')
 
-      # For rapidly test changes to rofi's stylesheets
-      # (writeScriptBin "rofi-test" ''
-      #   #!${stdenv.shell}
-      #   themefile=$1
-      #   themename=${my.theme.name}
-      #   shift
-      #   exec rofi \
-      #        -theme ${themesDir}/$themename/rofi/$themefile \
-      #        "$@"
-      #   '')
-
       # Fake rofi dmenu entries
       (makeDesktopItem {
         name = "rofi-browsermenu";
         desktopName = "Open Bookmark in Browser";
         icon = "bookmark-new-symbolic";
-        exec = "$DOTFILES_BIN/rofi/browsermenu";
+        exec = "${config.dotfiles.binDir}/rofi/browsermenu";
       })
       (makeDesktopItem {
         name = "rofi-browsermenu-history";
         desktopName = "Open Browser History";
         icon = "accessories-clock";
-        exec = "$DOTFILES_BIN/rofi/browsermenu history";
+        exec = "${config.dotfiles.binDir}/rofi/browsermenu history";
       })
       (makeDesktopItem {
         name = "rofi-filemenu";
         desktopName = "Open Directory in Terminal";
         icon = "folder";
-        exec = "$DOTFILES_BIN/rofi/filemenu";
+        exec = "${config.dotfiles.binDir}/rofi/filemenu";
       })
       (makeDesktopItem {
         name = "rofi-filemenu-scratch";
         desktopName = "Open Directory in Scratch Terminal";
         icon = "folder";
-        exec = "$DOTFILES_BIN/rofi/filemenu -x";
+        exec = "${config.dotfiles.binDir}/rofi/filemenu -x";
       })
 
       (makeDesktopItem {
         name = "lock-display";
         desktopName = "Lock screen";
         icon = "system-lock-screen";
-        exec = "$DOTFILES_BIN/zzz";
+        exec = "${config.dotfiles.binDir}/zzz";
       })
     ];
   };

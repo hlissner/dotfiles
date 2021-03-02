@@ -6,6 +6,18 @@ with lib.my;
   options = with types; {
     user = mkOpt attrs {};
 
+    dotfiles = let t = either str path; in {
+      dir = mkOpt t
+        (findFirst pathExists (toString ../.) [
+          "${config.user.home}/.config/dotfiles"
+          "/etc/dotfiles"
+        ]);
+      binDir     = mkOpt t "${config.dotfiles.dir}/bin";
+      configDir  = mkOpt t "${config.dotfiles.dir}/config";
+      modulesDir = mkOpt t "${config.dotfiles.dir}/modules";
+      themesDir  = mkOpt t "${config.dotfiles.modulesDir}/themes";
+    };
+
     home = {
       file       = mkOpt' attrs {} "Files to place directly in $HOME";
       configFile = mkOpt' attrs {} "Files to place in $XDG_CONFIG_HOME";

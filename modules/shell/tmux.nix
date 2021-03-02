@@ -10,6 +10,7 @@ let cfg = config.modules.shell.tmux;
       #!${pkgs.stdenv.shell}
       exec ${pkgs.tmux}/bin/tmux -f "$TMUX_HOME/config" "$@"
     '');
+    configDir = config.dotfiles.configDir;
 in {
   options.modules.shell.tmux = with types; {
     enable = mkBoolOpt false;

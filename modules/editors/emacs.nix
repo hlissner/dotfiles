@@ -7,6 +7,7 @@
 with lib;
 with lib.my;
 let cfg = config.modules.editors.emacs;
+    configDir = config.dotfiles.configDir;
 in {
   options.modules.editors.emacs = {
     enable = mkBoolOpt false;

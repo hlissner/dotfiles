@@ -3,6 +3,7 @@
 with lib;
 with lib.my;
 let cfg = config.modules.desktop.stumpwm;
+    configDir = config.dotfiles.configDir;
 in {
   options.modules.desktop.stumpwm = {
     enable = mkBoolOpt false;
