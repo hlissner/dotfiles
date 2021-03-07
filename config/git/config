@@ -36,3 +36,7 @@
     insteadOf = bb:
 [url "https://git.v0.com"]
     insteadOf = v0:
+[diff "lisp"]
+	xfuncname = "^(((;;;+ )|\\(|([ \t]+\\(((cl-|el-patch-)?def(un|var|macro|method|custom)|gb/))).*)$"
+[diff "org"]
+	xfuncname = "^(\\*+ +.*)$"

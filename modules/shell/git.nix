@@ -21,6 +21,7 @@ in {
     home.configFile = {
       "git/config".source = "${configDir}/git/config";
       "git/ignore".source = "${configDir}/git/ignore";
+      "git/attributes".source = "${configDir}/git/attributes";
     };
 
     modules.shell.zsh.rcFiles = [ "${configDir}/git/aliases.zsh" ];

@@ -1,0 +1,3 @@
+*.lisp  diff=lisp
+*.el    diff=lisp
+*.org   diff=org
