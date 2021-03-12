@@ -9,6 +9,7 @@ with lib.my;
     ../home.nix
     ./hardware-configuration.nix
 
+    ./modules/backup.nix
     ./modules/gitea.nix
     ./modules/bitwarden.nix
   ];

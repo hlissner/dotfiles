@@ -45,11 +45,7 @@ in {
         service.ENABLE_BASIC_AUTHENTICATION = false;
       };
 
-      dump = {
-        enable = true;
-        interval = "daily";
-        backupDir = "/run/backups/gitea";
-      };
+      dump.interval = "daily";
     };
 
     services.fail2ban.jails.gitea = ''
