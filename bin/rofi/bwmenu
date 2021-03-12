@@ -131,6 +131,7 @@ module BW
     @@session = PersistentData.load :session, ttl: vault_ttl
     if @@session.data
       sid, data = @@session.data
+      @@session_id = sid
     else
       pass = rofi nil, %w{-p Master\ Password -password -lines 0}
       error "No password given. Aborting..." if pass.empty?
@@ -140,6 +141,7 @@ module BW
       data = JSON.parse(bw(:list, :items))
       @@session.save [sid, data]
     end
+    raise "No session ID" unless @@session_id
 
     last = PersistentData.load :last_id
     last_id, last_field = last.data if last
@@ -220,7 +222,7 @@ module BW
       preamble[" Launch #{url}"] = lambda { sh ENV['BROWSER'], url }
       data['Username'] = item['login']['username']
       data['Password'] = item['login']['password']
-      data['TOTP'] = bw :get, :totp, item['id'] if item['totp']
+      data['TOTP'] = bw :get, :totp, url if item['login']['totp']
       return (data[field.capitalize] || item[field]) if field
     when 2  # secure notes
       data['Notes'] = item['notes']
