@@ -54,6 +54,8 @@ in {
       nodePackages.javascript-typescript-langserver
       # :lang latex & :lang org (latex previews)
       texlive.combined.scheme-medium
+      # :lang ledger
+      ledger
       # :lang rust
       rustfmt
       unstable.rust-analyzer
