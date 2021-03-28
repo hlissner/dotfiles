@@ -153,12 +153,14 @@ module Hey
     desc "Update specific flakes or all of them"
     args "[INPUT...]"
     lambda do |args|
-      args.each do |flake|
-        puts "Trying to update #{flake}..."
-        sh ["nix", "flake", "update", "--update-input", flake, @@opts[:flake]]
-      end.empty? and begin
+      if args.empty?
         puts "Updating all flakes.."
-        sh ["nix", "flake", "update", "--recreate-lock-file", @@opts[:flake]]
+        sh ["nix", "flake", "update", @@opts[:flake]]
+      else
+        puts "Trying to update flakes: #{args.join ' '}"
+        sh ["nix", "flake", "lock"]
+             .concat(args.map { |f| [ "--update-input", f ]}.flatten)
+             .concat([@@opts[:flake]])
       end
     end
   end
