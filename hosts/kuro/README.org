@@ -2,17 +2,20 @@
 #+DATE:  September 13, 2020
 
 * Overview
+My main driver for work on Linux.
+
+Have a separate Windows rig for gaming/adobe (Midori).
 
 * Specs
-| CPU   | [[https://www.newegg.ca/amd-ryzen-9-3900x/p/N82E16819113103][AMD Ryzen 9 3900X 12-core, 24-thread]]    |
-| MOBO  | [[https://www.newegg.ca/gigabyte-b550-aorus-elite/p/N82E16813145214?Item=N82E16813145214&IsFeedbackTab=true#scrollFullInfo][GIGABYTE B550 AORUS Elite]]               |
-| COOL  | [[https://www.newegg.ca/cooler-master-hyper-212-evo-rr-212e-20pk-r2/p/N82E16835103099][Cooler Master Hyper 212 Evo]]             |
-| GPU   | EVGA GeForce 680 GTX SC                 |
-| RAM   | [[https://www.newegg.ca/g-skill-64gb-288-pin-ddr4-sdram/p/N82E16820374003?Description=G.SKILL%20Ripjaws%20V%20Series%2064gb&cm_re=G.SKILL_Ripjaws%20V%20Series%2064gb-_-20-374-003-_-Product][G.SKILL Ripjaws V Series 64GB (2x 32GB)]] |
-| HDD   | [[https://www.newegg.ca/samsung-970-evo-plus-500gb/p/N82E16820147742?Description=samsung%20970%20evo%20plus&cm_re=samsung_970%20evo%20plus-_-20-147-742-_-Product][Samsung 970 EVO Plus 500GB NVMe M2]]      |
-| HDD   | ST31000340NS 1TB (2x)                   |
-| KBD   | ErgoDox-EZ                              |
-| MOUSE | Anker Wireless Vertical Mouse           |
+| CASE  | [[https://www.amazon.com/Fractal-Design-Define-Cases-FD-CA-DEF-R4-BL/dp/B008HD3CTI][Fractal Design Define R4 ATX Tower Case Black Pearl]] |
+| CPU   | [[https://www.newegg.ca/amd-ryzen-9-3900x/p/N82E16819113103][AMD Ryzen 9 3900X 12-core, 24-thread]]                |
+| MOBO  | [[https://www.newegg.ca/gigabyte-b550-aorus-elite/p/N82E16813145214?Item=N82E16813145214&IsFeedbackTab=true#scrollFullInfo][GIGABYTE B550 AORUS Elite]]                           |
+| COOL  | [[https://www.newegg.ca/cooler-master-hyper-212-evo-rr-212e-20pk-r2/p/N82E16835103099][Cooler Master Hyper 212 Evo]]                         |
+| GPU   | EVGA GeForce 680 GTX SC                             |
+| RAM   | [[https://www.newegg.ca/g-skill-64gb-288-pin-ddr4-sdram/p/N82E16820374003?Description=G.SKILL%20Ripjaws%20V%20Series%2064gb&cm_re=G.SKILL_Ripjaws%20V%20Series%2064gb-_-20-374-003-_-Product][G.SKILL Ripjaws V Series 64GB (2x 32GB)]]             |
+| HDD   | [[https://www.newegg.ca/samsung-970-evo-plus-500gb/p/N82E16820147742?Description=samsung%20970%20evo%20plus&cm_re=samsung_970%20evo%20plus-_-20-147-742-_-Product][Samsung 970 EVO Plus 500GB NVMe M2]]                  |
+| KBD   | [[https://ergodox-ez.com/][ErgoDox-EZ]]                                          |
+| MOUSE | [[https://www.anker.com/products/variant/anker-24g-wireless-vertical-ergonomic-optical-mouse/A7852011][Anker Wireless Vertical Mouse]]                       |
 
 * Installation
 ** Set up root file system
