@@ -58,6 +58,7 @@
     };
     services = {
       ssh.enable = true;
+      docker.enable = true;
       # Needed occasionally to help the parental units with PC problems
       # teamviewer.enable = true;
     };
