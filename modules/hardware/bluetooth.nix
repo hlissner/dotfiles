@@ -23,10 +23,9 @@ in {
         extraModules = [ pkgs.pulseaudio-modules-bt ];
       };
 
-      hardware.bluetooth.extraConfig = ''
-        [General]
-        Enable=Source,Sink,Media,Socket
-      '';
+      hardware.bluetooth.config = {
+        General.Enable = "Source,Sink,Media,Socket";
+      };
     })
   ]);
 }
