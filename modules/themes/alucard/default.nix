@@ -38,7 +38,7 @@ in {
     # Desktop (X11) theming
     (mkIf config.services.xserver.enable {
       user.packages = with pkgs; [
-        dracula-theme
+        unstable.dracula-theme
         paper-icon-theme # for rofi
       ];
       fonts = {
