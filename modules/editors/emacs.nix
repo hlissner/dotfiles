@@ -23,7 +23,10 @@ in {
     user.packages = with pkgs; [
       ## Emacs itself
       binutils       # native-comp needs 'as', provided by this
-      emacsPgtkGcc   # 28 + pgtk + native-comp
+      # emacsPgtkGcc   # 28 + pgtk + native-comp
+      ((emacsPackagesNgGen emacsPgtkGcc).emacsWithPackages (epkgs: [
+        epkgs.vterm
+      ]))
 
       ## Doom dependencies
       git
