@@ -6,16 +6,16 @@ with lib.my;
   options = with types; {
     user = mkOpt attrs {};
 
-    dotfiles = let t = either str path; in {
-      dir = mkOpt t
+    dotfiles = {
+      dir = mkOpt path
         (findFirst pathExists (toString ../.) [
           "${config.user.home}/.config/dotfiles"
           "/etc/dotfiles"
         ]);
-      binDir     = mkOpt t "${config.dotfiles.dir}/bin";
-      configDir  = mkOpt t "${config.dotfiles.dir}/config";
-      modulesDir = mkOpt t "${config.dotfiles.dir}/modules";
-      themesDir  = mkOpt t "${config.dotfiles.modulesDir}/themes";
+      binDir     = mkOpt path "${config.dotfiles.dir}/bin";
+      configDir  = mkOpt path "${config.dotfiles.dir}/config";
+      modulesDir = mkOpt path "${config.dotfiles.dir}/modules";
+      themesDir  = mkOpt path "${config.dotfiles.modulesDir}/themes";
     };
 
     home = {
