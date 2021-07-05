@@ -39,10 +39,6 @@ with lib.my;
   system.configurationRevision = with inputs; mkIf (self ? rev) self.rev;
   system.stateVersion = "21.05";
 
-  # HACK Momentarily fix 'install-info: cannot allocate memory for gzip -d'
-  #      errors on latest unstable.
-  documentation.info.enable = false;
-
   ## Some reasonable, global defaults
   # This is here to appease 'nix flake check' for generic hosts with no
   # hardware-configuration.nix or fileSystem config.
@@ -62,7 +58,6 @@ with lib.my;
   environment.systemPackages = with pkgs; [
     bind
     cached-nix-shell
-    coreutils
     git
     vim
     wget
