@@ -59,7 +59,7 @@ in {
       texlive.combined.scheme-medium
       # :lang beancount
       beancount
-      fava
+      unstable.fava  # HACK Momentarily broken on nixos-unstable
       # :lang rust
       rustfmt
       unstable.rust-analyzer
