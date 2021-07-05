@@ -38,6 +38,9 @@
   # performance gives better battery life/perf than ondemand on sandy bridge and
   # newer because of intel pstates.
   powerManagement.cpuFreqGovernor = "performance";
+  # Without this wpa_supplicant may fail to auto-discover wireless interfaces at
+  # startup (and must be restarted).
+  networking.wireless.interfaces = [ "wlp2s0" ];
 
   # Power management
   environment.systemPackages = [ pkgs.acpi ];
