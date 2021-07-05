@@ -18,6 +18,7 @@ with lib.my;
   ## Modules
   modules = {
     shell = {
+      direnv.enable = true;
       git.enable = true;
       zsh.enable = true;
     };
