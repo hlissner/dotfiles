@@ -3,13 +3,6 @@
 with lib;
 with lib.my;
 let cfg = config.modules.shell.tmux;
-    # Despite tmux/tmux#142, tmux will support XDG in 3.2. Sadly, only 3.0 is
-    # available on nixpkgs, and 3.1b on master (tmux/tmux@15d7e56), so I
-    # implement it myself:
-    tmux = (pkgs.writeScriptBin "tmux" ''
-      #!${pkgs.stdenv.shell}
-      exec ${pkgs.tmux}/bin/tmux -f "$TMUX_HOME/config" "$@"
-    '');
     configDir = config.dotfiles.configDir;
 in {
   options.modules.shell.tmux = with types; {
@@ -18,9 +11,9 @@ in {
   };
 
   config = mkIf cfg.enable {
-    user.packages = [ tmux ];
+    user.packages = with pkgs; [ tmux ];
 
-    modules.theme.onReload.tmux = "${tmux}/bin/tmux source-file $TMUX_HOME/extraInit";
+    modules.theme.onReload.tmux = "${pkgs.tmux}/bin/tmux source-file $TMUX_HOME/extraInit";
 
     modules.shell.zsh = {
       rcInit = "_cache tmuxifier init -";
