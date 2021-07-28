@@ -9,21 +9,6 @@ in {
   };
 
   config = mkIf cfg.enable {
-    # HACK Due to alsa-project/alsa-lib#143, ALSA/pulseaudio can't find sound
-    #      devices. The 1.2.5.1 hotfix addresses this, but isn't in nixpkgs yet.
-    nixpkgs.overlays = [
-      (self: super: with super; {
-        alsa-lib = super.alsa-lib.overrideAttrs (old: rec {
-          pname = "alsa-lib";
-          version = "1.2.5.1";
-          src = pkgs.fetchurl {
-            url = "mirror://alsa/lib/${pname}-${version}.tar.bz2";
-            sha256 = "sha256-YoQh2VDOyvI03j+JnVIMCmkjMTyWStdR/6wIHfMxQ44=";
-          };
-        });
-      })
-    ];
-
     sound.enable = true;
     hardware.pulseaudio.enable = true;
 
