@@ -7,6 +7,8 @@
 	defaultBranch = main
 [github]
 	user = hlissner
+[gitlab]
+	user = hlissner
 [rebase]
 	autosquash = true
 [push]
