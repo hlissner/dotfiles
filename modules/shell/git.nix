@@ -16,6 +16,7 @@ in {
       gitAndTools.diff-so-fancy
       (mkIf config.modules.shell.gnupg.enable
         gitAndTools.git-crypt)
+      act
     ];
 
     home.configFile = {
