@@ -42,6 +42,11 @@
         qemu.enable = true;
       };
     };
+    dev = {
+      node.enable = true;
+      rust.enable = true;
+      python.enable = true;
+    };
     editors = {
       default = "nvim";
       emacs.enable = true;
