@@ -1,7 +1,7 @@
 #!/usr/bin/env cached-nix-shell
 #! nix-shell -p ruby_2_7 -i "ruby -S"
 
-# A rofi client for bitwarden. Similar to passmenu, but uses rofi. (Badly)
+# A rofi client for vaultwarden. Similar to passmenu, but uses rofi. (Badly)
 # written in ruby because data persistence and frontend logic would be a pain to
 # write in bash or zsh. I'll refactor this later perhaps. Maybe.
 
@@ -91,7 +91,7 @@ module BW
   end
 
   def self.notify message, title: nil, urgency: "normal"
-    sh 'notify-send', '-u', urgency, '-a', "Bitwarden", *[title, message].compact
+    sh 'notify-send', '-u', urgency, '-a', "Vaultwarden", *[title, message].compact
   end
 
   def self.error message
@@ -209,7 +209,7 @@ module BW
     when true
       return data[0][1]
     end
-    rofi rofiData.merge(data.to_h), '-p', 'Bitwarden', '-filter', (query || "")
+    rofi rofiData.merge(data.to_h), '-p', 'Vaultwarden', '-filter', (query || "")
   end
 
   def show_item item, field: nil

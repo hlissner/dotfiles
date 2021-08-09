@@ -26,8 +26,8 @@ with lib;
     longitude = 12.5;
   } else {});
 
-  # So thw bitwarden CLI knows where to find my server.
-  modules.shell.bitwarden.config.server = "p.v0.io";
+  # So the vaultwarden CLI knows where to find my server.
+  modules.shell.vaultwarden.config.server = "p.v0.io";
 
 
   ## Not using syncthing atm

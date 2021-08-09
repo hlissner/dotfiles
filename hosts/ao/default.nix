@@ -11,7 +11,7 @@ with lib.my;
 
     ./modules/backup.nix
     ./modules/gitea.nix
-    ./modules/bitwarden.nix
+    ./modules/vaultwarden.nix
   ];
 
 
