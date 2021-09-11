@@ -8,7 +8,7 @@
   boot = {
     initrd.availableKernelModules = [ "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" "sr_mod" "nvme" ];
     initrd.kernelModules = [ "dm-snapshot" ];
-    kernelModules = [ "kvm-intel" ];
+    kernelModules = [ "kvm-intel" "wl" ];
     extraModulePackages = [ ];
     kernelParams = [
       # HACK Disables fixes for spectre, meltdown, L1TF and a number of CPU
