@@ -1,4 +1,4 @@
-# Shiro -- my laptop
+# Aijiro -- a portable mini-ITX desktop
 
 { ... }:
 {
