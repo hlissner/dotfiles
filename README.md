@@ -28,17 +28,54 @@
 
 ## Quick start
 
-1. Yoink the latest build of [NixOS 21.05][nixos].
+1. Acquire NixOS 21.11 or newer:
+   ```sh
+   # Yoink nixos-unstable
+   wget -O nixos.iso https://channels.nixos.org/nixos-unstable/latest-nixos-minimal-x86_64-linux.iso
+   
+   # Write it to a flash drive
+   cp nixos.iso /dev/sdX
+   ```
+
 2. Boot into the installer.
-3. Do your partitions and mount your root to `/mnt` ([for example](hosts/kuro/README.org))
-4. Install these dotfiles:
-5. `nix-shell -p git nixFlakes`
-6. `git clone https://github.com/hlissner/dotfiles /mnt/etc/nixos`
-7. Install NixOS: `nixos-install --root /mnt --flake /mnt/etc/nixos#XYZ`, where
-   `XYZ` is [the host you want to install](hosts/).  Use `#generic` for a
-   simple, universal config, or create a sub-directory in `hosts/` for your device. See [host/kuro] for an example.
-8. Reboot!
-9. Change your `root` and `$USER` passwords!
+
+3. Switch to root user: `sudo su -`
+
+4. Do your partitions and mount your root to `/mnt` ([for
+   example](hosts/kuro/README.org)).
+
+5. Install these dotfiles:
+   ```sh
+   nix-shell -p git nixFlakes
+
+   # Set HOST to the desired hostname of this system
+   HOST=...
+   # Set USER to your desired username (defaults to hlissner)
+   USER=...
+
+   git clone https://github.com/hlissner/dotfiles /mnt/etc/nixos
+   cd /mnt/etc/nixos
+   
+   # Create a host config in `hosts/` and add it to the repo:
+   mkdir -p hosts/$HOST/
+   nixos-generate-config --root /mnt --dir hosts/$HOST/
+   rm -f hosts/configuration.nix
+   cp hosts/kuro/config.nix hosts/$HOST/config.nix
+   vim config.nix  # configure this for your system; don't use it verbatim!
+   git add hosts/$HOST/
+   
+   # Install nixOS
+   USER=$USER nixos-install --root /mnt --impure --flake .#$HOST
+   
+   # If you get 'unrecognized option: --impure', replace '--impure' with 
+   # `--option pure-eval no`.
+   ```
+
+6. Then reboot and you're good to go!
+
+> :warning: **Don't forget to change your `root` and `$USER` passwords!** They
+> are set to `nixos` by default.
+
 
 ## Management
 
@@ -124,5 +161,4 @@ Options:
 [doom-emacs]: https://github.com/hlissner/doom-emacs
 [vim]: https://github.com/hlissner/.vim
 [nixos]: https://releases.nixos.org/?prefix=nixos/unstable/
-[host/kuro]: https://github.com/hlissner/dotfiles/tree/master/hosts/kuro
 [agenix]: https://github.com/ryantm/agenix
