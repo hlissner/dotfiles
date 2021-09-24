@@ -115,22 +115,55 @@ Options:
 
   Because declarative, generational, and immutable configuration is a godsend
   when you have a fleet of computers to manage.
+
++ **Should I use NixOS?**
+
+  **Short answer:** no.
   
+  **Long answer:** no really. Don't.
+  
+  **Long long answer:** no really, I'm not kidding. Don't.
+  
+  **Unsigned long long answer:** Ok ok. Do any of these sound like you?
+
+  - You only have one (maybe two) systems to NixOS-ify.
+  - You lack the discipline or dedication to learn a new language, google your
+    issues, and trial'n'error your way to NixOS enlightenment -- all on your
+    own.
+  - "Declarative", "generational", and "immutable" don't make you _fully_ erect.
+  - You're a unix virgin or have limited experience with Linux distros.
+  - You arrived at NixOS by following trends, rather than your needs.
+  - You need somebody else to tell you whether or not you need NixOS.
+  
+  **Then no, you should _not_ use NixOS.**
+
+  - The learning curve is steep.
+  - NixOS is unlike other Linux distros. Your issues will be unique and
+    difficult to google.
+  - The overhead of managing a NixOS config will rarely pay for itself with
+    fewer than 3 systems.
+  - Official documentation for Nix and NixOS is vast, but shallow.
+  - Unofficial resources and example configs are sparse, tend to either be too
+    simple or too complex, or outdated.
+  - The Nix language is obtuse and its toolchain is complicated; multiply this
+    by 1,000 if you've never touched the shell or a functional language before.
+    And you _will_ have to learn Nix to do a fraction of what makes NixOS worth
+    any of the trouble.
+  - A decent grasp of Linux and its ecosystem is necessary to distinguish
+    Nix/NixOS issues from conventional Linux issues (and to debug them).
+    
+  If none of this has deterred you, then you didn't need my advice in the first
+  place. Stop procrastinating and try NixOS.
+
 + **How do you manage secrets?**
 
   With [agenix].
-  
-+ **How do I change the default username?**
 
-  1. Set the `USER` environment variable the first time you run `nixos-install`:
-     `USER=myusername nixos-install --root /mnt --flake /path/to/dotfiles#XYZ`
-  2. Or change `"hlissner"` in modules/options.nix.
-  
 + **Why did you write bin/hey?**
 
-  I envy Guix's CLI and want similar for NixOS, but its toolchain is spread
-  across many commands, none of which are as intuitive: `nix`,
-  `nix-collect-garbage`, `nixos-rebuild`, `nix-env`, `nix-shell`.
+  I envy Guix's CLI and want similar for NixOS, whose toolchain is spread across
+  many commands, none of which are as intuitive: `nix`, `nix-collect-garbage`,
+  `nixos-rebuild`, `nix-env`, `nix-shell`.
   
   I don't claim `hey` is the answer, but everybody likes their own brew.
  
@@ -142,7 +175,7 @@ Options:
   No. Suffer my pain:
   
   + [A three-part tweag article that everyone's read.](https://www.tweag.io/blog/2020-05-25-flakes/)
-  + [An overengineered config to scare off beginners.](https://github.com/nrdxp/nixflk)
+  + [An overengineered config to scare off beginners.](https://github.com/divnix/devos)
   + [A minimalistic config for scared beginners.](https://github.com/colemickens/nixos-flake-example)
   + [A nixos wiki page that spells out the format of flake.nix.](https://nixos.wiki/wiki/Flakes)
   + [Official documentation that nobody reads.](https://nixos.org/learn.html)
