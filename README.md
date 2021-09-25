@@ -113,7 +113,7 @@ Available Commands:
   upgrade                Update all flakes and rebuild system
 
 Options:
-    -d, --dryrun                     Don't change anything; preform dry run
+    -d, --dryrun                     Don't change anything; perform dry run
     -D, --debug                      Show trace on nix errors
     -f, --flake URI                  Change target flake to URI
     -h, --help                       Display this help, or help for a specific command
