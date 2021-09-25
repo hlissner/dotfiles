@@ -2,11 +2,14 @@
 #+DATE:  September 3, 2021
 
 * Overview
-...
+My travel workstation. A mini computer I have stashed away for my visits to
+Denmark.
 
 * Specs
-+ Intel i5-6400
-+ 8GB
+https://www.msi.com/Desktop/Nightblade-MI2C/Specification
+
+- Intel i5-6400
+- 8GB
 
 * Installation
 ** Set up root file system

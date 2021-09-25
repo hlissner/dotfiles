@@ -9,7 +9,7 @@
 #    - /dev/sdc -> NixOS
 #
 # 3. Once booted into Finnix (step 2) pipe this script to sh:
-#      iso=https://channels.nixos.org/nixos-20.09/latest-nixos-minimal-x86_64-linux.iso
+#      iso=https://channels.nixos.org/nixos-21.05/latest-nixos-minimal-x86_64-linux.iso
 #      update-ca-certificates
 #      curl -k $iso | dd bs=1M of=/dev/sda
 #

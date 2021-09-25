@@ -1,7 +1,8 @@
 # modules/browser/firefox.nix --- https://www.mozilla.org/en-US/firefox
 #
-# Oh firefox, gateway to the interwebs, devourer of ram. Give onto me your
-# infinite knowledge and shelter me from ads.
+# Oh Firefox, gateway to the interwebs, devourer of ram. Give onto me your
+# infinite knowledge and shelter me from ads, but bless my $HOME with
+# directories nobody needs and live long enough to turn into Chrome.
 
 { options, config, lib, pkgs, ... }:
 
