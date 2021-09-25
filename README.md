@@ -1,7 +1,18 @@
 [![Made with Doom Emacs](https://img.shields.io/badge/Made_with-Doom_Emacs-blueviolet.svg?style=flat-square&logo=GNU%20Emacs&logoColor=white)](https://github.com/hlissner/doom-emacs)
 [![NixOS Unstable](https://img.shields.io/badge/NixOS-unstable-blue.svg?style=flat-square&logo=NixOS&logoColor=white)](https://nixos.org)
 
-**Hey,** you. You're finally awake. You were trying to configure your OS declaratively, right? Walked right into that NixOS ambush, same as us, and those dotfiles over there.
+**Hey,** you. You're finally awake. You were trying to configure your OS
+declaratively, right? Walked right into that NixOS ambush, same as us, and those
+dotfiles over there.
+
+> **Disclaimer:** _This is not a community framework or distribution._ It's a
+> private configuration and an ongoing experiment while I feel out NixOS. I make
+> no guarantees that it will work out of the box for anyone but myself. It may
+> also change drastically and without warning. 
+> 
+> Until I can bend spoons with my nix-fu, please don't treat me like an
+> authority or expert in the NixOS space. Seek help on [the NixOS
+> discourse](https://discourse.nixos.org) instead.
 
 <img src="/../screenshots/alucard/fakebusy.png" width="100%" />
 
