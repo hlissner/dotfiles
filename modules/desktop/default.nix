@@ -36,6 +36,8 @@ in {
         exec = ''scratch "${tmux}/bin/tmux new-session -s calc -n calc qalc"'';
         categories = "Development";
       })
+      qgnomeplatform        # QPlatformTheme for a better Qt application inclusion in GNOME
+      libsForQt5.qtstyleplugin-kvantum # SVG-based Qt5 theme engine plus a config tool and extra theme
     ];
 
     fonts = {
@@ -104,8 +106,8 @@ in {
 
     # Try really hard to get QT to respect my GTK theme.
     env.GTK_DATA_PREFIX = [ "${config.system.path}" ];
-    env.QT_QPA_PLATFORMTHEME = "gtk2";
-    qt5 = { style = "gtk2"; platformTheme = "gtk2"; };
+    env.QT_QPA_PLATFORMTHEME = "gnome";
+    env.QT_STYLE_OVERRIDE = "kvantum";
 
     services.xserver.displayManager.sessionCommands = ''
       # GTK2_RC_FILES must be available to the display manager.
