@@ -12,7 +12,6 @@
     desktop = {
       bspwm.enable = true;
       apps = {
-        discord.enable = true;
         rofi.enable = true;
         # godot.enable = true;
       };
