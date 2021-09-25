@@ -20,6 +20,9 @@
         default = "firefox";
         firefox.enable = true;
       };
+      gaming = {
+        steam.enable = true;
+      };
       media = {
         # daw.enable = true;
         documents.enable = true;
@@ -63,5 +66,5 @@
   networking.wireless.enable = true;
   hardware.opengl.enable = true;
 
-  # time.timeZone = "Europe/Copenhagen";
+  time.timeZone = "Europe/Copenhagen";
 }
