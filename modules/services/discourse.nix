@@ -9,6 +9,8 @@ in {
   };
 
   config = mkIf cfg.enable {
+    services.postgresql.package = pkgs.postgresql;
+
     services.discourse = {
       enable = true;
       enableACME = true;
