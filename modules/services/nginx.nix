@@ -29,6 +29,15 @@ in {
       commonHttpConfig = ''
         client_body_buffer_size  4k;       # default: 8k
         large_client_header_buffers 2 4k;  # default: 4 8k
+
+        map $sent_http_content_type $expires {
+            default                    off;
+            text/html                  10m;
+            text/css                   max;
+            application/javascript     max;
+            application/pdf            max;
+            ~image/                    max;
+        }
       '';
     };
   };
