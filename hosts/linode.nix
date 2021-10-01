@@ -9,9 +9,10 @@
 #    - /dev/sdc -> NixOS
 #
 # 3. Once booted into Finnix (step 2) pipe this script to sh:
-#      iso=https://channels.nixos.org/nixos-21.05/latest-nixos-minimal-x86_64-linux.iso
+#      iso=https://channels.nixos.org/nixos-unstable/latest-nixos-minimal-x86_64-linux.iso
 #      update-ca-certificates
-#      curl -k $iso | dd bs=1M of=/dev/sda
+#      wget -O nixos.iso $iso
+#      cp nixos.iso /dev/sda
 #
 # 4. Create two configuration profiles:
 #    - Installer
@@ -20,16 +21,19 @@
 #      - /dev/sdb -> Swap
 #      - /dev/sdc -> Installer
 #      - Helpers: distro and auto network helpers = off
+#      - Leave others on their defaults
 #    - Boot
 #      - Kernel: GRUB 2
 #      - /dev/sda -> NixOS
 #      - /dev/sdb -> Swap
 #      - Helpers: distro and auto network helpers = off
+#      - Leave others on their defaults
 #
 # 5. Boot into installer profile.
 #
 # 6. Generate hardware-configuration.nix
-#      e2label /dev/sda nixos
+#      sudo su -
+#      e2label /dev/sdc nixos
 #      swaplabel -L swap /dev/sdb
 #      mount /dev/disk/by-label/nixos /mnt
 #      swapon /dev/disk/by-label/swap
@@ -42,8 +46,6 @@
 #      cd /mnt/home/hlissner/.config
 #      git clone https://github.com/hlissner/dotfiles
 #      nixos-install --root /mnt --flake .#linode --impure
-#        OR (on older versions of nixos)
-#      nixos-install --root /mnt --flake .#linode --option pure-eval false
 #
 # 8. Reboot into "Boot" profile.
 
