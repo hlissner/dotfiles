@@ -1,5 +1,6 @@
 { config, options, lib, pkgs, ... }:
 
+with builtins;
 with lib;
 with lib.my;
 let cfg = config.modules.services.nginx;
