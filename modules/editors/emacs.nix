@@ -54,7 +54,7 @@ in {
       # :lang cc
       ccls
       # :lang javascript
-      nodePackages.javascript-typescript-langserver
+      nodePackages.typescript-language-server
       # :lang latex & :lang org (latex previews)
       texlive.combined.scheme-medium
       # :lang beancount
