@@ -1,6 +1,6 @@
 [user]
 	name = Henrik Lissner
-	email = henrik@lissner.net
+	email = git@henrik.io
 [core]
 	whitespace = trailing-space
 [init]

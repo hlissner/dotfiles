@@ -12,13 +12,13 @@
       server.SSH_DOMAIN = "v0.io";
       mailer = {
         ENABLED = true;
-        FROM = "mail@v0.io";
-        HOST = "mail.gmail.com:465";
-        USER = "hlissner@gmail.com";
+        FROM = "git@v0.io";
+        HOST = "smtp.mailgun.org:587";
+        USER = config.age.secrets.mailgun-smtp-username.path;
         MAILER_TYPE = "smtp";
       };
     };
-    mailerPasswordFile = config.age.secrets.gitea-smtp.path;
+    mailerPasswordFile = config.age.secrets.mailgun-smtp-secret.path;
   };
 
   services.nginx.virtualHosts."git.v0.io" = {

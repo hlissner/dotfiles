@@ -1,8 +1,5 @@
 ;; -*- lisp -*-
 ;;
-;; Author:  Henrik Lissner <henrik@lissner.net>
-;; URL:     https://github.com/hlissner/doom-emacs
-;;
 ;;;
 (in-package :stumpwm)
 ;; (swank:create-server

@@ -1,6 +1,6 @@
 # flake.nix --- the heart of my dotfiles
 #
-# Author:  Henrik Lissner <henrik@lissner.net>
+# Author:  Henrik Lissner <contact@henrik.io>
 # URL:     https://github.com/hlissner/dotfiles
 # License: MIT
 #

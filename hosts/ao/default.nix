@@ -57,5 +57,5 @@ with lib.my;
     };
   };
 
-  security.acme.email = "henrik@lissner.net";
+  security.acme.email = "accounts+acme@henrik.io";
 }
