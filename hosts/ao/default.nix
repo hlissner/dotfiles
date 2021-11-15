@@ -41,6 +41,7 @@ with lib.my;
     default = true;
     forceSSL = true;
     enableACME = true;
+    root = "/srv/www/home.lissner.net";
     extraConfig = ''
       client_max_body_size 10m;
       proxy_buffering off;
