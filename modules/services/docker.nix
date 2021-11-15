@@ -26,7 +26,7 @@ in {
       docker = {
         enable = true;
         autoPrune.enable = true;
-        enableOnBoot = false;
+        enableOnBoot = mkDefault false;
         # listenOptions = [];
       };
     };
