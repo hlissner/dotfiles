@@ -6,7 +6,7 @@
   services.vaultwarden.config = {
     signupsAllowed = false;
     invitationsAllowed = true;
-    domain = "https://p.v0.io";
+    domain = "https://vault.lissner.net";
     httpPort = 8002;
   };
 
@@ -17,10 +17,10 @@
     RestartSec = "2s";
   };
 
-  services.nginx.virtualHosts."p.v0.io" = {
+  services.nginx.virtualHosts."vault.lissner.net" = {
     forceSSL = true;
     enableACME = true;
-    root = "/srv/www/p.v0.io";
+    root = "/srv/www/vault.lissner.net";
     extraConfig = ''
       client_max_body_size 128M;
     '';

@@ -27,7 +27,7 @@ with lib;
   } else {});
 
   # So the vaultwarden CLI knows where to find my server.
-  modules.shell.vaultwarden.config.server = "p.v0.io";
+  modules.shell.vaultwarden.config.server = "vault.lissner.net";
 
 
   ## Not using syncthing atm

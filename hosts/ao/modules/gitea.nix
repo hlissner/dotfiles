@@ -4,27 +4,27 @@
   modules.services.gitea.enable = true;
 
   services.gitea = {
-    appName = "V-NOUGHT";
-    domain = "v0.io";
-    rootUrl = "https://git.v0.io/";
+    appName = "Gitea";
+    domain = "henrik.io";
+    rootUrl = "https://git.henrik.io/";
     disableRegistration = true;
     settings = {
-      server.SSH_DOMAIN = "v0.io";
+      server.SSH_DOMAIN = "henrik.io";
       mailer = {
         ENABLED = true;
-        FROM = "git@v0.io";
+        FROM = "noreply@mail.henrik.io";
         HOST = "smtp.mailgun.org:587";
-        USER = config.age.secrets.mailgun-smtp-username.path;
+        USER = config.age.secrets.gitea-smtp-username.path;
         MAILER_TYPE = "smtp";
       };
     };
-    mailerPasswordFile = config.age.secrets.mailgun-smtp-secret.path;
+    mailerPasswordFile = config.age.secrets.gitea-smtp-secret.path;
   };
 
-  services.nginx.virtualHosts."git.v0.io" = {
+  services.nginx.virtualHosts."git.henrik.io" = {
     forceSSL = true;
     enableACME = true;
-    root = "/srv/www/git.v0.io";
+    root = "/srv/www/git.henrik.io";
     locations."/".proxyPass = "http://127.0.0.1:3000";
   };
 }
