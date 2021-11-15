@@ -12,6 +12,7 @@ with lib.my;
     ./modules/backup.nix
     ./modules/gitea.nix
     ./modules/vaultwarden.nix
+    ./modules/shlink.nix
   ];
 
 

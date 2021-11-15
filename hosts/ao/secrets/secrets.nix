@@ -3,4 +3,5 @@ in {
   "vaultwarden-smtp-env.age".publicKeys = [key];
   "gitea-smtp-username.age".publicKeys = [key];
   "gitea-smtp-secret.age".publicKeys = [key];
+  "geolite-apikey.age".publicKeys = [key];
 }
