@@ -22,7 +22,7 @@
         steam.enable = true;
       };
       media = {
-        # daw.enable = true;
+        daw.enable = true;
         documents.enable = true;
         graphics.enable = true;
         mpv.enable = true;
