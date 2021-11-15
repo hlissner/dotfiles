@@ -4,7 +4,7 @@ with builtins;
 {
   modules.services.docker.enable = true;
 
-  docker-containers."shlink" = {
+  virtualisation.oci-containers.containers."shlink" = {
     image = "shlinkio/shlink:stable";
     environment = {
       "DEFAULT_DOMAIN" = "henrik.link";
