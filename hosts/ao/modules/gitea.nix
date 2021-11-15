@@ -14,7 +14,7 @@
         ENABLED = true;
         FROM = "noreply@mail.henrik.io";
         HOST = "smtp.mailgun.org:587";
-        USER = config.age.secrets.gitea-smtp-username.path;
+        USER = "postmaster@mail.henrik.io";
         MAILER_TYPE = "smtp";
       };
     };

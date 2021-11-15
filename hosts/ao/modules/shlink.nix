@@ -9,7 +9,6 @@ with builtins;
     environment = {
       "DEFAULT_DOMAIN" = "henrik.link";
       "USE_HTTPS" = "false";
-      "GEOLITE_LICENSE_KEY" = readFile config.age.secrets.geolite-apikey.path;
     };
     ports = [ "8080:8080" ];
     volumes = [];
