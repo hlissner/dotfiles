@@ -6,7 +6,7 @@
 { config, lib, pkgs, ... }:
 
 {
-  boot.kernelPackages = pkgs.linuxPackages_5_13_hardened;
+  boot.kernelPackages = pkgs.linuxPackages_5_14_hardened;
 
   nix.gc = {
     automatic = true;
