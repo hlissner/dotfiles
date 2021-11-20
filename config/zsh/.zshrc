@@ -1,15 +1,28 @@
-[ -d "$ZGEN_DIR" ] || git clone https://github.com/tarjoilija/zgen "$ZGEN_DIR"
+#!/usr/bin/env zsh
+
+# We'll handle compinit ourselves...
+export ZGEN_AUTOLOAD_COMPINIT=0
+
+# NOTE ZGEN_DIR and ZGEN_SOURCE are forward-declared in modules/shell/zsh.nix
+# NOTE Zgen is no longer maintained; zgenom is a maintained fork
+[ -d "$ZGEN_DIR" ] || git clone https://github.com/jandamm/zgenom "$ZGEN_DIR"
 source $ZGEN_SOURCE
-if ! zgen saved; then
-  echo "Initializing zgen"
-  zgen load hlissner/zsh-autopair autopair.zsh
-  zgen load zsh-users/zsh-history-substring-search
-  zgen load zdharma-continuum/history-search-multi-word
-  zgen load jeffreytse/zsh-vi-mode
-  zgen load zsh-users/zsh-completions src
-  zgen load junegunn/fzf shell
-  [ -z "$SSH_CONNECTION" ] && zgen load zdharma-continuum/fast-syntax-highlighting
-  zgen save
+
+if ! zgenom saved; then
+  echo "Initializing zgenom"
+  rm -f $ZDOTDIR/*.zwc(N)
+
+  zgenom load junegunn/fzf shell
+
+  zgenom load jeffreytse/zsh-vi-mode
+  zgenom load zsh-users/zsh-completions src
+  zgenom load zsh-users/zsh-history-substring-search
+  zgenom load zdharma-continuum/history-search-multi-word
+  zgenom load hlissner/zsh-autopair autopair.zsh
+  zgenom load zdharma-continuum/fast-syntax-highlighting
+
+  zgenom save
+  zgenom compile $ZDOTDIR
 fi
 
 source $ZDOTDIR/config.zsh
