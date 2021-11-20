@@ -5,6 +5,7 @@ if ! zgen saved; then
   zgen load hlissner/zsh-autopair autopair.zsh
   zgen load zsh-users/zsh-history-substring-search
   zgen load zdharma/history-search-multi-word
+  zgen load jeffreytse/zsh-vi-mode
   zgen load zsh-users/zsh-completions src
   zgen load junegunn/fzf shell
   [ -z "$SSH_CONNECTION" ] && zgen load zdharma/fast-syntax-highlighting
