@@ -4,11 +4,11 @@ if ! zgen saved; then
   echo "Initializing zgen"
   zgen load hlissner/zsh-autopair autopair.zsh
   zgen load zsh-users/zsh-history-substring-search
-  zgen load zdharma/history-search-multi-word
+  zgen load zdharma-continuum/history-search-multi-word
   zgen load jeffreytse/zsh-vi-mode
   zgen load zsh-users/zsh-completions src
   zgen load junegunn/fzf shell
-  [ -z "$SSH_CONNECTION" ] && zgen load zdharma/fast-syntax-highlighting
+  [ -z "$SSH_CONNECTION" ] && zgen load zdharma-continuum/fast-syntax-highlighting
   zgen save
 fi
 
