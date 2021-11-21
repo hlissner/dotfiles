@@ -58,6 +58,23 @@ if (( $+commands[exa] )); then
   alias tree='exa --tree'
 fi
 
+if (( $+commands[fasd] )); then
+  unalias z 2>/dev/null
+  z() {
+    if [ $# -gt 0 ]; then
+      fasd_cd -d "$*"
+      return
+    fi
+    # interactive selection when given no args
+    if (( $+commands[fzf] )); then
+      local dir="$(fasd -l 2>&1 | fzf --reverse --inline-info +s --tac --query "${*##-* }")"
+      [[ -n $dir ]] && cd $dir
+    else
+      fasd_cd -d -i
+    fi
+  }
+fi
+
 autoload -U zmv
 
 take() {
