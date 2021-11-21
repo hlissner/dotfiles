@@ -3,6 +3,8 @@ fpath+=( $ZDOTDIR/completions )
 zstyle ':autocomplete:*' min-delay 0.18
 zstyle ':autocomplete:*' min-input 1
 zstyle ':autocomplete:*' widget-style menu-select
+zstyle ':autocomplete:*' list-lines 12
+zstyle ':autocomplete:*' recent-dirs fasd
 
 # Expand partial paths, e.g. cd f/b/z == cd foo/bar/baz (assuming no ambiguity)
 zstyle ':completion:*:paths' path-completion yes
