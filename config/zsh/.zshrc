@@ -18,6 +18,7 @@ if ! zgenom saved; then
   zgenom load zsh-users/zsh-completions src
   zgenom load zsh-users/zsh-history-substring-search
   zgenom load zdharma-continuum/history-search-multi-word
+  zgenom load romkatv/powerlevel10k powerlevel10k
   zgenom load hlissner/zsh-autopair autopair.zsh
   zgenom load zdharma-continuum/fast-syntax-highlighting
 
