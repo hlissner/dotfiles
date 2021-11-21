@@ -4,8 +4,12 @@ export ZVM_VI_INSERT_ESCAPE_BINDKEY=jk
 bindkey -M viins '^a' beginning-of-line
 bindkey -M viins '^d' push-line-or-edit
 
-# Shift + Tab
-bindkey -M viins '^[[Z' reverse-menu-complete
+# Up arrow:
+bindkey '\e[A' history-substring-search-up
+bindkey '\eOA' history-substring-search-up
+# Down arrow:
+bindkey '\e[B' history-substring-search-down
+bindkey '\eOB' history-substring-search-down
 
 # C-z to toggle current process (background/foreground)
 fancy-ctrl-z () {

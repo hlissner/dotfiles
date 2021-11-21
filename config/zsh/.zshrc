@@ -15,9 +15,9 @@ if ! zgenom saved; then
   zgenom load junegunn/fzf shell
 
   zgenom load jeffreytse/zsh-vi-mode
+  zgenom load marlonrichert/zsh-autocomplete zsh-autocomplete.plugin.zsh
   zgenom load zsh-users/zsh-completions src
   zgenom load zsh-users/zsh-history-substring-search
-  zgenom load zdharma-continuum/history-search-multi-word
   zgenom load romkatv/powerlevel10k powerlevel10k
   zgenom load hlissner/zsh-autopair autopair.zsh
   zgenom load zdharma-continuum/fast-syntax-highlighting
