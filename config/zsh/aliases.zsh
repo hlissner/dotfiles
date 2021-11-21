@@ -49,11 +49,13 @@ alias jc='journalctl -xe'
 alias sc=systemctl
 alias ssc='sudo systemctl'
 
-if command -v exa >/dev/null; then
+if (( $+commands[exa] )); then
   alias exa="exa --group-directories-first --git";
-  alias l="exa -1";
-  alias ll="exa -lg";
-  alias la="LC_COLLATE=C exa -la";
+  alias l="exa -blF";
+  alias ll="exa -abghilmu";
+  alias llm='ll --sort=modified'
+  alias la="LC_COLLATE=C exa -ablF";
+  alias tree='exa --tree'
 fi
 
 autoload -U zmv
