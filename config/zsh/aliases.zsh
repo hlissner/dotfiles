@@ -2,7 +2,6 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias -- -='cd -'
-alias cdg='cd `git rev-parse --show-toplevel`'
 
 alias q=exit
 alias clr=clear
