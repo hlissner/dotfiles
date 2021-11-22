@@ -30,7 +30,7 @@ c.content.blocking.hosts.lists = [
 
 ## Options
 c.downloads.position = 'bottom'
-c.downloads.location.directory = os.path.expanduser("~/dl")
+c.downloads.location.directory = os.path.expanduser("~/downloads")
 c.downloads.location.prompt = False
 c.input.insert_mode.auto_leave = True
 c.input.insert_mode.auto_load = False
