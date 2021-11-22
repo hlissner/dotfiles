@@ -7,10 +7,17 @@ if [[ $TERM == dumb || -n $INSIDE_EMACS ]]; then
 fi
 
 ## Plugins
+# zgen
+# we handle compinit ourselves...
+export ZGEN_AUTOLOAD_COMPINIT=0
+
+# zsh-vi-mode
+export ZVM_INIT_MODE=sourcing
+export ZVM_VI_INSERT_ESCAPE_BINDKEY=jk
+
 # fasd
 export _FASD_DATA="$XDG_CACHE_HOME/fasd"
 export _FASD_VIMINFO="$XDG_CACHE_HOME/viminfo"
-_cache fasd --init posix-alias zsh-{hook,{c,w}comp{,-install}}
 
 # fzf
 if (( $+commands[fd] )); then
@@ -64,7 +71,7 @@ setopt HIST_BEEP                 # Beep when accessing non-existent history.
 
 ## Directories
 DIRSTACKSIZE=9
-# setopt AUTO_CD              # Auto changes to a directory without typing cd.
+unsetopt AUTO_CD            # Implicit CD slows down zsh-autocomplete
 setopt AUTO_PUSHD           # Push the old directory onto the stack on cd.
 setopt PUSHD_IGNORE_DUPS    # Do not store duplicates in the stack.
 setopt PUSHD_SILENT         # Do not print the directory stack after pushd or popd.

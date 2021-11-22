@@ -1,32 +1,39 @@
 #!/usr/bin/env zsh
-
-# We'll handle compinit ourselves...
-export ZGEN_AUTOLOAD_COMPINIT=0
+source $ZDOTDIR/config.zsh
 
 # NOTE ZGEN_DIR and ZGEN_SOURCE are forward-declared in modules/shell/zsh.nix
 # NOTE Zgen is no longer maintained; zgenom is a maintained fork
-[ -d "$ZGEN_DIR" ] || git clone https://github.com/jandamm/zgenom "$ZGEN_DIR"
-source $ZGEN_SOURCE
+if [ ! -d "$ZGEN_DIR" ]; then
+  echo "Installing jandamm/zgenom"
+  git clone https://github.com/jandamm/zgenom "$ZGEN_DIR"
+fi
+source $ZGEN_DIR/zgenom.zsh
+
+# Check for plugin and zgenom updates every 7 days
+# This does not increase the startup time.
+zgenom autoupdate
 
 if ! zgenom saved; then
   echo "Initializing zgenom"
-  rm -f $ZDOTDIR/*.zwc(N)
+  rm -f $ZDOTDIR/*.zwc(N) \
+        $XDG_CACHE_HOME/zsh/*(N) \
+        $ZGEN_INIT.zwc
 
+  # NOTE Be extra careful about plugin load order, or subtle breakage can
+  #   emerge. This is the best order I've
   zgenom load junegunn/fzf shell
-
   zgenom load jeffreytse/zsh-vi-mode
+  zgenom load zdharma-continuum/fast-syntax-highlighting
   zgenom load marlonrichert/zsh-autocomplete zsh-autocomplete.plugin.zsh
   zgenom load zsh-users/zsh-completions src
   zgenom load zsh-users/zsh-history-substring-search
   zgenom load romkatv/powerlevel10k powerlevel10k
   zgenom load hlissner/zsh-autopair autopair.zsh
-  zgenom load zdharma-continuum/fast-syntax-highlighting
 
   zgenom save
   zgenom compile $ZDOTDIR
 fi
 
-source $ZDOTDIR/config.zsh
 if [[ $TERM != dumb ]]; then
   source $ZDOTDIR/keybinds.zsh
   source $ZDOTDIR/completion.zsh
@@ -37,7 +44,8 @@ if [[ $TERM != dumb ]]; then
   # If you have host-local configuration, put it here
   _source $ZDOTDIR/local.zshrc
 
-  ##
+  ## Bootstrap
+  _cache fasd --init posix-alias zsh-{hook,{c,w}comp{,-install}}
   autoload -Uz compinit && compinit -u -d $ZSH_CACHE/zcompdump
   autopair-init
 fi

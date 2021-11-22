@@ -49,10 +49,9 @@ in {
     ];
 
     env = {
-      ZDOTDIR     = "$XDG_CONFIG_HOME/zsh";
-      ZSH_CACHE   = "$XDG_CACHE_HOME/zsh";
-      ZGEN_DIR    = "$XDG_DATA_HOME/zgenom";
-      ZGEN_SOURCE = "$ZGEN_DIR/zgenom.zsh";
+      ZDOTDIR   = "$XDG_CONFIG_HOME/zsh";
+      ZSH_CACHE = "$XDG_CACHE_HOME/zsh";
+      ZGEN_DIR  = "$XDG_DATA_HOME/zgenom";
     };
 
     home.configFile = {
@@ -79,6 +78,6 @@ in {
       '';
     };
 
-    system.userActivationScripts.cleanupZgen = "rm -fv $XDG_CACHE_HOME/zsh/*";
+    system.userActivationScripts.cleanupZgen = "rm -fv $ZGEN_DIR/init.zsh";
   };
 }

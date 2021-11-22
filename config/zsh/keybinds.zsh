@@ -1,5 +1,3 @@
-export ZVM_VI_INSERT_ESCAPE_BINDKEY=jk
-
 # Other conveniences
 bindkey -M viins '^a' beginning-of-line
 bindkey -M viins '^d' push-line-or-edit

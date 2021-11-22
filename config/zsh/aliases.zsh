@@ -60,7 +60,7 @@ fi
 
 if (( $+commands[fasd] )); then
   unalias z 2>/dev/null
-  z() {
+  function z {
     if [ $# -gt 0 ]; then
       fasd_cd -d "$*"
       return
@@ -77,16 +77,16 @@ fi
 
 autoload -U zmv
 
-take() {
+function take {
   mkdir "$1" && cd "$1";
 }; compdef take=mkdir
 
-zman() {
+function zman {
   PAGER="less -g -I -s '+/^       "$1"'" man zshall;
 }
 
 # Create a reminder with human-readable durations, e.g. 15m, 1h, 40s, etc
-r() {
+function r {
   local time=$1; shift
   sched "$time" "notify-send --urgency=critical 'Reminder' '$@'; ding";
 }; compdef r=sched

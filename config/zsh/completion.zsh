@@ -1,5 +1,6 @@
 fpath+=( $ZDOTDIR/completions )
 
+# zsh-autocomplete config
 zstyle ':autocomplete:*' min-delay 0.18
 zstyle ':autocomplete:*' min-input 1
 zstyle ':autocomplete:*' widget-style menu-select
@@ -26,51 +27,16 @@ unsetopt COMPLETE_ALIASES  # Completion for aliases
 # unsetopt ALWAYS_TO_END     # Move cursor to the end of a completed word.
 unsetopt CASE_GLOB
 
-# Use caching to make completion for commands such as dpkg and apt usable.
-# zstyle ':completion::complete:*' use-cache on
-# zstyle ':completion::complete:*' cache-path "$ZSH_CACHE/zcompcache"
-
-# Case-insensitive (all), partial-word, and then substring completion.
-# zstyle ':completion:*' matcher-list '' \
-#        'm:{a-z\-}={A-Z\_}' \
-#        'r:[^[:alpha:]]||[[:alpha:]]=** r:|=* m:{a-z\-}={A-Z\_}' \
-#        'r:[[:ascii:]]||[[:ascii:]]=** r:|=* m:{a-z\-}={A-Z\_}'
-
 # Group matches and describe.
-# zstyle ':completion:*:*:*:*:*' menu select
-# zstyle ':completion:*:matches' group 'yes'
-# zstyle ':completion:*:options' description 'yes'
 zstyle ':completion:*:corrections' format '%B%F{green}%d (errors: %e)%f%b'
 zstyle ':completion:*:messages' format '%B%F{yellow}%d%f%b'
 zstyle ':completion:*:warnings' format '%B%F{red}No such %d%f%b'
 zstyle ':completion:*:errors' format '%B%F{red}No such %d%f%b'
-zstyle ':completion:*:descriptions' format '%B%F{magenta}%d%f%b'
+zstyle ':completion:*:descriptions' format $'%{\e[35;1m%}%d%{\e[0m%}'
 zstyle ':completion:*:default' list-prompt '%S%M matches%s'
-# zstyle ':completion:*' format '%B%F{blue}%d%f%b'
-# zstyle ':completion:*' group-name ''
 
-# # Fuzzy match mistyped completions.
-# zstyle ':completion:*' completer _complete _list _match _approximate
-# zstyle ':completion:*:match:*' original only
-# zstyle ':completion:*:approximate:*' max-errors 1 numeric
-
-# # Increase the number of errors based on the length of the typed word.
-# zstyle -e ':completion:*:approximate:*' max-errors 'reply=($((($#PREFIX+$#SUFFIX)/3))numeric)'
-
-# # Don't complete unavailable commands.
-# zstyle ':completion:*:functions' ignored-patterns '(_*|pre(cmd|exec))'
-
-# # Array completion element sorting.
-# zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters
-
-# # Directories
-# zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
-# zstyle ':completion:*:*:cd:*' ignore-parents parent pwd
-# zstyle ':completion:*:*:cd:*' tag-order local-directories directory-stack path-directories
-# zstyle ':completion:*:*:cd:*:directory-stack' menu yes select
-# zstyle ':completion:*:-tilde-:*' group-order 'named-directories' 'path-directories' 'users' 'expand'
-# zstyle ':completion:*' squeeze-slashes true
-# zstyle ':completion:*' special-dirs true
+# Don't complete unavailable commands.
+zstyle ':completion:*:functions' ignored-patterns '(_*|.*|pre(cmd|exec))'
 
 # # History
 # zstyle ':completion:*:history-words' stop yes
