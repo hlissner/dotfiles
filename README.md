@@ -68,12 +68,12 @@ dotfiles over there.
    cd /mnt/etc/nixos
    
    # Create a host config in `hosts/` and add it to the repo:
-   mkdir -p hosts/$HOST/
-   nixos-generate-config --root /mnt --dir hosts/$HOST/
-   rm -f hosts/configuration.nix
-   cp hosts/kuro/config.nix hosts/$HOST/config.nix
-   vim config.nix  # configure this for your system; don't use it verbatim!
-   git add hosts/$HOST/
+   mkdir -p hosts/$HOST
+   nixos-generate-config --root /mnt --dir /etc/nixos/hosts/$HOST
+   rm -f hosts/$HOST/configuration.nix
+   cp hosts/kuro/default.nix hosts/$HOST/default.nix
+   vim hosts/$HOST/default.nix  # configure this for your system; don't use it verbatim!
+   git add hosts/$HOST
    
    # Install nixOS
    USER=$USER nixos-install --root /mnt --impure --flake .#$HOST
