@@ -11,8 +11,8 @@ in {
 
   config = mkIf cfg.enable {
     nixpkgs.overlays = [
-      (self: super: with super; {
-        awesome = super.awesome.override { luaPackages = super.luajitPackages; };
+      (self: super: {
+        awesome = super.awesome.override { lua = super.luajit; };
       })
     ];
 
