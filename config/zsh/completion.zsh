@@ -6,6 +6,7 @@ zstyle ':autocomplete:*' min-input 1
 zstyle ':autocomplete:*' widget-style menu-select
 zstyle ':autocomplete:*' list-lines 12
 zstyle ':autocomplete:*' recent-dirs fasd
+zstyle ':autocomplete:*' insert-unambiguous yes
 
 # Expand partial paths, e.g. cd f/b/z == cd foo/bar/baz (assuming no ambiguity)
 zstyle ':completion:*:paths' path-completion yes
@@ -21,7 +22,7 @@ setopt AUTO_MENU           # Show completion menu on a successive tab press.
 setopt AUTO_LIST           # Automatically list choices on ambiguous completion.
 # setopt AUTO_PARAM_SLASH    # If completed parameter is a directory, add a trailing slash.
 # setopt AUTO_PARAM_KEYS
-setopt FLOW_CONTROL        # Disable start/stop characters in shell editor.
+# setopt FLOW_CONTROL        # Disable start/stop characters in shell editor.
 unsetopt MENU_COMPLETE     # Do not autoselect the first completion entry.
 unsetopt COMPLETE_ALIASES  # Completion for aliases
 # unsetopt ALWAYS_TO_END     # Move cursor to the end of a completed word.
