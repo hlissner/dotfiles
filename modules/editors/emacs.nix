@@ -45,14 +45,10 @@ in {
       (aspellWithDicts (ds: with ds; [
         en en-computers en-science
       ]))
-      # :checkers grammar
-      languagetool
       # :tools editorconfig
       editorconfig-core-c # per-project style config
       # :tools lookup & :lang org +roam
       sqlite
-      # :lang cc
-      ccls
       # :lang javascript
       nodePackages.typescript-language-server
       # :lang latex & :lang org (latex previews)
