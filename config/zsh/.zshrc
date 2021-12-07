@@ -45,7 +45,7 @@ if [[ $TERM != dumb ]]; then
   _source $ZDOTDIR/local.zshrc
 
   ## Bootstrap
-  _cache fasd --init posix-alias zsh-{hook,{c,w}comp{,-install}}
+  _cache fasd --init posix-alias zsh-hook
   autoload -Uz compinit && compinit -u -d $ZSH_CACHE/zcompdump
   autopair-init
 fi
