@@ -44,12 +44,18 @@ in {
       env.XDG_DESKTOP_DIR = "$HOME/";
 
       modules.desktop.browsers.firefox.settings = {
+        # Default to dark theme in DevTools panel
         "devtools.theme" = "dark";
+        # Your customized toolbar settings are stored in
+        # 'browser.uiCustomization.state'. This tells firefox to sync it between
+        # machines. WARNING: This may not work across OSes. Since I use NixOS on
+        # all the machines I use Firefox on, this is no concern to me.
+        "services.sync.prefs.sync.browser.uiCustomization.state" = true;
         # Enable userContent.css and userChrome.css for our theme modules
         "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
         # Stop creating ~/Downloads!
         "browser.download.dir" = "${config.user.home}/downloads";
-        # Don't use the built-in password manager; a nixos user is more likely
+        # Don't use the built-in password manager. A nixos user is more likely
         # using an external one (you are using one, right?).
         "signon.rememberSignons" = false;
         # Do not check if Firefox is the default browser
@@ -72,6 +78,14 @@ in {
         "browser.newtab.preload" = false;
         "browser.newtabpage.directory.ping" = "";
         "browser.newtabpage.directory.source" = "data:text/plain,{}";
+        # Reduce search engine noise in the urlbar's completion window. The
+        # shortcuts and suggestions will still work, but Firefox won't clutter
+        # its UI with reminders that they exist.
+        "browser.urlbar.suggest.searches" = false;
+        "browser.urlbar.shortcuts.bookmarks" = false;
+        "browser.urlbar.shortcuts.history" = false;
+        "browser.urlbar.shortcuts.tabs" = false;
+        "browser.urlbar.showSearchSuggestionsFirst" = false;
         # Disable some not so useful functionality.
         "media.videocontrols.picture-in-picture.video-toggle.enabled" = false;
         "extensions.htmlaboutaddons.recommendations.enabled" = false;
@@ -81,6 +95,7 @@ in {
         "app.normandy.api_url" = "";
         "extensions.shield-recipe-client.enabled" = false;
         "app.shield.optoutstudies.enabled" = false;
+        "reader.parse-on-load.enabled" = false;  # "reader view"
         # Disable battery API
         # https://developer.mozilla.org/en-US/docs/Web/API/BatteryManager
         # https://bugzilla.mozilla.org/show_bug.cgi?id=1313580
