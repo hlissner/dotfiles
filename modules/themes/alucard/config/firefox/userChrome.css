@@ -4,54 +4,31 @@
                url(chrome://browser/content/browser.xhtml)
 {
   /*** TAB BAR ***/
-  /* Ensure tab doesn't show through auto-completion popup */
-  .tabbrowser-tab { z-index: 0 !important; }
-  /* Ensure tab "spacers" don't show through the completion window */
-  #tabbrowser-arrowscrollbox > spacer { z-index: -1 !important; }
-  #mainPopupSet { z-index: 9999 !important; }
+  :root {
+    --tab-min-height: 32px !important;
+  }
 
   /* Hide tabbar if only one tab */
   @import url(./css/tabs-hide-if-only-one.css);
 
-
-  /* Remove the colored overline on the focused tab */
-  .tabbrowser-tab .tab-line { background: none !important; }
+  /* Hide the close button */
+  .tabbrowser-tab .tab-close-button { display: none !important; }
 
   /* Replace favicon on tabs with close button on mouse hover */
-  .tabbrowser-tab:not(:hover) .tab-close-button,
-  .tabbrowser-tab:not([pinned]):hover .tab-icon-image { display: none !important; }
-  .tabbrowser-tab:not([pinned]):hover .tab-close-button { display:block !important; }
+  /* .tabbrowser-tab .tab-close-button { -moz-box-ordinal-group: 0 !important; } */
+  /* .tabbrowser-tab:not(:hover) .tab-close-button, */
+  /* .tabbrowser-tab:not([pinned]):hover .tab-icon-stack { display: none !important; } */
+  /* .tabbrowser-tab:not([pinned]):hover .tab-close-button { display: block !important; } */
 
-  .tabbrowser-tab:hover .tab-throbber,
-  .tabbrowser-tab:hover .tab-icon-image,
-  .tabbrowser-tab:hover .tab-sharing-icon-overlay,
-  .tabbrowser-tab:hover .tab-icon-overlay,
-  .tabbrowser-tab:hover .tab-label-container,
-  .tabbrowser-tab:hover .tab-icon-sound {
-    -moz-box-ordinal-group: 2 !important;
-  }
-
-  .tabbrowser-tab .tab-close-button {
-    margin-left: -2px !important;
-    margin-right: 4px !important;
-  }
-
-  .tab-close-button:hover {
-    fill-opacity: 0 !important;
-  }
-
-  .tabbrowser-tab::after,
-  .tabbrowser-tab::before {
-    border-left: none !important;
-    border-right: none !important;
-  }
-
-  .scrollbutton-up[orient="horizontal"]~spacer { border-width: 0px; opacity: 0 }
+  /* Hide the "all tabs" button */
+  #wrapper-alltabs-button { display: none !important; }
+  /* Hide the search engine suggestions at bottom of completion window */
+  #urlbar .urlbarView .search-one-offs { display: none !important; }
 
 
   /*** NAV BAR ***/
   /* Hide urlbar */
-  #nav-bar {
+  #nav-bar:not([customizing=true]) {
     position: relative !important;
     z-index: 2 !important;
     height: 2px !important;
@@ -61,7 +38,7 @@
     border: none !important;
   }
 
-  /* But unfocus it when we invoke it with ctrl+L */
+  /* ...but unfocus it when we invoke it with ctrl+L */
   #nav-bar:focus-within {
     height: auto !important;
     margin-bottom: 0px !important;
