@@ -40,7 +40,9 @@
       emacs.enable = true;
       vim.enable = true;
     };
-    dev = {};
+    dev = {
+      cc.enable = true;
+    };
     shell = {
       vaultwarden.enable = true;
       direnv.enable = true;
