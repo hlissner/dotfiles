@@ -20,7 +20,7 @@ if ! zgenom saved; then
         $ZGEN_INIT.zwc
 
   # NOTE Be extra careful about plugin load order, or subtle breakage can
-  #   emerge. This is the best order I've
+  #   emerge. This is the best order I've sussed out for these plugins.
   zgenom load junegunn/fzf shell
   zgenom load jeffreytse/zsh-vi-mode
   zgenom load zdharma-continuum/fast-syntax-highlighting
