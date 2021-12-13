@@ -207,6 +207,7 @@ module Hey
           puts "Swapping #{target}"
           sh [:mv, target, "#{target}.nix-store-backup"]
           sh [:cp, "#{target}.nix-store-backup", target]
+          sh [:chmod, "u+rw", target]
         else
           puts "Not a valid target: #{target}"
           exit 1
