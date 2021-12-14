@@ -6,6 +6,7 @@ function _cache {
       echo "Caching $1"
       mkdir -p $cache_dir
       "$@" >$cache
+      chmod 600 $cache
   fi
   if [[ -o interactive ]]; then
       source $cache || rm -f $cache
