@@ -59,19 +59,11 @@ if (( $+commands[exa] )); then
 fi
 
 if (( $+commands[fasd] )); then
+  # fuzzy completion with 'z' when called without args
   unalias z 2>/dev/null
   function z {
-    if [ $# -gt 0 ]; then
-      fasd_cd -d "$*"
-      return
-    fi
-    # interactive selection when given no args
-    if (( $+commands[fzf] )); then
-      local dir="$(fasd -l 2>&1 | fzf --reverse --inline-info +s --tac --query "${*##-* }")"
-      [[ -n $dir ]] && cd $dir
-    else
-      fasd_cd -d -i
-    fi
+    [ $# -gt 0 ] && _z "$*" && return
+    cd "$(_z -l 2>&1 | fzf --height 40% --nth 2.. --reverse --inline-info +s --tac --query "${*##-* }" | sed 's/^[0-9,.]* *//')"
   }
 fi
 

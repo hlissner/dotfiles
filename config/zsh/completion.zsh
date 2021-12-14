@@ -1,12 +1,9 @@
 fpath+=( $ZDOTDIR/completions )
 
-# zsh-autocomplete config
-zstyle ':autocomplete:*' min-delay 0.18
-zstyle ':autocomplete:*' min-input 1
-zstyle ':autocomplete:*' widget-style menu-select
-zstyle ':autocomplete:*' list-lines 12
-zstyle ':autocomplete:*' recent-dirs fasd
-zstyle ':autocomplete:*' insert-unambiguous yes
+# Don't offer history completion; we have fzf, C-r, and
+# zsh-history-substring-search for that.
+ZSH_AUTOSUGGEST_STRATEGY=(completion)
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=30
 
 # Expand partial paths, e.g. cd f/b/z == cd foo/bar/baz (assuming no ambiguity)
 zstyle ':completion:*:paths' path-completion yes
@@ -39,14 +36,14 @@ zstyle ':completion:*:default' list-prompt '%S%M matches%s'
 # Don't complete unavailable commands.
 zstyle ':completion:*:functions' ignored-patterns '(_*|.*|pre(cmd|exec))'
 
-# # History
-# zstyle ':completion:*:history-words' stop yes
-# zstyle ':completion:*:history-words' remove-all-dups yes
-# zstyle ':completion:*:history-words' list false
-# zstyle ':completion:*:history-words' menu yes
+# History
+zstyle ':completion:*:history-words' stop yes
+zstyle ':completion:*:history-words' remove-all-dups yes
+zstyle ':completion:*:history-words' list false
+zstyle ':completion:*:history-words' menu yes
 
-# # Environmental Variables
-# zstyle ':completion::*:(-command-|export):*' fake-parameters ${${${_comps[(I)-value-*]#*,}%%,*}:#-*-}
+# Environmental Variables
+zstyle ':completion::*:(-command-|export):*' fake-parameters ${${${_comps[(I)-value-*]#*,}%%,*}:#-*-}
 
 # Populate hostname completion.
 zstyle -e ':completion:*:hosts' hosts 'reply=(
