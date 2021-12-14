@@ -34,7 +34,10 @@ if ! zgenom saved; then
   zgenom compile $ZDOTDIR
 fi
 
+## Bootstrap interactive sessions
 if [[ $TERM != dumb ]]; then
+  autoload -Uz compinit && compinit -u -d $ZSH_CACHE/zcompdump
+
   source $ZDOTDIR/keybinds.zsh
   source $ZDOTDIR/completion.zsh
   source $ZDOTDIR/aliases.zsh
@@ -44,8 +47,6 @@ if [[ $TERM != dumb ]]; then
   # If you have host-local configuration, put it here
   _source $ZDOTDIR/local.zshrc
 
-  ## Bootstrap
-  _cache fasd --init posix-alias zsh-hook
-  autoload -Uz compinit && compinit -u -d $ZSH_CACHE/zcompdump
+  _cache fasd --init posix-alias zsh-{hook,{c,w}comp{,-install}}
   autopair-init
 fi
