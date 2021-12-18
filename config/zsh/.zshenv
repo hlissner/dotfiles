@@ -23,3 +23,12 @@ function _source {
 _source ${0:a:h}/extra.zshenv
 # If you have host-local configuration, this is where you'd put it
 _source $ZDOTDIR/local.zshenv
+
+# Be more restrictive with permissions; no one has any business reading things
+# that don't belong to them.
+if (( EUID != 0 )); then
+  umask 027
+else
+  # Be even less permissive if root.
+  umask 077
+fi
