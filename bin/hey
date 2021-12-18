@@ -69,12 +69,33 @@ module Hey
       return result
     end
   end
-  def self.rebuild(*args, sudo: false, host: nil)
-    host ||= ENV['HOST'] || `hostname`.rstrip
-    sh ["nixos-rebuild",
-        "--flake", "#{@@opts[:flake]}##{host}",
-        "--option", "pure-eval", "no",
-        *args], sudo: sudo
+  def self.rebuild(*args, sudo: false)
+    withLockFile do
+      sh ["nixos-rebuild",
+          "--flake", "#{@@opts[:flake]}##{@@opts[:host]}",
+          "--option", "pure-eval", "no",
+          *args], sudo: sudo
+    end
+  end
+  def self.withLockFile(&block)
+    puts "Using flake: #{@@opts[:flake]}##{@@opts[:host]}"
+    lockfile = "#{@@opts[:flake]}/hosts/#{@@opts[:host]}/flake.lock"
+    lockfileDest = "#{@@opts[:flake]}/flake.lock"
+    user_error "Lockfile already exists in flake root! Aborting..." if File.exists? lockfileDest
+
+    Signal.trap('TERM') { throw :exit }
+    Signal.trap('INT')  { throw :exit }
+    if not File.directory?(File.expand_path("#{@@opts[:flake]}/hosts/#{@@opts[:host]}"))
+      user_error "Host #{@@opts[:host]} not found in #{@@opts[:flake]}"
+    else
+      sh [:cp, "-f", lockfile, lockfileDest] if File.exists? lockfile
+      catch :exit do
+        sh [:git, "add", "-f", lockfileDest]
+        block.call
+      end
+      sh [:mv, "-f", lockfileDest, lockfile]
+      sh [:git, :restore, "--staged", lockfileDest]
+    end
   end
 
   #
@@ -94,14 +115,18 @@ module Hey
   defcmd [:check, :ch] do
     desc "Run 'nix flake check' on your dotfiles"
     lambda do |args|
-      sh ["nix", "flake", "check", @@opts[:flake]]
+      withLockFile do
+        sh ["nix", "flake", "check", @@opts[:flake]]
+      end
     end
   end
 
   defcmd :show do
     desc "[ARGS...]", "Run 'nix flake show' on your dotfiles"
     lambda do |args|
-      sh ["nix", "flake", "show", @@opts[:flake]]
+      withLockFile do
+        sh ["nix", "flake", "show", @@opts[:flake]]
+      end
     end
   end
 
@@ -136,8 +161,7 @@ module Hey
                 @@opts[:fast]  ? "--fast"       : nil,
                 @@opts[:debug] ? "--show-trace" : nil,
                 *args,
-                sudo: !@@opts[:user],
-                host: @@opts[:host])
+                sudo: !@@opts[:user])
       end
     end
   end
@@ -153,14 +177,16 @@ module Hey
     desc "Update specific flakes or all of them"
     args "[INPUT...]"
     lambda do |args|
-      if args.empty?
-        puts "Updating all flakes.."
-        sh ["nix", "flake", "update", @@opts[:flake], "--impure"]
-      else
-        puts "Trying to update flakes: #{args.join ' '}"
-        sh ["nix", "flake", "lock", "--impure"]
-             .concat(args.map { |f| [ "--update-input", f ]}.flatten)
-             .concat([@@opts[:flake]])
+      withLockFile do
+        if args.empty?
+          puts "Updating all flakes.."
+          sh ["nix", "flake", "update", @@opts[:flake], "--impure"]
+        else
+          puts "Trying to update flakes: #{args.join ' '}"
+          sh ["nix", "flake", "lock", "--impure"]
+               .concat(args.map { |f| [ "--update-input", f ]}.flatten)
+               .concat([@@opts[:flake]])
+        end
       end
     end
   end
@@ -337,11 +363,15 @@ module Hey
     if cmd
       @@commands[cmd].fn.call args
     elsif command
-      puts "Couldn't recognize command '#{command}'"
-      exit 1
+      user_error "Couldn't recognize command '#{command}'"
     else
       raise UsageError
     end
+  end
+
+  def self.user_error message
+    puts "\e[31m#{message}\e[0m"
+    exit 1
   end
 
   def self.run args=[]
@@ -364,9 +394,9 @@ module Hey
     if @@opts[:flake] and @@opts[:flake].include? "#"
       @@opts[:flake], @@opts[:host] = @@opts[:flake].split '#'
     end
-    if not @@opts[:flake] or @@opts[:flake].empty?
-      @@opts[:flake] = File.expand_path('../', File.dirname(__FILE__))
-    end
+    @@opts[:host] ||= ENV['HOST'] || `hostname`.rstrip
+    @@opts[:flake] ||= File.expand_path('../', File.dirname(__FILE__))
+    @@opts[:flake] = File.expand_path(@@opts[:flake])
 
     begin
       args.unshift("help") if @@opts[:help]
@@ -374,6 +404,10 @@ module Hey
         puts "Error: No command specified!"
         puts
         raise UsageError
+      elsif not @@opts[:flake] || @@opts[:flake].empty?
+        user_error "No flake specified"
+      elsif not @@opts[:host] || @opts[:host].empty?
+        user_error "No host specified"
       else
         call args.first, args.drop(1)
       end
