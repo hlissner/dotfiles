@@ -97,6 +97,20 @@ module Hey
     end
   end
 
+  defcmd :info do
+    desc "Retrieve details (including SHA) for a REPO."
+    opts '--type VCS', "What version control system to use (default is git)"
+    args "REPO", "[QUERY]"
+    lambda do |args|
+      user_error "No repo specified" unless args.length > 0
+      repo, query = args
+      repo, commit = repo.split ":"
+      repo = "https://github.com/#{repo}" if repo.match /^[^\/]+\/[^\/]+$/
+      sh ["nix-shell", "-p" "nix-prefetch-git", "--run",
+          "nix-prefetch-#{@@opts[:type] || :git}", "--quiet", repo, commit]
+    end
+  end
+
   defcmd :show do
     desc "[ARGS...]", "Run 'nix flake show' on your dotfiles"
     lambda do |args|
