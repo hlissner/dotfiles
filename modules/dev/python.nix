@@ -8,15 +8,16 @@
 
 with lib;
 with lib.my;
-let cfg = config.modules.dev.python;
+let devCfg = config.modules.dev;
+    cfg = devCfg.python;
 in {
   options.modules.dev.python = {
     enable = mkBoolOpt false;
-    enableGlobally = mkBoolOpt false;
+    xdg.enable = mkBoolOpt devCfg.xdg.enable;
   };
 
-  config = mkIf cfg.enable (mkMerge [
-    (mkIf cfg.enableGlobally {
+  config = mkMerge [
+    (mkIf cfg.enable {
       user.packages = with pkgs; [
         python37
         python37Packages.pip
@@ -37,7 +38,7 @@ in {
       };
     })
 
-    {
+    (mkIf cfg.xdg.enable {
       env.IPYTHONDIR      = "$XDG_CONFIG_HOME/ipython";
       env.PIP_CONFIG_FILE = "$XDG_CONFIG_HOME/pip/pip.conf";
       env.PIP_LOG_FILE    = "$XDG_DATA_HOME/pip/log";
@@ -46,6 +47,6 @@ in {
       env.PYTHONSTARTUP   = "$XDG_CONFIG_HOME/python/pythonrc";
       env.PYTHON_EGG_CACHE = "$XDG_CACHE_HOME/python-eggs";
       env.JUPYTER_CONFIG_DIR = "$XDG_CONFIG_HOME/jupyter";
-    }
-  ]);
+    })
+  ];
 }

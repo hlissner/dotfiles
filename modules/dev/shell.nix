@@ -9,15 +9,23 @@
 
 with lib;
 with lib.my;
-let cfg = config.modules.dev.shell;
+let devCfg = config.modules.dev;
+    cfg = devCfg.shell;
 in {
   options.modules.dev.shell = {
     enable = mkBoolOpt false;
+    xdg.enable = mkBoolOpt devCfg.xdg.enable;
   };
 
-  config = mkIf cfg.enable {
-    user.packages = with pkgs; [
-      shellcheck
-    ];
-  };
+  config = mkMerge [
+    (mkIf cfg.enable {
+      user.packages = with pkgs; [
+        shellcheck
+      ];
+    })
+
+    (mkIf cfg.xdg.enable {
+      # TODO
+    })
+  ];
 }

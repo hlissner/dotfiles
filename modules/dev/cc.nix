@@ -8,20 +8,28 @@
 
 with lib;
 with lib.my;
-let cfg = config.modules.dev.cc;
+let devCfg = config.modules.dev;
+    cfg = devCfg.cc;
 in {
   options.modules.dev.cc = {
     enable = mkBoolOpt false;
+    xdg.enable = mkBoolOpt devCfg.xdg.enable;
   };
 
-  config = mkIf cfg.enable {
-    user.packages = with pkgs; [
-      clang
-      gcc
-      bear
-      gdb
-      cmake
-      llvmPackages.libcxx
-    ];
-  };
+  config = mkMerge [
+    (mkIf cfg.enable {
+      user.packages = with pkgs; [
+        clang
+        gcc
+        bear
+        gdb
+        cmake
+        llvmPackages.libcxx
+      ];
+    })
+
+    (mkIf cfg.xdg.enable {
+      # TODO
+    })
+  ];
 }

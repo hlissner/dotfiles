@@ -7,19 +7,20 @@
 
 with lib;
 with lib.my;
-let cfg = config.modules.dev.node;
-    node = pkgs.nodejs_latest;
+let devCfg = config.modules.dev;
+    cfg = devCfg.node;
 in {
   options.modules.dev.node = {
     enable = mkBoolOpt false;
-    enableGlobally = mkBoolOpt false;
+    xdg.enable = mkBoolOpt devCfg.xdg.enable;
   };
 
-  config = mkIf cfg.enable (mkMerge [
-    (mkIf cfg.enableGlobally {
-      user.packages = with pkgs; [
+  config = mkMerge [
+    (let node = pkgs.nodejs_latest;
+     in mkIf cfg.enable {
+      user.packages = [
         node
-        yarn
+        pkgs.yarn
       ];
 
       # Run locally installed bin-script, e.g. n coffee file.coffee
@@ -31,7 +32,7 @@ in {
       env.PATH = [ "$(${pkgs.yarn}/bin/yarn global bin)" ];
     })
 
-    {
+    (mkIf cfg.xdg.enable {
       env.NPM_CONFIG_USERCONFIG = "$XDG_CONFIG_HOME/npm/config";
       env.NPM_CONFIG_CACHE      = "$XDG_CACHE_HOME/npm";
       env.NPM_CONFIG_TMP        = "$XDG_RUNTIME_DIR/npm";
@@ -42,6 +43,6 @@ in {
         cache=$XDG_CACHE_HOME/npm
         prefix=$XDG_DATA_HOME/npm
       '';
-    }
-  ]);
+    })
+  ];
 }
