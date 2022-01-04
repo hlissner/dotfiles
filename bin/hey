@@ -70,32 +70,10 @@ module Hey
     end
   end
   def self.rebuild(*args, sudo: false)
-    withLockFile do
-      sh ["nixos-rebuild",
-          "--flake", "#{@@opts[:flake]}##{@@opts[:host]}",
-          "--option", "pure-eval", "no",
-          *args], sudo: sudo
-    end
-  end
-  def self.withLockFile(&block)
-    puts "Using flake: #{@@opts[:flake]}##{@@opts[:host]}"
-    lockfile = "#{@@opts[:flake]}/hosts/#{@@opts[:host]}/flake.lock"
-    lockfileDest = "#{@@opts[:flake]}/flake.lock"
-    user_error "Lockfile already exists in flake root! Aborting..." if File.exists? lockfileDest
-
-    Signal.trap('TERM') { throw :exit }
-    Signal.trap('INT')  { throw :exit }
-    if not File.directory?(File.expand_path("#{@@opts[:flake]}/hosts/#{@@opts[:host]}"))
-      user_error "Host #{@@opts[:host]} not found in #{@@opts[:flake]}"
-    else
-      sh [:cp, "-f", lockfile, lockfileDest] if File.exists? lockfile
-      catch :exit do
-        sh [:git, "add", "-f", lockfileDest]
-        block.call
-      end
-      sh [:mv, "-f", lockfileDest, lockfile]
-      sh [:git, :restore, "--staged", lockfileDest]
-    end
+    sh ["nixos-rebuild",
+        "--flake", "#{@@opts[:flake]}##{@@opts[:host]}",
+        "--option", "pure-eval", "no",
+        *args], sudo: sudo
   end
 
   #
@@ -115,18 +93,14 @@ module Hey
   defcmd [:check, :ch] do
     desc "Run 'nix flake check' on your dotfiles"
     lambda do |args|
-      withLockFile do
-        sh ["nix", "flake", "check", @@opts[:flake]]
-      end
+      sh ["nix", "flake", "check", @@opts[:flake]]
     end
   end
 
   defcmd :show do
     desc "[ARGS...]", "Run 'nix flake show' on your dotfiles"
     lambda do |args|
-      withLockFile do
-        sh ["nix", "flake", "show", @@opts[:flake]]
-      end
+      sh ["nix", "flake", "show", @@opts[:flake]]
     end
   end
 
@@ -177,16 +151,14 @@ module Hey
     desc "Update specific flakes or all of them"
     args "[INPUT...]"
     lambda do |args|
-      withLockFile do
-        if args.empty?
-          puts "Updating all flakes.."
-          sh ["nix", "flake", "update", @@opts[:flake], "--impure"]
-        else
-          puts "Trying to update flakes: #{args.join ' '}"
-          sh ["nix", "flake", "lock", "--impure"]
-               .concat(args.map { |f| [ "--update-input", f ]}.flatten)
-               .concat([@@opts[:flake]])
-        end
+      if args.empty?
+        puts "Updating all flakes.."
+        sh ["nix", "flake", "update", @@opts[:flake], "--impure"]
+      else
+        puts "Trying to update flakes: #{args.join ' '}"
+        sh ["nix", "flake", "lock", "--impure"]
+             .concat(args.map { |f| [ "--update-input", f ]}.flatten)
+             .concat([@@opts[:flake]])
       end
     end
   end
