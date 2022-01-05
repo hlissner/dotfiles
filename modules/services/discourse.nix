@@ -14,7 +14,6 @@ in {
     services.discourse = {
       enable = true;
       enableACME = true;
-      sidekiqProcesses = config.nix.maxJobs / 2;
       # plugins = with config.services.discourse.package.plugins; [
       #   discourse-akismet
       #   discourse-chat-integration
