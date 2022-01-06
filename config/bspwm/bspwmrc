@@ -10,6 +10,9 @@ export MONITORS=( $(xrandr -q | grep ' connected' | cut -d' ' -f1) )
 MONITOR=${MONITOR:-${MONITORS[0]}}
 
 # Only have workspaces for primary monitor
+for monitor in $MONITORS; do
+  bspc monitor $monitor -d 0
+done
 bspc monitor $MONITOR -d {1,2,3,4,5}
 
 bspc config remove_disabled_monitors true
