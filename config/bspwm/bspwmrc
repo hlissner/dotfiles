@@ -29,7 +29,7 @@ bspc rule -a feh state=fullscreen
 bspc rule -a 'Emacs:org*' state=floating
 bspc rule -a 'Emacs:scratch' state=floating
 bspc rule -a 'Emacs:emacs-everywhere' state=floating sticky=on
-bspc rule -a '*:scratch' state=floating sticky=on center=on border=off rectangle=1000x800+0+0
+bspc rule -a '*:scratch' state=floating sticky=on border=off rectangle=1000x460+480+620
 
 #
 for file in $XDG_CONFIG_HOME/bspwm/rc.d/*; do
