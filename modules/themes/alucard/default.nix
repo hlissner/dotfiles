@@ -17,6 +17,30 @@ in {
             iconTheme = "Paper";
             cursorTheme = "Paper";
           };
+          fonts = {
+            sans.name = "Fira Sans";
+            mono.name = "Fira Code";
+          };
+          colors = rec {
+            black         = "#1E2029";
+            red           = "#ffb86c";
+            green         = "#50fa7b";
+            yellow        = "#f0c674";
+            blue          = "#61bfff";
+            magenta       = "#bd93f9";
+            cyan          = "#8be9fd";
+            silver        = "#e2e2dc";
+            grey          = "#5B6268";
+            brightred     = "#de935f";
+            brightgreen   = "#0189cc";
+            brightyellow  = "#f9a03f";
+            brightblue    = "#8be9fd";
+            brightmagenta = "#ff79c6";
+            brightcyan    = "#0189cc";
+            white         = "#f8f8f2";
+
+            fg            = silver;
+          };
         };
 
         shell.zsh.rcFiles  = [ ./config/zsh/prompt.zsh ];
@@ -49,10 +73,6 @@ in {
           siji
           font-awesome-ttf
         ];
-        fontconfig.defaultFonts = {
-          sansSerif = ["Fira Sans"];
-          monospace = ["Fira Code"];
-        };
       };
 
       # Compositor
