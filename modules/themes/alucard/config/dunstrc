@@ -1,3 +1,5 @@
+{ colors, fonts, ... }:
+''
 [global]
 alignment = left
 bounce_freq = 0
@@ -5,9 +7,9 @@ browser = firefox -new-tab
 corner_radius = 2
 dmenu = rofi -dmenu -p dunst:
 follow = none
-font = Fira Sans 11
+font = ${fonts.sans.name} ${toString(fonts.sans.size)}
 format = "<b>%s</b>\n%b"
-frame_color = "#1a1c25"
+frame_color = "${colors.types.border}"
 frame_width = 1
 # geometry [{width}]x{height}][+/-{x}+/-{y}]
 geometry = "440x15-26+26"
@@ -34,16 +36,17 @@ transparency = 5
 word_wrap = yes
 
 [urgency_low]
-background = "#1E2029"
-foreground = "#bbc2cf"
+background = "${colors.types.bg}"
+foreground = "${colors.types.fg}"
 timeout = 8
 
 [urgency_normal]
-background = "#2a2d39"
-foreground = "#bbc2cf"
+background = "${colors.types.panelbg}"
+foreground = "${colors.types.fg}"
 timeout = 14
 
 [urgency_critical]
 background = "#cc6666"
-foreground = "#1E2029"
+foreground = "${colors.types.bg}"
 timeout = 0
+''

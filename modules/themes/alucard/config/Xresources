@@ -21,7 +21,6 @@ st.borderpx: 10
 
 !! urxvt
 URxvt*depth:                   32
-URxvt*.background:             bg
 URxvt*.borderless:             1
 URxvt*.buffered:               true
 URxvt*.cursorBlink:            true

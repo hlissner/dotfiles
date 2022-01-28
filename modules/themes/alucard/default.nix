@@ -21,7 +21,7 @@ in {
             sans.name = "Fira Sans";
             mono.name = "Fira Code";
           };
-          colors = rec {
+          colors = {
             black         = "#1E2029";
             red           = "#ffb86c";
             green         = "#50fa7b";
@@ -39,7 +39,9 @@ in {
             brightcyan    = "#0189cc";
             white         = "#f8f8f2";
 
-            fg            = silver;
+            types.fg      = "#bbc2cf";
+            types.panelbg = "#21242b";
+            types.border  = "#1a1c25";
           };
         };
 
@@ -97,10 +99,10 @@ in {
 
       # Login screen theme
       services.xserver.displayManager.lightdm.greeters.mini.extraConfig = ''
-        text-color = "#ff79c6"
-        password-background-color = "#1E2029"
-        window-color = "#181a23"
-        border-color = "#181a23"
+        text-color = "${cfg.colors.magenta}"
+        password-background-color = "${cfg.colors.black}"
+        window-color = "${cfg.colors.types.border}"
+        border-color = "${cfg.colors.types.border}"
       '';
 
       # Other dotfiles
@@ -110,15 +112,15 @@ in {
           "xtheme/90-theme".source = ./config/Xresources;
         }
         (mkIf desktop.bspwm.enable {
-          "bspwm/rc.d/polybar".source = ./config/polybar/run.sh;
-          "bspwm/rc.d/theme".source = ./config/bspwmrc;
+          "bspwm/rc.d/00-theme".source = ./config/bspwmrc;
+          "bspwm/rc.d/95-polybar".source = ./config/polybar/run.sh;
         })
         (mkIf desktop.apps.rofi.enable {
           "rofi/theme" = { source = ./config/rofi; recursive = true; };
         })
         (mkIf (desktop.bspwm.enable || desktop.stumpwm.enable) {
           "polybar" = { source = ./config/polybar; recursive = true; };
-          "dunst/dunstrc".source = ./config/dunstrc;
+          "dunst/dunstrc".text = import ./config/dunstrc cfg;
           "Dracula-purple-solid-kvantum" = {
             recursive = true;
             source = "${pkgs.unstable.dracula-theme}/share/themes/Dracula/kde/kvantum/Dracula-purple-solid";

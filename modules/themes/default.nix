@@ -35,7 +35,7 @@ in {
 
     onReload = mkOpt (attrsOf lines) {};
 
-    fonts = rec {
+    fonts = {
       # TODO Use submodules
       mono = {
         name = mkOpt str "Monospace";
@@ -66,28 +66,43 @@ in {
       white         = mkOpt str "#FFFFFF"; # 15
 
       # Color classes
-      bg        = mkOpt str cfg.colors.black;
-      fg        = mkOpt str cfg.colors.white;
-      error     = mkOpt str cfg.colors.red;
-      warning   = mkOpt str cfg.colors.yellow;
-      highlight = mkOpt str cfg.colors.blue;
+      types = {
+        bg        = mkOpt str cfg.colors.black;
+        fg        = mkOpt str cfg.colors.white;
+        panelbg   = mkOpt str cfg.colors.types.bg;
+        panelfg   = mkOpt str cfg.colors.types.fg;
+        border    = mkOpt str cfg.colors.types.bg;
+        error     = mkOpt str cfg.colors.red;
+        warning   = mkOpt str cfg.colors.yellow;
+        highlight = mkOpt str cfg.colors.white;
+      };
     };
   };
 
   config = mkIf (cfg.active != null) (mkMerge [
-    # Read xresources files in ~/.config/xtheme/* to allow modular
-    # configuration of Xresources.
-    (let xrdb = ''${pkgs.xorg.xrdb}/bin/xrdb -override "$XDG_CONFIG_HOME"/xtheme/*'';
+    # Read xresources files in ~/.config/xtheme/* to allow modular configuration
+    # of Xresources.
+    (let xrdb = ''cat "$XDG_CONFIG_HOME"/xtheme/* | ${pkgs.xorg.xrdb}/bin/xrdb -load'';
      in {
-       services.xserver.displayManager.sessionCommands = xrdb;
+       home.configFile."xtheme.init" = {
+         text = xrdb;
+         executable = true;
+       };
        modules.theme.onReload.xtheme = xrdb;
      })
+
+    (mkIf config.modules.desktop.bspwm.enable {
+      home.configFile."bspwm/rc.d/05-init" = {
+        text = "$XDG_CONFIG_HOME/xtheme.init";
+        executable = true;
+      };
+    })
 
     {
       home.configFile = {
         "xtheme/00-init".text = with cfg.colors; ''
-          #define bg   ${bg}
-          #define fg   ${fg}
+          #define bg   ${types.bg}
+          #define fg   ${types.fg}
           #define blk  ${black}
           #define red  ${red}
           #define grn  ${green}
@@ -125,8 +140,8 @@ in {
           *.color14: bcyn
           *.color15: bwht
         '';
-        "xtheme/05-fonts".text = with cfg.fonts; ''
-          *.font: xft:${mono.name}:pixelsize=${toString(mono.size)}
+        "xtheme/05-fonts".text = with cfg.fonts.mono; ''
+          *.font: xft:${name}:pixelsize=${toString(size)}
         '';
         # GTK
         "gtk-3.0/settings.ini".text = ''
