@@ -6,9 +6,9 @@ declaratively, right? Walked right into that NixOS ambush, same as us, and those
 dotfiles over there.
 
 > **Disclaimer:** _This is not a community framework or distribution._ It's a
-> private configuration and an ongoing experiment while I feel out NixOS. I make
-> no guarantees that it will work out of the box for anyone but myself. It may
-> also change drastically and without warning. 
+> private configuration and an ongoing experiment to feel out NixOS. I make no
+> guarantees that it will work out of the box for anyone but myself. It may also
+> change drastically and without warning. 
 > 
 > Until I can bend spoons with my nix-fu, please don't treat me like an
 > authority or expert in the NixOS space. Seek help on [the NixOS
@@ -24,15 +24,15 @@ dotfiles over there.
 
 ------
 
-| | |
-|-|-|
-| **Shell:** | zsh + zgen |
-| **DM:** | lightdm + lightdm-mini-greeter |
-| **WM:** | bspwm + polybar |
-| **Editor:** | [Doom Emacs][doom-emacs] (and occasionally [vim]) |
-| **Terminal:** | st |
-| **Launcher:** | rofi |
-| **Browser:** | firefox |
+|                |                                                          |
+|----------------|----------------------------------------------------------|
+| **Shell:**     | zsh + zgenom                                             |
+| **DM:**        | lightdm + lightdm-mini-greeter                           |
+| **WM:**        | bspwm + polybar                                          |
+| **Editor:**    | [Doom Emacs][doom-emacs]                                 |
+| **Terminal:**  | st                                                       |
+| **Launcher:**  | rofi                                                     |
+| **Browser:**   | firefox                                                  |
 | **GTK Theme:** | [Ant Dracula](https://github.com/EliverLara/Ant-Dracula) |
 
 -----
@@ -90,7 +90,7 @@ dotfiles over there.
 
 ## Management
 
-And I say, `bin/hey`. [What's going on?](http://hemansings.com/)
+And I say, `bin/hey`, [what's going on?](http://hemansings.com/)
 
 ```
 Usage: hey [global-options] [command] [sub-options]
@@ -106,7 +106,7 @@ Available Commands:
   search                 Search nixpkgs for a package
   show                   [ARGS...]
   ssh HOST [COMMAND]     Run a bin/hey command on a remote NixOS system
-  swap PATH [PATH...]    Recursively swap nix-store symlinks with copies (or back).
+  swap PATH [PATH...]    Recursively swap nix-store symlinks with copies (and back).
   test                   Quickly rebuild, for quick iteration
   theme THEME_NAME       Quickly swap to another theme module
   update [INPUT...]      Update specific flakes or all of them
@@ -124,8 +124,12 @@ Options:
 
 + **Why NixOS?**
 
-  Because declarative, generational, and immutable configuration is a godsend
-  when you have a fleet of computers to manage.
+  Because managing hundreds of servers is the tenth circle of hell without a
+  declarative, generational, and immutable single-source-of-truth configuration
+  framework like NixOS.
+  
+  Sure beats the nightmare of capistrano/chef/puppet/ansible + brittle shell
+  scripts I left behind.
 
 + **Should I use NixOS?**
 
@@ -133,39 +137,36 @@ Options:
   
   **Long answer:** no really. Don't.
   
-  **Long long answer:** no really, I'm not kidding. Don't.
+  **Long long answer:** I'm not kidding. Don't.
   
-  **Unsigned long long answer:** Ok ok. Do any of these sound like you?
+  **Unsigned long long answer:** Alright alright. Here's why not:
 
-  - You only have one (maybe two) systems to NixOS-ify.
-  - You lack the discipline or dedication to learn a new language, google your
-    issues, and trial'n'error your way to NixOS enlightenment -- all on your
-    own.
-  - "Declarative", "generational", and "immutable" don't make you _fully_ erect.
-  - You're a unix virgin or have limited experience with Linux distros.
-  - You arrived at NixOS by following trends, rather than your needs.
-  - You need somebody else to tell you whether or not you need NixOS.
-  
-  **Then no, you should _not_ use NixOS.**
-
-  - The learning curve is steep.
+  - Its learning curve is steep.
+  - You _will_ trial and error your way to enlightenment, if you survive long
+    enough.
   - NixOS is unlike other Linux distros. Your issues will be unique and
     difficult to google.
+  - If the words "declarative", "generational", and "immutable" don't make you
+    _fully_ erect, you're considering NixOS for the wrong reasons.
   - The overhead of managing a NixOS config will rarely pay for itself with
-    fewer than 3 systems.
-  - Official documentation for Nix and NixOS is vast, but shallow.
-  - Unofficial resources and example configs are sparse, tend to either be too
-    simple or too complex, or outdated.
-  - The Nix language is obtuse and its toolchain is complicated; multiply this
-    by 1,000 if you've never touched the shell or a functional language before.
-    And you _will_ have to learn Nix to do a fraction of what makes NixOS worth
-    any of the trouble.
-  - A decent grasp of Linux and its ecosystem is necessary to distinguish
-    Nix/NixOS issues from conventional Linux issues (and to debug them).
-    
-  If none of this has deterred you, then you didn't need my advice in the first
-  place. Stop procrastinating and try NixOS.
+    fewer than 3 systems (perhaps another distro with nix on top would suit you
+    better?).
+  - Official documentation for Nix(OS) is vast, but shallow.
+  - Unofficial resources and example configs are sparse and tend to be either
+    too simple or too complex (or outdated).
+  - The Nix language is obtuse and its toolchain is unintuitive. This is made
+    infinitely worse if you've never touched the shell or a functional language
+    before, but you'll _need_ to learn it to do even a fraction of what makes
+    NixOS worth all the trouble.
+  - A decent grasp of Linux and its ecosystem is a must, if only to distinguish
+    Nix(OS) issues from Linux (or upstream) issues -- as well as to debug them
+    or report them to the correct authority (and coherently).
+  - If you need somebody else to tell you whether or not you need NixOS, you
+    don't need NixOS.
 
+  If none of this has deterred you, then you didn't need my advice in the first
+  place. Stop procrastinating and try NixOS!
+  
 + **How do you manage secrets?**
 
   With [agenix].
@@ -199,10 +200,12 @@ Options:
     [through](https://github.com/purcell/dotfiles).
   + [Some notes about using Nix](https://github.com/justinwoo/nix-shorts)
   + [What helped me figure out generators (for npm, yarn, python and haskell)](https://myme.no/posts/2020-01-26-nixos-for-development.html)
+  + [Learn from someone else's descent into madness; this journals his
+    experience digging into the NixOS
+    ecosystem](https://www.ianthehenry.com/posts/how-to-learn-nix/introduction/)
   + [What y'all will need when Nix drives you to drink.](https://www.youtube.com/watch?v=Eni9PPPPBpg)
 
 
 [doom-emacs]: https://github.com/hlissner/doom-emacs
-[vim]: https://github.com/hlissner/.vim
 [nixos]: https://releases.nixos.org/?prefix=nixos/unstable/
 [agenix]: https://github.com/ryantm/agenix

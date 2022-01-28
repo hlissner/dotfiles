@@ -2,7 +2,7 @@
 source $ZDOTDIR/config.zsh
 
 # NOTE ZGEN_DIR and ZGEN_SOURCE are forward-declared in modules/shell/zsh.nix
-# NOTE Zgen is no longer maintained; zgenom is a maintained fork
+# NOTE Using zgenom because zgen is no longer maintained
 if [ ! -d "$ZGEN_DIR" ]; then
   echo "Installing jandamm/zgenom"
   git clone https://github.com/jandamm/zgenom "$ZGEN_DIR"
