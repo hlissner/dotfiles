@@ -47,8 +47,6 @@ in {
         ubuntu_font_family
         dejavu_fonts
         symbola
-        noto-fonts
-        noto-fonts-cjk
       ];
     };
 
