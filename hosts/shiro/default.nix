@@ -1,6 +1,6 @@
 # Shiro -- my laptop
 
-{ ... }:
+{ pkgs, ... }:
 {
   imports = [
     ../home.nix
@@ -58,6 +58,9 @@
     theme.active = "alucard";
   };
 
+  user.packages = with pkgs; [
+    my.starsector
+  ];
 
   ## Local config
   programs.ssh.startAgent = true;
