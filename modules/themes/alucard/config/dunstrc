@@ -2,7 +2,6 @@
 ''
 [global]
 alignment = left
-bounce_freq = 0
 browser = firefox -new-tab
 corner_radius = 2
 dmenu = rofi -dmenu -p dunst:
@@ -11,8 +10,10 @@ font = ${fonts.sans.name} ${toString(fonts.sans.size)}
 format = "<b>%s</b>\n%b"
 frame_color = "${colors.types.border}"
 frame_width = 1
-# geometry [{width}]x{height}][+/-{x}+/-{y}]
-geometry = "440x15-26+26"
+origin = top-right
+width = 440
+height = 15
+offset = -26, +26
 history_length = 20
 horizontal_padding = 16
 icon_position = right
@@ -30,7 +31,6 @@ show_age_threshold = 60
 show_indicators = yes
 shrink = no
 sort = yes
-startup_notification = false
 sticky_history = yes
 transparency = 5
 word_wrap = yes
