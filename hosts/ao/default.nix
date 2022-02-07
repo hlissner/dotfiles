@@ -34,7 +34,7 @@ with lib.my;
 
   ## Local config
   networking.networkmanager.enable = true;
-  security.acme.email = "accounts+acme@henrik.io";
+  security.acme.defaults.email = "accounts+acme@henrik.io";
 
   # nginx hosts
   services.nginx.virtualHosts."home.lissner.net" = {
