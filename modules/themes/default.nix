@@ -142,6 +142,7 @@ in {
         '';
         "xtheme/05-fonts".text = with cfg.fonts.mono; ''
           *.font: xft:${name}:pixelsize=${toString(size)}
+          Emacs.font: ${name}:pixelsize=${toString(size)}
         '';
         # GTK
         "gtk-3.0/settings.ini".text = ''
