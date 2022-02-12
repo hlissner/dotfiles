@@ -1,6 +1,11 @@
 [user]
 	name = Henrik Lissner
 	email = git@henrik.io
+	signingKey = FA1FADD9440B688CAA75A057B60957CA074D39A3
+[commit]
+	gpgSign = true
+[tag]
+	gpgSign = true
 [core]
 	whitespace = trailing-space
 [init]
@@ -9,10 +14,11 @@
 	user = hlissner
 [gitlab]
 	user = hlissner
-[rebase]
-	autosquash = true
+[push]
+	autoSquash = true
 [push]
 	default = current
+	gpgSign = if-asked
 [pull]
 	rebase = true
 [alias]
