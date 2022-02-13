@@ -49,16 +49,11 @@ in {
       editorconfig-core-c # per-project style config
       # :tools lookup & :lang org +roam
       sqlite
-      # :lang javascript
-      nodePackages.typescript-language-server
       # :lang latex & :lang org (latex previews)
       texlive.combined.scheme-medium
       # :lang beancount
       beancount
       unstable.fava  # HACK Momentarily broken on nixos-unstable
-      # :lang rust
-      rustfmt
-      unstable.rust-analyzer
     ];
 
     env.PATH = [ "$XDG_CONFIG_HOME/emacs/bin" ];
