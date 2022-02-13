@@ -33,7 +33,7 @@
 #
 # 6. Generate hardware-configuration.nix
 #      sudo su -
-#      e2label /dev/sdc nixos
+#      e2label /dev/sda nixos
 #      swaplabel -L swap /dev/sdb
 #      mount /dev/disk/by-label/nixos /mnt
 #      swapon /dev/disk/by-label/swap
