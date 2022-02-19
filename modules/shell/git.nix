@@ -11,6 +11,7 @@ in {
 
   config = mkIf cfg.enable {
     user.packages = with pkgs; [
+      gitAndTools.git-annex
       gitAndTools.gh
       gitAndTools.git-open
       gitAndTools.diff-so-fancy
