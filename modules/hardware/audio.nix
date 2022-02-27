@@ -9,8 +9,18 @@ in {
   };
 
   config = mkIf cfg.enable {
-    sound.enable = true;
-    hardware.pulseaudio.enable = true;
+    services.pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+    };
+
+    security.rtkit.enable = true;
+
+    environment.systemPackages = with pkgs; [
+      easyeffects
+    ];
 
     # HACK Prevents ~/.esd_auth files by disabling the esound protocol module
     #      for pulseaudio, which I likely don't need. Is there a better way?
