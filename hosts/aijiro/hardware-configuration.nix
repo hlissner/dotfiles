@@ -32,7 +32,7 @@
   };
 
   # CPU
-  nix.maxJobs = lib.mkDefault 4;
+  nix.settings.max-jobs = lib.mkDefault 4;
   hardware.cpu.intel.updateMicrocode = true;
   # performance gives better battery life/perf than ondemand on sandy bridge and
   # newer because of intel pstates.
