@@ -12,35 +12,7 @@ in {
 
   config = mkIf cfg.enable (mkMerge [
     {
-      # I avoid programs.steam.enable because it installs another steam binary,
-      # which the xdesktop package invokes, instead of my steam shims below.
-      hardware.opengl.enable = true;
-      hardware.opengl.driSupport32Bit  = true;
-      hardware.pulseaudio.support32Bit = config.hardware.pulseaudio.enable;
-
-      user.packages = with pkgs; [
-        # Get steam to keep its garbage out of $HOME
-        (writeScriptBin "steam" ''
-          #!${stdenv.shell}
-          HOME="${cfg.libDir}" exec ${steam}/bin/steam "$@"
-        '')
-        # for running GOG and humble bundle games
-        (writeScriptBin "steam-run" ''
-          #!${stdenv.shell}
-          HOME="${cfg.libDir}" exec ${steam-run-native}/bin/steam-run "$@"
-        '')
-        # So a rofi entry exists
-        (makeDesktopItem {
-          name = "steam";
-          desktopName = "Steam";
-          icon = "steam";
-          exec = "steam";
-          terminal = "false";
-          mimeType = "x-scheme-handler/steam";
-          categories = "Network;FileTransfer;Game";
-        })
-      ];
-      system.userActivationScripts.setupSteamDir = ''mkdir -p "${cfg.libDir}"'';
+      programs.steam.enable = true;
 
       # better for steam proton games
       systemd.extraConfig = "DefaultLimitNOFILE=1048576";
