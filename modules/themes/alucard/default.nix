@@ -71,6 +71,7 @@ in {
         fonts = with pkgs; [
           fira-code
           fira-code-symbols
+          open-sans
           jetbrains-mono
           siji
           font-awesome-ttf
