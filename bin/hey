@@ -383,6 +383,9 @@ module Hey
     @@opts[:host] ||= ENV['HOST'] || `hostname`.rstrip
     @@opts[:flake] ||= File.expand_path('../', File.dirname(__FILE__))
     @@opts[:flake] = File.expand_path(@@opts[:flake])
+    if File.readlink(@@opts[:flake])
+      @@opts[:flake] = File.readlink(@@opts[:flake])
+    end
 
     begin
       args.unshift("help") if @@opts[:help]
