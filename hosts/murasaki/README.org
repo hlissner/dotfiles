@@ -25,7 +25,7 @@ parted /dev/nvme0n1 -- mkpart primary 8.5GiB 200GiB
 parted /dev/nvme0n1 -- mkpart primary 200GiB 100%
 parted /dev/nvme0n1 -- set 1 boot on
 mkfs.fat -F32 -n BOOT /dev/nvme0n1p1
-mkswap /dev/nvme0n1p2
+mkswap -L swap /dev/nvme0n1p2
 mkfs.ext4 -L nixos /dev/nvme0n1p3
 mkfs.ext4 -L home /dev/nvme0n1p4
 #+END_SRC
