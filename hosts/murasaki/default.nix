@@ -18,10 +18,7 @@
         firefox.enable = true;
       };
       gaming = {
-        steam = {
-          enable = true;
-          hardware.enable = true;
-        };
+        steam.enable = true;
       };
       media = {
         daw.enable = true;
