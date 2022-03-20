@@ -27,7 +27,7 @@ in {
         genericName = "Open a private Qutebrowser window";
         icon = "qutebrowser";
         exec = ''${pkg}/bin/qutebrowser -T -s content.private_browsing true'';
-        categories = "Network";
+        categories = [ "Network" ];
       })
       # For Brave adblock in qutebrowser, which is significantly better than the
       # built-in host blocking. Works on youtube and crunchyroll ads!

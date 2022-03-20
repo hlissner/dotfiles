@@ -74,7 +74,7 @@ in {
           open-sans
           jetbrains-mono
           siji
-          font-awesome-ttf
+          font-awesome
         ];
       };
 

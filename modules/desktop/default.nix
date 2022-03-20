@@ -34,7 +34,7 @@ in {
         desktopName = "Calculator";
         icon = "calc";
         exec = ''scratch "${tmux}/bin/tmux new-session -s calc -n calc qalc"'';
-        categories = "Development";
+        categories = [ "Development" ];
       })
       qgnomeplatform        # QPlatformTheme for a better Qt application inclusion in GNOME
       libsForQt5.qtstyleplugin-kvantum # SVG-based Qt5 theme engine plus a config tool and extra theme

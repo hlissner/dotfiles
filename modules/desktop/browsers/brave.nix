@@ -21,7 +21,7 @@ in {
         genericName = "Open a private Brave window";
         icon = "brave";
         exec = "${brave}/bin/brave --incognito";
-        categories = "Network";
+        categories = [ "Network" ];
       })
     ];
   };

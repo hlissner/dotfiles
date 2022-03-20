@@ -35,7 +35,7 @@ in {
           genericName = "Open a private Firefox window";
           icon = "firefox";
           exec = "${firefox-bin}/bin/firefox --private-window";
-          categories = "Network";
+          categories = [ "Network" ];
         })
       ];
 
