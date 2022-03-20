@@ -38,26 +38,26 @@
   hardware.cpu.amd.updateMicrocode = true;
 
   # Displays
-  # services.xserver = {
-  #   # This must be done manually to ensure my screen spaces are arranged exactly
-  #   # as I need them to be *and* the correct monitor is "primary". Using
-  #   # xrandrHeads does not work.
-  #   monitorSection = ''
-  #     VendorName  "Unknown"
-  #     ModelName   "DELL U2515H"
-  #     HorizSync   30.0 - 113.0
-  #     VertRefresh 56.0 - 86.0
-  #     Option      "DPMS"
-  #   '';
-  #   screenSection = ''
-  #     Option "metamodes" "HDMI-0: nvidia-auto-select +1920+0, DVI-I-1: nvidia-auto-select +0+180, DVI-D-0: nvidia-auto-select +4480+180"
-  #     Option "SLI" "Off"
-  #     Option "MultiGPU" "Off"
-  #     Option "BaseMosaic" "off"
-  #     Option "Stereo" "0"
-  #     Option "nvidiaXineramaInfoOrder" "DFP-1"
-  #   '';
-  # };
+  services.xserver = {
+    # This must be done manually to ensure my screen spaces are arranged exactly
+    # as I need them to be *and* the correct monitor is "primary". Using
+    # xrandrHeads does not work.
+    monitorSection = ''
+      VendorName     "Unknown"
+      ModelName      "Samsung S27E391"
+      HorizSync       30.0 - 81.0
+      VertRefresh     50.0 - 75.0
+      Option         "DPMS"
+    '';
+    screenSection = ''
+      Option "metamodes" "HDMI-0: nvidia-auto-select +1920+0, DVI-D-0: 1920x1080_75 +0+0"
+      Option "SLI" "Off"
+      Option "MultiGPU" "Off"
+      Option "BaseMosaic" "off"
+      Option "Stereo" "0"
+      Option "nvidiaXineramaInfoOrder" "DFP-1"
+    '';
+  };
 
   fileSystems = {
     "/" = {
@@ -78,6 +78,13 @@
       device = "/dev/disk/by-uuid/8C1EE27F1EE261A6";
       fsType = "ntfs";
       options = [ "uid=1000" "gid=100" "rw" "user" "exec" "umask=000" ];
+    };
+    "/media/store" = {
+      device = "/dev/disk/by-label/Mimas";
+      fsType = "exfat";
+      options = [
+        "uid=1000" "gid=100" "rw" "user" "exec" "umask=000" "nofail"
+      ];
     };
   };
   swapDevices = [
