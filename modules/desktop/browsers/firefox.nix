@@ -28,13 +28,13 @@ in {
   config = mkIf cfg.enable (mkMerge [
     {
       user.packages = with pkgs; [
-        firefox-bin
+        unstable.firefox-bin
         (makeDesktopItem {
           name = "firefox-private";
           desktopName = "Firefox (Private)";
           genericName = "Open a private Firefox window";
           icon = "firefox";
-          exec = "${firefox-bin}/bin/firefox --private-window";
+          exec = "${unstable.firefox-bin}/bin/firefox --private-window";
           categories = [ "Network" ];
         })
       ];
