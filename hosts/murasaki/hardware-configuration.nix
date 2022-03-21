@@ -50,7 +50,7 @@
       Option         "DPMS"
     '';
     screenSection = ''
-      Option "metamodes" "HDMI-0: nvidia-auto-select +1920+0, DVI-D-0: 1920x1080_75 +0+0"
+      Option "metamodes" "HDMI-0: nvidia-auto-select +1920+0, DP-1: 1920x1080_75 +0+0"
       Option "SLI" "Off"
       Option "MultiGPU" "Off"
       Option "BaseMosaic" "off"

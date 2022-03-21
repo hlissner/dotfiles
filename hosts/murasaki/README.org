@@ -38,3 +38,15 @@ mkdir -p /mnt/{home,boot,usr/store}
 mount /dev/nvme0n1p1 /mnt/boot
 mount /dev/nvme0n1p4 /mnt/home
 #+END_SRC
+* Displays
+#+begin_src sh :results none
+xrandr \
+    --dpi 72 \
+    --output DP-1 --mode 1920x1080 --rate 75 --pos 0x0 --primary \
+    --output HDMI-0 --mode 1920x1080 --rate 60 --pos 1920x0
+#+end_src
+
+Don't forget to reload bspwm afterwards:
+#+begin_src sh :results none
+~/.config/bspwm/bspwmrc
+#+end_src
