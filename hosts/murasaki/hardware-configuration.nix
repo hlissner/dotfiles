@@ -32,6 +32,9 @@
     sensors.enable = true;
   };
 
+  # Xbox controller support
+  hardware.xpadneo.enable = true;
+
   # CPU
   nix.settings.max-jobs = lib.mkDefault 12;
   powerManagement.cpuFreqGovernor = "performance";
