@@ -383,7 +383,7 @@ module Hey
     @@opts[:host] ||= ENV['HOST'] || `hostname`.rstrip
     @@opts[:flake] ||= File.expand_path('../', File.dirname(__FILE__))
     @@opts[:flake] = File.expand_path(@@opts[:flake])
-    if File.readlink(@@opts[:flake])
+    if File.symlink?(@@opts[:flake])
       @@opts[:flake] = File.readlink(@@opts[:flake])
     end
 
