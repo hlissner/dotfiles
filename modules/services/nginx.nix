@@ -28,7 +28,7 @@ in {
         # Reduce the permitted size of client requests, to reduce the likelihood
         # of buffer overflow attacks. This can be tweaked on a per-vhost basis,
         # as needed.
-        clientMaxBodySize = "128k";  # default 10m
+        clientMaxBodySize = "256k";  # default 10m
         # Significantly speed up regex matchers
         appendConfig = ''pcre_jit on;'';
         commonHttpConfig = ''
