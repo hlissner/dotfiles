@@ -26,9 +26,11 @@ in {
         recommendedTlsSettings = true;
 
         # Reduce the permitted size of client requests, to reduce the likelihood
-        # of buffer overflow attacks. This can be tweaked on a per-vhost basis, as
-        # needed.
+        # of buffer overflow attacks. This can be tweaked on a per-vhost basis,
+        # as needed.
         clientMaxBodySize = "128k";  # default 10m
+        # Significantly speed up regex matchers
+        appendConfig = ''pcre_jit on;'';
         commonHttpConfig = ''
           client_body_buffer_size  4k;       # default: 8k
           large_client_header_buffers 2 4k;  # default: 4 8k
