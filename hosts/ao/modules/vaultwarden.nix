@@ -3,18 +3,15 @@
 {
   modules.services.vaultwarden.enable = true;
 
-  services.vaultwarden.config = {
-    signupsAllowed = false;
-    invitationsAllowed = true;
-    domain = "https://vault.lissner.net";
-    httpPort = 8002;
-  };
-
-  # Inject secrets at runtime
-  systemd.services.vaultwarden.serviceConfig = {
-    EnvironmentFile = [ config.age.secrets.vaultwarden-smtp-env.path ];
-    Restart = "on-failure";
-    RestartSec = "2s";
+  services.vaultwarden = {
+    # Inject secrets at runtime
+    environmentFile = config.age.secrets.vaultwarden-env.path;
+    config = {
+      signupsAllowed = false;
+      invitationsAllowed = true;
+      domain = "https://vault.lissner.net";
+      httpPort = 8002;
+    };
   };
 
   services.nginx.virtualHosts."vault.lissner.net" = {
