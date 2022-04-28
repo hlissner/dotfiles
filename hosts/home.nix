@@ -3,13 +3,18 @@
 with lib;
 {
   networking.hosts =
-    let hostConfig = {
+    let hostConfig = if config.time.timeZone == "America/Toronto" then {
           "192.168.1.2"  = [ "ao" ];
           "192.168.1.3"  = [ "kiiro" ];
           "192.168.1.10" = [ "kuro" ];
           "192.168.1.11" = [ "shiro" ];
           "192.168.1.12" = [ "midori" ];
-        };
+        } else if config.time.timeZone == "Europe/Copenhagen" then {
+          "192.168.1.19" = [ "shiro" ];
+          "192.168.1.20" = [ "murasaki" ];
+          "192.168.1.21" = [ "aijiro" ];
+          "192.168.1.28" = [ "ao" ];
+        } else {};
         hosts = flatten (attrValues hostConfig);
         hostName = config.networking.hostName;
     in mkIf (builtins.elem hostName hosts) hostConfig;
