@@ -22,6 +22,7 @@
   };
 
   services.nginx.virtualHosts."git.henrik.io" = {
+    http2 = true;
     forceSSL = true;
     enableACME = true;
     root = "/srv/www/git.henrik.io";

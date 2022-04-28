@@ -15,6 +15,7 @@
   };
 
   services.nginx.virtualHosts."vault.lissner.net" = {
+    http2 = true;
     forceSSL = true;
     enableACME = true;
     root = "/srv/www/vault.lissner.net";

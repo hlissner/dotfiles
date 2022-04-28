@@ -35,10 +35,12 @@ with lib.my;
   ## Local config
   networking.networkmanager.enable = true;
   security.acme.defaults.email = "accounts+acme@henrik.io";
+  # security.acme.defaults.server = "https://acme-staging-v02.api.letsencrypt.org/directory";
 
   # nginx hosts
   services.nginx.virtualHosts."home.lissner.net" = {
     default = true;
+    http2 = true;
     forceSSL = true;
     enableACME = true;
     root = "/srv/www/home.lissner.net";

@@ -15,6 +15,7 @@ with builtins;
   };
 
   services.nginx.virtualHosts."henrik.link" = {
+    http2 = true;
     forceSSL = true;
     enableACME = true;
     locations."/".proxyPass = "http://127.0.0.1:8080";
