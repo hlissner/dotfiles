@@ -12,6 +12,7 @@
   ## CPU
   nix.settings.max-jobs = lib.mkDefault 2;
   powerManagement.cpuFreqGovernor = "ondemand";
+  hardware.cpu.intel.updateMicrocode = true;
 
   ## Networking
   networking.interfaces.enp0s10.useDHCP = true;
