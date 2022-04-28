@@ -45,11 +45,11 @@ with lib.my;
     forceSSL = true;
     enableACME = true;
     root = "/srv/www/home.lissner.net";
-    extraConfig = ''
-      client_max_body_size 10m;
-      proxy_buffering off;
-      proxy_redirect off;
-    '';
-    locations."/".proxyPass = "http://kiiro:8000";
+    # extraConfig = ''
+    #   client_max_body_size 10m;
+    #   proxy_buffering off;
+    #   proxy_redirect off;
+    # '';
+    # locations."/".proxyPass = "http://kiiro:8000";
   };
 }

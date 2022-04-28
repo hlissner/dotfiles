@@ -27,14 +27,6 @@
       device = "/dev/disk/by-label/boot";
       fsType = "vfat";
     };
-    "/usr/drive" = {
-      device = "kiiro:/volume1/homes/hlissner/Drive/backup/ao";
-      fsType = "nfs";
-      options = [
-        "nofail" "noauto" "noatime" "x-systemd.automount" "x-systemd.idle-timeout=5min"
-        "nodev" "nosuid" "noexec"
-      ];
-    };
   };
   swapDevices = [{ device = "/dev/disk/by-label/swap"; }];
 }
