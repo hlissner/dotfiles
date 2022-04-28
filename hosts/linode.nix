@@ -104,11 +104,8 @@ with lib;
   };
 
   networking = {
-    useDHCP = false;
     usePredictableInterfaceNames = false;
-    interfaces.eth0 = {
-      useDHCP = true;
-    };
+    interfaces.eth0.useDHCP = true;
   };
 
   fileSystems."/" = {

@@ -40,6 +40,12 @@
   powerManagement.cpuFreqGovernor = "performance";
   hardware.cpu.amd.updateMicrocode = true;
 
+  # Networking
+  networking.interfaces = {
+    enp42s0.useDHCP = true;
+    wlo1.useDHCP = true;
+  };
+
   # Displays
   services.xserver = {
     # This must be done manually to ensure my screen spaces are arranged exactly
@@ -90,14 +96,5 @@
       ];
     };
   };
-  swapDevices = [
-    { device = "/dev/disk/by-label/swap"; }
-  ];
-
-  # The global useDHCP flag is deprecated, therefore explicitly set to false
-  # here. Per-interface useDHCP will be mandatory in the future, so this
-  # generated config replicates the default behaviour.
-  networking.useDHCP = false;
-  networking.interfaces.enp42s0.useDHCP = true;
-  networking.interfaces.wlo1.useDHCP = true;
+  swapDevices = [{ device = "/dev/disk/by-label/swap"; }];
 }

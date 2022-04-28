@@ -6,12 +6,15 @@
     initrd.availableKernelModules = [ "ohci_pci" "ehci_pci" "ahci" "firewire_ohci" "usb_storage" "usbhid" "sd_mod" "sr_mod" "sdhci_pci" ];
     initrd.kernelModules = [ ];
     kernelModules = [ "kvm-intel" "wl" ];
-    extraModulePackages = [];
+    extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
   };
 
   ## CPU
   nix.settings.max-jobs = lib.mkDefault 2;
   powerManagement.cpuFreqGovernor = "ondemand";
+
+  ## Networking
+  networking.interfaces.enp0s10.useDHCP = true;
 
   ## Harddrives
   fileSystems = {
