@@ -28,8 +28,7 @@
     };
   };
 
-  system.activationScripts.createVaultwardenBackupDir = ''
-    mkdir -m 750 -p "${config.services.vaultwarden.backupDir}" || true
-    chown vaultwarden:vaultwarden "${config.services.vaultwarden.backupDir}"
-  '';
+  systemd.tmpfiles.rules = [
+    "d ${config.services.vaultwarden.backupDir} 750 vaultwarden vaultwarden - -"
+  ];
 }

@@ -33,8 +33,7 @@
     locations."/".proxyPass = "http://127.0.0.1:3000";
   };
 
-  system.activationScripts.createGiteaBackupDir = ''
-    mkdir -m 750 -p "${config.services.gitea.dump.backupDir}" || true
-    chown git:gitea "${config.services.gitea.dump.backupDir}"
-  '';
+  systemd.tmpfiles.rules = [
+    "d ${config.services.gitea.dump.backupDir} 750 git gitea - -"
+  ];
 }
