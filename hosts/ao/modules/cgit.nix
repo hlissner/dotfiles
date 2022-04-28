@@ -8,6 +8,9 @@
     extraConfig = ''
       robots=noindex, nofollow
       enable-index-owner=0
+      enable-http-clone=1
+      enable-commit-graph=1
+      clone-prefix=https://git.henrik.io
     '';
   };
 
