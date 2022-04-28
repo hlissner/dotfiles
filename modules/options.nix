@@ -8,10 +8,11 @@ with lib.my;
 
     dotfiles = {
       dir = mkOpt path
-        (findFirst pathExists (toString ../.) [
-          "${config.user.home}/.config/dotfiles"
-          "/etc/dotfiles"
-        ]);
+        (removePrefix "/mnt"
+          (findFirst pathExists (toString ../.) [
+            "/mnt/etc/dotfiles"
+            "/etc/dotfiles"
+          ]));
       binDir     = mkOpt path "${config.dotfiles.dir}/bin";
       configDir  = mkOpt path "${config.dotfiles.dir}/config";
       modulesDir = mkOpt path "${config.dotfiles.dir}/modules";
