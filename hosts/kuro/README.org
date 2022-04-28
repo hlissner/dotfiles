@@ -2,9 +2,8 @@
 #+DATE:  September 13, 2020
 
 * Overview
-My main driver for work on Linux.
-
-Have a separate Windows rig for gaming/adobe (Midori).
+My main driver for work on Linux. Complemented by a second, Windows rig for
+gaming/adobe, that sits next to it.
 
 * Specs
 | CASE  | [[https://www.amazon.com/Fractal-Design-Define-Cases-FD-CA-DEF-R4-BL/dp/B008HD3CTI][Fractal Design Define R4 ATX Tower Case Black Pearl]] |
