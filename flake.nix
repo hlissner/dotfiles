@@ -70,12 +70,8 @@
           path = ./.;
           description = "A grossly incandescent nixos config";
         };
-        minimal = {
-          path = ./templates/minimal;
-          description = "A grossly incandescent and minimal nixos config";
-        };
-      };
-      defaultTemplate = self.templates.minimal;
+      } // import ./templates;
+      defaultTemplate = self.templates.full;
 
       defaultApp."${system}" = {
         type = "app";
