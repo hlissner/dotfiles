@@ -9,10 +9,17 @@
     extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
   };
 
+  ## Modules
+  modules.hardware.fs = {
+    enable = true;
+    ssd.enable = true;
+  };
+
   ## CPU
   nix.settings.max-jobs = lib.mkDefault 2;
   powerManagement.cpuFreqGovernor = "ondemand";
   hardware.cpu.intel.updateMicrocode = true;
+  services.logind.lidSwitch = "ignore";
 
   ## Networking
   networking.interfaces.enp0s10.useDHCP = true;
