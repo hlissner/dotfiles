@@ -10,7 +10,8 @@ with lib.my;
     ./hardware-configuration.nix
 
     ./modules/backup.nix
-    ./modules/gitea.nix
+    # ./modules/gitea.nix
+    ./modules/cgit.nix
     ./modules/vaultwarden.nix
     ./modules/shlink.nix
   ];
