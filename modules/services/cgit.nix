@@ -24,27 +24,27 @@ let cfg = config.modules.services.cgit;
       source-filter=${cfg.package}/lib/cgit/filters/syntax-highlighting.py
       remove-suffix=1
       section-from-path=1
-      scan-path=${cfg.repository}
+      scan-path=${cfg.reposDirectory}
     '';
 in {
-  options.modules.services.cgit = {
+  options.modules.services.cgit = with types; {
     enable = mkBoolOpt false;
     package = mkOption {
       default = pkgs.cgit-pink;
-      type = types.package;
+      type = package;
       description = ''
         Cgit package to use. This defaults to a better-maintained fork of cgit.
       '';
     };
     authorizedKeys = mkOption {
       default = config.user.openssh.authorizedKeys.keys;
-      type = types.listOf types.str;
+      type = listOf str;
     };
-    user = mkStrOpt "git";
-    directory = mkStrOpt "/srv/${cfg.user}";
-    reposDirectory = mkStrOpt "${cfg.directory}/repos";
-    domain = mkStrOpt "git.example.com";
-    extraConfig = mkStrOpt "";
+    user = mkOpt str "git";
+    directory = mkOpt str "/srv/${cfg.user}";
+    reposDirectory = mkOpt str "${cfg.directory}/public";
+    domain = mkOpt str "git.example.com";
+    extraConfig = mkOpt str "";
   };
 
   config = mkIf cfg.enable {
@@ -53,16 +53,17 @@ in {
       users.${cfg.user} = {
         createHome = true;
         group = cfg.user;
-        home = cfg.reposDirectory;
+        home = cfg.directory;
         isSystemUser = true;
         openssh.authorizedKeys.keys = cfg.authorizedKeys;
         shell = "${pkgs.git}/bin/git-shell";
       };
     };
+    user.extraGroups = [ cfg.user ];
 
     systemd.tmpfiles.rules = [
-      "z ${cfg.directory} 755 ${cfg.user} ${cfg.user} - -"
-      "d ${cfg.repoDirectory} 700 ${cfg.user} ${cfg.user} - -"
+      "z ${cfg.directory} 770 ${cfg.user} ${cfg.user} - -"
+      "d ${cfg.reposDirectory} 770 ${cfg.user} ${cfg.user} - -"
     ];
 
     services.fcgiwrap = {
