@@ -5,7 +5,7 @@ with lib.my;
 let cfg = config.modules.desktop.apps.skype;
 in {
   options.modules.desktop.apps.skype = {
-    enable = mkEnableOption false;
+    enable = mkBoolOpt false;
   };
 
   config = mkIf cfg.enable {
