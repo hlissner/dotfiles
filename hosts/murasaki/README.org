@@ -42,8 +42,15 @@ mount /dev/nvme0n1p4 /mnt/home
 #+begin_src sh :results none
 xrandr \
     --dpi 72 \
-    --output DP-1 --mode 1920x1080 --rate 75 --pos 0x0 --primary \
-    --output HDMI-0 --mode 1920x1080 --rate 60 --pos 1920x0
+    --output DP-1 --mode 1920x1080 --rate 75 --pos 0x0 \
+    --output HDMI-0 --mode 1920x1080 --rate 60 --pos 1920x0 --primary
+#+end_src
+
+#+begin_src sh :results none
+xrandr \
+    --dpi 72 \
+    --output DP-1 --off \
+    --output HDMI-0 --mode 1920x1080 --rate 60 --pos 1920x0 --primary
 #+end_src
 
 Don't forget to reload bspwm afterwards:
