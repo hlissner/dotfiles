@@ -4,6 +4,7 @@
   modules.services.vaultwarden.enable = true;
 
   services.vaultwarden = {
+    backupDir = "/backups/vaultwarden";
     # Inject secrets at runtime
     environmentFile = config.age.secrets.vaultwarden-env.path;
     config = {
@@ -19,13 +20,16 @@
     forceSSL = true;
     enableACME = true;
     root = "/srv/www/vault.lissner.net";
-    extraConfig = ''
-      client_max_body_size 128M;
-    '';
+    extraConfig = ''client_max_body_size 64M;'';
     locations = {
       "/".proxyPass = "http://127.0.0.1:8000";
       "/notifications/hub".proxyWebsockets = true;
       "/notifications/hub/negotiate".proxyPass = "http://127.0.0.1:8001";
     };
   };
+
+  system.activationScripts.createVaultwardenBackupDir = ''
+    mkdir -m 750 -p "${config.services.vaultwarden.backupDir}" || true
+    chown vaultwarden:vaultwarden "${config.services.vaultwarden.backupDir}"
+  '';
 }

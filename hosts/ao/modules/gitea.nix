@@ -8,6 +8,10 @@
     domain = "henrik.io";
     rootUrl = "https://git.henrik.io/";
     disableRegistration = true;
+    dump = {
+      enable = true;
+      backupDir = "/backups/gitea";
+    };
     settings = {
       server.SSH_DOMAIN = "henrik.io";
       mailer = {
@@ -28,4 +32,9 @@
     root = "/srv/www/git.henrik.io";
     locations."/".proxyPass = "http://127.0.0.1:3000";
   };
+
+  system.activationScripts.createGiteaBackupDir = ''
+    mkdir -m 750 -p "${config.services.gitea.dump.backupDir}" || true
+    chown git:gitea "${config.services.gitea.dump.backupDir}"
+  '';
 }
