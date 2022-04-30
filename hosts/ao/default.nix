@@ -33,6 +33,11 @@ with lib.my;
     theme.active = "alucard";
   };
 
+  systemd.tmpfiles.rules = [
+    "z /backup 777 root root - -"
+    "d /backup 777 root root - -"
+  ];
+
   ## Local config
   networking.networkmanager.enable = true;
   security.acme.defaults.email = "accounts+acme@henrik.io";

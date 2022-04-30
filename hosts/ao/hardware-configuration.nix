@@ -15,11 +15,13 @@
     ssd.enable = true;
   };
 
+  # Don't turn off/sleep when closing the lid of the laptop.
+  services.logind.lidSwitch = "ignore";
+
   ## CPU
   nix.settings.max-jobs = lib.mkDefault 2;
   powerManagement.cpuFreqGovernor = "ondemand";
   hardware.cpu.intel.updateMicrocode = true;
-  services.logind.lidSwitch = "ignore";
 
   ## Networking
   networking.interfaces.enp0s10.useDHCP = true;
@@ -35,6 +37,12 @@
       device = "/dev/disk/by-label/BOOT";
       fsType = "vfat";
     };
+    "/backup" = {
+      device = "/dev/disk/by-label/backup";
+      fsType = "ext4";
+      options = [ "noatime" "nofail" ];
+    };
   };
+  boot.initrd.luks.devices.backup.device = "/dev/sdc1";
   swapDevices = [{ device = "/dev/disk/by-label/swap"; }];
 }

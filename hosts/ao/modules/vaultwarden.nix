@@ -4,7 +4,7 @@
   modules.services.vaultwarden.enable = true;
 
   services.vaultwarden = {
-    backupDir = "/backups/vaultwarden";
+    backupDir = "/backup/vaultwarden";
     # Inject secrets at runtime
     environmentFile = config.age.secrets.vaultwarden-env.path;
     config = {
@@ -29,6 +29,7 @@
   };
 
   systemd.tmpfiles.rules = [
+    "z ${config.services.vaultwarden.backupDir} 750 vaultwarden vaultwarden - -"
     "d ${config.services.vaultwarden.backupDir} 750 vaultwarden vaultwarden - -"
   ];
 }

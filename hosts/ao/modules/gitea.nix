@@ -10,7 +10,7 @@
     disableRegistration = true;
     dump = {
       enable = true;
-      backupDir = "/backups/gitea";
+      backupDir = "/backup/gitea";
     };
     settings = {
       server.SSH_DOMAIN = "henrik.io";
@@ -34,6 +34,7 @@
   };
 
   systemd.tmpfiles.rules = [
+    "z ${config.services.gitea.dump.backupDir} 750 git gitea - -"
     "d ${config.services.gitea.dump.backupDir} 750 git gitea - -"
   ];
 }
