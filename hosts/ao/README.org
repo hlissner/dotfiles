@@ -2,10 +2,22 @@
 #+DATE:  December 16, 2014
 
 * Overview
-Mac Mini 2014. Used as a low-power home server.
+My low-power home server. Lives either on a 2014 Mac Mini or a 2013 13" Macbook
+Pro, depending on whether I'm in Toronto or Denmark. Their specs and setup are
+close enough that they don't need separate configs.
 
-* Specs
-https://support.apple.com/kb/SP710?locale=en_CA
+Used for:
+- Hosting demos for clients
+- Hosting my bots (for Discord, Discourse, and Git{hub,lab})
+- [[https://bitwarden.com/#/][vaultwarden]]
+- [[https://git.zx2c4.com/cgit/about/][cgit]]
+- [[https://shlink.io][shlink]]
+- [[https://nginx.org][nginx]]
+- [[https://grafana.com/][grafana]] (unpublished)
+
+** Specs
+- Mac Mini 2014: https://support.apple.com/kb/SP710
+- 13" Macbook Pro 2009: https://support.apple.com/kb/SP579
 
 * Installation
 ** Set up root file system
