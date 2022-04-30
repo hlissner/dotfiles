@@ -14,6 +14,7 @@ with lib.my;
     ./modules/cgit.nix
     ./modules/vaultwarden.nix
     ./modules/shlink.nix
+    ./modules/dyndns.nix
   ];
 
 
