@@ -44,8 +44,9 @@ in {
       fasd
       fd
       fzf
-      tldr
+      jq
       ripgrep
+      tldr
     ];
 
     env = {
