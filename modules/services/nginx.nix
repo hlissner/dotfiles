@@ -55,7 +55,7 @@ in {
               ${readFile (fetchurl "https://www.cloudflare.com/ips-v4/")}
               ${readFile (fetchurl "https://www.cloudflare.com/ips-v6/")}
             ''))}
-        real_ip_header CF-Connectting-IP;
+        real_ip_header CF-Connecting-IP;
       '';
     })
   ];
