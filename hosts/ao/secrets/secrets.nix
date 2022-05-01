@@ -4,5 +4,5 @@ in {
   "gitea-smtp-username.age".publicKeys = [key];
   "gitea-smtp-secret.age".publicKeys = [key];
   "geolite-apikey.age".publicKeys = [key];
-  "ddclient-config.age".publicKeys = [key];
+  "dns-env.age".publicKeys = [key];
 }

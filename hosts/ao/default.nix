@@ -28,10 +28,7 @@ with lib.my;
     services = {
       fail2ban.enable = true;
       ssh.enable = true;
-      nginx = {
-        enable = true;
-        enableCloudflareSupport = true;
-      };
+      nginx.enable = true;
     };
 
     theme.active = "alucard";

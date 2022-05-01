@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   modules.services.vaultwarden.enable = true;
@@ -13,22 +13,55 @@
       rocketPort = 8000;
       signupsAllowed = false;
       websocketEnabled = true;
+      # Bitwarden apps bombard the server every 30s.
+      loginRatelimitSeconds = 30;
     };
   };
 
-  services.nginx.virtualHosts."vault.lissner.net" = {
-    http2 = true;
-    forceSSL = true;
-    enableACME = true;
-    root = "/srv/www/vault.lissner.net";
-    extraConfig = ''client_max_body_size 64M;'';
-    locations = {
-      "/notifications/hub/negotiate".proxyPass = "http://127.0.0.1:8000";
-      "/notifications/hub" = {
-        proxyPass = "http://127.0.0.1:3012";
-        proxyWebsockets = true;
+  services.geoipupdate = {
+    enable = true;
+    settings = {
+      AccountID = 636144;
+      EditionIDs = ["GeoLite2-ASN" "GeoLite2-City" "GeoLite2-Country"];
+      LicenseKey = config.age.secrets.geolite-apikey.path;
+    };
+  };
+
+  services.nginx = {
+    additionalModules = [ pkgs.nginxModules.geoip2 ];
+    commonHttpConfig = ''
+      geoip2 ${config.services.geoipupdate.settings.DatabaseDirectory}/GeoLite2-Country.mmdb {
+        auto_reload 60m;
+        $geoip2_data_country_code country iso_code;
+      }
+      map $geoip2_data_country_code $deny {
+        default 1;
+        DK 0;
+        CA 0;
+      }
+    '';
+    virtualHosts."vault.lissner.net" = {
+      http2 = true;
+      forceSSL = true;
+      enableACME = true;
+      root = "/srv/www/vault.lissner.net";
+      extraConfig = ''
+        client_max_body_size 64M;
+        if ($deny) {
+          return 503;
+        }
+      '';
+      locations = {
+        "/notifications/hub/negotiate" = {
+          proxyPass = "http://127.0.0.1:8000";
+          proxyWebsockets = true;
+        };
+        "/notifications/hub" = {
+          proxyPass = "http://127.0.0.1:3012";
+          proxyWebsockets = true;
+        };
+        "/".proxyPass = "http://127.0.0.1:8000";
       };
-      "/".proxyPass = "http://127.0.0.1:8000";
     };
   };
 
