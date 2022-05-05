@@ -15,6 +15,7 @@ with lib.my;
     ./modules/vaultwarden.nix
     ./modules/shlink.nix
     ./modules/dyndns.nix
+    ./modules/grafana.nix
   ];
 
 
