@@ -8,9 +8,9 @@
   ## Modules
   modules = {
     desktop = {
-      bspwm.enable = true;
+      xfce.enable = true;
       apps = {
-        rofi.enable = true;
+        # rofi.enable = true;
         # godot.enable = true;
       };
       browsers = {
