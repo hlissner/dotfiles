@@ -1,0 +1,22 @@
+#! /usr/bin/env bash
+
+# Shows the output of every command
+set +x
+
+build_iso_system() {
+  nix --extra-experimental-features "nix-command flakes" shell github:nix-community/nixos-generators \
+   -c nixos-generate \
+   -f install-iso \
+    -I nixpkgs=channel:nixos-22.05 \
+    --show-trace \
+    -c system/machine/dell-xps/default.nix \
+    -o build.iso
+
+}
+
+case $1 in
+  "iso-system")
+    build_iso_system;;
+  *)
+    echo "Invalid option. Expected 'iso-system'";;
+esac
