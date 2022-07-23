@@ -47,7 +47,7 @@ with lib.my;
   ## Local config
   time.timeZone = "Europe/Copenhagen";
   networking.networkmanager.enable = true;
-  security.acme.defaults.email = "accounts+acme@henrik.io";
+  security.acme.defaults.email = "acme@accounts.henrik.io";
   # security.acme.defaults.server = "https://acme-staging-v02.api.letsencrypt.org/directory";
 
   ## Shared nginx settings
