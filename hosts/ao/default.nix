@@ -9,14 +9,17 @@ with lib.my;
     ../home.nix
     ./hardware-configuration.nix
 
-    ./modules/backup.nix
+    # TODO
     ./modules/wireguard.nix
+    ./modules/dyndns.nix
+
+    # Services
+    # ./modules/backup.nix
     # ./modules/gitea.nix
     ./modules/cgit.nix
     ./modules/vaultwarden.nix
     ./modules/shlink.nix
-    ./modules/dyndns.nix
-    ./modules/grafana.nix
+    ./modules/metrics.nix
   ];
 
 
