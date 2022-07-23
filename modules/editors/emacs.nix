@@ -26,9 +26,8 @@ in {
       ## Emacs itself
       binutils       # native-comp needs 'as', provided by this
       # 29 + pgtk + native-comp
-      ((emacsPackagesFor emacsPgtkGcc).emacsWithPackages (epkgs: [
-        epkgs.vterm
-      ]))
+      ((emacsPackagesFor emacsPgtkNativeComp).emacsWithPackages
+        (epkgs: [ epkgs.vterm ]))
 
       ## Doom dependencies
       git
@@ -44,9 +43,7 @@ in {
 
       ## Module dependencies
       # :checkers spell
-      (aspellWithDicts (ds: with ds; [
-        en en-computers en-science
-      ]))
+      (aspellWithDicts (ds: with ds; [ en en-computers en-science ]))
       # :tools editorconfig
       editorconfig-core-c # per-project style config
       # :tools lookup & :lang org +roam
