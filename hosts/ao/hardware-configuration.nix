@@ -38,11 +38,11 @@
       fsType = "vfat";
     };
     "/backup" = {
-      device = "/dev/disk/by-label/backup";
+      device = "/dev/mapper/backup";
       fsType = "ext4";
       options = [ "noatime" "nofail" ];
     };
   };
-  boot.initrd.luks.devices.backup.device = "/dev/sdc1";
+  boot.initrd.luks.devices.backup.device = "/dev/disk/by-uuid/8839e98a-b1d1-441f-bac3-47dc092685c2";
   swapDevices = [{ device = "/dev/disk/by-label/swap"; }];
 }
