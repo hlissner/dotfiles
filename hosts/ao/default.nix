@@ -10,6 +10,7 @@ with lib.my;
     ./hardware-configuration.nix
 
     ./modules/backup.nix
+    ./modules/wireguard.nix
     # ./modules/gitea.nix
     ./modules/cgit.nix
     ./modules/vaultwarden.nix
