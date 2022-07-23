@@ -11,7 +11,7 @@
   nix.gc = {
     automatic = true;
     dates = "weekly";
-    options = "--delete-older-than 30d";
+    options = "--delete-older-than 21d";
   };
 
   systemd = {
@@ -19,7 +19,7 @@
       description = "Clear >1 month-old logs every week";
       serviceConfig = {
         Type = "oneshot";
-        ExecStart = "${pkgs.systemd}/bin/journalctl --vacuum-time=30d";
+        ExecStart = "${pkgs.systemd}/bin/journalctl --vacuum-time=21d";
       };
     };
     timers.clear-log = {
