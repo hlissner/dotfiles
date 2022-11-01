@@ -20,6 +20,17 @@
 
   ## Modules
   modules = {
+    hardware = {
+      bluetooth.enable = true;
+      audio.enable = true;
+  #    ergodox.enable = true;
+  #    fs = {
+  #      enable = true;
+  #      ssd.enable = true;
+  #    };
+#      nvidia.enable = true;
+#      sensors.enable = true;
+    };
     desktop = {
       bspwm.enable = true;
       apps = {
