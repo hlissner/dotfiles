@@ -71,6 +71,7 @@
     };
     editors = {
       default = "nvim";
+      idea.enable = true;
       emacs.enable = true;
       vim.enable = true;
     };

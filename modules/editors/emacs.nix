@@ -1,4 +1,4 @@
-# Emacs is my main driver. I'm the author of Doom Emacs
+# Emacs is my passion, but I am far from fluent.
 # https://github.com/hlissner/doom-emacs. This module sets it up to meet my
 # particular Doomy needs.
 
