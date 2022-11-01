@@ -69,6 +69,9 @@
    #   rust.enable = true;
   #    python.enable = true;
     };
+    work = {
+      enable = true;
+    };
     editors = {
       default = "nvim";
       idea.enable = true;
