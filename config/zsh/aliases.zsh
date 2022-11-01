@@ -82,3 +82,11 @@ function r {
   local time=$1; shift
   sched "$time" "notify-send --urgency=critical 'Reminder' '$@'; ding";
 }; compdef r=sched
+
+work-git-clone() {
+	git clone git@gitlab.com:coreau/$1 ~/$1
+};
+
+github-git-clone() {
+	git clone git@github.com:jamesmstone/$1 ~/$1
+};
