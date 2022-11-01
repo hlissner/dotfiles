@@ -46,7 +46,7 @@ in {
       fonts = with pkgs; [
         ubuntu_font_family
         dejavu_fonts
-        symbola
+#        symbola
       ];
     };
 
