@@ -1,14 +1,14 @@
-alias dk=docker
-alias dkc=docker-compose
-alias dkm=docker-machine
-alias dkl='dk logs'
-alias dkcl='dkc logs'
+alias d=docker
+alias dc=docker-compose
+alias dm=docker-machine
+alias dl='dk logs'
+alias dcl='dkc logs'
 
-dkclr() {
-  dk stop $(docker ps -a -q)
-  dk rm $(docker ps -a -q)
+dclr() {
+  d stop $(docker ps -a -q)
+  d rm $(docker ps -a -q)
 }
 
-dke() {
-  dk exec -it "$1" "${@:1}"
+de() {
+  d exec -it "$1" "${@:1}"
 }
