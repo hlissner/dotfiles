@@ -26,8 +26,8 @@ in {
   '';
 
   ## Location config -- since Toronto is my 127.0.0.1
-  time.timeZone = mkDefault "America/Toronto";
-  i18n.defaultLocale = mkDefault "en_US.UTF-8";
+  time.timeZone = mkDefault "Australia/Melbourne";
+  i18n.defaultLocale = mkDefault "en_AU.UTF-8";
   # For redshift, mainly
   location = (if config.time.timeZone == "America/Toronto" then {
     latitude = 43.70011;
@@ -35,6 +35,9 @@ in {
   } else if config.time.timeZone == "Europe/Copenhagen" then {
     latitude = 55.88;
     longitude = 12.5;
+  } else if config.time.timeZone == "Australia/Melbourne" then {
+    latitude = -37.81417;
+    longitude = 144.96306;
   } else {});
 
   # So the vaultwarden CLI knows where to find my server.
