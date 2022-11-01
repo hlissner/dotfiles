@@ -1,19 +1,18 @@
 [user]
-	name = Henrik Lissner
-	email = git@henrik.io
-	signingKey = FA1FADD9440B688CAA75A057B60957CA074D39A3
+	name = James Stone
+	email = github@jamesst.one
 [commit]
-	gpgSign = true
+	gpgSign = false
 [tag]
-	gpgSign = true
+	gpgSign = false
 [core]
 	whitespace = trailing-space
 [init]
 	defaultBranch = main
 [github]
-	user = hlissner
+	user = jamesmstone
 [gitlab]
-	user = hlissner
+	user = jamesmstone
 [push]
 	autoSquash = true
 [push]
