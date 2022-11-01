@@ -69,9 +69,9 @@ fi
 
 autoload -U zmv
 
-function take {
+function mkd {
   mkdir "$1" && cd "$1";
-}; compdef take=mkdir
+}; compdef mkd=mkdir
 
 function zman {
   PAGER="less -g -I -s '+/^       "$1"'" man zshall;
