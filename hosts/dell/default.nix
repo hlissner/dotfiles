@@ -75,7 +75,12 @@
     editors = {
       default = "nvim";
       idea.enable = true;
-      emacs.enable = true;
+      emacs = {
+       enable = true;
+       doom.enable = true;
+       doom.repoUrl = "https://github.com/doomemacs/doomemacs";
+       doom.configRepoUrl = "https://github.com/jamesmstone/.doom";
+      };
       vim.enable = true;
     };
     shell = {
