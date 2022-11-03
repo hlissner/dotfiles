@@ -41,5 +41,5 @@ in {
   } else {});
 
   # So the vaultwarden CLI knows where to find my server.
-  modules.shell.vaultwarden.config.server = "vault.lissner.net";
+#  modules.shell.vaultwarden.config.server = "vault.lissner.net";
 }
