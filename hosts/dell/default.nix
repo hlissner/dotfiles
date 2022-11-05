@@ -78,8 +78,8 @@
       emacs = {
        enable = true;
        doom.enable = true;
-       doom.repoUrl = "https://github.com/doomemacs/doomemacs";
-       doom.configRepoUrl = "https://github.com/jamesmstone/.doom";
+       doom.repoUrl = "https://:@github.com/doomemacs/doomemacs";
+       doom.configRepoUrl = "https://:@github.com/jamesmstone/.doom";
       };
       vim.enable = true;
     };
