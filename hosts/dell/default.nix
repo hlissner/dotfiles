@@ -109,7 +109,9 @@
 
   networking.networkmanager.enable = true;
 
-
+  user.packages = with pkgs; [
+    mosh
+  ];
   ## Personal backups
   # Syncthing is a bit heavy handed for my needs, so rsync to my NAS instead.
   /*systemd = {
