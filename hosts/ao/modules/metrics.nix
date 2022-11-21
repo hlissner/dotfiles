@@ -9,7 +9,9 @@ in {
   user.extraGroups = [ "grafana" ];
   services.grafana = {
     enable = true;
-    domain = "stats.henrik.io";
+    settings = {
+      server.domain = "stats.henrik.io";
+    };
   };
   services.nginx.virtualHosts = {
     "stats.henrik.io" = {
@@ -18,12 +20,11 @@ in {
       enableACME = true;
       extraConfig = ''if ($deny) { return 503; }'';
       locations."/" = {
-        proxyPass = "http://127.0.0.1:${toString config.services.grafana.port}";
+        proxyPass = "http://127.0.0.1:3000";
         proxyWebsockets = true;
       };
     };
   };
-
 
   ### Collectors
   services.prometheus = {
