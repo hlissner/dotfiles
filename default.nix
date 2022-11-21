@@ -50,6 +50,9 @@ with lib.my;
   # here. Per-interface useDHCP will be mandatory in the future, so we enforce
   # this default behavior here.
   networking.useDHCP = mkDefault false;
+  # Ensure we always have nmtui/nmcli
+  networking.networkmanager.enable = true;
+  user.extraGroups = [ "networkmanager" ];
 
   # Use the latest kernel
   boot = {

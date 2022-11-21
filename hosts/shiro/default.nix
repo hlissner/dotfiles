@@ -66,7 +66,6 @@
   programs.ssh.startAgent = true;
   services.openssh.startWhenNeeded = true;
 
-  networking.wireless.enable = true;
   hardware.opengl.enable = true;
 
   time.timeZone = "Europe/Copenhagen";
