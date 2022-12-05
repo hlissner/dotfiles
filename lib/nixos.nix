@@ -4,16 +4,16 @@ with lib;
 with lib.my;
 let sys = "x86_64-linux";
 in {
-  mkHost = path: attrs @ { system ? sys, ... }:
+  mkHost = path: attrs @ { system ? sys, specialArgs ? {}, ... }:
     nixosSystem {
       inherit system;
-      specialArgs = { inherit lib inputs system; };
+      specialArgs = { inherit lib inputs system; } // specialArgs;
       modules = [
         {
           nixpkgs.pkgs = pkgs;
           networking.hostName = mkDefault (removeSuffix ".nix" (baseNameOf path));
         }
-        (filterAttrs (n: v: !elem n [ "system" ]) attrs)
+        (filterAttrs (n: v: !elem n [ "system" "specialArgs" ]) attrs)
         ../.   # /default.nix
         (import path)
       ];
