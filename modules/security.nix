@@ -65,6 +65,16 @@
   user.initialPassword = "nixos";
   users.users.root.initialPassword = "nixos";
 
+  # Harden SSH client
+  programs.ssh = {
+    # Known vulnerability. See
+    # https://security.stackexchange.com/questions/110639/how-exploitable-is-the-recent-useroaming-ssh-vulnerability
+    extraConfig = ''
+      Host *
+        UseRoaming no
+    '';
+  };
+
   # So we don't have to do this later...
   security.acme.acceptTerms = true;
 }
