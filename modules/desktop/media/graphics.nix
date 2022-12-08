@@ -18,23 +18,23 @@ in {
     raster.enable  = mkBoolOpt true;
     vector.enable  = mkBoolOpt true;
     sprites.enable = mkBoolOpt true;
+    design.enable  = mkBoolOpt true;
   };
 
   config = mkIf cfg.enable {
     user.packages = with pkgs.unstable;
       (if cfg.tools.enable then [
-        font-manager   # so many damned fonts...
-        imagemagick    # for image manipulation from the shell
+        font-manager   # for easily toggling and previewing groups of fonts
+        imagemagick    # for CLI image manipulation
       ] else []) ++
 
-      # replaces illustrator & indesign
+      # Replaces Illustrator (maybe indesign?)
       (if cfg.vector.enable then [
         inkscape
       ] else []) ++
 
-      # Replaces photoshop
+      # Replaces Photoshop
       (if cfg.raster.enable then [
-        krita
         gimp
         gimpPlugins.resynthesizer  # content-aware scaling in gimp
       ] else []) ++
@@ -42,10 +42,16 @@ in {
       # Sprite sheets & animation
       (if cfg.sprites.enable then [
         aseprite-unfree
+      ] else []) ++
+
+      # Replaces Adobe XD/InDesign (or Sketch)
+      (if cfg.design.enable then [
+        figma-linux   # FIXME ew, electron
       ] else []);
 
     home.configFile = mkIf cfg.raster.enable {
       "GIMP/2.10" = { source = "${configDir}/gimp"; recursive = true; };
+      # TODO Inkscape dotfiles
     };
   };
 }
