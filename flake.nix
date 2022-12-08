@@ -20,7 +20,8 @@
       agenix.url = "github:ryantm/agenix";
       agenix.inputs.nixpkgs.follows = "nixpkgs";
 
-      # Extras
+      # Extras (these are used directly by modules)
+      blender-bin.url    = "github:edolstra/nix-warez?dir=blender";
       emacs-overlay.url  = "github:nix-community/emacs-overlay";
       nixos-hardware.url = "github:nixos/nixos-hardware";
     };
