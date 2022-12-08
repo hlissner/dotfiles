@@ -27,7 +27,6 @@
       };
       media = {
         daw.enable = true;
-        documents.enable = true;
         graphics.enable = true;
         mpv.enable = true;
         recording.enable = true;
