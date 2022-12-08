@@ -111,13 +111,5 @@ in {
       # GTK2_RC_FILES must be available to the display manager.
       export GTK2_RC_FILES="$XDG_CONFIG_HOME/gtk-2.0/gtkrc"
     '';
-
-    # Clean up leftovers, as much as we can
-    system.userActivationScripts.cleanupHome = ''
-      pushd "${config.user.home}"
-      rm -rf .compose-cache .nv .pki .dbus .fehbg
-      [ -s .xsession-errors ] || rm -f .xsession-errors*
-      popd
-    '';
   };
 }

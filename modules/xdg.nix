@@ -3,49 +3,110 @@
 # Set up and enforce XDG compliance. Other modules will take care of their own,
 # but this takes care of the general cases.
 
-{ config, home-manager, ... }:
-{
-  ### A tidy $HOME is a tidy mind
-  home-manager.users.${config.user.name}.xdg.enable = true;
+{ options, config, lib, home-manager, ... }:
 
-  environment = {
-    sessionVariables = {
-      # These are the defaults, and xdg.enable does set them, but due to load
-      # order, they're not set before environment.variables are set, which could
-      # cause race conditions.
-      XDG_CACHE_HOME  = "$HOME/.cache";
-      XDG_CONFIG_HOME = "$HOME/.config";
-      XDG_DATA_HOME   = "$HOME/.local/share";
-      XDG_BIN_HOME    = "$HOME/.local/bin";
-      XDG_STATE_HOME  = "$HOME/.local/state";
-    };
-    variables = {
-      # Conform more programs to XDG conventions. The rest are handled by their
-      # respective modules.
-      __GL_SHADER_DISK_CACHE_PATH = "$XDG_CACHE_HOME/nv";
-      ASPELL_CONF = ''
-        per-conf $XDG_CONFIG_HOME/aspell/aspell.conf;
-        personal $XDG_CONFIG_HOME/aspell/en_US.pws;
-        repl $XDG_CONFIG_HOME/aspell/en.prepl;
-      '';
-      CUDA_CACHE_PATH = "$XDG_CACHE_HOME/nv";
-      HISTFILE        = "$XDG_DATA_HOME/bash/history";
-      INPUTRC         = "$XDG_CONFIG_HOME/readline/inputrc";
-      LESSHISTFILE    = "$XDG_STATE_HOME/less/history";
-      WGETRC          = "$XDG_CONFIG_HOME/wgetrc";
-
-      # Tools I don't use
-      # SUBVERSION_HOME = "$XDG_CONFIG_HOME/subversion";
-      # BZRPATH         = "$XDG_CONFIG_HOME/bazaar";
-      # BZR_PLUGIN_PATH = "$XDG_DATA_HOME/bazaar";
-      # BZR_HOME        = "$XDG_CACHE_HOME/bazaar";
-      # ICEAUTHORITY    = "$XDG_CACHE_HOME/ICEauthority";
-    };
-
-    # Move ~/.Xauthority out of $HOME (setting XAUTHORITY early isn't enough)
-    extraInit = ''
-      export XAUTHORITY=/tmp/Xauthority
-      [ -e ~/.Xauthority ] && mv -f ~/.Xauthority "$XAUTHORITY"
-    '';
+with lib;
+with lib.my;
+let cfg = config.xdg;
+in {
+  options.xdg = {
+    enable = mkBoolOpt true;
+    ssh.enable = mkBoolOpt false;
   };
+
+  config = mkIf cfg.enable (mkMerge [
+    {
+      ### A tidy $HOME is a tidy mind
+      home-manager.users.${config.user.name}.xdg.enable = true;
+
+      environment = {
+        sessionVariables = {
+          # These are the defaults, and xdg.enable does set them, but due to load
+          # order, they're not set before environment.variables are set, which could
+          # cause race conditions.
+          XDG_CACHE_HOME  = "$HOME/.cache";
+          XDG_CONFIG_HOME = "$HOME/.config";
+          XDG_DATA_HOME   = "$HOME/.local/share";
+          XDG_BIN_HOME    = "$HOME/.local/bin";
+          XDG_STATE_HOME  = "$HOME/.local/state";
+        };
+
+        variables = {
+          # Conform more programs to XDG conventions. The rest are handled by their
+          # respective modules.
+          __GL_SHADER_DISK_CACHE_PATH = "$XDG_CACHE_HOME/nv";
+          ASPELL_CONF = ''
+            per-conf $XDG_CONFIG_HOME/aspell/aspell.conf;
+            personal $XDG_CONFIG_HOME/aspell/en_US.pws;
+            repl $XDG_CONFIG_HOME/aspell/en.prepl;
+          '';
+          DVDCSS_CACHE    = "$XDG_DATA_HOME/dvdcss";
+          HISTFILE        = "$XDG_DATA_HOME/bash/history";
+          INPUTRC         = "$XDG_CONFIG_HOME/readline/inputrc";
+          LESSHISTFILE    = "$XDG_STATE_HOME/less/history";
+          LESSKEY         = "$XDG_CONFIG_HOME/less/keys";
+          WGETRC          = "$XDG_CONFIG_HOME/wgetrc";
+          # Common shells
+          BASH_COMPLETION_USER_FILE = "$XDG_CONFIG_HOME/bash/completion";
+          ENV = "$XDG_CONFIG_HOME/shell/shrc";  # sh, ksh
+          # PostgreSQL
+          MYSQL_HISTFILE  = "$XDG_STATE_HOME/mysql/history";
+          PGPASSFILE      = "$XDG_CONFIG_HOME/pg/pgpass";
+          PGSERVICEFILE   = "$XDG_CONFIG_HOME/pg";
+          PSQLRC          = "$XDG_CONFIG_HOME/pg/psqlrc";
+          PSQL_HISTORY    = "$XDG_STATE_HOME/psql_history";
+          # Tools I don't use
+          BZRPATH         = "$XDG_CONFIG_HOME/bazaar";
+          BZR_HOME        = "$XDG_CACHE_HOME/bazaar";
+          BZR_PLUGIN_PATH = "$XDG_DATA_HOME/bazaar";
+          ICEAUTHORITY    = "$XDG_CACHE_HOME/ICEauthority";
+          SUBVERSION_HOME = "$XDG_CONFIG_HOME/subversion";
+        };
+
+        ## dbus-broker doesn't produce a $HOME/.dbus like the dbus daemon does.
+        services.dbus.implementation = "broker";
+      };
+
+      # NixOS genereates a $HOME/.xsession-errors file whether or not there were any
+      # errors, so delete it if it's empty.
+      services.xserver.displayManager.job.environment = {
+        # Move ~/.Xauthority out of $HOME.
+        XAUTHORITY = "$XDG_RUNTIME_DIR/Xauthority";
+        # See https://kdemonkey.blogspot.com/2008/04/magic-trick.html
+        # Then https://github.com/NixOS/nixpkgs/blob/nixos-unstable/nixos/modules/services/x11/display-managers/default.nix#L74-L83
+        # Which would otherwise create $HOME/.compose-cache.
+        XCOMPOSECACHE = "$XDG_RUNTIME_DIR/xcompose";
+      };
+    }
+
+    ## Getting SSH to respect XDG -- HIGHLY EXPERIMENTAL. Expect jank.
+    (mkIf cfg.ssh.enable {
+      environment.systemPackages = [
+        (writeShellScriptBin "ssh" ''
+          if [ -s "$XDG_CONFIG_HOME/ssh/config" ]; then
+            OPTS='-F $XDG_CONFIG_HOME/ssh/config'
+          fi
+          exec ${pkgs.ssh}/bin/ssh $OPTS "$@"
+        '')
+        (writeShellScriptBin "scp" ''
+          if [ -s "$XDG_CONFIG_HOME/ssh/config" ]; then
+            OPTS='-F $XDG_CONFIG_HOME/ssh/config'
+          fi
+          exec ${pkgs.ssh}/bin/scp $OPTS "$@"
+        '')
+        (writeShellScriptBin "ssh-copy-id" ''
+          OPTS="-i \"$XDG_CONFIG_HOME/ssh/id_ed25519\" "
+          OPTS+="-i \"$XDG_CONFIG_HOME/ssh/id_rsa\" "
+          exec ${pkgs.ssh-copy-id}/bin/ssh-copy-id "$@" $OPTS
+        '')
+      ];
+
+      programs.ssh.extraConfig = ''
+        Host *
+          IdentityFile ~/.config/ssh/id_ed25519
+          IdentityFile ~/.config/ssh/id_rsa
+          UserKnownHostsFile ~/.config/ssh/known_hosts
+      '';
+    })
+  ]);
 }
