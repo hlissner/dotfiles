@@ -5,11 +5,9 @@
   # sets hidepid=2 on /proc (make process info visible only to owning user)
   # NOTE Was removed on nixpkgs-unstable because it doesn't do anything
   # security.hideProcessInformation = true;
-  # Prevent replacing the running kernel w/o reboot
-  security.protectKernelImage = true;
 
   # tmpfs = /tmp is mounted in ram. Doing so makes temp file management speedy
-  # on ssd systems, and volatile! Because it's wiped on reboot.
+  # on ssd systems and more secure (and volatile)! Because it's wiped on reboot.
   boot.tmpOnTmpfs = lib.mkDefault true;
   # If not using tmpfs, which is naturally purged on reboot, we must clean it
   # /tmp ourselves. /tmp should be volatile storage!

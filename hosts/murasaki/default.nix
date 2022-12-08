@@ -1,11 +1,16 @@
 { pkgs, config, lib, ... }:
 {
   imports = [
-    ../home.nix
     ./hardware-configuration.nix
   ];
 
-  ## Modules
+
+  ## Framework configuration
+  profiles = {
+    users.hlissner.enable = true;
+    workstation.enable = true;
+  };
+
   modules = {
     desktop = {
       bspwm.enable = true;
@@ -61,14 +66,11 @@
     theme.active = "alucard";
   };
 
+
+  ## Local config
   user.packages = with pkgs; [
     my.starsector
   ];
 
-  ## Local config
-  programs.ssh.startAgent = true;
-  services.openssh.startWhenNeeded = true;
-
-  # networking.wireless.enable = true;
   time.timeZone = "Europe/Copenhagen";
 }

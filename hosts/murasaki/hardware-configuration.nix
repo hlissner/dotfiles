@@ -8,16 +8,6 @@
     initrd.kernelModules = [];
     extraModulePackages = [];
     kernelModules = [ "kvm-amd" ];
-    kernelParams = [
-      # HACK Disables fixes for spectre, meltdown, L1TF and a number of CPU
-      #      vulnerabilities. Don't copy this blindly! And especially not for
-      #      mission critical or server/headless builds exposed to the world.
-      "mitigations=off"
-    ];
-
-    # Refuse ICMP echo requests on my desktop/laptop; nobody has any business
-    # pinging them, unlike my servers.
-    kernel.sysctl."net.ipv4.icmp_echo_ignore_broadcasts" = 1;
   };
 
   modules.hardware = {
@@ -34,7 +24,6 @@
 
   # CPU
   nix.settings.max-jobs = lib.mkDefault 12;
-  powerManagement.cpuFreqGovernor = "performance";
   hardware.cpu.amd.updateMicrocode = true;
 
   # Networking

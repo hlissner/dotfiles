@@ -8,6 +8,9 @@
 {
   boot.kernelPackages = pkgs.linuxKernel.packages.linux_6_0_hardened;
 
+  # Prevent replacing the running kernel w/o reboot
+  security.protectKernelImage = true;
+
   nix.gc = {
     automatic = true;
     dates = "weekly";

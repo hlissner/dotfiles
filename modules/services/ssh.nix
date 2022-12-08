@@ -24,8 +24,10 @@ in {
       moduliFile = pkgs.runCommand "filterModuliFile" {} ''
         awk '$5 >= 3071' "${config.programs.ssh.package}/etc/ssh/moduli" >"$out"
       '';
-      # Removes the default RSA key and ensures the ed25519 key is generated
-      # with 100 rounds, rather than the default (16).
+      # Removes the default RSA key (not that it represents a vulnerability, per
+      # se, but is one less key (that I don't plan to use) to the castle laying
+      # around) and ensures the ed25519 key is generated with 100 rounds, rather
+      # than the default (16), to better ensure its entropy.
       hostKeys = [
         {
           comment = "${config.networking.hostName}.local";
@@ -35,10 +37,5 @@ in {
         }
       ];
     };
-
-    user.openssh.authorizedKeys.keys =
-      if config.user.name == "hlissner"
-      then [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB71rSnjuC06Qq3NLXQJwSz7jazoB+umydddrxL6vg1a hlissner" ]
-      else [];
   };
 }
