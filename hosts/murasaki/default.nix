@@ -25,8 +25,8 @@
       media = {
         daw.enable = true;
         graphics.enable = true;
-        mpv.enable = true;
-        recording.enable = true;
+        video.enable = true;
+        cad.enable = true;
       };
       term = {
         default = "xst";
