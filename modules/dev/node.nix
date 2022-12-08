@@ -9,6 +9,7 @@ with lib;
 with lib.my;
 let devCfg = config.modules.dev;
     cfg = devCfg.node;
+    nodePkg = pkgs.nodejs_latest;
 in {
   options.modules.dev.node = {
     enable = mkBoolOpt false;
@@ -16,16 +17,15 @@ in {
   };
 
   config = mkMerge [
-    (let node = pkgs.nodejs_latest;
-     in mkIf cfg.enable {
+    (mkIf cfg.enable {
       user.packages = [
-        node
+        nodePkg
         pkgs.yarn
       ];
 
       # Run locally installed bin-script, e.g. n coffee file.coffee
       environment.shellAliases = {
-        n  = "PATH=\"$(${node}/bin/npm bin):$PATH\"";
+        n  = "PATH=\"$(${nodePkg}/bin/npm bin):$PATH\"";
         ya = "yarn";
       };
 
@@ -33,6 +33,7 @@ in {
     })
 
     (mkIf cfg.xdg.enable {
+      # NPM refuses to adopt XDG conventions upstream, so I enforce it myself.
       env.NPM_CONFIG_USERCONFIG = "$XDG_CONFIG_HOME/npm/config";
       env.NPM_CONFIG_CACHE      = "$XDG_CACHE_HOME/npm";
       env.NPM_CONFIG_TMP        = "$XDG_RUNTIME_DIR/npm";
