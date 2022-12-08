@@ -13,6 +13,7 @@
         rofi.enable = true;
         # godot.enable = true;
         spotify.enable = true;
+        teamviewer.enable = true;
       };
       browsers = {
         default = "firefox";
