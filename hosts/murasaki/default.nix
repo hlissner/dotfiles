@@ -12,6 +12,7 @@
       apps = {
         rofi.enable = true;
         # godot.enable = true;
+        spotify.enable = true;
       };
       browsers = {
         default = "firefox";
@@ -26,7 +27,6 @@
         graphics.enable = true;
         mpv.enable = true;
         recording.enable = true;
-        spotify.enable = true;
       };
       term = {
         default = "xst";
