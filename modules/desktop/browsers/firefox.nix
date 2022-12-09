@@ -39,10 +39,6 @@ in {
         })
       ];
 
-      # Prevent auto-creation of ~/Desktop. The trailing slash is necessary; see
-      # https://bugzilla.mozilla.org/show_bug.cgi?id=1082717
-      env.XDG_DESKTOP_DIR = "$HOME/";
-
       modules.desktop.browsers.firefox.settings = {
         # Default to dark theme in DevTools panel
         "devtools.theme" = "dark";

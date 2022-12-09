@@ -21,6 +21,12 @@ in {
 
       environment = {
         sessionVariables = {
+          # Prevent auto-creation of XDG user directories (like Desktop,
+          # Documents, etc), we move it to $XDG_DATA_HOME. The trailing slash is
+          # necessary for some apps (like Firefox) to respect it. See
+          # https://bugzilla.mozilla.org/show_bug.cgi?id=1082717
+          XDG_DESKTOP_DIR = "$HOME/.local/share/desktop/";
+
           # These are the defaults, and xdg.enable does set them, but due to load
           # order, they're not set before environment.variables are set, which could
           # cause race conditions.
@@ -30,6 +36,21 @@ in {
           XDG_BIN_HOME    = "$HOME/.local/bin";
           XDG_STATE_HOME  = "$HOME/.local/state";
         };
+
+        # Some programs ignore the envvars (like apps with Gnome/QT
+        # compatibilty, or certain file managers) and end up auto-creating these
+        # annoying directories in $HOME. I would rather impose my own structure
+        # on $HOME, so I stow them away in $XDG_DATA_HOME.
+        etc."xdg/user-dirs.defaults".text = ''
+          XDG_DESKTOP_DIR="$HOME/.local/share/xdg/desktop"
+          XDG_DOCUMENTS_DIR="$HOME/.local/share/xdg/documents"
+          XDG_DOWNLOAD_DIR="$HOME/downloads"
+          XDG_MUSIC_DIR="$HOME/.local/share/xdg/music"
+          XDG_PICTURES_DIR="$HOME/.local/share/xdg/pictures"
+          XDG_PUBLICSHARE_DIR="$HOME/.local/share/xdg/share"
+          XDG_TEMPLATES_DIR="$HOME/.local/share/xdg/templates"
+          XDG_VIDEOS_DIR="$HOME/.local/share/xdg/videos"
+        '';
 
         variables = {
           # Conform more programs to XDG conventions. The rest are handled by their
