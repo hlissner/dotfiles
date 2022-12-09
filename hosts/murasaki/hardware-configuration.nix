@@ -72,7 +72,7 @@
     "/media/games" = {
       device = "/dev/disk/by-uuid/8C1EE27F1EE261A6";
       fsType = "ntfs";
-      options = [ "uid=1000" "gid=100" "rw" "user" "exec" "umask=000" "nofail" ];
+      options = [ "uid=1000" "gid=100" "rw" "user" "exec" "umask=000" "nofail" "lowntfs-3g" ];
     };
   };
   swapDevices = [{ device = "/dev/disk/by-label/swap"; }];
