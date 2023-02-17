@@ -28,14 +28,16 @@ in {
 
     programs.zsh = {
       enable = true;
-      enableCompletion = true;
       # I init completion myself, because enableGlobalCompInit initializes it
       # too soon, which means commands initialized later in my config won't get
       # completion, and running compinit twice is slow.
+      enableCompletion = true;
       enableGlobalCompInit = false;
+      # Again. I configure the prompt myself, so disable the default.
       promptInit = "";
     };
 
+    # Some shell utilies I find indispensible.
     user.packages = with pkgs; [
       zsh
       nix-zsh-completions

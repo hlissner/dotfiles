@@ -1,9 +1,11 @@
 # modules/desktop/media/graphics.nix
 #
-# The hardest part about switching to linux? Sacrificing Adobe. It really is
-# difficult to replace and its open source alternatives don't *quite* cut it,
-# but enough that I can do a fraction of it on Linux. For the rest I have a
-# second computer dedicated to design work (and gaming).
+# I use almost every app in the Adobe suite, both professionally and personally.
+# Sacrificing them was the hardest (and most liberating) part of my switch to
+# Linux more than a decade ago. For much of that time I've maintained a
+# dedicated Windows PC for it, but within the past few years (2021/2022), its
+# alternatives have finally (in my opinion) become viable enough for me to drop
+# the second PC.
 
 { self, lib, config, options, pkgs, ... }:
 
@@ -37,9 +39,10 @@ in {
       # Replaces Photoshop
       (if cfg.raster.enable then [
         gimp
-        gimpPlugins.resynthesizer  # content-aware scaling in gimp
-        gimpPlugins.gmic           # an assortment of extra filters
         gimpPlugins.bimp           # batch image manipulation
+        gimpPlugins.resynthesizer  # content-aware scaling in gimp
+        # NOTE: gmic is broken on nixpkgs-unstable (see NixOS/nixpkgs#212563)
+        gimpPlugins.gmic           # an assortment of extra filters
       ] else []) ++
 
       # Sprite sheets & animation
