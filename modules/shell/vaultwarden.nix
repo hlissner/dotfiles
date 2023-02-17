@@ -14,11 +14,15 @@ in {
       bitwarden-cli
     ];
 
-    modules.shell.zsh.rcInit = "_cache bw completion --shell zsh; compdef _bw bw;";
+    modules.shell.zsh.rcInit = ''
+      _cache bw completion --shell zsh && compdef _bw bw;
+    '';
 
     system.userActivationScripts = mkIf (cfg.config != {}) {
       initVaultwarden = ''
-        ${concatStringsSep "\n" (mapAttrsToList (n: v: "bw config ${n} ${v}") cfg.config)}
+        if command -v bw; then
+          ${concatStringsSep "\n" (mapAttrsToList (n: v: "bw config ${n} ${v}") cfg.config)}
+        fi
       '';
     };
   };
