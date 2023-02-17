@@ -37,6 +37,8 @@ in {
       (if cfg.raster.enable then [
         gimp
         gimpPlugins.resynthesizer  # content-aware scaling in gimp
+        gimpPlugins.gmic           # an assortment of extra filters
+        gimpPlugins.bimp           # batch image manipulation
       ] else []) ++
 
       # Sprite sheets & animation
