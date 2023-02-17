@@ -3,7 +3,7 @@
 with lib;
 with self.lib;
 let cfg = config.modules.desktop.gaming.steam;
-    steamDir = "$XDG_RUNTIME_HOME/steam";
+    steamDir = "$XDG_STATE_HOME/steam";
 in {
   options.modules.desktop.gaming.steam = with types; {
     enable = mkBoolOpt false;
