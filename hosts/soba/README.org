@@ -1,0 +1,52 @@
+#+title: Soba
+#+date:  January 16, 2023
+
+* Overview
+Old parts thrown into a Coolermaster HAF XB EVO, intended as an emergency or
+testbench system, for testing and benchmarking hardware and software in an
+isolated environment. Also moonlights as a Steam remote play server for my Steam
+Deck.
+
+** Specs
+| CASE | Cooler Master HAF XB EVO                    |
+| CPU  | Intel i7-6700                               |
+| MOBO | Gigabyte GA-H170M-D3H mATX                  |
+| PSU  | Corsair RM750I 80+GOLD Modular              |
+| GPU  | EVGA GeForce 1080 GTX                       |
+| RAM  | 16gb Kingston Hyper-X Fury DDR4-2133        |
+| HDD  | SDSSDA-120G-G25 "SanDisk S Plus 120G" 120gb |
+
+* Filesystems
+** Set up root file system
+#+BEGIN_SRC sh
+# EVO Plus 500gb
+parted /dev/sda1 -- mklabel gpt
+parted /dev/sda1 -- mkpart ESP fat32 1MiB 512MiB
+parted /dev/sda1 -- mkpart primary  8.5GiB
+parted /dev/sda1 -- mkpart primary 8.5GiB 200GiB
+parted /dev/sda1 -- mkpart primary 200GiB 100%
+parted /dev/sda1 -- set 1 boot on
+mkfs.fat -F32 -n BOOT /dev/nvme0n1p1
+mkswap -L swap /dev/nvme0n1p2
+mkfs.ext4 -L nixos /dev/nvme0n1p3
+mkfs.ext4 -L home /dev/nvme0n1p4
+#+END_SRC
+
+** Mount drives
+#+BEGIN_SRC sh
+mount /dev/nvme0n1p3 /mnt
+swapon /dev/nvme0n1p2
+mkdir -p /mnt/{home,boot,usr/store}
+mount /dev/nvme0n1p1 /mnt/boot
+mount /dev/nvme0n1p4 /mnt/home
+#+END_SRC
+
+** Mount external
+#+begin_src
+cryptsetup luksOpen /dev/sdc1 external
+mount /mnt/mapper/external /media/external
+#+end_src
+
+* History
+** January 5, 2023
+Initial build.
