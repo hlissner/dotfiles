@@ -19,6 +19,7 @@ in {
     vector.enable  = mkBoolOpt true;
     sprites.enable = mkBoolOpt true;
     design.enable  = mkBoolOpt true;
+    print.enable   = mkBoolOpt false;
   };
 
   config = mkIf cfg.enable {
@@ -46,9 +47,15 @@ in {
         aseprite-unfree
       ] else []) ++
 
-      # Replaces Adobe XD/InDesign (or Sketch)
+      # Replaces Adobe XD (or Sketch)
       (if cfg.design.enable then [
         figma-linux   # FIXME ew, electron
+      ] else []) ++
+
+      # Replaces InDesign
+      (if cfg.print.enable then [
+        scribus
+        cyan          # CYMK converter/viewer
       ] else []);
 
     home.configFile = mkIf cfg.raster.enable {
