@@ -16,12 +16,12 @@ in {
   config = mkIf cfg.enable {
     user.packages = with pkgs; [
       # Dependencies
-      my.trackma
-      my.anime-downloader
+      trackma
+      anime-downloader
       mpv
 
       # The star of the show
-      my.adl
+      adl
     ];
   };
 }
