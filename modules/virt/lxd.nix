@@ -1,12 +1,12 @@
 # Inspired by https://www.srid.ca/2012301.html
 
-{ options, config, lib, pkgs, ... }:
+{ self, lib, config, options, pkgs, ... }:
 
 with lib;
-with lib.my;
-let cfg = config.modules.desktop.vm.lxd;
+with self.lib;
+let cfg = config.modules.virt.lxd;
 in {
-  options.modules.desktop.vm.lxd = {
+  options.modules.virt.lxd = {
     enable = mkBoolOpt false;
   };
 

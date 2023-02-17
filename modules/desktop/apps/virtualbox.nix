@@ -1,15 +1,15 @@
-# modules/desktop/vm/virtualbox.nix
+# modules/desktop/apps/virtualbox.nix
 #
 # For testing or building software on other OSes. If I find out how to get macOS
 # on qemu/libvirt I'd be happy to leave virtualbox behind.
 
-{ options, config, lib, pkgs, ... }:
+{ self, lib, config, options, pkgs, ... }:
 
 with lib;
-with lib.my;
-let cfg = config.modules.desktop.vm.virtualbox;
+with self.lib;
+let cfg = config.modules.desktop.apps.virtualbox;
 in {
-  options.modules.desktop.vm.virtualbox = {
+  options.modules.desktop.apps.virtualbox = {
     enable = mkBoolOpt false;
   };
 
@@ -21,5 +21,12 @@ in {
     };
 
     user.extraGroups = [ "vboxusers" ];
+
+    # I will always update the microcode for my CPUs, so this is safe heuristic
+    # for what CPU to cater to.
+    boot.kernelModules =
+      if config.hardware.cpu.amd.updateMicrocode
+      then [ "kvm-amd" ]
+      else [ "kvm-intel" ];
   };
 }
