@@ -47,7 +47,13 @@ in {
       preferDarkTheme = mkBoolOpt true;
     };
 
-    onReload = mkOpt (attrsOf lines) {};
+    onReload = mkOpt (attrsOf (submodule {
+      options = {
+        enabled = mkOpt bool true;
+        order = mkOpt int 50;
+        text = mkOpt str "";
+      };
+    })) {};
 
     fonts = {
       # TODO Use submodules
@@ -94,20 +100,18 @@ in {
   };
 
   config = mkIf (cfg.active != null) (mkMerge [
-    # Read xresources files in ~/.config/xtheme/* to allow modular configuration
-    # of Xresources.
-    (let xrdb = ''cat "$XDG_CONFIG_HOME"/xtheme/* | ${pkgs.xorg.xrdb}/bin/xrdb -load'';
-     in {
-       home.configFile."xtheme.init" = {
-         text = xrdb;
-         executable = true;
-       };
-       modules.theme.onReload.xtheme = xrdb;
-     })
+    {
+      # Read xresources files in ~/.config/xtheme/* to allow modular
+      # configuration of Xresources.
+      modules.theme.onReload.xtheme = {
+        text = ''cat "$XDG_CONFIG_HOME"/xtheme/* | ${pkgs.xorg.xrdb}/bin/xrdb -load'';
+        order = 10;
+      };
+    }
 
     (mkIf config.modules.desktop.bspwm.enable {
       home.configFile."bspwm/rc.d/05-init" = {
-        text = "$XDG_CONFIG_HOME/xtheme.init";
+        text = "$XDG_DATA_HOME/dotfiles/10.xtheme.reload";
         executable = true;
       };
     })
@@ -212,7 +216,7 @@ in {
           '';
        in {
          services.xserver.displayManager.sessionCommands = command;
-         modules.theme.onReload.wallpaper = command;
+         modules.theme.onReload.wallpaper.text = command;
 
          home.dataFile = mkIf (cfg.wallpaper != null) {
            "wallpaper".source = cfg.wallpaper;
@@ -224,21 +228,38 @@ in {
     })
 
     (mkIf (cfg.onReload != {})
-      (let reloadTheme =
-             with pkgs; (writeScriptBin "reloadTheme" ''
-               #!${stdenv.shell}
-               echo "Reloading current theme: ${cfg.active}"
-               ${concatStringsSep "\n"
-                 (mapAttrsToList (name: script: ''
-                   echo "[${name}]"
-                   ${script}
-                 '') cfg.onReload)}
-             '');
-       in {
-         user.packages = [ reloadTheme ];
-         system.userActivationScripts.reloadTheme = ''
-           [ -z "$NORELOAD" ] && ${reloadTheme}/bin/reloadTheme
-         '';
-       }))
+      {
+        home.dataFile = {
+          "dotfiles/reload" = {
+            text = ''
+              for s in $XDG_DATA_HOME/dotfiles/*.reload; do
+                [ -x "$s" ] && "$s"
+              done
+            '';
+            executable = true;
+          };
+        } // (mapAttrs'
+          (n: v:
+            nameValuePair
+              "dotfiles/${fixedWidthNumber 2 (min 99 (max 0 v.order))}.${n}.reload"
+              {
+                text = ''
+                  #!/usr/bin/env bash
+                  source "${config.system.build.setEnvironment}"
+                  echo "[Reloading ${n}]"
+                  ${v.text}
+                '';
+                executable = true;
+              })
+          cfg.onReload);
+        system.userActivationScripts.reload = ''
+          reloadfile="$XDG_DATA_HOME/dotfiles/reload"
+          if [[ -z "$NORELOAD" && -x "$reloadfile" ]]; then
+            source "${config.system.build.setEnvironment}"
+            echo "Reloading current theme: ${cfg.active}"
+            "$reloadfile"
+          fi
+        '';
+      })
   ]);
 }

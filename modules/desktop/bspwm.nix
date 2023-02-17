@@ -14,9 +14,9 @@ in {
   };
 
   config = mkIf cfg.enable {
-    modules.theme.onReload.bspwm = ''
-      ${pkgs.bspwm}/bin/bspc wm -r
-      source $XDG_CONFIG_HOME/bspwm/bspwmrc
+    modules.theme.onReload.bspwm.text = ''
+      bspc wm -r
+      $XDG_CONFIG_HOME/bspwm/bspwmrc
     '';
 
     modules.services.dunst.enable = true;
