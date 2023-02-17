@@ -10,8 +10,8 @@ with self.lib;
     self.modules.home-manager.default
   ];
 
-  options = with types; {
-    home = {
+  options = {
+    home = with types; {
       file       = mkOpt' attrs {} "Files to place directly in $HOME";
       configFile = mkOpt' attrs {} "Files to place in $XDG_CONFIG_HOME";
       dataFile   = mkOpt' attrs {} "Files to place in $XDG_DATA_HOME";
@@ -40,6 +40,7 @@ with self.lib;
           stateVersion = config.system.stateVersion;
         };
         xdg = {
+          enable = true;
           configFile = mkAliasDefinitions options.home.configFile;
           dataFile   = mkAliasDefinitions options.home.dataFile;
         };
