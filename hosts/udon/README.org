@@ -1,0 +1,83 @@
+#+TITLE: Udon
+#+DATE:  September 13, 2020
+
+* Overview
+My daily NixOS driver, for work and play. Dual-boots with Windows (used solely
+for gaming, when Proton isn't enough).
+
+* Specs
+| CASE | [[https://www.amazon.com/Fractal-Design-Define-Cases-FD-CA-DEF-R4-BL/dp/B008HD3CTI][Fractal Design Define R4 ATX Tower Case Black Pearl]] |
+| CPU  | [[https://www.newegg.ca/amd-ryzen-9-3900x/p/N82E16819113103][AMD Ryzen 9 3900X 12-core, 24-thread]]                |
+| MOBO | [[https://www.newegg.ca/gigabyte-b550-aorus-elite/p/N82E16813145214?Item=N82E16813145214&IsFeedbackTab=true#scrollFullInfo][GIGABYTE B550 AORUS Elite]]                           |
+| COOL | [[https://www.newegg.ca/cooler-master-hyper-212-evo-rr-212e-20pk-r2/p/N82E16835103099][Cooler Master Hyper 212 Evo]]                         |
+| RAM  | [[https://www.newegg.ca/g-skill-64gb-288-pin-ddr4-sdram/p/N82E16820374003?Description=G.SKILL%20Ripjaws%20V%20Series%2064gb&cm_re=G.SKILL_Ripjaws%20V%20Series%2064gb-_-20-374-003-_-Product][G.SKILL Ripjaws V Series 64GB (2x 32GB)]]             |
+| PSU  | [[https://www.newegg.ca/seasonic-prime-ultra-titanium-ssr-1000tr-1000w/p/N82E16817151195][Seasonic PRIME TX-1000]]                              |
+| GPU  | ASUS TUF GeForce 3080ti RTX                         |
+| HDD  | [[https://www.amazon.ca/gp/product/B0B7CPSN2K?psc=1][WD_BLACK 1TB SN850X NVMe]]                            |
+| HDD  | [[https://www.newegg.ca/samsung-970-evo-plus-500gb/p/N82E16820147742?Description=samsung%20970%20evo%20plus&cm_re=samsung_970%20evo%20plus-_-20-147-742-_-Product][Samsung 970 EVO+ 500GB]]                              |
+| HDD  | Seagate ST1000DM010 Compute 1TB                     |
+| HDD  | WD6400AAKS 640GB                                    |
+| KBD  | [[https://ergodox-ez.com/][ErgoDox-EZ]]                                          |
+| USB  | [[https://www.anker.com/products/variant/anker-24g-wireless-vertical-ergonomic-optical-mouse/A7852011][Anker Wireless Vertical Mouse]]                       |
+
+* Filesystems
+** /dev/nvme0n1: Samsung EVO+ 500gb (nixos, /home)
+
+#+begin_src sh
+parted /dev/nvme0n1 -- mklabel gpt
+parted /dev/nvme0n1 -- mkpart ESP fat32 1MiB 512MiB
+parted /dev/nvme0n1 -- mkpart primary 512MiB 200GiB
+parted /dev/nvme0n1 -- mkpart primary 200GiB 100%
+parted /dev/nvme0n1 -- set 1 boot on
+mkfs.fat -F32 -n BOOT /dev/nvme0n1p1
+mkfs.ext4 -L nixos /dev/nvme0n1p2
+mkfs.ext4 -L home /dev/nvme0n1p3
+#+END_SRC
+
+** /dev/nvme1n1: SN850X NVMe 1TB (windows, games) :windows:
+This is set up on the Windows side, as is my dedicated Windows + game library
+drive. On the Linux side I only need a label to consistently refer to it by:
+#+begin_src sh
+ntfslabel /dev/nvme1n1p2 windows
+#+end_src
+
+** /dev/sda: WD6400AAKS 640gb (extra storage and VMs)
+#+begin_src sh
+parted /dev/sda -- mklabel gpt
+parted /dev/sda -- mkpart primary 0% 100%
+mkfs.ext4 -L data /dev/sda1
+#+end_src
+
+** /dev/sdb: ST1000DM010 1TB (for streaming/recording footage) :windows:
+This is set up on the Windows side, as dedicated hot-storage for game and screen
+recordings on either Windows (with ShadowPlay) or Linux (with OBS studio). No
+setup needed on Linux, except for a label to consistently refer to it by:
+#+begin_src sh
+ntfslabel /dev/sdb video
+#+end_src
+** Mount filesystems
+The final step in the install process, before running ~$DOTFILES/bin/hey
+install~:
+#+BEGIN_SRC sh
+mount /dev/disk/by-label/nixos /mnt
+
+mkdir -p /mnt/{home,boot}
+mount /dev/disk/by-label/boot /mnt/boot
+mount /dev/disk/by-label/home /mnt/home
+
+mkdir -p /mnt/media/{windows,video}
+mount /dev/disk/by-label/windows /mnt/media/windows
+mount /dev/disk/by-label/video /mnt/media/video
+#+END_SRC
+
+* History
+** January 4, 2023
+Repurposed this system from a dedicated workstation to a dual purpose
+work+gaming workstation.
+
+- Renamed from Kuro to Udon.
+- Replaced EVGA GeForce 680GTX SC with ASUS TUF GeForce 3080ti RTX.
+- Added WD_BLACK 1TB SN850X M.2 drive for Windows dualbooting.
+- Added Seagate ST1000DM010 1TB for footage and video projects.
+- Added WD6400AAKS 640GB for VM storage and local redundancy.
+- Replaced PSU: Corsair RM750I -> Seasonic PRIME TX-1000.
