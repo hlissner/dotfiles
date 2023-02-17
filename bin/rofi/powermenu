@@ -1,31 +1,43 @@
-#!/usr/bin/env sh
+#!/usr/bin/env zsh
+#
+# Present a Rofi menu to power down, reboot, reboot into a specific systemd-boot
+# target, sleep, or logout.
 
-rofi_command="rofi -theme theme/powermenu.rasi"
+_rofi() { rofi -theme theme/powermenu.rasi "$@"; }
+
 
 ### Options ###
-power_off="\tShutdown"
-reboot="\tReboot"
-lock="\tLock"
-suspend="鈴\tSleep"
-log_out="\tLogout"
-# Variable passed to rofi
-options="$power_off\n$reboot\n$lock\n$suspend\n$log_out"
+all=(shutdown reboot rebootinto suspend logout)
 
-case "$(echo -e "$options" | $rofi_command -dmenu -selected-row 2)" in
-    $power_off)
-        systemctl poweroff
+declare -A icons
+icons[shutdown]=""
+icons[reboot]=""
+icons[rebootinto]=""
+icons[suspend]="鈴"
+icons[logout]=""
+
+declare -A labels
+labels[shutdown]="Shutdown"
+labels[reboot]="Reboot"
+labels[rebootinto]="Reboot into..."
+labels[suspend]="Sleep"
+labels[logout]="Logout"
+
+# Variable passed to rofi
+choice=$(for k in "${all[@]}"; do echo "${icons[$k]}\t$labels[$k]"; done | _rofi -dmenu -i -selected-row 2)
+choice="${choice#*	}"
+
+echo "Choice: $choice"
+case $choice in
+    "${labels[shutdown]}") systemctl poweroff ;;
+    "${labels[reboot]}") systemctl reboot ;;
+    "${labels[rebootinto]}")
+        entry=$(systemctl reboot --boot-loader-entry=help | _rofi -dmenu -i -p "Reboot into...")
+        [[ -n "$entry" ]] && systemctl reboot --boot-loader-entry="$entry"
         ;;
-    $reboot)
-        systemctl reboot
-        ;;
-    $lock)
-        zzz
-        ;;
-    $suspend)
-        dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Pause
+    "${labels[suspend]}")
+        playerctl -a pause
         systemctl suspend
         ;;
-    $log_out)
-        bspc quit
-        ;;
+    "${labels[logout]}") bspc quit ;;
 esac

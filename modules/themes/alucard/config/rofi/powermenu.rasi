@@ -5,14 +5,17 @@
 @import "appmenu.rasi"
 
 window {
-  children: [ listview ];
   width: 500px;
 }
-
+inputbar {
+  children: [ prompt, entry ];
+}
+textbox-icon {
+  str: "  ";
+}
 listview {
   scrollbar: false;
 }
-
 element {
   padding: 30px;
   background-color: @bg-light;

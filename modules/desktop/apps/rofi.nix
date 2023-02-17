@@ -40,13 +40,31 @@ in {
         icon = "folder";
         exec = "${binDir}/rofi/filemenu -x";
       })
-
+      (makeDesktopItem {
+        name = "rofi-mojimenu";
+        desktopName = "Insert Emoji/Unicode";
+        icon = "accessories-character-map";
+        exec = "${binDir}/rofi/mojimenu";
+      })
+      (makeDesktopItem {
+        name = "rofi-powermenu";
+        desktopName = "Power Control";
+        icon = "system-shutdown";
+        exec = "${binDir}/rofi/powermenu";
+      })
       (makeDesktopItem {
         name = "lock-display";
         desktopName = "Lock screen";
         icon = "system-lock-screen";
         exec = "${binDir}/zzz";
       })
-    ];
+    ] ++ (if config.modules.shell.vaultwarden.enable then [
+      (makeDesktopItem {
+        name = "rofi-bwmenu";
+        desktopName = "Insert password";
+        icon = "changes-prevent";
+        exec = "${binDir}/rofi/bwmenu";
+      })
+    ] else []);
   };
 }

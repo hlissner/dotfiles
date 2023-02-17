@@ -47,7 +47,6 @@ window {
   border: 1px;
   border-radius: 6px 6px 0 0;
   children: [ inputbar, listview ];
-
 }
 
 listview {

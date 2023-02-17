@@ -1,5 +1,5 @@
 #!/usr/bin/env cached-nix-shell
-#! nix-shell -p ruby_2_7 -i "ruby -S"
+#! nix-shell -p ruby_3_1 -i "ruby -S"
 
 # A rofi client for vaultwarden. Similar to passmenu, but uses rofi. (Badly)
 # written in ruby because data persistence and frontend logic would be a pain to
@@ -135,7 +135,9 @@ module BW
     else
       pass = rofi nil, %w{-p Master\ Password -password -lines 0}
       error "No password given. Aborting..." if pass.empty?
-      sid  = sh [:bw, :unlock, '--raw', pass]
+      ENV['__BWENV'] = pass
+      sid  = sh [:bw, :unlock, '--passwordenv', '__BWENV', '--raw']
+      ENV['__BWENV'] = nil
       error "Failed to unlock vault. Aborting..." unless $?.success?
       @@session_id = sid
       data = JSON.parse(bw(:list, :items))

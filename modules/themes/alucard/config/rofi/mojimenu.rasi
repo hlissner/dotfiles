@@ -1,0 +1,6 @@
+/* -*- mode: css; -*- */
+@import "config.rasi"
+
+window {
+  columns: 6;
+}
