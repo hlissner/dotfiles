@@ -21,16 +21,14 @@ in {
 
   config = mkIf cfg.enable (mkMerge [
     (mkIf cfg.capture.enable {
-      user.packages = with pkgs.unstable; [
-        obs-studio       # For recording footage
+      user.packages = [
+        pkgs.unstable.obs-studio  # For recording footage
       ];
     })
 
     (mkIf cfg.editor.enable {
-      # Hardware accelerated rendering
-      modules.hardware.nvidia.cuda.enable = mkDefault true;
-      user.packages = with pkgs.unstable; [
-        davinci-resolve  # For editing it
+      user.packages = [
+        pkgs.unstable.davinci-resolve  # For editing it
       ];
     })
 

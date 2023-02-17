@@ -59,10 +59,11 @@ in {
       # Write it recursively so other modules can write files to it
       "zsh" = { source = "${configDir}/zsh"; recursive = true; };
 
-      # Why am I creating extra.zsh{rc,env} when I could be using extraInit?
-      # Because extraInit generates those files in /etc/profile, and mine just
-      # write the files to ~/.config/zsh; where it's easier to edit and tweak
-      # them in case of issues or when experimenting.
+      # Why extra.zsh{rc,env} when I could be using extraInit? Because extraInit
+      # generates those files in /etc/profile, and mine just write the files to
+      # ~/.config/zsh; where it's easier to edit and tweak them in case of
+      # issues or when experimenting. Plus, my zsh dotfiles should be relatively
+      # NixOS agnostic, so they can still be deployed elsewhere.
       "zsh/extra.zshrc".text =
         let aliasLines = mapAttrsToList (n: v: "alias ${n}=\"${v}\"") cfg.aliases;
         in ''
@@ -85,8 +86,7 @@ in {
     };
 
     system.userActivationScripts.cleanupZgen = ''
-      rm -rf $ZSH_CACHE
-      rm -fv $ZGEN_DIR/init.zsh{,.zwc}
+      rm -rfv $ZSH_CACHE $ZGEN_DIR/init.zsh{,.zwc}
     '';
   };
 }

@@ -15,7 +15,7 @@
 
   # Fix a security hole in place for backwards compatibility. See desc in
   # nixpkgs/nixos/modules/system/boot/loader/systemd-boot/systemd-boot.nix
-  boot.loader.systemd-boot.editor = false;
+  boot.loader.systemd-boot.editor = lib.mkDefault false;
 
   boot.kernel.sysctl = {
     # The Magic SysRq key is a key combo that allows users connected to the

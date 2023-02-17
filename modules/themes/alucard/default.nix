@@ -77,7 +77,7 @@ in {
     # Desktop (X11) theming
     (mkIf config.services.xserver.enable {
       user.packages = with pkgs; [
-        unstable.dracula-theme
+        dracula-theme
         paper-icon-theme # for rofi
       ];
       fonts = {
@@ -113,10 +113,17 @@ in {
 
       # Login screen theme
       services.xserver.displayManager.lightdm.greeters.mini.extraConfig = ''
+        [greeter]
+        show-password-label = false
+
+        [greeter-theme]
         text-color = "${cfg.colors.magenta}"
         password-background-color = "${cfg.colors.black}"
         window-color = "${cfg.colors.types.border}"
         border-color = "${cfg.colors.types.border}"
+        password-border-radius = 0.01em
+        font = "${cfg.fonts.sans.name}"
+        font-size = 1.4em
       '';
 
       modules.services.dunst.settings = {
@@ -219,13 +226,19 @@ in {
           "bspwm/rc.d/95-polybar".source = ./config/polybar/run.sh;
         })
         (mkIf desktop.apps.rofi.enable {
-          "rofi/theme" = { source = ./config/rofi; recursive = true; };
+          "rofi/theme" = {
+            source = ./config/rofi;
+            recursive = true;
+          };
         })
         (mkIf (desktop.bspwm.enable || desktop.stumpwm.enable) {
-          "polybar" = { source = ./config/polybar; recursive = true; };
+          "polybar" = {
+            source = ./config/polybar;
+            recursive = true;
+          };
           "Dracula-purple-solid-kvantum" = {
             recursive = true;
-            source = "${pkgs.unstable.dracula-theme}/share/themes/Dracula/kde/kvantum/Dracula-purple-solid";
+            source = "${pkgs.dracula-theme}/share/themes/Dracula/kde/kvantum/Dracula-purple-solid";
             target = "Kvantum/Dracula-purple-solid";
           };
           "kvantum.kvconfig" = {
