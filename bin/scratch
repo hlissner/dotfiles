@@ -3,7 +3,7 @@
 # Toggle a scratch terminal window. A scratch terminal is a disposable terminal
 # for one-off, quick commands that don't warrant a dedicated terminal.
 
-SCRID=scratch
+SCRID=xst-scratch
 CMD=${1:-'tmux new-session -A -s scratch -n scratch'}
 focused=$(xdotool getactivewindow)
 scratch=$(xdotool search --onlyvisible --classname $SCRID)
