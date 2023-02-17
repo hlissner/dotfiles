@@ -1,0 +1,12 @@
+[Bookmarks]
+/home/hlissner/projects/assets/
+/home/hlissner/projects/
+!projects/3d
+/home/hlissner/projects/oneshot/3d/
+[Recent]
+/home/hlissner/downloads/
+/home/hlissner/Downloads/
+/home/hlissner/projects/oneshot/3d/1903-111/
+/home/hlissner/projects/assets/models/
+/home/hlissner/projects/oneshot/3d/elizabeth111/
+/home/hlissner/projects/assets/

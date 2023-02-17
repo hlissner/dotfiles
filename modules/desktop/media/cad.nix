@@ -14,16 +14,42 @@ in {
   };
 
   config = mkIf cfg.enable {
-    # Hardware accelerated rendering
-    modules.hardware.nvidia.cuda.enable = mkDefault true;
+    # Supplies newer versions of Blender with CUDA support baked in.
+    nixpkgs.overlays = [ self.inputs.blender-bin.overlays.default ];
 
     # Includes newer versions of Blender baked in with CUDA support.
-    nixpkgs.overlays = [ inputs.blender-bin.overlay ];
     user.packages = [ pkgs.blender_3_4 ];
 
-    # TODO File is too big. Deploy to server/use annex/gitlfs later.
-    # home.configFile = {
-    #   "blender/3.40/config/userpref.blend".source = "${config.dotfiles.configDir}/blender/userpref.blend";
-    # };
+    home.configFile = {
+      # "blender/3.4/config" = {
+      #   source = "${configDir}/blender/config";
+      #   recursive = true;
+      # };
+      "blender/3.4/scripts" = {
+        source = "${configDir}/blender/scripts";
+        recursive = true;
+      };
+    };
+
+    # I copy these files manually because they should be mutable, as Blender is
+    # very stateful. Having a consistent starting point for new systems is good
+    # enough for me.
+    system.userActivationScripts.setupBlenderConfig = ''
+      destdir="$XDG_CONFIG_HOME/blender/3.4/config"
+      mkdir -p "$destdir"
+      for cfile in ${configDir}/blender/config/*; do
+        basename="$(basename $cfile)"
+        dest="$destdir/$basename"
+        if [ ! -e "$dest" ]; then
+          cp "$cfile" "$dest"
+        fi
+      done
+      for bfile in startup userpref; do
+        src="${configDir}/blender/$bfile.blend.tar.gz"
+        if [ ! -e "$destdir/$bfile.blend" ]; then
+          ${pkgs.gnutar}/bin/tar xzvf "$src" -C "$destdir"
+        fi
+      done
+    '';
   };
 }
