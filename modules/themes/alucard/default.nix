@@ -119,6 +119,95 @@ in {
         border-color = "${cfg.colors.types.border}"
       '';
 
+      modules.services.dunst.settings = {
+        global = {
+          font = "${cfg.fonts.sans.name} ${toString cfg.fonts.sans.size}";
+          follow = "none";
+          alignment = "left";
+          width = 440;
+          height = 300;
+          origin = "top-right";
+          offset = "30x30";
+          scale = 0;
+          transparency = 5;
+          corner_radius = 2;
+          format = "<b>%s</b>\\n%b";
+          frame_color = cfg.colors.types.border;
+          frame_width = 1;
+          horizontal_padding = 18;
+          padding = 16;
+          # icon_position = "right";
+          icon_theme = "Paper-Mono-Dark, Paper";
+          icon_path =
+            let iconDir = "/etc/profiles/per-user/${config.user.name}/share/icons";
+                iconSize = "24x24";
+                mkDirs = themeName:
+                  map (dir: "${iconDir}/${themeName}/${iconSize}/${dir}") [
+                    "actions"
+                    "animations"
+                    "apps"
+                    "categories"
+                    "devices"
+                    "emblems"
+                    "emotes"
+                    "mimetypes"
+                    "panel"
+                    "places"
+                    "status"
+                  ];
+            in concatStringsSep ":" (flatten (map mkDirs [ "Paper" "gnome" ]));
+          ignore_newline = false;
+          line_height = 0;
+          max_icon_size = 24;
+          separator_color = "auto";
+          separator_height = 4;
+          show_age_threshold = 60;
+          show_indicators = true;
+          shrink = false;
+          word_wrap = true;
+          # Includes the frame, should be at least 2x as big as the frame width.
+          progress_bar_height = 10;
+          progress_bar_frame_width = 1;
+          progress_bar_min_width = 150;
+          progress_bar_max_width = 300;
+          # Not in current version of dunst
+          # progress_bar_corner_radius = 0;  # disable rounded corners
+        };
+        urgency_low = {
+          background = cfg.colors.types.bg;
+          foreground = cfg.colors.types.fg;
+          timeout = 8;
+          icon = "";
+        };
+        urgency_normal = {
+          background = cfg.colors.types.panelbg;
+          foreground = cfg.colors.types.fg;
+          timeout = 14;
+          icon = "";
+        };
+        urgency_critical = {
+          background = cfg.colors.types.bg;
+          foreground = cfg.colors.types.warning;
+          frame_color = cfg.colors.types.warning;
+          timeout = 0;
+        };
+        osd = {
+          stack_tag = "osd";
+          height = 150;
+          format = "%b";
+          timeout = 2;
+        };
+        low_battery = {
+          stack_tag = "battery";
+          icon = "battery-empty-charging";
+          format = "<b>%s</b> %b";
+        };
+        spotify = {
+          appname = "Spotify";
+          max_icon_size = 64;
+        };
+      };
+
       # Other dotfiles
       home.configFile = with config.modules; mkMerge [
         {
@@ -134,7 +223,6 @@ in {
         })
         (mkIf (desktop.bspwm.enable || desktop.stumpwm.enable) {
           "polybar" = { source = ./config/polybar; recursive = true; };
-          "dunst/dunstrc".text = import ./config/dunstrc cfg;
           "Dracula-purple-solid-kvantum" = {
             recursive = true;
             source = "${pkgs.unstable.dracula-theme}/share/themes/Dracula/kde/kvantum/Dracula-purple-solid";

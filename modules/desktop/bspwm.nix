@@ -19,9 +19,10 @@ in {
       source $XDG_CONFIG_HOME/bspwm/bspwmrc
     '';
 
+    modules.services.dunst.enable = true;
+
     environment.systemPackages = with pkgs; [
       lightdm
-      dunst
       libnotify
       (polybar.override {
         pulseSupport = true;
@@ -41,15 +42,6 @@ in {
         };
         windowManager.bspwm.enable = true;
       };
-    };
-
-    systemd.user.services."dunst" = {
-      enable = true;
-      description = "";
-      wantedBy = [ "default.target" ];
-      serviceConfig.Restart = "always";
-      serviceConfig.RestartSec = 2;
-      serviceConfig.ExecStart = "${pkgs.dunst}/bin/dunst";
     };
 
     # link recursively so other modules can link files in their folders
