@@ -130,8 +130,12 @@ super + XF86AudioLowerVolume
 	$DOTFILES_BIN/osd capture down
 
 XF86Audio{Play,Pause}
-	spt-send toggle
+	playerctl -p spotify play-pause
 XF86AudioNext
-	spt-send next
+	playerctl -p spotify next
 XF86AudioPrev
-	spt-send prev
+	playerctl -p spotify previous
+super + XF86AudioNext
+	playerctl -p spotify position 5+
+super + XF86AudioPrev
+	playerctl -p spotify position 5-
