@@ -1,0 +1,31 @@
+#!/usr/bin/env cached-nix-shell
+#! nix-shell -p cryptsetup -i bash
+#
+# A shortcut script for managing Luks mounts in one command.
+#
+#   luks {m,mount} DEVICE MOUNTPOINT
+#   luks {u,umount} MOUNTPOINT
+
+set -e
+ACTION="$1"
+case "$ACTION" in
+    m|mount)
+        DEVICE="$2"
+        MOUNTPOINT="$3"
+        LABEL="$(basename $MOUNTPOINT)"
+        MAPPER="/dev/mapper/$LABEL"
+        if [ ! -e "$MAPPER" ]; then
+            sudo cryptsetup luksOpen "$DEVICE" "$LABEL"
+        fi
+        sudo mount "/dev/mapper/$LABEL" "$MOUNTPOINT"
+        ;;
+    u|umount)
+        MOUNTPOINT="$2"
+        LABEL="$(basename $MOUNTPOINT)"
+        sudo umount "$MOUNTPOINT"
+        if [ -e "/dev/mapper/$LABEL" ]; then
+            sudo cryptsetup luksClose "$LABEL"
+        fi
+        ;;
+    *) >&2 echo "Unknown command: $ACTION"; exit 1; ;;
+esac
