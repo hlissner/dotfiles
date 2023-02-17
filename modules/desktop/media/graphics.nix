@@ -5,12 +5,12 @@
 # but enough that I can do a fraction of it on Linux. For the rest I have a
 # second computer dedicated to design work (and gaming).
 
-{ config, options, lib, pkgs, ... }:
+{ self, lib, config, options, pkgs, ... }:
 
 with lib;
-with lib.my;
-let cfg = config.modules.desktop.media.graphics;
-    configDir = config.dotfiles.configDir;
+with self.lib;
+let inherit (self) configDir;
+    cfg = config.modules.desktop.media.graphics;
 in {
   options.modules.desktop.media.graphics = {
     enable         = mkBoolOpt false;

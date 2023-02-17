@@ -1,7 +1,7 @@
-{ config, lib, pkgs, ... }:
+{ self, lib, config, options, pkgs, ... }:
 
 with lib;
-with lib.my;
+with self.lib;
 let cfg = config.modules.services.discourse;
 in {
   options.modules.services.discourse = {

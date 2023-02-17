@@ -3,10 +3,10 @@
 # I like (x)st. This appears to be a controversial opinion; don't tell anyone,
 # mkay?
 
-{ options, config, lib, pkgs, ... }:
+{ self, lib, config, options, pkgs, ... }:
 
 with lib;
-with lib.my;
+with self.lib;
 let cfg = config.modules.desktop.term.st;
 in {
   options.modules.desktop.term.st = {

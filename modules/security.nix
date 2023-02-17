@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ lib, config, ... }:
 
 {
   ## System security tweaks

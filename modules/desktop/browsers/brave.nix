@@ -2,10 +2,10 @@
 #
 # A FOSS and privacy-minded browser.
 
-{ options, config, lib, pkgs, ... }:
+{ self, lib, config, options, pkgs, ... }:
 
 with lib;
-with lib.my;
+with self.lib;
 let cfg = config.modules.desktop.browsers.brave;
 in {
   options.modules.desktop.browsers.brave = {

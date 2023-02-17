@@ -3,10 +3,10 @@
 # Set up and enforce XDG compliance. Other modules will take care of their own,
 # but this takes care of the general cases.
 
-{ options, config, lib, home-manager, ... }:
+{ self, lib, config, home-manager, ... }:
 
 with lib;
-with lib.my;
+with self.lib;
 let cfg = config.xdg;
 in {
   options.xdg = {

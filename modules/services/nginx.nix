@@ -1,8 +1,8 @@
-{ config, options, lib, pkgs, ... }:
+{ self, lib, config, options, pkgs, ... }:
 
 with builtins;
 with lib;
-with lib.my;
+with self.lib;
 let cfg = config.modules.services.nginx;
 in {
   options.modules.services.nginx = {

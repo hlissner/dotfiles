@@ -1,11 +1,11 @@
-## modules/desktop/cosmic.nix
+# modules/desktop/cosmic.nix --- TODO
 #
 # Sets up a Gnome desktop environment inspired by PopOS's Cosmic DE.
 
-{ options, config, lib, pkgs, ... }:
+{ self, lib, config, options, pkgs, ... }:
 
 with lib;
-with lib.my;
+with self.lib;
 let cfg = config.modules.desktop.cosmic;
 in {
   options.modules.desktop.cosmic = {

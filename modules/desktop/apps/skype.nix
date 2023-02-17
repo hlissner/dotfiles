@@ -1,7 +1,11 @@
-{ config, options, lib, pkgs, ... }:
+# modules/desktop/apps/skype.nix --- oh god why
+#
+# Skype on Linux. I'm sure there's a card for this in cards against humanity.
+
+{ self, lib, config, options, pkgs, ... }:
 
 with lib;
-with lib.my;
+with self.lib;
 let cfg = config.modules.desktop.apps.skype;
 in {
   options.modules.desktop.apps.skype = {
@@ -9,7 +13,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    user.packages = with pkgs; [
+    user.packages = with pkgs.unstable; [
       skypeforlinux
       skype_call_recorder
     ];

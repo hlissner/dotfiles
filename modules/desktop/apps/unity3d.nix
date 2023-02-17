@@ -2,10 +2,10 @@
 #
 # I don't use Unity often, but when I do, it's in a team or with students.
 
-{ config, options, lib, pkgs, ... }:
+{ self, lib, config, options, pkgs, ... }:
 
 with lib;
-with lib.my;
+with self.lib;
 let cfg = config.modules.desktop.apps.unity3d;
 in {
   options.modules.desktop.apps.unity3d = {

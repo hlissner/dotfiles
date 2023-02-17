@@ -1,9 +1,9 @@
-{ config, options, lib, pkgs, ... }:
+{ self, lib, config, options, pkgs, ... }:
 
 with lib;
-with lib.my;
-let cfg = config.modules.desktop.media.ncmpcpp;
-    configDir = config.dotfiles.configDir;
+with self.lib;
+let inherit (self) configDir;
+    cfg = config.modules.desktop.media.ncmpcpp;
 in {
   options.modules.desktop.media.ncmpcpp = {
     enable = mkBoolOpt false;

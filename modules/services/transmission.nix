@@ -1,7 +1,7 @@
-{ config, options, pkgs, lib, my, ... }:
+{ self, lib, config, options, pkgs, ... }:
 
 with lib;
-with lib.my;
+with self.lib;
 let cfg = config.modules.services.transmission;
 in {
   options.modules.services.transmission = {

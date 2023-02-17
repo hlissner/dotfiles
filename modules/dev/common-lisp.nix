@@ -2,10 +2,10 @@
 #
 # Mostly for my stumpwm config, and the occasional dip into lisp gamedev.
 
-{ config, options, lib, pkgs, ... }:
+{ self, lib, config, options, pkgs, ... }:
 
 with lib;
-with lib.my;
+with self.lib;
 let devCfg = config.modules.dev;
     cfg = devCfg.common-lisp;
 in {

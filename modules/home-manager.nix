@@ -1,13 +1,13 @@
 # ...
 # I use home-manager to deploy files to $HOME; little else
 
-{ config, options, home-manager, lib, pkgs, ... }:
+{ self, lib, config, options, home-manager, pkgs, ... }:
 
 with lib;
-with lib.my;
+with self.lib;
 {
   imports = [
-    inputs.home-manager.nixosModules.home-manager
+    self.modules.home-manager.default
   ];
 
   options = with types; {

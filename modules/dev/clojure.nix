@@ -2,10 +2,10 @@
 #
 # I don't use clojure... yet.
 
-{ config, options, lib, pkgs, my, ... }:
+{ self, lib, config, options, pkgs, ... }:
 
 with lib;
-with lib.my;
+with self.lib;
 let devCfg = config.modules.dev;
     cfg = devCfg.clojure;
 in {

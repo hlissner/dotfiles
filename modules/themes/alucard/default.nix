@@ -1,10 +1,23 @@
 # modules/themes/alucard/default.nix --- a regal dracula-inspired theme
 
-{ options, config, lib, pkgs, ... }:
+{ self, lib, options, config, pkgs, ... }:
 
 with lib;
-with lib.my;
+with self.lib;
 let cfg = config.modules.theme;
+    toCSSFile = file:
+      let fileName = removeSuffix ".scss" (baseNameOf file);
+          compiledStyles =
+            pkgs.runCommand "compileScssFile" { buildInputs = [ pkgs.sass ]; } ''
+              mkdir "$out"
+              scss --sourcemap=none \
+                   --no-cache \
+                   --style compressed \
+                   --default-encoding utf-8 \
+                   "${file}" \
+                   >>"$out/${fileName}.css"
+            '';
+      in "${compiledStyles}/${fileName}.css";
 in {
   config = mkIf (cfg.active == "alucard") (mkMerge [
     # Desktop-agnostic configuration

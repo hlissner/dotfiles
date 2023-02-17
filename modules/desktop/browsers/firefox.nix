@@ -4,10 +4,10 @@
 # infinite knowledge and shelter me from ads, but bless my $HOME with
 # directories nobody needs and live long enough to turn into Chrome.
 
-{ options, config, lib, pkgs, ... }:
+{ self, lib, config, options, pkgs, ... }:
 
 with lib;
-with lib.my;
+with self.lib;
 let cfg = config.modules.desktop.browsers.firefox;
 in {
   options.modules.desktop.browsers.firefox = with types; {

@@ -1,14 +1,13 @@
 # modules/desktop/media/daw.nix
 #
-# I make music for my games. LMMS is my DAW; or will be, once I've weened myself
-# off of Fruityloops. When I'm in the mood for a quicky I fire up sunvox
-# instead. It runs absolutely anywhere, even on my ipad and phone. As if I'd
-# ever need to.
+# I make music for my games. LMMS+Ardour is my DAW. When I'm in the mood for a
+# quicky I fire up sunvox instead. It runs absolutely anywhere, even on my ipad
+# and phone -- as if I'd ever need to.
 
-{ config, options, lib, pkgs, ... }:
+{ self, lib, config, pkgs, ... }:
 
 with lib;
-with lib.my;
+with self.lib;
 let cfg = config.modules.desktop.media.daw;
 in {
   options.modules.desktop.media.daw = {

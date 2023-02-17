@@ -3,13 +3,13 @@
 # Qutebrowser is cute because it's not enough of a browser to be handsome.
 # Still, we can all tell he'll grow up to be one hell of a lady-killer.
 
-{ options, config, lib, pkgs, ... }:
+{ self, lib, options, config, pkgs, ... }:
 
 with lib;
-with lib.my;
-let cfg = config.modules.desktop.browsers.qutebrowser;
+with self.lib;
+let inherit (self) configDir;
+    cfg = config.modules.desktop.browsers.qutebrowser;
     pkg = pkgs.unstable.qutebrowser;
-    configDir = config.dotfiles.configDir;
 in {
   options.modules.desktop.browsers.qutebrowser = with types; {
     enable = mkBoolOpt false;

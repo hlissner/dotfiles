@@ -5,10 +5,10 @@
 # in moonscript to get around lua's idiosynchrosies. That said, I install love2d
 # on a per-project basis.
 
-{ config, options, lib, pkgs, ... }:
+{ self, lib, config, options, pkgs, ... }:
 
 with lib;
-with lib.my;
+with self.lib;
 let devCfg = config.modules.dev;
     cfg = devCfg.lua;
 in {

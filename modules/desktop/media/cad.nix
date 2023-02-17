@@ -2,11 +2,12 @@
 #
 # For game art assets, interior design, and product demos for clients.
 
-{ config, options, lib, pkgs, ... }:
+{ self, lib, config, pkgs, ... }:
 
 with lib;
-with lib.my;
-let cfg = config.modules.desktop.media.cad;
+with self.lib;
+let inherit (self) configDir;
+    cfg = config.modules.desktop.media.cad;
 in {
   options.modules.desktop.media.cad = with types; {
     enable = mkBoolOpt false;

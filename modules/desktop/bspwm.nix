@@ -1,9 +1,13 @@
-{ options, config, lib, pkgs, ... }:
+## modules/desktop/bspwm.nix
+#
+# Sets up a BSPWM-based desktop environment.
+
+{ self, lib, options, config, pkgs, ... }:
 
 with lib;
-with lib.my;
-let cfg = config.modules.desktop.bspwm;
-    configDir = config.dotfiles.configDir;
+with self.lib;
+let inherit (self) configDir;
+    cfg = config.modules.desktop.bspwm;
 in {
   options.modules.desktop.bspwm = {
     enable = mkBoolOpt false;

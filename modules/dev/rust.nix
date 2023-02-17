@@ -7,10 +7,10 @@
 # is no formal proof of your claims for safety, but who said you have to solve
 # all the world's problems to be wonderful?
 
-{ config, options, lib, pkgs, ... }:
+{ self, lib, config, options, pkgs, ... }:
 
 with lib;
-with lib.my;
+with self.lib;
 let devCfg = config.modules.dev;
     cfg = devCfg.rust;
 in {

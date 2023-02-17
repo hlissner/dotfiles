@@ -1,7 +1,7 @@
-{ options, config, lib, pkgs, ... }:
+{ self, lib, config, options, pkgs, ... }:
 
 with lib;
-with lib.my;
+with self.lib;
 let cfg = config.modules.services.wireguard;
     udpPorts = mapAttrs' (_: cfg: cfg.listenPort) config.networking.wireguard.interfaces;
     interfaces = elem 0 (mapAttrs' (n: _: n) config.networking.interfaces);

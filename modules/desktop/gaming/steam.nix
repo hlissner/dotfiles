@@ -1,7 +1,7 @@
-{ options, config, lib, pkgs, ... }:
+{ self, lib, config, options, pkgs, ... }:
 
 with lib;
-with lib.my;
+with self.lib;
 let cfg = config.modules.desktop.gaming.steam;
     steamDir = "$XDG_RUNTIME_HOME/steam";
 in {

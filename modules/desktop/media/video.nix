@@ -5,10 +5,10 @@
 # This, paired with DaVinci Resolve for video editing and I'm set for the
 # occasional gameplay, instructional, or product demo video.
 
-{ config, options, lib, pkgs, ... }:
+{ self, lib, config, options, pkgs, ... }:
 
 with lib;
-with lib.my;
+with self.lib;
 let cfg = config.modules.desktop.media.video;
 in {
   options.modules.desktop.media.video = {

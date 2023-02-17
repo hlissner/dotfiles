@@ -1,7 +1,7 @@
-{ options, config, lib, pkgs, ... }:
+{ self, lib, config, options, ... }:
 
 with lib;
-with lib.my;
+with self.lib;
 let cfg = config.modules.services.calibre;
 in {
   options.modules.services.calibre = {

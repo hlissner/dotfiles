@@ -1,16 +1,16 @@
-# modules/desktop/app/teamviewer.nix --- for my parental SOSes
+# modules/desktop/apps/teamviewer.nix --- for my parental SOSes
 #
 # You know the feeling. It's 4am, you get a phone call. It's your parents in
 # another timezone and their printer/email/something has stopped working, and
 # you're the family computer guy (my condolences). Cue teamviewer.
 
-{ options, config, lib, pkgs, ... }:
+{ self, lib, config, options, pkgs, ... }:
 
 with lib;
-with lib.my;
-let cfg = config.modules.desktop.app.teamviewer;
+with self.lib;
+let cfg = config.modules.desktop.apps.teamviewer;
 in {
-  options.modules.desktop.app.teamviewer = {
+  options.modules.desktop.apps.teamviewer = {
     enable = mkBoolOpt false;
   };
 

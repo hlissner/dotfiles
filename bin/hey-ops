@@ -1,0 +1,80 @@
+# lib/hey.ops -*- mode: ruby -*-
+# Author:  Henrik Lissner
+# Version: 0.0.1
+#
+##
+
+class HeyOps < HeyCLI
+  desc "push [REMOTE...]", "Build flake locally then push it to a remote system"
+  option :builder, aliases: :b, type: :string, repeatable: true,
+         desc: "Remote machine(s) to build the system on"
+  def push *remotes
+    puts "Hello world"
+  end
+
+  desc "pushkeys REMOTE", "Deploy SSH keys from a Bitwarden server"
+  option :rekey, type: :boolean, desc: "Regenerate host keys before pushing them"
+  def pushkeys *remotes
+  #   # Requires SSH key entries to be named "SSH: <HOSTNAME>" and store keys as
+  #   # attachments.
+  #   opts "HOSTNAME"
+  #   lambda do |args|
+  #     user_error "Not implemented yet!"
+
+  #     user_error "No target host specified" unless args.length > 0
+  #     user_error "Bitwarden CLI not found in $PATH" unless `which bw` && $?.exitstatus == 0
+  #     keyfiledir = "..."
+  #     # TODO Poll bitwarden
+  #     # TODO Or regenerate them and push them to bitwarden
+  #     host = args[0]
+  #     target = "root@#{host}"
+  #     if sh ["ssh", "-t", host,
+  #            "sudo mkdir -p /root/.ssh && sudo cp -f ~/.ssh/authorized_keys /root/.ssh/"],
+  #           noerror: true
+  #       begin
+  #         puts "Copying host keys to #{host}..."
+  #         sh ['scp', '-pr', "#{keyfiledir}/.", "#{target}:/etc/ssh/"]
+  #       ensure
+  #         puts "Undoing root ssh access on #{target}"
+  #         sh ["ssh", "-t", "root@#{target}", "rm -f /root/.ssh/authorized_keys"]
+  #       end
+  #     end
+  #   end
+  end
+
+  desc :pullkeys, "Pull remote keys to local storage as a backup"
+  def pullkeys *remotes
+  end
+
+  # desc "ssh COMMAND REMOTE [REMOTE...]", "Run an SSH command on all REMOTEs",
+  # args "HOST", "[COMMAND]"
+  # def ssh command, *remotes
+  #   target, command = args.take(2)
+  #   command ||= "test"
+  #   if command.match(/switch|test|boot/)
+  #     puts "Enabling root ssh access on #{target}. Enter root password for remote system:"
+  #     if sh ["ssh", "-t", target,
+  #            "sudo mkdir -p /root/.ssh && sudo cp -f ~/.ssh/authorized_keys /root/.ssh/"],
+  #           noerror: true
+  #       begin
+  #         puts "Building #{@@opts[:flake]}##{@@opts[:host] || target} for #{target}"
+  #         call "rebuild", ["--user",
+  #                          "--host", @@opts[:host] || target,
+  #                          "--build-host",  "localhost",
+  #                          "--target-host", "root@#{target}",
+  #                          command]
+  #       ensure
+  #         puts "Undoing root ssh access on #{target}"
+  #         sh ["ssh", "-t", "root@#{target}", "rm -f /root/.ssh/authorized_keys"]
+  #       end
+  #     end
+  #   else
+  #     command = "nix run github:hlissner/dotfiles -- #{command}"
+  #     puts "Running '#{command}' on #{target}"
+  #     sh ["ssh", "-t", target, command]
+  #   end
+  # end
+end
+
+Hey.desc 'ops', 'Remote NixOS management'
+Hey.subcommand 'ops', HeyOps

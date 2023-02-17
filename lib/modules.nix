@@ -1,42 +1,40 @@
-{ self, lib, ... }:
+{ lib, attrs }:
 
 let
   inherit (builtins) attrValues readDir pathExists concatLists;
   inherit (lib) id mapAttrsToList filterAttrs hasPrefix hasSuffix nameValuePair removeSuffix;
-  inherit (self.attrs) mapFilterAttrs;
-in
-rec {
+in rec {
   mapModules = dir: fn:
-    mapFilterAttrs
-      (n: v:
-        v != null &&
-        !(hasPrefix "_" n))
+    attrs.mapFilterAttrs'
       (n: v:
         let path = "${toString dir}/${n}"; in
         if v == "directory" && pathExists "${path}/default.nix"
         then nameValuePair n (fn path)
         else if v == "regular" &&
                 n != "default.nix" &&
+                n != "flake.nix" &&
                 hasSuffix ".nix" n
         then nameValuePair (removeSuffix ".nix" n) (fn path)
         else nameValuePair "" null)
+      (n: v: v != null && !(hasPrefix "_" n))
       (readDir dir);
 
   mapModules' = dir: fn:
     attrValues (mapModules dir fn);
 
   mapModulesRec = dir: fn:
-    mapFilterAttrs
-      (n: v:
-        v != null &&
-        !(hasPrefix "_" n))
+    attrs.mapFilterAttrs'
       (n: v:
         let path = "${toString dir}/${n}"; in
         if v == "directory"
         then nameValuePair n (mapModulesRec path fn)
-        else if v == "regular" && n != "default.nix" && hasSuffix ".nix" n
+        else if v == "regular" &&
+                n != "default.nix" &&
+                n != "flake.nix" &&
+                hasSuffix ".nix" n
         then nameValuePair (removeSuffix ".nix" n) (fn path)
         else nameValuePair "" null)
+      (n: v: v != null && !(hasPrefix "_" n))
       (readDir dir);
 
   mapModulesRec' = dir: fn:

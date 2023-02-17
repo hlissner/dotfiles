@@ -2,10 +2,10 @@
 # intertwined with others, and are solely responsible for aesthetics. Disabling
 # a theme module should never leave a system non-functional.
 
-{ options, config, lib, pkgs, ... }:
+{ self, lib, options, config, pkgs, ... }:
 
 with lib;
-with lib.my;
+with self.lib;
 let cfg = config.modules.theme;
 in {
   options.modules.theme = with types; {

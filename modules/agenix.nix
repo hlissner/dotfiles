@@ -1,16 +1,19 @@
 # modules/agenix.nix -- encrypt secrets in nix store
 
-{ options, config, inputs, lib, pkgs, ... }:
+{ self, lib, options, config, pkgs, ... }:
 
 with builtins;
 with lib;
-with lib.my;
-let inherit (inputs) agenix;
-    secretsDir = "${toString ../hosts}/${config.networking.hostName}/secrets";
+with self.lib;
+let secretsDir  = "${self.hostDir}/secrets";
     secretsFile = "${secretsDir}/secrets.nix";
 in {
-  imports = [ agenix.nixosModules.age ];
-  environment.systemPackages = [ agenix.defaultPackage.x86_64-linux ];
+  imports = [ self.modules.agenix.age ];
+  environment.systemPackages = [
+    (pkgs.writeShellScriptBin "agenix" ''
+      exec nix run github:ryantm/agenix -- "$@"
+    '')
+  ];
 
   age = {
     secrets =

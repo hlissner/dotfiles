@@ -1,13 +1,13 @@
 # Emacs is my main driver. I'm the author of Doom Emacs
-# https://github.com/hlissner/doom-emacs. This module sets it up to meet my
-# particular Doomy needs.
+# https://github.com/doomemacs. This module sets it up to meet my particular
+# Doomy needs.
 
-{ config, lib, pkgs, inputs, ... }:
+{ self, lib, config, pkgs, ... }:
 
 with lib;
-with lib.my;
-let cfg = config.modules.editors.emacs;
-    configDir = config.dotfiles.configDir;
+with self.lib;
+let inherit (self) configDir;
+    cfg = config.modules.editors.emacs;
 in {
   options.modules.editors.emacs = {
     enable = mkBoolOpt false;
@@ -20,7 +20,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    nixpkgs.overlays = [ inputs.emacs-overlay.overlay ];
+    nixpkgs.overlays = [ self.inputs.emacs-overlay.overlays.default ];
 
     user.packages = with pkgs; [
       ## Emacs itself

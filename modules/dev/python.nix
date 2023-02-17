@@ -4,10 +4,10 @@
 # me. The Py2->3 transition make trainwrecks jealous. But SciPy, NumPy, iPython
 # and Jupyter can have my babies. Every single one.
 
-{ config, options, lib, pkgs, my, ... }:
+{ self, lib, config, options, pkgs, ... }:
 
 with lib;
-with lib.my;
+with self.lib;
 let devCfg = config.modules.dev;
     cfg = devCfg.python;
 in {

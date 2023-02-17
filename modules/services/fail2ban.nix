@@ -1,7 +1,7 @@
-{ config, options, lib, pkgs, ... }:
+{ self, lib, config, options, ... }:
 
 with lib;
-with lib.my;
+with self.lib;
 let cfg = config.modules.services.fail2ban;
 in {
   options.modules.services.fail2ban = {

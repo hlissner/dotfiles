@@ -1,9 +1,9 @@
-{ config, options, lib, pkgs, ... }:
+{ self, lib, config, options, pkgs, ... }:
 
 with lib;
-with lib.my;
-let cfg = config.modules.shell.git;
-    configDir = config.dotfiles.configDir;
+with self.lib;
+let inherit (self) configDir;
+    cfg = config.modules.shell.git;
 in {
   options.modules.shell.git = {
     enable = mkBoolOpt false;
