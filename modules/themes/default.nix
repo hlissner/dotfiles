@@ -7,6 +7,15 @@
 with lib;
 with self.lib;
 let cfg = config.modules.theme;
+    toFilteredImage = imageFile: options:
+      let result = "result.png";
+          filteredImage =
+            pkgs.runCommand "filterWallpaper"
+              { buildInputs = [ pkgs.imagemagick ]; } ''
+              mkdir "$out"
+              convert ${options} ${imageFile} $out/${result}
+            '';
+      in "${filteredImage}/${result}";
 in {
   options.modules.theme = with types; {
     active = mkOption {
@@ -28,9 +37,14 @@ in {
        else null);
 
     gtk = {
+      font = {
+        name = mkOpt str cfg.fonts.sans.name;
+        size = mkOpt (nullOr int) null;
+      };
       theme = mkOpt str "";
       iconTheme = mkOpt str "";
       cursorTheme = mkOpt str "";
+      preferDarkTheme = mkBoolOpt true;
     };
 
     onReload = mkOpt (attrsOf lines) {};
@@ -144,34 +158,37 @@ in {
           *.font: xft:${name}:pixelsize=${toString(size)}
           Emacs.font: ${name}:pixelsize=${toString(size)}
         '';
-        # GTK
-        "gtk-3.0/settings.ini".text = ''
+      };
+
+      # Write GTK settings globally so users (and apps) can write user-specific
+      # settings to $XDG_CONFIG_HOME without read-only errors (from trying to
+      # write to the nix-store symlinks).
+      environment.etc = let gtkCommonSettings = ''
+        gtk-application-prefer-dark-theme=${boolToStr cfg.gtk.preferDarkTheme}
+        ${optionalString (cfg.gtk.theme != "")
+          ''gtk-theme-name=${cfg.gtk.theme}''}
+        ${optionalString (cfg.gtk.iconTheme != "")
+          ''gtk-icon-theme-name=${cfg.gtk.iconTheme}''}
+        ${optionalString (cfg.gtk.cursorTheme != "")
+          ''gtk-cursor-theme-name=${cfg.gtk.cursorTheme}''}
+        ${optionalString (cfg.gtk.font.name != "")
+          ''gtk-font-name=${cfg.gtk.font.name}${optionalString (cfg.gtk.font.size != null) " ${toString cfg.gtk.font.size}"}''}
+      ''; in {
+        "xdg/gtk-4.0/settings.ini".text = ''
           [Settings]
-          ${optionalString (cfg.gtk.theme != "")
-            ''gtk-theme-name=${cfg.gtk.theme}''}
-          ${optionalString (cfg.gtk.iconTheme != "")
-            ''gtk-icon-theme-name=${cfg.gtk.iconTheme}''}
-          ${optionalString (cfg.gtk.cursorTheme != "")
-            ''gtk-cursor-theme-name=${cfg.gtk.cursorTheme}''}
-          gtk-fallback-icon-theme=gnome
-          gtk-application-prefer-dark-theme=true
-          gtk-xft-hinting=1
-          gtk-xft-hintstyle=hintfull
-          gtk-xft-rgba=none
+          ${gtkCommonSettings}
         '';
-        # GTK2 global theme (widget and icon theme)
-        "gtk-2.0/gtkrc".text = ''
-          ${optionalString (cfg.gtk.theme != "")
-            ''gtk-theme-name="${cfg.gtk.theme}"''}
-          ${optionalString (cfg.gtk.iconTheme != "")
-            ''gtk-icon-theme-name="${cfg.gtk.iconTheme}"''}
-          gtk-font-name="Sans ${toString(cfg.fonts.sans.size)}"
+        "xdg/gtk-3.0/settings.ini".text = ''
+          [Settings]
+          ${gtkCommonSettings}
+        '';
+        "xdg/gtk-2.0/gtkrc".text = ''
+          ${gtkCommonSettings}
         '';
         # QT4/5 global theme
-        "Trolltech.conf".text = ''
+        "xdg/Trolltech.conf".text = ''
           [Qt]
-          ${optionalString (cfg.gtk.theme != "")
-            ''style=${cfg.gtk.theme}''}
+          ${optionalString (cfg.gtk.theme != "") "style=${cfg.gtk.theme}"}
         '';
       };
 
