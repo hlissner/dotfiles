@@ -111,16 +111,23 @@ super + ctrl + Print
 	scrrec -s ~/recordings/$(date +%F-%T).gif
 
 XF86MonBrightnessUp
-	light -A 5
+	$DOTFILES_BIN/osd brightness up
 XF86MonBrightnessDown
-	light -U 5
+	$DOTFILES_BIN/osd brightness down
 
 XF86AudioMute
-	amixer -q set Master toggle
-XF86AudioLowerVolume
-	amixer -q set Master 10%- unmute
+	$DOTFILES_BIN/osd master toggle
 XF86AudioRaiseVolume
-	amixer -q set Master 10%+ unmute
+	$DOTFILES_BIN/osd master up
+XF86AudioLowerVolume
+	$DOTFILES_BIN/osd master down
+
+super + XF86AudioMute
+	$DOTFILES_BIN/osd capture toggle
+super + XF86AudioRaiseVolume
+	$DOTFILES_BIN/osd capture up
+super + XF86AudioLowerVolume
+	$DOTFILES_BIN/osd capture down
 
 XF86Audio{Play,Pause}
 	spt-send toggle
