@@ -48,13 +48,24 @@ super + Escape
 super + alt + Escape
 	bspc quit
 
+# Toggle polybar while Meta is down
+@Super_L
+	polybar-msg cmd hide
+
+Super_L
+	polybar-msg cmd show
+
 
 #
 ##
 
-## Toggle floating/fullscreen
-super + w; super + {_,shift + }f
-	bspc node -t ~{floating,fullscreen}
+# Toggle fullscreen
+super + w; super + f
+	bspc node -t ~fullscreen
+
+# Toggle floating
+super + w; super + t
+	bspc node -t ~floating
 
 # Focus window directionally; w/ ctrl = move by monitor
 super + {_,ctrl +}{h,j,k,l}
@@ -68,9 +79,13 @@ super + shift + {_,ctrl +}{h,j,k,l}
 #
 ##
 
-# Close window or force-kill it!
-super + q; super + {_,shift + }q
-	bspc node -{c,k}
+# Regular "quit app"
+super + q; super + q
+    bspc node -c
+
+# Force kill app
+super + q; super + k
+    bspc node -k
 
 # expand a window by moving one of its side outward
 super + {Left,Down,Up,Right}
