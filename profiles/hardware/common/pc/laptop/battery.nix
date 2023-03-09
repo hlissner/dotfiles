@@ -10,7 +10,7 @@ with self.lib;
   # regularly check battery status
   systemd.user.services.battery_monitor = {
     wants = [ "display-manager.service" ];
-    wantedby = [ "graphical-session.target" ];
+    wantedBy = [ "graphical-session.target" ];
     script = ''
       prev_val=100
       _check () {
