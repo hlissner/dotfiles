@@ -11,8 +11,8 @@ with builtins;
   profiles = with profiles; [
     role.workstation
     user.hlissner
-    network.dk
-    # network.vpn.homelab
+    network.ca
+    network.vpn.homelab
     hardware.dell.xps."13-9370"
     hardware.common.pc.laptop.battery
     hardware.common.audio
@@ -64,10 +64,10 @@ with builtins;
   };
 
   ## Local config
-  config = { pkgs, ... }: {
-    profiles.network.vpn.homelab = {
-      ip = "10.10.0.2/24";
-      privateKeyFile = config.age.secrets.wgHomelabKey.path;
+  config = { pkgs, config, ... }: {
+    networking.wireguard.interfaces.wg-homelab = {
+      ips = [ "10.10.0.2/24" ];
+      privateKeyFile = config.age.secrets.wg-homelab-key.path;
     };
   };
 
