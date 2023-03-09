@@ -18,7 +18,14 @@ in {
     nixpkgs.overlays = [ self.inputs.blender-bin.overlays.default ];
 
     # Includes newer versions of Blender baked in with CUDA support.
-    user.packages = [ pkgs.blender_3_4 ];
+    user.packages = with pkgs; [
+      (writeShellScriptBin "blender" ''
+        export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${libxcrypt}/lib"
+        exec ${blender_3_4}/bin/blender "$@"
+      '')
+    ];
+
+    environment.systemPackages = [ pkgs.blender_3_4 ];
 
     home.configFile = {
       # "blender/3.4/config" = {
