@@ -28,13 +28,13 @@ in {
   config = mkIf cfg.enable (mkMerge [
     {
       user.packages = with pkgs; [
-        unstable.firefox-bin
+        firefox-bin
         (makeDesktopItem {
           name = "firefox-private";
           desktopName = "Firefox (Private)";
           genericName = "Open a private Firefox window";
           icon = "firefox";
-          exec = "${unstable.firefox-bin}/bin/firefox --private-window";
+          exec = "${firefox-bin}/bin/firefox --private-window";
           categories = [ "Network" ];
         })
       ];
@@ -104,6 +104,7 @@ in {
         "browser.aboutConfig.showWarning" = false; # Warning when opening about:config
         "media.videocontrols.picture-in-picture.video-toggle.enabled" = false;
         "extensions.pocket.enabled" = false;
+        "extensions.unifiedExtensions.enabled" = false;
         "extensions.shield-recipe-client.enabled" = false;
         "reader.parse-on-load.enabled" = false;  # "reader view"
 
