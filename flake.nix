@@ -14,7 +14,7 @@
     {
       # Core dependecies
       nixpkgs.url = "nixpkgs/nixos-unstable";  # primary nixpkgs
-      nixpkgs-unstable.url = "nixpkgs";        # for packages on the edge
+      nixpkgs-unstable.url = "nixpkgs/nixos-unstable";        # for packages on the edge
       home-manager.url = "github:rycee/home-manager/master";
       home-manager.inputs.nixpkgs.follows = "nixpkgs";
       agenix.url = "github:ryantm/agenix";

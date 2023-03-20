@@ -38,11 +38,13 @@ in {
 
       # Replaces Photoshop
       (if cfg.raster.enable then [
-        gimp
-        gimpPlugins.bimp           # batch image manipulation
-        gimpPlugins.resynthesizer  # content-aware scaling in gimp
-        # NOTE: gmic is broken on nixpkgs-unstable (see NixOS/nixpkgs#212563)
-        gimpPlugins.gmic           # an assortment of extra filters
+        (gimp-with-plugins.override {
+          plugins = with gimpPlugins; [
+            bimp            # batch image manipulation
+            # resynthesizer   # content-aware scaling in gimp
+            gmic            # an assortment of extra filters
+          ];
+        })
       ] else []) ++
 
       # Sprite sheets & animation
