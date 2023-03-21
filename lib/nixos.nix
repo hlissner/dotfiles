@@ -159,7 +159,7 @@ rec {
                 (_: v: !(v ? meta.platforms) || (elem system v.meta.platforms))
                 packageAttrs;
             pkgs = mkPkgs system nixpkgs (attrValues overlays);
-        in filterAttrs (_: v: v.${system} != {}){
+        in filterAttrs (_: v: v.${system} != {}) {
           apps.${system} = apps;
           checks.${system} = withPkgs pkgs checks;
           devShells.${system} = withPkgs pkgs devShells;

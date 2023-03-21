@@ -69,9 +69,9 @@ with builtins;
   hardware = { ... }: {
     boot.supportedFilesystems = [ "ntfs" ];
 
-    # Disable all wakeup events, to prevent random wakeups during sleep. This
-    # system has many peripherals attached to it (shared between Windows and
-    # Linux) that can unpredictably wake it.
+    # Disable all wakeup events, to ensure restful sleep. This system has many
+    # peripherals attached to it (shared between Windows and Linux) that can
+    # unpredictably wake it.
     systemd.services.fixSuspend = {
       script = ''
         for ev in $(grep enabled /proc/acpi/wakeup | cut --delimiter=\  --fields=1); do

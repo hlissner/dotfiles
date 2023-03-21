@@ -2,6 +2,8 @@
 # Author:  Henrik Lissner
 # Version: 0.0.1
 #
+# - Offers shortcut commands for invoking commands across many systems.
+# - Uses bitwarden to store and deploy per-host ssh keys.
 ##
 
 class HeyOps < HeyCLI
