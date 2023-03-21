@@ -227,7 +227,7 @@ class Hey < HeyCLI
     desc :dev, "TODO"
     stop_on_unknown_option! :dev
     def dev *args
-      nix :develop, "#{dir}", *args
+      nix :develop, @flake.path, *args
     end
 
     desc :repl, "Open a REPL with the dotfiles flake (and nixpkgs inputs) preloaded"
