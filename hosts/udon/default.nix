@@ -64,7 +64,9 @@ with builtins;
   };
 
   ## Local config
-  config = { ... }: {};
+  config = { ... }: {
+    xdg.ssh.enable = true;
+  };
 
   hardware = { ... }: {
     boot.supportedFilesystems = [ "ntfs" ];
