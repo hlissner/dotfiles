@@ -17,11 +17,12 @@ in {
 
     programs.gnupg.agent = {
       enable = true;
-      pinentryFlavor = "gtk2";
+      pinentryFlavor = null;
     };
 
     home.configFile."gnupg/gpg-agent.conf".text = ''
       default-cache-ttl ${toString cfg.cacheTTL}
+      pinentry-program ${pkgs.pinentry-rofi}/bin/pinentry
     '';
   };
 }
