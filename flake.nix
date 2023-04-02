@@ -32,7 +32,11 @@
 
   outputs = inputs @ { self, nixpkgs, nixos-hardware, ... }:
     let
-      args = { inherit self; inherit (nixpkgs) lib; };
+      args = {
+        inherit self;
+        inherit (nixpkgs) lib;
+        pkgs = import nixpkgs {};
+      };
       lib = import ./lib args;
     in
       with builtins; with lib; mkFlake inputs {

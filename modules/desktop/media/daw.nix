@@ -18,10 +18,19 @@ in {
     services.pipewire.jack.enable = true;
 
     user.packages = with pkgs.unstable; [
-      ardour     # recording, mixing, loops
-      lmms       # for making music
-      sunvox     # my favorite midi tracker
-      audacity   # for recording and remastering audio
+      ardour
+      sunvox
+      audacity
+
+      # LMMS creates .lmmsrc.xml in $HOME on launch (see LMMS/lmms#5869).
+      # Jailing it has the side-effect of rooting all file dialogs in the fake
+      # home, but this is easily worked around by adding proper shortcuts.
+      (mkWrapper lmms ''
+        wrapProgram "$out/bin/lmms" \
+          --run 'cfgdir="$XDG_CONFIG_HOME/lmms"' \
+          --run 'mkdir -p "$cfgdir"' \
+          --add-flags '-c "$cfgdir/rc.xml"'
+      '')
     ];
   };
 }

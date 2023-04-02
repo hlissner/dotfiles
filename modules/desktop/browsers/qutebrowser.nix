@@ -21,10 +21,8 @@ in {
   config = mkIf cfg.enable {
     user.packages = with pkgs; [
       pkg
-      (makeDesktopItem {
-        name = "qutebrowser-private";
-        desktopName = "Qutebrowser (Private)";
-        genericName = "Open a private Qutebrowser window";
+      (mkLauncherEntry "Qutebrowser (Private)" {
+        description = "Open a private Qutebrowser window";
         icon = "qutebrowser";
         exec = ''${pkg}/bin/qutebrowser -T -s content.private_browsing true'';
         categories = [ "Network" ];

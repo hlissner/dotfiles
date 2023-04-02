@@ -1,4 +1,4 @@
-{ self, lib, ... }:
+{ self, lib, pkgs, ... }:
 
 let
   inherit (builtins) mapAttrs intersectAttrs functionArgs getEnv fromJSON;
@@ -43,7 +43,7 @@ let
   };
   # FIXME: Lexicographical loading can cause race conditions. Sort them?
   libModules = sortLibsByDeps (mapModules ./. import);
-  libs = foldl libConcat { inherit lib; self = libs; } (attrsToList libModules);
+  libs = foldl libConcat { inherit lib pkgs; self = libs; } (attrsToList libModules);
 in
   # The flattened tree is appended to make the namespaced endpoints optional,
   # and because namespaces are useful for inherit'ed let-bindings. In other

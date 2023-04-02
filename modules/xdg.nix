@@ -113,34 +113,50 @@ in {
       services.xserver.displayManager.job.environment.XCOMPOSECACHE = "$XDG_RUNTIME_DIR/xcompose";
     }
 
-    ## Getting SSH to respect XDG -- HIGHLY EXPERIMENTAL. Expect jank.
-    (mkIf cfg.ssh.enable {
-      environment.systemPackages = with pkgs; [
-        (writeShellScriptBin "ssh" ''
-          if [ -s "$XDG_CONFIG_HOME/ssh/config" ]; then
-            OPTS='-F $XDG_CONFIG_HOME/ssh/config'
-          fi
-          exec ${openssh}/bin/ssh $OPTS "$@"
-        '')
-        (writeShellScriptBin "scp" ''
-          if [ -s "$XDG_CONFIG_HOME/ssh/config" ]; then
-            OPTS='-F $XDG_CONFIG_HOME/ssh/config'
-          fi
-          exec ${openssh}/bin/scp $OPTS "$@"
-        '')
-        (writeShellScriptBin "ssh-copy-id" ''
-          OPTS="-i \"$XDG_CONFIG_HOME/ssh/id_ed25519\" "
-          OPTS+="-i \"$XDG_CONFIG_HOME/ssh/id_rsa\" "
-          exec ${ssh-copy-id}/bin/ssh-copy-id "$@" $OPTS
-        '')
-      ];
+    ## Forces SSH to respect XDG.
+    # HACK: This could break tools that rely on openssh (and even openssh
+    #   itself), like DropBear. None of my tools/workflows on my workstations
+    #   are broken by this, so I can ignore it, but it's opt-in for a reason.
+    #
+    #   Only issue I've found, so far, is that ssh-keygen writes to ~/.ssh by
+    #   default (use -f to overwrite).
+    (let keyFiles = [ "id_dsa" "id_ecdsa" "id_ecdsa_sk" "id_ed25519" "id_ed25519_sk" "id_rsa" ];
+         keyFilesStr = concatStringsSep " " keyFiles;
+         sshConfigDir = "$XDG_CONFIG_HOME/ssh";
+     in mkIf cfg.ssh.enable {
+       # To spare us passing the extra options to the executables, we set these
+       # in the system config file.
+       programs.ssh.extraConfig = ''
+         Host *
+           ${concatMapStringsSep "\n" (key: "IdentityFile ~/.config/ssh/${key}") keyFiles}
+           UserKnownHostsFile ~/.config/ssh/known_hosts
+       '';
 
-      programs.ssh.extraConfig = ''
-        Host *
-          IdentityFile ~/.config/ssh/id_ed25519
-          IdentityFile ~/.config/ssh/id_rsa
-          UserKnownHostsFile ~/.config/ssh/known_hosts
-      '';
-    })
+       environment.systemPackages = with pkgs; with self.lib.pkgs; [
+         (mkWrapper openssh ''
+           dir='${sshConfigDir}'
+           cfg="$dir/config"
+           wrapProgram "$out/bin/ssh" \
+             --run "[ -s \"$cfg\" ] && opts='-F \"$cfg\"'" \
+             --add-flags '$opts'
+           wrapProgram "$out/bin/scp" \
+             --run "[ -s \"$cfg\" ] && opts='-F \"$cfg\"'" \
+             --add-flags '$opts'
+           wrapProgram "$out/bin/ssh-add" \
+             --run "dir=\"$dir\"" \
+             --run 'args=()' \
+             --run '[ $# -eq 0 ] && for f in ${keyFilesStr}; do [ -f "$dir/$f" ] && args+="$dir/$f"; done' \
+             --add-flags '-H "$dir/known_hosts"' \
+             --add-flags '-H "/etc/ssh/ssh_known_hosts"' \
+             --add-flags '"''${args[@]}"'
+         '')
+         (mkWrapper ssh-copy-id ''
+           wrapProgram "$out/bin/ssh-copy-id" \
+             --run 'dir="${sshConfigDir}"' \
+             --run 'opts=(); for f in ${keyFilesStr}; do [ -f "$dir/$f" ] && opts+="-i '$dir/$f'"; done' \
+             --append-flags '"''${opts[@]}"'
+         '')
+       ];
+     })
   ]);
 }

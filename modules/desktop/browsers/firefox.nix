@@ -27,14 +27,14 @@ in {
 
   config = mkIf cfg.enable (mkMerge [
     {
-      user.packages = with pkgs; [
-        firefox-bin
-        (makeDesktopItem {
-          name = "firefox-private";
-          desktopName = "Firefox (Private)";
-          genericName = "Open a private Firefox window";
+      user.packages = with pkgs; with self.lib.pkgs; [
+        (mkWrapper firefox-bin ''
+          wrapProgram "$out/bin/firefox" --run 'export HOME="$XDG_FAKE_HOME"'
+        '')
+        (mkLauncherEntry "Firefox (Private)" {
+          description = "Open a private Firefox window";
           icon = "firefox";
-          exec = "${firefox-bin}/bin/firefox --private-window";
+          exec = "firefox --private-window";
           categories = [ "Network" ];
         })
       ];

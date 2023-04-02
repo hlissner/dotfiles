@@ -28,10 +28,7 @@ in {
       xclip
       xdotool
       xorg.xwininfo
-      libqalculate  # calculator cli w/ currency conversion
-      (makeDesktopItem {
-        name = "scratch-calc";
-        desktopName = "Calculator";
+      (mkLauncherEntry "Calculator" {
         icon = "calc";
         exec = ''scratch "${tmux}/bin/tmux new-session -s calc -n calc qalc"'';
         categories = [ "Development" ];

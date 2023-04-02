@@ -22,9 +22,13 @@ in {
         clang
         gcc
         bear
-        gdb
         cmake
         llvmPackages.libcxx
+
+        # Respect XDG, damn it!
+        (mkWrapper gdb ''
+          wrapProgram "$out/bin/gdb" --add-flags '-q -x "$XDG_CONFIG_HOME/gdb/init"'
+        '')
       ];
     })
 

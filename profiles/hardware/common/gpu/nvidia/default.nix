@@ -29,10 +29,12 @@ with self.lib;
   environment = {
     systemPackages = with pkgs; [
       # Respect XDG conventions, damn it!
-      (writeShellScriptBin "nvidia-settings" ''
-        mkdir -p "$XDG_CONFIG_HOME/nvidia"
-        exec ${config.boot.kernelPackages.nvidia_x11.settings}/bin/nvidia-settings --config="$XDG_CONFIG_HOME/nvidia/settings" "$@"
+      (mkWrapper config.boot.kernelPackages.nvidia_x11.settings ''
+        wrapProgram "$out/bin/nvidia-settings" \
+          --run 'mkdir -p "$XDG_CONFIG_HOME/nvidia"' \
+          --append-flags '--config="$XDG_CONFIG_HOME/nvidia/rc.conf"'
       '')
+
       # Required for CUDA support
       cudatoolkit
     ];

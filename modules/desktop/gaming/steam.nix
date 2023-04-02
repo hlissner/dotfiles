@@ -3,7 +3,6 @@
 with lib;
 with self.lib;
 let cfg = config.modules.desktop.gaming.steam;
-    steamDir = "$XDG_STATE_HOME/steam";
 in {
   options.modules.desktop.gaming.steam = with types; {
     enable = mkBoolOpt false;
@@ -30,17 +29,16 @@ in {
 
     user.extraGroups = [ "gamemode" ];
 
-    # Stop Steam from polluting $HOME
     environment.systemPackages = with pkgs; [
-      (writeShellScriptBin "steam" ''
-        mkdir -p "${steamDir}"
-        HOME="${steamDir}" exec ${config.programs.steam.package}/bin/steam "$@"
-      '')
-      # for running GOG and humble bundle games
-      (writeShellScriptBin "steam-run" ''
-        mkdir -p "${steamDir}"
-        HOME="${steamDir}" exec ${config.programs.steam.package.run}/bin/steam-run "$@"
-      '')
+      # Stop Steam from polluting $HOME
+      (let pkg = config.programs.steam.package;
+       in mkWrapper [
+         pkg
+         pkg.run   # for GOG and humble bundle games
+       ] ''
+         wrapProgram "$out/bin/steam" --run 'export HOME="$XDG_FAKE_HOME"'
+         wrapProgram "$out/bin/steam-run" --run 'export HOME="$XDG_FAKE_HOME"'
+       '')
     ] ++ (if cfg.mangohud.enable then [ pkgs.mangohud ] else []);
 
     # better for steam proton games

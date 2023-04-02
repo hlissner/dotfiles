@@ -21,10 +21,8 @@ in {
 
     user.packages = with pkgs; [
       xst  # st + nice-to-have extensions
-      (makeDesktopItem {
-        name = "xst";
-        desktopName = "Suckless Terminal";
-        genericName = "Default terminal";
+      (mkLauncherEntry "Suckless Terminal" {
+        description = "Open default terminal application";
         icon = "utilities-terminal";
         exec = "${xst}/bin/xst";
         categories = [ "Development" "System" "Utility" ];
