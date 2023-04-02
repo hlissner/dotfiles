@@ -2,4 +2,4 @@
 rofi -show drun \
      -modi drun,run \
      -show-icons \
-     -theme theme/appmenu.rasi
+     -theme appmenu

@@ -1,10 +1,10 @@
 #!/usr/bin/env sh
 cd $HOME
-DIR="$(fd -L -d 4 --type d . | rofi -dmenu -i -p "~/" -theme theme/filemenu.rasi)"
+DIR="$(fd -L -d 4 --type d . | rofi -dmenu -i -p "~/" -theme filemenu)"
 if [ -d "$DIR" ]; then
   cd "$DIR"
   if [[ $1 == "-x" ]]; then
-    scratch
+    $DOTFILES_BIN/gui/scratch
   else
     xst
   fi

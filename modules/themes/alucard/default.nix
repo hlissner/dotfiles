@@ -226,7 +226,7 @@ in {
           "bspwm/rc.d/95-polybar".source = ./config/polybar/run.sh;
         })
         (mkIf desktop.apps.rofi.enable {
-          "rofi/theme" = {
+          "rofi" = {
             source = ./config/rofi;
             recursive = true;
           };

@@ -5,7 +5,7 @@
 #
 # Example: passmenu [RESUME]
 
-ROFI_CMD='rofi -dmenu -theme theme/passmenu.rasi'
+ROFI_CMD='rofi -dmenu -theme passmenu'
 MSG_CMD='notify-send'
 set -e
 shopt -s nullglob globstar

@@ -3,7 +3,7 @@
 # Present a Rofi menu to power down, reboot, reboot into a specific systemd-boot
 # target, sleep, or logout.
 
-_rofi() { rofi -theme theme/powermenu.rasi "$@"; }
+_rofi() { rofi -theme powermenu "$@"; }
 
 
 ### Options ###

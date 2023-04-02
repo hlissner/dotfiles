@@ -3,7 +3,7 @@
 
 rofimoji --action type \
     --selector=rofi \
-    --selector-args="-theme theme/mojimenu.rasi" \
+    --selector-args="-theme mojimenu" \
     --files emojis latin-1_supplement math
 
     # --hide-descriptions \

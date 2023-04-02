@@ -80,7 +80,7 @@ module BW
   def self.rofi items, *args
     input = items.keys.join("\n") if items
     result = sh(['rofi', '-dmenu', '-markup-rows',
-                 '-theme', 'theme/passmenu.rasi',
+                 '-theme', 'passmenu',
                  *args],
                 input: input)
     if items
