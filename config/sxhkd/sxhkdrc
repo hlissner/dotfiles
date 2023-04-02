@@ -16,7 +16,7 @@ super + ctrl + alt + Return
 
 # Open a disposable, floating terminal window, for quick shell commands.
 super + grave
-	scratch
+	$DOTFILES_BIN/gui/scratch
 
 # Open a disposable scratch buffer in a floating Emacs window, to run arbitrary
 # code or quickly note something down.
@@ -117,32 +117,32 @@ super + shift + {1-9,0}
 
 # screenshot region
 Print
-	scrcap
+	$DOTFILES_BIN/gui/scrcap
 # screencast region to mp4
 super + Print
-	scrrec -s ~/recordings/$(date +%F-%T).mp4
+	$DOTFILES_BIN/gui/scrrec -s ~/recordings/$(date +%F-%T).mp4
 # screencast region to gif
 super + ctrl + Print
-	scrrec -s ~/recordings/$(date +%F-%T).gif
+	$DOTFILES_BIN/gui/scrrec -s ~/recordings/$(date +%F-%T).gif
 
 XF86MonBrightnessUp
-	$DOTFILES_BIN/osd brightness up
+	$DOTFILES_BIN/gui/osd brightness up
 XF86MonBrightnessDown
-	$DOTFILES_BIN/osd brightness down
+	$DOTFILES_BIN/gui/osd brightness down
 
 XF86AudioMute
-	$DOTFILES_BIN/osd master toggle
+	$DOTFILES_BIN/gui/osd master toggle
 XF86AudioRaiseVolume
-	$DOTFILES_BIN/osd master up
+	$DOTFILES_BIN/gui/osd master up
 XF86AudioLowerVolume
-	$DOTFILES_BIN/osd master down
+	$DOTFILES_BIN/gui/osd master down
 
 super + XF86AudioMute
-	$DOTFILES_BIN/osd capture toggle
+	$DOTFILES_BIN/gui/osd capture toggle
 super + XF86AudioRaiseVolume
-	$DOTFILES_BIN/osd capture up
+	$DOTFILES_BIN/gui/osd capture up
 super + XF86AudioLowerVolume
-	$DOTFILES_BIN/osd capture down
+	$DOTFILES_BIN/gui/osd capture down
 
 XF86Audio{Play,Pause}
 	playerctl -p spotify play-pause
