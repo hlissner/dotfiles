@@ -71,7 +71,7 @@ with builtins;
   hardware = { ... }: {
     boot.supportedFilesystems = [ "ntfs" ];
 
-    # Disable all wakeup events, to ensure restful sleep. This system has many
+    # Disable all wakeup events to ensure restful sleep. This system has many
     # peripherals attached to it (shared between Windows and Linux) that can
     # unpredictably wake it.
     systemd.services.fixSuspend = {

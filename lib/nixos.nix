@@ -1,14 +1,12 @@
 # lib/flakes.nix --- syntax sugar for flakes
 #
-# You might wonder: this looks a lot like what flake-parts, flake-utils(-plus),
-# and/or digga offers; why reinvent the wheel? Besides flake-utils, they are all
-# in volatile stages of their development (as of Dec 13, 2022). In other words:
-# they see rapid, subtle, and sometimes unannounced changes. Since I rely on
-# this flake as a basis for 100+ systems, VMs, and containers, some of whom are
-# mission-critical, I'd rather have a less polished API that I fully control
-# than a robust one that I cannot predict, for maximum mobility.
-#
-# It's also a more valuable learning experience.
+# This may look a lot like what flake-parts, flake-utils(-plus), and/or digga
+# offer. I reinvent the whell because (besides flake-utils), they are too
+# volatile to depend on. They see subtle and unannounced changes, often. Since I
+# rely on this flake as a basis for 100+ systems, VMs, and containers, some of
+# whom are mission-critical, I'd rather have a less polished API that I fully
+# control than a robust one that I cannot predict, for maximum mobility. It's
+# also a more valuable learning experience.
 
 { self, lib, attrs, modules }:
 

@@ -1,4 +1,4 @@
-# Soba -- my testbench
+# Harusame -- my workstation abroad
 
 { self, lib, profiles, ... }:
 

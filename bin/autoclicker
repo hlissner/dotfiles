@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+#
+# Cookie clicker didn't stand a chance.
 
 while true; do
     xdotool mousedown 1

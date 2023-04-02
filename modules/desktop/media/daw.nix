@@ -1,8 +1,9 @@
 # modules/desktop/media/daw.nix
 #
-# I make music for my games. LMMS+Ardour is my DAW. When I'm in the mood for a
-# quicky I fire up sunvox instead. It runs absolutely anywhere, even on my ipad
-# and phone -- as if I'd ever need to.
+# I make games on my spare time (and occasionally edit audio for videos). These
+# need music and sound effects. On Windows/Mac, I used Apple Logic, Fruityloops,
+# Adobe Audition, and Sunvox. To replace them on Linux, I use Ardour, LMMS,
+# Audacity, and Sunvox (works everywhere), respectively.
 
 { self, lib, config, pkgs, ... }:
 

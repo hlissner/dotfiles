@@ -20,7 +20,6 @@ class Hey < HeyCLI
 
 
   group "Flake management" do
-    # TODO: Test me
     desc "install [HOSTNAME]", "Deploy these dotfiles to a system for the first time."
     option :dest,   aliases: :d, type: :string, desc: 'Where to deploy dotfiles after install (default: ~/.config/dotfiles)'
     option :repo,   type: :string, default: "hlissner/dotfiles", desc: "Where to clone your dotfiles flake from"

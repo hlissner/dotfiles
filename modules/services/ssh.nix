@@ -22,16 +22,19 @@ in {
         extraConfig = ''GSSAPIAuthentication no'';
         # Deactivate short moduli
         moduliFile = pkgs.runCommand "filterModuliFile" {} ''
-        awk '$5 >= 3071' "${config.programs.ssh.package}/etc/ssh/moduli" >"$out"
-      '';
-        # Remove all auto-generated host keys, because SSH keys have been built
-        # for all systems that require them. Systems that don't require them don't
-        # need one generated for them, and those that do should loudly fail to
+          awk '$5 >= 3071' "${config.programs.ssh.package}/etc/ssh/moduli" >"$out"
+        '';
+        # Remove all auto-generated host keys, because host keys have been built
+        # for all systems that require them. Systems that don't require them
+        # don't need them generated, and those that do should loudly fail to
         # build if the host keys haven't been provisioned.
         hostKeys = mkDefault [];
       };
     })
 
+    # This framework uses this host key for its secrets. It's expected to be
+    # provisioned before the system is built (presumably with 'hey ops push-keys
+    # $HOST').
     {
       programs.ssh.extraConfig = ''
         Host *

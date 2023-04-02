@@ -1,5 +1,11 @@
-# ...
-# I use home-manager to deploy files to $HOME; little else
+# modules/home-manager.nix
+#
+# I'm sure I'm reinventing wheels by avoiding home-manager's other capabilities
+# and using it solely as a $HOME file/link manager, but it's already an ordeal
+# to maintain this config on top of nixpkgs and its rapidly-shifting
+# idiosynchrosies (though it's still better than what I had before NixOS). Add
+# home-manager to the mix and it becomes too much, so I treat it as little more
+# than a library, and simply write my own modules.
 
 { self, lib, config, options, home-manager, pkgs, ... }:
 

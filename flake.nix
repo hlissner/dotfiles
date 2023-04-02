@@ -13,12 +13,14 @@
   inputs = 
     {
       # Core dependecies
-      nixpkgs.url = "nixpkgs/nixos-unstable";  # primary nixpkgs
-      nixpkgs-unstable.url = "nixpkgs/nixos-unstable";        # for packages on the edge
+      nixpkgs.url = "nixpkgs/nixos-unstable";           # primary nixpkgs
+      nixpkgs-unstable.url = "nixpkgs/nixos-unstable";  # for packages on the edge
       home-manager.url = "github:rycee/home-manager/master";
       home-manager.inputs.nixpkgs.follows = "nixpkgs";
       agenix.url = "github:ryantm/agenix";
       agenix.inputs.nixpkgs.follows = "nixpkgs";
+
+      # TODO: Declarative partitions
       # disko.url = "github:nix-community/disko";
       # disko.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -58,18 +60,13 @@
         packages = mapModules ./packages import;
         templates = import ./templates args;
 
-        # I wanted to parameterize this flake (more so for flakes derived from
-        # this one). To do so, I rely on bin/hey (my nix{,os} CLI/wrapper) to
-        # emulate --arg/--argstr options. default.dir is special though, and
-        # communicated using hey's -f/--flake and --host options:
+        # To parameterize this flake (more so for flakes derived from this one)
+        # I rely on bin/hey (my nix{,os} CLI/wrapper) to emulate --arg/--argstr
+        # options. 'dir' and 'host' are special though, and communicated using
+        # hey's -f/--flake and --host options:
         #
         #   hey rebuild -f /etc/nixos#soba
         #   hey rebuild -f /etc/nixos --host soba
-        #
-        # But it (and any other default.* attribute) can be set with
-        # --arg/--argstr:
-        #
-        #   hey rebuild --arg dir /etc/nixos --arg host soba
         #
         # The magic that allows this lives in mkFlake, but requires --impure
         # mode. Sorry hermetic purists!

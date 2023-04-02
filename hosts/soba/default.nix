@@ -1,4 +1,4 @@
-# Soba -- my testbench
+# Soba -- testbench and steam remote server
 
 { self, lib, profiles, ... }:
 
