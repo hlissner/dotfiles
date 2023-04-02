@@ -7,23 +7,39 @@
 { self, lib, config, options, pkgs, ... }:
 
 with lib;
-with self.lib;
 let cfg = config.modules.desktop.browsers.firefox;
 in {
-  options.modules.desktop.browsers.firefox = with types; {
-    enable = mkBoolOpt false;
-    profileName = mkOpt types.str config.user.name;
+  options.modules.desktop.browsers.firefox =
+    with self.lib.options; with types; {
+      enable = mkBoolOpt false;
+      profileName = mkOpt str config.user.name;
 
-    settings = mkOpt' (attrsOf (oneOf [ bool int str ])) {} ''
-      Firefox preferences to set in <filename>user.js</filename>
-    '';
-    extraConfig = mkOpt' lines "" ''
-      Extra lines to add to <filename>user.js</filename>
-    '';
+      sharedSettings = mkOpt' (attrsOf (oneOf [ bool int str ])) {} ''
+        Firefox preferences to set in <filename>user.js</filename>
+      '';
+      extraConfig = mkOpt' lines "" ''
+        Extra lines to add to <filename>user.js</filename>
+      '';
 
-    userChrome  = mkOpt' lines "" "CSS Styles for Firefox's interface";
-    userContent = mkOpt' lines "" "Global CSS Styles for websites";
-  };
+      userChrome  = mkOpt' lines "" "CSS Styles for Firefox's interface";
+      userContent = mkOpt' lines "" "Global CSS Styles for websites";
+
+      # TODO
+      # profiles = attrsOf (submodule ({ config, ... }: {
+      #   options = {
+      #     name = mkOpt str config._module.args.name;
+      #     default = mkOpt bool false;
+      #     settings = mkOpt' (attrsOf (oneOf [ bool int str ])) {} ''
+      #       Firefox preferences to set in <filename>user.js</filename>
+      #     '';
+      #     extraConfig = mkOpt' lines "" ''
+      #       Extra lines to add to <filename>user.js</filename>
+      #     '';
+      #     userChrome  = mkOpt' lines "" "CSS Styles for Firefox's interface";
+      #     userContent = mkOpt' lines "" "Global CSS Styles for websites";
+      #   };
+      # }));
+    };
 
   config = mkIf cfg.enable (mkMerge [
     {
@@ -39,7 +55,7 @@ in {
         })
       ];
 
-      modules.desktop.browsers.firefox.settings = {
+      modules.desktop.browsers.firefox.sharedSettings = {
         # Default to dark theme in DevTools panel
         "devtools.theme" = "dark";
         # Enable ETP for decent security (makes firefox containers and many
@@ -103,6 +119,7 @@ in {
         "browser.onboarding.enabled" = false;      # "New to Firefox? Let's get started!" tour
         "browser.aboutConfig.showWarning" = false; # Warning when opening about:config
         "media.videocontrols.picture-in-picture.video-toggle.enabled" = false;
+        "media.hardwaremediakeys.enabled" = false; # stop ~/.mozilla/firefox/firefox-mpris dir
         "extensions.pocket.enabled" = false;
         "extensions.unifiedExtensions.enabled" = false;
         "extensions.shield-recipe-client.enabled" = false;
@@ -195,7 +212,7 @@ in {
       };
 
       # Use a stable profile name so we can target it in themes
-      home.file = let cfgPath = ".mozilla/firefox"; in {
+      home.file = let cfgPath = ".local/user/.mozilla/firefox"; in {
         "${cfgPath}/profiles.ini".text = ''
           [Profile0]
           Name=default
@@ -209,11 +226,11 @@ in {
         '';
 
         "${cfgPath}/${cfg.profileName}.default/user.js" =
-          mkIf (cfg.settings != {} || cfg.extraConfig != "") {
+          mkIf (cfg.sharedSettings != {} || cfg.extraConfig != "") {
             text = ''
               ${concatStrings (mapAttrsToList (name: value: ''
                 user_pref("${name}", ${builtins.toJSON value});
-              '') cfg.settings)}
+              '') cfg.sharedSettings)}
               ${cfg.extraConfig}
             '';
           };

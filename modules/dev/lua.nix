@@ -1,9 +1,9 @@
 # modules/dev/lua.nix --- https://www.lua.org/
 #
-# I use lua for modding, awesomewm or Love2D for rapid gamedev prototyping (when
-# godot is overkill and I have the luxury of avoiding JS). I write my Love games
-# in moonscript to get around lua's idiosynchrosies. That said, I install love2d
-# on a per-project basis.
+# I use lua for modding, awesomewm, or Love2D for rapid gamedev prototyping
+# (when godot is overkill and I have the luxury of avoiding JS). I write my Love
+# games in fennel to get around lua's idiosynchrosies. That said, I install
+# love2d on a per-project basis.
 
 { self, lib, config, options, pkgs, ... }:
 
@@ -16,19 +16,21 @@ in {
     enable = mkBoolOpt false;
     xdg.enable = mkBoolOpt devCfg.enableXDG;
     love2D.enable = mkBoolOpt false;
+    fennel.enable = mkBoolOpt false;
   };
 
   config = mkMerge [
     (mkIf cfg.enable {
       user.packages = with pkgs; [
         lua
-        luaPackages.moonscript
+        luajit
         (mkIf cfg.love2D.enable love2d)
+        (mkIf cfg.fennel.enable fennel)
       ];
     })
 
     (mkIf cfg.xdg.enable {
-      # TODO
+      # The lua ecosystem has great XDG support out of the box, so...
     })
   ];
 }

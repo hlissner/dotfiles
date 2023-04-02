@@ -23,7 +23,12 @@ in {
     })
 
     (mkIf cfg.xdg.enable {
-      # TODO
+      # Moves ~/.sbclrc to ~/.config/sbcl/rc
+      environment.etc."sbclrc".text = ''
+        (require :asdf)
+        (setf db-ext:*userinit-pathname-function*
+              (lambda () (uiop:xdg-config-home #P"sbcl/rc")))
+      '';
     })
   ];
 }

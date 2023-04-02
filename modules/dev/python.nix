@@ -39,14 +39,23 @@ in {
     })
 
     (mkIf cfg.xdg.enable {
-      env.IPYTHONDIR      = "$XDG_CONFIG_HOME/ipython";
-      env.PIP_CONFIG_FILE = "$XDG_CONFIG_HOME/pip/pip.conf";
-      env.PIP_LOG_FILE    = "$XDG_STATE_HOME/pip/log";
-      env.PYLINTHOME      = "$XDG_DATA_HOME/pylint";
-      env.PYLINTRC        = "$XDG_CONFIG_HOME/pylint/pylintrc";
-      env.PYTHONSTARTUP   = "$XDG_CONFIG_HOME/python/pythonrc";
-      env.PYTHON_EGG_CACHE = "$XDG_CACHE_HOME/python-eggs";
-      env.JUPYTER_CONFIG_DIR = "$XDG_CONFIG_HOME/jupyter";
+      env = {
+        # Internal
+        PYTHONPYCACHEPREFIX = "$XDG_CACHE_HOME/python";
+        PYTHONSTARTUP = "$XDG_CONFIG_HOME/python/pythonrc";
+        PYTHONUSERBASE = "$XDG_DATA_HOME/python";
+        PYTHON_EGG_CACHE = "$XDG_CACHE_HOME/python-eggs";
+        PYTHONHISTFILE = "$XDG_DATA_HOME/python/python_history"; # default value as of >=3.4
+
+        # Tools
+        IPYTHONDIR = "$XDG_CONFIG_HOME/ipython";
+        JUPYTER_CONFIG_DIR = "$XDG_CONFIG_HOME/jupyter";
+        PIP_CONFIG_FILE = "$XDG_CONFIG_HOME/pip/pip.conf";
+        PIP_LOG_FILE = "$XDG_STATE_HOME/pip/log";
+        PYLINTHOME = "$XDG_DATA_HOME/pylint";
+        PYLINTRC = "$XDG_CONFIG_HOME/pylint/pylintrc";
+        WORKON_HOME = "$XDG_DATA_HOME/virtualenvs";
+      };
     })
   ];
 }

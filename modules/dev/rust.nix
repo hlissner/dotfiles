@@ -31,9 +31,11 @@ in {
     })
 
     (mkIf cfg.xdg.enable {
-      env.RUSTUP_HOME = "$XDG_DATA_HOME/rustup";
-      env.CARGO_HOME = "$XDG_DATA_HOME/cargo";
-      env.PATH = [ "$CARGO_HOME/bin" ];
+      env = {
+        RUSTUP_HOME = "$XDG_DATA_HOME/rustup";
+        CARGO_HOME = "$XDG_DATA_HOME/cargo";
+        PATH = [ "$CARGO_HOME/bin" ];
+      };
     })
   ];
 }
