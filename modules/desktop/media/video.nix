@@ -37,6 +37,11 @@ in {
         mpv
         mpvc  # CLI controller for mpv
       ];
+
+      # Use hardware decoding, if available
+      home.configFile."mpv/mpv.conf".text = ''
+        hwdec=auto
+      '';
     })
 
     (mkIf cfg.tools.enable {
