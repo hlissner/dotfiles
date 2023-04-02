@@ -80,15 +80,13 @@ in {
       };
     };
 
+    # Some core shell utilities I need everywhere.
     environment.systemPackages = with pkgs; [
       bc
       bind
       cached-nix-shell
       git
-      vim
       wget
-      gnumake
-      unzip
     ];
 
     # The global useDHCP flag is deprecated, therefore explicitly set to false

@@ -1,6 +1,9 @@
+# Intentionally redundant with modules/shell/zsh.nix
+export ZDOTDIR="${ZDOTDIR:-${XDG_CONFIG_HOME:-~/.config}/zsh}"
+
 function _cache {
   (( $+commands[$1] )) || return 1
-  local cache_dir="$XDG_CACHE_HOME/${SHELL##*/}"
+  local cache_dir="$XDG_CACHE_HOME/zsh"
   local cache="$cache_dir/$1"
   if [[ ! -f $cache || ! -s $cache ]]; then
       echo "Caching $1"
@@ -19,8 +22,8 @@ function _source {
   done
 }
 
-# Be more restrictive with permissions; no one has any business reading things
-# that don't belong to them.
+# Be more restrictive with permissions in $HOME; no one has any business reading
+# things that don't belong to them.
 if (( EUID != 0 )); then
   umask 027
 else

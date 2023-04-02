@@ -37,25 +37,25 @@ in {
       promptInit = "";
     };
 
-    # Some shell utilies I find indispensible.
+    # Some interactive shell utilies I find universally indispensible.
     user.packages = with pkgs; [
-      zsh
-      nix-zsh-completions
       bat
       exa
       fasd
       fd
       fzf
+      gnumake
       jq
+      libqalculate  # calculator cli w/ currency conversion
+      nix-zsh-completions
       ripgrep
       tldr
+      unzip
+      vim
     ];
 
-    env = {
-      ZDOTDIR   = "$XDG_CONFIG_HOME/zsh";
-      ZSH_CACHE = "$XDG_CACHE_HOME/zsh";
-      ZGEN_DIR  = "$XDG_DATA_HOME/zgenom";
-    };
+    # Ensure XDG compliance
+    env.ZDOTDIR = "$XDG_CONFIG_HOME/zsh";
 
     home.configFile = {
       # Write it recursively so other modules can write files to it
@@ -88,7 +88,7 @@ in {
     };
 
     system.userActivationScripts.cleanupZgen = ''
-      rm -rfv $ZSH_CACHE $ZGEN_DIR/init.zsh{,.zwc}
+      rm -rfv "$XDG_CACHE_HOME/zsh" $ZGEN_DIR/init.zsh{,.zwc}
     '';
   };
 }

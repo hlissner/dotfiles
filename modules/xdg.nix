@@ -73,7 +73,6 @@ in {
             repl $XDG_CONFIG_HOME/aspell/en.prepl;
           '';
           DVDCSS_CACHE    = "$XDG_DATA_HOME/dvdcss";
-          HISTFILE        = "$XDG_DATA_HOME/bash/history";
           INPUTRC         = "$XDG_CONFIG_HOME/readline/inputrc";
           LESSHISTFILE    = "$XDG_STATE_HOME/less/history";
           LESSKEY         = "$XDG_CONFIG_HOME/less/keys";
@@ -82,6 +81,7 @@ in {
           BASH_COMPLETION_USER_FILE = "$XDG_CONFIG_HOME/bash/completion";
           ENV = "$XDG_CONFIG_HOME/shell/shrc";  # sh, ksh
           # PostgreSQL
+          HISTFILE        = ''$XDG_STATE_HOME/''${SHELL##*/}/history'';
           MYSQL_HISTFILE  = "$XDG_STATE_HOME/mysql/history";
           PGPASSFILE      = "$XDG_CONFIG_HOME/pg/pgpass";
           PGSERVICEFILE   = "$XDG_CONFIG_HOME/pg";
