@@ -17,15 +17,12 @@ in {
     # Supplies newer versions of Blender with CUDA support baked in.
     nixpkgs.overlays = [ self.inputs.blender-bin.overlays.default ];
 
-    # Includes newer versions of Blender baked in with CUDA support.
     user.packages = with pkgs; [
-      (writeShellScriptBin "blender" ''
-        export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${libxcrypt}/lib"
-        exec ${blender_3_4}/bin/blender "$@"
+      (mkWrapper pkgs.blender_3_4 ''
+        wrapProgram "$out/bin/blender" \
+          --run 'export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${libxcrypt}/lib"'
       '')
     ];
-
-    environment.systemPackages = [ pkgs.blender_3_4 ];
 
     home.configFile = {
       # "blender/3.4/config" = {

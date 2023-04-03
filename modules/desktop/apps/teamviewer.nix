@@ -15,14 +15,14 @@ in {
   };
 
   config = mkIf cfg.enable {
-    # I replicate services.teamviewer here instead of using it because I don't
-    # want teamviewerd auto-started or running all the time just for the once or
-    # twice a month I use teamviewer.
     environment.systemPackages = [
-      (writeShellScriptBin "teamviewer" ''
-        servicectl start teamviewerd
-        trap 'servicectl stop teamviewerd' EXIT
-        exec ${pkgs.teamviewer}/bin/teamviewer "$@"
+      # I am aware of services.teamviewer, and choose to avoid it so I can
+      # wazily start (and shut down) the teamviewer daemon. I rarely use
+      # teamviewr, and don't want the daemon running all that time it's idle.
+      (mkWrapper pkgs.teamviewer ''
+        wrapProgram "$out/bin/teamviewer"
+          --run 'servicectl start teamviewerd' \
+          --run 'trap "servicectl stop teamviewerd" EXIT'
       '')
     ];
 
