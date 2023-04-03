@@ -1,0 +1,61 @@
+" -*- mode: vimrc -*-
+
+" Resets all existing settings so that this file is the sole source of truth for
+" Tridactyl's config.
+sanitize tridactyllocal tridactylsync
+
+" Use vim in tmux for editor.
+set editorcmd terminal -e tmux -u new nvim
+
+" Use a blank page for new tab, instead of tridactyl's (noisy) help page.
+set newtab about:blank
+
+" Use browser's native find for Ctrl-F, instead of tridactyl's.
+unbind <C-f>
+" ...but support Tridactyl search too.
+bind / fillcmdline find
+bind ? fillcmdline find -?
+bind n findnext 1
+bind N findnext -1
+
+"" Don't run Tridactyl on some web sites because it doesn't work well, or
+" because the web site has its own keybindings.
+autocmd DocStart docs.google.com mode ignore
+autocmd DocStart ^https://cloud.linode.com/linodes/.*/lish/glish mode ignore
+
+" Sometimes the status bar in the bottom left corner overlaps the Tridactyl
+" command line, so set an option to move the status bar to the right.
+guiset_quiet hoverlink right
+
+bindurl https://github.com/.*/.*/blob f hint -c .blob-num,a
+bindurl https://github.com/notifications <Space><Space> openGithubNotifications
+bindurl youtu((\.be)|(be\.com)) f hint -J
+bindurl google(\.[a-zA-Z0-9]+){1,2}/search f hint -Jc #top_nav a, #search a, .card-section a, a.fl, #pnnext, #pnprev
+bindurl google(\.[a-zA-Z0-9]+){1,2}/search F hint -Jbc #top_nav a, #search a, .card-section a, a.fl, #pnnext, #pnprev
+bindurl google(\.[a-zA-Z0-9]+){1,2}/search gF hint -Jqbc #top_nav a, #search a, .card-section a, a.fl, #pnnext, #pnprev
+
+seturl .*github.com preventautofocusjackhammer false
+seturl jsfiddle.net allowautofocus true
+
+set allowautofocus false     " don't auto-focus elements on page load
+set visualenterauto false    " let me decide when we should be in visual mode
+set hintchars asdfgqwertzxcvb
+set searchengine ddg
+
+" Disable all searchurls
+jsb Object.keys(tri.config.get("searchurls")).reduce((prev, u) => prev.catch(()=>{}).then(_ => tri.excmds.setnull("searchurls." + u)), Promise.resolve())
+" Add my own
+set searchurls.amazon https://www.amazon.ca/s/ref=nb_sb_noss?field-keywords=%s
+set searchurls.crates https://crates.io/search?q=%s
+set searchurls.ddg https://duckduckgo.com/html?q=%s
+set searchurls.g https://www.google.com/search?q=%s
+set searchurls.gh https://github.com/search?utf8=%E2%9C%93&q=%s&ref=simplesearch
+set searchurls.gmaps https://www.google.com/maps/search/%s
+set searchurls.gw https://wiki.gentoo.org/index.php?title=Special%3ASearch&profile=default&search=%s&fulltext=Search
+set searchurls.npm https://www.npmjs.com/search?q=%s
+set searchurls.osm https://www.openstreetmap.org/search?query=%s
+set searchurls.steam https://store.steampowered.com/search/?term=%s
+set searchurls.w https://en.wikipedia.org/w/index.php?search=%s&title=Special%3ASearch
+set searchurls.y https://www.youtube.com/results?search_query=%s
+" set customthemes.custom html, body { -moz-font-feature-settings: "dlig" 0 !important; } span.TridactylHint { font-family: monospace !important; background: transparent !important; color: black !important; text-shadow: cyan -1px -1px 0px, cyan -1px 0px 0px, cyan -1px 1px 0px, cyan 1px -1px 0px, cyan 1px 0px 0px, cyan 1px 1px 0px, cyan 0px 1px 0px, cyan 0px -1px 0px !important; }
+" set theme custom

@@ -12,11 +12,11 @@
 with builtins;
 with lib;
 let cfg = config.xdg;
-    fakeHomeDir = "$HOME/.local/user";
 in {
   options.xdg = with self.lib.options; {
     enable = mkBoolOpt true;
     ssh.enable = mkBoolOpt false;
+    fakeHomeDir = mkOpt types.str ".local/user";
   };
 
   config = mkIf cfg.enable (mkMerge [
@@ -31,10 +31,10 @@ in {
 
         # These are set early in the login process by PAM; much sooner than
         # environment.variables, so the important variables go here.
-        sessionVariables = {
+        sessionVariables = rec {
           # This is not in the XDG standard. It's my jail for stubborn programs,
           # like Firefox, Steam, and LMMS.
-          XDG_FAKE_HOME = fakeHomeDir;
+          XDG_FAKE_HOME = "$HOME/${cfg.fakeHomeDir}";
 
           # These are the defaults, and xdg.enable does set them, but due to load
           # order, they're not set before environment.variables are set, which could
@@ -43,7 +43,7 @@ in {
           XDG_CACHE_HOME  = "$HOME/.cache";
           XDG_CONFIG_HOME = "$HOME/.config";
           XDG_DATA_HOME   = "$HOME/.local/share";
-          XDG_DESKTOP_DIR = fakeHomeDir;
+          XDG_DESKTOP_DIR = XDG_FAKE_HOME;
           XDG_STATE_HOME  = "$HOME/.local/state";
 
           # To avoid ~/.compose-cache getting created, and must be set
@@ -101,14 +101,14 @@ in {
       # (non-dotfile) subfolder in (like Documents or Videos). What can I say?
       # Linux is a battlefield.
       home.configFile."user-dirs.dirs".text = ''
-        XDG_DESKTOP_DIR="${fakeHomeDir}/Desktop"
-        XDG_DOCUMENTS_DIR="${fakeHomeDir}/Documents"
-        XDG_DOWNLOAD_DIR="${fakeHomeDir}/Downloads"
-        XDG_MUSIC_DIR="${fakeHomeDir}/Music"
-        XDG_PICTURES_DIR="${fakeHomeDir}/Pictures"
-        XDG_PUBLICSHARE_DIR="${fakeHomeDir}/Share"
-        XDG_TEMPLATES_DIR="${fakeHomeDir}/Templates"
-        XDG_VIDEOS_DIR="${fakeHomeDir}/Videos"
+        XDG_DESKTOP_DIR="${cfg.fakeHomeDir}/Desktop"
+        XDG_DOCUMENTS_DIR="${cfg.fakeHomeDir}/Documents"
+        XDG_DOWNLOAD_DIR="${cfg.fakeHomeDir}/Downloads"
+        XDG_MUSIC_DIR="${cfg.fakeHomeDir}/Music"
+        XDG_PICTURES_DIR="${cfg.fakeHomeDir}/Pictures"
+        XDG_PUBLICSHARE_DIR="${cfg.fakeHomeDir}/Share"
+        XDG_TEMPLATES_DIR="${cfg.fakeHomeDir}/Templates"
+        XDG_VIDEOS_DIR="${cfg.fakeHomeDir}/Videos"
       '';
 
       # Auto-create XDG directories, ensure correct permissions, and generate a
@@ -125,7 +125,7 @@ in {
         # Populate the fake home with .local and .config, so certain things are
         # still in scope for the jailed programs, like fonts, data, and files,
         # should they choose to use them at all.
-        fakehome="${fakeHomeDir}"
+        fakehome="${cfg.fakeHomeDir}"
         mkdir -p "$fakehome" -m 755
         [ -e "$fakehome/.local" ]  || ln -sf ~/.local  "$fakehome/.local"
         [ -e "$fakehome/.config" ] || ln -sf ~/.config "$fakehome/.config"
