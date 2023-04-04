@@ -4,13 +4,13 @@
 
 with builtins;
 with lib;
-with self.lib;
 let secretsDir  = "${self.hostDir}/secrets";
     secretsFile = "${secretsDir}/secrets.nix";
 in {
   imports = [ self.modules.agenix.age ];
-  environment.systemPackages = [
-    (pkgs.writeShellScriptBin "agenix" ''
+
+  environment.systemPackages = with pkgs; [
+    (writeShellScriptBin "agenix" ''
       exec nix run github:ryantm/agenix -- "$@"
     '')
   ];
@@ -23,10 +23,8 @@ in {
         owner = mkDefault config.user.name;
       }) (import secretsFile)
       else {};
-    identityPaths =
-      options.age.identityPaths.default ++ (filter pathExists [
-        "${config.user.home}/.ssh/id_ed25519"
-        "${config.user.home}/.ssh/id_rsa"
-      ]);
+    # If this system has secrets, identityPaths must be non-empty, but if no
+    # host key has been provided, then it will fail, and it should. Loudly.
+    identityPaths = filter pathExists [ "/etc/ssh/ssh_host_ed25519_key" ];
   };
 }

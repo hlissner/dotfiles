@@ -19,22 +19,15 @@ in {
       };
       # Suppress superfluous TCP traffic on new connections. Undo if using SSSD.
       extraConfig = ''GSSAPIAuthentication no'';
-      # Deactive short moduli
+      # Deactivate short moduli
       moduliFile = pkgs.runCommand "filterModuliFile" {} ''
         awk '$5 >= 3071' "${config.programs.ssh.package}/etc/ssh/moduli" >"$out"
       '';
-      # Removes the default RSA key (not that it represents a vulnerability, per
-      # se, but is one less key (that I don't plan to use) to the castle laying
-      # around) and ensures the ed25519 key is generated with 100 rounds, rather
-      # than the default (16), to improve its entropy.
-      hostKeys = [
-        {
-          comment = "${config.networking.hostName}.local";
-          path = "/etc/ssh/ssh_host_ed25519_key";
-          rounds = 100;
-          type = "ed25519";
-        }
-      ];
+      # Remove all auto-generated host keys, because SSH keys have been built
+      # for all systems that require them. Systems that don't require them don't
+      # need one generated for them, and those that do should loudly fail to
+      # build if the host keys haven't been provisioned.
+      hostKeys = mkDefault [];
     };
   };
 }
