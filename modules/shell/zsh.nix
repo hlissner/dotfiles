@@ -88,7 +88,7 @@ in {
     };
 
     system.userActivationScripts.cleanupZgen = ''
-      rm -rfv "$XDG_CACHE_HOME/zsh" $ZGEN_DIR/init.zsh{,.zwc}
+      rm -rfv "$XDG_CONFIG_HOME/zsh/"*.zwc "$XDG_CACHE_HOME/zsh" $ZGEN_DIR/init.zsh{,.zwc}
     '';
   };
 }
