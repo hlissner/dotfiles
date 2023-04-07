@@ -59,19 +59,5 @@
         overlays = mapModules ./overlays import;
         packages = mapModules ./packages import;
         templates = import ./templates args;
-
-        # To parameterize this flake (more so for flakes derived from this one)
-        # I rely on bin/hey (my nix{,os} CLI/wrapper) to emulate --arg/--argstr
-        # options. 'dir' and 'host' are special though, and communicated using
-        # hey's -f/--flake and --host options:
-        #
-        #   hey rebuild -f /etc/nixos#soba
-        #   hey rebuild -f /etc/nixos --host soba
-        #
-        # The magic that allows this lives in mkFlake, but requires --impure
-        # mode. Sorry hermetic purists!
-        _heyArgs =
-          let args = getEnv "__HEYARGS"; in
-          if args == "" then {} else fromJSON args;
       };
 }
