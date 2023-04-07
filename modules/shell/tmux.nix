@@ -18,6 +18,9 @@ in {
         source-file $TMUX_HOME/tmux.conf
         ${concatMapStrings (path: "source-file '${path}'\n") cfg.rcFiles}
 
+        # Obey XDG, damn it!
+        set -g @resurrect-dir ~/.local/share/tmux/resurrect
+
         # Run plugins
         run-shell ${copycat.rtp}
         run-shell ${prefix-highlight.rtp}
