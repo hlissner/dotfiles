@@ -15,6 +15,7 @@ with self.lib;
       file       = mkOpt' attrs {} "Files to place directly in $HOME";
       configFile = mkOpt' attrs {} "Files to place in $XDG_CONFIG_HOME";
       dataFile   = mkOpt' attrs {} "Files to place in $XDG_DATA_HOME";
+      fakeFile   = mkOpt' attrs {} "Files to place in $XDG_FAKE_HOME";
     };
   };
 
@@ -46,5 +47,10 @@ with self.lib;
         };
       };
     };
+
+    # See XDG_FAKE_HOME in modules/xdg.nix for details.
+    home.file =
+      mapAttrs' (k: v: nameValuePair "${config.xdg.fakeHomeDir}/${k}" v)
+        config.home.fakeFile;
   };
 }

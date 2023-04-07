@@ -232,8 +232,9 @@ in {
           recursive = true;
         };
 
-        # Manually install tridactyl native and config.
-        file.".local/user/.mozilla/native-messaging-hosts/tridactyl.json".source =
+        # programs.firefox.nativeMessagingHosts.tridactyl doesn't seem to be
+        # enough, so install the native messenger manually.
+        fakeFile.".mozilla/native-messaging-hosts/tridactyl.json".source =
           let version = "0.3.6";
               manifestURL = "https://raw.githubusercontent.com/tridactyl/native_messenger/${version}/tridactyl.json";
               manifest = pkgs.runCommand "generateTridactylManifest" {} ''
