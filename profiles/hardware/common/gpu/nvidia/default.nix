@@ -39,11 +39,17 @@ with self.lib;
       cudatoolkit
     ];
     variables = {
-      CUDA_PATH="${pkgs.cudatoolkit}";
+      CUDA_PATH = "${pkgs.cudatoolkit}";
       CUDA_CACHE_PATH = "$XDG_CACHE_HOME/nv";
 
       # $EXTRA_LDFLAGS and $EXTRA_CCFLAGS are sometimes necessary too, but I set
       # those in nix-shells instead.
     };
+  };
+
+  # Cajole Firefox into video-acceleration (or try).
+  modules.desktop.browsers.firefox.sharedSettings = {
+    "media.ffmpeg.vaapi.enabled" = true;
+    "gfx.webrender.enabled" = true;
   };
 }
