@@ -65,6 +65,8 @@ with builtins;
 
   ## Local config
   config = { pkgs, config, ... }: {
+    xdg.ssh.enable = true;
+
     networking.wireguard.interfaces.wg-homelab = {
       ips = [ "10.10.0.2/24" ];
       privateKeyFile = config.age.secrets.wg-homelab-key.path;
