@@ -8,38 +8,33 @@ in {
     enable = mkBoolOpt false;
   };
 
-  config = mkMerge [
-    (mkIf cfg.enable {
-      services.openssh = {
-        enable = true;
-        settings = {
-          kbdInteractiveAuthentication = false;
-          # Require keys over passwords. Ensure target machines are provisioned
-          # with authorizedKeys!
-          passwordAuthentication = false;
-        };
-        # Suppress superfluous TCP traffic on new connections. Undo if using SSSD.
-        extraConfig = ''GSSAPIAuthentication no'';
-        # Deactivate short moduli
-        moduliFile = pkgs.runCommand "filterModuliFile" {} ''
-          awk '$5 >= 3071' "${config.programs.ssh.package}/etc/ssh/moduli" >"$out"
-        '';
-        # Remove all auto-generated host keys, because host keys have been built
-        # for all systems that require them. Systems that don't require them
-        # don't need them generated, and those that do should loudly fail to
-        # build if the host keys haven't been provisioned.
-        hostKeys = mkDefault [];
+  config = mkIf cfg.enable {
+    services.openssh = {
+      enable = true;
+      settings = {
+        kbdInteractiveAuthentication = false;
+        # Require keys over passwords. Ensure target machines are provisioned
+        # with authorizedKeys!
+        passwordAuthentication = false;
       };
-    })
-
-    # This framework uses this host key for its secrets. It's expected to be
-    # provisioned before the system is built (presumably with 'hey ops push-keys
-    # $HOST').
-    {
-      programs.ssh.extraConfig = ''
-        Host *
-           ${concatMapStringsSep "\n" (key: "IdentityFile ${key.path}") config.services.openssh.hostKeys}
+      # Suppress superfluous TCP traffic on new connections. Undo if using SSSD.
+      extraConfig = ''GSSAPIAuthentication no'';
+      # Deactivate short moduli
+      moduliFile = pkgs.runCommand "filterModuliFile" {} ''
+        awk '$5 >= 3071' "${config.programs.ssh.package}/etc/ssh/moduli" >"$out"
       '';
-    }
-  ];
+      # Removes the default RSA key (not that it represents a vulnerability, per
+      # se, but is one less key (that I don't plan to use) to the castle laying
+      # around) and ensures the ed25519 key is generated with 100 rounds, rather
+      # than the default (16), to improve its entropy.
+      hostKeys = [
+        {
+          comment = "${config.networking.hostName}.local";
+          path = "/etc/ssh/ssh_host_ed25519_key";
+          rounds = 100;
+          type = "ed25519";
+        }
+      ];
+    };
+  };
 }
