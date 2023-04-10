@@ -21,11 +21,10 @@ class Hey < HeyCLI
 
   group "Flake management" do
     desc "install [HOSTNAME]", "Deploy these dotfiles to a system for the first time."
-    option :dest,   aliases: :d, type: :string, desc: 'Where to deploy dotfiles after install (default: ~/.config/dotfiles)'
-    option :repo,   type: :string, default: "hlissner/dotfiles", desc: "Where to clone your dotfiles flake from"
-    option :root,   type: :string, desc: "Mount root", default: "/mnt"
-    option :ssh,    aliases: :s, desc: 'Clone from ssh+git instead of https. Ignored if --repo is an URL'
-    option :tmpdir, type: :string, default: "#{}", desc: "Where to clone your dotfiles flake from"
+    option :dest, aliases: :d,   type: :string, desc: 'Where to deploy dotfiles after install (default: ~/.config/dotfiles)'
+    option :repo, type: :string, default: "hlissner/dotfiles", desc: "Where to clone your dotfiles flake from"
+    option :root, type: :string, desc: "Mount root", default: "/mnt"
+    option :ssh,  aliases: :s,   desc: 'Clone from ssh+git instead of https. Ignored if --repo is an URL'
     def install *args
       user_error "Must be root to run this command" unless Process.uid == 0
       user_error "No mounted root at #{options[:root]}. Did you mount/partition it?" unless Dir.exists? options[:root]
