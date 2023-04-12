@@ -18,6 +18,7 @@ with builtins;
     hardware.common.pc.laptop.battery
     hardware.common.audio
     hardware.common.ssd
+    # hardware.common.printer
   ];
 
   ## Flake modules
