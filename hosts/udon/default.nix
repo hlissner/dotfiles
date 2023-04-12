@@ -22,6 +22,7 @@ with builtins;
   ## Flake modules
   modules = {
     theme.active = "alucard";
+    xdg.ssh.enable = true;
 
     desktop = {
       bspwm.enable = true;
@@ -64,9 +65,7 @@ with builtins;
   };
 
   ## Local config
-  config = { ... }: {
-    xdg.ssh.enable = true;
-  };
+  config = { ... }: {};
 
   hardware = { ... }: {
     boot.supportedFilesystems = [ "ntfs" ];

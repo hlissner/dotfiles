@@ -225,7 +225,7 @@ in {
     };
 
     home =
-      let firefoxDir = "${config.xdg.fakeHomeDir}/.mozilla/firefox";
+      let firefoxDir = "${config.modules.xdg.fakeHomeDir}/.mozilla/firefox";
       in {
         configFile."tridactyl" = {
           source = "${configDir}/tridactyl";

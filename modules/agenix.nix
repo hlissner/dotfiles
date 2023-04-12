@@ -30,7 +30,7 @@ in {
     # Respect XDG, damn it!
     (writeShellScriptBin "agenix" ''
       ARGS=( "$@" )
-      ${optionalString config.xdg.ssh.enable ''
+      ${optionalString config.modules.xdg.ssh.enable ''
         if [[ "''${ARGS[*]}" != *"--identity"* && "''${ARGS[*]}" != *"-i"* ]]; then
           hostkey="${hostKey}"
           if [[ -f "$hostkey" ]]; then

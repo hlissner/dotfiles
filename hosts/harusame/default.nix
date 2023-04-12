@@ -23,6 +23,7 @@ with builtins;
   ## Flake modules
   modules = {
     theme.active = "alucard";
+    xdg.ssh.enable = true;
 
     desktop = {
       bspwm.enable = true;
@@ -57,9 +58,7 @@ with builtins;
   };
 
   ## Local config
-  config = { pkgs, config, ... }: {
-    xdg.ssh.enable = true;
-
+  config = { ... }: {
     systemd.network.networks.wg0.address = [
       "10.10.0.3/32"
     ];

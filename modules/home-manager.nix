@@ -56,7 +56,7 @@ with self.lib;
 
     # See XDG_FAKE_HOME in modules/xdg.nix for details.
     home.file =
-      mapAttrs' (k: v: nameValuePair "${config.xdg.fakeHomeDir}/${k}" v)
+      mapAttrs' (k: v: nameValuePair "${config.modules.xdg.fakeHomeDir}/${k}" v)
         config.home.fakeFile;
   };
 }

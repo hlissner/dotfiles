@@ -11,9 +11,9 @@
 
 with builtins;
 with lib;
-let cfg = config.xdg;
+let cfg = config.modules.xdg;
 in {
-  options.xdg = with self.lib.options; {
+  options.modules.xdg = with self.lib.options; {
     enable = mkBoolOpt true;
     ssh.enable = mkBoolOpt false;
     fakeHomeDir = mkOpt types.str ".local/user";
