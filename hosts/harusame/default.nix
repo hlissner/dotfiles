@@ -17,6 +17,7 @@ with builtins;
     hardware.common.gpu.nvidia
     hardware.common.audio
     hardware.common.ssd
+    hardware.ergodox
   ];
 
   ## Flake modules

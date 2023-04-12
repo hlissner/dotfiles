@@ -11,7 +11,8 @@ with builtins;
   profiles = with profiles; [
     role.workstation
     user.hlissner
-    network.ca
+    # network.ca
+    network.dk
     network.vpn.homelab
     hardware.dell.xps."13-9370"
     hardware.common.pc.laptop.battery
