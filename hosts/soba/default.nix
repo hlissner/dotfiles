@@ -55,7 +55,7 @@ with builtins;
   };
 
   ## Local config
-  config = { ... }: {
+  config = { pkgs, ... }: {
     # Allow kernel options to be modified before booting. This is a testbench
     # system. Security is less important.
     boot.loader.systemd-boot = {
