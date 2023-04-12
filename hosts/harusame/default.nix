@@ -28,9 +28,9 @@ with builtins;
       bspwm.enable = true;
 
       apps.rofi.enable = true;
+      apps.steam.enable = true;
       browsers.default = "firefox";
       browsers.firefox.enable = true;
-      gaming.steam.enable = true;
       term.default = "xst";
       term.st.enable = true;
     };

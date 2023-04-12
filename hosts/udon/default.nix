@@ -28,9 +28,9 @@ with builtins;
 
       apps.rofi.enable = true;
       apps.spotify.enable = true;
+      apps.steam.enable = true;
       browsers.default = "firefox";
       browsers.firefox.enable = true;
-      gaming.steam.enable = true;
       media.cad.enable = true;
       media.daw.enable = true;
       media.graphics.enable = true;

@@ -1,10 +1,12 @@
+# modules/desktop/apps/steam.nix
+
 { self, lib, config, options, pkgs, ... }:
 
 with lib;
 with self.lib;
-let cfg = config.modules.desktop.gaming.steam;
+let cfg = config.modules.desktop.apps.steam;
 in {
-  options.modules.desktop.gaming.steam = with types; {
+  options.modules.desktop.apps.steam = with types; {
     enable = mkBoolOpt false;
     mangohud.enable = mkBoolOpt true;
   };
