@@ -58,7 +58,7 @@ in {
           # Common shells
           BASH_COMPLETION_USER_FILE = "$XDG_CONFIG_HOME/bash/completion";
           ENV             = "$XDG_CONFIG_HOME/shell/shrc";  # sh, ksh
-          HISTFILE        = ''$XDG_STATE_HOME/''${SHELL##*/}/history'';
+          HISTFILE        = ''$XDG_STATE_HOME/''${SHELL##*/}_history'';
           # Common databases
           MYSQL_HISTFILE  = "$XDG_STATE_HOME/mysql/history";
           PGPASSFILE      = "$XDG_CONFIG_HOME/pg/pgpass";
