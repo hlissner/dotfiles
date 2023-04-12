@@ -12,7 +12,7 @@ with builtins;
     role.workstation
     user.hlissner
     network.dk
-    network.vpn.homelab
+    network.wg0
     hardware.common.cpu.amd.pstate
     hardware.common.gpu.nvidia
     hardware.common.audio
@@ -58,10 +58,11 @@ with builtins;
 
   ## Local config
   config = { pkgs, config, ... }: {
-    profiles.network.vpn.homelab = {
-      ip = "10.10.0.3/24";
-      privateKeyFile = config.age.secrets.wgHomelabKey.path;
-    };
+    xdg.ssh.enable = true;
+
+    systemd.network.networks.wg0.address = [
+      "10.10.0.3/32"
+    ];
   };
 
   ## Hardware config

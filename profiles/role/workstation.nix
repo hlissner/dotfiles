@@ -34,8 +34,19 @@ with self.lib;
   # TODO ...
   powerManagement.cpuFreqGovernor = mkDefault "performance";
 
-  # Ensure we always have nmtui/nmcli
-  networking.networkmanager.enable = mkDefault true;
+  # Use the newer systemd-{network,resolve}d, than resolv or dnsmasq, for a more
+  # unified networking backend. It is also required for split-DNS over wireguard
+  # (set up using systemd-netdevs, which are more robust than
+  # networking.{wg-quick,wireguard}).
+  networking = {
+    useNetworkd = true;
+    networkmanager.dns = "systemd-resolved";  # For split-DNS over wireguard
+    # Ensure nmtui/nmcli exist, as they're excellent tools for managing
+    # temporary network connections or even swapping wifi networks without
+    # having to tango with wpa_supplicant silliness.
+    networkmanager.enable = mkDefault true;
+  };
+  # So the primary user has permission to use the CLI/TUI.
   user.extraGroups = [ "networkmanager" ];
 
   programs.ssh.startAgent = true;

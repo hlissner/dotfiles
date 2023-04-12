@@ -13,7 +13,7 @@ with builtins;
     user.hlissner
     # network.ca
     network.dk
-    network.vpn.homelab
+    network.wg0
     hardware.dell.xps."13-9370"
     hardware.common.pc.laptop.battery
     hardware.common.audio
@@ -68,10 +68,9 @@ with builtins;
   config = { pkgs, config, ... }: {
     xdg.ssh.enable = true;
 
-    networking.wireguard.interfaces.wg-homelab = {
-      ips = [ "10.10.0.2/24" ];
-      privateKeyFile = config.age.secrets.wg-homelab-key.path;
-    };
+    systemd.network.networks.wg0.address = [
+      "10.10.0.2/32"
+    ];
   };
 
   ## Hardware config
@@ -104,6 +103,7 @@ with builtins;
         device = "/dev/disk/by-label/home";
         fsType = "ext4";
         options = [ "noatime" ];
+        neededForBoot = true;
       };
     };
     swapDevices = [ { device = "/dev/disk/by-label/swap"; }];
