@@ -57,7 +57,6 @@ rec {
     self
     , super ? {}
     , nixpkgs ? self.inputs.nixpkgs or super.inputs.nixpkgs
-    , nixpkgs-unstable ? self.inputs.nixpkgs-unstable or super.inputs.nixpkgs-unstable or nixpkgs
     # , disko ? self.inputs.disko
     , ...
   } @ inputs: {
@@ -120,11 +119,7 @@ rec {
             themesDir   = "${path}/modules/themes";
             hostDir     = "${path}/hosts/${hostName}";
           };
-          pkgs = mkPkgs host.system nixpkgs ((attrValues overlays') ++ [
-            (final: prev: {
-              unstable = mkPkgs host.system nixpkgs-unstable (attrValues overlays');
-            })
-          ]);
+          pkgs = mkPkgs host.system nixpkgs (attrValues overlays');
         in
           nixpkgs.lib.nixosSystem {
             system = host.system;

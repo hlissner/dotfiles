@@ -18,7 +18,7 @@ in {
   config = mkIf cfg.enable {
     services.pipewire.jack.enable = true;
 
-    user.packages = with pkgs.unstable; [
+    user.packages = with pkgs; [
       ardour
       sunvox
       audacity

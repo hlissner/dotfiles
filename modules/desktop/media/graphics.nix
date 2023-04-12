@@ -25,7 +25,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    user.packages = with pkgs.unstable;
+    user.packages = with pkgs;
       (if cfg.tools.enable then [
         font-manager   # for easily toggling and previewing groups of fonts
         imagemagick    # for CLI image manipulation

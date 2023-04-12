@@ -3,7 +3,7 @@
 with lib;
 with self.lib;
 {
-  user.packages = [ pkgs.unstable.wally-cli ];
+  user.packages = [ pkgs.wally-cli ];
 
   hardware.keyboard.zsa.enable = true;
 

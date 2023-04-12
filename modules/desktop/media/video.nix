@@ -22,13 +22,13 @@ in {
   config = mkIf cfg.enable (mkMerge [
     (mkIf cfg.capture.enable {
       user.packages = [
-        pkgs.unstable.obs-studio  # For recording footage
+        pkgs.obs-studio  # For recording footage
       ];
     })
 
     (mkIf cfg.editor.enable {
       user.packages = [
-        pkgs.unstable.davinci-resolve  # For editing it
+        pkgs.davinci-resolve  # For editing it
       ];
     })
 
@@ -45,7 +45,7 @@ in {
     })
 
     (mkIf cfg.tools.enable {
-      user.packages = with pkgs.unstable; [
+      user.packages = with pkgs; [
         # For (en|de)coding
         ffmpeg     # ...in the CLI
         handbrake  # ...for the GUI

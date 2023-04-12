@@ -9,7 +9,7 @@ with lib;
 with self.lib;
 let inherit (self) configDir;
     cfg = config.modules.desktop.browsers.qutebrowser;
-    pkg = pkgs.unstable.qutebrowser;
+    pkg = pkgs.qutebrowser;
 in {
   options.modules.desktop.browsers.qutebrowser = with types; {
     enable = mkBoolOpt false;

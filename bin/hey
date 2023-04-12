@@ -236,7 +236,6 @@ class Hey < HeyCLI
           with builtins;
           let
             pkgs  = (getFlake "flake:nixpkgs").legacyPackages.${currentSystem};
-            pkgs' = (getFlake "flake:nixpkgs-unstable").legacyPackages.${currentSystem};
             self  = mapAttrs
               (n: v: if isAttrs v && hasAttr currentSystem v then v.${currentSystem} else v)
                 (getFlake "flake:dotfiles");

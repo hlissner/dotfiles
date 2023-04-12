@@ -13,7 +13,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    user.packages = with pkgs.unstable; [
+    user.packages = with pkgs; [
       skypeforlinux
       skype_call_recorder
     ];
