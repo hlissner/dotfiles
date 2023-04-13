@@ -18,8 +18,8 @@ with self.lib;
     #   optimizations, these aren't the droids you're looking for!
     # kernelParams = [ "mitigations=off" ];
 
-    # I'm not a big fan of Grub.
-    loader.systemd-boot.enable = mkDefault true;
+    # I'm not a big fan of Grub, so if it's not in use...
+    loader.systemd-boot.enable = mkDefault (!config.boot.loader.grub.enable);
 
     # Common kernels across workstations
     initrd.availableKernelModules = [
