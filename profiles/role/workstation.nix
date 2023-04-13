@@ -18,8 +18,13 @@ with self.lib;
     #   optimizations, these aren't the droids you're looking for!
     # kernelParams = [ "mitigations=off" ];
 
-    # I'm not a big fan of Grub, so if it's not in use...
-    loader.systemd-boot.enable = mkDefault (!config.boot.loader.grub.enable);
+    loader = {
+      # I'm not a big fan of Grub, so if it's not in use...
+      systemd-boot.enable = mkDefault (!config.boot.loader.grub.enable);
+      # For much quicker boot up to NixOS. I can use `systemctl reboot
+      # --boot-loader-entry=X` instead.
+      timeout = mkDefault 1;
+    };
 
     # Common kernels across workstations
     initrd.availableKernelModules = [

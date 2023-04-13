@@ -72,7 +72,6 @@ with self.lib;
       kernelModules = [];
     };
     loader = {
-      timeout = 10;
       grub = {
         enable = true;
         version = 2;
@@ -91,7 +90,6 @@ with self.lib;
         forceInstall = true;
       };
       # Disable globals
-      systemd-boot.enable = false;
       efi.canTouchEfiVariables = false;
     };
   };

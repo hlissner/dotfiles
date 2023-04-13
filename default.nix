@@ -74,9 +74,6 @@ in {
         efi.canTouchEfiVariables = mkDefault true;
         # To not overwhelm the boot screen.
         systemd-boot.configurationLimit = mkDefault 10;
-        # For much quicker boot up to NixOS. I can use `systemctl reboot
-        # --boot-loader-entry=X` instead.
-        timeout = 1;
       };
     };
 
