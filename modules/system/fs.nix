@@ -6,14 +6,12 @@
 
 with lib;
 with self.lib;
-let cfg = config.modules.system.fs;
+let inherit (self) binDir configDir;
+    cfg = config.modules.system.fs;
 in {
   options.modules.system.fs = {
     enable = mkBoolOpt true;
-    zfs = {
-      enable = mkBoolOpt (any (x: x ? fsType && x.fsType == "zfs") (attrValues config.fileSystems));
-    };
-    # TODO automount.enable = mkBoolOpt false;
+    zfs.enable = mkBoolOpt (any (x: x ? fsType && x.fsType == "zfs") (attrValues config.fileSystems));
     nfs.enable = mkBoolOpt false;
   };
 
@@ -21,12 +19,30 @@ in {
     {
       # Support for more filesystems, mostly to support external drives
       environment.systemPackages = with pkgs; [
-        sshfs
         exfat       # ExFAT drives
         ntfs3g      # Windows drives
         hfsprogs    # MacOS drives
+        cryptsetup  # for Luks drives
       ];
+
+      # For mounting+polling disks+shares in userspace. I prefer the simpler
+      # udevil over udisks2; the fewer daemons the better.
+      programs.udevil.enable = true;
+      environment.etc."udevil/udevil.conf".source = "${configDir}/udevil/udevil.conf";
     }
+
+    (mkIf config.modules.desktop.apps.rofi.enable {
+      environment.systemPackages = with pkgs; [
+        (mkLauncherEntry "Mount device" {
+          icon = "drive-harddisk";
+          exec = "${binDir}/rofi/mountmenu mount";
+        })
+        (mkLauncherEntry "Unmount device" {
+          icon = "drive-removable-media";
+          exec = "${binDir}/rofi/mountmenu unmount";
+        })
+      ];
+    })
 
     (mkIf cfg.zfs.enable (mkMerge [
       {

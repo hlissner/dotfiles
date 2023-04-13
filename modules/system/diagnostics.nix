@@ -23,6 +23,7 @@ in {
         glances
         hwinfo
         lsof
+        usbutils  # lsusb
         sysstat   # sar, iostat, pidstat
         ioping
         iftop

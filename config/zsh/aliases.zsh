@@ -68,6 +68,12 @@ if (( $+commands[fasd] )); then
   }
 fi
 
+if (( $+commands[udevil] )); then
+  alias ud='udevil'
+  alias mount='udevil mount'
+  alias umount='udevil umount'
+fi
+
 autoload -U zmv
 
 function take {
