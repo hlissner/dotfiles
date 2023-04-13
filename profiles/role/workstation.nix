@@ -20,7 +20,7 @@ with self.lib;
 
     loader = {
       # I'm not a big fan of Grub, so if it's not in use...
-      systemd-boot.enable = mkDefault (!config.boot.loader.grub.enable);
+      systemd-boot.enable = mkDefault true;
       # For much quicker boot up to NixOS. I can use `systemctl reboot
       # --boot-loader-entry=X` instead.
       timeout = mkDefault 1;

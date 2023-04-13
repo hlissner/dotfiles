@@ -92,6 +92,7 @@ with self.lib;
       # Disable globals
       efi.canTouchEfiVariables = false;
     };
+    systemd-boot.enable = false;
   };
 
   networking = {
