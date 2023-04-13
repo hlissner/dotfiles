@@ -306,6 +306,6 @@ class Hey < HeyCLI
   end
 end
 
-load './hey-ops'
+load File.dirname($0) + '/hey-ops'
 
 Hey.start ARGV
