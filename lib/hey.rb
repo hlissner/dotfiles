@@ -189,13 +189,13 @@ class HeyCLI < Thor
       args.compact!
       args.unshift('sudo') if sudo
       ENV['__HEYARGS'] = @flake.to_json
+      if options[:backtrace]
+        args.append "--show-trace"
+      end
       if options[:dryrun]
         print "$ #{args.shelljoin}\n".red.bold
         return true
       else
-        if options["--show-trace"]
-          args.append "--show-trace"
-        end
         system args.shelljoin
         result = $?.exitstatus
         exit(result) unless noerror or result == 0
@@ -228,7 +228,7 @@ class HeyCLI < Thor
 
   class_option :verbose, aliases: '-V', type: :boolean, default: false,
                desc: "Be more verbose about errors and logs"
-  class_option "--show-trace", aliases: '-T', type: :boolean, default: false,
+  class_option :backtrace, aliases: '-T', type: :boolean, default: false,
                desc: "Show backtrace for errors"
   class_option :dryrun, aliases: '-D', type: :boolean, default: false,
                desc: "Don't actually change anything; only pretend"
