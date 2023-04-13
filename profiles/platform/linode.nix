@@ -96,8 +96,6 @@ with self.lib;
     };
   };
 
-  hardware.cpu.amd.updateMicrocode = mkDefault true;
-
   networking = {
     enableIPv6 = true;
     tempAddresses = "disabled";
