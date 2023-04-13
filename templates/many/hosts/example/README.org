@@ -1,0 +1,25 @@
+#+title: foobar
+#+date:  Month DD, YYYY
+
+* Overview
+<A brief explanation of the purpose for this host>
+
+* Specs
+| CASE | - |
+| CPU  | - |
+| MOBO | - |
+| RAM  | - |
+| PSU  | - |
+| GPU  | - |
+| HDD  | - |
+| HDD  | - |
+| HDD  | - |
+| KBD  | - |
+| USB  | - |
+|      | - |
+
+* Filesystems
+<A list of filesystems and how to create, format, and mount them>
+
+* History
+<A chronicle, detailing changes to this device>
