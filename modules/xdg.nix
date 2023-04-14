@@ -21,6 +21,14 @@ in {
 
   config = mkIf cfg.enable (mkMerge [
     {
+      # Get Nix itself to respect XDG. I.e.
+      # ~/.nix-defexpr -> $XDG_DATA_HOME/nix/defexpr
+      # ~/.nix-profile -> $XDG_DATA_HOME/nix/profile
+      # ~/.nix-channels -> $XDG_DATA_HOME/nix/channels
+      nix.extraOptions = ''
+        use-xdg-base-directories = true
+      '';
+
       ### A tidy $HOME is a tidy mind
       home-manager.users.${config.user.name}.xdg.enable = true;
 
