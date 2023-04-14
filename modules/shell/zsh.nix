@@ -60,6 +60,11 @@ in {
       ZGEN_DIR = "$XDG_DATA_HOME/zgenom";
     };
 
+    # Ensure that $HISTFILE's directory ($XDG_STATE_HOME/zsh/) exists, otherwise
+    # history won't be recorded. systemd-tmpfiles lacks a specifier for
+    # XDG_STATE_HOME, though, so it must be spelled out:
+    systemd.user.tmpfiles.rules = [ "d %h/.local/state/zsh 700 - - - -" ];
+
     home.configFile = {
       # Write it recursively so other modules can write files to it
       "zsh" = { source = "${configDir}/zsh"; recursive = true; };
