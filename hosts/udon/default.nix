@@ -60,7 +60,10 @@ with builtins;
       ssh.enable = true;
       # docker.enable = true;
     };
-    system.diagnostics.enable = true;
+    system = {
+      diagnostics.enable = true;
+      fs.enable = true;
+    };
     virt.qemu.enable = true;
   };
 

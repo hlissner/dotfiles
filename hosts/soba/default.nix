@@ -51,6 +51,10 @@ with builtins;
     services = {
       ssh.enable = true;
     };
+    system = {
+      diagnostics.enable = true;
+      fs.enable = true;
+    };
     virt.qemu.enable = true;
   };
 
