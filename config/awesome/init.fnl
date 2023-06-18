@@ -183,10 +183,10 @@
   (awful.key [ modkey "Control" ] "r" awesome.restart
    { :description "reload awesome" :group "awesome" })
   (awful.key [ modkey "Control" "Shift" ] "r"
-	     (fn []
-		 (let [s (awful.screen.focused)]
-		   (s.mypromptbox:run)))
-   { :description "run prompt" :group "launcher" })
+             (fn []
+                 (let [s (awful.screen.focused)]
+                   (s.mypromptbox:run)))
+             { :description "run prompt" :group "launcher" })
 
   (awful.key [ modkey ] "p" (fn [] (menubar.show))
    { :description "show menubar" :group "launcher" })))
@@ -194,28 +194,28 @@
 
 (local clientkeys
        (gears.table.join
-	 (awful.key [ modkey ] "f"
-		    (fn [c]
-			(set c.fullscreen (not c.fullscreen))
-			(c:raise))
-		    { :description "toggle fullscreen" :group "client" })
-	 (awful.key [ modkey "Shift" ] "c" (fn [c] (c:kill))
-		    { :description "close" :group "client" })
-	 (awful.key [ modkey "Control" ] "space" awful.client.floating.toggle
-		    { :description "toggle floating" :group "client" })
-	 (awful.key [ modkey "Control" ] "Return" (fn [c] (c:swap (awful.client.getmaster)))
-		    { :description "move to master" :group "client" })
-	 (awful.key [ modkey ] "o" (fn [c] (c:move_to_screen))
-		    { :description "move to screen" :group "client" })
-	 (awful.key [ modkey ] "t" (fn [c] (set c.ontop (not c.ontop)))
-		    { :description "toggle keep on top" :group "client" })
+        (awful.key [ modkey ] "f"
+                   (fn [c]
+                       (set c.fullscreen (not c.fullscreen))
+                       (c:raise))
+                   { :description "toggle fullscreen" :group "client" })
+        (awful.key [ modkey "Shift" ] "c" (fn [c] (c:kill))
+                   { :description "close" :group "client" })
+        (awful.key [ modkey "Control" ] "space" awful.client.floating.toggle
+                   { :description "toggle floating" :group "client" })
+        (awful.key [ modkey "Control" ] "Return" (fn [c] (c:swap (awful.client.getmaster)))
+                   { :description "move to master" :group "client" })
+        (awful.key [ modkey ] "o" (fn [c] (c:move_to_screen))
+                   { :description "move to screen" :group "client" })
+        (awful.key [ modkey ] "t" (fn [c] (set c.ontop (not c.ontop)))
+                   { :description "toggle keep on top" :group "client" })
 
-	 ;; The client currently has the input focus, so it cannot be
-	 ;; minimized, since minimized clients can't have the focus.
-	 (awful.key [ modkey ] "n" (fn [c] (set c.minimized true))
-		    { :description "minimize" :group "client" })
-	 (awful.key [ modkey ] "m" (fn [c] (set c.maximized (not c.maximized)) (c:raise))
-		    { :description "(un)maximize" :group "client" })))
+        ;; The client currently has the input focus, so it cannot be minimized,
+        ;; since minimized clients can't have the focus.
+        (awful.key [ modkey ] "n" (fn [c] (set c.minimized true))
+                   { :description "minimize" :group "client" })
+        (awful.key [ modkey ] "m" (fn [c] (set c.maximized (not c.maximized)) (c:raise))
+                   { :description "(un)maximize" :group "client" })))
 
 ;; Bind all key numbers to tags.
 ;; Be careful: we use keycodes to make it work on any keyboard layout.
@@ -224,31 +224,31 @@
   (set globalkeys (gears.table.join globalkeys
         ;; View tag only.
         (awful.key [ modkey ] (.. "#" (+ i 9))
-		   (fn []
-		       (let [scr (awful.screen.focused)
-			     tag (. scr.tags i)]
-			 (if tag (tag:view_only))))
+                   (fn []
+                       (let [scr (awful.screen.focused)
+                             tag (. scr.tags i)]
+                         (if tag (tag:view_only))))
                    { :description (.. "view tag #" i) :group "tag"})
         ;; Toggle tag display.
         (awful.key [ modkey "Control" ] (.. "#" (+ i 9))
                    (fn []
-		       (let [scr (awful.screen.focused)
-			     tag (. scr.tags i)]
-			 (if tag (awful.tag.viewtoggle tag))))
+                       (let [scr (awful.screen.focused)
+                             tag (. scr.tags i)]
+                         (if tag (awful.tag.viewtoggle tag))))
                    { :description (.. "toggle tag #" i) :group "tag"})
         ;; Move client to tag.
         (awful.key [ modkey "Shift" ] (.. "#" (+ i 9))
                    (fn []
-		     (when client.focus
-		       (let [tag (client.focus.screen.tags i)]
-			 (if tag (client.focus:move_to_tag tag)))))
+                       (when client.focus
+                         (let [tag (client.focus.screen.tags i)]
+                           (if tag (client.focus:move_to_tag tag)))))
                    { :description (.. "move focused client to tag #" i) :group "tag"})
         ;; Toggle tag on focused client.
         (awful.key [ modkey "Control" "Shift" ] (.. "#" (+ i 9))
                    (fn []
-                     (when client.focus
-		       (let [tag (client.focus.screen.tags i)]
-			 (if tag (client.focus:toggle_tag tag)))))
+                       (when client.focus
+                         (let [tag (client.focus.screen.tags i)]
+                           (if tag (client.focus:toggle_tag tag)))))
                    { :description (.. "toggle focused client on tag #" i) :group "tag"}))))
 
 (local clientbuttons
