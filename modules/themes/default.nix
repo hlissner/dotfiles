@@ -101,6 +101,9 @@ in {
 
   config = mkIf (cfg.active != null) (mkMerge [
     {
+      # So scripts (among other things) can see what theme is active.
+      env.DOTFILES_THEME = cfg.active;
+
       # Read xresources files in ~/.config/xtheme/* to allow modular
       # configuration of Xresources.
       modules.theme.onReload.xtheme = {
