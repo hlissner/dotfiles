@@ -1,4 +1,4 @@
-{ mkShell, writeShellScriptBin, nixFlakes, git, nix-zsh-completions, ... }:
+{ mkShell, writeShellScriptBin, nixVersions, git, nix-zsh-completions, ... }:
 
 let nixConfig = builtins.toFile "nix.conf" ''
       warn-dirty = false
@@ -10,6 +10,7 @@ in mkShell {
   buildInputs = [
     git
     nix-zsh-completions
+    nixVersions.nix_2_15
   ];
   shellHook = ''
     export NIX_USER_CONF_FILES="${nixConfig}"
