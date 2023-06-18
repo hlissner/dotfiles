@@ -7,8 +7,6 @@ alias q=exit
 alias clr=clear
 alias sudo='sudo '
 alias rm='rm -i'
-alias cp='cp -i'
-alias mv='mv -i'
 alias mkdir='mkdir -pv'
 alias wget='wget -c'
 alias path='echo -e ${PATH//:/\\n}'
@@ -46,6 +44,7 @@ alias y='xclip -selection clipboard -in'
 alias p='xclip -selection clipboard -out'
 
 alias jc='journalctl -xe'
+alias jcu='journalctl -xe -u'
 alias sc=systemctl
 alias scu='systemctl --user'
 alias ssc='sudo systemctl'
@@ -59,7 +58,7 @@ if (( $+commands[exa] )); then
   alias tree='exa --tree'
 fi
 
-if (( $+commands[fasd] )); then
+if (( $+commands[fasd] && $+commands[fzf] )); then
   # fuzzy completion with 'z' when called without args
   unalias z 2>/dev/null
   function z {
@@ -68,10 +67,10 @@ if (( $+commands[fasd] )); then
   }
 fi
 
-if (( $+commands[udevil] )); then
-  alias ud='udevil'
-  alias mount='udevil mount'
-  alias umount='udevil umount'
+if (( $+commands[udisksctl] )); then
+  alias ud='udisksctl'
+  alias mount='udisksctl mount -b'
+  alias umount='udisksctl unmount -b'
 fi
 
 autoload -U zmv
