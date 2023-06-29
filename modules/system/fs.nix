@@ -25,10 +25,10 @@ in {
         cryptsetup  # for Luks drives
       ];
 
-      # For mounting+polling disks+shares in userspace. I prefer the simpler
-      # udevil over udisks2; the fewer daemons the better.
-      programs.udevil.enable = true;
-      environment.etc."udevil/udevil.conf".source = "${configDir}/udevil/udevil.conf";
+      # A daemon that lets us mount/poll disks in userspace. I'd prefer udevil,
+      # as it's daemon-less, but it's unmaintained and doesn't understand
+      # encrypted filesystems.
+      services.udisks2.enable = true;
     }
 
     (mkIf config.modules.desktop.apps.rofi.enable {

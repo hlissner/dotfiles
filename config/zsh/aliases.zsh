@@ -69,8 +69,8 @@ fi
 
 if (( $+commands[udisksctl] )); then
   alias ud='udisksctl'
-  alias mount='udisksctl mount -b'
-  alias umount='udisksctl unmount -b'
+  alias udm='udisksctl mount -b'
+  alias udu='udisksctl unmount -b'
 fi
 
 autoload -U zmv
