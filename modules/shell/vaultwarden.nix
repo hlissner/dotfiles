@@ -20,7 +20,7 @@ in {
 
     system.userActivationScripts = mkIf (cfg.config != {}) {
       initVaultwarden = ''
-        if command -v bw; then
+        if command -v bw >/dev/null; then
           ${concatStringsSep "\n" (mapAttrsToList (n: v: "bw config ${n} ${v}") cfg.config)}
         fi
       '';
