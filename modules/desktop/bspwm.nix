@@ -55,5 +55,7 @@ in {
         recursive = true;
       };
     };
+
+    env.PATH = [ "$XDG_CONFIG_HOME/bspwm/bin" ];
   };
 }

@@ -69,11 +69,11 @@ super + w; super + t
 
 # Focus window directionally; w/ ctrl = move by monitor
 super + {_,ctrl +}{h,j,k,l}
-	$DOTFILES_BIN/bspwm/focus {_,-m }{west,south,north,east}
+	$DOTFILES/config/bspwm/bin/focus {_,-m }{west,south,north,east}
 
 # Swap windows directionally; w/ ctrl = across monitors
 super + shift + {_,ctrl +}{h,j,k,l}
-	$DOTFILES_BIN/bspwm/swap {_,-m }{west,south,north,east}
+	$DOTFILES/config/bspwm/bin/swap {_,-m }{west,south,north,east}
 
 
 #
