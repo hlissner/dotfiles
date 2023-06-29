@@ -61,12 +61,12 @@ in {
         "0:_NET_WM_STATE@[2]:32a *= '_NET_WM_STATE_HIDDEN'"
         "0:_NET_WM_STATE@[3]:32a *= '_NET_WM_STATE_HIDDEN'"
         "0:_NET_WM_STATE@[4]:32a *= '_NET_WM_STATE_HIDDEN'"
-        "99:class_g = 'xst-256color'"
+        "98:class_g = 'xst-256color'"
         "90:class_g = 'xst-scratch'"
       ];
       shadowExclude = [
         # Put shadows on notifications, the scratch popup and rofi only
-        "! name~='(rofi|scratch|Dunst)$'"
+        "! class_g~='(Rofi|xst-scratch|Dunst)$'"
       ];
       settings = {
         blur-background-exclude = [

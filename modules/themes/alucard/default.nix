@@ -93,16 +93,17 @@ in {
 
       # Compositor
       services.picom = {
-        fade = true;
-        fadeDelta = 1;
-        fadeSteps = [ 0.01 0.012 ];
+        # fade = true;
+        # fadeDelta = 1;
+        # fadeSteps = [ 0.06 0.02 ];
+        # fadeExclude = [];
         shadow = true;
         shadowOffsets = [ (-10) (-10) ];
-        shadowOpacity = 0.22;
+        shadowOpacity = 0.23;
         # activeOpacity = "1.00";
         # inactiveOpacity = "0.92";
         settings = {
-          shadow-radius = 12;
+          shadow-radius = 14;
           # blur-background = true;
           # blur-background-frame = true;
           # blur-background-fixed = true;
@@ -134,7 +135,7 @@ in {
           width = 440;
           height = 300;
           origin = "top-right";
-          offset = "30x30";
+          offset = "30x54";
           scale = 0;
           transparency = 5;
           corner_radius = 2;
