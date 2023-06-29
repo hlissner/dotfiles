@@ -29,9 +29,15 @@ with builtins;
       bspwm.enable = true;
 
       apps.rofi.enable = true;
+      apps.spotify.enable = true;
       apps.steam.enable = true;
       browsers.default = "firefox";
       browsers.firefox.enable = true;
+      media.cad.enable = true;
+      media.daw.enable = true;
+      media.graphics.enable = true;
+      media.video.enable = true;
+      media.video.capture.enable = true;
       term.default = "xst";
       term.st.enable = true;
     };
@@ -70,10 +76,9 @@ with builtins;
 
   ## Hardware config
   hardware = { ... }: {
-    networking.interfaces = {
-      enp42s0.useDHCP = true;
-      wlo1.useDHCP = true;
-    };
+    boot.supportedFilesystems = [ "ntfs" ];
+
+    networking.interfaces.enp42s0.useDHCP = true;
 
     services.xserver = {
       # This must be done manually to ensure my screen spaces are arranged
@@ -111,13 +116,8 @@ with builtins;
         fsType = "ext4";
         options = [ "noatime" ];
       };
-      "/media/games" = {
-        device = "/dev/disk/by-label/games";
-        fsType = "ntfs";
-        options = [ "uid=1000" "gid=100" "rw" "user" "exec" "umask=000" "nofail" "lowntfs-3g" ];
-      };
     };
-    swapDevices = [{ device = "/dev/disk/by-label/swap"; }];
+    swapDevices = [];
   };
 
   ## TODO: Declarative partitioning
