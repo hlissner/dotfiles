@@ -97,7 +97,9 @@ in {
       let filteredInputs = filterAttrs (_: v: v ? outputs) inputs;
           nixPathInputs  = mapAttrsToList (n: v: "${n}=${v}") filteredInputs;
       in {
-        package = pkgs.nixFlakes;
+        # The Nix package with NixOS is 2.13.x, which predates its
+        # use-xdg-base-directories option.
+        package = pkgs.nixVersions.nix_2_15;
         extraOptions = ''
           warn-dirty = false
           http2 = true
