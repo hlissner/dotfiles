@@ -12,10 +12,10 @@ in {
     services.openssh = {
       enable = true;
       settings = {
-        kbdInteractiveAuthentication = false;
+        KbdInteractiveAuthentication = false;
         # Require keys over passwords. Ensure target machines are provisioned
         # with authorizedKeys!
-        passwordAuthentication = false;
+        PasswordAuthentication = false;
       };
       # Suppress superfluous TCP traffic on new connections. Undo if using SSSD.
       extraConfig = ''GSSAPIAuthentication no'';
