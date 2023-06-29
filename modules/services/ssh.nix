@@ -9,6 +9,9 @@ in {
   };
 
   config = mkIf cfg.enable {
+    # Ensure this directory exists and has correct permissions.
+    systemd.user.tmpfiles.rules = [ "d %h/.config/ssh 700 - - - -" ];
+
     services.openssh = {
       enable = true;
       settings = {
