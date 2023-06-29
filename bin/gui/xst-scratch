@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+#
+# Toggle a scratch terminal window. A scratch terminal is a disposable terminal
+# for one-off, quick commands that don't warrant a dedicated terminal. However,
+# tmux is used so that these scratch sessions persist until they are explicitly
+# killed.
+#
+# Requires: xst, xdotool, tmux
+
+SCRID=xst-scratch
+focused=$(xdotool getactivewindow)
+scratch=$(xdotool search --onlyvisible --classname $SCRID)
+if [[ -n $scratch ]]; then
+  if [[ $focused == $scratch ]]; then
+    xdotool windowkill $scratch
+  else
+    xdotool windowactivate $scratch
+  fi
+else
+  tmux new-session -d -s scratch -n "${1:-scratch}" $@
+  tmux setw -t scratch automatic-rename off
+  xst -t $SCRID -n $SCRID -c $SCRID \
+      -f "$(xrdb -get st.scratch.font)" \
+      -- tmux attach-session -t scratch
+fi
