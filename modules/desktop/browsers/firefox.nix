@@ -120,6 +120,9 @@ in {
       "browser.urlbar.shortcuts.tabs" = false;
       "browser.urlbar.showSearchSuggestionsFirst" = false;
       "browser.urlbar.speculativeConnect.enabled" = false;
+      # Since FF 113, you must press TAB twice to cycle through urlbar
+      # suggestions. This disables that.
+      "browser.urlbar.resultMenu.keyboardAccessible" = false;
       # https://bugzilla.mozilla.org/1642623
       "browser.urlbar.dnsResolveSingleWordsAfterSearch" = 0;
       # https://blog.mozilla.org/data/2021/09/15/data-and-firefox-suggest/
