@@ -148,21 +148,22 @@ in {
           icon_theme = "Paper-Mono-Dark, Paper";
           icon_path =
             let iconDir = "/etc/profiles/per-user/${config.user.name}/share/icons";
-                iconSize = "24x24";
+                iconSizes = [ 8 16 22 24 32 48 64 128 256 512 "scalable" ];
+                folders = [
+                  "actions" "animations" "apps" "categories" "devices" "emblems"
+                  "emotes" "mimetypes" "notifications" "panel" "places" "status"
+                  "web"
+                ];
                 mkDirs = themeName:
-                  map (dir: "${iconDir}/${themeName}/${iconSize}/${dir}") [
-                    "actions"
-                    "animations"
-                    "apps"
-                    "categories"
-                    "devices"
-                    "emblems"
-                    "emotes"
-                    "mimetypes"
-                    "panel"
-                    "places"
-                    "status"
-                  ];
+                  map (dir:
+                    (map (size:
+                      if isString size
+                      then "${iconDir}/${themeName}/${size}/${dir}"
+                      else [
+                        "${iconDir}/${themeName}/${toString size}x${toString size}/${dir}"
+                        "${iconDir}/${themeName}/${toString size}x${toString size}@2x/${dir}"
+                      ]) iconSizes))
+                    folders;
             in concatStringsSep ":" (flatten (map mkDirs [ "Paper" "gnome" ]));
           ignore_newline = false;
           line_height = 0;
