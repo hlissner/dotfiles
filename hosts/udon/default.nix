@@ -29,7 +29,10 @@ with builtins;
 
       apps.rofi.enable = true;
       apps.spotify.enable = true;
-      apps.steam.enable = true;
+      apps.steam = {
+        enable = true;
+        libraryDir = "/media/windows/SteamLibrary";
+      };
       browsers.default = "firefox";
       browsers.firefox.enable = true;
       media.cad.enable = true;

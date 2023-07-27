@@ -30,7 +30,11 @@ with builtins;
 
       apps.rofi.enable = true;
       apps.spotify.enable = true;
-      apps.steam.enable = true;
+      apps.steam = {
+        enable = true;
+        libraryDir = "/media/games/SteamLibrary";
+      };
+      apps.thunar.enable = true;
       browsers.default = "firefox";
       browsers.firefox.enable = true;
       media.cad.enable = true;
@@ -115,6 +119,11 @@ with builtins;
         device = "/dev/disk/by-label/home";
         fsType = "ext4";
         options = [ "noatime" ];
+      };
+      "/media/games" = {
+        device = "/dev/disk/by-label/games";
+        fsType = "ntfs";
+        options = [ "defaults" "noauto" "nofail" "noatime" "nodev" "exec" "umask=000" "uid=1000" "gid=1000" "x-systemd.automount" ];
       };
     };
     swapDevices = [];
