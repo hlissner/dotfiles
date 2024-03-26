@@ -21,7 +21,7 @@ in {
 
   config = mkIf cfg.enable (mkMerge [
     {
-      # Get Nix itself to respect XDG. I.e.
+      # Get Nix (2.14+) itself to respect XDG. I.e.
       # ~/.nix-defexpr -> $XDG_DATA_HOME/nix/defexpr
       # ~/.nix-profile -> $XDG_DATA_HOME/nix/profile
       # ~/.nix-channels -> $XDG_DATA_HOME/nix/channels

@@ -13,8 +13,9 @@
   inputs = 
     {
       # Core dependecies
-      nixpkgs.url = "nixpkgs/nixos-23.05";
-      home-manager.url = "github:rycee/home-manager/master";
+      nixpkgs.url = "nixpkgs/nixos-23.11";
+      nixpkgs-unstable.url = "nixpkgs/nixos-unstable";
+      home-manager.url = "github:nix-community/home-manager/release-23.11";
       home-manager.inputs.nixpkgs.follows = "nixpkgs";
       agenix.url = "github:ryantm/agenix";
       agenix.inputs.nixpkgs.follows = "nixpkgs";

@@ -10,7 +10,7 @@
 
     user.name = "nixos";
 
-    boot.kernelPackages = pkgs.linuxKernel.packages.linux_6_1;
+    boot.kernelPackages = pkgs.linuxKernel.packages.linux_6_6;
     boot.kernelModules = [ "wl" ];
     boot.extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
 

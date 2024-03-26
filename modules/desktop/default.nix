@@ -40,7 +40,7 @@ in {
     fonts = {
       fontDir.enable = true;
       enableGhostscriptFonts = true;
-      fonts = with pkgs; [
+      packages = with pkgs; [
         ubuntu_font_family
         dejavu_fonts
         symbola

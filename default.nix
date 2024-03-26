@@ -4,11 +4,12 @@
 
 with lib;
 with self.lib;
-let inherit (self) dir binDir inputs;
+let inherit (self) dir binDir configDir themesDir hostDir inputs;
 in {
   imports = mapModulesRec' ./modules import;
 
   options = with types; {
+    modules = {};
 
     # Creates a simpler, polymorphic alias for users.users.$USER.
     user = mkOpt attrs { name = ""; };
@@ -19,30 +20,23 @@ in {
       type = attrsOf (oneOf [ str path (listOf (either str path)) ]);
       apply = mapAttrs
         (n: v: if isList v
-               then concatMapStringsSep ":" (x: toString x) v
-               else (toString v));
+               then "${concatMapStringsSep ":" (x: toString x) v}:\$${n}"
+               else toString v);
       default = {};
       description = "TODO";
     };
-
-    modules = {};
   };
 
   config = {
-    assertions = [
-      {
-        assertion = config.user ? name && config.user.name != "";
-        message = "user.name is required, but not set.";
-      }
-      {
-        assertion = config.user.name != "root";
-        message = "user.name cannot be set to root.";
-      }
-    ];
-
-    environment.extraInit =
-      concatStringsSep "\n"
-        (mapAttrsToList (n: v: "export ${n}=\"${v}\"") config.env);
+    environment.extraInit = ''
+      export DOTFILES_HOME="${dir}"
+      export DOTFILES_BIN_HOME="${binDir}"
+      export DOTFILES_LIB_HOME="${dir}/lib"
+      export DOTFILES_CONFIG_HOME="${configDir}";
+      export PATH="$DOTFILES_BIN_HOME:$PATH"
+      ${concatStringsSep "\n"
+        (mapAttrsToList (n: v: "export ${n}=\"${v}\"") config.env)}
+    '';
 
     # FIXME: Make this optional
     user = {
@@ -55,41 +49,11 @@ in {
     };
     users.users.${config.user.name} = mkAliasDefinitions options.user;
 
-    ## Core, universal configuration for all NixOS machines.
-    env.PATH = [ "$DOTFILES_BIN" "$XDG_BIN_HOME" "$PATH" ];
-    env.DOTFILES = dir;
-    env.DOTFILES_BIN = binDir;
-
 
     ## Core, universal configuration for all NixOS machines.
     # This is here to appease 'nix flake check' for generic hosts with no
     # hardware-configuration.nix or fileSystem config.
     fileSystems."/".device = mkDefault "/dev/disk/by-label/nixos";
-
-    boot = {
-      # Prefer the latest kernel; this will be overridden on more security
-      # conscious systems, among other settings in modules/security.nix.
-      kernelPackages = mkDefault pkgs.linuxKernel.packages.linux_6_4;
-      loader = {
-        efi.canTouchEfiVariables = mkDefault true;
-        # To not overwhelm the boot screen.
-        systemd-boot.configurationLimit = mkDefault 10;
-      };
-    };
-
-    # Some core shell utilities I need everywhere.
-    environment.systemPackages = with pkgs; [
-      bc
-      bind
-      cached-nix-shell
-      git
-      wget
-    ];
-
-    # The global useDHCP flag is deprecated, therefore explicitly set to false
-    # here. Per-interface useDHCP will be mandatory in the future, so we enforce
-    # this default behavior here.
-    networking.useDHCP = mkDefault false;
 
 
     ## Nix core configuration
@@ -97,9 +61,6 @@ in {
       let filteredInputs = filterAttrs (_: v: v ? outputs) inputs;
           nixPathInputs  = mapAttrsToList (n: v: "${n}=${v}") filteredInputs;
       in {
-        # The Nix package with NixOS is 2.13.x, which predates its
-        # use-xdg-base-directories option.
-        package = pkgs.nixVersions.nix_2_15;
         extraOptions = ''
           warn-dirty = false
           http2 = true
@@ -110,7 +71,7 @@ in {
           "dotfiles=${dir}"
         ];
         registry = mapAttrs (_: v: { flake = v; }) filteredInputs;
-        settings = let users = [ "root" config.user.name ]; in {
+        settings = {
           substituters = [
             "https://cache.nixos.org"
             "https://nix-community.cachix.org"
@@ -120,21 +81,43 @@ in {
             "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
           ];
           auto-optimise-store = true;
-          trusted-users = users;
-          allowed-users = users;
+          trusted-users = [ "root" config.user.name ];
+          allowed-users = [ "root" config.user.name ];
         };
       };
+
     system = {
       configurationRevision = with inputs; mkIf (self ? rev) self.rev;
-      stateVersion = "21.05";
+      stateVersion = "23.05";
     };
 
+    boot = {
+      # Prefer the latest kernel; this will be overridden on more security
+      # conscious systems, among other settings in modules/security.nix.
+      kernelPackages = mkDefault pkgs.unstable.linuxKernel.packages.linux_6_8;
+      loader = {
+        efi.canTouchEfiVariables = mkDefault true;
+        # To not overwhelm the boot screen.
+        systemd-boot.configurationLimit = mkDefault 10;
+      };
+    };
+
+
+    ## Core, universal configuration for all NixOS machines.
     # Forgive me Stallman-senpai.
     env.NIXPKGS_ALLOW_UNFREE = "1";  # for nix-env
     # For unfree drivers/firmware my laptops/refurbed systems are likely to have.
     hardware.enableRedistributableFirmware = true;
+    # Core shell utilities I need absolutely everywhere.
+    environment.systemPackages = with pkgs; [
+      cached-nix-shell
+      bind
+      git
+      wget
+    ];
 
-    # For build-vm
+    ## Extra support for bin/hey
+    # For 'hey build-vm'
     virtualisation.vmVariant.virtualisation = {
       memorySize = 2048;  # default: 1024
       cores = 2;          # default: 1

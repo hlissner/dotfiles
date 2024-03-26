@@ -46,7 +46,9 @@ in {
   config = mkIf cfg.enable {
     programs.firefox = {
       enable = true;
-      nativeMessagingHosts.tridactyl = true;
+      nativeMessagingHosts.packages = with pkgs; [
+        tridactyl-native
+      ];
       policies = {
         DontCheckDefaultBrowser = true;
         DisablePocket = true;
