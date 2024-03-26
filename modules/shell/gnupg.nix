@@ -15,9 +15,14 @@ in {
       "GNUPGHOME=/home/${config.user.name}/.config/gnupg"
     ];
 
-    programs.gnupg.agent = {
-      enable = true;
-      pinentryFlavor = null;
+    programs.gnupg = {
+      agent = {
+        enable = true;
+        pinentryFlavor = null;
+      };
+      # There's a release between 2.2 and 2.4 where GPG is broken. Rather than
+      # risk hitting it, I'm installing GnuPG from nixos-unstable.
+      package = pkgs.unstable.gnupg;
     };
 
     home.configFile."gnupg/gpg-agent.conf".text = ''
