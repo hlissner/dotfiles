@@ -48,14 +48,16 @@ alias jcu='journalctl -xe -u'
 alias sc=systemctl
 alias scu='systemctl --user'
 alias ssc='sudo systemctl'
+alias rctl='sudo resolvectl'
+alias nctl='sudo networkctl'
 
-if (( $+commands[exa] )); then
-  alias exa="exa --group-directories-first --git";
-  alias l="exa -blF";
-  alias ll="exa -abghilmu";
+if (( $+commands[eza] )); then
+  alias exa="eza --group-directories-first --git";
+  alias l="eza -blF";
+  alias ll="eza -abghilmu";
   alias llm='ll --sort=modified'
-  alias la="LC_COLLATE=C exa -ablF";
-  alias tree='exa --tree'
+  alias la="LC_COLLATE=C eza -ablF";
+  alias tree='eza --tree'
 fi
 
 if (( $+commands[fasd] && $+commands[fzf] )); then
@@ -73,6 +75,11 @@ if (( $+commands[udisksctl] )); then
   alias udu='udisksctl unmount -b'
 fi
 
+if (( ! $+commands[pry] )); then
+  # I don't always have ruby installed, but I often need access to a REPL
+  pry() { nix-shell -p rubyPackages_3_2.pry rubyPackages_3_2.pry-doc --run "pry $@" }
+fi
+
 autoload -U zmv
 
 function take {
@@ -85,6 +92,7 @@ function zman {
 
 # Create a reminder with human-readable durations, e.g. 15m, 1h, 40s, etc
 function r {
+  zmodload -F zsh/sched b:sched
   local time=$1; shift
-  sched "$time" "notify-send --urgency=critical 'Reminder' '$@'; ding";
+  sched "$time" "notify-send --urgency=critical 'Reminder' '$@'";
 }; compdef r=sched

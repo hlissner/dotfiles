@@ -2,6 +2,9 @@
 bindkey -M viins '^a' beginning-of-line
 bindkey -M viins '^d' push-line-or-edit
 
+autoload -z edit-command-line
+bindkey "^x^e" edit-command-line
+
 # Up arrow:
 bindkey '\e[A' history-substring-search-up
 bindkey '\eOA' history-substring-search-up

@@ -39,8 +39,10 @@ in {
 
     # Some interactive shell utilies I find universally indispensible.
     user.packages = with pkgs; [
+      at
+      bc
       bat
-      exa
+      eza
       fasd
       fd
       fzf
@@ -66,7 +68,8 @@ in {
     systemd.user.tmpfiles.rules = [ "d %h/.local/state/zsh 700 - - - -" ];
 
     home.configFile = {
-      # Write it recursively so other modules can write files to it
+      # Link individual files (recursively), rather than whole directory, so
+      # other modules (or the user) can write files there later.
       "zsh" = { source = "${configDir}/zsh"; recursive = true; };
 
       # Why extra.zsh{rc,env} when I could be using extraInit? Because extraInit
@@ -92,7 +95,8 @@ in {
 
     # Delete compiled zgenom state, so that everything can rebuild from scratch.
     system.userActivationScripts.cleanupZgen = ''
-      rm -fv $ZGEN_DIR/init.zsh{,.zwc}
+      rm -fv "$ZGEN_DIR"/init.zsh*
+      rm -fv "$ZDOTDIR"/*.zwc
     '';
   };
 }

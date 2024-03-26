@@ -65,7 +65,7 @@ if [[ $TERM != dumb ]]; then
   unsetopt HUP              # Don't kill jobs on shell exit.
   unsetopt CHECK_JOBS       # Don't report on jobs when shell exit.
   ## History
-  HISTFILE="$XDG_STATE_HOME/zsh_history";
+  HISTFILE="$XDG_STATE_HOME/zsh/history";
   HISTSIZE=100000   # Max events to store in internal history.
   SAVEHIST=100000   # Max events to store in history file.
   unsetopt BANG_HIST               # Don't treat '!' specially during expansion.
