@@ -47,11 +47,6 @@
         hosts = mapModules ./hosts import;
         modules.default = import ./.;
 
-        profiles = mergeAttrs' [
-          (mkProfiles ["hardware"] "${nixos-hardware}")
-          (mkProfiles [] ./profiles)  # highest priority
-        ];
-
         apps.default = mkApp ./bin/hey;
         devShells.default = import ./shell.nix;
         checks = mapModules ./test import;

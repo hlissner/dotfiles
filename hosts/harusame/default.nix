@@ -1,29 +1,29 @@
 # Harusame -- my workstation abroad
 
-{ self, lib, profiles, ... }:
+{ self, lib, ... }:
 
 with lib;
 with builtins;
 {
   system = "x86_64-linux";
 
-  ## Flake profiles
-  profiles = with profiles; [
-    role.workstation
-    user.hlissner
-    network.dk
-    network.wg0
-    hardware.common.cpu.amd.pstate
-    hardware.common.gpu.nvidia
-    hardware.common.audio
-    hardware.common.ssd
-    hardware.ergodox
-  ];
-
-  ## Flake modules
+  ## Dotfiles modules
   modules = {
     theme.active = "alucard";
     xdg.ssh.enable = true;
+
+    profiles = {
+      role = "workstation";
+      user = "hlissner";
+      networks = [ "dk" "wg0" ];
+      hardware = [
+        "cpu/amd"
+        "gpu/nvidia"
+        "audio"
+        "ssd"
+        "ergodox"
+      ];
+    };
 
     desktop = {
       bspwm.enable = true;

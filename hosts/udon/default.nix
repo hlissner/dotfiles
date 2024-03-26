@@ -1,28 +1,29 @@
 # Udon -- my primary powerhouse
 
-{ self, lib, profiles, ... }:
+{ self, lib, ... }:
 
 with lib;
 with builtins;
 {
   system = "x86_64-linux";
 
-  ## Flake profiles
-  profiles = with profiles; [
-    role.workstation
-    user.hlissner
-    network.ca
-    hardware.common.cpu.amd.pstate
-    hardware.common.gpu.nvidia
-    hardware.common.audio
-    hardware.common.ssd
-    hardware.ergodox
-  ];
-
-  ## Flake modules
   modules = {
     theme.active = "alucard";
     xdg.ssh.enable = true;
+
+    profiles = {
+      role = "workstation";
+      user = "hlissner";
+      networks = [ "ca" ];
+      hardware = [
+        "cpu/amd"
+        "gpu/nvidia"
+        "audio"
+        "audio/realtime"
+        "ssd"
+        "ergodox"
+      ];
+    };
 
     desktop = {
       bspwm.enable = true;

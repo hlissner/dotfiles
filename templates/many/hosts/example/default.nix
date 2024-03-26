@@ -1,4 +1,4 @@
-{ self, super, lib, profiles, ... }:
+{ self, lib, ... }:
 
 with lib;
 with builtins;
@@ -10,36 +10,31 @@ with builtins;
   ];
 
   ## Flake profiles
-  profiles = with profiles; [
-    # Can be:
-    # - Anything from nixos-hardware OR
-    # - Anything in $DOTFILES/profiles/
-    # E.g.
-    # role.server
-    # role.workstation
-    # role.vm.workstation
-    # role.vm.qemu-guest
-    # platform.linode    # Uncomment for Linode systems
-    # user.hlissner
-    # network.ca
-    # hardware.common.cpu.amd.pstate
-    # hardware.common.cpu.intel
-    # hardware.common.gpu.nvidia
-    # hardware.common.gpu.nvidia.kepler
-    # hardware.common.gpu.nvidia.turing
-    # hardware.common.printer
-    # hardware.common.printer.wireless
-    # hardware.common.ssd
-    # hardware.ergodox
-    # hardware.razer
-    # hardware.wacom.cintiq
-  ];
-
   ## Flake modules
   modules = {
     # theme.active = "alucard";
     # xdg.enable = false;
     # xdg.ssh.enable = true;
+
+    profiles = {
+      # user = "hlissner";
+      # role = "server";
+      # role = "workstation";
+      # role = "vm/qemu-guest";
+      # platform = "linode";
+      # networks = [ "ca" "dk" "wg0" ];
+      # hardware = [
+      #   "gpu/nvidia"
+      #   "gpu/nvidia/kepler"
+      #   "gpu/nvidia/turing"
+      #   "printer"
+      #   "printer/wireless"
+      #   "ssd"
+      #   "ergodox"
+      #   "razer"
+      #   "wacom/cintiq"
+      # ];
+    };
 
     desktop = {
       # awesomewm.enable = true;

@@ -1,26 +1,26 @@
 # Soba -- testbench and steam remote server
 
-{ self, lib, profiles, ... }:
+{ self, lib, ... }:
 
 with lib;
 with builtins;
 {
   system = "x86_64-linux";
 
-  ## Flake profiles
-  profiles = with profiles; [
-    role.workstation
-    user.hlissner
-    network.dk
-    hardware.common.cpu.intel
-    hardware.common.gpu.nvidia
-    hardware.common.audio
-    hardware.common.ssd
-  ];
-
-  ## Flake modules
   modules = {
     theme.active = "alucard";
+
+    profiles = {
+      role = "workstation";
+      user = "hlissner";
+      networks = [ "dk" ];
+      hardware = [
+        "cpu/intel"
+        "gpu/nvidia"
+        "audio"
+        "ssd"
+      ];
+    };
 
     desktop = {
       bspwm.enable = true;

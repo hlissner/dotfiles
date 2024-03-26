@@ -1,0 +1,24 @@
+{ self, lib, config, ... }:
+
+with lib;
+let cfg = config.modules.profiles;
+    username = cfg.user;
+    role = cfg.role;
+in mkIf (username == "hlissner") (mkMerge [
+  {
+    user.name = username;
+    i18n.defaultLocale = mkDefault "en_US.UTF-8";
+    modules.shell.vaultwarden.config.server = "vault.home.lissner.net";
+
+    # Be slightly more restrictive about SSH access to workstations, which I
+    # only need LAN access to, if ever. Other systems, particularly servers, are
+    # remoted into often, so I leave their access control to an upstream router
+    # or local firewall.
+    user.openssh.authorizedKeys.keys = [
+      (let key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB71rSnjuC06Qq3NLXQJwSz7jazoB+umydddrxL6vg1a hlissner"; in
+       if role == "workstation"
+       then ''from="10.0.0.0/8" ${key} ${username}''
+       else key)
+    ];
+  }
+])

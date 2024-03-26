@@ -20,39 +20,7 @@ rec {
     type = "app";
   };
 
-  getProfileName = p: p._profile.name;
-  getProfilePath = p: p._profile.path;
-
-  # FIXME: Rushed. Refactor me
-  mkProfiles = parentPath: dir:
-    setAttrByPath parentPath
-      (let readFilesRec = dir: fn:
-             mapFilterAttrs'
-               (n: v:
-                 let path = "${dir}/${n}";
-                 in if v == "directory"
-                    then nameValuePair n (readFilesRec path fn)
-                    else if v == "regular" && hasSuffix ".nix" n && !(hasPrefix "_" n)
-                    then (if n == "default.nix"
-                          then nameValuePair "_profile" (fn path true)
-                          else nameValuePair (removeSuffix ".nix" n) {
-                            _profile = fn path false;
-                          })
-                    else nameValuePair "" {})
-               (_: v: v != {})
-               (readDir dir);
-       in readFilesRec dir (file: isDefault: {
-         name =
-           concatStringsSep "/"
-             (parentPath ++ filter (s: s != "")
-               (splitString "/"
-                 (removePrefix "${dir}"
-                   (removeSuffix (if isDefault then "/default.nix" else ".nix")
-                     file))));
-         path = file;
-       }));
-
-  # FIXME: Refactor me! (Use submodules)
+  # FIXME: Refactor me! (Use submodules?)
   mkFlake = {
     self
     , super ? {}
@@ -67,7 +35,6 @@ rec {
     , modules ? {}
     , overlays ? {}
     , packages ? {}
-    , profiles ? {}
     , storage ? {}
     , systems
     , templates ? {}
@@ -81,7 +48,6 @@ rec {
       };
 
       # Inherited properties
-      profiles' = mergeAttrs' [ (super.profiles or {}) profiles ];
       overlays' = (super.overlays or {}) // overlays;
 
       # Processes external arguments that bin/hey will feed to this flake (using
@@ -107,7 +73,6 @@ rec {
           host = cfg {
             inherit args lib nixosModules;
             self = self';
-            profiles = profiles';
           };
           mkDotfiles = path: {
             dir =
@@ -139,13 +104,11 @@ rec {
               {
                 nixpkgs.pkgs = pkgs;
                 networking.hostName = mkDefault (args.host or hostName);
-                profiles.active = map getProfileName (host.profiles or []);
               }
               (super.modules.default or {})
               (modules.default or {})
             ]
             ++ (host.imports or [])
-            ++ (map getProfilePath (host.profiles or []))
             ++ [ { modules = host.modules or {}; } ]
             ++ [ (host.config or {}) (host.hardware or {}) ]
             ;
@@ -166,10 +129,10 @@ rec {
     in
       (filterAttrs (n: _: !elem n [
         "apps" "bundlers" "checks" "devices" "devShells" "hosts" "modules"
-        "packages" "profiles" "storage" "systems"
+        "packages" "storage" "systems"
       ]) flake) // {
           inherit nixosConfigurations;
-          nixosModules = modules // { inherit profiles; };
+          nixosModules = modules;
 
           # To parameterize this flake (more so for flakes derived from this one)
           # I rely on bin/hey (my nix{,os} CLI/wrapper) to emulate --arg/--argstr

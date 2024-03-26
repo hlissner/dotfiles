@@ -7,8 +7,6 @@ in {
   imports = mapModulesRec' ./modules import;
 
   options = with types; {
-    # For keeping track of enabled profiles. Should not be modified by the user.
-    profiles.active = mkOpt (listOf str) [];
 
     # Creates a simpler, polymorphic alias for users.users.$USER.
     user = mkOpt attrs { name = ""; };

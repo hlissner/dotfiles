@@ -1,30 +1,32 @@
 # Ramen -- my mobile workstation, for when I travel
 
-{ self, lib, profiles, ... }:
+{ self, lib, ... }:
 
 with lib;
 with builtins;
 {
   system = "x86_64-linux";
 
-  ## Flake profiles
-  profiles = with profiles; [
-    role.workstation
-    user.hlissner
-    # network.ca
-    network.dk
-    network.wg0
-    hardware.dell.xps."13-9370"
-    hardware.common.pc.laptop.battery
-    hardware.common.audio
-    hardware.common.ssd
-    # hardware.common.printer
+  imports = [
+    self.modules.nixos-hardware.dell-xps-13-9370
   ];
 
   ## Flake modules
   modules = {
     theme.active = "alucard";
     xdg.ssh.enable = true;
+
+    profiles = {
+      role = "workstation";
+      user = "hlissner";
+      networks = [ "ca" "wg0" ];
+      hardware = [
+        "wifi"
+        "pc/laptop"
+        "audio"
+        "ssd"
+      ];
+    };
 
     desktop = {
       bspwm.enable = true;
