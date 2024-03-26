@@ -32,8 +32,11 @@ with builtins;
       apps.spotify.enable = true;
       apps.steam = {
         enable = true;
-        libraryDir = "/media/windows/SteamLibrary";
+        libraryDir = "/media/windows/Program Files (x86)/Steam";
       };
+      apps.godot.enable = true;
+      # apps.thunar.enable = true;
+      # apps.gromit.enable = true;
       browsers.default = "firefox";
       browsers.firefox.enable = true;
       media.cad.enable = true;
@@ -68,18 +71,44 @@ with builtins;
       diagnostics.enable = true;
       fs.enable = true;
     };
-    virt.qemu.enable = true;
+    # virt.qemu.enable = true;
   };
 
-  ## Local config
-  config = { ... }: {};
+  ## local config
+  config = { pkgs, ... }: {
+    networking.search = [ "home.lissner.net" ];
+
+    # Low-latency audio for guitar recording and DAW stuff. Should not be
+    # generalized, since these values depend heavily on many local factors, like
+    # CPU speed, kernels, audio cards, etc.
+    environment.etc."pipewire/pipewire.conf.d/95-low-latency.conf".text = ''
+      context.properties = {
+        default.clock.rate = 48000
+        default.clock.quantum = 64
+        default.clock.min-quantum = 32
+        default.clock.max-quantum = 64
+      }
+    '';
+
+    user.packages = with pkgs; [
+      unstable.guitarix
+      gxplugins-lv2
+      ladspaPlugins
+
+      calibre
+      signal-desktop
+      zoom-us
+    ];
+  };
 
   hardware = { ... }: {
     boot.supportedFilesystems = [ "ntfs" ];
 
-    # Disable all wakeup events to ensure restful sleep. This system has many
-    # peripherals attached to it (shared between Windows and Linux) that can
-    # unpredictably wake it.
+    networking.interfaces.eno1.useDHCP = true;
+
+    # Disable all USB wakeup events to ensure restful sleep. This system has
+    # many peripherals attached to it (shared between Windows and Linux) that
+    # can unpredictably wake it otherwise.
     systemd.services.fixSuspend = {
       script = ''
         for ev in $(grep enabled /proc/acpi/wakeup | cut --delimiter=\  --fields=1); do
@@ -87,11 +116,6 @@ with builtins;
         done
       '';
       wantedBy = [ "multi-user.target" ];
-    };
-    # ...only wake-on-lan (and the power button) should wake it up.
-    networking = {
-      interfaces."eno1".wakeOnLan.enable = true;
-      firewall.allowedUDPPorts = [ 9 ];
     };
 
     services.xserver = {
@@ -106,7 +130,7 @@ with builtins;
         Option      "DPMS"
       '';
       screenSection = ''
-        Option "metamodes" "HDMI-0: nvidia-auto-select +0+0, HDMI-1: nvidia-auto-select +1920+0, DP-1: nvidia-auto-select +4480+0"
+        Option "metamodes" "DP-5: nvidia-auto-select +0+31, HDMI-1: nvidia-auto-select +1920+0, DP-3: nvidia-auto-select +4480+31"
         Option "SLI" "Off"
         Option "MultiGPU" "Off"
         Option "BaseMosaic" "off"
@@ -119,7 +143,7 @@ with builtins;
       "/" = {
         device = "/dev/disk/by-label/nixos";
         fsType = "ext4";
-        options = [ "noatime" ];
+        options = [ "noatime" "errors=remount-ro" ];
       };
       "/boot" = {
         device = "/dev/disk/by-label/BOOT";
@@ -130,29 +154,20 @@ with builtins;
         fsType = "ext4";
         options = [ "noatime" ];
       };
-      "/media/data" = {
-        device = "/dev/disk/by-label/data";
-        fsType = "ext4";
-        options = [
-          "noauto" "x-systemd.automount" "x-systemd.idle-timeout=15min" "x-systemd.mount-timeout=10s"
-          "noatime" "nodev" "nosuid" "noexec"
-        ];
-      };
       "/media/video" = {
         device = "/dev/disk/by-label/video";
-        fsType = "ntfs3";
-        options = [
-          "noauto" "x-systemd.automount" "x-systemd.idle-timeout=15min" "x-systemd.mount-timeout=10s"
-          "uid=1000" "gid=100" "rw" "user" "exec" "umask=000"
-        ];
+        fsType = "ntfs";
+        options = [ "defaults" "noauto" "nofail" "noatime" "nodev" "exec" "umask=000" "uid=1000" "gid=1000" "x-systemd.automount" ];
       };
       "/media/windows" = {
         device = "/dev/disk/by-label/windows";
-        fsType = "ntfs3";
-        options = [
-          "noauto" "x-systemd.automount" "x-systemd.idle-timeout=30min" "x-systemd.mount-timeout=10s"
-          "uid=1000" "gid=100" "rw" "user" "exec" "umask=000"
-        ];
+        fsType = "ntfs";
+        options = [ "defaults" "noauto" "nofail" "noatime" "nodev" "exec" "umask=000" "uid=1000" "gid=1000" "x-systemd.automount" ];
+      };
+      "/media/nas" = {
+        device = "nas0.home.lissner.net:/mnt/nas/users/hlissner/files";
+        fsType = "nfs";
+        options = [ "noauto" "nofail" "noatime" "nfsvers=4.2" "x-systemd.automount" "x-systemd.idle-timeout=600" ];
       };
     };
     swapDevices = [];
