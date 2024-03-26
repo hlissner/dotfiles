@@ -45,7 +45,6 @@ with builtins;
       apps = {
         # godot.enable = true;
         # rofi.enable = true;
-        # skype.enable = true;
         # spotify.enable = true;
         # steam.enable = true;
         # steam.mangohud.enable = true;
