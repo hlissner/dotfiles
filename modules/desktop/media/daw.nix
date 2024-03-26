@@ -19,14 +19,14 @@ in {
     services.pipewire.jack.enable = true;
 
     user.packages = with pkgs; [
-      ardour
-      sunvox
-      audacity
+      unstable.ardour      # My DAW for recording
+      unstable.audacity    # For one-off audio editing
+      unstable.sunvox      # For chiptune
 
       # LMMS creates .lmmsrc.xml in $HOME on launch (see LMMS/lmms#5869).
       # Jailing it has the side-effect of rooting all file dialogs in the fake
       # home, but this is easily worked around by adding proper shortcuts.
-      (mkWrapper lmms ''
+      (mkWrapper unstable.lmms ''
         wrapProgram "$out/bin/lmms" \
           --run 'cfgdir="$XDG_CONFIG_HOME/lmms"' \
           --run 'mkdir -p "$cfgdir"' \

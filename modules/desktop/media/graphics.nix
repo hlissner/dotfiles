@@ -33,7 +33,7 @@ in {
 
       # Replaces Illustrator (maybe indesign?)
       (if cfg.vector.enable then [
-        inkscape
+        unstable.inkscape
       ] else []) ++
 
       # Replaces Photoshop
@@ -45,6 +45,7 @@ in {
             gmic            # an assortment of extra filters
           ];
         })
+        unstable.krita   # But Krita is better for digital illustration
       ] else []) ++
 
       # Sprite sheets & animation

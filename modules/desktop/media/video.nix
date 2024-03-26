@@ -28,7 +28,7 @@ in {
 
     (mkIf cfg.editor.enable {
       user.packages = [
-        pkgs.davinci-resolve  # For editing it
+        pkgs.unstable.davinci-resolve  # For editing it
       ];
     })
 
@@ -46,9 +46,9 @@ in {
 
     (mkIf cfg.tools.enable {
       user.packages = with pkgs; [
-        # For (en|de)coding
-        ffmpeg     # ...in the CLI
-        handbrake  # ...for the GUI
+        # Tools for (en|de)coding.
+        ffmpeg_6-full   # ...in the CLI
+        handbrake       # ...for the GUI
       ];
     })
   ]);
