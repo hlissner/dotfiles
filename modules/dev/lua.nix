@@ -2,8 +2,8 @@
 #
 # I use lua for modding, awesomewm, or Love2D for rapid gamedev prototyping
 # (when godot is overkill and I have the luxury of avoiding JS). I write my Love
-# games in fennel to get around lua's idiosynchrosies. That said, I install
-# love2d on a per-project basis.
+# games in fennel to get around some of lua's idiosynchrosies. That said, I
+# install love2d on a per-project basis, so this module is rarely enabled.
 
 { self, lib, config, options, pkgs, ... }:
 

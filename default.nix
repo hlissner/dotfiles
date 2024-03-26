@@ -1,4 +1,6 @@
-{ self, lib, config, options, pkgs, ... }:
+# default.nix
+
+{ self, lib, options, config, pkgs, ... }:
 
 with lib;
 with self.lib;
@@ -11,8 +13,8 @@ in {
     # Creates a simpler, polymorphic alias for users.users.$USER.
     user = mkOpt attrs { name = ""; };
 
-    # Creates a simpler, more predictable alias for environment.variables,
-    # because it's going to be used *a lot*.
+    # Creates a simpler alias for environment.variables, with a more predictable
+    # load-order, since it will be used *a lot*.
     env = mkOption {
       type = attrsOf (oneOf [ str path (listOf (either str path)) ]);
       apply = mapAttrs

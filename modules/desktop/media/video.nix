@@ -22,7 +22,7 @@ in {
   config = mkIf cfg.enable (mkMerge [
     (mkIf cfg.capture.enable {
       user.packages = [
-        pkgs.obs-studio  # For recording footage
+        pkgs.obs-studio  # For streaming/recording footage
       ];
     })
 

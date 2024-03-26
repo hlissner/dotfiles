@@ -53,10 +53,10 @@ This is set up on the Windows side, as dedicated hot-storage for game and screen
 recordings on either Windows (with ShadowPlay) or Linux (with OBS studio). No
 setup needed on Linux, except for a label to consistently refer to it by:
 #+begin_src sh
-ntfslabel /dev/sdb video
+$ ntfslabel /dev/sdb video
 #+end_src
 ** Mount filesystems
-The final step in the install process, before running ~$DOTFILES/bin/hey
+The final step in the install process, before running ~$DOTFILES_HOME/bin/hey
 install~:
 #+BEGIN_SRC sh
 mount /dev/disk/by-label/nixos /mnt

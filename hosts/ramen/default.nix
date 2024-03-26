@@ -1,4 +1,4 @@
-# Ramen -- my mobile workstation, for when I travel
+# Ramen -- my laptop, for travel
 
 { self, lib, ... }:
 

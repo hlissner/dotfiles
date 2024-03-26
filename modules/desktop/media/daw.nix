@@ -1,9 +1,9 @@
 # modules/desktop/media/daw.nix
 #
 # I make games on my spare time (and occasionally edit audio for videos). These
-# need music and sound effects. On Windows/Mac, I used Apple Logic, Fruityloops,
-# Adobe Audition, and Sunvox. To replace them on Linux, I use Ardour, LMMS,
-# Audacity, and Sunvox (works everywhere), respectively.
+# need music and sound effects. In the past, I've used Apple Logic, Fruityloops,
+# and Adobe Audition. To replace them on Linux, I've replaced them with Ardour,
+# LMMS, and Audacity, respectively with much success.
 
 { self, lib, config, pkgs, ... }:
 

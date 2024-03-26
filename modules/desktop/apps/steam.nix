@@ -15,6 +15,8 @@ in {
   config = mkIf cfg.enable {
     programs = {
       steam.enable = true;
+      # Makes gamemoderun available, but it must be selectively enabled for
+      # games by changing said game's launch options to 'gamemoderun %command%'.
       gamemode = {
         enable = true;
         settings = {
@@ -38,7 +40,9 @@ in {
            # If the steam library lives on a shared NTFS drive, then we must
            # symlink steamapps/compatdata to a local directory, because Proton
            # will fail to produce certain paths that are illegal on an NTFS
-           # filesystem (e.g. contains ":").
+           # filesystem (e.g. contains ":"). WARNING: SOME GAMES WRITE SAVEFILES
+           # TO THE COMPATDATA FOLDER. IF THOSE GAMES DON'T HAVE CLOUD-SAVING,
+           # THIS WILL DESTROY DATA! (Most games do, though)
            libFix = writeShellScriptBin "libfix" ''
              if [[ "x${cfg.libraryDir}" != "x" ]]; then
                _libdir="${cfg.libraryDir}"
