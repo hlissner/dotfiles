@@ -73,13 +73,17 @@ with builtins;
 
   ## Local config
   config = { ... }: {
-    systemd.network.networks.wg0.address = [
-      "10.10.0.2/32"
-    ];
+    systemd.network.networks.wg0.address = [ "10.10.0.2/32" ];
   };
 
   ## Hardware config
   hardware = { pkgs, ... }: {
+    networking.wireless.interfaces = [ "wlp2s0" ];
+
+    # Control monitor brightness
+    programs.light.enable = true;
+    user.extraGroups = [ "video" ];
+
     boot.initrd = {
       kernelModules = [ "dm-snapshot" ];
       luks.devices.home = {
@@ -87,12 +91,6 @@ with builtins;
         allowDiscards = true;
       };
     };
-
-    networking.wireless.interfaces = [ "wlp2s0" ];
-
-    # Control monitor brightness
-    programs.light.enable = true;
-    user.extraGroups = [ "video" ];
 
     fileSystems = {
       "/" = {

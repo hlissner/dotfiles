@@ -34,7 +34,9 @@ with builtins;
         enable = true;
         libraryDir = "/media/games/SteamLibrary";
       };
+      apps.godot.enable = true;
       apps.thunar.enable = true;
+      apps.gromit.enable = true;
       browsers.default = "firefox";
       browsers.firefox.enable = true;
       media.cad.enable = true;
@@ -72,10 +74,8 @@ with builtins;
   };
 
   ## Local config
-  config = { ... }: {
-    systemd.network.networks.wg0.address = [
-      "10.10.0.3/32"
-    ];
+  config = { pkgs, ... }: {
+    systemd.network.networks.wg0.address = [ "10.10.0.3/32" ];
   };
 
   ## Hardware config
