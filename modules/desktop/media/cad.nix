@@ -18,18 +18,20 @@ in {
     nixpkgs.overlays = [ self.inputs.blender-bin.overlays.default ];
 
     user.packages = with pkgs; [
-      (mkWrapper pkgs.blender_3_4 ''
+      # Blender itself doesn't need libxcrypt-legacy, but I use blenderkit,
+      # which needs libcrypt.so.1, which libxcrypt no longer provides.
+      (mkWrapper blender_4_0 ''
         wrapProgram "$out/bin/blender" \
-          --run 'export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${libxcrypt}/lib"'
+          --run 'export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${libxcrypt-legacy}/lib"'
       '')
     ];
 
     home.configFile = {
-      # "blender/3.4/config" = {
+      # "blender/4.0/config" = {
       #   source = "${configDir}/blender/config";
       #   recursive = true;
       # };
-      "blender/3.4/scripts" = {
+      "blender/4.0/scripts" = {
         source = "${configDir}/blender/scripts";
         recursive = true;
       };
@@ -39,7 +41,7 @@ in {
     # very stateful. Having a consistent starting point for new systems is good
     # enough for me.
     system.userActivationScripts.setupBlenderConfig = ''
-      destdir="$XDG_CONFIG_HOME/blender/3.4/config"
+      destdir="$XDG_CONFIG_HOME/blender/4.0/config"
       mkdir -p "$destdir"
       for cfile in ${configDir}/blender/config/*; do
         basename="$(basename $cfile)"
