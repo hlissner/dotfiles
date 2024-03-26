@@ -16,18 +16,18 @@ in {
   config = mkIf cfg.enable (mkMerge [
     {
       environment.systemPackages = with pkgs; [
-        lm_sensors
-        powertop
-        unixtools.netstat
-        pciutils  # lspci
         glances
         hwinfo
-        lsof
-        usbutils  # lsusb
-        sysstat   # sar, iostat, pidstat
-        ioping
         iftop
+        ioping
+        lm_sensors
+        lsof
+        pciutils  # lspci
+        powertop
         smartmontools
+        sysstat   # sar, iostat, pidstat
+        unixtools.netstat
+        usbutils  # lsusb
       ];
     }
 
