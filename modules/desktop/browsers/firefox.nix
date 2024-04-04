@@ -62,12 +62,6 @@ in {
         export HOME="$XDG_FAKE_HOME"
         exec "${config.programs.firefox.package}/bin/firefox" "$@"
       '')
-      (mkLauncherEntry "Firefox (Private)" {
-        description = "Open a private Firefox window";
-        icon = "firefox";
-        exec = "firefox --private-window";
-        categories = [ "Network" ];
-      })
     ];
 
     modules.desktop.browsers.firefox.sharedSettings = {
