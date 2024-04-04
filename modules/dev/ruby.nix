@@ -16,7 +16,7 @@ in {
 
   config = mkMerge [
     (mkIf cfg.enable {
-      user.packages = [ pkgs.ruby_3_1 ];
+      user.packages = [ pkgs.ruby_3_2 ];
       environment.shellAliases = {
         rb = "ruby";
       };

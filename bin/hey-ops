@@ -6,20 +6,20 @@
 # - Uses bitwarden to store and deploy per-host ssh keys.
 ##
 
-class HeyOps < HeyCLI
+class HeyOps < NixOSCLI
   desc "push [REMOTE...]", "Build flake locally then push it to a remote system"
   option :builder, aliases: :b, type: :string, repeatable: true,
          desc: "Remote machine(s) to build the system on"
   def push *remotes
-    user_error "Not implemented yet!"
+    raise UserError, "Not implemented yet!"
   end
 
   desc "pushkeys REMOTE", "Deploy SSH keys from a Bitwarden server"
   option :rekey, type: :boolean, desc: "Regenerate host keys before pushing them"
   def pushkeys *remotes
-    user_error "Not implemented yet!"
-    # user_error "No target host specified" unless args.length > 0
-    # user_error "Bitwarden CLI not found in $PATH" unless `which bw` && $?.exitstatus == 0
+    raise UserError, "Not implemented yet!"
+    # raise UserError, "No target host specified" unless args.length > 0
+    # raise UserError, "Bitwarden CLI not found in $PATH" unless `which bw` && $?.exitstatus == 0
     # keyfiledir = "..."
     # # TODO Poll bitwarden
     # # TODO Or regenerate them and push them to bitwarden
@@ -40,12 +40,12 @@ class HeyOps < HeyCLI
 
   desc :pullkeys, "Pull remote keys to local storage as a backup"
   def pullkeys *remotes
-    user_error "Not implemented yet!"
+    raise UserError, "Not implemented yet!"
   end
 
   desc "ssh COMMAND REMOTE [REMOTE...]", "Run an SSH command on all REMOTEs"
   def ssh command, *remotes
-    user_error "Not implemented yet!"
+    raise UserError, "Not implemented yet!"
     # target, command = args.take(2)
     # command ||= "test"
     # if command.match(/switch|test|boot/)

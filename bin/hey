@@ -1,18 +1,20 @@
 #!/usr/bin/env cached-nix-shell
-#! nix-shell -p ruby_3_1 rubyPackages_3_1.thor rubyPackages_3_1.json -i "ruby -S"
+#! nix-shell -p ruby_3_2 rubyPackages_3_2.thor -i "ruby -S" --keep XDG_DATA_DIRS
 
-require_relative '../lib/hey'
+require_relative '../lib/lib'
+require 'rb/nixos'
 
-class Hey < HeyCLI
+class Hey < NixOSCLI
+  DEFAULT_PROFILE = "/nix/var/nix/profiles/system"
+
   def help
     puts <<~DESC
-      Nix's CLI has a poor user story for NixOS users, in my opinion. I'm
-      envious of Guix in this respect, so I wrote this script to abstract  more
-      common NixOS workflows, like rebuilding (nixos-rebuild), cleaning up
+      I envy the user story for Guix's CLI; Nix's does not spark joy, in my
+      humble opinion. This script exists to abstract the more common NixOS
+      workflows, like rebuilding (nixos-rebuild), cleaning up
       (nix-collect-garbage), package/env management (nix-env), updating/rolling
-      back, and dotfile management. And I've split out additional subcommands in
-      other bin/hey* scripts (like heyops for remote deployment of NixOS
-      configs).
+      back, and dotfile management, and will be augmented by other hey-* scripts
+      (like 'hey ops' for remote nixos key/config management)
     DESC
     puts
     super
@@ -26,28 +28,26 @@ class Hey < HeyCLI
     option :root, type: :string, desc: "Mount root", default: "/mnt"
     option :ssh,  aliases: :s,   desc: 'Clone from ssh+git instead of https. Ignored if --repo is an URL'
     def install *args
-      user_error "Must be root to run this command" unless Process.uid == 0
-      user_error "No mounted root at #{options[:root]}. Did you mount/partition it?" unless Dir.exists? options[:root]
-      @flake.valid!
+      raise UserError, "Must be root to run this command" unless Process.uid == 0
+      raise UserError, "No mounted root at #{options[:root]}. Did you mount/partition it?" unless Dir.exist? options[:root]
+      @flake.ensure!
       dest = File.expand_path(options[:dest] || "#{options[:root]}/home/#{@flake.user}/.config/dotfiles")
       repo = options[:repo]
-      if !repo.match /^https?:\/\//
+      unless repo =~ /^https?:\/\//
         proto = 'git@github.com:' if options[:ssh] else 'https://github.com/'
         repo = "#{proto}#{options[:repo]}"
       end
       Dir.mktmpdir do |tmpdir|
         puts "Deploying dotfiles..."
-        run "nix-shell", "-p", "git", "--run", "git", "clone", repo, tmpdir
-        unless Dir.exists? "#{dest}/hosts/#{@flake.host}"
-          user_error "No host config for #{@flake.host} in dotfile flake"
+        sh! "git", "clone", repo, tmpdir, shell: ["-p", "git"]
+        unless Dir.exist? "#{dest}/hosts/#{@flake.host}"
+          raise UserError, "No host config for #{@flake.host} in dotfile flake"
         end
         puts "Installing NixOS..."
-        run "nix-shell", "-p", "nixFlakes",
-            "--run", "nixos-install",
-            "--root", options[:root],
-            "--flake", @flake.uri
+        sh! "nixos-install", "--flake", @flake.uri, '--impure',
+            shell: ["-p", "nixVersions.nix_2_15", "--root", options[:root]]
         puts "Moving dotfiles to #{options[:dest]}..."
-        unless Dir.exists? dest
+        unless Dir.exist? dest
           FileUtils.mkdir_p File.expand_path('..', dest)
           FileUtils.mv tmpdir, dest
           FileUtils.chown_R @flake.user, 'users', dest
@@ -60,10 +60,10 @@ class Hey < HeyCLI
     def pull *inputs
       if inputs.empty?
         puts "Updating all inputs."
-        nix :flake, "update", "--impure", @flake.path
+        sh! %w{nix flake update --impure}, @flake.path
       else
         puts "Trying to update inputs: #{inputs.join ' '}"
-        nix :flake, "lock", "--impure",
+        sh! %w{nix flake lock --impure},
             inputs.map { |i| [ "--update-input", i ] },
             @flake.path
       end
@@ -82,71 +82,68 @@ class Hey < HeyCLI
            desc: "What generation of PROFILE to switch to"
     map "sw" => "switch"
     def switch mode = nil
-      options[:fast] ||= mode == "test"
+      fast = options[:fast] || (mode == "test")
       if options[:generation]
-        return run "nix-env",
-                   "--switch-generation", Integer(options[:generation]),
-                   "--profile", options[:profile] || DEFAULT_PROFILE,
-                   sudo: true
+        return sh! 'sudo', 'nix-env',
+                   { 'switch-generation': Integer(options[:generation]),
+                     profile: options[:profile] }
       elsif options[:theme]
         @flake.theme = options[:theme]
-        options[:fast] = ! mode
+        fast = !fast
       end
-      @flake.valid!
+      @flake.ensure!
       Dir.chdir @flake.path do
-        run 'nixos-rebuild', '--impure', '--flake', @flake.uri,
-            optarg(:target, flag: "--target-host"),
-            optarg(:builder) { |k,v| [ "--builders", v.join(' ; ') ] },
-            optarg(:fast, nil),
-            optarg(:profile, nil),
-            optarg(:verbose, nil),
-            optarg(:rollback, nil),
+        sh! 'sudo', 'nixos-rebuild',
+            '--impure', '--flake', @flake.uri,
             mode || "switch",
-            sudo: !options[:user]
+            { fast: !!fast,
+              verbose: !!options[:verbose],
+              rollback: !!options[:rollback],
+              builders: options[:builder]&.join(' ; '),
+              'target-host': options[:target],
+              'profile-name': options[:profile],
+              'show-trace': !!options[:show_trace] }
       end
     end
 
     desc "build OPERATION [HOST]", "TODO"
     option "--print-out-paths", desc: "TODO"
     option :profile, desc: "TODO"
-    def build op, host = @flake.host
-      if op.match /^vm(-with-bootloader)?$/
-        run 'nixos-rebuild', '--impure', '--flake', "#{@flake.path}##{host}",
-            "build-#{op}",
-            optarg(:verbose, nil),
-            sudo: !options[:user]
+    def build(op, host = @flake.host)
+      if op =~ /^vm(-with-bootloader)?$/
+        @flake.host = host;
+        switch "build-#{op}"
       else
         path = @flake.path
-        case op
-        when "iso"
+        if op == 'iso'
           host = "nixosConfigurations.#{host}.config.system.build.isoImage"
         end
-        nix :build, "#{path}##{host}",
-            optarg(:profile),
-            optarg("--print-out-paths", nil)
+        sh! :nix, :build, "#{path}##{host}", '--print-out-paths',
+            { profile: options[:profile] }
       end
     end
 
     desc :ls, "List all generations of your system profile"
     def ls
-      run "nix-env", "--list-generations", "--profile", DEFAULT_PROFILE, sudo: true
+      sh! 'sudo', 'nix-env', '--list-generations', '--profile', DEFAULT_PROFILE
     end
 
     desc "rm GENERATION", "Delete a specific system generation"
-    def rm
-      run "nix-env", "--delete-generations", "--profile", DEFAULT_PROFILE, *args, sudo: true
+    def rm(generations)
+      # TODO
+      # sh! 'sudo', 'nix-env', '--delete-generations', '--profile', DEFAULT_PROFILE, *gens
     end
 
     desc "diff FROM TO", "Diff two system generations"
-    def diff from, to
+    def diff(from, to)
       profile = DEFAULT_PROFILE
       if from == to
         puts "Comparing the same profile! Aborting..."
         exit 1
       elsif [from, to].compact.select do |gen|
-              File.exists? "#{profile}-#{gen}-link" or
+              File.exist?("#{profile}-#{gen}-link") or
                 puts "Generation #{gen} does not exist!"
-            end.length != [from, to].compact.length
+            end.size != [from, to].compact.size
         exit 2
       end
       from = from ? "#{profile}-#{from}-link" : profile
@@ -159,63 +156,65 @@ class Hey < HeyCLI
 
     desc :rollback, "Rollback to last generation"
     def rollback
-      rebuild "switch", "--rollback"
+      switch("switch", "--rollback")
     end
 
     desc :gc, "Garbage collect & optimize nix store"
     option :all,    aliases: :a, type: :boolean, desc: "GC both the user and system profiles"
     option :system, aliases: :s, type: :boolean, desc: "Only GC the system profile"
-    def gc *args
+    def gc
+      @flake.ensure!
       if options[:all] or options[:system]
-        puts "Cleaning up your system profile..."
-        run %w{nix-collect-garbage -d}, sudo: true
-        run %w{nix-store --optimise}, sudo: true
+        puts "Cleaning your system profile..."
+        sh! %w{sudo nix-collect-garbage -d}
+        sh! %w{sudo nix-store --optimise}
         # Move away left-over secrets to be deleted later. The
         # switch-to-configuration call below regenerates them, but we must be
         # certain that the process succeeds first.
-        if File.exists?("/run/secrets/*")
-          run %w{mv /run/secrets /run/secrets.old}
+        if File.exist?("/run/secrets/*")
+          sh! %w{mv /run/secrets /run/secrets.old}
         end
         # nix-collect-garbage is a Nix tool, not a NixOS tool. It won't delete old
-        # boot entries until you do a nixos-rebuild (which means we'll always have
-        # 2 boot entries at any time). Instead, we properly delete them by
-        # reloading the current environment.
-        run %w{nix-env --delete-generations old --profile /nix/var/nix/profiles/system}, sudo: true
-        run %w{/nix/var/nix/profiles/system/bin/switch-to-configuration switch}, sudo: true
-        run %w{rm -rf /run/secrets.old}, sudo: true
+        # boot entries until you do a nixos-rebuild (which means we'll always
+        # have 2 boot entries at any time); reloading the current environment
+        # deletes them immediately.
+        sh! %w{sudo nix-env --delete-generations old --profile /nix/var/nix/profiles/system}
+        sh! %w{sudo /nix/var/nix/profiles/system/bin/switch-to-configuration switch}
+        sh! %w{sudo rm -rf /run/secrets.old}
       end
       if options[:all] or not options[:system]
-        puts "Cleaning up your user profile..."
-        run %w{nix-collect-garbage -d}
+        puts 'Cleaning your user profile...'
+        sh! %w{nix-collect-garbage -d}
       end
     end
 
     desc :check, "Run a flake check on your dotfiles flake"
     map "ch" => "check"
     def check
-      user_error "Flake is not derived from hlissner/dotfiles" unless @flake.dotfiles?
-      code = nix :flake, "check", "--impure",
-                 "--no-warn-dirty",
-                 "--no-use-registries",
-                 "--no-write-lock-file",
-                 "--no-update-lock-file",
+      raise UserError, "Flake is not derived from hlissner/dotfiles" unless @flake.dotfiles?
+      code = sh! :nix, 'flake', 'check', '--impure',
+                 '--show-trace',
+                 '--no-warn-dirty',
+                 '--no-use-registries',
+                 '--no-write-lock-file',
+                 '--no-update-lock-file',
                  @flake.path
-      puts "Check found no issues" if code.zero?
+      puts "Check found no issues"
     end
 
     desc "info [REPO] [EXPECTED-HASH]", "Dump information about your system flake or a REPO"
     option :type, type: :string, banner: "VCS", default: "git",
            desc: "What VC system to use (default: git)"
-    def info repo=nil, rev=nil
+    def info(repo=nil, rev=nil)
       if repo
-        repo, commit = repo.split ":"
-        repo = "https://github.com/#{repo}" if repo.match /^[^\/]+\/[^\/]+$/
-        run "nix-shell", "-p", "nix-prefetch-git",
-            "--run", "nix-prefetch-#{options[:type]} --quiet '#{repo}' #{rev}"
+        repo, commit = repo.split(':')
+        repo = "https://github.com/#{repo}" if repo =~ /^[^\/]+\/[^\/]+$/
+        sh! "nix-prefetch-#{options[:type]}", '--fetch-submodules', '--quiet', { url: repo }, { rev: rev },
+            packages: ['nix-prefetch-git']
       else
-        nix :flake, "metadata", "--impure", "--no-warn-dirty", @flake.path
+        sh! %w{nix flake metadata --impure --no-warn-dirty}, @flake.path
         puts
-        nix :flake, "show", "--impure", "--no-warn-dirty", @flake.path
+        sh! %w{nix flake show --impure --no-warn-dirty}, @flake.path
       end
     end
   end
@@ -224,24 +223,27 @@ class Hey < HeyCLI
   group "Development Tools" do
     desc :dev, "TODO"
     stop_on_unknown_option! :dev
-    def dev *args
-      nix :develop, @flake.path, *args
+    def dev(*args)
+      sh! :nix, :develop, @flake.path, *args
     end
 
     desc :repl, "Open a REPL with the dotfiles flake (and nixpkgs inputs) preloaded"
     def repl *args
-      nix :repl,
+      flakepath = File.expand_path("#{File.dirname(__FILE__)}/..")
+      flakepath = File.readlink(flakepath) if File.symlink?(flakepath)
+      sh! :nix, :repl,
           '--extra-experimental-features', 'flakes repl-flake',
-          '--expr', <<-NIX
-          with builtins;
-          let
-            pkgs  = (getFlake "flake:nixpkgs").legacyPackages.${currentSystem};
-            self  = mapAttrs
-              (n: v: if isAttrs v && hasAttr currentSystem v then v.${currentSystem} else v)
-                (getFlake "flake:dotfiles");
-            self' = getFlake "flake:dotfiles";
-          in { inherit pkgs pkgs' self self'; }
-        NIX
+          '--expr', <<~NIX
+            with builtins;
+            let
+              pkgs  = (getFlake "flake:nixpkgs").legacyPackages.${currentSystem};
+              pkgsu = (getFlake "flake:nixpkgs-unstable").legacyPackages.${currentSystem};
+              self  = mapAttrs
+                (n: v: if isAttrs v && hasAttr currentSystem v then v.${currentSystem} else v)
+                  (getFlake "#{flakepath}");
+              self' = getFlake "#{flakepath}";
+            in { inherit pkgs pkgsu self self'; }
+          NIX
     end
 
     # desc :bundle, "TODO"
@@ -254,14 +256,13 @@ class Hey < HeyCLI
     option :expr, type: :string, desc: "Interpret installables as attribute paths relative to the Nix expression EXPR"
     option :file, type: :string, desc: "Interpret installables as attribute paths relative to the Nix expression stored in FILE (or read from stdin if - is given)"
     map "s" => "search"
-    def search *args
-      nix :search,
-          '--no-update-lock-file',
+    def search(*args)
+      sh! :nix, :search, '--no-update-lock-file',
           @flake.explicit? ? 'nixpkgs' : @flake.path,
-          optarg(:expr),
-          optarg(:file),
+          { expr: options[:expr],
+            file: options[:file] },
           # Interpret '!REGEX' as '-e REGEX'
-          args.map { |a| a.match(/^!/) ? [ "-e", a[1..] ] : a.delete_prefix("\\") }.flatten
+          *args.map { |a| a =~ /^!/ ? [ "-e", a[1..] ] : a.delete_prefix("\\") }
     end
   end
 
@@ -277,35 +278,46 @@ class Hey < HeyCLI
       Warning: backup your copies, or they will be destroyed when restored!
     EOF
     option :force, aliases: '-f', type: :boolean, desc: "Overwrite any pre-existing files"
-    def swap *args
+    option :to, aliases: '-t', type: :string,
+           desc: "Symlink to TARGET instead (file or directory; if the latter, will symlink to a file with the same name within)"
+    def swap(*args)
       for target in args
-        if File.directory? target
+        if target[/\.nix-store-backup$/,0]
+          puts "Skipping #{target}"
+        elsif File.directory? target
           files = Dir.glob("#{target}/**/*.nix-store-backup")
           if files.length > 0
             puts "There are swapped files here. Unswapping!"
-            swap *files
+            swap *files, to: options[:to]
           else
             puts "Swapping files in #{target}"
-            swap *(Dir.glob("#{target}/**/*")
+            swap(*(Dir.glob("#{target}/**/*")
                      .select { |f| File.symlink? f }
-                     .select { |l| File.readlink(l).match '^/nix/store/' })
+                     .select { |l| File.readlink(l) =~ '^/nix/store/' }),
+                 to: options[:to])
           end
         elsif File.file? "#{target}.nix-store-backup"
           puts "Unswapping #{target}"
-          run :mv, optarg(:force, "-f"), '-i', "#{target}.nix-store-backup", target
+          sh! :mv, options[:force] && '-f', '-i', "#{target}.nix-store-backup", target
         elsif File.file? target
-          puts "Swapping #{target}"
-          run :mv, optarg(:force, "-f"), target, "#{target}.nix-store-backup"
-          run :cp, optarg(:force, "-f"), "#{target}.nix-store-backup", target
-          run :chmod, "u+rw", target
+          sh! :mv, options[:force] && '-f', target, "#{target}.nix-store-backup"
+          if options[:to]
+            to = File.directory(options[:to]) ? "#{options[:to]}/#{File.basename(target)}" : options[:to]
+            puts "Swapping #{target} with symlink to #{to}"
+            sh :ln, '-sf', to, target
+          else
+            puts "Swapping #{target} with copy"
+            sh! :cp, options[:force] && '-f', "#{target}.nix-store-backup", target
+            sh! :chmod, "u+rw", target
+          end
         else
-          user_error "Not a valid target: #{target}"
+          raise UserError, "Not a valid target: #{target}"
         end
       end
     end
   end
 end
 
-load File.dirname($0) + '/hey-ops'
+# load File.dirname($0) + '/hey-ops'
 
 Hey.start ARGV

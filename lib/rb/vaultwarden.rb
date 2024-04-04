@@ -1,0 +1,2 @@
+# lib/vaultwarden.rb
+
