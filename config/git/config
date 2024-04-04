@@ -32,20 +32,6 @@
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	clean = git-lfs clean -- %f
-[url "https://github.com/"]
-    insteadOf = gh:
-[url "git@github.com:"]
-    insteadOf = ssh+gh:
-[url "git@github.com:hlissner/"]
-    insteadOf = gh:/
-[url "https://gitlab.com/"]
-    insteadOf = gl:
-[url "https://gist.github.com/"]
-    insteadOf = gist:
-[url "https://bitbucket.org/"]
-    insteadOf = bb:
-[url "https://git.henrik.io"]
-    insteadOf = my:
 [diff "lisp"]
 	xfuncname = "^(((;;;+ )|\\(|([ \t]+\\(((cl-|el-patch-)?def(un|var|macro|method|custom)|gb/))).*)$"
 [diff "org"]
