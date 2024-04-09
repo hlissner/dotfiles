@@ -140,6 +140,9 @@ in {
           #define bmag ${brightmagenta}
           #define bcyn ${brightcyan}
           #define bwht ${silver}
+
+          Xcursor*theme: ${cfg.gtk.cursorTheme}
+          Xcursor*size: 32
         '';
         "xtheme/05-colors".text = ''
           *.foreground: fg
