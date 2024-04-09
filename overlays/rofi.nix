@@ -5,8 +5,8 @@ final: prev: {
     src = prev.fetchFromGitHub {
       owner = "hlissner";
       repo = "rofi";
-      rev = "32ffee7ddd962a23624cccd2f4e059aa1a8a9e53";
-      sha256 = "0l71r79dj1n1bycnlllxqzkkq33lsg1jxy86c8n86b3i8hj4k2px";
+      rev = "634e4455e5a3904d975e69cfadfaa08bbf79cbc1";
+      sha256 = "1bsfkis66dmfmwcbvw802ih7fwih9vzj8v7iv7llmlyal25d6jpz";
       fetchSubmodules = true;
     };
   });
