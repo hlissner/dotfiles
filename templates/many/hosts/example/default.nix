@@ -40,7 +40,6 @@ with builtins;
       # awesomewm.enable = true;
       # bspwm.enable = true;
       # cosmic.enable = true;
-      # stumpwm.enable = true;
 
       apps = {
         # godot.enable = true;
