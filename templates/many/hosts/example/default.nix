@@ -37,7 +37,6 @@ with builtins;
     };
 
     desktop = {
-      # awesomewm.enable = true;
       # bspwm.enable = true;
       # cosmic.enable = true;
 

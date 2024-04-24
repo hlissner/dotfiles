@@ -35,7 +35,6 @@ with builtins;
     xdg.ssh.enable = true;
 
     desktop = {
-      # awesomewm.enable = true;
       bspwm.enable = true;
       # cosmic.enable = true;
 
