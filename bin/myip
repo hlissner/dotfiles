@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
-# Echos your local or WAN IP
+# Quickly echos your local or WAN IP
 
 if [[ $1 == -w ]]; then
   wan=1
