@@ -6,7 +6,9 @@ with lib;
 with self.lib;
 let inherit (self) dir binDir configDir themesDir hostDir inputs;
 in {
-  imports = mapModulesRec' ./modules import;
+  imports = (mapModulesRec' ./modules import) ++ [
+    ./themes
+  ];
 
   options = with types; {
     modules = {};

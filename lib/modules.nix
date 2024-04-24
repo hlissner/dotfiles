@@ -43,7 +43,9 @@ in rec {
         mapAttrsToList
           (k: _: "${dir}/${k}")
           (filterAttrs
-            (n: v: v == "directory" && !(hasPrefix "_" n))
+            (n: v: v == "directory"
+                   && !(hasPrefix "_" n)
+                   && !(pathExists "${dir}/${n}/.noload"))
             (readDir dir));
       files = attrValues (mapModules dir id);
       paths = files ++ concatLists (map (d: mapModulesRec' d id) dirs);
