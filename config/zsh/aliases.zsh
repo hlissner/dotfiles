@@ -40,8 +40,13 @@ alias rcpd='rcp --delete --delete-after'
 alias rcpu='rcp --chmod=go='
 alias rcpdu='rcpd --chmod=go='
 
-alias y='xclip -selection clipboard -in'
-alias p='xclip -selection clipboard -out'
+if (( $+commands[wl-copy] )); then
+  alias y='wl-copy'
+  alias p='wl-paste'
+elif (( $+commands[xclip] )); then
+  alias y='xclip -selection clipboard -in'
+  alias p='xclip -selection clipboard -out'
+fi
 
 alias jc='journalctl -xe'
 alias jcu='journalctl -xe -u'
@@ -75,24 +80,28 @@ if (( $+commands[udisksctl] )); then
   alias udu='udisksctl unmount -b'
 fi
 
-if (( ! $+commands[pry] )); then
-  # I don't always have ruby installed, but I often need access to a REPL
-  pry() { nix-shell -p rubyPackages_3_2.pry rubyPackages_3_2.pry-doc --run "pry $@" }
+if (( $+commands[nix] )); then
+  alias n=nix
+  alias ne=nix-env
+  alias nf='nix flake'
+  alias nfm='nix flake metadata'
+  alias nfs='nix flake show'
+  alias nr='nix repl'
+  alias nrp='nix repl "<nixpkgs>"'
+  alias ns='nix search'
+  alias nsp='nix search nixpkgs'
+fi
+
+if (( $+commands[xdg-open] )); then
+  alias open=xdg-open
 fi
 
 autoload -U zmv
 
-function take {
+function mkdir! {
   mkdir "$1" && cd "$1";
 }; compdef take=mkdir
 
 function zman {
   PAGER="less -g -I -s '+/^       "$1"'" man zshall;
 }
-
-# Create a reminder with human-readable durations, e.g. 15m, 1h, 40s, etc
-function r {
-  zmodload -F zsh/sched b:sched
-  local time=$1; shift
-  sched "$time" "notify-send --urgency=critical 'Reminder' '$@'";
-}; compdef r=sched

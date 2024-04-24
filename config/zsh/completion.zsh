@@ -1,4 +1,4 @@
-fpath+=( $ZDOTDIR/completions )
+fpath+=( "${0:a:h}/zsh" $ZDOTDIR/completions )
 
 # Don't offer history completion; we have fzf, C-r, and
 # zsh-history-substring-search for that.
@@ -14,6 +14,7 @@ zstyle ':bracketed-paste-magic' active-widgets '.self-*'
 
 # Options
 setopt COMPLETE_IN_WORD    # Complete from both ends of a word.
+setopt EXTENDED_GLOB       # Use extended globbing syntax.
 setopt PATH_DIRS           # Perform path search even on command names with slashes.
 setopt AUTO_MENU           # Show completion menu on a successive tab press.
 setopt AUTO_LIST           # Automatically list choices on ambiguous completion.
@@ -21,18 +22,25 @@ setopt AUTO_LIST           # Automatically list choices on ambiguous completion.
 # setopt AUTO_PARAM_KEYS
 # setopt FLOW_CONTROL        # Disable start/stop characters in shell editor.
 unsetopt MENU_COMPLETE     # Do not autoselect the first completion entry.
-unsetopt COMPLETE_ALIASES  # Completion for aliases
+unsetopt COMPLETE_ALIASES  # Disabling this enables completion for aliases
 # unsetopt ALWAYS_TO_END     # Move cursor to the end of a completed word.
 unsetopt CASE_GLOB
 
+LS_COLORS=${LS_COLORS:-'di=34:ln=35:so=32:pi=33:ex=31:bd=36;01:cd=33;01:su=31;40;07:sg=36;40;07:tw=32;40;07:ow=33;40;07:'}
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+
 # Fuzzy match mistyped completions.
-zstyle ':completion:*' completer _complete _list _match _approximate
+zstyle ':completion:*' completer _complete _match _approximate _list
+zstyle ':completion:*' matcher-list 'm:{[:lower:]-}={[:upper:]_}' 'r:[[:ascii:]]||[[:ascii:]]=** r:|?=**'
 zstyle ':completion:*:match:*' original only
 zstyle ':completion:*:approximate:*' max-errors 1 numeric
+# Especially great for expensive completion (e.g. apt, systemd, etc)
+zstyle ':completion::complete:*' use-cache on
+zstyle ':completion::complete:*' cache-path "$XDG_CACHE_HOME/zsh/zcompcache"
 # Increase the number of errors based on the length of the typed word.
 zstyle -e ':completion:*:approximate:*' max-errors 'reply=($((($#PREFIX+$#SUFFIX)/3))numeric)'
 # Don't complete unavailable commands.
-zstyle ':completion:*:functions' ignored-patterns '(_*|.*|pre(cmd|exec))'
+zstyle ':completion:*:(functions|parameters)' ignored-patterns '(_*|.*|-*|+*|autosuggest-*|pre(cmd|exec))'
 # Group matches and describe.
 zstyle ':completion:*:corrections' format '%B%F{green}%d (errors: %e)%f%b'
 zstyle ':completion:*:messages' format '%B%F{yellow}%d%f%b'
@@ -56,8 +64,8 @@ zstyle ':completion::*:(-command-|export):*' fake-parameters ${${${_comps[(I)-va
 zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters
 # Complete hostnames from ssh files too
 zstyle -e ':completion:*:hosts' hosts 'reply=(
-  ${=${=${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) 2>/dev/null)"}%%[#| ]*}//\]:[0-9]*/ }//,/ }//\[/ }
-  ${=${${${${(@M)${(f)"$(cat ~/.ssh/config 2>/dev/null)"}:#Host *}#Host }:#*\**}:#*\?*}}
+  ${=${=${=${${(f)"$(cat {/etc/ssh_,~/.{config/,}ssh/known_}hosts(|2)(N) 2>/dev/null)"}%%[#| ]*}//\]:[0-9]*/ }//,/ }//\[/ }
+  ${=${${${${(@M)${(f)"$(cat ~/.{config/,}ssh/config 2>/dev/null)"}:#Host *}#Host }:#*\**}:#*\?*}}
 )'
 # Don't complete uninteresting users
 zstyle ':completion:*:users' ignored-patterns \

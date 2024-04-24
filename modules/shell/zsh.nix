@@ -38,7 +38,7 @@ in {
     };
 
     # Some interactive shell utilies I find universally indispensible.
-    user.packages = with pkgs; [
+    user.packages = with pkgs.unstable; [
       at
       bc
       bat

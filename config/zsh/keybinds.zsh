@@ -2,8 +2,9 @@
 bindkey -M viins '^a' beginning-of-line
 bindkey -M viins '^d' push-line-or-edit
 
-autoload -z edit-command-line
-bindkey "^x^e" edit-command-line
+# Vanilla behavior is to move by characters
+bindkey -M viins '^b' backward-word
+bindkey -M viins '^f' forward-word
 
 # Up arrow:
 bindkey '\e[A' history-substring-search-up

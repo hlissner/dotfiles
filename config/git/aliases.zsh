@@ -2,7 +2,7 @@
 
 g() { [[ $# = 0 ]] && git status --short . || git $*; }
 
-alias cdg='cd `git rev-parse --show-toplevel`'
+alias cdd='cd `git rev-parse --show-toplevel`'
 alias git='noglob git'
 alias ga='git add'
 alias gap='git add --patch'
