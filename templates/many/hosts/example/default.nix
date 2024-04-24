@@ -57,7 +57,6 @@ with builtins;
         # brave.enable = true;
         # default = "firefox";
         # firefox.enable = true;
-        # qutebrowser.enable = true;
       };
       media = {
         # cad.enable = true;

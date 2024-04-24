@@ -64,12 +64,6 @@ in {
           firefox.userChrome = concatMapStringsSep "\n" readFile [
             ./config/firefox/userChrome.css
           ];
-          qutebrowser.userStyles = concatMapStringsSep "\n" readFile
-            (map toCSSFile [
-              ./config/qutebrowser/userstyles/monospace-textareas.scss
-              ./config/qutebrowser/userstyles/stackoverflow.scss
-              ./config/qutebrowser/userstyles/xkcd.scss
-            ]);
         };
       };
     }
@@ -250,9 +244,6 @@ in {
         })
         (mkIf desktop.media.graphics.vector.enable {
           "inkscape/templates/default.svg".source = ./config/inkscape/default-template.svg;
-        })
-        (mkIf desktop.browsers.qutebrowser.enable {
-          "qutebrowser/extra/theme.py".source = ./config/qutebrowser/theme.py;
         })
       ];
     })
