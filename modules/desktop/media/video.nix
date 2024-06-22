@@ -21,14 +21,14 @@ in {
 
   config = mkIf cfg.enable (mkMerge [
     (mkIf cfg.capture.enable {
-      user.packages = [
-        pkgs.obs-studio  # For streaming/recording footage
+      user.packages = with pkgs.unstable; [
+        obs-studio  # For streaming/recording footage
       ];
     })
 
     (mkIf cfg.editor.enable {
-      user.packages = [
-        pkgs.unstable.davinci-resolve  # For editing it
+      user.packages = with pkgs.unstable; [
+        davinci-resolve  # For editing it
       ];
     })
 

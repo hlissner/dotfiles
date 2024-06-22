@@ -12,4 +12,8 @@ with self.lib;
     hardware = mkOpt (listOf str) [];
     networks = mkOpt (listOf str) [];
   };
+
+  config = {
+    hey.info.profiles = config.modules.profiles;
+  };
 }

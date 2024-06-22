@@ -22,6 +22,9 @@ in rec {
   mapModules' = dir: fn:
     attrValues (mapModules dir fn);
 
+  # dir -> fn :: attrs (attrs (attrs ...))
+  #
+  # Creates a file tree where each leaf is the result of FN.
   mapModulesRec = dir: fn:
     attrs.mapFilterAttrs'
       (n: v:
@@ -37,6 +40,9 @@ in rec {
       (n: v: v != null && !(hasPrefix "_" n))
       (readDir dir);
 
+  # dir -> fn :: listOf paths
+  #
+  # Returns a list of all files under DIR, mapped by FN.
   mapModulesRec' = dir: fn:
     let
       dirs =

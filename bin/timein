@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-open=open
-[[ $OSTYPE == linux* ]] && open=xdg-open
-
-$open https://time.is/$1 2>/dev/null &

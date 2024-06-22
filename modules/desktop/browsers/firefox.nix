@@ -7,48 +7,46 @@
 { self, lib, config, options, pkgs, ... }:
 
 with lib;
-let
-  inherit (self) configDir;
-  cfg = config.modules.desktop.browsers.firefox;
+with self.lib;
+let cfg = config.modules.desktop.browsers.firefox;
 in {
-  options.modules.desktop.browsers.firefox =
-    with self.lib.options; with types; {
-      enable = mkBoolOpt false;
-      profileName = mkOpt str config.user.name;
+  options.modules.desktop.browsers.firefox = with types; {
+    enable = mkBoolOpt false;
+    profileName = mkOpt str config.user.name;
 
-      sharedSettings = mkOpt' (attrsOf (oneOf [ bool int str ])) {} ''
-        Firefox preferences to set in <filename>user.js</filename>
-      '';
-      extraConfig = mkOpt' lines "" ''
-        Extra lines to add to <filename>user.js</filename>
-      '';
+    settings = mkOpt' (attrsOf (oneOf [ bool int str ])) {} ''
+      Firefox preferences to set in <filename>user.js</filename>
+    '';
+    extraConfig = mkOpt' lines "" ''
+      Extra lines to add to <filename>user.js</filename>
+    '';
 
-      userChrome  = mkOpt' lines "" "CSS Styles for Firefox's interface";
-      userContent = mkOpt' lines "" "Global CSS Styles for websites";
+    userChrome  = mkOpt' lines "" "CSS Styles for Firefox's interface";
+    userContent = mkOpt' lines "" "Global CSS Styles for websites";
 
-      # TODO
-      # profiles = attrsOf (submodule ({ config, ... }: {
-      #   options = {
-      #     name = mkOpt str config._module.args.name;
-      #     default = mkOpt bool false;
-      #     settings = mkOpt' (attrsOf (oneOf [ bool int str ])) {} ''
-      #       Firefox preferences to set in <filename>user.js</filename>
-      #     '';
-      #     extraConfig = mkOpt' lines "" ''
-      #       Extra lines to add to <filename>user.js</filename>
-      #     '';
-      #     userChrome  = mkOpt' lines "" "CSS Styles for Firefox's interface";
-      #     userContent = mkOpt' lines "" "Global CSS Styles for websites";
-      #   };
-      # }));
-    };
+    # TODO
+    # profiles = attrsOf (submodule ({ config, ... }: {
+    #   options = {
+    #     name = mkOpt str config._module.args.name;
+    #     default = mkOpt bool false;
+    #     settings = mkOpt' (attrsOf (oneOf [ bool int str ])) {} ''
+    #       Firefox preferences to set in <filename>user.js</filename>
+    #     '';
+    #     extraConfig = mkOpt' lines "" ''
+    #       Extra lines to add to <filename>user.js</filename>
+    #     '';
+    #     userChrome  = mkOpt' lines "" "CSS Styles for Firefox's interface";
+    #     userContent = mkOpt' lines "" "Global CSS Styles for websites";
+    #   };
+    # }));
+  };
 
   config = mkIf cfg.enable {
     programs.firefox = {
       enable = true;
-      nativeMessagingHosts.packages = with pkgs; [
-        tridactyl-native
-      ];
+      # nativeMessagingHosts.packages = with pkgs; [
+      #   tridactyl-native
+      # ];
       policies = {
         DontCheckDefaultBrowser = true;
         DisablePocket = true;
@@ -64,9 +62,17 @@ in {
       '')
     ];
 
-    modules.desktop.browsers.firefox.sharedSettings = {
-      # Default to dark theme in DevTools panel
-      "devtools.theme" = "dark";
+    modules.desktop.browsers.firefox.settings = {
+      # Allow svgs to take on theme colors
+      "svg.context-properties.content.enabled" = true;
+      # Pressing TAB from address bar shouldn't cycle through buttons before
+      # switching focus back to the webppage. Most of those buttons have
+      # dedicated shortcuts, so I don't need this level of tabstop granularity.
+      "browser.toolbars.keyboard_navigation" = false;
+
+      # Seriously. Stop popping up on every damn page. If I want it translated,
+      # I know where to find gtranslate/deepl/whatever!
+      "browser.translations.automaticallyPopup" = false;
       # Enable ETP for decent security (makes firefox containers and many
       # common security/privacy add-ons redundant).
       "browser.contentblocking.category" = "strict";
@@ -131,7 +137,6 @@ in {
       "browser.onboarding.enabled" = false;      # "New to Firefox? Let's get started!" tour
       "browser.aboutConfig.showWarning" = false; # Warning when opening about:config
       "media.videocontrols.picture-in-picture.video-toggle.enabled" = false;
-      "media.hardwaremediakeys.enabled" = false; # stop ~/.mozilla/firefox/firefox-mpris dir
       "extensions.pocket.enabled" = false;
       "extensions.unifiedExtensions.enabled" = false;
       "extensions.shield-recipe-client.enabled" = false;
@@ -224,23 +229,23 @@ in {
     };
 
     home =
-      let firefoxDir = "${config.modules.xdg.fakeHomeDir}/.mozilla/firefox";
+      let firefoxDir = "${config.home.fakeDir}/.mozilla/firefox";
       in {
-        configFile."tridactyl" = {
-          source = "${configDir}/tridactyl";
-          recursive = true;
-        };
+        # configFile."tridactyl" = {
+        #   source = "${self.configDir}/tridactyl";
+        #   recursive = true;
+        # };
 
         # programs.firefox.nativeMessagingHosts.tridactyl doesn't seem to be
         # enough, so install the native messenger manually.
-        fakeFile.".mozilla/native-messaging-hosts/tridactyl.json".source =
-          let version = "0.3.6";
-              manifestURL = "https://raw.githubusercontent.com/tridactyl/native_messenger/${version}/tridactyl.json";
-              manifest = pkgs.runCommand "generateTridactylManifest" {} ''
-              cp "${builtins.fetchurl manifestURL}" "$out"
-              sed -i.bak "s%REPLACE_ME_WITH_SED%${tridactyl-native}%" "$out"
-            '';
-          in "${pkgs.tridactyl-native}/lib/mozilla/native-messaging-hosts/tridactyl.json";
+        # fakeFile.".mozilla/native-messaging-hosts/tridactyl.json".source =
+        #   let version = "0.3.6";
+        #       manifestURL = "https://raw.githubusercontent.com/tridactyl/native_messenger/${version}/tridactyl.json";
+        #       manifest = pkgs.runCommand "generateTridactylManifest" {} ''
+        #       cp "${builtins.fetchurl manifestURL}" "$out"
+        #       sed -i.bak "s%REPLACE_ME_WITH_SED%${tridactyl-native}%" "$out"
+        #     '';
+        #   in "${pkgs.tridactyl-native}/lib/mozilla/native-messaging-hosts/tridactyl.json";
 
         # Use fixed profile name so it can be targeted in themes and scripts
         file."${firefoxDir}/profiles.ini".text = ''
@@ -256,24 +261,20 @@ in {
         '';
 
         file."${firefoxDir}/${cfg.profileName}.default/user.js" =
-          mkIf (cfg.sharedSettings != {} || cfg.extraConfig != "") {
+          mkIf (cfg.settings != {} || cfg.extraConfig != "") {
             text = ''
               ${concatStrings (mapAttrsToList (name: value: ''
                 user_pref("${name}", ${builtins.toJSON value});
-              '') cfg.sharedSettings)}
+              '') cfg.settings)}
               ${cfg.extraConfig}
             '';
           };
 
         file."${firefoxDir}/${cfg.profileName}.default/chrome/userChrome.css" =
-          mkIf (cfg.userChrome != "") {
-            text = cfg.userChrome;
-          };
+          mkIf (cfg.userChrome != "") { text = cfg.userChrome; };
 
         file."${firefoxDir}/${cfg.profileName}.default/chrome/userContent.css" =
-          mkIf (cfg.userContent != "") {
-            text = cfg.userContent;
-          };
+          mkIf (cfg.userContent != "") { text = cfg.userContent; };
       };
   };
 }

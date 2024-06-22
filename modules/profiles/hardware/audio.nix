@@ -11,10 +11,9 @@ mkMerge [
       pulse.enable = true;
     };
 
+    sound.enable = false;
     security.rtkit.enable = true;
     user.extraGroups = [ "audio" ];
-    # for CLI volume control and volume persistence across reboots
-    sound.enable = false;
 
     ## easyEffects
     programs.dconf.enable = true;

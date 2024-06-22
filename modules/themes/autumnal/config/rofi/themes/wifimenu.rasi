@@ -1,0 +1,21 @@
+/* -*- mode: css; -*- */
+@import "config.rasi"
+
+/* configuration { */
+/*   show-icons: false; */
+/* } */
+
+/* * { font: @font-sans-0; } */
+/* entry, prompt { font: @font-sans-2; } */
+
+icon {
+  filename: "network-wireless";
+}
+
+entry {
+  placeholder: "Select network...";
+}
+
+element-text {
+  tab-stops: [74ch];
+}

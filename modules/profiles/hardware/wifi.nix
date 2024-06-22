@@ -13,15 +13,17 @@ in mkIf (elem "wifi" config.modules.profiles.hardware) {
 
   networking.supplicant = listToAttrs (map
     (int: nameValuePair int {
-      configFile.path = "/etc/wpa_supplicant.d/${int}.conf";
+      # Allow wpa_(cli|gui) to modify networks list
       userControlled = {
-        # Allow wpa_(cli|gui) to modify networks list
         enable = true;
         group = "users";
       };
+      configFile = {
+        path = "/etc/wpa_supplicant.d/${int}.conf";
+        writable = true;
+      };
       extraConf = ''
         ap_scan=1
-        filter_ssids=1
         p2p_disabled=1
         okc=1
       '';

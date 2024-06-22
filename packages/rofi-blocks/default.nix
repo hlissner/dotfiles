@@ -20,10 +20,10 @@ stdenv.mkDerivation rec {
   name = "rofi-blocks";
 
   src = fetchFromGitHub {
-    owner = "hlissner";
+    owner = "OmarCastro";
     repo = name;
-    rev = "f784a6786ea5c4e4e9db505389b32723f8f0aff9";
-    sha256 = "0vkf75aryr75x22v6z3yn87vschh3xb0f7h2g72p466lixrdfi70";
+    rev = "1708f2cb50e593e06cc22eedeecbb4b41584668d";
+    sha256 = "0rg007iwws4x6057y28rrkfm931z75x82prms3jzk8q14xxlvvcc";
   };
 
   nativeBuildInputs = [
@@ -45,7 +45,7 @@ stdenv.mkDerivation rec {
 
   meta = with lib; {
     description = "Control rofi content through an external process.";
-    homepage = "https://github.com/hlissner/rofi-blocks";
+    homepage = "https://github.com/OmarCastro/rofi-blocks";
     license = licenses.gpl3;
     maintainers = [];
     platforms = with platforms; linux;

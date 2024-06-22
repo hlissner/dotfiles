@@ -7,53 +7,79 @@ super + w; super + b
 # Attach to a detached session. If none is available create a new one, rather
 # than attach to one that is already attached to elsewhere.
 super + Return
-	xst -e bash -c "(tmux ls | grep -qEv 'attached|xst-scratch' && tmux at) || tmux"
+	xst -e bash -c "(tmux ls | grep -qEv 'attached|xst-scratch' && tmux at) || tmux" || /run/current-system/sw/bin/xterm
 # Start a plain ol' terminal
 super + ctrl + Return
-	xst
+	xst || /run/current-system/sw/bin/xterm
+# Emergency console
 super + ctrl + alt + Return
-	xterm
+	/run/current-system/sw/bin/xterm bash
 
 # Open a disposable, floating terminal window, for quick shell commands.
 super + grave
-	$DOTFILES_BIN/gui/xst-scratch
-
-# Open a disposable scratch buffer in a floating Emacs window, to run arbitrary
-# code or quickly note something down.
-super + shift + grave
-	emacsclient --eval "(open-scratch-frame)"
+	hey .xst-scratch
 
 # Invoke emacs-everywhere at point.
 super + e
     emacsclient --eval "(emacs-everywhere)"
+super + ctrl + e
+	emacsclient --eval "(open-scratch-frame)"
 
+# Rofi commands
 super + space
-	$DOTFILES_BIN/rofi/appmenu
+	hey @rofi menu
 
 super + Tab
-	$DOTFILES_BIN/rofi/windowmenu
+	hey @rofi window.menu
 
-super + p
-	$DOTFILES_BIN/rofi/bwmenu
-
-super + shift + p
-	$DOTFILES_BIN/rofi/bwmenu -r
+super + equal
+	hey @rofi menus/calc.rb
 
 super + slash
-	$DOTFILES_BIN/rofi/filemenu -x
+	hey @rofi menus/file.rb ~
+
+# screenshot region
+Print
+    hey @rofi menus/screen.rb --capture
+# draw on the screen toggle
+super + Print
+    hey @rofi menus/screen.rb --record
+# more comprehensive screen{cap,cast,draw} menu
+super + ctrl + Print
+    hey @rofi menus/screen.rb
+# Toggle drawing on the screen
+super + d
+    hey @rofi menus/screen.rb --draw
+
+# TODO
+# super + i
+# 	hey @rofi menus/insert.rb
+
+# super + c
+# 	hey @rofi menus/paste.rb -c
+
+# super + v
+# 	hey @rofi menus/paste.rb
+
+# super + p
+# 	hey @rofi menus/vaultwarden.rb
+
+# super + shift + p
+# 	hey @rofi menus/vaultwarden.rb -r
 
 super + Escape
-	pkill -USR1 -x sxhkd
+    dunstctl close
 
-super + alt + Escape
-	bspc quit
+super + shift + r
+    hey reload
+	pkill -USR1 -x sxhkd; notify-send "Reloaded sxhkd"
 
-# Toggle polybar while Meta is down
+# Switch clock with system stats while Meta is down
 @Super_L
-	polybar-msg cmd hide
+	hey theme polybar run 0
 
 Super_L
-	polybar-msg cmd show
+	hey theme polybar run 1
 
 
 #
@@ -69,11 +95,17 @@ super + w; super + t
 
 # Focus window directionally; w/ ctrl = move by monitor
 super + {_,ctrl +}{h,j,k,l}
-	$DOTFILES/config/bspwm/bin/focus {_,-m }{west,south,north,east}
+	hey .focus {_,-m }{west,south,north,east}
 
 # Swap windows directionally; w/ ctrl = across monitors
 super + shift + {_,ctrl +}{h,j,k,l}
-	$DOTFILES/config/bspwm/bin/swap {_,-m }{west,south,north,east}
+	hey .swap {_,-m }{west,south,north,east}
+
+# Resize or contract a window i3-style
+super + alt + {h,j,k,l}
+	hey .resize {x -, y +, y -, x +} 40
+super + alt + ctrl + {h,j,k,l}
+	hey .resize {x -, y +, y -, x +} 160
 
 
 #
@@ -86,18 +118,6 @@ super + q; super + q
 # Force kill app
 super + q; super + k
     bspc node -k
-
-# expand a window by moving one of its side outward
-super + {Left,Down,Up,Right}
-	bspc node -z {left -40 0,bottom 0 40,top 0 -40,right 40 0}
-
-# contract a window by moving one of its side inward
-super + shift + {Left,Down,Up,Right}
-	bspc node -z {right -40 0,top 0 40,bottom 0 -40,left 40 0}
-
-# move a floating window
-super + ctrl + {Left,Down,Up,Right}
-	bspc node -v {-40 0,0 40,0 -40,40 0}
 
 
 #
@@ -115,34 +135,24 @@ super + shift + {1-9,0}
 #
 ## Media keys
 
-# screenshot region
-Print
-	$DOTFILES_BIN/gui/scrcap
-# screencast region to mp4
-super + Print
-	$DOTFILES_BIN/gui/scrrec -s ~/recordings/$(date +%F-%T).mp4
-# screencast region to gif
-super + ctrl + Print
-	$DOTFILES_BIN/gui/scrrec -s ~/recordings/$(date +%F-%T).gif
-
 XF86MonBrightnessUp
-	$DOTFILES_BIN/gui/osd brightness up
+	hey .osd brightness up
 XF86MonBrightnessDown
-	$DOTFILES_BIN/gui/osd brightness down
+	hey .osd brightness down
 
 XF86AudioMute
-	$DOTFILES_BIN/gui/osd master toggle
+	hey .osd master toggle
 XF86AudioRaiseVolume
-	$DOTFILES_BIN/gui/osd master up
+	hey .osd master up
 XF86AudioLowerVolume
-	$DOTFILES_BIN/gui/osd master down
+	hey .osd master down
 
 super + XF86AudioMute
-	$DOTFILES_BIN/gui/osd capture toggle
+	hey .osd capture toggle
 super + XF86AudioRaiseVolume
-	$DOTFILES_BIN/gui/osd capture up
+	hey .osd capture up
 super + XF86AudioLowerVolume
-	$DOTFILES_BIN/gui/osd capture down
+	hey .osd capture down
 
 XF86Audio{Play,Pause}
 	playerctl -p spotify play-pause

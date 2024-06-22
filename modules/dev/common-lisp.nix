@@ -1,6 +1,6 @@
 # modules/dev/common-lisp.nix --- https://common-lisp.net/
 #
-# Mostly for my stumpwm config, and the occasional dip into lisp gamedev.
+# Mostly for the occasional dip into lisp gamedev.
 
 { self, lib, config, options, pkgs, ... }:
 

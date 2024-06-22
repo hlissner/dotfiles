@@ -7,8 +7,9 @@ let cfg = config.modules.profiles;
 in mkIf (username == "hlissner") (mkMerge [
   {
     user.name = username;
+    user.description = "Henrik";
     i18n.defaultLocale = mkDefault "en_US.UTF-8";
-    modules.shell.vaultwarden.config.server = "vault.home.lissner.net";
+    modules.shell.vaultwarden.settings.server = "vault.home.lissner.net";
 
     # Be slightly more restrictive about SSH access to workstations, which I
     # only need LAN access to, if ever. Other systems, particularly servers, are

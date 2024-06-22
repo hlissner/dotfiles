@@ -13,7 +13,9 @@ with builtins;
 
   ## Flake modules
   modules = {
-    theme.active = "alucard";
+    theme = {
+      active = "autumnal";
+    };
     xdg.ssh.enable = true;
 
     profiles = {
@@ -21,6 +23,7 @@ with builtins;
       user = "hlissner";
       networks = [ "ca" "wg0" ];
       hardware = [
+        "bluetooth"
         "wifi"
         "pc/laptop"
         "audio"
@@ -29,11 +32,32 @@ with builtins;
     };
 
     desktop = {
-      bspwm.enable = true;
+      # X only
+      # bspwm.enable = true;
+      # term.default = "xst";
+      # term.st.enable = true;
+
+      # Wayland only
+      hyprland = rec {
+        enable = true;
+        monitors = [ { output = "eDP-1"; primary = true; } ];
+        idle.time = 300;
+        extraConfig = ''
+          workspace=special:term,gapsin:3,gapsout:100,on-created-empty:hey .scratch term
+          workspace=special:pad,gapsin:3,gapsout:40 80 40 80
+
+          # trigger when the lid is up
+          bindl=, switch:off:Lid Switch, exec, hyprctl dispatch dpms on
+          # trigger when the lid is down
+          bindl=, switch:on:Lid Switch, exec, hyprctl dispatch dpms off && hey .lock --no-fade-in --no-fade-out
+        '';
+      };
 
       apps.rofi.enable = true;
+      term.default = "foot";
+      term.foot.enable = true;
+
       apps.spotify.enable = true;
-      apps.steam.enable = true;
       browsers.default = "firefox";
       browsers.firefox.enable = true;
       media.cad.enable = true;
@@ -41,8 +65,6 @@ with builtins;
       media.graphics.enable = true;
       media.video.enable = true;
       media.video.capture.enable = true;
-      term.default = "xst";
-      term.st.enable = true;
     };
     dev = {
       cc.enable = true;
@@ -80,16 +102,27 @@ with builtins;
   hardware = { pkgs, ... }: {
     networking.wireless.interfaces = [ "wlp2s0" ];
 
-    # Control monitor brightness
-    programs.light.enable = true;
-    user.extraGroups = [ "video" ];
-
     boot.initrd = {
       kernelModules = [ "dm-snapshot" ];
       luks.devices.home = {
         device = "/dev/nvme0n1p8";
         allowDiscards = true;
       };
+    };
+
+    # tlp is enabled by nixos-hardware.dell-xps-13-9370
+    services.tlp.settings = {
+      CPU_SCALING_GOVERNOR_ON_BAT="powersave";
+      CPU_SCALING_GOVERNOR_ON_AC="ondemand";
+      CPU_MAX_PERF_ON_AC=100;
+      CPU_MAX_PERF_ON_BAT=50;
+
+      # My laptop is always plugged in wherever I'm willing to use it, so I'll
+      # value battery lifespan over runtime. Run `tlp fullcharge` to temporarily
+      # force full charge.
+      # @see https://linrunner.de/tlp/faq/battery.html#how-to-choose-good-battery-charge-thresholds
+      START_CHARGE_THRESH_BAT0=40;
+      STOP_CHARGE_THRESH_BAT0=50;
     };
 
     fileSystems = {

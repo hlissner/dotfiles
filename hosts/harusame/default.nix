@@ -9,7 +9,7 @@ with builtins;
 
   ## Dotfiles modules
   modules = {
-    theme.active = "alucard";
+    theme.active = "autumnal";
     xdg.ssh.enable = true;
 
     profiles = {
@@ -26,7 +26,15 @@ with builtins;
     };
 
     desktop = {
+      # X only
       bspwm.enable = true;
+      term.default = "xst";
+      term.st.enable = true;
+
+      # Wayland only
+      # hyprland.enable = true;
+      # term.default = "foot";
+      # term.foot.enable = true;
 
       apps.rofi.enable = true;
       apps.spotify.enable = true;
@@ -35,8 +43,6 @@ with builtins;
         libraryDir = "/media/games/SteamLibrary";
       };
       apps.godot.enable = true;
-      apps.thunar.enable = true;
-      apps.gromit.enable = true;
       browsers.default = "firefox";
       browsers.firefox.enable = true;
       media.cad.enable = true;
@@ -44,8 +50,6 @@ with builtins;
       media.graphics.enable = true;
       media.video.enable = true;
       media.video.capture.enable = true;
-      term.default = "xst";
-      term.st.enable = true;
     };
     dev = {
       cc.enable = true;

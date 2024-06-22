@@ -1,36 +1,73 @@
-#compdef hey
+#compdef _hey hey
 
-_hey_dispatch () {
-    local cmd="$@"
-    local offset=$#
-    CURRENT=$((CURRENT-$offset))
-    words=($cmd "${words[$((2 + offset)),-1]}")
-    _$cmd
-}
+function __list_commands {
+  local -aU subcmds
+  local line dir next help command
+  dir="$1"
+  # the parens after the glob contains "glob qualifiers" (see man zshexpn):
+  # * executable
+  # - follow symlinks
+  # , "or" separator
+  # / directories
+  for file in "$dir"/*(-*,/); do
+    command=${file:A:t:r}
 
-_hey_command_list () {
-    hey | sed '1,/Available commands:/d' | awk '{ print $1 }'
-}
-
-_hey () {
-    local -a commands
-    IFS=$'\n' commands=($(_hey_command_list))
-
-    if (( CURRENT == 2 )); then
-        _describe -t commands "hey commands" commands
-        return
+    if [[ $file == _* || ! -x $file ]]; then
+      continue
+    elif [[ -d $file ]]; then
+      [[ -n ${file:r}*(.xN[1]) ]] && continue
+      [[ -f $file/.docs ]] && help=$(head -n1 $file/.docs)
+    else
+      help=$(head -n+2 $file | tail -n-1 | sed -e 's/^# //')
     fi
-    integer ret=1
-    case ${words[2]} in
-        ch|channel) _hey_dispatch nix-channel ;;
-        b|build)    _hey_dispatch nix-build ;;
-        ch|check)   _hey_dispatch nix flake check ;;
-        sh|show)    _hey_dispatch nix flake show ;;
-        s|search)   _hey_dispatch nix search nixpkgs ;;
-        -*)         _hey_dispatch nix-env ;;
-        *)          _message "Command not found: ${words[2]}" ;;
-    esac
-    return ret
+
+    subcmds+=("$command:\"$help\"")
+  done
+
+  _arguments -C ": :(($subcmds))" "*::arg:->args"
+
+  case "$words[1]" in
+    sync) __hey_sync ;;
+    swap) __hey_swap ;;
+  esac
+
+
+  next="$dir/${line[1]}"
+  if [[ ! -z $line[1] && -d "$next" ]]; then
+    __list_commands "$next"
+  elif [[ ! -z $line[1] && -x "$next" ]]; then
+    # You could imagine wanting to customize the '*:file:_files' fallback
+    # at some point, but I'm not going to worry about that for now.
+    _arguments -A '-*' \
+      '--help[print help text]' \
+      '--cat[print script contents]' \
+      '--which[print script path]' \
+      '--edit[open script for editing]' \
+      '--really[suppress special argument handling]' \
+      '*:file:_files'
+  elif [[ ! -z $line[1] && ! -f "$next" ]]; then
+    _arguments "--new[create a new script]"
+  fi
 }
 
-_hey
+function __hey_sync {
+  if [[ $words[2] == -- ]]; then
+    _nixos-rebuild $@
+  else
+    _arguments -C \
+      '--fast[Rebuild the system config quickly]' \
+      '(-t --theme)'{-t,--theme}'[Override the enabled theme]' \
+      '(-p --profile)'{-p,--profile}'[Target a specific nixos profile]' \
+      "*::arg:->args"
+  fi
+}
+
+function __hey_swap {
+  _alternative \
+    'args:commands:((all\:"All files" ls\:"List swapped files"))' \
+    'files:filename:_files'
+  # _arguments -C \
+  #   '-u[Unswap the files]' \
+}
+
+__list_commands ${DOTFILES_HOME}/bin/hey.d

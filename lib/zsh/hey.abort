@@ -1,0 +1,4 @@
+#!/usr/bin/env zsh
+
+hey.error $@
+exit 1

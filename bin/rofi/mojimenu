@@ -1,9 +1,0 @@
-#!/usr/bin/env cached-nix-shell
-#! nix-shell -p rofimoji -i bash
-
-rofimoji --action type \
-    --selector=rofi \
-    --selector-args="-theme mojimenu" \
-    --files emojis latin-1_supplement math
-
-    # --hide-descriptions \

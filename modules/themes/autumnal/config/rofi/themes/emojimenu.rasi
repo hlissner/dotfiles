@@ -1,0 +1,14 @@
+/* -*- mode: css; -*- */
+@import "config.rasi"
+
+configuration {
+  show-icons: false;
+}
+
+window {
+  columns: 6;
+}
+
+icon {
+  filename: "insert-emoticon-symbolic";
+}

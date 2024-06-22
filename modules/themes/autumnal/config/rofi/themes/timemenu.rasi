@@ -1,0 +1,10 @@
+/** -*- mode: css; -*- **/
+@import "config.rasi"
+
+icon {
+  filename: "accessories-clock";
+}
+
+entry {
+  placeholder: "Display time in...";
+}

@@ -9,5 +9,5 @@ mkIf (elem "ergodox" config.modules.profiles.hardware) {
 
   user.extraGroups = [ "plugdev" ];
 
-  services.xserver.xkbOptions = "compose:ralt";
+  services.xserver.xkb.options = "compose:ralt";
 }

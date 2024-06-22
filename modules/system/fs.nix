@@ -6,8 +6,7 @@
 
 with lib;
 with self.lib;
-let inherit (self) binDir configDir;
-    cfg = config.modules.system.fs;
+let cfg = config.modules.system.fs;
 in {
   options.modules.system.fs = {
     enable = mkBoolOpt true;
@@ -17,7 +16,7 @@ in {
 
   config = mkIf cfg.enable (mkMerge [
     {
-      # Support for more filesystems, mostly to support external drives
+      # Support for more filesystems (for external drives)
       environment.systemPackages = with pkgs; [
         exfat       # ExFAT drives
         ntfs3g      # Windows drives
@@ -26,23 +25,10 @@ in {
       ];
 
       # A daemon that lets us mount/poll disks in userspace. I'd prefer udevil,
-      # as it's daemon-less, but it's unmaintained and doesn't understand
+      # since it's daemon-less, but it's unmaintained and doesn't understand
       # encrypted filesystems.
       services.udisks2.enable = true;
     }
-
-    (mkIf config.modules.desktop.apps.rofi.enable {
-      environment.systemPackages = with pkgs; [
-        (mkLauncherEntry "Mount device" {
-          icon = "drive-harddisk";
-          exec = "${binDir}/rofi/mountmenu mount";
-        })
-        (mkLauncherEntry "Unmount device" {
-          icon = "drive-removable-media";
-          exec = "${binDir}/rofi/mountmenu unmount";
-        })
-      ];
-    })
 
     (mkIf cfg.zfs.enable (mkMerge [
       {

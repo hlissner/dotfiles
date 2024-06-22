@@ -14,9 +14,6 @@ rec {
 
   boolToStr = bool: boolTo bool "true" "false";
 
-  toPrettyJSON = attrs:
-    lib.readFile ((pkgs.formats.json {}).generate "prettyJSON" attrs);
-
   mkWrapper = package: postBuild:
     let name = if isList package then elemAt package 0 else package;
         paths = if isList package then package else [ package ];
@@ -39,4 +36,21 @@ rec {
     } // (if description != "" then {
       genericName = description;
     } else {}));
+
+  toPrettyJSON = attrs:
+    readFile ((pkgs.formats.json {}).generate "prettyJSON" attrs);
+
+  compileSCSS = file:
+    let fileName = removeSuffix ".scss" (baseNameOf file);
+        compiledStyles =
+          pkgs.runCommand "compileScssFile" { buildInputs = [ pkgs.sass ]; } ''
+            mkdir "$out"
+            scss --sourcemap=none \
+                 --no-cache \
+                 --style compressed \
+                 --default-encoding utf-8 \
+                 "${file}" \
+                 >>"$out/${fileName}.css"
+          '';
+    in readFile "${compiledStyles}/${fileName}.css";
 }

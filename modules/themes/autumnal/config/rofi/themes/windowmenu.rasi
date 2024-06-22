@@ -1,0 +1,28 @@
+/* -*- mode: css; -*- */
+@import "../config.rasi"
+
+configuration {
+  window-format: "{c}\n{t}";
+  cycle: true;
+  window-thumbnail: true;
+  scroll-method: 0;
+}
+
+icon {
+  filename: "focus-windows-symbolic";
+}
+
+entry {
+  placeholder: "Switch to window...";
+}
+
+listview {
+  lines: 8;
+}
+
+element {
+  spacing: 8px;
+  padding: 0.4em 4px 0.4em 6px;
+}
+element-icon { size: 46px; }
+element-text { vertical-align: 0.5; }

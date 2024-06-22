@@ -1,0 +1,16 @@
+#!/usr/bin/env zsh
+
+typeset -F SECONDS
+
+main() {
+  [ -z "$HEYDEBUG" ] && return
+  if [[ $1 == -[123] ]]; then
+    (( ${1#-} > HEYDEBUG )) && return
+    shift
+  fi
+  hey.echo -c blue \
+    -p "$(printf '%.4f' $SECONDS):${ZSH_ARGZERO:t:r}[$$]: " \
+    "${@:-$(cat)}" >&2
+}
+
+main $@

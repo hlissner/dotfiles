@@ -53,9 +53,9 @@ rec {
       # a json payload in an envvar). The internal var is kept in lib to stop
       # 'nix flake check' from complaining more than it has to.
       args =
-        let hargs = getEnv "__HEYARGS"; in
+        let hargs = getEnv "HEYENV"; in
         if hargs == ""
-        then abort "__HEYARGS envvar is missing"
+        then abort "HEYENV envvar is missing"
         else fromJSON hargs;
 
       # This is the only impurity we allow into this flake, because there are
@@ -75,6 +75,7 @@ rec {
               if path != "" then path
               else abort "No or invalid dotfilesDir specified: ${path}";
             binDir      = "${path}/bin";
+            libDir      = "${path}/lib";
             configDir   = "${path}/config";
             modulesDir  = "${path}/modules";
             themesDir   = "${path}/modules/themes";
@@ -86,7 +87,7 @@ rec {
             packages = self.packages.${host.system};
             devShell = self.devShell.${host.system};
             apps = self.apps.${host.system};
-            store = mkDotfiles "${self}";
+            store = mkDotfiles (toString self);
           } // (mkDotfiles args.path);
           host = cfg {
             inherit args lib nixosModules;
@@ -113,7 +114,10 @@ rec {
               ../.
             ]
             ++ (host.imports or [])
-            ++ [ { modules = host.modules or {}; } ]
+            ++ [ {
+              modules = host.modules or {};
+              # theme = host.theme or {};
+            } ]
             ++ [ (host.config or {}) (host.hardware or {}) ];
           }) hosts;
       perSystem = map (system:
@@ -137,13 +141,13 @@ rec {
           inherit nixosConfigurations;
           nixosModules = modules;
 
-          # To parameterize this flake (more so for flakes derived from this one)
-          # I rely on bin/hey (my nix{,os} CLI/wrapper) to emulate --arg/--argstr
-          # options. 'dir' and 'host' are special though, and communicated using
-          # hey's -f/--flake and --host options:
+          # To parameterize this flake (more so for flakes derived from this
+          # one) I rely on bin/hey (my nix{,os} CLI/wrapper) to emulate
+          # --arg/--argstr options. 'dir' and 'host' are special though, and
+          # communicated using hey's -f/--flake and --host options:
           #
-          #   hey rebuild -f /etc/nixos#soba
-          #   hey rebuild -f /etc/nixos --host soba
+          #   hey sync -f /etc/nixos#soba
+          #   hey sync -f /etc/nixos --host soba
           #
           # The magic that allows this lives in mkFlake, but requires --impure
           # mode. Sorry hermetic purists!

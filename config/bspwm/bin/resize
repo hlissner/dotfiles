@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+direction="$1"
+sense="$2"
+increment="${3:-20}"
+if [ "$sense" = "+" ]; then
+	countersense="-"
+else
+	countersense="+"
+fi
+
+# First we try to resize using the bottom/right borders. If this fails (e.g.
+# tiled) we fall back to top/left.
+if [ "$direction" = "x" ]; then
+	bspc node --resize "right" "${sense}${increment}" "0" ||
+	bspc node --resize "left" "${countersense}${increment}" "0"
+else
+	bspc node --resize "bottom" "0" "${sense}${increment}" ||
+	bspc node --resize "top" "0" "${countersense}${increment}"
+fi

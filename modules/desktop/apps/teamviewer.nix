@@ -17,12 +17,12 @@ in {
   config = mkIf cfg.enable {
     environment.systemPackages = [
       # I am aware of services.teamviewer, and choose to avoid it so I can
-      # wazily start (and shut down) the teamviewer daemon. I rarely use
-      # teamviewr, and don't want the daemon running all that time it's idle.
+      # lazily start (and shut down) the teamviewer daemon. I rarely use
+      # teamviewr, and don't want the daemon running when it's unused.
       (mkWrapper pkgs.teamviewer ''
         wrapProgram "$out/bin/teamviewer"
-          --run 'servicectl start teamviewerd' \
-          --run 'trap "servicectl stop teamviewerd" EXIT'
+          --run 'systemctl start teamviewerd' \
+          --run 'trap "systemctl stop teamviewerd" EXIT'
       '')
     ];
 

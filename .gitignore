@@ -1,1 +1,4 @@
-result
+/build/
+/result
+*.zwc
+*.janet.tested

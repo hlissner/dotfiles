@@ -1,9 +1,13 @@
-fpath+=( "${0:a:h}/zsh" $ZDOTDIR/completions )
+fpath+=( "${0:a:h}/completions" )
 
 # Don't offer history completion; we have fzf, C-r, and
 # zsh-history-substring-search for that.
 ZSH_AUTOSUGGEST_STRATEGY=(completion)
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=30
+
+# Completion is slow. Use a cache! For the love of god, use a cache...
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path "$XDG_CACHE_HOME/zsh"
 
 # Expand partial paths, e.g. cd f/b/z == cd foo/bar/baz (assuming no ambiguity)
 zstyle ':completion:*:paths' path-completion yes
@@ -20,13 +24,12 @@ setopt AUTO_MENU           # Show completion menu on a successive tab press.
 setopt AUTO_LIST           # Automatically list choices on ambiguous completion.
 # setopt AUTO_PARAM_SLASH    # If completed parameter is a directory, add a trailing slash.
 # setopt AUTO_PARAM_KEYS
-# setopt FLOW_CONTROL        # Disable start/stop characters in shell editor.
+unsetopt FLOW_CONTROL        # Redundant with tmux
 unsetopt MENU_COMPLETE     # Do not autoselect the first completion entry.
 unsetopt COMPLETE_ALIASES  # Disabling this enables completion for aliases
 # unsetopt ALWAYS_TO_END     # Move cursor to the end of a completed word.
 unsetopt CASE_GLOB
 
-LS_COLORS=${LS_COLORS:-'di=34:ln=35:so=32:pi=33:ex=31:bd=36;01:cd=33;01:su=31;40;07:sg=36;40;07:tw=32;40;07:ow=33;40;07:'}
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 
 # Fuzzy match mistyped completions.
@@ -34,9 +37,6 @@ zstyle ':completion:*' completer _complete _match _approximate _list
 zstyle ':completion:*' matcher-list 'm:{[:lower:]-}={[:upper:]_}' 'r:[[:ascii:]]||[[:ascii:]]=** r:|?=**'
 zstyle ':completion:*:match:*' original only
 zstyle ':completion:*:approximate:*' max-errors 1 numeric
-# Especially great for expensive completion (e.g. apt, systemd, etc)
-zstyle ':completion::complete:*' use-cache on
-zstyle ':completion::complete:*' cache-path "$XDG_CACHE_HOME/zsh/zcompcache"
 # Increase the number of errors based on the length of the typed word.
 zstyle -e ':completion:*:approximate:*' max-errors 'reply=($((($#PREFIX+$#SUFFIX)/3))numeric)'
 # Don't complete unavailable commands.
@@ -103,3 +103,11 @@ zstyle ':completion:*:ssh:*' group-order users hosts-domain hosts-host users hos
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-host' ignored-patterns '*(.|:)*' loopback ip6-loopback localhost ip6-localhost broadcasthost
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-domain' ignored-patterns '<->.<->.<->.<->' '^[-[:alnum:]]##(.[-[:alnum:]]##)##' '*@*'
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
+
+# Only generate the dump if it doesn't exist. `hey reload` will clear it. And
+# yes, -d is necessary. compinit doesn't respect cache-path.
+ZCOMPCACHE="$XDG_CACHE_HOME/zsh/zcompdump.$ZSH_VERSION"
+if autoload -Uz compinit; then
+  compinit -u -C -d "$ZCOMPCACHE"
+  [[ ! -f "$ZCOMPCACHE.zwc" && -f $ZCOMPCACHE ]] && zcompile "$ZCOMPCACHE"
+fi

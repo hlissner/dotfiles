@@ -1,0 +1,4 @@
+#!/usr/bin/env zsh
+
+[[ $HEYQUIET ]] && return
+hey.echo -p "⚠ " -c yellow $@ >&2;

@@ -6,8 +6,8 @@
 
 with lib;
 with self.lib;
-let inherit (self) configDir;
-    cfg = config.modules.desktop.media.cad;
+let cfg = config.modules.desktop.media.cad;
+    version = "4.1";
 in {
   options.modules.desktop.media.cad = with types; {
     enable = mkBoolOpt false;
@@ -15,24 +15,25 @@ in {
 
   config = mkIf cfg.enable {
     # Supplies newer versions of Blender with CUDA support baked in.
+    # @see https://github.com/edolstra/nix-warez/tree/master/blender
     nixpkgs.overlays = [ self.inputs.blender-bin.overlays.default ];
 
-    user.packages = with pkgs; [
+    user.packages = [
       # Blender itself doesn't need libxcrypt-legacy, but I use blenderkit,
       # which needs libcrypt.so.1, which libxcrypt no longer provides.
-      (mkWrapper blender_4_0 ''
+      (mkWrapper pkgs."blender_${builtins.replaceStrings ["."] ["_"] version}" ''
         wrapProgram "$out/bin/blender" \
-          --run 'export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${libxcrypt-legacy}/lib"'
+          --run 'export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${pkgs.libxcrypt-legacy}/lib"'
       '')
     ];
 
     home.configFile = {
-      # "blender/4.0/config" = {
-      #   source = "${configDir}/blender/config";
+      # "blender/${version}/config" = {
+      #   source = "${self.configDir}/blender/config";
       #   recursive = true;
       # };
-      "blender/4.0/scripts" = {
-        source = "${configDir}/blender/scripts";
+      "blender/${version}/scripts" = {
+        source = "${self.configDir}/blender/scripts";
         recursive = true;
       };
     };
@@ -41,9 +42,9 @@ in {
     # very stateful. Having a consistent starting point for new systems is good
     # enough for me.
     system.userActivationScripts.setupBlenderConfig = ''
-      destdir="$XDG_CONFIG_HOME/blender/4.0/config"
+      destdir="$XDG_CONFIG_HOME/blender/${version}/config"
       mkdir -p "$destdir"
-      for cfile in ${configDir}/blender/config/*; do
+      for cfile in ${self.configDir}/blender/config/*; do
         basename="$(basename $cfile)"
         dest="$destdir/$basename"
         if [ ! -e "$dest" ]; then
@@ -51,7 +52,7 @@ in {
         fi
       done
       for bfile in startup userpref; do
-        src="${configDir}/blender/$bfile.blend.tar.gz"
+        src="${self.configDir}/blender/$bfile.blend.tar.gz"
         if [ ! -e "$destdir/$bfile.blend" ]; then
           ${pkgs.gnutar}/bin/tar xzvf "$src" -C "$destdir"
         fi

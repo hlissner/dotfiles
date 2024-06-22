@@ -1,0 +1,84 @@
+/* @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"); */
+
+@-moz-document url(chrome://browser/content/browser.xul),
+               url(chrome://browser/content/browser.xhtml)
+{
+  :root {
+    --hey-short-delay: 33ms;
+    --hey-long-delay:  300ms;
+    --hey-tabbar-height: 3.35em;
+  }
+
+  /*** Hiding all the unwanted elements ***/
+  /* Hide 'list all tabs' button */
+  #tabbrowser-tabs, #tabbrowser-arrowscrollbox { min-height:0!important; }
+  #alltabs-button { display:none !important; }
+  /* Hide tab close button (takes up valuable title real-estate when there are a lot of tabs) */
+  .tabbrowser-tab .tab-close-button { display: none !important; }
+  /* Hide minimize, maximize, and close window buttons; I use shortcut keys instead */
+  .titlebar-buttonbox-container { display: none !important; }
+  /* Hide extra space left over on either side of the tabbar */
+  .titlebar-spacer[type="pre-tabs"], .titlebar-spacer[type="post-tabs"] { display: none !important; }
+  /* Hide useless header in the sidebar */
+  #sidebar-box #sidebar-header { display: none !important; }
+  /* Hide the search engine suggestions at bottom of completion window */
+  #urlbar .urlbarView .search-one-offs { display: none !important; }
+
+
+  /*** Auto-hide tab bar when Sidebery is open (w/ sliding animation) */
+  #main-window #titlebar {
+    overflow: hidden;
+    transition: height 0.3s 0.3s !important;
+  }
+  /** Default state: **/
+  #main-window #titlebar { height: auto !important; }
+  /* #main-window[uidensity="touch"] #titlebar { height: 3.35em !important; } */
+  /* #main-window[uidensity="compact"] #titlebar { height: 2.7em !important; } */
+
+  /** Hidden state **/
+  #main-window[titlepreface*="Sidebery"] #titlebar { height: 0 !important; }
+  /* Fix z-index of active pinned tabs */
+  #main-window[titlepreface*="Sidebery"] #tabbrowser-tabs { z-index: 0 !important; }
+
+
+  /*** Auto-hide address bar (w/ sliding animations) ***/
+  /** Hidden state: **/
+  #nav-bar {
+    /* Hover the nav-bar over the web content, otherwise it will obnoxiously
+     * push UI elements around while showing/hiding */
+    position: fixed !important;
+    top: var(--hey-tabbar-height);
+    width: 100vw;
+    margin-top: calc(var(--hey-tabbar-height) * -1);
+    transition: margin-top 72ms linear, opacity 72ms linear !important;
+    opacity: 0 !important;
+  }
+  #main-window[titlepreface*="Sidebery"] #nav-bar { top: 0px; }
+
+  /** Visible state: **/
+  /* Auto-show nav-bar if hovered over (after a delay) */
+  #main-window[titlepreface*="Sidebery"] #navigator-toolbox:hover #nav-bar {
+    transition-delay: var(--hey-long-delay) !important;
+  }
+  #navigator-toolbox:hover #nav-bar {
+    transition-delay: calc(var(--hey-long-delay) * 2) !important;
+  }
+  /* ...but do so immediately if invoked via ctrl+L... */
+  #nav-bar:focus-within { transition-delay: var(--hey-short-delay) !important; }
+
+  /* Auto-show when hovering or nearby */
+  :root[customizing=true] #nav-bar,
+  #navigator-toolbox:hover #nav-bar,
+  #nav-bar:focus-within {
+    margin-top: 0;
+    opacity: 1 !important;
+  }
+
+  /* Fixes for the above hacks */
+  #nav-bar { z-index: 2 !important; }
+  #TabsToolbar { z-index: 3 !important; }
+
+
+  /*** Load local overrides ***/
+  @import url(./userChrome.local.css);
+}

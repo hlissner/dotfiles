@@ -22,7 +22,6 @@ in {
   config = mkMerge [
     (mkIf cfg.enable {
       user.packages = [ pkgs.rustup ];
-      env.PATH = [ "$(${pkgs.yarn}/bin/yarn global bin)" ];
       environment.shellAliases = {
         rs  = "rustc";
         rsp = "rustup";
@@ -31,10 +30,10 @@ in {
     })
 
     (mkIf cfg.xdg.enable {
-      env = {
+      environment.variables = rec {
         RUSTUP_HOME = "$XDG_DATA_HOME/rustup";
         CARGO_HOME = "$XDG_DATA_HOME/cargo";
-        PATH = [ "$CARGO_HOME/bin" ];
+        PATH = [ "${CARGO_HOME}/bin" ];
       };
     })
   ];

@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+bluetoothctl | while read -r; do
+    if [ "$(systemctl is-active "bluetooth.service")" = "active" ]; then
+        printf ''
+
+        devices_paired=$(bluetoothctl devices Paired | grep Device | cut -d ' ' -f 2)
+        counter=0
+        # TODO: Use fewer processes
+        for device in $devices_paired; do
+            device_info=$(bluetoothctl info "$device")
+
+            if echo "$device_info" | grep -q "Connected: yes"; then
+                counter=$((counter + 1))
+            fi
+        done
+
+        printf "$counter\n"
+    else
+        echo '%{F#604c7e}'
+    fi
+done

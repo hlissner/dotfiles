@@ -2,8 +2,7 @@
 
 with lib;
 with self.lib;
-let inherit (self) configDir;
-    cfg = config.modules.shell.git;
+let cfg = config.modules.shell.git;
 in {
   options.modules.shell.git = {
     enable = mkBoolOpt false;
@@ -21,11 +20,11 @@ in {
     ];
 
     home.configFile = {
-      "git/config".source = "${configDir}/git/config";
-      "git/ignore".source = "${configDir}/git/ignore";
-      "git/attributes".source = "${configDir}/git/attributes";
+      "git/config".source = "${self.configDir}/git/config";
+      "git/ignore".source = "${self.configDir}/git/ignore";
+      "git/attributes".source = "${self.configDir}/git/attributes";
     };
 
-    modules.shell.zsh.rcFiles = [ "${configDir}/git/aliases.zsh" ];
+    modules.shell.zsh.rcFiles = [ "${self.configDir}/git/aliases.zsh" ];
   };
 }

@@ -2,8 +2,7 @@
 
 with lib;
 with self.lib;
-let inherit (self) configDir;
-    cfg = config.modules.desktop.media.ncmpcpp;
+let cfg = config.modules.desktop.media.ncmpcpp;
 in {
   options.modules.desktop.media.ncmpcpp = {
     enable = mkBoolOpt false;
@@ -15,13 +14,13 @@ in {
       (ncmpcpp.override { visualizerSupport = true; })
     ];
 
-    env.NCMPCPP_HOME = "$XDG_CONFIG_HOME/ncmpcpp";
+    environment.variables.NCMPCPP_HOME = "$XDG_CONFIG_HOME/ncmpcpp";
 
     # Symlink these one at a time because ncmpcpp writes other files to
     # ~/.config/ncmpcpp, so it needs to be writeable.
     home.configFile = {
-      "ncmpcpp/config".source   = "${configDir}/ncmpcpp/config";
-      "ncmpcpp/bindings".source = "${configDir}/ncmpcpp/bindings";
+      "ncmpcpp/config".source   = "${self.configDir}/ncmpcpp/config";
+      "ncmpcpp/bindings".source = "${self.configDir}/ncmpcpp/bindings";
     };
   };
 }

@@ -1,0 +1,149 @@
+/** -*- mode: css -*- **/
+
+/* Dark Leaves theme for Rofi */
+
+* {
+  accent:   #bd93f9;
+  bg:       rgb(29, 31, 33, 0.96);
+  bg-alt:   rgba(25, 26, 28, 0.92);
+  bg-light: #1a1c1e;
+  bg-focus: #333536;
+  bg-dark:  #161719;
+  border:   #0d0d0d;
+  fg:       #c5c8c6;
+  fg-alt:   #434547;
+  fg-list:  #bbc2cf;
+  on:       #b5bd68;
+  off:      #cc6666;
+  magenta:  #c9b4cf;
+  blue:     #81a2be;
+
+  selected: #38292b;
+  errors:   #cc6666;
+  warnings: #f0c674;
+
+  font-mono-0: "JetBrainsMono 10";
+  font-mono-1: "JetBrainsMono 12";
+  font-mono-2: "JetBrainsMono 14";
+  font-mono-3: "JetBrainsMono 16";
+  font-mono-4: "JetBrainsMono 20";
+  font-sans-0: "Fira Sans 14";
+  font-sans-1: "Fira Sans 16";
+  font-sans-2: "Fira Sans 18";
+  font-sans-3: "Fira Sans 22";
+
+  pad1: 4px;
+  pad2: 8px;
+  pad3: 12px;
+  pad4: 16px;
+  pad5: 20px;
+  pad6: 24px;
+  pad7: 32px;
+}
+
+* { font: @font-mono-1; }
+error-message { font: @font-sans-0; }
+entry, prompt { font: @font-mono-3; }
+
+configuration {
+  show-icons: true;
+
+  run,drun,window {
+    fallback-icon: "view-fullscreen-symbolic";
+  }
+}
+
+window {
+  width: 760px;
+  anchor: env(ROFI_ANCHOR, north);
+  location: north;
+  x-offset: env(ROFI_X, 0);
+  y-offset: env(ROFI_Y, 2%);
+  height: 800px;
+}
+
+error-message {
+  padding: @pad7;
+}
+
+inputbar {
+  background-color: @bg;
+}
+listview {
+  expand: false;
+  fixed-height: false;
+}
+listview, inputbar, overlay, message, error-message {
+  margin: 0 0 8px 0;
+  border: 0 0 2px 0;
+  border-color: @border;
+  border-radius: 1px;
+}
+element, overlay, error-message {
+  background-color: @bg-alt;
+}
+element selected {
+  background-color: @selected;
+}
+message {
+  background-color: @bg-light;
+  margin: -9px 0 8px 0;
+  padding: 16px 24px;
+}
+
+textbox, prompt, entry, element-text {
+  text-color: @fg;
+}
+
+
+/** Icons **/
+element-icon { size: 24px; }
+icon, icon-current-entry { size: 32px; }
+
+
+
+/** Input area **/
+inputbar {
+  /* children: [ icon, prompt, entry, num-filtered-rows ]; */
+  padding: @pad5;
+  spacing: @pad3;
+}
+prompt, entry, num-filtered-rows, element-text {
+  vertical-align: 0.65;
+}
+textbox-current-entry, prompt, num-filtered-rows {
+  text-color: @fg;
+}
+num-filtered-rows {
+  text-color: @fg-alt;
+}
+prompt {
+  enabled: false;
+  text-transform: bold;
+}
+entry {
+  blink: true;
+  placeholder: env(ROFI_PLACEHOLDER, "Search...");
+  placeholder-color: @fg-alt;
+  placeholder-markup: true;
+  cursor: text;
+}
+
+/** List **/
+listview {
+  spacing: 0;
+}
+overlay {
+  text-color: @fg-alt;
+  text-transform: italic;
+}
+
+element {
+  spacing: 18px;
+  padding: 0.5em 0em 0.5em 2.5ch;
+}
+
+element-text {
+  horizontal-align: 0.0;
+  highlight: underline bold;
+}

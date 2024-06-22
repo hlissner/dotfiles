@@ -1,0 +1,15 @@
+!! Colors
+*.cursorColor: mag
+! greys
+*.color234: #1E2029
+*.color235: #282a36
+*.color236: #373844
+*.color237: #44475a
+*.color239: #565761
+*.color240: #6272a4
+*.color241: #b6b6b2
+
+!! xst
+st.font: monospace:size=9.5
+st.scratch.font: monospace:size=12.5
+st.borderpx: 10

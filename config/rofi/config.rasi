@@ -1,0 +1,224 @@
+/** -*- mode: css -*- **/
+
+configuration {
+  /* Display rofi in the focused monitor */
+  monitor: "primary";
+
+  modi: "";
+  /* modi: "drun,run,filebrowser,window"; */
+  case-sensitive: false;
+  cycle: false;
+  filter: "";
+  scroll-method: 1;
+  normalize-match: false;
+  show-icons: false;
+  /* cache-dir: ;*/
+  /* steal-focus: false; */
+  /* dpi: -1;*/
+
+  /*---------- Matching setting ----------*/
+  matching: "normal";
+  tokenize: true;  /* search terms separately, and in any order */
+
+  /*---------- SSH settings ----------*/
+  /* ssh-client: "ssh"; */
+  /* ssh-command: "{terminal} -e {ssh-client} {host} [-p {port}]"; */
+  /* parse-hosts: true; */
+  /* parse-known-hosts: true; */
+
+  /*---------- Run settings ----------*/
+  /* run-command: "{cmd}"; */
+  /* run-list-command: ""; */
+  /* run-shell-command: "{terminal} -e {cmd}"; */
+
+  /*---------- Window switcher settings ----------*/
+  /* window-match-fields: "title,class,role,name,desktop"; */
+  /* window-command: "wmctrl -i -R {window}"; */
+  /* window-format: "{w} - {c} - {t:0}"; */
+  /* window-thumbnail: false; */
+
+  /*---------- Combi settings ----------*/
+  /* combi-modi: "window,run";*/
+  /* combi-hide-mode-prefix: false;*/
+  /* combi-display-format: "{mode} {text}";*/
+
+  /*---------- History and Sorting ----------*/
+  disable-history: false;
+  /* sorting-method: "normal"; */
+  /* max-history-size: 25; */
+
+  /*---------- Display setting ----------*/
+  /* display-window: "Windows"; */
+  /* display-windowcd: "Window CD"; */
+  /* display-run: "Run"; */
+  /* display-ssh: "SSH"; */
+  /* display-drun: "Apps"; */
+  /* display-combi: "Combi"; */
+  /* display-keys: "Keys"; */
+  /* display-filebrowser: "Files"; */
+
+  /*---------- Misc setting ----------*/
+  /* terminal: "rofi-sensible-terminal"; */
+  /* sort: false; */
+  /* threads: 0; */
+  click-to-exit: true;
+  /* ignored-prefixes: "";*/
+  /* pid: "/run/user/1000/rofi.pid";*/
+
+  /*---------- File browser settings ----------*/
+  filebrowser {
+    directories-first: true;
+    sorting-method: "name";
+  }
+
+  /*---------- Other settings ----------*/
+  /* timeout { */
+  /*   action: "kb-cancel"; */
+  /*   delay:  0; */
+  /* } */
+
+  /* Auto-select first item when modifying query */
+  /* inputchange { */
+  /*   action: "kb-row-first"; */
+  /* } */
+
+  /* Vim-esque C-j/C-k as up/down in rofi */
+  kb-accept-entry: env(ROFI_KB_ACCEPT_ENTRY, "Return,Control+m,KP_Enter");
+  kb-remove-to-eol: env(ROFI_KB_ACCEPT_ENTRY, "Return,Control+m,KP_Enter");
+  kb-row-down: "Down,Control+n,Control+j";
+  kb-row-up: "Up,Control+p,Control+k";
+
+  /*
+   * rofi-blocks doesn't recognize command-line -kb-* options, so I reimplement
+   * external control through envvars:
+   */
+  kb-primary-paste:           env(ROFI_KB_PRIMARY_PASTE, "Control+V,Shift+Insert");
+  kb-secondary-paste:         env(ROFI_KB_SECONDARY_PASTE, "Control+v,Insert");
+  kb-clear-line:              env(ROFI_KB_CLEAR_LINE, "Control+w");
+  kb-move-front:              env(ROFI_KB_MOVE_FRONT, "Control+a");
+  kb-move-end:                env(ROFI_KB_MOVE_END, "Control+e");
+  kb-move-word-back:          env(ROFI_KB_MOVE_WORD_BACK, "Alt+b,Control+Left");
+  kb-move-word-forward:       env(ROFI_KB_MOVE_WORD_FORWARD, "Alt+f,Control+Right");
+  kb-move-char-back:          env(ROFI_KB_MOVE_CHAR_BACK, "Left,Control+b");
+  kb-move-char-forward:       env(ROFI_KB_MOVE_CHAR_FORWARD, "Right,Control+f");
+  kb-remove-word-back:        env(ROFI_KB_REMOVE_WORD_BACK, "Control+Alt+h,Control+BackSpace");
+  kb-remove-word-forward:     env(ROFI_KB_REMOVE_WORD_FORWARD, "Control+Alt+d");
+  kb-remove-char-forward:     env(ROFI_KB_REMOVE_CHAR_FORWARD, "Delete,Control+d");
+  kb-remove-char-back:        env(ROFI_KB_REMOVE_CHAR_BACK, "BackSpace,Shift+BackSpace,Control+h");
+  kb-remove-to-eol:           env(ROFI_KB_REMOVE_TO_EOL, "");
+  kb-remove-to-sol:           env(ROFI_KB_REMOVE_TO_SOL, "Control+u");
+  kb-accept-entry:            env(ROFI_KB_ACCEPT_ENTRY, "Return,Control+m,KP_Enter");
+  kb-accept-custom:           env(ROFI_KB_ACCEPT_CUSTOM, "Control+Return");
+  kb-accept-custom-alt:       env(ROFI_KB_ACCEPT_CUSTOM_ALT, "Control+Shift+Return");
+  kb-accept-alt:              env(ROFI_KB_ACCEPT_ALT, "Shift+Return");
+  kb-delete-entry:            env(ROFI_KB_DELETE_ENTRY, "Shift+Delete");
+  kb-mode-next:               env(ROFI_KB_MODE_NEXT, "Shift+Right,Control+Tab");
+  kb-mode-previous:           env(ROFI_KB_MODE_PREVIOUS, "Shift+Left,Control+ISO_Left_Tab");
+  kb-mode-complete:           env(ROFI_KB_MODE_COMPLETE, "Control+l");
+  kb-row-left:                env(ROFI_KB_ROW_LEFT, "Control+Page_Up");
+  kb-row-right:               env(ROFI_KB_ROW_RIGHT, "Control+Page_Down");
+  kb-row-up:                  env(ROFI_KB_ROW_UP, "Up,Control+p,Control+k");
+  kb-row-down:                env(ROFI_KB_ROW_DOWN, "Down,Control+n,Control+j");
+  kb-row-tab:                 env(ROFI_KB_ROW_TAB, "");
+  kb-element-next:            env(ROFI_KB_ELEMENT_NEXT, "Tab");
+  kb-element-prev:            env(ROFI_KB_ELEMENT_PREV, "ISO_Left_Tab");
+  kb-page-prev:               env(ROFI_KB_PAGE_PREV, "Page_Up");
+  kb-page-next:               env(ROFI_KB_PAGE_NEXT, "Page_Down");
+  kb-row-first:               env(ROFI_KB_ROW_FIRST, "Home,KP_Home");
+  kb-row-last:                env(ROFI_KB_ROW_LAST, "End,KP_End");
+  kb-row-select:              env(ROFI_KB_ROW_SELECT, "Control+space");
+  kb-screenshot:              env(ROFI_KB_SCREENSHOT, "Alt+S");
+  kb-ellipsize:               env(ROFI_KB_ELLIPSIZE, "Alt+period");
+  kb-toggle-case-sensitivity: env(ROFI_KB_TOGGLE_CASE_SENSITIVITY, "grave,dead_grave");
+  kb-toggle-sort:             env(ROFI_KB_TOGGLE_SORT, "Alt+grave");
+  kb-cancel:                  env(ROFI_KB_CANCEL, "Escape,Control+g,Control+bracketleft");
+  kb-custom-1:                env(ROFI_KB_CUSTOM_1, "Alt+1");
+  kb-custom-2:                env(ROFI_KB_CUSTOM_2, "Alt+2");
+  kb-custom-3:                env(ROFI_KB_CUSTOM_3, "Alt+3");
+  kb-custom-4:                env(ROFI_KB_CUSTOM_4, "Alt+4");
+  kb-custom-5:                env(ROFI_KB_CUSTOM_5, "Alt+5");
+  kb-custom-6:                env(ROFI_KB_CUSTOM_6, "Alt+6");
+  kb-custom-7:                env(ROFI_KB_CUSTOM_7, "Alt+7");
+  kb-custom-8:                env(ROFI_KB_CUSTOM_8, "Alt+8");
+  kb-custom-9:                env(ROFI_KB_CUSTOM_9, "Alt+9");
+  kb-custom-10:               env(ROFI_KB_CUSTOM_10, "Alt+0");
+  kb-custom-11:               env(ROFI_KB_CUSTOM_11, "Alt+exclam");
+  kb-custom-12:               env(ROFI_KB_CUSTOM_12, "Alt+at");
+  kb-custom-13:               env(ROFI_KB_CUSTOM_13, "Alt+numbersign");
+  kb-custom-14:               env(ROFI_KB_CUSTOM_14, "Alt+dollar");
+  kb-custom-15:               env(ROFI_KB_CUSTOM_15, "Alt+percent");
+  kb-custom-16:               env(ROFI_KB_CUSTOM_16, "Alt+dead_circumflex");
+  kb-custom-17:               env(ROFI_KB_CUSTOM_17, "Alt+ampersand");
+  kb-custom-18:               env(ROFI_KB_CUSTOM_18, "Alt+asterisk");
+  kb-custom-19:               env(ROFI_KB_CUSTOM_19, "Alt+parenleft");
+  kb-select-1:                env(ROFI_KB_SELECT_1, "Super+1");
+  kb-select-2:                env(ROFI_KB_SELECT_2, "Super+2");
+  kb-select-3:                env(ROFI_KB_SELECT_3, "Super+3");
+  kb-select-4:                env(ROFI_KB_SELECT_4, "Super+4");
+  kb-select-5:                env(ROFI_KB_SELECT_5, "Super+5");
+  kb-select-6:                env(ROFI_KB_SELECT_6, "Super+6");
+  kb-select-7:                env(ROFI_KB_SELECT_7, "Super+7");
+  kb-select-8:                env(ROFI_KB_SELECT_8, "Super+8");
+  kb-select-9:                env(ROFI_KB_SELECT_9, "Super+9");
+  kb-select-10:               env(ROFI_KB_SELECT_10, "Super+0");
+  /* ml-row-left:                env(ROFI_ML_ROW_LEFT, "ScrollLeft"); */
+  /* ml-row-right:               env(ROFI_ML_ROW_RIGHT, "ScrollRight"); */
+  /* ml-row-up:                  env(ROFI_ML_ROW_UP, "ScrollUp"); */
+  /* ml-row-down:                env(ROFI_ML_ROW_DOWN, "ScrollDown"); */
+  /* me-select-entry:            env(ROFI_ME_SELECT_ENTRY, "MousePrimary"); */
+  /* me-accept-entry:            env(ROFI_ME_ACCEPT_ENTRY, "MouseDPrimary"); */
+  /* me-accept-custom:           env(ROFI_ME_ACCEPT_CUSTOM, "Control+MouseDPrimary"); */
+}
+
+/* Universal fixes and resets */
+* {
+  background-color: transparent;
+  text-color: inherit;
+}
+
+window {
+  enabled: true;
+  anchor: env(ROFI_ANCHOR, north);
+  location: north;
+  x-offset: env(ROFI_X, 0);
+  y-offset: env(ROFI_Y, 40%);
+  transparency: "real";
+  background-color: transparent;
+}
+
+/* Reset! */
+window, mainbox {
+  spacing: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  outline: 0;
+}
+
+mainbox {
+  enabled: true;
+  children: [ inputbar, message, listview, overlay ];
+}
+
+textbox { font: inherit; }
+
+inputbar { children: [ icon, prompt, entry, num-filtered-rows ]; }
+
+icon, icon-current-entry, prompt, num-filtered-rows {
+  expand: false;
+}
+
+icon {
+  filename: env(ROFI_ICON, "search-symbolic");
+}
+
+entry {
+  placeholder: env(ROFI_PLACEHOLDER, "Search...");
+  placeholder-markup: true;
+  cursor: text;
+  blink: true;
+}
+
+/* Import nix-generated files */
+@import "./config.theme.rasi"

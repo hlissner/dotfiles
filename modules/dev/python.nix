@@ -39,7 +39,7 @@ in {
     })
 
     (mkIf cfg.xdg.enable {
-      env = {
+      environment.variables = {
         # Internal
         PYTHONPYCACHEPREFIX = "$XDG_CACHE_HOME/python";
         PYTHONSTARTUP = "$XDG_CONFIG_HOME/python/pythonrc";

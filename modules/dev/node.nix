@@ -29,20 +29,23 @@ in {
         ya = "yarn";
       };
 
-      env.PATH = [ "$(${pkgs.yarn}/bin/yarn global bin)" ];
+      environment.variables.PATH = [ "$(${pkgs.yarn}/bin/yarn global bin)" ];
     })
 
     (mkIf cfg.xdg.enable {
       # NPM refuses to adopt XDG conventions upstream, so I enforce it myself.
-      env.NPM_CONFIG_USERCONFIG = "$XDG_CONFIG_HOME/npm/config";
-      env.NPM_CONFIG_CACHE      = "$XDG_CACHE_HOME/npm";
-      env.NPM_CONFIG_TMP        = "$XDG_RUNTIME_DIR/npm";
-      env.NPM_CONFIG_PREFIX     = "$XDG_CACHE_HOME/npm";
-      env.NODE_REPL_HISTORY     = "$XDG_CACHE_HOME/node/repl_history";
+      environment.variables = {
+        NPM_CONFIG_USERCONFIG = "$XDG_CONFIG_HOME/npm/config";
+        NPM_CONFIG_CACHE      = "$XDG_CACHE_HOME/npm";
+        NPM_CONFIG_PREFIX     = "$XDG_CACHE_HOME/npm";
+        NPM_CONFIG_TMP        = "$XDG_RUNTIME_DIR/npm";
+        NODE_REPL_HISTORY     = "$XDG_CACHE_HOME/node/repl_history";
+      };
 
       home.configFile."npm/config".text = ''
-        cache=$XDG_CACHE_HOME/npm
-        prefix=$XDG_DATA_HOME/npm
+        cache=''${XDG_CACHE_HOME}/npm
+        prefix=''${XDG_DATA_HOME}/npm
+        tmp=''${XDG_RUNTIME_DIR}/npm
       '';
     })
   ];

@@ -16,7 +16,6 @@ mkIf (elem "wg0" config.modules.profiles.networks) (mkMerge [
         netdevConfig = {
           Kind = "wireguard";
           Name = "wg0";
-          MTUBytes = "1420";
         };
         wireguardConfig = {
           PrivateKeyFile = config.age.secrets.wg0PrivateKey.path;
@@ -25,17 +24,18 @@ mkIf (elem "wg0" config.modules.profiles.networks) (mkMerge [
         wireguardPeers = [{
           wireguardPeerConfig = {
             PublicKey = "kuv6kPygJbjcAbhogEst5m8XyKz9pn0XgyR7EcnveAU=";
-            AllowedIPs = [ "10.0.0.0/8" ];
+            AllowedIPs = [ "10.0.0.0/24" ];
             Endpoint = "0.home.lissner.net:51820";
           };
         }];
       };
-      networks."90-wg0" = {
+      networks.wg0 = {
         # address = ...;
         matchConfig.Name = "wg0";
         DHCP = "no";
         dns = [ "10.0.0.1" ];
-        domains = [ "home.lissner.net" "git.henrik.io" ];
+        ntp = [ "10.0.0.1" ];
+        domains = [ "home.lissner.net" ];
         networkConfig = {
           DNSSEC = false;
           DNSDefaultRoute = false;

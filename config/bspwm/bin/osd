@@ -1,0 +1,101 @@
+#!/usr/bin/env zsh
+#
+# An all-in-one audio, microphone, and brightness control script, tied into
+# Dunst to produce slick on-screen-displays.
+#
+#   osd {master,capture,brightness} {toggle,up,down}
+
+DEVICE="default"
+INTERVAL="${3:-10}"
+BAR_CHAR="─"
+BAR_CHARMAX=47
+
+_notify() {
+    if [[ "$2" -eq 0 ]]; then
+        bar=""
+        rest=$(seq  -s "$BAR_CHAR" "$(( BAR_CHARMAX - 2 ))" | sed 's/[0-9]//g')
+    elif [[ "$2" -eq 100 ]]; then
+        bar=$(seq  -s "$BAR_CHAR" "$(( BAR_CHARMAX - 2 ))" | sed 's/[0-9]//g')
+        rest=""
+    else
+        val="$2"
+        barrem=$(echo "(1.0 - ($val / 100)) * $BAR_CHARMAX" | bc -l)
+        barrem=$(echo "$barrem - 1" | bc)
+        barlen=$(echo "$BAR_CHARMAX - $barrem" | bc)
+        bar=$(seq  -s "$BAR_CHAR" "$barlen" | sed 's/[0-9]//g')
+        rest=$(seq -s "$BAR_CHAR" "$barrem" | sed 's/[0-9]//g')
+    fi
+    dunstify -h string:x-dunst-stack-tag:osd \
+             -h int:transient:1 \
+             -u low \
+             -i "$1" \
+             -h "int:value:$2" \
+             --timeout=1750 \
+             -r 2593 \
+             -- "$3" "<tt>${bar}<span foreground=\"#5B6268\">${rest}</span></tt>"
+}
+
+
+__error() {
+    >&2 echo "$1"
+    exit 1
+}
+
+__adjust_audio() {
+    case "$2" in
+        up)     amixer -D "$DEVICE" set "$1" "${INTERVAL}%+" unmute ;;
+        down)   amixer -D "$DEVICE" set "$1" "${INTERVAL}%-" unmute ;;
+        toggle) amixer -D "$DEVICE" set "$1" toggle ;;
+        *)    __error "Invalid $1 command: $2" ;;
+    esac
+
+    label=
+    case "$1" in
+      Master)  iconPrefix="volume-level" ;;
+      Capture) iconPrefix="microphone-sensitivity" ;;
+    esac
+    # Is default device muted now?
+    if amixer sget "$1" | grep '%' | grep -oE '[^ ]+$' | grep '\[off\]' >/dev/null; then
+        _notify "${iconPrefix}-muted" 0 "$label"
+    else
+        volume=$(amixer sget "$1" | grep 'Right:' | awk -F'[][]' '{ print $2 }' | tr -d "%")
+        if [ "$volume" -le 1 ]; then
+            _notify "${iconPrefix}-muted" 0 "$label"
+        elif [ "$volume" -le 20 ]; then
+            _notify "${iconPrefix}-low" "$volume" "$label"
+        elif [ "$volume" -le 60 ]; then
+            _notify "${iconPrefix}-medium" "$volume" "$label"
+        else
+            _notify "${iconPrefix}-high" "$volume" "$label"
+        fi
+    fi
+}
+
+
+_adjust_master()  { __adjust_audio Master "$1" "$2"; }
+
+_adjust_capture() { __adjust_audio Capture "$1" "$2"; }
+
+_adjust_brightness() {
+    case "$1" in
+        up)   light -A "$INTERVAL" ;;
+        down) light -U "$INTERVAL" ;;
+        *) __error "Invalid brightness command: $1" ;;
+    esac
+    level="$(light)"
+    iconPrefix="notification-display-brightness"
+    icon="${iconPrefix}-full"
+    if [ "$level" -le 1 ]; then
+        icon="${iconPrefix}-off"
+    elif [ "$level" -le 20 ]; then
+        icon="${iconPrefix}-low"
+    elif [ "$level" -le 60 ]; then
+        icon="${iconPrefix}-medium"
+    fi
+    _notify "$icon" "$level" "LCD"
+}
+
+case $1 in
+    master|capture|brightness) "_adjust_$1" "$2" ;;
+    *) __error "Invalid command: $1" ;;
+esac

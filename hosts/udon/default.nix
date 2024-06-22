@@ -8,7 +8,7 @@ with builtins;
   system = "x86_64-linux";
 
   modules = {
-    theme.active = "alucard";
+    theme.active = "autumnal";
     xdg.ssh.enable = true;
 
     profiles = {
@@ -26,17 +26,59 @@ with builtins;
     };
 
     desktop = {
-      bspwm.enable = true;
+      # X only
+      # bspwm.enable = true;
+      # term.default = "xst";
+      # term.st.enable = true;
 
+      # Wayland only
+      hyprland = rec {
+        enable = true;
+        monitors = [
+          { output = "HDMI-A-2";
+            position = "1920x2160";
+            primary = true; }
+          { output = "DP-3";
+            position = "0x2191"; }
+          { output = "DP-2";
+            position = "4480x2191"; }
+          { output = "HDMI-A-1";
+            mode = "3840x2160@120";
+            position = "1280x0"; }
+        ];
+        extraConfig = ''
+          # REVIEW: Might be a hyprland bug, but an "Unknown-1" display is
+          #   always created and reserves some desktop space, so I disable it.
+          monitor = Unknown-1,disable
+
+          # Bind fixed workspaces to external monitors
+          workspace = name:left, monitor:DP-3, default:true
+          workspace = name:right, monitor:DP-2, default:true
+          workspace = name:tv, monitor:HDMI-A-1, default:true, gapsout:4
+
+          # Scroll by holding down a side button, because the wheel is broken
+          device {
+              name = mosart-semi.-2.4g-wireless-mouse
+              scroll_method = on_button_down
+              scroll_button = 276
+          }
+
+          exec-once = hyprctl keyword monitor HDMI-A-1,disable
+        '';
+      };
+      term.default = "foot";
+      term.foot.enable = true;
+
+      ## Extra
       apps.rofi.enable = true;
       apps.spotify.enable = true;
+      apps.thunar.enable = true;
       apps.steam = {
         enable = true;
         libraryDir = "/media/windows/Program Files (x86)/Steam";
       };
       apps.godot.enable = true;
-      # apps.thunar.enable = true;
-      # apps.gromit.enable = true;
+
       browsers.default = "firefox";
       browsers.firefox.enable = true;
       media.cad.enable = true;
@@ -44,8 +86,6 @@ with builtins;
       media.graphics.enable = true;
       media.video.enable = true;
       media.video.capture.enable = true;
-      term.default = "xst";
-      term.st.enable = true;
     };
     dev = {
       cc.enable = true;
@@ -81,14 +121,14 @@ with builtins;
     # Low-latency audio for guitar recording and DAW stuff. Should not be
     # generalized, since these values depend heavily on many local factors, like
     # CPU speed, kernels, audio cards, etc.
-    environment.etc."pipewire/pipewire.conf.d/95-low-latency.conf".text = ''
-      context.properties = {
-        default.clock.rate = 48000
-        default.clock.quantum = 64
-        default.clock.min-quantum = 32
-        default.clock.max-quantum = 64
-      }
-    '';
+    services.pipewire.extraConfig.pipewire."95-low-latency" = {
+      "context.properties" = {
+        "default.clock.rate" = 48000;
+        "default.clock.quantum" = 64;
+        "default.clock.min-quantum" = 32;
+        "default.clock.max-quantum" = 64;
+      };
+    };
 
     user.packages = with pkgs; [
       unstable.guitarix
@@ -118,26 +158,26 @@ with builtins;
       wantedBy = [ "multi-user.target" ];
     };
 
-    services.xserver = {
-      # This must be done manually to ensure my screen spaces are arranged
-      # exactly as I need them to be *and* the correct monitor is "primary".
-      # Using xrandrHeads does not work.
-      monitorSection = ''
-        VendorName  "Unknown"
-        ModelName   "DELL U2515H"
-        HorizSync   30.0 - 113.0
-        VertRefresh 56.0 - 86.0
-        Option      "DPMS"
-      '';
-      screenSection = ''
-        Option "metamodes" "DP-5: nvidia-auto-select +0+31, HDMI-1: nvidia-auto-select +1920+0, DP-3: nvidia-auto-select +4480+31"
-        Option "SLI" "Off"
-        Option "MultiGPU" "Off"
-        Option "BaseMosaic" "off"
-        Option "Stereo" "0"
-        Option "nvidiaXineramaInfoOrder" "DFP-5"
-      '';
-    };
+    # services.xserver = {
+    #   # This must be done manually to ensure my screen spaces are arranged
+    #   # exactly as I need them to be *and* the correct monitor is "primary".
+    #   # Using xrandrHeads does not work.
+    #   monitorSection = ''
+    #     VendorName  "Unknown"
+    #     ModelName   "DELL U2515H"
+    #     HorizSync   30.0 - 113.0
+    #     VertRefresh 56.0 - 86.0
+    #     Option      "DPMS"
+    #   '';
+    #   screenSection = ''
+    #     Option "metamodes" "DP-5: nvidia-auto-select +0+31, HDMI-1: nvidia-auto-select +1920+0, DP-3: nvidia-auto-select +4480+31"
+    #     Option "SLI" "Off"
+    #     Option "MultiGPU" "Off"
+    #     Option "BaseMosaic" "off"
+    #     Option "Stereo" "0"
+    #     Option "nvidiaXineramaInfoOrder" "DFP-5"
+    #   '';
+    # };
 
     fileSystems = {
       "/" = {

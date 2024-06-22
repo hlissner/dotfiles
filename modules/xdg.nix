@@ -6,17 +6,24 @@
 # projects that staunchly refuse these conventions, and never with good reason,
 # so it's a lost cause. Best to just deal with it quickly so I can move on to
 # more important things...
+#
+# PS. ValveSoftware/steam-for-linux#1890 is a gold mine.
 
-{ self, lib, pkgs, config, home-manager, ... }:
+{ self, lib, config, options, pkgs, ... }:
 
 with builtins;
 with lib;
+with self.lib;
 let cfg = config.modules.xdg;
+    home = config.home;
 in {
-  options.modules.xdg = with self.lib.options; {
+  imports = [
+    self.modules.home-manager.default
+  ];
+
+  options.modules.xdg = {
     enable = mkBoolOpt true;
     ssh.enable = mkBoolOpt false;
-    fakeHomeDir = mkOpt types.str ".local/user";
   };
 
   config = mkIf cfg.enable (mkMerge [
@@ -25,39 +32,29 @@ in {
       # ~/.nix-defexpr -> $XDG_DATA_HOME/nix/defexpr
       # ~/.nix-profile -> $XDG_DATA_HOME/nix/profile
       # ~/.nix-channels -> $XDG_DATA_HOME/nix/channels
-      nix.extraOptions = ''
-        use-xdg-base-directories = true
-      '';
+      nix.settings.use-xdg-base-directories = true;
+      # nix.extraOptions = ''
+      #   use-xdg-base-directories = true
+      # '';
 
       ### A tidy $HOME is a tidy mind
-      home-manager.users.${config.user.name}.xdg.enable = true;
+      # home-manager.users.${config.user.name}.xdg.enable = true;
 
       environment = {
-        # Some GUI programs consult this, and ignore XDG conventions if it isn't
+        # Some GUI programs consult this, ignoring XDG conventions if it isn't
         # available (sigh).
         systemPackages = [ pkgs.xdg-user-dirs ];
 
         # These are set early in the login process by PAM; much sooner than
-        # environment.variables, so the important variables go here.
-        sessionVariables = rec {
-          # This is not in the XDG standard. It's my jail for stubborn programs,
-          # like Firefox, Steam, and LMMS.
-          XDG_FAKE_HOME = "$HOME/${cfg.fakeHomeDir}";
+        # environment.variables, so the important variables go here. The actual
+        # XDG_*_HOME variables are defined in home-manager.nix.
+        sessionVariables = {
+          __GL_SHADER_DISK_CACHE_PATH = "/tmp/nv";
 
-          # These are the defaults, and xdg.enable does set them, but due to load
-          # order, they're not set before environment.variables are set, which could
-          # cause race conditions.
-          XDG_BIN_HOME    = "$HOME/.local/bin";
-          XDG_CACHE_HOME  = "$HOME/.cache";
-          XDG_CONFIG_HOME = "$HOME/.config";
-          XDG_DATA_HOME   = "$HOME/.local/share";
-          XDG_DESKTOP_DIR = XDG_FAKE_HOME;
-          XDG_STATE_HOME  = "$HOME/.local/state";
-
-          # To avoid ~/.compose-cache getting created, and must be set
-          # especially early to intercept this silliness:
-          # https://github.com/NixOS/nixpkgs/blob/nixos-unstable/nixos/modules/services/x11/display-managers/default.nix#L74-L83
-          XCOMPOSECACHE = "$XDG_RUNTIME_DIR/xcompose";
+          # X11 systems only: prevents creation of ~/.compose-cache, and must be
+          # set especially early to intercept this silliness:
+          # https://github.com/NixOS/nixpkgs/blob/25865a40d14b3f9cf19f19b924e2ab4069b09588/nixos/modules/services/x11/display-managers/default.nix#L98-L105,
+          XCOMPOSECACHE = "/tmp/xcompose";
         };
 
         # Conform common programs to XDG conventions, leaving the rest to their
@@ -66,20 +63,15 @@ in {
           # Common shells
           BASH_COMPLETION_USER_FILE = "$XDG_CONFIG_HOME/bash/completion";
           ENV             = "$XDG_CONFIG_HOME/shell/shrc";  # sh, ksh
-          HISTFILE        = ''$XDG_STATE_HOME/''${SHELL##*/}_history'';
           # Common databases
           MYSQL_HISTFILE  = "$XDG_STATE_HOME/mysql/history";
           PGPASSFILE      = "$XDG_CONFIG_HOME/pg/pgpass";
           PGSERVICEFILE   = "$XDG_CONFIG_HOME/pg";
           PSQLRC          = "$XDG_CONFIG_HOME/pg/psqlrc";
           PSQL_HISTORY    = "$XDG_STATE_HOME/psql_history";
-          SQLITE_HISTORY  = "$XDG_DATA_HOME/sqlite/history";
+          SQLITE_HISTORY  = "$XDG_STATE_HOME/sqlite/history";
           # Misc
-          ASPELL_CONF = ''
-            per-conf $XDG_CONFIG_HOME/aspell/aspell.conf;
-            personal $XDG_CONFIG_HOME/aspell/en_US.pws;
-            repl $XDG_CONFIG_HOME/aspell/en.prepl;
-          '';
+          ASPELL_CONF     = ''per-conf $XDG_CONFIG_HOME/aspell/aspell.conf; personal $XDG_CONFIG_HOME/aspell/en_US.pws; repl $XDG_CONFIG_HOME/aspell/en.prepl;'';
           BZRPATH         = "$XDG_CONFIG_HOME/bazaar";
           BZR_HOME        = "$XDG_CACHE_HOME/bazaar";
           BZR_PLUGIN_PATH = "$XDG_DATA_HOME/bazaar";
@@ -90,7 +82,6 @@ in {
           LESSKEY         = "$XDG_CONFIG_HOME/less/keys";
           SUBVERSION_HOME = "$XDG_CONFIG_HOME/subversion";
           WGETRC          = "$XDG_CONFIG_HOME/wgetrc";
-          __GL_SHADER_DISK_CACHE_PATH = "$XDG_CACHE_HOME/nv";
         };
 
         # For programs that don't expose an envvar or for whom XDG compliance is
@@ -99,32 +90,37 @@ in {
           sqlite3 = ''sqlite3 -init "$XDG_CONFIG_HOME/sqlite3/sqliterc"'';
           wget = ''wget --hsts-file="$XDG_CACHE_HOME/wget-hsts"'';
         };
+
+        # Don't recreate the $HOME/*/ XDG directories on login (in some desktop
+        # environments).
+        etc."xdg/user-dirs.conf".text = ''
+          enabled=False
+        '';
       };
 
-      # Different (GUI) prorgams have competing opinions about what should go
+      # Different (GUI) programs have competing opinions about what should go
       # where. Some ignore the envvars and only listen to xdg-user-dirs (thus
       # necessitating a user-dirs.dirs file), others (that may otherwise support
       # the convention) barrel on ahead and create files in $HOME anyway before
-      # doing the right thing, and a few decide to create+pollute a
-      # (non-dotfile) subfolder in (like Documents or Videos). What can I say?
-      # Linux is a battlefield.
+      # doing the right thing, and a few decide to pop a dotfile subfolder into
+      # $HOME (like Documents or Videos). War. War never changes.
       home.configFile."user-dirs.dirs".text = ''
-        XDG_DESKTOP_DIR="${cfg.fakeHomeDir}/Desktop"
-        XDG_DOCUMENTS_DIR="${cfg.fakeHomeDir}/Documents"
-        XDG_DOWNLOAD_DIR="${cfg.fakeHomeDir}/Downloads"
-        XDG_MUSIC_DIR="${cfg.fakeHomeDir}/Music"
-        XDG_PICTURES_DIR="${cfg.fakeHomeDir}/Pictures"
-        XDG_PUBLICSHARE_DIR="${cfg.fakeHomeDir}/Share"
-        XDG_TEMPLATES_DIR="${cfg.fakeHomeDir}/Templates"
-        XDG_VIDEOS_DIR="${cfg.fakeHomeDir}/Videos"
+        XDG_DESKTOP_DIR="${home.fakeDir}/Desktop"
+        XDG_DOCUMENTS_DIR="${home.fakeDir}/Documents"
+        XDG_DOWNLOAD_DIR="${home.fakeDir}/Downloads"
+        XDG_MUSIC_DIR="${home.fakeDir}/Music"
+        XDG_PICTURES_DIR="${home.fakeDir}/Pictures"
+        XDG_PUBLICSHARE_DIR="${home.fakeDir}/Share"
+        XDG_TEMPLATES_DIR="${home.fakeDir}/Templates"
+        XDG_VIDEOS_DIR="${home.fakeDir}/Videos"
       '';
 
       # Auto-create XDG directories, ensure correct permissions, and generate a
       # fake $HOME in XDG_DATA_HOME for jailing silly programs and their even
-      # sillier developers for resisting XDG conventions.
-      # Some tools may auto-create them with overly permissive defaults OR may
-      # not create them at all when trying to write them, causing errors. Best
-      # to do it right from the start.
+      # sillier developers for resisting XDG conventions. Some tools may
+      # auto-create them with overly permissive defaults OR may not create them
+      # at all when trying to write them, causing errors. Best to do it right
+      # from the start.
       system.userActivationScripts.initXDG = ''
         for dir in "$XDG_DESKTOP_DIR" "$XDG_STATE_HOME" "$XDG_DATA_HOME" "$XDG_CACHE_HOME" "$XDG_BIN_HOME" "$XDG_CONFIG_HOME"; do
           mkdir -p "$dir" -m 700
@@ -133,7 +129,7 @@ in {
         # Populate the fake home with .local and .config, so certain things are
         # still in scope for the jailed programs, like fonts, data, and files,
         # should they choose to use them at all.
-        fakehome="${cfg.fakeHomeDir}"
+        fakehome="${home.fakeDir}"
         mkdir -p "$fakehome" -m 755
         [ -e "$fakehome/.local" ]  || ln -sf ~/.local  "$fakehome/.local"
         [ -e "$fakehome/.config" ] || ln -sf ~/.config "$fakehome/.config"
@@ -144,21 +140,22 @@ in {
         mkdir -p "$XDG_DATA_HOME/pki/nssdb"
       '';
 
-      ## dbus-broker doesn't produce a $HOME/.dbus like the dbus daemon does.
+      # dbus-broker doesn't produce a $HOME/.dbus like the dbus daemon does.
       services.dbus.implementation = "broker";
 
       # Ensures .Xauthority is written (by the display manager or X11-compatible
       # programs) to $XDG_RUNTIME_DIR and /run/lightdm/*/, instead of $HOME.
       services.xserver.displayManager.lightdm.extraConfig = "user-authority-in-system-dir = true\n";
-      services.xserver.displayManager.job.environment.XAUTHORITY = "$XDG_RUNTIME_DIR/xauthority";
+      services.displayManager.environment.XAUTHORITY = "$XDG_RUNTIME_DIR/xauthority";
 
       # See https://kdemonkey.blogspot.com/2008/04/magic-trick.html, then
-      # https://github.com/NixOS/nixpkgs/blob/nixos-unstable/nixos/modules/services/x11/display-managers/default.nix#L74-L83
-      # which would otherwise create $HOME/.compose-cache.
-      services.xserver.displayManager.job.environment.XCOMPOSECACHE = "$XDG_RUNTIME_DIR/xcompose";
+      # https://github.com/NixOS/nixpkgs/blob/25865a40d14b3f9cf19f19b924e2ab4069b09588/nixos/modules/services/x11/display-managers/default.nix#L98-L105,
+      # which creates $HOME/.compose-cache without this.
+      services.displayManager.environment.XCOMPOSECACHE =
+        config.environment.sessionVariables.XCOMPOSECACHE;
     }
 
-    ## Forces SSH to respect XDG.
+    ## Forcing SSH to respect XDG.
     # HACK: This could break tools that rely on openssh (and even openssh
     #   itself), like DropBear. None of my tools/workflows on my workstations
     #   are broken by this, so I can ignore it, but it's opt-in for a reason.

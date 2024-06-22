@@ -1,0 +1,154 @@
+/* .config/waybar/styles.css */
+
+/** Variables **/
+@define-color fg #c5c8c6;
+@define-color bg #1D1F1E;
+
+@define-color highlight #e68183;
+@define-color active #b5bd68;
+@define-color accent #c9b4cf;
+@define-color warning red;
+
+
+/** Styles **/
+* {
+    border: none;
+    border-radius: 0;
+    min-height: 0;
+    font-family: "JetBrains Mono";
+}
+
+window.main#waybar {
+    /* background: alpha(@bg, 0.0); */
+    background: linear-gradient(180deg, alpha(@bg, 0.96), alpha(@bg, 0.94));
+    color: @fg;
+    font-size: 12px;
+    /* border-bottom: 1px solid alpha(@bg,0.2); */
+}
+window.osd#waybar {
+    background: none;
+}
+
+window.osd #submap {
+    font-family: "Font Awesome 6 Free";
+    padding: 16px 64px;
+    margin: 0;
+    font-size: 96px;
+    background: rgba(18, 18, 18, 0.8);
+    color: @highlight;
+    opacity: 0.96;
+    border-radius: 24px;
+}
+
+label.module {
+    padding: 0 6px 0;
+    margin: 0 1px;
+    text-shadow: 0px 1px 4px @bg;
+}
+
+#workspaces {
+    /* padding-right: 18px; */
+}
+#workspaces * {
+    font-size: 14px;
+}
+#workspaces button {
+    padding: 0 4px 0;
+    background: transparent;
+    border-top: 0px solid transparent;
+    /* opacity: 0.9; */
+    color: @highlight;
+    opacity: 1.0;
+}
+
+#workspaces button.empty {
+    opacity: 0.9;
+}
+
+#workspaces button.special {
+    color: @accent;
+}
+
+#workspaces button.active {
+    /* border-top-color: #81a2be; */
+    color: @fg;
+    opacity: 1.0;
+}
+
+#workspaces button:hover, #tags button:hover {
+    /* color: @fg; */
+}
+
+/* Hyprland */
+#clock, #window, #workspaces button, #submap {
+    font-weight: bold;
+}
+
+#window {
+    font-size: 14px;
+}
+
+window.main #submap {
+    background: @bg;
+    color: @highlight;
+    padding: 2px 10px;
+    margin: 0;
+    font-size: 24px;
+}
+
+
+#clock {
+    /* margin-right: 14px; */
+}
+
+#battery {}
+#battery icon {
+    color: @warning;
+}
+#battery.charging {}
+
+@keyframes blink {
+    to {
+        background-color: @fg;
+        color: @bg;
+    }
+}
+
+#battery.warning:not(.charging) {
+    color: @fg;
+    animation-name: blink;
+    animation-duration: 0.3s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+#cpu {
+}
+
+#memory {
+}
+
+#network {
+}
+
+#network.disconnected {
+    color: @warning;
+}
+#network.ethernet {
+}
+
+#pulseaudio {
+}
+
+#pulseaudio.muted {
+}
+
+#tray {
+    margin-left: 8px;
+}
+
+#idle_inhibitor.activated {
+    background-color: @accent;
+    color: @bg;
+}

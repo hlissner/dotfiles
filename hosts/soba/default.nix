@@ -8,7 +8,7 @@ with builtins;
   system = "x86_64-linux";
 
   modules = {
-    theme.active = "alucard";
+    theme.active = "autumnal";
 
     profiles = {
       role = "workstation";
@@ -23,14 +23,20 @@ with builtins;
     };
 
     desktop = {
-      bspwm.enable = true;
+      # X only
+      # bspwm.enable = true;
+      # term.default = "xst";
+      # term.st.enable = true;
+
+      # Wayland only
+      hyprland.enable = true;
+      term.default = "foot";
+      term.foot.enable = true;
 
       apps.rofi.enable = true;
       apps.steam.enable = true;
       browsers.default = "firefox";
       browsers.firefox.enable = true;
-      term.default = "xst";
-      term.st.enable = true;
     };
     dev = {
       cc.enable = true;

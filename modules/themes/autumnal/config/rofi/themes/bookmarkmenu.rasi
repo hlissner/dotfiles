@@ -1,0 +1,11 @@
+/* -*- mode: css; -*- */
+@import "config.rasi"
+
+icon {
+  filename: "user-bookmarks-symbolic";
+  margin: -3px 0 0 0;
+}
+
+entry {
+  placeholder: "Search bookmarks...";
+}

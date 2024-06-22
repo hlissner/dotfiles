@@ -3,25 +3,26 @@
 with lib;
 with self.lib;
 let cfg = config.modules.shell.vaultwarden;
+    package = pkgs.unstable.bitwarden-cli;
 in {
   options.modules.shell.vaultwarden = with types; {
     enable = mkBoolOpt false;
-    config = mkOpt attrs {};
+    settings = mkOpt attrs {};
   };
 
   config = mkIf cfg.enable {
-    user.packages = with pkgs; [
-      bitwarden-cli
-    ];
+    user.packages = [ package ];
 
     modules.shell.zsh.rcInit = ''
-      _cache bw completion --shell zsh && compdef _bw bw;
+      hey.cache ${package}/bin/bw completion --shell zsh && compdef _bw bw;
     '';
 
-    system.userActivationScripts = mkIf (cfg.config != {}) {
+    system.userActivationScripts = mkIf (cfg.settings != {}) {
       initVaultwarden = ''
         if command -v bw >/dev/null; then
-          ${concatStringsSep "\n" (mapAttrsToList (n: v: "bw config ${n} ${v}") cfg.config)}
+          echo "Configuring bitwarden-cli..."
+          ${concatStringsSep "\n"
+            (mapAttrsToList (n: v: "bw config ${n} ${v}") cfg.settings)}
         fi
       '';
     };

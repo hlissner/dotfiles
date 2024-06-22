@@ -1,0 +1,6 @@
+/* -*- mode: css; -*- */
+@import "config.rasi"
+
+icon {
+  filename: "lock";  /* FIXME */
+}

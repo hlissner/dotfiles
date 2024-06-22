@@ -11,8 +11,7 @@
 
 with lib;
 with self.lib;
-let inherit (self) configDir;
-    cfg = config.modules.desktop.media.graphics;
+let cfg = config.modules.desktop.media.graphics;
 in {
   options.modules.desktop.media.graphics = {
     enable         = mkBoolOpt false;
@@ -21,23 +20,27 @@ in {
     vector.enable  = mkBoolOpt true;
     sprites.enable = mkBoolOpt true;
     design.enable  = mkBoolOpt true;
-    print.enable   = mkBoolOpt false;
   };
 
   config = mkIf cfg.enable {
-    user.packages = with pkgs;
-      (if cfg.tools.enable then [
-        font-manager   # for easily toggling and previewing groups of fonts
-        imagemagick    # for CLI image manipulation
-      ] else []) ++
+    user.packages = with pkgs.unstable;
+      # CLI/scripting tools
+      (optionals cfg.tools.enable [
+        imagemagick
+        # Optimizers
+        # LOSSLESS   LOSSY
+        optipng      pngquant
+        jpegoptim    libjpeg  # (jpegtran)
+                     gifsicle
+      ]) ++
 
       # Replaces Illustrator (maybe indesign?)
-      (if cfg.vector.enable then [
-        unstable.inkscape
-      ] else []) ++
+      (optionals cfg.vector.enable [
+        inkscape
+      ]) ++
 
       # Replaces Photoshop
-      (if cfg.raster.enable then [
+      (optionals cfg.raster.enable [
         (gimp-with-plugins.override {
           plugins = with gimpPlugins; [
             bimp            # batch image manipulation
@@ -45,27 +48,46 @@ in {
             gmic            # an assortment of extra filters
           ];
         })
-        unstable.krita   # But Krita is better for digital illustration
-      ] else []) ++
+        krita   # But Krita is better for digital illustration
+      ]) ++
 
       # Sprite sheets & animation
-      (if cfg.sprites.enable then [
+      (optionals cfg.sprites.enable [
         aseprite-unfree
-      ] else []) ++
+      ]) ++
 
       # Replaces Adobe XD (or Sketch)
-      (if cfg.design.enable then [
-        figma-linux   # FIXME ew, electron
-      ] else []) ++
-
-      # Replaces InDesign
-      (if cfg.print.enable then [
-        scribus
-        cyan          # CYMK converter/viewer
-      ] else []);
+      (optionals cfg.design.enable [
+        (if config.modules.desktop.type == "wayland"
+         then figma-linux.overrideAttrs (final: prev: {
+           postFixup = ''
+             substituteInPlace $out/share/applications/figma-linux.desktop \
+               --replace "Exec=/opt/figma-linux/figma-linux" \
+                         "Exec=$out/bin/${final.pname} --enable-features=UseOzonePlatform \
+                                                       --ozone-platform=wayland \
+                                                       --enable-vulkan \
+                                                       --enable-gpu-rasterization \
+                                                       --enable-oop-rasterization \
+                                                       --enable-gpu-compositing \
+                                                       --enable-accelerated-2d-canvas \
+                                                       --enable-zero-copy \
+                                                       --canvas-oop-rasterization \
+                                                       --disable-features=UseChromeOSDirectVideoDecoder \
+                                                       --enable-accelerated-video-decode \
+                                                       --enable-accelerated-video-encode \
+                                                       --enable-features=VaapiVideoDecoder,VaapiVideoEncoder,VaapiIgnoreDriverChecks,RawDraw,Vulkan \
+                                                       --enable-hardware-overlays \
+                                                       --enable-unsafe-webgpu"
+           '';
+         })
+         else figma-linux)
+      ]);
 
     home.configFile = mkIf cfg.raster.enable {
-      "GIMP/2.10" = { source = "${configDir}/gimp"; recursive = true; };
+      "GIMP/2.10" = {
+        source = "${self.configDir}/gimp";
+        recursive = true;
+      };
       # TODO Inkscape dotfiles
     };
   };

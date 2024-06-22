@@ -6,23 +6,27 @@
 
 with lib;
 with self.lib;
-let inherit (self) configDir;
-    cfg = config.modules.editors.emacs;
-    emacs = with pkgs; (emacsPackagesFor emacs-git).emacsWithPackages
+let cfg = config.modules.editors.emacs;
+    emacs = with pkgs; (emacsPackagesFor
+      (if config.modules.desktop.type == "wayland"
+       then emacs-pgtk
+       else emacs-git)).emacsWithPackages
       (epkgs: []);
 in {
   options.modules.editors.emacs = {
     enable = mkBoolOpt false;
-    doom = rec {
-      enable = mkBoolOpt false;
-      forgeUrl = mkOpt types.str "https://github.com";
-      repoUrl = mkOpt types.str "${forgeUrl}/doomemacs/doomemacs";
-      configRepoUrl = mkOpt types.str "${forgeUrl}/hlissner/.doom.d";
-    };
+    # doom = rec {
+    #   enable = mkBoolOpt false;
+    #   forgeUrl = mkOpt types.str "https://github.com";
+    #   repoUrl = mkOpt types.str "${forgeUrl}/doomemacs/doomemacs";
+    #   configRepoUrl = mkOpt types.str "${forgeUrl}/hlissner/.doom.d";
+    # };
   };
 
   config = mkIf cfg.enable {
-    nixpkgs.overlays = [ self.inputs.emacs-overlay.overlays.default ];
+    nixpkgs.overlays = [
+      self.inputs.emacs-overlay.overlays.default
+    ];
 
     user.packages = with pkgs; [
       (mkLauncherEntry "Emacs (Debug Mode)" {
@@ -38,7 +42,7 @@ in {
 
       ## Doom dependencies
       git
-      (ripgrep.override {withPCRE2 = true;})
+      ripgrep
       gnutls              # for TLS connectivity
 
       ## Optional dependencies
@@ -64,21 +68,12 @@ in {
       age
     ];
 
-    env.PATH = [ "$XDG_CONFIG_HOME/emacs/bin" ];
+    environment.variables.PATH = [ "$XDG_CONFIG_HOME/emacs/bin" ];
 
-    modules.shell.zsh.rcFiles = [ "${configDir}/emacs/aliases.zsh" ];
+    modules.shell.zsh.rcFiles = [ "${self.configDir}/emacs/aliases.zsh" ];
 
     fonts.packages = [
       (pkgs.nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
     ];
-
-    system.userActivationScripts = mkIf cfg.doom.enable {
-      installDoomEmacs = ''
-        if [ ! -d "$XDG_CONFIG_HOME/emacs" ]; then
-           git clone --depth=1 --single-branch "${cfg.doom.repoUrl}" "$XDG_CONFIG_HOME/emacs"
-           git clone "${cfg.doom.configRepoUrl}" "$XDG_CONFIG_HOME/doom"
-        fi
-      '';
-    };
   };
 }

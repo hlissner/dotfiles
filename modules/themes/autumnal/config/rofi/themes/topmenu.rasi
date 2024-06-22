@@ -1,0 +1,25 @@
+/* -*- mode: css; -*- */
+@import "config.rasi"
+
+configuration {
+  /* kb-accept-entry: "Return"; */
+  /* kb-accept-custom: "Control+Return"; */
+  show-icons: false;
+}
+
+window {
+  width: 90%;
+}
+
+icon {
+  enabled: false;
+  /* filename: "accessories-calculator-symbolic"; */
+}
+
+entry {
+  placeholder: "Process list ...";
+}
+
+element-text {
+  font: @font-mono-0;
+}

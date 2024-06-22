@@ -1,0 +1,10 @@
+#!/usr/bin/env zsh
+#
+# TODO
+
+hey .open-term -t scratch-term -F 2 -o colors.alpha=0.8 -o main.pad=16x16 &
+sleep 0.1
+hey .open-term -t scratch-calc -F 4 -o colors.alpha=0.8 -o main.pad=12x12 -- qalc &
+sleep 0.2
+
+hyprctl dispatch cyclenext

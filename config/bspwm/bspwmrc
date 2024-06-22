@@ -1,14 +1,13 @@
 #!/usr/bin/env bash
 
-export MONITOR=$(xrandr -q | grep primary | cut -d' ' -f1)
-export MONITORS=( $(xrandr -q | grep ' connected' | cut -d' ' -f1) )
-MONITOR=${MONITOR:-${MONITORS[0]}}
+MONITORS=( $(xrandr --listactivemonitors | grep -E '^ [0-9]+:' | cut -d' ' -f6 | sed 's/\n/ /') )
+MONITOR="${MONITOR:-${MONITORS[0]}}"
 
 # Only have workspaces for primary monitor
-for monitor in $MONITORS; do
-  bspc monitor $monitor -d 0
-done
 bspc monitor $MONITOR -d {1,2,3,4,5}
+for mon in ${MONITORS[@]:1}; do
+  bspc monitor $mon -d 0
+done
 
 bspc config remove_disabled_monitors true
 bspc config remove_unplugged_monitors true
@@ -25,9 +24,9 @@ bspc rule -a feh state=fullscreen
 bspc rule -a 'Emacs:org*' state=floating
 bspc rule -a 'Emacs:scratch' state=floating
 bspc rule -a 'Emacs:emacs-everywhere' state=floating sticky=on
-bspc rule -a '*:xst-scratch' state=floating sticky=on border=off rectangle=1920x420+0+32
+bspc rule -a '*:xst-scratch' state=floating sticky=on border=off rectangle=2560x480+0+50 monitor=primary
 
-#
+export MONITOR="$MONITOR"
 for file in $XDG_CONFIG_HOME/bspwm/rc.d/*; do
   source "$file"
 done

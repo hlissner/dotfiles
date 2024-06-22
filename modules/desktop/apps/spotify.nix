@@ -8,15 +8,23 @@
 with lib;
 with self.lib;
 let cfg = config.modules.desktop.apps.spotify;
+    spicetify = pkgs.unstable.spicetify-cli;
 in {
-  options.modules.desktop.apps.spotify = {
+  imports = [
+    self.modules.spicetify-nix.default
+  ];
+
+  options.modules.desktop.apps.spotify = with types; {
     enable = mkBoolOpt false;
+    theme = mkOpt str "";
+    colorscheme = mkOpt str "";
   };
 
   config = mkIf cfg.enable {
+    programs.spicetify.enable = true;
+
     user.packages = with pkgs; [
-      spotify
-      playerctl    # To control it remotely.
+      playerctl   # To control it remotely.
     ];
   };
 }

@@ -23,9 +23,11 @@ in {
     })
 
     (mkIf cfg.xdg.enable {
-      env.BUNDLE_USER_CACHE = "$XDG_CACHE_HOME/bundle";
-      env.BUNDLE_USER_CONFIG = "$XDG_CONFIG_HOME/bundle";
-      env.BUNDLE_USER_PLUGIN = "$XDG_DATA_HOME/bundle";
+      environment.variables = {
+        BUNDLE_USER_CACHE = "$XDG_CACHE_HOME/bundle";
+        BUNDLE_USER_CONFIG = "$XDG_CONFIG_HOME/bundle";
+        BUNDLE_USER_PLUGIN = "$XDG_DATA_HOME/bundle";
+      };
     })
   ];
 }

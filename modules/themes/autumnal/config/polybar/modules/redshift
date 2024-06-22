@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+_notify() {
+    dunstify -h int:transient:1 \
+             -u low \
+             -i redshift \
+             -- "$@"
+}
+
+action="$1"
+active="$(systemctl --user is-active redshift.service)"
+case "$action" in
+    toggle)
+        case "$active" in
+            active)
+                _notify "Disabling redshift..."
+                systemctl --user stop redshift.service
+                ;;
+            inactive)
+                _notify "Enabling redshift..."
+                systemctl --user start redshift.service
+                ;;
+        esac
+        ;;
+    *)
+        case "$active" in
+            active)   echo "" ;;
+            inactive) echo "%{F#604c7e}" ;;
+            *)        echo "%{F#373844}!" ;;
+        esac
+        ;;
+esac

@@ -1,0 +1,14 @@
+/* -*- mode: css; -*- */
+@import "config.rasi"
+
+icon {
+  filename: "drive-harddisk";
+}
+
+entry {
+  placeholder: "Manage filesystem...";
+}
+
+/* element-icon { */
+/*   filename: "ipod_mount"; */
+/* } */

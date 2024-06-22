@@ -1,6 +1,6 @@
 # modules/desktop/apps/steam.nix
 
-{ self, lib, config, options, pkgs, ... }:
+{ self, lib, config, options, pkgs, hey, ... }:
 
 with lib;
 with self.lib;
@@ -14,7 +14,11 @@ in {
 
   config = mkIf cfg.enable {
     programs = {
-      steam.enable = true;
+      steam = {
+        enable = true;
+        remotePlay.openFirewall = true;
+      };
+      gamescope.enable = true;
       # Makes gamemoderun available, but it must be selectively enabled for
       # games by changing said game's launch options to 'gamemoderun %command%'.
       gamemode = {
@@ -25,8 +29,8 @@ in {
             renice = 10;
           };
           custom = {
-            start = "${pkgs.libnotify}/bin/notify-send 'GameMode started'";
-            end = "${pkgs.libnotify}/bin/notify-send 'GameMode ended'";
+            start = "${hey} hook gamemode --on";
+            end = "${hey} hook gamemode --off";
           };
         };
       };
@@ -35,7 +39,8 @@ in {
     user.extraGroups = [ "gamemode" ];
 
     environment.systemPackages = with pkgs; [
-      # Stop Steam from polluting $HOME
+      # Stop Steam from polluting $HOME, and fix symlink/filename issues for a
+      # Steam library that lives on an NTFS drive.
       (let pkg = config.programs.steam.package;
            # If the steam library lives on a shared NTFS drive, then we must
            # symlink steamapps/compatdata to a local directory, because Proton

@@ -28,6 +28,15 @@ mkIf (config.modules.profiles.role == "workstation") (mkMerge [
         timeout = mkDefault 1;
       };
 
+      # For a truly silent boot!
+      # kernelParams = [
+      #   "quiet"
+      #   "splash"
+      #   "udev.log_level=3"
+      # ];
+      # consoleLogLevel = 0;
+      # initrd.verbose = false;
+
       # Common kernels across workstations
       initrd.availableKernelModules = [
         "xhci_pci"     # USB 3.0

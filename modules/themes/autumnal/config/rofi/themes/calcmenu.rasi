@@ -1,0 +1,16 @@
+/** -*- mode: css; -*- **/
+@import "config.rasi"
+
+configuration {
+  normalize-match: true;
+  /* kb-accept-entry: "Return"; */
+  /* kb-accept-custom: "Control+Return"; */
+}
+
+icon {
+  filename: "accessories-calculator-symbolic";
+}
+
+entry {
+  placeholder: "Enter calculation...";
+}

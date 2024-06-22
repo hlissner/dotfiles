@@ -9,6 +9,6 @@ in {
   };
 
   config = mkIf (cfg.default != null) {
-    env.BROWSER = cfg.default;
+    environment.sessionVariables.BROWSER = cfg.default;
   };
 }

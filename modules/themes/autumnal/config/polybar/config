@@ -1,0 +1,541 @@
+[colors]
+black    = ${xrdb:color0}
+bblack   = ${xrdb:color8}
+red      = ${xrdb:color1}
+bred     = ${xrdb:color9}
+green    = ${xrdb:color2}
+bgreen   = ${xrdb:color10}
+yellow   = ${xrdb:color3}
+byellow  = ${xrdb:color11}
+blue     = ${xrdb:color4}
+bblue    = ${xrdb:color12}
+magenta  = ${xrdb:color5}
+bmagenta = ${xrdb:color13}
+cyan     = ${xrdb:color6}
+bcyan    = ${xrdb:color14}
+white    = #FFFFFF
+bwhite   = ${xrdb:color15}
+
+bg = #cc0f1113
+fg = ${colors.white}
+bg-alt = #161719
+fg-alt = #5a5b5a
+; fg-alt = #373844
+bg-dark = #181a23
+
+alert = ${colors.yellow}
+accent = ${colors.fg-alt}
+; accent = #604c7e
+
+[global/wm]
+margin-top = 0
+margin-bottom = 34
+
+
+[bar/global]
+monitor = ${env:MONITOR}
+monitor-strict = true
+enable-ipc = true
+override-redirect = true
+fixed-center = true
+background = ${colors.bg}
+foreground = ${colors.fg}
+padding = 0
+; offset-x = 37.5%
+; offset-y = 11.7%
+bottom = false
+overline-size = 0
+; overline-color = #f00
+underline-size = 0
+; underline-color = #00f
+wm-restack = bspwm
+font-0 = "JetBrainsMono:pixelsize=9;3"
+font-1 = "Font Awesome 6 Free Solid:pixelsize=9;3"
+font-2 = "Font Awesome 6 Free Solid:pixelsize=8;3"
+font-3 = "Font Awesome 6 Free Solid:pixelsize=16;3"
+font-4 = "Material Icons:pixelsize=10;3"
+
+[bar/main]
+inherit = bar/global
+width = 100%
+height = 31
+modules-left = date_day date clock cpu memory fs-root fs-home
+modules-center = bspwm
+modules-right = wlan lan battery bluetooth redshift pulseaudio
+
+; [bar/meta]
+; inherit = bar/global
+; width = 100%
+; height = 32
+; modules-center = cpu memory fs
+; background = ${colors.bg-dark}
+
+; [bar/date]
+; inherit = bar/global
+; width = 25%
+; height = 32
+; offset-y = 5.5%
+; font-0 = "Fira Code:pixelsize=10:weight=bold;2"
+; font-1 = "Wuncon Siji:pixelsize=14:weight=bold;2"
+; font-2 = "Siji:pixelsize=12:weight=bold;2"
+; modules-center = date time
+; background = "#ee1E2029"
+
+
+[module/bspwm]
+type = internal/bspwm
+pin-workspaces = true
+enable-click = true
+
+; ws-icon-0 = 1;
+; ws-icon-1 = 2;
+; ws-icon-2 = 3;
+; ws-icon-3 = 4;
+; ws-icon-4 = 5;
+; ws-icon-5 = 6;
+ws-icon-default = "%{T3}%{T-}"
+
+format = <label-state> <label-mode>
+label-padding = 1
+
+label-focused = "%{T3}%{T-}"
+label-focused-foreground = ${colors.fg}
+; label-focused-background = ${colors.bg-dark}
+label-focused-padding = 1
+
+label-occupied = "%{T3}%{T-}"
+label-occupied-foreground = ${colors.accent}
+; label-occupied-background = ${colors.bg}
+label-occupied-padding = 1
+
+label-urgent = %icon%
+label-urgent-foreground = ${colors.alert}
+; label-urgent-background = ${colors.bg}
+; label-urgent-background = ${colors.alert}
+label-urgent-padding = 1
+
+label-empty = %icon%
+label-empty-foreground = ${colors.fg-alt}
+; label-empty-background = ${colors.bg}
+label-empty-padding = 1
+
+; [module/date]
+; type = internal/date
+; interval = 60
+; date = "<b>%a</b>  %Y-%M-%d"
+; date-alt = "%A, %B %d"
+; date-foreground = ${colors.accent}
+; format-prefix = "·"
+; ; format-prefix-padding = 1
+; ; format-prefix-background = ${colors.bg-alt}
+; format-prefix-foreground = ${colors.fg}
+; ; format-underline = ${xrdb:color4}
+
+[module/date_day]
+type = internal/date
+interval = 60
+label = %date%
+date = "%a"
+date-alt = "%A"
+format-padding = 1
+
+[module/date]
+type = internal/date
+interval = 60
+label = %date%
+label-foreground = ${colors.fg-alt}
+date = "%Y-%m-%d"
+date-alt = "%B %d, %Y"
+
+[module/clock]
+type = internal/date
+interval = 60
+label = %time%
+time = %H%M
+time-alt = %H%M
+format = <time>  <date>
+format-padding = 2
+format-suffix = "hrs"
+format-suffix-padding = 1
+format-suffix-foreground = ${colors.accent}
+; format-prefix-background = ${colors.bg-alt}
+; format-underline = ${xrdb:color4}
+
+[fs-base]
+type = internal/fs
+; mount-0 = /
+; mount-1 = /home          ; for laptop
+interval = 30
+
+; Available tags:
+;   <label-mounted> (default)
+;   <bar-free>
+;   <bar-used>
+;   <ramp-capacity>
+; format-mounted = <ramp-capacity>
+format-mounted = <label-mounted> <bar-used>
+; Available tokens:
+;   %mountpoint%
+;   %type%
+;   %fsname%
+;   %percentage_free%
+;   %percentage_used%
+;   %total%
+;   %free%
+;   %used%
+; Default: %mountpoint% %percentage_free%%
+label-mounted = %mountpoint%
+
+format-mounted-prefix = " "
+format-mounted-padding = 1
+format-unmounted =
+; label-unmounted =
+; label-unmounted-foreground = ${colors.fg-alt}
+
+ramp-capacity-0 = 
+; ramp-capacity-1 = ▂
+; ramp-capacity-2 = ▃
+; ramp-capacity-3 = ▄
+; ramp-capacity-4 = ▅
+; ramp-capacity-5 = ▆
+; ramp-capacity-6 = ▇
+; ramp-capacity-7 = █
+ramp-capacity-0-foreground = ${colors.red}
+ramp-capacity-1-foreground = ${colors.yellow}
+ramp-capacity-2-foreground = ${colors.fg}
+ramp-capacity-3-foreground = ${colors.accent}
+ramp-capacity-4-foreground = ${colors.accent}
+
+bar-used-indicator = |
+bar-used-fill = ─
+bar-used-empty = ─
+bar-used-width = 8
+bar-used-foreground-0 = ${colors.fg}
+bar-used-foreground-1 = ${colors.fg}
+bar-used-foreground-2 = ${colors.yellow}
+bar-used-foreground-3 = ${colors.alert}
+bar-used-foreground-4 = ${colors.alert}
+bar-used-empty-foreground = ${colors.fg-alt}
+
+[module/fs-root]
+inherit = fs-base
+hidden = true
+mount-0 = /
+
+[module/fs-home]
+inherit = fs-base
+hidden = true
+mount-0 = /home
+
+[module/xwindow]
+type = internal/xwindow
+label = %title:0:80:...%
+label-padding-left = 2
+
+; [module/mpd]
+; type = internal/mpd
+; host = /home/hlissner/.config/mpd/mpd.sock
+;
+; format-online = <label-song> <toggle>
+; format-padding = 5
+;
+; label-song-maxlen = 45
+; label-song-ellipsis = true
+;
+; icon-prev = 
+; icon-seekb = 
+; icon-stop = 
+; icon-play = 
+; icon-pause = 
+; icon-next = 
+; icon-seekf = 
+;
+; icon-random = 
+; icon-repeat = 
+;
+; toggle-on-foreground = ${colors.fg}
+; toggle-off-foreground = #66
+
+[module/cpu]
+type = internal/cpu
+hidden = true
+interval = 1
+format = <ramp-coreload>
+; format = <bar-load>
+format-prefix = "CPU "
+format-prefix-foreground = ${colors.fg}
+; format-foreground = ${colors.accent}
+; format-background = ${colors.bg-dark}
+; format-underline = #f90000
+; label = %percentage%%
+; format-padding-left = 1
+format-padding = 1
+
+ramp-coreload-spacing = 0
+; ramp-coreload-0 = ▁
+; ramp-coreload-1 = ▂
+; ramp-coreload-2 = ▃
+; ramp-coreload-3 = ▄
+; ramp-coreload-4 = ▅
+; ramp-coreload-5 = ▆
+; ramp-coreload-6 = ▇
+; ramp-coreload-7 = █
+ramp-coreload-0 = ·
+ramp-coreload-1 = ·
+ramp-coreload-2 = ¦
+ramp-coreload-3 = ¦
+ramp-coreload-4 = |
+ramp-coreload-5 = |
+ramp-coreload-6 = |
+ramp-coreload-7 = |
+ramp-coreload-0-foreground = ${colors.fg-alt}
+ramp-coreload-1-foreground = ${colors.fg-alt}
+ramp-coreload-2-foreground = ${colors.accent}
+ramp-coreload-3-foreground = ${colors.accent}
+ramp-coreload-4-foreground = ${colors.fg}
+ramp-coreload-5-foreground = ${colors.fg}
+ramp-coreload-6-foreground = ${colors.yellow}
+ramp-coreload-7-foreground = ${colors.yellow}
+
+bar-load-indicator =
+bar-load-width = 10
+bar-load-foreground-0 = ${colors.fg}
+bar-load-foreground-1 = ${colors.fg}
+bar-load-foreground-2 = ${colors.yellow}
+bar-load-foreground-3 = ${colors.alert}
+bar-load-foreground-4 = ${colors.alert}
+bar-load-fill = |
+bar-load-empty = ¦
+bar-load-empty-foreground = ${colors.fg-alt}
+
+[module/memory]
+type = internal/memory
+hidden = true
+interval = 3
+format = <bar-used>
+; format = <bar-used>
+; format-prefix = ""
+; format-prefix-foreground = ${colors.fg}
+format-prefix = "MEM "
+format-prefix-foreground = ${colors.fg}
+; format-background = ${colors.bg-dark}
+; format-underline = #4bffdc
+; label = %percentage_used%%
+format-padding = 1
+
+; Only applies if <ramp-used> is used
+ramp-used-0 =
+ramp-used-1 =
+ramp-used-2 =
+ramp-used-3 = !
+ramp-used-4 = !
+ramp-used-5 = !
+ramp-used-0-foreground = ${colors.accent}
+ramp-used-1-foreground = ${colors.accent}
+ramp-used-2-foreground = ${colors.accent}
+ramp-used-3-foreground = ${colors.fg}
+ramp-used-4-foreground = ${colors.yellow}
+ramp-used-5-foreground = ${colors.red}
+
+; Only applies if <bar-used> is used
+bar-used-indicator = |
+bar-used-fill = ─
+bar-used-empty = ─
+bar-used-width = 10
+bar-used-foreground-0 = ${colors.fg}
+bar-used-foreground-1 = ${colors.yellow}
+bar-used-foreground-2 = ${colors.red}
+bar-used-empty-foreground = ${colors.fg-alt}
+
+[module/wlan]
+type = internal/network
+interface-type = wireless
+interval = 3.0
+label-connected = %essid%
+label-connected-foreground = ${colors.accent}
+format-connected = <ramp-signal> <label-connected>
+format-connected-padding = 2
+# format-disconnected = 
+format-disconnected = ""
+# format-disconnected-padding = 2
+# format-disconnected-foreground = ${colors.fg-alt}
+; format-disconnected-padding = 0
+ramp-signal-0 = ""
+ramp-signal-0-foreground = ${colors.fg}
+ramp-signal-1 = ""
+ramp-signal-1-foreground = ${colors.fg}
+ramp-signal-2 = ""
+ramp-signal-2-foreground = ${colors.fg}
+ramp-signal-3 = ""
+ramp-signal-3-foreground = ${colors.fg-alt}
+ramp-signal-4 = "!"
+ramp-signal-4-foreground = ${colors.fg-alt}
+
+[module/lan]
+type = internal/network
+interface-type = wired
+label-connected = ""
+; format-connected-prefix = " "
+; format-connected-prefix-foreground = ${colors.accent}
+format-connected-foreground = ${colors.fg}
+format-connected-background =
+format-connected-underline =
+format-connected-padding = 1
+
+; label-disconnected = ""
+; format-disconnected-prefix = " "
+; format-disconnected-prefix-foreground = ${colors.alert}
+format-disconnected-foreground = ${colors.alert}
+
+[module/pulseaudio]
+type = internal/pulseaudio
+; format-volume = <label-volume> <bar-volume>
+format-volume = <ramp-volume>
+format-volume-foreground = ${colors.fg}
+format-volume-padding = 1
+; label-volume = " "
+; label-volume-foreground = ${colors.accent}
+; format-muted-prefix = " "
+label-muted = 
+label-muted-foreground = ${colors.accent}
+format-muted-foreground = ${colors.accent}
+format-muted-padding = 1
+; bar-volume-width = 8
+; bar-volume-foreground-0 = ${colors.magenta}
+; bar-volume-foreground-1 = ${colors.magenta}
+; bar-volume-foreground-2 = ${colors.magenta}
+; bar-volume-foreground-3 = ${colors.magenta}
+; bar-volume-foreground-4 = ${colors.magenta}
+; bar-volume-foreground-5 = ${colors.magenta}
+; bar-volume-foreground-6 = ${colors.magenta}
+; bar-volume-gradient = false
+; bar-volume-indicator = |
+; bar-volume-indicator-font = 1
+; bar-volume-indicator-foreground = ${colors.magenta}
+; bar-volume-fill = ─
+; bar-volume-fill-font = 1
+; bar-volume-empty = ─
+; bar-volume-empty-font = 1
+; bar-volume-empty-foreground = ${colors.fg}
+; Only applies if <ramp-volume> is used
+ramp-volume-0 = 
+ramp-volume-0-foreground = ${colors.accent}
+ramp-volume-1 = 
+ramp-volume-2 = 
+ramp-volume-3 = 
+ramp-volume-4 = 
+ramp-volume-5 = 
+ramp-volume-6 = 
+ramp-volume-7 = 
+ramp-volume-8 = 
+ramp-volume-9 = 
+ramp-volume-10 = 
+; ramp-volume-0-foreground = ${colors.accent}
+; ramp-volume-1-foreground = ${colors.accent}
+; ramp-volume-2-foreground = ${colors.accent}
+
+[module/battery]
+type = internal/battery
+battery = BAT0
+adapter = ADP1
+full-at = 98
+low-at = 5
+poll-interval = 5
+
+time-format = "%H:%M"
+
+label-charging = %percentage%%
+; label-charging-foreground = ${colors.yellow}
+format-charging = <animation-charging> <label-charging>
+; format-charging-foreground = ${colors.fg}
+; format-charging-underline = #ffb52a
+format-charging-padding = 1
+
+label-discharging = %time%
+format-discharging = <ramp-capacity> <label-discharging>
+format-discharging-foreground = ${colors.fg}
+; format-discharging-underline = ${self.format-charging-underline}
+format-discharging-padding = 1
+
+label-low = <ramp-capacity>! %time%
+format-low-foreground = ${colors.red}
+
+label-full =
+label-full-foreground = ${colors.accent}
+format-full-padding = 1
+; format-full-prefix = " "
+; format-full-foreground = ${colors.fg}
+; format-full-underline = ${self.format-charging-underline}
+
+ramp-capacity-0 = "%{T4}%{T-}"
+ramp-capacity-1 = "%{T4}%{T-}"
+ramp-capacity-2 = "%{T4}%{T-}"
+ramp-capacity-3 = "%{T4}%{T-}"
+ramp-capacity-4 = "%{T4}%{T-}"
+ramp-capacity-0-foreground = ${colors.red}
+ramp-capacity-1-foreground = ${colors.yellow}
+; ramp-capacity-2-foreground = ${colors.fg}
+; ramp-capacity-3-foreground = ${colors.fg}
+; ramp-capacity-4-foreground = ${colors.fg}
+
+animation-charging-0 = "%{T4}%{T-}"
+animation-charging-1 = "%{T4}%{T-}"
+animation-charging-2 = "%{T4}%{T-}"
+animation-charging-3 = "%{T4}%{T-}"
+animation-charging-4 = "%{T4}%{T-}"
+animation-charging-framerate = 750
+
+[module/temperature]
+type = internal/temperature
+
+; Seconds to sleep between updates
+; Default: 1
+interval = 1
+
+; Thermal zone to use
+; To list all the zone types, run
+; $ for i in /sys/class/thermal/thermal_zone*; do echo "$i: $(<$i/type)"; done
+; Default: 0
+thermal-zone = 0
+
+; Full path of temperature sysfs path
+; Use `sensors` to find preferred temperature source, then run
+; $ for i in /sys/class/hwmon/hwmon*/temp*_input; do echo "$(<$(dirname $i)/name): $(cat ${i%_*}_label 2>/dev/null || echo $(basename ${i%_*})) $(readlink -f $i)"; done
+; to find path to desired file
+; Default reverts to thermal zone setting
+hwmon-path = /sys/devices/platform/coretemp.0/hwmon/hwmon2/temp1_input
+
+; Base temperature for where to start the ramp (in degrees celsius)
+; Default: 0
+base-temperature = 20
+
+; Threshold temperature to display warning label (in degrees celsius)
+; Default: 80
+warn-temperature = 60
+
+
+;=====================================================
+; Custom scripts
+;=====================================================
+
+[module/bluetooth]
+type = custom/script
+exec-if = command -v bluetoothctl
+exec = ~/.config/polybar/modules/bluetooth
+tail = true
+click-left = bluetoothmenu
+
+[module/redshift]
+type = custom/script
+exec-if = command -v redshift
+exec = ~/.config/polybar/modules/redshift
+click-left = ~/.config/polybar/modules/redshift toggle
+format-padding = 1
+interval = 1
+
+[module/pad]
+type = custom/text
+content = "  · "
+content-foreground = ${colors.fg-alt}
+
+; vim:ft=dosini

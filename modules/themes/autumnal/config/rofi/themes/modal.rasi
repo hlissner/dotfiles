@@ -1,0 +1,17 @@
+/* -*- mode: css; -*- */
+@import "config.rasi"
+
+configuration {
+  cycle: true;
+  scroll-method: 0;
+}
+
+inputbar {
+  enabled: false;
+}
+
+message {
+  background-color: @bg-focus;
+  padding: @pad4;
+  font: @font-sans-0;
+}

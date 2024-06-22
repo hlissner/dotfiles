@@ -13,22 +13,34 @@
   inputs = 
     {
       # Core dependecies
-      nixpkgs.url = "nixpkgs/nixos-23.11";
+      nixpkgs.url = "nixpkgs/nixos-24.05";
       nixpkgs-unstable.url = "nixpkgs/nixos-unstable";
-      home-manager.url = "github:nix-community/home-manager/release-23.11";
+      home-manager.url = "github:nix-community/home-manager/release-24.05";
       home-manager.inputs.nixpkgs.follows = "nixpkgs";
       agenix.url = "github:ryantm/agenix";
       agenix.inputs.nixpkgs.follows = "nixpkgs";
-
       # TODO: Declarative partitions
       # disko.url = "github:nix-community/disko";
       # disko.inputs.nixpkgs.follows = "nixpkgs";
 
+      # Hyprland + core extensions
+      hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
+      hyprlock.url = "github:hyprwm/Hyprlock";
+      hyprlock.inputs.nixpkgs.follows = "nixpkgs-unstable";
+      # hypridle.url = "github:hyprwm/hypridle";
+      # hypridle.inputs.nixpkgs.follows = "nixpkgs-unstable";
+      waybar.url = "github:Alexays/Waybar";
+      waybar.inputs.nixpkgs.follows = "nixpkgs-unstable";
+
       # Extras (imported directly by modules/hosts that need them)
+      spicetify-nix.url = "github:the-argus/spicetify-nix";
+      spicetify-nix.inputs.nixpkgs.follows = "nixpkgs-unstable";
+      hyprpicker.url = "github:hyprwm/hyprpicker";
+      hyprpicker.inputs.nixpkgs.follows = "nixpkgs-unstable";
       blender-bin.url = "github:edolstra/nix-warez?dir=blender";
-      blender-bin.inputs.nixpkgs.follows = "nixpkgs";
+      blender-bin.inputs.nixpkgs.follows = "nixpkgs-unstable";
       emacs-overlay.url = "github:nix-community/emacs-overlay";
-      emacs-overlay.inputs.nixpkgs.follows = "nixpkgs";
+      emacs-overlay.inputs.nixpkgs.follows = "nixpkgs-unstable";
       nixos-hardware.url = "github:nixos/nixos-hardware";
     };
 
@@ -48,7 +60,7 @@
         hosts = mapModules ./hosts import;
         modules.default = import ./.;
 
-        apps.default = mkApp ./bin/hey;
+        apps.install = mkApp ./install.zsh;
         devShells.default = import ./shell.nix;
         checks = mapModules ./test import;
         overlays = mapModules ./overlays import;

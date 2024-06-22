@@ -1,0 +1,20 @@
+/* -*- mode: css; -*- */
+@import "config.rasi"
+
+configuration {
+  matching: "regex";
+
+  /* drun-categories: ""; */
+  /* drun-match-fields: "name,generic,exec,categories,keywords"; */
+  drun-display-format: "{name} [<span weight='light' size='small' alpha='40%'>({generic})</span>]";
+  /* drun-show-actions: true; */
+  /* drun-url-launcher: "xdg-open"; */
+  /* drun-use-desktop-cache: false; */
+  /* drun-reload-desktop-cache: false; */
+  drun {
+    /** Parse user desktop files. */
+    parse-user:   true;
+    /** Parse system desktop files. */
+    parse-system: true;
+  }
+}

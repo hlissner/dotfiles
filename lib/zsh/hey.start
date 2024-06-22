@@ -1,0 +1,12 @@
+#!/usr/bin/env zsh
+
+main() {
+  zparseopts -E -D -- r=restart || return 1
+  if pidof -s $1 >/dev/null; then
+    [[ $restart ]] || return
+    hey.do pkill $1
+  fi
+  hey.do $@ &
+}
+
+main $@

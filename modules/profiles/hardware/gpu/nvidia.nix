@@ -24,23 +24,23 @@ in mkIf (any (s: hasPrefix "gpu/nvidia" s) hardware) (mkMerge [
       nvidia = {
         # Save some idle watts.
         powerManagement.enable = true;  # see NixOS/nixos-hardware#348
+        modesetting.enable = true;
       };
     };
 
     environment = {
       systemPackages = with pkgs; [
         # Respect XDG conventions, damn it!
-        (mkWrapper config.boot.kernelPackages.nvidia_x11.settings ''
+        (mkWrapper config.hardware.nvidia.package.settings ''
           wrapProgram "$out/bin/nvidia-settings" \
             --run 'mkdir -p "$XDG_CONFIG_HOME/nvidia"' \
             --append-flags '--config="$XDG_CONFIG_HOME/nvidia/rc.conf"'
         '')
 
-        # Required for CUDA support
-        cudatoolkit
+        cudaPackages.cudatoolkit  # required for CUDA support
       ];
       variables = {
-        CUDA_PATH = "${pkgs.cudatoolkit}";
+        CUDA_PATH = "${pkgs.cudaPackages.cudatoolkit}";
         CUDA_CACHE_PATH = "$XDG_CACHE_HOME/nv";
 
         # $EXTRA_LDFLAGS and $EXTRA_CCFLAGS are sometimes necessary too, but I
@@ -49,7 +49,7 @@ in mkIf (any (s: hasPrefix "gpu/nvidia" s) hardware) (mkMerge [
     };
 
     # Cajole Firefox into video-acceleration (or try).
-    modules.desktop.browsers.firefox.sharedSettings = {
+    modules.desktop.browsers.firefox.settings = {
       "media.ffmpeg.vaapi.enabled" = true;
       "gfx.webrender.enabled" = true;
     };
@@ -57,7 +57,7 @@ in mkIf (any (s: hasPrefix "gpu/nvidia" s) hardware) (mkMerge [
 
   (mkIf (elem "gpu/nvidia/kepler" hardware) {
     # Last one supporting Kepler architecture
-    hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.legacy_470;
+    hardware.nvidia.package = mkForce config.boot.kernelPackages.nvidiaPackages.legacy_470;
   })
 
   (mkIf (elem "gpu/nvidia/turing" hardware) {
@@ -65,6 +65,29 @@ in mkIf (any (s: hasPrefix "gpu/nvidia" s) hardware) (mkMerge [
     hardware.nvidia = {
       powerManagement.finegrained = true;
       nvidiaPersistenced = true;
+    };
+  })
+
+  (mkIf (config.modules.desktop.type == "wayland") {
+    # see NixOS/nixos-hardware#348
+    # TODO: Try these!
+    environment.systemPackages = with pkgs; [
+      libva
+      # Fixes crashes in Electron-based apps?
+      # libsForQt5.qt5ct
+      # libsForQt5.qt5-wayland
+    ];
+
+    environment.sessionVariables = {
+      LIBVA_DRIVER_NAME = "nvidia";
+      WLR_NO_HARDWARE_CURSORS = "1";
+
+      # May cause Firefox crashes
+      GBM_BACKEND = "nvidia-drm";
+
+      # If you face problems with Discord windows not displaying or screen
+      # sharing not working in Zoom, remove or comment this:
+      __GLX_VENDOR_LIBRARY_NAME = "nvidia";
     };
   })
 ])

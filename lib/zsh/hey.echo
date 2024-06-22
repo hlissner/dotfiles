@@ -1,0 +1,10 @@
+#!/usr/bin/env zsh
+
+# TODO
+main() {
+  zparseopts -E -D -- p:=prefix c:=color n=nl || return
+  [[ -n $HEYPIPE ]] && color=
+  print -P $nl "${color[2]:+%F\{$color[2]\}}${prefix[2]}$@${color[2]:+%f}"
+}
+
+main $@
