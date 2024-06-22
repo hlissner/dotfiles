@@ -65,7 +65,7 @@ with builtins;
       # docker.enable = true;
     };
     system = {
-      diagnostics.enable = true;
+      utils.enable = true;
       fs.enable = true;
     };
     virt.qemu.enable = true;

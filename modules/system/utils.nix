@@ -1,4 +1,4 @@
-# modules/system/diagnostics.nix --- TODO
+# modules/system/utils.nix --- TODO
 #
 # TODO
 
@@ -6,9 +6,9 @@
 
 with lib;
 with self.lib;
-let cfg = config.modules.system.diagnostics;
+let cfg = config.modules.system.utils;
 in {
-  options.modules.system.diagnostics = {
+  options.modules.system.utils = {
     enable = mkBoolOpt false;
     benchmarks.enable = mkBoolOpt false;
   };
@@ -17,6 +17,7 @@ in {
     {
       environment.systemPackages = with pkgs; [
         glances
+        bandwhich # network utilization monitor
         hwinfo
         iftop
         ioping
