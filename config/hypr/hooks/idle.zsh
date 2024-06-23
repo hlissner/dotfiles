@@ -17,7 +17,7 @@ case $2 in
           brightnessctl -m -s set 10
         else
           # A poor man's screen dimmer
-          hey set hypr.hook.last-shader $(hyprshade current)
+          hey set hypr.hook.last-shader "$(hyprshade current)"
           hyprshade on screen-dim
         fi
         ;;
