@@ -1,7 +1,5 @@
 # rofi-blocks: a plugin for Rofi that enables more dynamic interaction between
-# Rofi's state and an arbitrary process. It wasn't maintained at the time I
-# looked into it, so I forked it and made a bunch of changes. It now powers the
-# Ruby UI library I'm cooking up in my dotfiles.
+# Rofi's state and an arbitrary process. It's not on nixpkgs so...
 
 { self, lib, stdenv
 , fetchFromGitHub
