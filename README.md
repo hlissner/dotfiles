@@ -80,7 +80,7 @@ dotfiles over there.
 
 ## Management
 
-And I say, `bin/hey`, [what's going on?](http://hemansings.com/)
+And I say, `bin/hey`, [what's going on?](https://youtu.be/ZZ5LpwO-An4).
 
 ```
 SYNOPSIS:
