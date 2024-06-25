@@ -186,7 +186,7 @@ COMMANDS:
   - [A three-part tweag article that everyone's read.](https://www.tweag.io/blog/2020-05-25-flakes/)
   - [An overengineered config to scare off beginners.](https://github.com/divnix/devos)
   - [A minimalistic config for scared beginners.](https://github.com/colemickens/nixos-flake-example)
-  - [A nixos wiki page that spells out the format of flake.nix.](https://nixos.wiki/wiki/Flakes)
+  - [A nixos wiki page that spells out the format of flake.nix.](https://wiki.nixos.org/wiki/Flakes)
   - [Official documentation that nobody reads.](https://nixos.org/learn.html)
   - [Some great videos on general nixOS tooling and hackery.](https://www.youtube.com/channel/UC-cY3DcYladGdFQWIKL90SQ)
   - A couple flake configs that I 
