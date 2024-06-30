@@ -33,7 +33,7 @@
 
 (defn- list []
   (if (path/file? (*store*))
-    (unmarshal (string/chomp (slurp (*store*))))
+    (filter |(path/file? (string $ *ext*)) (unmarshal (string/chomp (slurp (*store*)))))
     @[]))
 
 (defn- save [swapped]
@@ -63,7 +63,7 @@
                   (do? $ mv ,;force ,path ,spath)
                   (do? $ cp ,;force ,spath ,path)
                   (do? $ chmod u+rw ,path)
-                  (array/push new-swapped path)))))
+                  (array/push new-swapped (os/realpath path))))))
     (if (or (dryrun?)
             (deep= swapped new-swapped))
       (exit 1)
