@@ -141,7 +141,7 @@ in {
     })
     (mkIf desktop.bspwm.enable {
       "polybar" = {
-        source = ./polybar;
+        source = ./config/polybar;
         recursive = true;
       };
       # "Dracula-purple-solid-kvantum" = {

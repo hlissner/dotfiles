@@ -41,6 +41,7 @@
       blender-bin.inputs.nixpkgs.follows = "nixpkgs-unstable";
       emacs-overlay.url = "github:nix-community/emacs-overlay";
       emacs-overlay.inputs.nixpkgs.follows = "nixpkgs-unstable";
+      emacs-overlay.inputs.nixpkgs-stable.follows = "nixpkgs";
       nixos-hardware.url = "github:nixos/nixos-hardware";
     };
 

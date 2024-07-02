@@ -75,13 +75,13 @@ in mkIf (cfg.active == "autumnal") (mkMerge [
         };
       };
 
-      shell.zsh.rcFiles  = [ ./common/zsh/prompt.zsh ];
-      shell.tmux.rcFiles = [ ./common/tmux.conf ];
+      shell.zsh.rcFiles  = [ ./config/zsh/prompt.zsh ];
+      shell.tmux.rcFiles = [ ./config/tmux.conf ];
       desktop.browsers = {
         firefox = {
           settings."devtools.theme" = "dark";
           userChrome = concatMapStringsSep "\n" readFile [
-            ./common/firefox/userChrome.css
+            ./config/firefox/userChrome.css
           ];
         };
       };
@@ -97,16 +97,16 @@ in mkIf (cfg.active == "autumnal") (mkMerge [
 
     home.configFile = with config.modules; mkMerge [
       (mkIf desktop.media.graphics.vector.enable {
-        "inkscape/templates/default.svg".source = ./common/inkscape/default-template.svg;
+        "inkscape/templates/default.svg".source = ./config/inkscape/default-template.svg;
       })
       (mkIf desktop.apps.rofi.enable {
-        "rofi/config.theme.rasi".source = ./common/rofi/config.rasi;
+        "rofi/config.theme.rasi".source = ./config/rofi/config.rasi;
         "rofi/themes" = {
-          source = ./common/rofi/themes;
+          source = ./config/rofi/themes;
           recursive = true;
         };
         "rofi/icons" = {
-          source = ./common/rofi/icons;
+          source = ./config/rofi/icons;
           recursive = true;
         };
       })
