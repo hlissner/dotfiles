@@ -62,8 +62,6 @@ in {
       mapAttrs' (k: v: nameValuePair "${config.home.fakeDir}/${k}" v)
         config.home.fakeFile;
 
-    home.configFile."dotfiles".source = "/etc/dotfiles";
-
     # Install user packages to /etc/profiles instead. Necessary for
     # nixos-rebuild build-vm to work.
     home-manager = {
