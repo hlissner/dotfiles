@@ -107,8 +107,15 @@ in {
   config = mkIf (cfg.active != null) (mkMerge [
     {
       hey.info.theme = {
-        inherit (cfg) active colors fonts wallpaper;
-        gtk = { inherit (cfg.gtk) theme iconTheme cursorTheme; };
+        inherit (cfg) active colors;
+        fonts = mapAttrs
+          (_: v: removeAttrs v ["package"])
+          (removeAttrs cfg.fonts ["packages"]);
+        gtk = {
+          theme = { inherit (cfg.gtk.theme) name; };
+          iconTheme = { inherit (cfg.gtk.iconTheme) name; };
+          cursorTheme = { inherit (cfg.gtk.cursorTheme) name size; };
+        };
       };
 
       home-manager.users.${config.user.name} = {

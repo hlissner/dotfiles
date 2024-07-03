@@ -13,7 +13,5 @@ with hey.lib;
     networks = mkOpt (listOf str) [];
   };
 
-  config = {
-    hey.info.profiles = config.modules.profiles;
-  };
+  config.hey.info.profiles = config.modules.profiles;
 }

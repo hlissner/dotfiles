@@ -18,7 +18,7 @@ let cfg = config.hey;
 in {
   options = with types; {
     hey = {
-      info = mkOpt attrs {};
+      info = mkOpt (attrsOf attrs) {};
       hooks = mkOpt (attrsOf (attrsOf lines)) {};
     };
   };
