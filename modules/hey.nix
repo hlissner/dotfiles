@@ -29,6 +29,7 @@ in {
     _module.args.heyBin = "${janet}/bin/janet ${hey.binDir}/hey";
 
     environment.systemPackages = with pkgs; [
+      gcc
       janet
       jpm
       jq
@@ -54,6 +55,7 @@ in {
     '';
 
     # Compile bin/hey to trivialize janet startup time
+    # TODO: Include gcc for 'jpm deps'
     system.userActivationScripts.initHey = ''
       ${pkgs.zsh}/bin/zsh -c 'echo $PATH' >"$XDG_DATA_HOME/hey/path"
 
