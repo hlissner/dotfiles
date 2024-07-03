@@ -62,7 +62,7 @@
              [:get :set]    |[:eval (cmd 'vars) ;$&]
              :gc            (cmd 'gc)
              :hook          (cmd 'hook)
-             :host          (path :host "bin")
+             :host          |[:exec (path :host "bin") ;$&]
              :info          (cmd 'info)
              :ops           (cmd 'ops)
              :path          (cmd 'path)
@@ -73,9 +73,9 @@
              [:swap :sw]    (cmd 'swap)
              [:sync :s]     (cmd 'sync)
              :test          |[:exec "judge" (path :home "test/hey") ;(slice $& 1)]
-             :theme         (path :theme "bin")
+             :theme         |[:exec (path :theme "bin") ;$&]
              :vars          (cmd 'vars)
-             :wm            (path :wm "bin")
+             :wm            |[:exec (path :wm "bin") ;$&]
              :exec          |[:exec (or (path/find $1)
                                         (abort "%s: command not found" $1))
                                     ;$&]
