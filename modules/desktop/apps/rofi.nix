@@ -8,8 +8,8 @@ let inherit (hey.lib.pkgs) mkWrapper mkLauncherEntry;
     pkgs' = pkgs.unstable;
 
     rofiPkg = if config.modules.desktop.type == "wayland"
-           then pkgs'.rofi-wayland-unwrapped
-           else pkgs'.rofi-unwrapped;
+              then pkgs'.rofi-wayland-unwrapped
+              else pkgs'.rofi-unwrapped;
     rofiFBPkg = pkgs'.rofi-file-browser.override { rofi = rofiPkg; };
     rofiCalcPkg = pkgs'.rofi-calc.override { rofi-unwrapped = rofiPkg; };
     rofiBlocksPkg = hey.packages.rofi-blocks.override { rofi-unwrapped = rofiPkg; };

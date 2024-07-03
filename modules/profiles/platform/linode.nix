@@ -80,17 +80,16 @@ with hey.lib;
       loader = {
         grub = {
           enable = true;
-          version = 2;
           device = "/dev/sda";
           copyKernels = true;
           fsIdentifier = "provided";
           splashImage = null;
           # Needed for LISH (part 2)
           extraConfig = ''
-          serial --speed=19200 --unit=0 --word=8 --parity=no --stop=1;
-          terminal_input serial;
-          terminal_output serial
-        '';
+            serial --speed=19200 --unit=0 --word=8 --parity=no --stop=1;
+            terminal_input serial;
+            terminal_output serial
+          '';
           # GRUB will complain about blocklists when trying to install grub on a
           # partition-less disk. This tells it to ignore the warning and carry on.
           forceInstall = true;

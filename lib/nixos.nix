@@ -68,7 +68,7 @@ rec {
         let
           nixosModules =
             filterMapAttrs
-              (_: i: i ? nixosModules && i.nixosModules != {})
+              (_: i: i ? nixosModules)
               (_: i: i.nixosModules)
               inputs;
           mkDotfiles = dir: {

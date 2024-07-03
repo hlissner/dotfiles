@@ -5,7 +5,7 @@ with hey.lib;
 let cfg = config.modules.desktop;
 in {
   options.modules.desktop = {
-    type = with types; mkOpt (either str null) null;
+    type = with types; mkOpt (nullOr str) null;
   };
 
   config = mkMerge [
@@ -17,8 +17,7 @@ in {
               || !(anyAttrs (_: v: isAttrs v && anyAttrs isEnabled v) cfg);
         in [
           {
-            assertion =
-              (countAttrs (_: v: v.enable or false) cfg) < 2;
+            assertion = (countAttrs isEnabled cfg) < 2;
             message = "Can't have more than one desktop environment enabled at a time";
           }
           {
@@ -26,8 +25,8 @@ in {
             message = "Can't enable a desktop sub-module without a desktop environment";
           }
           {
-            assertion = !(hasDesktopEnabled cfg) || cfg.type != null;
-            message = "Downstream desktop module did not set modules.desktop.type!";
+            assertion = cfg.type != null || !(anyAttrs isEnabled cfg);
+            message = "Downstream desktop module did not set modules.desktop.type";
           }
         ];
 
