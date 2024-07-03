@@ -21,12 +21,12 @@
 
 (defn- build-hey [&opt all?]
   (os/cd (path :home))
-  (when all?
-    (echo :g "> Building bin/hey's dependencies...")
-    (do? $ jpm deps ,;(opts (if (debug?) "--verbose"))))
-  (echo :g "> Building & deploying bin/hey...")
-  (do? $ jpm run deploy ,;(opts (if (debug?) "--verbose")))
-  (echo :check "Done!"))
+  # Build hey out of tree, in case $DOTFILES_HOME is in the nix-store (and
+  # therefore read-only).
+  (with-envvars ["HEYBUILDDEPS" (if all? "1")]
+    (echof :g "> Building & deploying bin/hey%s..." (if all? " and dependencies" ""))
+    (do? $ jpm run deploy ,;(opts (if (debug?) "--verbose")))
+    (echo :check "Done!")))
 
 (defcmd build [_ cmd & args]
   (case* cmd

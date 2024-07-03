@@ -20,16 +20,28 @@
  :install true)
 
 (def *heypath* (string (dyn :modpath) "/hey"))
+(def *heybuildpath* (string (dyn :tree) "/build"))
+
+(os/setenv "JANET_BUILDPATH" *heybuildpath*)
+(os/mkdir *heybuildpath*)
 
 (task "deploy" ["uninstall" "clean"]
   # jpm won't deploy declared sources before building the executable, so I have
   # to do it manually.
-  (unless (os/stat *heypath* :mode)
-    (shell "ln" "-sv" (abspath "lib/hey") *heypath*)
+  (def mode (os/stat *heypath* :mode))
+  (unless mode
+    (shell "ln" "-sv" (abspath "lib/hey") *heypath*))
+  (when (or (not mode) (os/getenv "HEYBUILDDEPS"))
     (shell "jpm" "deps"))
   (shell "jpm" "install"
          "--build-type=release"
          "--optimize=3"))
+
+# Default clean rule doesn't seem to see the non-standard JANET_BUILDPATH, so I
+# have to reinvent the wheel:
+(put-in (getrules) ["clean" :recipe] @[]) # Disable build-in rule
+(task "clean" []
+  (shell "rm" "-rfv" *heybuildpath* (string (dyn :binpath) "/hey")))
 
 (put-in (getrules) ["test" :recipe] @[]) # Disable build-in tests
 (task "test" []
