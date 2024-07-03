@@ -4,10 +4,10 @@
 # Liking C/C++ seems to be an unpopular opinion, so it's my guilty secret.
 # Don't tell anyone pls.
 
-{ self, lib, config, options, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let devCfg = config.modules.dev;
     cfg = devCfg.cc;
 in {

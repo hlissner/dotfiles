@@ -1,7 +1,7 @@
-{ self, lib, options, config, pkgs, ... }:
+{ hey, lib, options, config, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 mkMerge [
   (mkIf (any (s: hasPrefix "audio" s) config.modules.profiles.hardware) {
     services.pipewire = {

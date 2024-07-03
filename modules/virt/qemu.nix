@@ -1,7 +1,7 @@
-{ self, lib, config, options, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.modules.virt.qemu;
 in {
   options.modules.virt.qemu = {

@@ -1,9 +1,9 @@
 # modules/profiles/hardware/cpu/intel.nix
 
-{ self, lib, config, pkgs, ... }:
+{ hey, lib, config, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let hardware = config.modules.profiles.hardware;
 in mkMerge [
   (mkIf (any (s: hasPrefix "cpu/intel" s) hardware) {

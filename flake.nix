@@ -55,10 +55,10 @@
       lib = import ./lib args;
     in
       with builtins; with lib; mkFlake inputs {
-        inherit lib;
         systems = [ "x86_64-linux" "aarch64-linux" ];
+        inherit lib;
 
-        hosts = mapModules ./hosts import;
+        hosts = mapHosts ./hosts;
         modules.default = import ./.;
 
         apps.install = mkApp ./install.zsh;
@@ -66,6 +66,6 @@
         checks = mapModules ./test import;
         overlays = mapModules ./overlays import;
         packages = mapModules ./packages import;
-        templates = import ./templates args;
+        # templates = import ./templates args;
       };
 }

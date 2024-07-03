@@ -1,9 +1,9 @@
 # modules/desktop/apps/steam.nix
 
-{ self, lib, config, options, pkgs, hey, ... }:
+{ hey, heyBin, lib, config, options, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.modules.desktop.apps.steam;
 in {
   options.modules.desktop.apps.steam = with types; {
@@ -29,8 +29,8 @@ in {
             renice = 10;
           };
           custom = {
-            start = "${hey} hook gamemode --on";
-            end = "${hey} hook gamemode --off";
+            start = "${heyBin} hook gamemode --on";
+            end = "${heyBin} hook gamemode --off";
           };
         };
       };

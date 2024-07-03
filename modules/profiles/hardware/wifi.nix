@@ -1,10 +1,10 @@
 # profiles/hardware/wifi.nix --- TODO
 
-{ self, lib, options, config, pkgs, ... }:
+{ hey, lib, options, config, pkgs, ... }:
 
 with builtins;
 with lib;
-with self.lib;
+with hey.lib;
 let interfaces = config.networking.wireless.interfaces;
 in mkIf (elem "wifi" config.modules.profiles.hardware) {
   environment.systemPackages = with pkgs; [

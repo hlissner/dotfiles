@@ -1,8 +1,8 @@
-{ self, lib, config, options, pkgs, hey, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with builtins;
 with lib;
-let inherit (self.lib.pkgs) mkWrapper mkLauncherEntry;
+let inherit (hey.lib.pkgs) mkWrapper mkLauncherEntry;
     cfg = config.modules.desktop.apps.rofi;
 
     pkgs' = pkgs.unstable;
@@ -12,16 +12,16 @@ let inherit (self.lib.pkgs) mkWrapper mkLauncherEntry;
            else pkgs'.rofi-unwrapped;
     rofiFBPkg = pkgs'.rofi-file-browser.override { rofi = rofiPkg; };
     rofiCalcPkg = pkgs'.rofi-calc.override { rofi-unwrapped = rofiPkg; };
-    rofiBlocksPkg = self.packages.rofi-blocks.override { rofi-unwrapped = rofiPkg; };
+    rofiBlocksPkg = hey.packages.rofi-blocks.override { rofi-unwrapped = rofiPkg; };
 in {
-  options.modules.desktop.apps.rofi = with self.lib.options; {
+  options.modules.desktop.apps.rofi = with hey.lib.options; {
     enable = mkBoolOpt false;
   };
 
   config = mkIf cfg.enable (mkMerge [
     {
       home.configFile."rofi" = {
-        source = "${self.configDir}/rofi";
+        source = "${hey.configDir}/rofi";
         recursive = true;
       };
 

@@ -13,15 +13,15 @@
 # than what I had before NixOS). home-manager is one black box too many for my
 # liking.
 
-{ self, lib, config, options, home-manager, pkgs, ... }:
+{ hey, lib, config, options, home-manager, pkgs, ... }:
 
 with builtins;
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.home;
 in {
   imports = [
-    self.modules.home-manager.default
+    hey.modules.home-manager.default
   ];
 
   options.home = with types; {

@@ -4,10 +4,10 @@
 #
 # TODO: Investigate bluetuith for bluetooth TUI
 
-{ self, lib, options, config, pkgs, hey, ... }:
+{ hey, heyBin, lib, options, config, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.modules.desktop.hyprland;
     primaryMonitor = findFirst (x: x.primary) {} cfg.monitors;
 in {
@@ -75,52 +75,52 @@ in {
       # hypridle = {
       #   enable = true;
       #   settings = {
-      #     before_sleep_cmd = "${hey} hook sleep";
-      #     after_sleep_cmd = "${hey} hook wakeup";
-      #     lock_cmd = "${hey} hook lock";
-      #     unlock_cmd = "${hey} hook unlock";
+      #     before_sleep_cmd = "${heyBin} hook sleep";
+      #     after_sleep_cmd = "${heyBin} hook wakeup";
+      #     lock_cmd = "${heyBin} hook lock";
+      #     unlock_cmd = "${heyBin} hook unlock";
       #     ignore_dbus_inhibit = "false";
       #   };
       #   timeouts =
       #     (optionals (cfg.idle.time > 0) [{
       #       timeout = cfg.idle.time;
-      #       on-timeout = "${hey} hook idle --dim";
-      #       on-resume = "${hey} hook idle --resume";
+      #       on-timeout = "${heyBin} hook idle --dim";
+      #       on-resume = "${heyBin} hook idle --resume";
       #     }]) ++
       #     (optionals (cfg.idle.autodpms > 0) [{
       #       timeout = cfg.idle.autodpms;
-      #       on-timeout = "${hey} hook idle --dpms";
-      #       on-resume = "${hey} hook idle --resume";
+      #       on-timeout = "${heyBin} hook idle --dpms";
+      #       on-resume = "${heyBin} hook idle --resume";
       #     }]) ++
       #     (optionals (cfg.idle.autolock > 0) [{
       #       timeout = cfg.idle.autolock;
-      #       on-timeout = "${hey} hook idle --lock";
+      #       on-timeout = "${heyBin} hook idle --lock";
       #     }]) ++
       #     (optionals (cfg.idle.autosleep > 0) [{
       #       timeout = cfg.idle.autosleep;
-      #       on-timeout = "${hey} hook idle --sleep";
+      #       on-timeout = "${heyBin} hook idle --sleep";
       #     }]);
       # };
       swayidle = {
         enable = true;
         events = {
-          before-sleep = "${hey} hook idle --on sleep";
-          after-resume = "${hey} hook idle --off sleep";
-          lock = "${hey} hook idle --on lock";
-          unlock = "${hey} hook idle --off lock";
+          before-sleep = "${heyBin} hook idle --on sleep";
+          after-resume = "${heyBin} hook idle --off sleep";
+          lock = "${heyBin} hook idle --on lock";
+          unlock = "${heyBin} hook idle --off lock";
         } // (optionalAttrs (cfg.idle.time > 0) {
           idlehint = toString cfg.idle.time;
         });
         timeouts =
           (optionals (cfg.idle.time > 0) [{
             timeout = cfg.idle.time;
-            command = "${hey} hook idle --on";
-            resume = "${hey} hook idle --off";
+            command = "${heyBin} hook idle --on";
+            resume = "${heyBin} hook idle --off";
           }]) ++
           (optionals (cfg.idle.autodpms > 0) [{
             timeout = cfg.idle.autodpms;
-            command = "${hey} hook idle --on dpms";
-            resume = "${hey} hook idle --off dpms";
+            command = "${heyBin} hook idle --on dpms";
+            resume = "${heyBin} hook idle --off dpms";
           }]) ++
           (optionals (cfg.idle.autolock > 0) [{
             timeout = cfg.idle.autolock;
@@ -147,11 +147,11 @@ in {
       # setting programs.hyprland.package because other packages, like
       # pkgs.hyprshade, may reference pkgs.hyprland in their derivations).
       (prev: final: {
-        hyprland = self.inputs.hyprland.packages.${final.system}.hyprland;
+        hyprland = hey.inputs.hyprland.packages.${final.system}.hyprland;
         hyprshot = pkgs.unstable.hyprshot;
       })
-      self.inputs.hyprlock.overlays.default
-      self.inputs.hyprpicker.overlays.default
+      hey.inputs.hyprlock.overlays.default
+      hey.inputs.hyprpicker.overlays.default
     ];
 
     environment.systemPackages = with pkgs; [
@@ -241,7 +241,7 @@ in {
 
     home.configFile = {
       "hypr" = {
-        source = "${self.configDir}/hypr";
+        source = "${hey.configDir}/hypr";
         recursive = true;
       };
 

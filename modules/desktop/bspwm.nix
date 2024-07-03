@@ -10,10 +10,10 @@
 # TODO: Need hey hook reload analog
 # TODO: Need monitors options
 
-{ self, lib, options, config, pkgs, ... }:
+{ hey, lib, options, config, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.modules.desktop.bspwm;
 in {
   options.modules.desktop.bspwm = {
@@ -39,10 +39,10 @@ in {
         package = pkgs.unstable.picom;
       };
       redshift.enable = true;
+      displayManager.defaultSession = "none+bspwm";
       xserver = {
         enable = true;
         displayManager = {
-          defaultSession = "none+bspwm";
           lightdm.enable = true;
           lightdm.greeters.mini.enable = true;
         };
@@ -53,11 +53,11 @@ in {
     # link recursively so other modules can link files in their folders
     home.configFile = {
       "sxhkd" = {
-        source = "${self.configDir}/sxhkd";
+        source = "${hey.configDir}/sxhkd";
         recursive = true;
       };
       "bspwm" = {
-        source = "${self.configDir}/bspwm";
+        source = "${hey.configDir}/bspwm";
         recursive = true;
       };
     };

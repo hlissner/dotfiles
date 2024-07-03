@@ -1,7 +1,7 @@
-{ self, lib, config, options, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.modules.shell.gnupg;
 in {
   options.modules.shell.gnupg = with types; {

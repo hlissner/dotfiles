@@ -5,10 +5,10 @@
 # mortals to question the will of the ancient ones. If they want shell programs,
 # they get shell programs.
 
-{ self, lib, config, options, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let devCfg = config.modules.dev;
     cfg = devCfg.shell;
 in {

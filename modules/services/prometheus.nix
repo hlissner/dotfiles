@@ -2,10 +2,10 @@
 #
 # For keeping an eye on things...
 
-{ self, lib, config, options, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.modules.services.prometheus;
 in {
   options.modules.services.prometheus = {

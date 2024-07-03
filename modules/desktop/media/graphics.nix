@@ -7,10 +7,10 @@
 # alternatives have finally (in my opinion) become viable enough for me to drop
 # the second PC.
 
-{ self, lib, config, options, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.modules.desktop.media.graphics;
 in {
   options.modules.desktop.media.graphics = {
@@ -85,7 +85,7 @@ in {
 
     home.configFile = mkIf cfg.raster.enable {
       "GIMP/2.10" = {
-        source = "${self.configDir}/gimp";
+        source = "${hey.configDir}/gimp";
         recursive = true;
       };
       # TODO Inkscape dotfiles

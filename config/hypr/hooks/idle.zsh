@@ -72,7 +72,6 @@ case $2 in
           hey .lock --no-fade-in --immediate &
           sleep 3  # give hyprlock time to lock
         fi
-
       ;;
       --off)
         hyprctl --batch \

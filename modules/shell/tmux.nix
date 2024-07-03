@@ -1,7 +1,7 @@
-{ self, lib, config, options, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.modules.shell.tmux;
 in {
   options.modules.shell.tmux = with types; {
@@ -27,10 +27,10 @@ in {
     '';
 
     home.configFile."tmux" = {
-      source = "${self.configDir}/tmux";
+      source = "${hey.configDir}/tmux";
       recursive = true;
     };
 
-    modules.shell.zsh.rcFiles = [ "${self.configDir}/tmux/aliases.zsh" ];
+    modules.shell.zsh.rcFiles = [ "${hey.configDir}/tmux/aliases.zsh" ];
   };
 }

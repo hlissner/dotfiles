@@ -1,9 +1,9 @@
 # Inspired by https://www.srid.ca/2012301.html
 
-{ self, lib, config, options, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.modules.virt.lxd;
 in {
   options.modules.virt.lxd = {

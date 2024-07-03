@@ -1,7 +1,7 @@
-{ self, config, lib, pkgs, ... }:
+{ hey, config, lib, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let platform = config.modules.profiles.platform;
 in mkMerge [
   (mkIf (hasPrefix "vm/" platform) {

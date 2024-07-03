@@ -1,6 +1,6 @@
 # Soba -- testbench and steam remote server
 
-{ self, lib, ... }:
+{ hey, lib, ... }:
 
 with lib;
 with builtins;

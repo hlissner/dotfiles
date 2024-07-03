@@ -4,10 +4,10 @@
 # another timezone and their printer/email/something has stopped working, and
 # you're the family computer guy (my condolences). Cue teamviewer.
 
-{ self, lib, config, options, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.modules.desktop.apps.teamviewer;
 in {
   options.modules.desktop.apps.teamviewer = {

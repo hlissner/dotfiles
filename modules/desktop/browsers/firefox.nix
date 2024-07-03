@@ -4,10 +4,10 @@
 # infinite knowledge and shelter me from ads, but bless my $HOME with
 # directories nobody needs and live long enough to turn into Chrome.
 
-{ self, lib, config, options, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.modules.desktop.browsers.firefox;
 in {
   options.modules.desktop.browsers.firefox = with types; {
@@ -54,7 +54,7 @@ in {
       };
     };
 
-    user.packages = with pkgs; with self.lib.pkgs; [
+    user.packages = with pkgs; with hey.lib.pkgs; [
       # Obey XDG, damn it!
       (writeShellScriptBin "firefox" ''
         export HOME="$XDG_FAKE_HOME"
@@ -232,7 +232,7 @@ in {
       let firefoxDir = "${config.home.fakeDir}/.mozilla/firefox";
       in {
         # configFile."tridactyl" = {
-        #   source = "${self.configDir}/tridactyl";
+        #   source = "${hey.configDir}/tridactyl";
         #   recursive = true;
         # };
 

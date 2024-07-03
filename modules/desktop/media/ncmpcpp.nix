@@ -1,7 +1,7 @@
-{ self, lib, config, options, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.modules.desktop.media.ncmpcpp;
 in {
   options.modules.desktop.media.ncmpcpp = {
@@ -19,8 +19,8 @@ in {
     # Symlink these one at a time because ncmpcpp writes other files to
     # ~/.config/ncmpcpp, so it needs to be writeable.
     home.configFile = {
-      "ncmpcpp/config".source   = "${self.configDir}/ncmpcpp/config";
-      "ncmpcpp/bindings".source = "${self.configDir}/ncmpcpp/bindings";
+      "ncmpcpp/config".source   = "${hey.configDir}/ncmpcpp/config";
+      "ncmpcpp/bindings".source = "${hey.configDir}/ncmpcpp/bindings";
     };
   };
 }

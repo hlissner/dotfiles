@@ -1,7 +1,7 @@
-{ self, lib, config, options, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.modules.services.dunst;
     eitherStrBoolIntList = with types;
       either str (either bool (either int (listOf str)));

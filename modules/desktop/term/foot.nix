@@ -2,10 +2,10 @@
 #
 # TODO
 
-{ self, lib, config, options, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.modules.desktop.term.foot;
 in {
   options.modules.desktop.term.foot = with types; {
@@ -28,7 +28,7 @@ in {
         include=${config.home.configDir}/foot/foot.global.ini
         include=${config.home.configDir}/foot/foot.local.ini
       '';
-      "foot/foot.global.ini".source = "${self.configDir}/foot/foot.ini";
+      "foot/foot.global.ini".source = "${hey.configDir}/foot/foot.ini";
       "foot/foot.local.ini".text = generators.toINI {} cfg.settings;
     };
   };

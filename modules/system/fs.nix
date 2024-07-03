@@ -2,10 +2,10 @@
 #
 # TODO
 
-{ self, lib, config, options, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.modules.system.fs;
 in {
   options.modules.system.fs = {

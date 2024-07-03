@@ -5,10 +5,10 @@
 # javascript (for its history of supply chain vulnerabiltiies), so I'll likely
 # drop it once wtype adds mouse support (see atx/wtype#24).
 
-{ self, lib, config, options, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.modules.services.ydotool;
     ydotool = pkgs.ydotool;
     socket = "/run/ydotoold/socket";

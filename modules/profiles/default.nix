@@ -1,9 +1,9 @@
 # modules/profiles/default.nix
 
-{ self, lib, options, config, ... }:
+{ hey, lib, options, config, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 {
   options.modules.profiles = with types; {
     user = mkOpt str "";

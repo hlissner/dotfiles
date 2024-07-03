@@ -1,9 +1,9 @@
 # default.nix
 
-{ self, lib, options, config, pkgs, ... }:
+{ hey, lib, options, config, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 {
   imports = mapModulesRec' ./modules import;
 
@@ -21,7 +21,7 @@ with self.lib;
     }];
 
     environment.sessionVariables = mkOrder 10 {
-      DOTFILES_HOME = self.dir;
+      DOTFILES_HOME = hey.dir;
       NIXPKGS_ALLOW_UNFREE = "1";   # Forgive me Stallman-senpai.
     };
 
@@ -43,7 +43,7 @@ with self.lib;
     fileSystems."/".device = mkDefault "/dev/disk/by-label/nixos";
 
     nix =
-      let filteredInputs = filterAttrs (_: v: v ? outputs) self.inputs;
+      let filteredInputs = filterAttrs (_: v: v ? outputs) hey.inputs;
           nixPathInputs  = mapAttrsToList (n: v: "${n}=${v}") filteredInputs;
       in {
         extraOptions = ''
@@ -52,8 +52,8 @@ with self.lib;
           experimental-features = nix-command flakes
         '';
         nixPath = nixPathInputs ++ [
-          "nixpkgs-overlays=${self.dir}/overlays"
-          "dotfiles=${self.dir}"
+          "nixpkgs-overlays=${hey.dir}/overlays"
+          "dotfiles=${hey.dir}"
         ];
         registry = mapAttrs (_: v: { flake = v; }) filteredInputs;
         settings = {
@@ -72,7 +72,7 @@ with self.lib;
       };
 
     system = {
-      configurationRevision = with self.inputs; mkIf (self ? rev) self.rev;
+      configurationRevision = with hey.inputs; mkIf (hey ? rev) hey.rev;
       stateVersion = "23.11";
     };
 

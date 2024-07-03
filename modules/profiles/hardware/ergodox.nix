@@ -1,7 +1,7 @@
-{ self, lib, options, config, pkgs, ... }:
+{ hey, lib, options, config, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 mkIf (elem "ergodox" config.modules.profiles.hardware) {
   user.packages = [ pkgs.wally-cli ];
 

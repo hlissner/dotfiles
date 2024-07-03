@@ -1,9 +1,9 @@
 # modules/themes/autumnal/default.nix --- a dark, pastel theme
 
-args @ { self, lib, config, pkgs, hey, ... }:
+{ hey, heyBin, lib, config, pkgs, ... } @ args:
 
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.modules.theme;
 in mkIf (cfg.active == "autumnal") (mkMerge [
   {
@@ -92,7 +92,7 @@ in mkIf (cfg.active == "autumnal") (mkMerge [
     modules.desktop.apps.spotify.theme = cfg.active;
 
     programs.spicetify =
-      let spkgs = self.inputs.spicetify-nix.packages.${pkgs.system}.default;
+      let spkgs = hey.inputs.spicetify-nix.packages.${pkgs.system}.default;
       in { theme = spkgs.themes.BurntSienna; };
 
     home.configFile = with config.modules; mkMerge [

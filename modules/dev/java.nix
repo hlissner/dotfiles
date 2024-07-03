@@ -2,10 +2,10 @@
 #
 # TODO
 
-{ self, lib, config, options, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let devCfg = config.modules.dev;
     cfg = devCfg.java;
 in {

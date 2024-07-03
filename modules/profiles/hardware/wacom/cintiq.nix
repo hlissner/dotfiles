@@ -1,7 +1,7 @@
-{ self, lib, options, config, ... }:
+{ hey, lib, options, config, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 mkIf (elem "wacom/cintiq" config.modules.profiles.hardware) (mkMerge [
   (mkIf (config.modules.desktop.type == "x11") {
     # For my intuos4 pro. Doesn't work for cintiqs.

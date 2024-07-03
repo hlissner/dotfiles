@@ -1,7 +1,7 @@
-{ self, lib, config, pkgs, hey, ... } @ args:
+{ hey, heyBin, lib, config, pkgs, ... } @ args:
 
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.modules.theme;
 in {
   modules.desktop.hyprland.extraConfig = ''
@@ -85,7 +85,7 @@ in {
       # TODO: "custom/gpu-amd" = {}
       # TODO: "custom/gpu-intel" = {}
       "custom/gpu-nvidia" = {
-        "exec" = "${hey} exec nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader,nounits";
+        "exec" = "${heyBin} exec nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader,nounits";
         "format" = " {}%";
         "return-type" = "";
         "interval" = 4;

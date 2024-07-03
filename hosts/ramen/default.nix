@@ -1,6 +1,6 @@
 # Ramen -- my laptop, for travel
 
-{ self, lib, ... }:
+{ hey, lib, ... }:
 
 with lib;
 with builtins;
@@ -8,7 +8,7 @@ with builtins;
   system = "x86_64-linux";
 
   imports = [
-    self.modules.nixos-hardware.dell-xps-13-9370
+    hey.modules.nixos-hardware.dell-xps-13-9370
   ];
 
   ## Flake modules

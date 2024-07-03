@@ -56,4 +56,13 @@ in rec {
       files = attrValues (mapModules dir id);
       paths = files ++ concatLists (map (d: mapModulesRec' d id) dirs);
     in map fn paths;
+
+  # dir :: attrs
+  #
+  # TODO
+  mapHosts = dir:
+    mapModules dir (path: {
+      inherit path;
+      config = import path;
+    });
 }

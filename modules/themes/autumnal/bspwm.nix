@@ -1,7 +1,7 @@
-{ self, lib, config, pkgs, hey, ... } @ args:
+{ hey, lib, config, pkgs, ... } @ args:
 
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.modules.theme;
 in {
   services.picom = {

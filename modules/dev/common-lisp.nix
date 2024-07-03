@@ -2,10 +2,10 @@
 #
 # Mostly for the occasional dip into lisp gamedev.
 
-{ self, lib, config, options, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let devCfg = config.modules.dev;
     cfg = devCfg.common-lisp;
 in {

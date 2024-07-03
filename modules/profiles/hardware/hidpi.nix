@@ -2,10 +2,10 @@
 #
 # TODO
 
-{ self, lib, config, ... }:
+{ hey, lib, config, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 mkIf (elem "hidpi" config.modules.profiles.hardware) {
   environment.sessionVariables = {
     QT_DEVICE_PIXEL_RATIO = "2";

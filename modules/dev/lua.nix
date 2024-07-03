@@ -5,10 +5,10 @@
 # fennel to get around some of lua's idiosynchrosies. That said, I install
 # love2d on a per-project basis, so this module is rarely enabled.
 
-{ self, lib, config, options, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let devCfg = config.modules.dev;
     cfg = devCfg.lua;
 in {

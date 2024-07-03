@@ -3,10 +3,10 @@
 # For testing or building software on other OSes. If I find out how to get macOS
 # on qemu/libvirt I'd be happy to leave virtualbox behind.
 
-{ self, lib, config, options, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.modules.desktop.apps.virtualbox;
 in {
   options.modules.desktop.apps.virtualbox = {

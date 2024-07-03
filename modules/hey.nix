@@ -3,11 +3,11 @@
 # ZSH and Janet are the powerhouses of my dotfiles. This module configures both
 # for my scripting needs (particularly by bin/hey).
 
-{ self, lib, options, config, pkgs, ... }:
+{ hey, lib, options, config, pkgs, ... }:
 
 with builtins;
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.hey;
 
     janet = pkgs.unstable.janet;
@@ -26,7 +26,7 @@ in {
   config = {
     # So systemd services in downstream modules/profiles can call hey without
     # dealing with PATH shenanigans.
-    _module.args.hey = "${janet}/bin/janet ${self.binDir}/hey";
+    _module.args.heyBin = "${janet}/bin/janet ${hey.binDir}/hey";
 
     environment.systemPackages = with pkgs; [
       janet
@@ -50,7 +50,7 @@ in {
     # Setting PATH in both environment.{variables,sessionVariables} causes
     # merge-conflict errors, so do these separately.
     environment.extraInit = mkAfter ''
-      export PATH="${janetTreeDir}/bin:${self.binDir}:$PATH"
+      export PATH="${janetTreeDir}/bin:${hey.binDir}:$PATH"
     '';
 
     # Compile bin/hey to trivialize janet startup time
@@ -59,13 +59,13 @@ in {
 
       export JANET_PATH="${janetTreeDir}/lib"
       export JANET_TREE="${janetTreeDir}"
-      ${pkgs.zsh}/bin/zsh -c "cd '${self.dir}'; jpm deps"
-      ${pkgs.zsh}/bin/zsh -c "cd '${self.dir}'; jpm run deploy"
+      ${pkgs.zsh}/bin/zsh -c "cd '${hey.dir}'; jpm deps"
+      ${pkgs.zsh}/bin/zsh -c "cd '${hey.dir}'; jpm run deploy"
     '';
 
     programs.zsh.shellInit = mkBefore ''
-      export DOTFILES_HOME="${self.dir}"
-      export fpath=( "${self.libDir}/zsh" "''${fpath[@]}" )
+      export DOTFILES_HOME="${hey.dir}"
+      export fpath=( "${hey.libDir}/zsh" "''${fpath[@]}" )
       autoload -Uz "''${fpath[1]}"/hey.*(.:t)
     '';
 

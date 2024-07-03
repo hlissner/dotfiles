@@ -2,10 +2,10 @@
 # intertwined with others, and are solely responsible for aesthetics. Disabling
 # a theme module should never leave a system non-functional.
 
-args @ { self, lib, options, config, pkgs, home-manager, ... }:
+args @ { hey, heyBin, lib, options, config, pkgs, home-manager, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.modules.theme;
 in {
   imports = mapModules' ./. import;

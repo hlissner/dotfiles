@@ -2,10 +2,10 @@
 #
 # TODO
 
-{ self, lib, config, pkgs, ... }:
+{ hey, lib, config, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 mkIf (config.modules.profiles.role == "workstation") (mkMerge [
   {
     boot = {

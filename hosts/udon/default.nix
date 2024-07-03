@@ -1,6 +1,6 @@
 # Udon -- my primary powerhouse
 
-{ self, lib, ... }:
+{ hey, lib, ... }:
 
 with lib;
 with builtins;

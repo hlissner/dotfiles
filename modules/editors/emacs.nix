@@ -2,10 +2,10 @@
 # https://github.com/doomemacs. This module sets it up to meet my particular
 # Doomy needs.
 
-{ self, lib, config, pkgs, ... }:
+{ hey, lib, config, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.modules.editors.emacs;
     emacs = with pkgs; (emacsPackagesFor
       (if config.modules.desktop.type == "wayland"
@@ -25,7 +25,7 @@ in {
 
   config = mkIf cfg.enable {
     nixpkgs.overlays = [
-      self.inputs.emacs-overlay.overlays.default
+      hey.inputs.emacs-overlay.overlays.default
     ];
 
     user.packages = with pkgs; [
@@ -70,7 +70,7 @@ in {
 
     environment.variables.PATH = [ "$XDG_CONFIG_HOME/emacs/bin" ];
 
-    modules.shell.zsh.rcFiles = [ "${self.configDir}/emacs/aliases.zsh" ];
+    modules.shell.zsh.rcFiles = [ "${hey.configDir}/emacs/aliases.zsh" ];
 
     fonts.packages = [
       (pkgs.nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })

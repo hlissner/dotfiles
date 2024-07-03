@@ -1,9 +1,9 @@
 # modules/profiles/network/ca.nix --- TODO
 
-{ self, lib, config, pkgs, ... }:
+{ hey, lib, config, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 mkIf (elem "ca" config.modules.profiles.networks) {
   time.timeZone = "America/Toronto";
 

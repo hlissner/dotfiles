@@ -2,10 +2,10 @@
 #
 # Share the suffering.
 
-{ self, lib, config, options, ... }:
+{ hey, lib, config, options, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.modules.services.printing;
 in {
   options.modules.services.printing = {

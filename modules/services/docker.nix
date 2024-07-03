@@ -1,7 +1,7 @@
-{ self, lib, options, config, pkgs, ... }:
+{ hey, lib, options, config, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.modules.services.docker;
 in {
   options.modules.services.docker = {
@@ -23,7 +23,7 @@ in {
 
       user.extraGroups = [ "docker" ];
 
-      modules.shell.zsh.rcFiles = [ "${self.configDir}/docker/aliases.zsh" ];
+      modules.shell.zsh.rcFiles = [ "${hey.configDir}/docker/aliases.zsh" ];
 
       virtualisation = {
         docker = {

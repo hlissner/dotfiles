@@ -2,10 +2,10 @@
 #
 # For game art assets, interior design, and product demos for clients.
 
-{ self, lib, config, pkgs, ... }:
+{ hey, lib, config, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.modules.desktop.media.cad;
     version = "4.1";
 in {
@@ -16,7 +16,7 @@ in {
   config = mkIf cfg.enable {
     # Supplies newer versions of Blender with CUDA support baked in.
     # @see https://github.com/edolstra/nix-warez/tree/master/blender
-    nixpkgs.overlays = [ self.inputs.blender-bin.overlays.default ];
+    nixpkgs.overlays = [ hey.inputs.blender-bin.overlays.default ];
 
     user.packages = [
       # Blender itself doesn't need libxcrypt-legacy, but I use blenderkit,
@@ -29,11 +29,11 @@ in {
 
     home.configFile = {
       # "blender/${version}/config" = {
-      #   source = "${self.configDir}/blender/config";
+      #   source = "${hey.configDir}/blender/config";
       #   recursive = true;
       # };
       "blender/${version}/scripts" = {
-        source = "${self.configDir}/blender/scripts";
+        source = "${hey.configDir}/blender/scripts";
         recursive = true;
       };
     };
@@ -44,7 +44,7 @@ in {
     system.userActivationScripts.setupBlenderConfig = ''
       destdir="$XDG_CONFIG_HOME/blender/${version}/config"
       mkdir -p "$destdir"
-      for cfile in ${self.configDir}/blender/config/*; do
+      for cfile in ${hey.configDir}/blender/config/*; do
         basename="$(basename $cfile)"
         dest="$destdir/$basename"
         if [ ! -e "$dest" ]; then
@@ -52,7 +52,7 @@ in {
         fi
       done
       for bfile in startup userpref; do
-        src="${self.configDir}/blender/$bfile.blend.tar.gz"
+        src="${hey.configDir}/blender/$bfile.blend.tar.gz"
         if [ ! -e "$destdir/$bfile.blend" ]; then
           ${pkgs.gnutar}/bin/tar xzvf "$src" -C "$destdir"
         fi

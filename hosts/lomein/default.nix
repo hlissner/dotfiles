@@ -1,6 +1,6 @@
 # Lomein -- my art workstation
 
-{ self, lib, ... }:
+{ hey, lib, ... }:
 
 with lib;
 with builtins;

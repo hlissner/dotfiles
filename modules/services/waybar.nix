@@ -1,7 +1,7 @@
-{ self, lib, config, options, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.modules.services.waybar;
 in {
   options.modules.services.waybar = with types; {
@@ -25,7 +25,7 @@ in {
       #   Alexays/Waybar#3158). Also, waybar's flake is broken, so we can't use
       #   its overlays directly (see Alexays/Waybar#3196).
       (prev: final: {
-        waybar = self.inputs.waybar.packages.${final.system}.default;
+        waybar = hey.inputs.waybar.packages.${final.system}.default;
       })
     ];
 
@@ -44,7 +44,7 @@ in {
             {
               inherit name;
               output = [ cfg.primaryMonitor ];
-              include = [ "${self.configDir}/waybar/config" ];
+              include = [ "${hey.configDir}/waybar/config" ];
             }
             v
           ]) cfg.settings)}

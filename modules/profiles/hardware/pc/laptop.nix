@@ -2,10 +2,10 @@
 #
 # TODO
 
-{ self, lib, config, pkgs, ... }:
+{ hey, lib, config, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let hardware = config.modules.profiles.hardware;
 in mkMerge [
   (mkIf (any (s: hasPrefix "pc/laptop" s) hardware) {
@@ -16,8 +16,8 @@ in mkMerge [
 
     # So the system can respond to power events
     # services.udev.extraRules = ''
-    #   SUBSYSTEM=="power_supply",ENV{POWER_SUPPLY_ONLINE}=="0",RUN+="${self.binDir}/hey hook battery --discharging"
-    #   SUBSYSTEM=="power_supply",ENV{POWER_SUPPLY_ONLINE}=="1",RUN+="${self.binDir}/hey hook battery --charging"
+    #   SUBSYSTEM=="power_supply",ENV{POWER_SUPPLY_ONLINE}=="0",RUN+="${hey.binDir}/hey hook battery --discharging"
+    #   SUBSYSTEM=="power_supply",ENV{POWER_SUPPLY_ONLINE}=="1",RUN+="${hey.binDir}/hey hook battery --charging"
     # '';
 
     # # And so I can monitor the charge level
@@ -25,7 +25,7 @@ in mkMerge [
     #   wants = [ "display-manager.service" ];
     #   wantedBy = [ "graphical-session.target" ];
     #   script = ''
-    #     export PATH="${pkgs.acpi}/bin:${self.binDir}:$PATH"
+    #     export PATH="${pkgs.acpi}/bin:${hey.binDir}:$PATH"
     #     while true; do
     #       IFS=: read _ bat0 < <(acpi -b)
     #       IFS=\ , read status val remaining <<<"$bat0"

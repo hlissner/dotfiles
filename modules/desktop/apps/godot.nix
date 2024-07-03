@@ -3,10 +3,10 @@
 # Gamedev is my hobby. C++ or Rust are my main drivers (and occasionally Lua),
 # but to prototype (for 3D, mainly) I often reach for godot (or Love2D).
 
-{ self, lib, config, options, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.modules.desktop.apps.godot;
 in {
   options.modules.desktop.apps.godot = {

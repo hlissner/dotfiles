@@ -3,15 +3,15 @@
 # I use spotify for my music needs. Gone are the days where I'd manage 200gb+ of
 # local music; most of which I haven't heard or don't even like.
 
-{ self, lib, config, options, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.modules.desktop.apps.spotify;
     spicetify = pkgs.unstable.spicetify-cli;
 in {
   imports = [
-    self.modules.spicetify-nix.default
+    hey.modules.spicetify-nix.default
   ];
 
   options.modules.desktop.apps.spotify = with types; {

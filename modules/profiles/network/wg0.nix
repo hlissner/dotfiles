@@ -1,9 +1,9 @@
 # modules/profiles/network/wg0 -- homelab VPN
 
-{ self, lib, config, pkgs, ... }:
+{ hey, lib, config, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 mkIf (elem "wg0" config.modules.profiles.networks) (mkMerge [
   {
     networking.firewall.allowedUDPPorts = [ 51820 ];

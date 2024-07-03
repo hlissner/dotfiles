@@ -9,16 +9,16 @@
 #
 # PS. ValveSoftware/steam-for-linux#1890 is a gold mine.
 
-{ self, lib, config, options, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with builtins;
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.modules.xdg;
     home = config.home;
 in {
   imports = [
-    self.modules.home-manager.default
+    hey.modules.home-manager.default
   ];
 
   options.modules.xdg = {
@@ -174,7 +174,7 @@ in {
            UserKnownHostsFile ~/.config/ssh/known_hosts
        '';
 
-       environment.systemPackages = with pkgs; with self.lib.pkgs; [
+       environment.systemPackages = with pkgs; with hey.lib.pkgs; [
          (mkWrapper openssh ''
            dir='${sshConfigDir}'
            cfg="$dir/config"

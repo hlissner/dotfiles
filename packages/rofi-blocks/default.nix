@@ -11,8 +11,7 @@
 , glib
 , cairo
 , gobject-introspection
-, wrapGAppsHook
-}:
+, wrapGAppsHook }:
 
 stdenv.mkDerivation rec {
   name = "rofi-blocks";

@@ -23,9 +23,10 @@ rec {
   # FIXME: Refactor me! (Use submodules?)
   mkFlake = {
     self
-    , nixpkgs ? self.inputs.nixpkgs
-    , nixpkgs-unstable ? self.inputs.nixpkgs-unstable or super.inputs.nixpkgs-unstable or nixpkgs
-    # , disko ? self.inputs.disko
+    , hey ? self
+    , nixpkgs ? hey.inputs.nixpkgs
+    , nixpkgs-unstable ? hey.inputs.nixpkgs-unstable or hey.inputs.nixpkgs-unstable or nixpkgs
+    # , disko ? hey.inputs.disko
     , ...
   } @ inputs: {
     apps ? {}
@@ -62,7 +63,7 @@ rec {
       # many times where it is more convenient to generate or seed dotfiles or
       # envvars with local (non-nix-store) paths instead, so I don't have to
       # rebuild each time I change/swap them out.
-      nixosConfigurations = mapAttrs (hostName: cfg:
+      nixosConfigurations = mapAttrs (hostName: { path, config }:
         # TODO: Replace with a submodule
         let
           nixosModules =
@@ -70,28 +71,42 @@ rec {
               (_: i: i ? nixosModules && i.nixosModules != {})
               (_: i: i.nixosModules)
               inputs;
-          mkDotfiles = path: {
+          mkDotfiles = dir: {
             dir =
-              if path != "" then path
-              else abort "No or invalid dotfilesDir specified: ${path}";
-            binDir      = "${path}/bin";
-            libDir      = "${path}/lib";
-            configDir   = "${path}/config";
-            modulesDir  = "${path}/modules";
-            themesDir   = "${path}/modules/themes";
-            hostDir     = "${path}/hosts/${hostName}";
+              if dir != "" then dir
+              else abort "No or invalid dir specified: ${dir}";
+            binDir      = "${dir}/bin";
+            libDir      = "${dir}/lib";
+            configDir   = "${dir}/config";
+            modulesDir  = "${dir}/modules";
+            themesDir   = "${dir}/modules/themes";
+            hostDir     = "${path}";
           };
-          self' = self // {
-            inherit args;
-            modules = nixosModules;
-            packages = self.packages.${host.system};
-            devShell = self.devShell.${host.system};
-            apps = self.apps.${host.system};
-            store = mkDotfiles (toString self);
-          } // (mkDotfiles args.path);
-          host = cfg {
+          mkModules = filterMapAttrs
+            (_: i: i ? nixosModules)
+            (_: i: i.nixosModules);
+          mkSelf = system:
+            self // {
+              inherit args;
+              modules = mkModules self.inputs;
+              packages = self.packages.${system};
+              devShell = self.devShell.${system};
+              apps = self.apps.${host.system};
+            } // (mkDotfiles (toString self));
+          mkHey = system:
+            hey // {
+              inherit args;
+              modules = mkModules hey.inputs;
+              packages = hey.packages.${system};
+              devShell = hey.devShell.${system};
+              apps = hey.apps.${system};
+            } // (mkDotfiles args.path);
+
+          self' = mkSelf host.system;
+          hey' = mkHey host.system;
+          host = config {
             inherit args lib nixosModules;
-            self = self';
+            hey = hey';
           };
           pkgs = mkPkgs host.system nixpkgs ((attrValues overlays) ++ [
             (final: prev: {
@@ -102,8 +117,9 @@ rec {
           nixpkgs.lib.nixosSystem {
             system = host.system;
             specialArgs.self = self';
+            specialArgs.hey = hey';
             modules = [
-              # TODO: self.inputs.disko.nixosModules.disko
+              # TODO: hey.inputs.disko.nixosModules.disko
               # (if isFunction storage
               #  then (attrs: { disko.devices = storage attrs; })
               #  else { disko.devices = storage; })

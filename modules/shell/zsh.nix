@@ -1,7 +1,7 @@
-{ self, lib, config, options, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.modules.shell.zsh;
 in {
   options.modules.shell.zsh = with types; {
@@ -74,7 +74,7 @@ in {
     home.configFile = {
       # Link individual files (recursively), rather than whole directory, so
       # other modules (or the user) can write files there later.
-      "zsh" = { source = "${self.configDir}/zsh"; recursive = true; };
+      "zsh" = { source = "${hey.configDir}/zsh"; recursive = true; };
 
       # Why extra.zsh{rc,env} when I could be using extraInit? Because extraInit
       # generates those files in /etc/profile, and mine just write the files to

@@ -1,7 +1,7 @@
-{ self, lib, config, options, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.modules.shell.git;
 in {
   options.modules.shell.git = {
@@ -20,11 +20,11 @@ in {
     ];
 
     home.configFile = {
-      "git/config".source = "${self.configDir}/git/config";
-      "git/ignore".source = "${self.configDir}/git/ignore";
-      "git/attributes".source = "${self.configDir}/git/attributes";
+      "git/config".source = "${hey.configDir}/git/config";
+      "git/ignore".source = "${hey.configDir}/git/ignore";
+      "git/attributes".source = "${hey.configDir}/git/attributes";
     };
 
-    modules.shell.zsh.rcFiles = [ "${self.configDir}/git/aliases.zsh" ];
+    modules.shell.zsh.rcFiles = [ "${hey.configDir}/git/aliases.zsh" ];
   };
 }

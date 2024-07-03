@@ -1,4 +1,4 @@
-{ self, lib, config, ... }:
+{ hey, lib, config, ... }:
 
 with lib;
 let cfg = config.modules.profiles;

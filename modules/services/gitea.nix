@@ -8,10 +8,10 @@
 #   Config: https://docs.gitea.io/en-us/config-cheat-sheet/
 #   API:    https://docs.gitea.io/en-us/api-usage/
 
-{ self, lib, config, options, ... }:
+{ hey, lib, config, options, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.modules.services.gitea;
 in {
   options.modules.services.gitea = {

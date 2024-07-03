@@ -5,10 +5,10 @@
 # and Adobe Audition. To replace them on Linux, I've replaced them with Ardour,
 # LMMS, and Audacity, respectively with much success.
 
-{ self, lib, config, pkgs, ... }:
+{ hey, lib, config, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let cfg = config.modules.desktop.media.daw;
 in {
   options.modules.desktop.media.daw = {

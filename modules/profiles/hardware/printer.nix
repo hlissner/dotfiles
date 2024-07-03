@@ -2,10 +2,10 @@
 #
 # Printers exist because there isn't enough despair in the world.
 
-{ self, lib, options, config, pkgs, ... }:
+{ hey, lib, options, config, pkgs, ... }:
 
 with lib;
-with self.lib;
+with hey.lib;
 let hardware = config.modules.profiles.hardware;
 in mkMerge [
   (mkIf (any (s: hasPrefix "printer" s) hardware) {
