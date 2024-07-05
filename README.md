@@ -1,5 +1,5 @@
 [![Made with Doom Emacs](https://img.shields.io/badge/Made_with-Doom_Emacs-blueviolet.svg?style=flat-square&logo=GNU%20Emacs&logoColor=white)](https://github.com/doomemacs)
-[![NixOS Unstable](https://img.shields.io/badge/NixOS-23.05-blue.svg?style=flat-square&logo=NixOS&logoColor=white)](https://nixos.org)
+[![NixOS Unstable](https://img.shields.io/badge/NixOS-24.05-blue.svg?style=flat-square&logo=NixOS&logoColor=white)](https://nixos.org)
 
 **Hey,** you. You're finally awake. You were trying to configure your OS
 declaratively, right? Walked right into that NixOS ambush, same as us, and those
@@ -22,14 +22,14 @@ dotfiles over there.
 
 ------
 
-|               | Wayland                  | X11                                              |
-|---------------|--------------------------|--------------------------------------------------|
-| **Shell:**    | zsh + zgenom             | "                                                |
-| **WM:**       | hyprland + waybar        | lightdm + lightdm-mini-greeter + bspwm + polybar |
-| **Editor:**   | [Doom Emacs][doom-emacs] | "                                                |
-| **Terminal:** | foot                     | st                                               |
-| **Launcher:** | rofi                     | "                                                |
-| **Browser:**  | firefox                  | "                                                |
+|               | Wayland                 | X11                                              |
+|---------------|-------------------------|--------------------------------------------------|
+| **Shell:**    | zsh + zgenom            | "                                                |
+| **WM:**       | hyprland + waybar       | lightdm + lightdm-mini-greeter + bspwm + polybar |
+| **Editor:**   | [Doom Emacs][doomemacs] | "                                                |
+| **Terminal:** | foot                    | st                                               |
+| **Launcher:** | rofi                    | "                                                |
+| **Browser:**  | firefox                 | "                                                |
 
 -----
 
@@ -61,13 +61,12 @@ dotfiles over there.
 
 7. Run the installer:
    ```sh
-   # The options below are optional, but spell out their default values.
-   $ USER=hlissner
+   # The options are optional, but these are their default values, if you omit them.
    $ dotfiles/install.zsh \ 
          --root /mnt \
          --flake /mnt/etc/dotfiles \
          --user "$USER" \
-         --host "$HOSTNAME" \
+         --host "$HOST" \
          --dest /mnt/home/$USER/.config/dotfiles
    ```
 
@@ -207,5 +206,4 @@ COMMANDS:
 
 [nixos-discourse]: https://discourse.nixos.org
 [doomemacs]: https://github.com/doomemacs/doomemacs
-[nixos]: https://releases.nixos.org/?prefix=nixos/unstable/
 [agenix]: https://github.com/ryantm/agenix
