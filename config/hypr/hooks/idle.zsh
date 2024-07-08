@@ -58,9 +58,7 @@ case $2 in
   sleep)
     case $1 in
       --on)
-        sleep 0.2
-        playerctl -a pause
-        hyprctl dispatch dpms off
+        playerctl -a pause &
         # With nvidia cards, hyprlock suffers from redraw issues (making it
         # appear like it's frozen). This helps a little:
         hyprctl --batch \
@@ -69,18 +67,24 @@ case $2 in
           keyword animations:enabled 0 \; \
           keyword misc:vrr 1
         if ! pidof hyprlock >/dev/null; then
-          hey .lock --no-fade-in --immediate &
-          sleep 3  # give hyprlock time to lock
+          hey .lock --immediate &
+          sleep 2
         fi
       ;;
       --off)
-        hyprctl --batch \
-          keyword decoration:blur:enabled 1 \; \
-          keyword general:allow_tearing 0 \; \
-          keyword animations:enabled 1 \; \
-          keyword misc:vrr 0
-        sleep 1
-        hyprctl dispatch dpms on
+        # HACK: Need to "turn off" the screen in order for hyprland to listen
+        #   for keypresses to wake up the display, otherwise, I'll be stuck in
+        #   an inescapable black screen. Definitely an upstream bug, but that's
+        #   normal for Hyprland.
+        {
+          hyprctl --batch \
+            keyword decoration:blur:enabled 1 \; \
+            keyword general:allow_tearing 0 \; \
+            keyword animations:enabled 1 \; \
+            keyword misc:vrr 0
+          sleep 1
+          hyprctl dispatch dpms off
+        } &
         ;;
     esac
     ;;
