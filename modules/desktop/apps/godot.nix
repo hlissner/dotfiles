@@ -14,8 +14,10 @@ in {
   };
 
   config = mkIf cfg.enable {
-    user.packages = with pkgs; [
-      unstable.godot_4
+    user.packages = with pkgs.unstable; [
+      godot_4
+      godot_4-export-templates
+      gdtoolkit_4
     ];
   };
 }
