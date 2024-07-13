@@ -10,8 +10,10 @@ let cfg = config.modules.editors.emacs;
     emacs = with pkgs; (emacsPackagesFor
       (if config.modules.desktop.type == "wayland"
        then emacs-pgtk
-       else emacs-git)).emacsWithPackages
-      (epkgs: []);
+       else emacs-git)).emacsWithPackages (epkgs: with epkgs; [
+         # treesit-grammars.with-all-grammars
+         vterm
+       ]);
 in {
   options.modules.editors.emacs = {
     enable = mkBoolOpt false;

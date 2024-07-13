@@ -40,7 +40,6 @@ in {
   home.configFile."doom/config.local.el".text = ''
     ;; -*- lexical-binding: t -*-
     (add-to-list 'default-frame-alist '(alpha-background . 95))
-    (add-to-list 'default-frame-alist '(internal-border-width . 6))
     (setq doom-theme 'doom-tomorrow-night)
     (custom-theme-set-faces! 'doom-tomorrow-night
       '(default :background "#1d1f21")

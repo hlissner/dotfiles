@@ -21,7 +21,7 @@
         (map |(get $ :children []))
         flatten))
 
-(def- *vars* (vars/new (:dir vars/cache :rofi :mountmenu)))
+(def- *vars* (vars/new (:dir vars/temp :rofi :mountmenu)))
 # TODO: untested!
 (defn- handle-luks [dev]
   (not-implemented :handle-luks dev)

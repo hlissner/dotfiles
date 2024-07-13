@@ -25,6 +25,7 @@
 
       # Hyprland + core extensions
       hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
+      hyprland.inputs.nixpkgs.follows = "nixpkgs-unstable";
       hyprlock.url = "github:hyprwm/Hyprlock";
       hyprlock.inputs.nixpkgs.follows = "nixpkgs-unstable";
       # hypridle.url = "github:hyprwm/hypridle";
