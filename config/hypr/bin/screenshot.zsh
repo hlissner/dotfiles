@@ -2,7 +2,7 @@
 # Capture (and edit) a screenshot to clibpoard.
 #
 # SYNOPSIS:
-#   screen-capture [-e] [-f FILE] [region|window|output]
+#   screen-capture [-e] [-o|--optimize] [-f FILE] [region|window|output]
 #
 # DESCRIPTION:
 #   Captures a screenshot, optionally piping it through swappy, then optimizing
@@ -11,6 +11,8 @@
 #   icon).
 #
 # OPTIONS:
+#   -o, --optimize
+#     Run pngquant on resulting png.
 #   -s, --swappy
 #     After capturing the image, invoke swappy on it (for quick editing).
 #   -f FILE
@@ -23,7 +25,7 @@ main() {
     exit 0
   fi
 
-  zparseopts -E -D -F -- {s,-swappy}=swappy f:=dest c:=countdown || return 1
+  zparseopts -E -D -F -- {s,-swappy}=swappy f:=dest c:=countdown {o,-optimize}=optimize || return 1
   local file="${dest[2]:-$(hey path runtime screencapture.png)}"
   hey.do hyprshot --silent -m "${1:-region}" -r >"$file" || return 1
   [[ $dest ]] || trap "rm -f '$file'" EXIT
@@ -33,7 +35,9 @@ main() {
     # Provide some feedback that the process is progressing as intended.
     hey .play-sound blip
   fi
-  hey.do -o pngquant -f --ext .png --quality 90-95 "$file"
+  if [[ $optimize ]]; then
+    hey.do -o pngquant -f --ext .png --quality 90-95 "$file"
+  fi
   wl-copy <"$file"
   hey.do notify-send \
     -a hey.screenshot \
