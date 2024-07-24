@@ -340,6 +340,18 @@ in {
         icon = "redshift";
         exec = "hyprshade toggle blue-light-filter";
       })
+      (mkLauncherEntry "Hyprpicker: grab RGB at point" {
+        icon = "com.github.finefindus.eyedropper";
+        exec = "hey .picker rgb";
+      })
+      (mkLauncherEntry "Hyprpicker: grab HSL at point" {
+        icon = "com.github.finefindus.eyedropper";
+        exec = "hey .picker hsl";
+      })
+      (mkLauncherEntry "Hyprpicker: grab hex at point" {
+        icon = "com.github.finefindus.eyedropper";
+        exec = "hey .picker hex";
+      })
     ];
   };
 }
