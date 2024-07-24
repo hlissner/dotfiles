@@ -51,14 +51,13 @@ for file in $@; do
         [[ $lossyonly ]] || hey.do -! jpegtran -copy none -optimize -progressive -outfile "$file" "$file"
         ;;
       pdf)
-        hey.requires gs
         # Adapted from Alfred Klomp's shrinkpdf script
         # <http://alfredklomp.com/programming/shrinkpdf/>
         local dpi=72
         hey.do -! -p ghostscript gs -q -dNOPAUSE -dBATCH -dSAFER \
           -sDEVICE=pdfwrite \
-          -dPDFSETTINGS=/screen \
-          -dCompatibilityLevel=1.3 \
+          -dPDFSETTINGS=/prepress \
+          -dCompatibilityLevel=1.5 \
           -dEmbedAllFonts=true \
           -dSubsetFonts=true \
           -dAutoRotatePages=/None \
@@ -68,8 +67,8 @@ for file in $@; do
           -dGrayImageDownsampleType=/Bicubic \
           -dColorImageResolution=$dpi \
           -dColorImageDownsampleType=/Bicubic \
-          -sOutputFile="$file" \
-          "$file"
+          -sOutputFile="compressed_$file" \
+          "$file" && mv -f "compressed_$file" "$file"
         ;;
       *)
         hey.warn "Unrecognized file: $file"
