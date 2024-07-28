@@ -216,14 +216,14 @@ in {
           hey.do hyprlock --immediate
           sleep 0.1
           hey.do systemctl --user start hyprland-session.target
+          hey .play-sound startup
 
           # TODO: Theme module should handle this!
           local wallpaper=$XDG_DATA_HOME/wallpaper
           if [[ -f $wallpaper ]]; then
             hey.do swaybg -i $wallpaper &
-            sleep 0.5  # give it time to fade out
+            sleep 0.5
           fi
-          hey .play-sound startup
         '';
 
         # I'm using this instead of exec= lines in hyprland.conf so I can ensure

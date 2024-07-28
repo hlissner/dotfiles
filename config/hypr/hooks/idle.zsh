@@ -59,6 +59,7 @@ case $2 in
     case $1 in
       --on)
         playerctl -a pause &
+        hey .play-sound shutdown
         # With nvidia cards, hyprlock suffers from redraw issues (making it
         # appear like it's frozen). This helps a little:
         hyprctl --batch \
@@ -67,9 +68,13 @@ case $2 in
           keyword animations:enabled 0 \; \
           keyword misc:vrr 1
         if ! pidof hyprlock >/dev/null; then
-          hey .lock --immediate &
-          sleep 2
+          {
+            hey .lock --immediate
+            sleep 1
+            hey .play-sound startup
+          } &
         fi
+        sleep 3
       ;;
       --off)
         # HACK: Need to "turn off" the screen in order for hyprland to listen
