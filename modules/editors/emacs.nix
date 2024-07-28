@@ -38,9 +38,8 @@ in {
       })
 
       ## Emacs itself
-      binutils       # native-comp needs 'as', provided by this
-      # HEAD + native-comp
-      emacs
+      binutils            # native-comp needs 'as', provided by this
+      emacs               # HEAD + native-comp
 
       ## Doom dependencies
       git

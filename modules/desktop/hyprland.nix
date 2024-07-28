@@ -75,10 +75,10 @@ in {
       # hypridle = {
       #   enable = true;
       #   settings = {
-      #     before_sleep_cmd = "${heyBin} hook sleep";
-      #     after_sleep_cmd = "${heyBin} hook wakeup";
-      #     lock_cmd = "${heyBin} hook lock";
-      #     unlock_cmd = "${heyBin} hook unlock";
+      #     before_sleep_cmd = "${heyBin} hook idle --on sleep";
+      #     after_sleep_cmd = "${heyBin} hook idle --off sleep";
+      #     lock_cmd = "${heyBin} hook idle --on lock";
+      #     unlock_cmd = "${heyBin} hook idle --off lock";
       #     ignore_dbus_inhibit = "false";
       #   };
       #   timeouts =
