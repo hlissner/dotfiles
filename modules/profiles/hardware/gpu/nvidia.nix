@@ -28,6 +28,9 @@ in mkIf (any (s: hasPrefix "gpu/nvidia" s) hardware) (mkMerge [
       };
     };
 
+    # REVIEW: Remove when NixOS/nixpkgs#324921 is backported to stable
+    boot.kernelParams = [ "nvidia-drm.fbdev=1" ];
+
     environment = {
       systemPackages = with pkgs; [
         # Respect XDG conventions, damn it!
