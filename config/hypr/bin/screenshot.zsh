@@ -27,7 +27,19 @@ main() {
 
   zparseopts -E -D -F -- {s,-swappy}=swappy f:=dest c:=countdown {o,-optimize}=optimize || return 1
   local file="${dest[2]:-$(hey path runtime screencapture.png)}"
-  hey.do hyprshot --silent -m "${1:-region}" -r >"$file" || return 1
+  hey.do hyprshot --silent --mode "${1:-region}" -o "$(dirname $file)" -f "$(basename $file)"
+
+  # It seems hyprshot exits before it's done writing the file...
+  local timer=0.0
+  while [[ ! -s "$file" ]]; do
+    if (( timer >= 3.0 )); then
+      echo "File not created at $file" >&2
+      return 1
+    fi
+    sleep 0.1
+    timer+=0.1
+  done
+
   [[ $dest ]] || trap "rm -f '$file'" EXIT
   if [[ $swappy ]]; then
     hey.do swappy -f "$file" -o "$file" || return 1
@@ -38,13 +50,14 @@ main() {
   if [[ $optimize ]]; then
     hey.do -o pngquant -f --ext .png --quality 90-95 "$file"
   fi
-  wl-copy <"$file"
+  wl-copy --type image/png <"$file"
   hey.do notify-send \
     -a hey.screenshot \
     -i $file \
     -h string:x-canonical-private-synchronous:osd \
     -h string:category:preview \
     "Sent screenshot to ${dest[2]:-clipboard}"
+  hey .play-sound blip
 }
 
 main $@
