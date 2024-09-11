@@ -77,10 +77,6 @@ case $2 in
         sleep 3
       ;;
       --off)
-        # HACK: Need to "turn off" the screen in order for hyprland to listen
-        #   for keypresses to wake up the display, otherwise, I'll be stuck in
-        #   an inescapable black screen. Definitely an upstream bug, but that's
-        #   normal for Hyprland.
         {
           hyprctl --batch \
             keyword decoration:blur:enabled 1 \; \
@@ -88,7 +84,7 @@ case $2 in
             keyword animations:enabled 1 \; \
             keyword misc:vrr 0
           sleep 1
-          hyprctl dispatch dpms off
+          hyprctl dispatch dpms on
         } &
         ;;
     esac
