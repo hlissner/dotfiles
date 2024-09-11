@@ -11,7 +11,7 @@ let cfg = config.modules.editors.emacs;
       (if config.modules.desktop.type == "wayland"
        then emacs-pgtk
        else emacs-git)).emacsWithPackages (epkgs: with epkgs; [
-         # treesit-grammars.with-all-grammars
+         treesit-grammars.with-all-grammars
          vterm
          mu4e
        ]);
