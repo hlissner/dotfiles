@@ -52,9 +52,11 @@ main() {
   esac
   rm -f "$file"
   touch "$livefile"
-  trap "rm -f '$thumbfile' '$livefile'" EXIT
+  trap "rm -f '$thumbfile' '$livefile'" EXIT SIGINT SIGTERM
+  local geom="$(hey .slurp ${2:-region})"
+  [[ -z "$geom" ]] && exit 1
   hey .osd toggle --on -P "" "Recording started"
-  if wf-recorder -g "$(hey .slurp ${2:-region})" ${opts[@]} --file="$file"; then
+  if wf-recorder -g "$geom" ${opts[@]} --file="$file"; then
     sleep 0.1
     hey .osd toggle --off "" "Recording ended"
     hey.do ffmpeg -y -i "$file" -frames:v 1 "$thumbfile"
