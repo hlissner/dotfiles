@@ -13,6 +13,7 @@ let cfg = config.modules.editors.emacs;
        else emacs-git)).emacsWithPackages (epkgs: with epkgs; [
          # treesit-grammars.with-all-grammars
          vterm
+         mu4e
        ]);
 in {
   options.modules.editors.emacs = {
@@ -54,6 +55,9 @@ in {
       zstd                # for undo-fu-session/undo-tree compression
 
       ## Module dependencies
+      # :email mu4e
+      mu
+      unstable.isync
       # :checkers spell
       (aspellWithDicts (ds: with ds; [ en en-computers en-science ]))
       # :tools editorconfig
