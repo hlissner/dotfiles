@@ -22,6 +22,7 @@ with builtins;
         "audio/realtime"
         "ssd"
         "ergodox"
+        "bluetooth"
       ];
     };
 
