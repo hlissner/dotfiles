@@ -64,6 +64,8 @@ in {
       editorconfig-core-c # per-project style config
       # :tools lookup & :lang org +roam
       sqlite
+      # :lang cc
+      clang-tools
       # :lang latex & :lang org (latex previews)
       texlive.combined.scheme-medium
       # :lang beancount
