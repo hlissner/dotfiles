@@ -80,9 +80,10 @@
                                         (abort "%s: command not found" $1))
                                     ;$&]
              '(+ "./" "/")  |[:exec ;$&]
-             '(* ".")       |[:exec ;(resolve [(path :host "bin")
-                                               (path :wm "bin")
-                                               (path :bin)]
-                                              (slice $0 1) ;$&)]
+             '(* ".")       |[:exec ;(or (resolve [(path :host "bin")
+                                                   (path :wm "bin")
+                                                   (path :bin)]
+                                                  (slice $0 1) ;$&)
+                                         (abort "%s: command not found" $0))]
              '(* "@")       |[:exec (path :config (slice $0 1) :bin) ;$&]]
             ;args))
