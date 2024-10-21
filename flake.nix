@@ -30,8 +30,6 @@
       hyprlock.inputs.nixpkgs.follows = "nixpkgs-unstable";
       # hypridle.url = "github:hyprwm/hypridle";
       # hypridle.inputs.nixpkgs.follows = "nixpkgs-unstable";
-      waybar.url = "github:Alexays/Waybar";
-      waybar.inputs.nixpkgs.follows = "nixpkgs-unstable";
 
       # Extras (imported directly by modules/hosts that need them)
       spicetify-nix.url = "github:Gerg-L/spicetify-nix";

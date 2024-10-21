@@ -57,9 +57,16 @@ in {
       MOZ_ENABLE_WAYLAND = "1";
     };
 
+    # Hyprland's aquamarine requires newer MESA drivers.
+    hardware.opengl = {
+      package = pkgs.unstable.mesa.drivers;
+      package32 = pkgs.unstable.pkgsi686Linux.mesa.drivers;
+    };
+
     programs.hyprland = {
       enable = true;
       xwayland.enable = true;
+      portalPackage = hey.inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
     };
 
     # xdg.portal.configPackages = [ pkgs.xdg-desktop-portal-gtk ];
@@ -134,6 +141,9 @@ in {
 
       waybar = {
         enable = true;
+        # REVIEW: Later versions of hyprland changed where its socket lives, but
+        #   waybar on nixpkgs stable yet (see Alexays/Waybar#3158).
+        package = pkgs.unstable.waybar;
         primaryMonitor = mkDefault (primaryMonitor.output or "");
       };
 

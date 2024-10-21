@@ -19,17 +19,10 @@ in {
       }
     ];
 
-    nixpkgs.overlays = [
-      # REVIEW: Latest version of hyprland changed where its socket lives, but
-      #   waybar on nixpkgs hasn't asborbed the fix yet (see
-      #   Alexays/Waybar#3158). Also, waybar's flake is broken, so we can't use
-      #   its overlays directly (see Alexays/Waybar#3196).
-      (prev: final: {
-        waybar = hey.inputs.waybar.packages.${final.system}.default;
-      })
-    ];
-
-    programs.waybar.enable = true;
+    programs.waybar = {
+      enable = true;
+      package = mkDefault cfg.package;
+    };
 
     hey.hooks.reload."98-waybar" = ''
       hey.do systemctl --user restart waybar.service
