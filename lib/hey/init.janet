@@ -156,13 +156,16 @@
                     :which (echo (string/join [file ;cargs] " "))
                     :help  (help [file ;cargs])
                     :call  (cmd command ;cargs)))))
-      :exec (if-let [pargs (resolve ;(slice spec 1))]
-              (fn [op]
-                (case op
-                  :which (echo (string/join pargs " "))
-                  :help (help pargs)
-                  :call (os/execute pargs :p)))
-              (abort "Unknown command: %q" command))
+      :exec (let [sargs (slice spec 1)]
+              (if (empty? sargs)
+                (abort "Unknown command: %q" command)
+                (if-let [pargs (resolve ;sargs)]
+                  (fn [op]
+                    (case op
+                      :which (echo (string/join pargs " "))
+                      :help (help pargs)
+                      :call (os/execute pargs :p)))
+                  (abort "Unknown command: %q" command))))
       (abort "Unknown command: %q" command))))
 
 (defdyn *script* "TODO")
