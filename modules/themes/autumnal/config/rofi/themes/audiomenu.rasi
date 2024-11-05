@@ -1,0 +1,11 @@
+/* -*- mode: css; -*- */
+@import "config.rasi"
+
+icon {
+  filename: "audio-card";
+  margin: -3px 0 0 0;
+}
+
+entry {
+  placeholder: "Change default audio device...";
+}

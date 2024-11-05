@@ -61,6 +61,10 @@ in {
           icon = "system-shutdown";
           exec = "hey @rofi powermenu";
         })
+        (mkLauncherEntry "Manage audio devices ->" {
+          icon = "audio-card";
+          exec = "hey @rofi audiomenu";
+        })
         (mkLauncherEntry "Manage Wireless Networks ->" {
           icon = "network-wireless";
           exec = "hey @rofi wifimenu";

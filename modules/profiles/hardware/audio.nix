@@ -21,6 +21,7 @@ mkMerge [
       alsaUtils  # for CLI utilities
       pavucontrol
       easyeffects
+      pulseaudio  # for pactl
       # Not strictly needed, but it silences DBus error noise in journalctl. The
       # error can be ignored, in any case, as easyeffects attachs to the
       # gapplication service.
