@@ -39,10 +39,10 @@ case $1 in
     shift
     zparseopts -D -- p+:=pkgs keep+:=keep
     (( $#pkgs == 0 )) && pkgs=( -p "$1" )
-    cached-nix-shell ${keep[@]} ${pkgs[@]} --run "$*"
+    cached-nix-shell "${keep[@]}" "${pkgs[@]}" --run "$*"
     exit
     ;;
 esac
 
 HEYDEBUG=${HEYDEBUG:-${HEYDRYRUN:+1}} hey.log -c green "$" "$*"
-[[ $HEYDRYRUN ]] || $@
+[[ $HEYDRYRUN ]] || "$@"
