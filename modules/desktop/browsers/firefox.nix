@@ -47,8 +47,6 @@ in {
       # nativeMessagingHosts.packages = with pkgs; [
       #   tridactyl-native
       # ];
-      # Firefox on nixos-stable crashes a lot.
-      package = pkgs.firefox-beta;
       policies = {
         DontCheckDefaultBrowser = true;
         DisablePocket = true;
@@ -60,11 +58,7 @@ in {
       # Obey XDG, damn it!
       (writeShellScriptBin "firefox" ''
         export HOME="$XDG_FAKE_HOME"
-        exec "${config.programs.firefox.package}/bin/firefox-beta" "$@"
-      '')
-      (writeShellScriptBin "firefox-beta" ''
-        export HOME="$XDG_FAKE_HOME"
-        exec "${config.programs.firefox.package}/bin/firefox-beta" "$@"
+        exec "${config.programs.firefox.package}/bin/firefox" "$@"
       '')
     ];
 
