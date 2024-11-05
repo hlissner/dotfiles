@@ -23,7 +23,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    user.packages = with pkgs.unstable;
+    user.packages = with pkgs;
       # CLI/scripting tools
       (optionals cfg.tools.enable [
         imagemagick

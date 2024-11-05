@@ -15,13 +15,13 @@ in mkIf (any (s: hasPrefix "gpu/nvidia" s) hardware) (mkMerge [
     services.xserver.videoDrivers = mkDefault [ "nvidia" ];
 
     hardware = {
-      opengl = {
+      graphics = {
         enable = true;
-        driSupport = true;
-        driSupport32Bit = true;
+        enable32Bit = true;
         extraPackages = [ pkgs.vaapiVdpau ];
       };
       nvidia = {
+        open = mkDefault true;
         # Save some idle watts.
         powerManagement.enable = true;  # see NixOS/nixos-hardware#348
         modesetting.enable = true;
@@ -60,7 +60,10 @@ in mkIf (any (s: hasPrefix "gpu/nvidia" s) hardware) (mkMerge [
 
   (mkIf (elem "gpu/nvidia/kepler" hardware) {
     # Last one supporting Kepler architecture
-    hardware.nvidia.package = mkForce config.boot.kernelPackages.nvidiaPackages.legacy_470;
+    hardware.nvidia = {
+      open = mkForce false;
+      package = mkForce config.boot.kernelPackages.nvidiaPackages.legacy_470;
+    };
   })
 
   (mkIf (elem "gpu/nvidia/turing" hardware) {

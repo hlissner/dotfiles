@@ -46,13 +46,13 @@ in {
 
       environment.systemPackages = with pkgs; [
         libnotify  # notify-send
-        xdg_utils
+        xdg-utils
         sox        # for `play` utility
       ];
     })
 
     (mkIf (cfg.type == "wayland") {
-      user.packages = with pkgs.unstable; [
+      user.packages = with pkgs; [
         # Program     Substitutes for
         ripdrag       # xdragon
         wev           # xev

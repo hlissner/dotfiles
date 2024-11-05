@@ -57,7 +57,7 @@ in {
       ## Module dependencies
       # :email mu4e
       mu
-      unstable.isync
+      isync
       # :checkers spell
       (aspellWithDicts (ds: with ds; [ en en-computers en-science ]))
       # :tools editorconfig

@@ -7,12 +7,12 @@ with hey.lib;
 let cfg = config.modules.theme;
 in mkIf (cfg.active == "autumnal") (mkMerge [
   {
-    user.packages = [ pkgs.unstable.tela-circle-icon-theme ];
+    user.packages = [ pkgs.tela-circle-icon-theme ];
 
     modules = {
       theme = {
         wallpaper = mkDefault ./wallpaper.png;
-        fonts = with pkgs.unstable; {
+        fonts = with pkgs; {
           sans.name = "Fira Sans";
           sans.package = fira;
           mono.name = "JetBrains Mono";
@@ -24,7 +24,7 @@ in mkIf (cfg.active == "autumnal") (mkMerge [
             montserrat
           ];
         };
-        gtk = with pkgs.unstable; {
+        gtk = with pkgs; {
           theme = {
             name = "Graphite-pink-Dark";
             package = pkgs.graphite-gtk-theme.override {

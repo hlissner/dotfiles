@@ -58,10 +58,10 @@ in {
     };
 
     # Hyprland's aquamarine requires newer MESA drivers.
-    hardware.opengl = {
-      package = pkgs.unstable.mesa.drivers;
-      package32 = pkgs.unstable.pkgsi686Linux.mesa.drivers;
-    };
+    # hardware.opengl = {
+    #   package = pkgs.unstable.mesa.drivers;
+    #   package32 = pkgs.unstable.pkgsi686Linux.mesa.drivers;
+    # };
 
     programs.hyprland = {
       enable = true;
@@ -141,9 +141,6 @@ in {
 
       waybar = {
         enable = true;
-        # REVIEW: Later versions of hyprland changed where its socket lives, but
-        #   waybar on nixpkgs stable yet (see Alexays/Waybar#3158).
-        package = pkgs.unstable.waybar;
         primaryMonitor = mkDefault (primaryMonitor.output or "");
       };
 
@@ -158,30 +155,29 @@ in {
       # pkgs.hyprshade, may reference pkgs.hyprland in their derivations).
       (prev: final: {
         hyprland = hey.inputs.hyprland.packages.${final.system}.hyprland;
-        hyprshot = pkgs.unstable.hyprshot;
       })
       hey.inputs.hyprlock.overlays.default
       hey.inputs.hyprpicker.overlays.default
     ];
 
     environment.systemPackages = with pkgs; [
-      # pkgs.unstable doesn't have nixpkgs.overlays applied, so any package
-      # referencing hyprland in their derivation must be installed from pkgs.
       hyprlock       # *fast* lock screen
       hyprpicker     # screen-space color picker
       hyprshade      # to apply shaders to the screen
       hyprshot       # instead of grim(shot) or maim/slurp
-    ] ++ (with pkgs.unstable; [
+
+      ## For Hyprland
       mako           # dunst for wayland
       swaybg         # feh (as a wallpaper manager)
+      xorg.xrandr    # for XWayland windows
 
-      ## Utilities
+      ## For CLIs
       gromit-mpx     # for drawing on the screen
       pamixer        # for volume control
-      wf-recorder    # screencasting
       wlr-randr      # for monitors that hyprctl can't handle
-      xorg.xrandr    # for XWayland windows
-    ]);
+      ## Waiting for NixOS/nixpkgs@7249e6c56141 to reach nixos-unstable
+      # wf-recorder    # for screencasting
+    ];
 
     systemd.user.targets.hyprland-session = {
       unitConfig = {

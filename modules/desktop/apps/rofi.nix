@@ -23,7 +23,7 @@ in {
         recursive = true;
       };
 
-      services.xserver.gdk-pixbuf.modulePackages = [ pkgs.librsvg ];
+      programs.gdk-pixbuf.modulePackages = [ pkgs.librsvg ];
 
       environment.variables.ROFI_PLUGIN_PATH = [
         "$XDG_CONFIG_HOME/rofi/plugins"  # for local development
@@ -34,7 +34,7 @@ in {
 
       user.packages = with pkgs; [
         rofiPkg
-        (unstable.rofimoji.override { rofi = rofiPkg; })
+        (rofimoji.override { rofi = rofiPkg; })
         (mkLauncherEntry "Calculator" {
           icon = "calc";
           exec = "hey @rofi calcmenu";

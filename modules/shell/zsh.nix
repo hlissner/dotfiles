@@ -39,7 +39,7 @@ in {
     users.defaultUserShell = pkgs.zsh;
 
     # Some interactive shell utilies I find universally indispensible.
-    user.packages = with pkgs.unstable; [
+    user.packages = with pkgs; [
       at
       bat      # a better cat
       bc

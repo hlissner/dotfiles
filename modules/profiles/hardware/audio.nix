@@ -11,14 +11,14 @@ mkMerge [
       pulse.enable = true;
     };
 
-    sound.enable = false;
+    # sound.enable = false;
     security.rtkit.enable = true;
     user.extraGroups = [ "audio" ];
 
     ## easyEffects
     programs.dconf.enable = true;
     user.packages = with pkgs; [
-      alsaUtils  # for CLI utilities
+      alsa-utils  # for CLI utilities
       pavucontrol
       easyeffects
       pulseaudio  # for pactl

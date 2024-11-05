@@ -25,7 +25,7 @@ rec {
     self
     , hey ? self
     , nixpkgs ? hey.inputs.nixpkgs
-    , nixpkgs-unstable ? hey.inputs.nixpkgs-unstable or hey.inputs.nixpkgs-unstable or nixpkgs
+    # , nixpkgs-unstable ? hey.inputs.nixpkgs-unstable or hey.inputs.nixpkgs-unstable or nixpkgs
     # , disko ? hey.inputs.disko
     , ...
   } @ inputs: {
@@ -108,11 +108,13 @@ rec {
             inherit args lib nixosModules;
             hey = hey';
           };
-          pkgs = mkPkgs host.system nixpkgs ((attrValues overlays) ++ [
-            (final: prev: {
-              unstable = mkPkgs host.system nixpkgs-unstable (attrValues overlays);
-            })
-          ]);
+          pkgs = mkPkgs host.system nixpkgs ((attrValues overlays)
+          #  ++ [
+          #   (final: prev: {
+          #     unstable = mkPkgs host.system nixpkgs-unstable (attrValues overlays);
+          #   })
+          # ]
+          );
         in
           nixpkgs.lib.nixosSystem {
             system = host.system;

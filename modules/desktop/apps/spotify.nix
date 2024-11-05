@@ -8,7 +8,6 @@
 with lib;
 with hey.lib;
 let cfg = config.modules.desktop.apps.spotify;
-    spicetify = pkgs.unstable.spicetify-cli;
 in {
   imports = [
     hey.modules.spicetify-nix.default

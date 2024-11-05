@@ -22,11 +22,9 @@ mkIf (elem "wg0" config.modules.profiles.networks) (mkMerge [
           ListenPort = "51820";
         };
         wireguardPeers = [{
-          wireguardPeerConfig = {
-            PublicKey = "kuv6kPygJbjcAbhogEst5m8XyKz9pn0XgyR7EcnveAU=";
-            AllowedIPs = [ "10.0.0.0/24" ];
-            Endpoint = "0.home.lissner.net:51820";
-          };
+          PublicKey = "kuv6kPygJbjcAbhogEst5m8XyKz9pn0XgyR7EcnveAU=";
+          AllowedIPs = [ "10.0.0.0/24" ];
+          Endpoint = "0.home.lissner.net:51820";
         }];
       };
       networks.wg0 = {
@@ -41,11 +39,9 @@ mkIf (elem "wg0" config.modules.profiles.networks) (mkMerge [
           DNSDefaultRoute = false;
         };
         routes = [{
-          routeConfig = {
-            Gateway = "10.0.0.1";
-            GatewayOnLink = true;
-            Destination = "10.0.0.0/24";
-          };
+          Gateway = "10.0.0.1";
+          GatewayOnLink = true;
+          Destination = "10.0.0.0/24";
         }];
       };
     };

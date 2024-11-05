@@ -16,7 +16,7 @@ in {
     # I avoid programs.tmux because it comes with extra magic I don't need.
     user.packages = [ pkgs.tmux ];
 
-    environment.etc."tmux.conf".text = with pkgs.unstable.tmuxPlugins; ''
+    environment.etc."tmux.conf".text = with pkgs.tmuxPlugins; ''
       set -s default-terminal "${cfg.term}"
 
       source-file $TMUX_HOME/tmux.conf

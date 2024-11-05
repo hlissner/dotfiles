@@ -48,7 +48,7 @@ in {
       #   tridactyl-native
       # ];
       # Firefox on nixos-stable crashes a lot.
-      package = pkgs.unstable.firefox-beta;
+      package = pkgs.firefox-beta;
       policies = {
         DontCheckDefaultBrowser = true;
         DisablePocket = true;

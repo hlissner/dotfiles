@@ -10,8 +10,8 @@ with lib;
 with hey.lib;
 let cfg = config.hey;
 
-    janet = pkgs.unstable.janet;
-    jpm = mkWrapper pkgs.unstable.jpm ''
+    janet = pkgs.janet;
+    jpm = mkWrapper pkgs.jpm ''
       wrapProgram $out/bin/jpm --add-flags '--tree="$JANET_TREE" --binpath="$XDG_BIN_HOME" --headerpath=${janet}/include --libpath=${janet}/lib --ldflags=-L${pkgs.glibc}/lib '
     '';
     janetTreeDir = "${config.home.dataDir}/janet/jpm_tree";

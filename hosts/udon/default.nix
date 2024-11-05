@@ -132,7 +132,7 @@ with builtins;
     };
 
     user.packages = with pkgs; [
-      unstable.guitarix
+      guitarix
       gxplugins-lv2
       ladspaPlugins
 

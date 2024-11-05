@@ -34,10 +34,7 @@ in {
     ];
 
     services = {
-      picom = {
-        enable = true;
-        package = pkgs.unstable.picom;
-      };
+      picom.enable = true;
       redshift.enable = true;
       displayManager.defaultSession = "none+bspwm";
       xserver = {
