@@ -47,8 +47,8 @@ in {
     (mkIf cfg.tools.enable {
       user.packages = with pkgs; [
         # Tools for (en|de)coding.
-        ffmpeg_7-full   # ...in the CLI
-        # handbrake       # ...for the GUI
+        ffmpeg-full     # ...in the CLI
+        # handbrake     # ...for the GUI
       ];
     })
   ]);

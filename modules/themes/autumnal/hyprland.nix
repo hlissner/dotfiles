@@ -21,10 +21,12 @@ in {
       dim_inactive = true
       dim_special = 0.4
       dim_around = 0.4
-      drop_shadow = yes
-      shadow_range = 10
-      shadow_render_power = 4
-      col.shadow = rgba(0f0f0f88)
+      shadow {
+        enabled = true
+        range = 10
+        render_power = 4
+        color = rgba(0f0f0f88)
+      }
       blur {
         enabled = true
         size = 4

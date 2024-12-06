@@ -52,7 +52,7 @@ in {
     })
 
     (mkIf (cfg.type == "wayland") {
-      user.packages = with pkgs; [
+      user.packages = with pkgs.unstable; [
         # Program     Substitutes for
         ripdrag       # xdragon
         wev           # xev

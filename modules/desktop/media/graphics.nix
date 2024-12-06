@@ -36,24 +36,24 @@ in {
 
       # Replaces Illustrator (maybe indesign?)
       (optionals cfg.vector.enable [
-        inkscape
+        unstable.inkscape
       ]) ++
 
       # Replaces Photoshop
       (optionals cfg.raster.enable [
-        (gimp-with-plugins.override {
-          plugins = with gimpPlugins; [
+        (unstable.gimp-with-plugins.override {
+          plugins = with unstable.gimpPlugins; [
             bimp            # batch image manipulation
             # resynthesizer   # content-aware scaling in gimp
             gmic            # an assortment of extra filters
           ];
         })
-        krita   # But Krita is better for digital illustration
+        unstable.krita   # But Krita is better for digital illustration
       ]) ++
 
       # Sprite sheets & animation
       (optionals cfg.sprites.enable [
-        aseprite-unfree
+        unstable.aseprite-unfree
       ]) ++
 
       # Replaces Adobe XD (or Sketch)

@@ -20,7 +20,7 @@ case $1 in
   --on)
     hey.do hyprctl --batch \
       keyword decoration:blur:enabled 0 \; \
-      keyword decoration:drop_shadow 0 \; \
+      keyword decoration:shadow:enabled 0 \; \
       keyword general:allow_tearing 1 \; \
       keyword animations:enabled 0 \; \
       keyword misc:vrr 1
@@ -31,7 +31,7 @@ case $1 in
   --off)
     hey.do hyprctl --batch \
       keyword decoration:blur:enabled 1 \; \
-      keyword decoration:drop_shadow 1 \; \
+      keyword decoration:shadow:enabled 1 \; \
       keyword general:allow_tearing 0 \; \
       keyword animations:enabled 1 \; \
       keyword misc:vrr 0

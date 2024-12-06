@@ -18,7 +18,7 @@ in {
   config = mkIf cfg.enable {
     services.pipewire.jack.enable = true;
 
-    user.packages = with pkgs; [
+    user.packages = with pkgs.unstable; [
       ardour      # My DAW for recording
       audacity    # For one-off audio editing
       sunvox      # For chiptune

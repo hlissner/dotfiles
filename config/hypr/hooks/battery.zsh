@@ -13,7 +13,7 @@ case $1 in
   --discharging)
     hyprctl --batch \
       keyword decoration:blur:enabled false \; \
-      keyword decoration:drop_shadow false
+      keyword decoration:shadow:enabled false
 
     if (( $+commands[brightnessctl] )); then
       if (( ($(brightnessctl get) / $(brightnessctl max).0) > 0.2 )); then
@@ -26,7 +26,7 @@ case $1 in
   --charging)
     hyprctl --batch \
       keyword decoration:blur:enabled true \; \
-      keyword decoration:drop_shadow true
+      keyword decoration:shadow:enabled true
 
     if (( $+commands[brightnessctl] )); then
       brightnessctl -m -r
