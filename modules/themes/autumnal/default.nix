@@ -48,7 +48,7 @@ in mkIf (cfg.active == "autumnal") (mkMerge [
           cursorTheme = {
             name = "catppuccin-mocha-dark-cursors";
             package = catppuccin-cursors.mochaDark;
-            size = 48;
+            size = 32;
           };
         };
         colors = {
