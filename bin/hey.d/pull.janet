@@ -33,7 +33,7 @@
     (empty? args)
     (do
       (echo :g "> Updating all inputs...")
-      (do? $ nix flake update --impure ,(path :home)))
+      (do? $ nix flake update --flake ,(path :home) --impure))
 
     override?
     (let [flake-args @[]]
@@ -59,13 +59,14 @@
     (let [inputs (keys (get-in (metadata) [:locks :nodes :root :inputs]))
           targets @{}]
       (each m args
+        (var negated? (string/has-prefix? "!" m))
+        (var match (if negated? (string/slice (string m) 1) (string m)))
         (each i inputs
-          (when (glob/match* m (string i))
+          (var match? (glob/match* match i))
+          (when (if negated? (not match?) match?)
             (put targets (string i) true))))
       (when (empty? targets)
         (abort "No matching inputs"))
       (echo :g "> Updating matching inputs:")
       (eachk t targets (echof "  - %s" t))
-      (do? $ nix flake lock --impure
-          --update-input ,;(interpose "--update-input" (keys targets))
-          ,(path :home)))))
+      (do? $ nix flake update --flake ,(path :home) --impure ,;(keys targets)))))
