@@ -57,6 +57,7 @@ alias sscr='sudo systemctl restart'
 alias sscs='sudo systemctl status'
 alias rctl='sudo resolvectl'
 alias nctl='sudo networkctl'
+alias bctl='bluetoothctl'
 
 if (( $+commands[eza] )); then
   alias exa="eza --group-directories-first --git";
