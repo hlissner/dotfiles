@@ -21,10 +21,18 @@ in mkIf (any (s: hasPrefix "gpu/nvidia" s) hardware) (mkMerge [
         extraPackages = [ pkgs.vaapiVdpau ];
       };
       nvidia = {
+        # Use the NVidia open source kernel module (not to be confused with the
+        # independent third-party "nouveau" open source driver).  Support is
+        # limited to the Turing and later architectures. Full list of supported
+        # GPUs is at:
+        # https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus
+        # Only available from driver 515.43.04+. Currently alpha-quality/buggy,
+        # so false is currently the recommended setting.
         open = mkDefault true;
         # Save some idle watts.
         powerManagement.enable = true;  # see NixOS/nixos-hardware#348
         modesetting.enable = true;
+        package = config.boot.kernelPackages.nvidiaPackages.beta;
       };
     };
 
