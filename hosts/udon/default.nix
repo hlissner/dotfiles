@@ -119,18 +119,6 @@ with builtins;
   config = { pkgs, ... }: {
     networking.search = [ "home.lissner.net" ];
 
-    # Low-latency audio for guitar recording and DAW stuff. Should not be
-    # generalized, since these values depend heavily on many local factors, like
-    # CPU speed, kernels, audio cards, etc.
-    services.pipewire.extraConfig.pipewire."95-low-latency" = {
-      "context.properties" = {
-        "default.clock.rate" = 48000;
-        "default.clock.quantum" = 64;
-        "default.clock.min-quantum" = 32;
-        "default.clock.max-quantum" = 64;
-      };
-    };
-
     user.packages = with pkgs; [
       guitarix
       gxplugins-lv2
