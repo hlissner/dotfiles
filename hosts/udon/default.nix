@@ -37,6 +37,7 @@ with builtins;
         enable = true;
         monitors = [
           { output = "HDMI-A-2";
+            mode = "2560x1440@120";
             position = "1920x2160";
             primary = true; }
           { output = "DP-3";
