@@ -5,6 +5,7 @@ zparseopts -E -F -D -- -flake=flake \
                        -user=user \
                        -host=host \
                        -dest=dest \
+                       -disk=disk \
                        -root=root || exit 1
 
 local root="${root[2]:-/mnt}"
@@ -12,6 +13,7 @@ local flake="${flake[2]:-$root/etc/dotfiles}"
 local host="${host[2]:-$HOST}"
 local user="${user[2]:-hlissner}"
 local dest="${dest[2]:-$root/home/$user/.config/dotfiles}"
+local disk="${disk[2]}"
 
 if [[ "$USER" == nixos ]]; then
   >&2 echo "Error: not in the nixos installer"
@@ -31,8 +33,17 @@ if [[ ! -d "$flake" ]]; then
 fi
 
 export HEYENV="{\"user\":\"$user\",\"host\":\"$host\",\"path\":\"${flake#$root}\",\"theme\":\"$THEME\"}"
-nixos-install \
-    --impure \
-    --show-trace \
-    --root "$root" \
-    --flake "${flake}#${host}"
+if [[ -n "$disk" ]]; then
+  nix run 'github:nix-community/disko/latest#disko-install' -- \
+      --impure \
+      --show-trace \
+      --flake "${flake}#${host}" \
+      --disk main "${disk}"
+else
+  nixos-install \
+      --impure \
+      --show-trace \
+      --root "$root" \
+      --flake "${flake}#${host}"
+fi
+

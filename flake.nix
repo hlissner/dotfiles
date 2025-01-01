@@ -19,9 +19,8 @@
       home-manager.inputs.nixpkgs.follows = "nixpkgs";
       agenix.url = "github:ryantm/agenix";
       agenix.inputs.nixpkgs.follows = "nixpkgs";
-      # TODO: Declarative partitions
-      # disko.url = "github:nix-community/disko";
-      # disko.inputs.nixpkgs.follows = "nixpkgs";
+      disko.url = "github:nix-community/disko";
+      disko.inputs.nixpkgs.follows = "nixpkgs";
 
       # Hyprland + core extensions
       hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";

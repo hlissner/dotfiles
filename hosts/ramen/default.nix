@@ -145,8 +145,7 @@ with builtins;
     swapDevices = [ { device = "/dev/disk/by-label/swap"; }];
   };
 
-  # Use 'hey install' to deploy these the first time, or 'hey install --storage'
-  # to reformat an existing system.
+  # Use 'install.zsh --disk /dev/...' to deploy these.
   # storage = { ... }: {
   #   disk.sda = {
   #     device = "/dev/nvme0n1p8";

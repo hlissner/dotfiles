@@ -203,84 +203,98 @@ with builtins;
     swapDevices = [];
   };
 
-  # Use 'hey install' to deploy these the first time, or 'hey install --storage'
-  # to reformat an existing system.
+  # Use 'install.zsh --disk /dev/...' to deploy these.
   # storage = { ... }: {
-  #   disk.sda = {
-  #     device = "/dev/nvme0n1p8";
-  #     type = "disk";
-  #     content = {
-  #       type = "table";
-  #       format = "gpt";
-  #       partitions = [
-  #         {
-  #           type = "partition";
-  #           name = "ESP";
-  #           start = "1MiB";
-  #           end = "128MiB";
-  #           bootable = true;
-  #           content = {
-  #             type = "filesystem";
-  #             format = "vfat";
-  #             mountpoint = "/boot";
-  #           };
-  #         }
-  #         {
-  #           name = "nixos";
-  #           type = "partition";
-  #           start = "128MiB";
-  #           end = "50%";
-  #           bootable = true;
-  #           content = {
-  #             type = "filesystem";
-  #             format = "ext4";
-  #             mountpoint = "/";
-  #             options = [ "noatime" ];
-  #           };
-  #         }
-  #         {
-  #           name = "home";
-  #           type = "partition";
-  #           start = "50%";
-  #           end = "-4G";
-  #           content = {
-  #             name = "home";
-  #             type = "luks";
-  #             keyFile = "...";
+  #   disk = {
+  #     main = {
+  #       device = "/dev/nvme0n1";
+  #       type = "disk";
+  #       content = {
+  #         type = "table";
+  #         format = "gpt";
+  #         partitions = [
+  #           {
+  #             type = "partition";
+  #             name = "ESP";
+  #             start = "1MiB";
+  #             end = "128MiB";
+  #             bootable = true;
   #             content = {
-  #               type = "lvm_pv";
-  #               vg = "pool";
+  #               type = "filesystem";
+  #               format = "vfat";
+  #               mountpoint = "/boot";
   #             };
-  #           };
-  #         }
-  #         {
-  #           name = "swap";
-  #           type = "partition";
-  #           start = "-4G";
-  #           end = "100%";
-  #           content = {
-  #             type = "swap";
-  #           };
-  #         }
-  #       ];
+  #           }
+  #           {
+  #             name = "nixos";
+  #             type = "partition";
+  #             start = "128MiB";
+  #             end = "50%";
+  #             bootable = true;
+  #             content = {
+  #               type = "filesystem";
+  #               format = "ext4";
+  #               mountpoint = "/";
+  #               options = [ "noatime" "errors=remount-ro" ];
+  #             };
+  #           }
+  #           {
+  #             name = "home";
+  #             type = "partition";
+  #             start = "50%";
+  #             end = "100%";
+  #             content = {
+  #               type = "filesystem";
+  #               format = "ext4";
+  #               mountpoint = "/home";
+  #               options = [ "noatime" ];
+  #             };
+  #           }
+  #         ];
+  #       };
   #     };
-  #   };
-
-  #   lvm_vg = {
-  #     pool = {
-  #       type = "lvm_vg";
-  #       lvs = {
-  #         home = {
-  #           type = "lvm_lv";
-  #           start = "1M";
-  #           end = "100%";
-  #           content = {
-  #             type = "filesystem";
-  #             format = "ext4";
-  #             mountpoint = "/home";
-  #             options = [ "noatime" ];
-  #           };
-  #         };
+  #     video = {  # 1TB
+  #       device = "/dev/sda";
+  #       type = "disk";
+  #       content = {
+  #         type = "table";
+  #         format = "gpt";
+  #         partitions = [
+  #           {
+  #             type = "partition";
+  #             name = "video";
+  #             start = "0%";
+  #             end = "100%";
+  #             content = {
+  #               type = "filesystem";
+  #               format = "ext4";
+  #               mountpoint = "/media/video";
+  #               options = [ "noatime" ];
+  #             };
+  #           }
+  #         ];
+  #       };
+  #     };
+  #     data = {  # 600gb
+  #       device = "/dev/sdb";
+  #       type = "disk";
+  #       content = {
+  #         type = "table";
+  #         format = "gpt";
+  #         partitions = [
+  #           {
+  #             type = "partition";
+  #             name = "data";
+  #             start = "0%";
+  #             end = "100%";
+  #             content = {
+  #               type = "filesystem";
+  #               format = "ext4";
+  #               mountpoint = "/media/data";
+  #               options = [ "noatime" ];
+  #             };
+  #           }
+  #         ];
   #       };
   #     };
   #   };
