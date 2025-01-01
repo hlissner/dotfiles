@@ -4,6 +4,7 @@ with lib;
 let cfg = config.modules.profiles;
     username = cfg.user;
     role = cfg.role;
+    key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB71rSnjuC06Qq3NLXQJwSz7jazoB+umydddrxL6vg1a";
 in mkIf (username == "hlissner") (mkMerge [
   {
     user.name = username;
@@ -16,10 +17,14 @@ in mkIf (username == "hlissner") (mkMerge [
     # remoted into often, so I leave their access control to an upstream router
     # or local firewall.
     user.openssh.authorizedKeys.keys = [
-      (let key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB71rSnjuC06Qq3NLXQJwSz7jazoB+umydddrxL6vg1a hlissner"; in
-       if role == "workstation"
+      (if role == "workstation"
        then ''from="10.0.0.0/8" ${key} ${username}''
        else key)
+    ];
+
+    # Allow key-based root access only from private ranges.
+    users.users.root.openssh.authorizedKeys.keys = [
+      ''from="10.0.0.0/8" ${key} ${username}''
     ];
   }
 ])
