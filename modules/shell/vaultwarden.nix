@@ -3,7 +3,7 @@
 with lib;
 with hey.lib;
 let cfg = config.modules.shell.vaultwarden;
-    package = pkgs.bitwarden-cli;
+    package = pkgs.unstable.bitwarden-cli;
 in {
   options.modules.shell.vaultwarden = with types; {
     enable = mkBoolOpt false;
