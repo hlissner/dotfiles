@@ -6,7 +6,6 @@ with builtins;
 with lib;
 with hey.lib;
 let hostKey = "/etc/ssh/host_ed25519";
-    globalKey = "/etc/ssh/global_ed25519";
 in {
   imports = [ hey.modules.agenix.age ];
 
@@ -21,18 +20,18 @@ in {
     assertions = [
       {
         assertion =
-          config.age.secrets == {} || (all pathExists [ hostKey globalKey ]);
-        message = "Secrets provided, but a host key is missing";
+          config.age.secrets == {} || (pathExists hostKey);
+        message = "Secrets provided, but no host key was found";
       }
     ];
 
-    # This framework uses two separate keys for its secrets. It's expected that
-    # they're provisioned before the system is built (presumably with 'hey ops
-    # push-keys $HOST' from a system with bitwarden set up).
+    # Each system gets a host key, used for decrypting Agenix secrets and as a
+    # deployment key via Git. It's expected to be provisioned before the system
+    # is initially installe (presumably with 'hey ops push-keys $HOST' from a
+    # system with bitwarden set up).
     programs.ssh.extraConfig = ''
       Host *
         IdentityFile ${hostKey}
-        IdentityFile ${globalKey}
     '';
 
     # Ensure this hostkey is the default key used by agenix.
@@ -42,7 +41,7 @@ in {
         ARGS=( "$@" )
         ${optionalString config.modules.xdg.ssh.enable ''
           if [[ "''${ARGS[*]}" != *"--identity"* && "''${ARGS[*]}" != *"-i"* ]]; then
-            for hostkey in "${hostKey}" "${globalKey}"; do
+            for hostkey in "${hostKey}"; do
               if [[ -f "$hostkey" ]]; then
                 ARGS=( --identity "$hostkey" "''${ARGS[@]}" )
               fi
@@ -54,7 +53,7 @@ in {
     ];
 
     age = {
-      identityPaths = [ hostKey globalKey ];
+      identityPaths = [ hostKey ];
       secrets = foldl (a: b: a // b) {}
         (map (dir: mapAttrs'
           (n: v: nameValuePair (removeSuffix ".age" n) {
