@@ -47,6 +47,28 @@ in {
       };
     };
 
+    # Set wallpaper according to modules.theme.wallpapers
+    hey.hooks = rec {
+      # TODO: Wallpaper setter
+      # Set the wallpaper ourselves so we don't need .background-image and/or
+      # .fehbg polluting $HOME
+      # startup."10-wallpaper" = ''
+      #   ${concatStringsSep "\n"
+      #     (mapAttrsToList
+      #       (output: w: ''
+      #         local wallpaper="${w.path}"
+      #         if [[ -f "$wallpaper" ]]; then
+      #           ${pkgs.feh}/bin/feh --bg-${w.mode} --no-fehbg "$wallpaper"
+      #         fi
+      #       '')
+      #       cfg.wallpapers)}
+
+      #   pgrep -x feh >/dev/null && sleep 0.5
+      # '';
+
+      # reload."10-wallpaper" = startup."10-wallpaper";
+    };
+
     # link recursively so other modules can link files in their folders
     home.configFile = {
       "sxhkd" = {

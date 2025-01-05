@@ -211,7 +211,7 @@ in {
         primaryMonitor = primaryMonitor.output or null;
         monitors = cfg.monitors;
       };
-      hooks = {
+      hooks = rec {
         # Launch my hyprlock-powered, pseudo-login screen on `hey hook
         # on-startup`.
         startup."05-loginscreen" = ''
@@ -223,13 +223,6 @@ in {
           sleep 0.1
           hey.do systemctl --user start hyprland-session.target
           hey .play-sound startup
-
-          # TODO: Theme module should handle this!
-          local wallpaper=$XDG_DATA_HOME/wallpaper
-          if [[ -f $wallpaper ]]; then
-            hey.do swaybg -i $wallpaper &
-            sleep 0.5
-          fi
         '';
 
         # I'm using this instead of exec= lines in hyprland.conf so I can ensure
@@ -242,6 +235,24 @@ in {
           done
           hey.do makoctl reload
         '';
+
+        # Set wallpaper according to modules.theme.wallpapers
+        startup."10-wallpaper" = ''
+          ${concatStringsSep "\n"
+            (mapAttrsToList
+              (output: w: ''
+                local wallpaper="${w.path}"
+                if [[ -f "$wallpaper" ]]; then
+                  hey.do swaybg \
+                         -o "${output}" \
+                         -i "$wallpaper" \
+                         -m ${w.mode or "center"} &
+                fi
+              '')
+              config.modules.theme.wallpapers)}
+          pgrep -x swaybg >/dev/null && sleep 0.5
+        '';
+        reload."10-wallpaper" = startup."10-wallpaper";
       };
     };
 

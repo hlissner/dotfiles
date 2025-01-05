@@ -22,8 +22,13 @@ in {
       '';
     };
 
-    # TODO: wallpaper -> wallpapers submodule
-    wallpaper = mkOpt (either path null) null;
+    # TODO: Make attrsOf submodule
+    wallpapers = mkOpt attrs {
+      "*" = {
+        mode = "center";
+        path = "${hey.themesDir}/${toString cfg.active}/wallpaper.png";
+      };
+    };
 
     gtk = mkOpt attrs {};
 
@@ -116,6 +121,7 @@ in {
           iconTheme = { inherit (cfg.gtk.iconTheme) name; };
           cursorTheme = { inherit (cfg.gtk.cursorTheme) name size; };
         };
+        wallpapers = cfg.wallpapers;
       };
 
       home-manager.users.${config.user.name} = {
@@ -165,10 +171,6 @@ in {
         sansSerif = [ cfg.fonts.sans.name ];
         monospace = [ cfg.fonts.mono.name ];
       };
-    })
-
-    (mkIf (cfg.wallpaper != null) {
-      home.dataFile."wallpaper".source = cfg.wallpaper;
     })
 
     (mkIf (config.modules.desktop.type == "x11") (mkMerge [
@@ -240,32 +242,6 @@ in {
           executable = true;
         };
       })
-
-      (mkIf (cfg.wallpaper != null)
-        # Set the wallpaper ourselves so we don't need .background-image and/or
-        # .fehbg polluting $HOME
-        (let wCfg = config.services.xserver.desktopManager.wallpaper;
-             command = ''
-               if [ -e "$XDG_DATA_HOME/wallpaper" ]; then
-                 ${pkgs.feh}/bin/feh --bg-${wCfg.mode} \
-                   ${optionalString wCfg.combineScreens "--no-xinerama"} \
-                   --no-fehbg \
-                   $XDG_DATA_HOME/wallpaper*
-               fi
-            '';
-         in {
-           services.xserver.displayManager.sessionCommands = command;
-           hey.hooks.reload."10-wallpaper" = command;
-         }))
     ]))
-
-    (mkIf (config.modules.desktop.type == "wayland") {
-      # hey.hooks.reload."10-wallpaper" = ''
-      #   if pidof -s swaybg >/dev/null; then
-      #     pkill swaybg
-
-      #   fi
-      # '';
-    })
   ]);
 }

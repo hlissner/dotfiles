@@ -3,6 +3,7 @@
 with lib;
 with hey.lib;
 let cfg = config.modules.theme;
+    hCfg = config.modules.desktop.hyprland;
 in {
   modules.desktop.hyprland.extraConfig = ''
     env = HYPRCURSOR_THEME,${cfg.gtk.cursorTheme.name}
@@ -300,20 +301,25 @@ in {
   };
 
   modules.desktop.hyprland.hyprlock.settings =
-    let monitor = (findFirst (x: x.primary) {} config.modules.desktop.hyprland.monitors).output or "";
+    let monitor = (findFirst (x: x.primary) {} hCfg.monitors).output or "";
     in {
-      backgrounds = [{
-        monitor = "";  # all monitors
-        path = "${config.user.home}/.local/share/wallpaper";
-        color = "rgb(000000)";
-        blur_size = 4;
-        blur_passes = 3;
-        noise = 0.0117;
-        contrast = 1.3;  # Vibrant!!!
-        brightness = 0.75;
-        vibrancy = 0.2100;
-        vibrancy_darkness = 0.0;
-      }];
+      backgrounds =
+        map (m: {
+          monitor = m.output;
+          path = if cfg.wallpapers ? m.output
+                 then cfg.wallpapers."${m.output}".path
+                 else if cfg.wallpapers ? "*"
+                 then cfg.wallpapers."*".path
+                 else "/does/not/exist";
+          color = "rgb(000000)";
+          blur_size = 4;
+          blur_passes = 3;
+          noise = 0.0117;
+          contrast = 1.3;  # Vibrant!!!
+          brightness = if m.primary then 0.75 else 0.40;
+          vibrancy = 0.2100;
+          vibrancy_darkness = 0.0;
+        }) hCfg.monitors;
       input-field = {
         inherit monitor;
         size = "250, 60";

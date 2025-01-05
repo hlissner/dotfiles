@@ -11,7 +11,6 @@ in mkIf (cfg.active == "autumnal") (mkMerge [
 
     modules = {
       theme = {
-        wallpaper = mkDefault ./wallpaper.png;
         fonts = with pkgs; {
           sans.name = "Fira Sans";
           sans.package = fira;

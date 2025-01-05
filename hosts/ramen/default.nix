@@ -13,9 +13,7 @@ with builtins;
 
   ## Flake modules
   modules = {
-    theme = {
-      active = "autumnal";
-    };
+    theme.active = "autumnal";
     xdg.ssh.enable = true;
 
     profiles = {

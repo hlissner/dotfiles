@@ -9,7 +9,10 @@ with builtins;
 
   ## Dotfiles modules
   modules = {
-    theme.active = "autumnal";
+    theme = {
+      active = "autumnal";
+      # wallpapers."*".path = ./wallpaper.png;
+    };
     xdg.ssh.enable = true;
 
     profiles = {
