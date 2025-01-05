@@ -10,7 +10,7 @@
 # TODO: Need hey hook reload analog
 # TODO: Need monitors options
 
-{ hey, lib, options, config, pkgs, ... }:
+{ hey, heyBin, lib, options, config, pkgs, ... }:
 
 with lib;
 with hey.lib;
@@ -42,6 +42,7 @@ in {
         displayManager = {
           lightdm.enable = true;
           lightdm.greeters.mini.enable = true;
+          sessionCommands = ''${heyBin} hook startup'';
         };
         windowManager.bspwm.enable = true;
       };
