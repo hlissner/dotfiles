@@ -65,6 +65,11 @@ with builtins;
               scroll_button = 276
           }
 
+          # To address 1px overscan on my U2724D's
+          general {
+            gaps_out = 0,0,1,0
+          }
+
           exec-once = hyprctl keyword monitor HDMI-A-1,disable
         '';
       };

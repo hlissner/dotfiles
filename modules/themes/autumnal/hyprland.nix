@@ -10,14 +10,14 @@ in {
     env = HYPRCURSOR_SIZE,${toString cfg.gtk.cursorTheme.size}
 
     general {
-      gaps_in = 4
-      gaps_out = 6
+      gaps_in = 0
+      gaps_out = 0
       border_size = 1
       col.active_border = rgba(e6818388) rgba(363637ff) 45deg
       col.inactive_border = rgba(161617ff)
     }
     decoration {
-      rounding = 6
+      rounding = 0
       dim_strength = 0.2
       dim_inactive = true
       dim_special = 0.4
