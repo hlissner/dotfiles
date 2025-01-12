@@ -41,8 +41,8 @@ in {
 
       # Replaces Photoshop
       (optionals cfg.raster.enable [
-        (unstable.gimp-with-plugins.override {
-          plugins = with unstable.gimpPlugins; [
+        (gimp-with-plugins.override {
+          plugins = with gimpPlugins; [
             bimp            # batch image manipulation
             # resynthesizer   # content-aware scaling in gimp
             gmic            # an assortment of extra filters

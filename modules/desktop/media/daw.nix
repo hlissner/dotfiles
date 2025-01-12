@@ -34,7 +34,7 @@ in {
 
     services.pipewire.jack.enable = true;
 
-    user.packages = with pkgs.unstable; [
+    user.packages = with pkgs; [
       ardour      # My DAW for recording
       audacity    # For one-off audio editing
       sunvox      # For chiptune
