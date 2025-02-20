@@ -30,12 +30,6 @@ with builtins;
     };
 
     desktop = {
-      # X only
-      # bspwm.enable = true;
-      # term.default = "xst";
-      # term.st.enable = true;
-
-      # Wayland only
       hyprland = rec {
         enable = true;
         monitors = [ { output = "eDP-1"; primary = true; } ];

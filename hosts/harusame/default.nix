@@ -29,15 +29,18 @@ with builtins;
     };
 
     desktop = {
-      # X only
-      bspwm.enable = true;
-      term.default = "xst";
-      term.st.enable = true;
-
-      # Wayland only
-      # hyprland.enable = true;
-      # term.default = "foot";
-      # term.foot.enable = true;
+      hyprland = {
+        enable = true;
+        monitors = [
+          { output = "HDMI-0";
+            position = "1920x0";
+            primary = true; }
+          { output = "DP-1";
+            mode = "1920x1080@75"; }
+        ];
+      };
+      term.default = "foot";
+      term.foot.enable = true;
 
       apps.rofi.enable = true;
       apps.spotify.enable = true;
@@ -90,27 +93,6 @@ with builtins;
     boot.supportedFilesystems = [ "ntfs" ];
 
     networking.interfaces.enp42s0.useDHCP = true;
-
-    services.xserver = {
-      # This must be done manually to ensure my screen spaces are arranged
-      # exactly as I need them to be *and* the correct monitor is "primary".
-      # Using xrandrHeads does not work.
-      monitorSection = ''
-        VendorName     "Unknown"
-        ModelName      "Samsung S27E391"
-        HorizSync       30.0 - 81.0
-        VertRefresh     50.0 - 75.0
-        Option         "DPMS"
-      '';
-      screenSection = ''
-        Option "metamodes" "HDMI-0: nvidia-auto-select +1920+0, DP-1: 1920x1080_75 +0+0"
-        Option "SLI" "Off"
-        Option "MultiGPU" "Off"
-        Option "BaseMosaic" "off"
-        Option "Stereo" "0"
-        Option "nvidiaXineramaInfoOrder" "DFP-1"
-      '';
-    };
 
     fileSystems = {
       "/" = {
