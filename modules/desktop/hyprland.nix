@@ -58,15 +58,19 @@ in {
     };
 
     # Hyprland's aquamarine requires newer MESA drivers.
-    # hardware.opengl = {
-    #   package = pkgs.unstable.mesa.drivers;
-    #   package32 = pkgs.unstable.pkgsi686Linux.mesa.drivers;
-    # };
+    hardware.graphics = {
+      package = pkgs.unstable.mesa.drivers;
+      package32 = pkgs.unstable.pkgsi686Linux.mesa.drivers;
+    };
 
     programs.hyprland = {
       enable = true;
       xwayland.enable = true;
-      portalPackage = hey.inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
+      package = pkgs.unstable.hyprland;
+      portalPackage = pkgs.unstable.xdg-desktop-portal-hyprland;
+
+      # package = hey.inputs.hyprland.packages.${final.system}.hyprland;
+      # portalPackage = hey.inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
     };
 
     # xdg.portal.configPackages = [ pkgs.xdg-desktop-portal-gtk ];
@@ -153,14 +157,14 @@ in {
       # Avoiding the hyprland input overlays to avoid cachix misses (and not
       # setting programs.hyprland.package because other packages, like
       # pkgs.hyprshade, may reference pkgs.hyprland in their derivations).
-      (prev: final: {
-        hyprland = hey.inputs.hyprland.packages.${final.system}.hyprland;
-      })
-      hey.inputs.hyprlock.overlays.default
-      hey.inputs.hyprpicker.overlays.default
+      # (prev: final: {
+      #   hyprland = hey.inputs.hyprland.packages.${final.system}.hyprland;
+      # })
+      # hey.inputs.hyprlock.overlays.default
+      # hey.inputs.hyprpicker.overlays.default
     ];
 
-    environment.systemPackages = with pkgs; [
+    environment.systemPackages = with pkgs.unstable; [
       hyprlock       # *fast* lock screen
       hyprpicker     # screen-space color picker
       hyprshade      # to apply shaders to the screen

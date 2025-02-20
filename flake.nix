@@ -23,18 +23,18 @@
       disko.inputs.nixpkgs.follows = "nixpkgs";
 
       # Hyprland + core extensions
-      hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
-      hyprland.inputs.nixpkgs.follows = "nixpkgs";
-      hyprlock.url = "github:hyprwm/Hyprlock";
-      hyprlock.inputs.nixpkgs.follows = "nixpkgs-unstable";
+      # hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
+      # hyprland.inputs.nixpkgs.follows = "nixpkgs";
+      # hyprlock.url = "github:hyprwm/Hyprlock";
+      # hyprlock.inputs.nixpkgs.follows = "nixpkgs-unstable";
       # hypridle.url = "github:hyprwm/hypridle";
       # hypridle.inputs.nixpkgs.follows = "nixpkgs-unstable";
 
       # Extras (imported directly by modules/hosts that need them)
       spicetify-nix.url = "github:Gerg-L/spicetify-nix";
       spicetify-nix.inputs.nixpkgs.follows = "nixpkgs-unstable";
-      hyprpicker.url = "github:hyprwm/hyprpicker";
-      hyprpicker.inputs.nixpkgs.follows = "nixpkgs-unstable";
+      # hyprpicker.url = "github:hyprwm/hyprpicker";
+      # hyprpicker.inputs.nixpkgs.follows = "nixpkgs-unstable";
       blender-bin.url = "github:edolstra/nix-warez?dir=blender";
       blender-bin.inputs.nixpkgs.follows = "nixpkgs-unstable";
       emacs-overlay.url = "github:nix-community/emacs-overlay";
