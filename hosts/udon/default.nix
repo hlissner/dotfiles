@@ -80,8 +80,8 @@ with builtins;
       };
       apps.godot.enable = true;
 
-      browsers.default = "firefox";
-      browsers.firefox.enable = true;
+      browsers.default = "librewolf";
+      browsers.librewolf.enable = true;
       media.cad.enable = true;
       media.daw.enable = true;
       media.graphics.enable = true;

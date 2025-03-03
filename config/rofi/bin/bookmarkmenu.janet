@@ -12,7 +12,7 @@
 
 (defn- profile-dir [&opt profile]
   (some (fn [dir]
-          (def dir (path/join dir ".mozilla" "firefox"))
+          (def dir (path/join dir ".mozilla" "librewolf"))
           (when (path/directory? dir)
             (def file (path/join dir "profiles.ini"))
             (when (path/file? file)

@@ -48,7 +48,7 @@ in {
           global = {
             title = "Dunst";
             class = "Dunst";
-            browser = "firefox -new-tab";
+            browser = "librewolf -new-tab";
             dmenu = "rofi -dmenu -p dunst";
             history_length = 20;
             idle_threshold = 120;

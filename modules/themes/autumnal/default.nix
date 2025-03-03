@@ -77,10 +77,10 @@ in mkIf (cfg.active == "autumnal") (mkMerge [
       shell.zsh.rcFiles  = [ ./config/zsh/prompt.zsh ];
       shell.tmux.rcFiles = [ ./config/tmux.conf ];
       desktop.browsers = {
-        firefox = {
+        librewolf = {
           settings."devtools.theme" = "dark";
           userChrome = concatMapStringsSep "\n" readFile [
-            ./config/firefox/userChrome.css
+            ./config/librewolf/userChrome.css
           ];
         };
       };

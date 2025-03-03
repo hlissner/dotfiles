@@ -1,6 +1,6 @@
-# modules/browser/firefox.nix --- https://www.mozilla.org/en-US/firefox
+# modules/browser/librewolf.nix --- https://librewolf.net/
 #
-# Oh Firefox, gateway to the interwebs, devourer of ram. Give onto me your
+# Oh Librewolf, gateway to the interwebs, devourer of ram. Give onto me your
 # infinite knowledge and shelter me from ads, but bless my $HOME with
 # directories nobody needs and live long enough to turn into Chrome.
 
@@ -8,20 +8,20 @@
 
 with lib;
 with hey.lib;
-let cfg = config.modules.desktop.browsers.firefox;
+let cfg = config.modules.desktop.browsers.librewolf;
 in {
-  options.modules.desktop.browsers.firefox = with types; {
+  options.modules.desktop.browsers.librewolf = with types; {
     enable = mkBoolOpt false;
     profileName = mkOpt str config.user.name;
 
     settings = mkOpt' (attrsOf (oneOf [ bool int str ])) {} ''
-      Firefox preferences to set in <filename>user.js</filename>
+      Librewolf preferences to set in <filename>user.js</filename>
     '';
     extraConfig = mkOpt' lines "" ''
       Extra lines to add to <filename>user.js</filename>
     '';
 
-    userChrome  = mkOpt' lines "" "CSS Styles for Firefox's interface";
+    userChrome  = mkOpt' lines "" "CSS Styles for Librewolf's interface";
     userContent = mkOpt' lines "" "Global CSS Styles for websites";
 
     # TODO
@@ -30,12 +30,12 @@ in {
     #     name = mkOpt str config._module.args.name;
     #     default = mkOpt bool false;
     #     settings = mkOpt' (attrsOf (oneOf [ bool int str ])) {} ''
-    #       Firefox preferences to set in <filename>user.js</filename>
+    #       Librewolf preferences to set in <filename>user.js</filename>
     #     '';
     #     extraConfig = mkOpt' lines "" ''
     #       Extra lines to add to <filename>user.js</filename>
     #     '';
-    #     userChrome  = mkOpt' lines "" "CSS Styles for Firefox's interface";
+    #     userChrome  = mkOpt' lines "" "CSS Styles for Librewolf's interface";
     #     userContent = mkOpt' lines "" "Global CSS Styles for websites";
     #   };
     # }));
@@ -44,6 +44,7 @@ in {
   config = mkIf cfg.enable {
     programs.firefox = {
       enable = true;
+      package = pkgs.unstable.librewolf;
       # nativeMessagingHosts.packages = with pkgs; [
       #   tridactyl-native
       # ];
@@ -56,13 +57,13 @@ in {
 
     user.packages = with pkgs; with hey.lib.pkgs; [
       # Obey XDG, damn it!
-      (writeShellScriptBin "firefox" ''
+      (writeShellScriptBin "librewolf" ''
         export HOME="$XDG_FAKE_HOME"
-        exec "${config.programs.firefox.package}/bin/firefox" "$@"
+        exec "${config.programs.firefox.package}/bin/librewolf" "$@"
       '')
     ];
 
-    modules.desktop.browsers.firefox.settings = {
+    modules.desktop.browsers.librewolf.settings = {
       # Allow svgs to take on theme colors
       "svg.context-properties.content.enabled" = true;
       # Pressing TAB from address bar shouldn't cycle through buttons before
@@ -229,7 +230,7 @@ in {
     };
 
     home =
-      let firefoxDir = "${config.home.fakeDir}/.mozilla/firefox";
+      let localDir = "${config.home.fakeDir}/.librewolf";
       in {
         # configFile."tridactyl" = {
         #   source = "${hey.configDir}/tridactyl";
@@ -248,7 +249,7 @@ in {
         #   in "${pkgs.tridactyl-native}/lib/mozilla/native-messaging-hosts/tridactyl.json";
 
         # Use fixed profile name so it can be targeted in themes and scripts
-        file."${firefoxDir}/profiles.ini".text = ''
+        file."${localDir}/profiles.ini".text = ''
           [Profile0]
           Name=default
           IsRelative=1
@@ -260,7 +261,7 @@ in {
           Version=2
         '';
 
-        file."${firefoxDir}/${cfg.profileName}.default/user.js" =
+        file."${localDir}/${cfg.profileName}.default/user.js" =
           mkIf (cfg.settings != {} || cfg.extraConfig != "") {
             text = ''
               ${concatStrings (mapAttrsToList (name: value: ''
@@ -270,10 +271,10 @@ in {
             '';
           };
 
-        file."${firefoxDir}/${cfg.profileName}.default/chrome/userChrome.css" =
+        file."${localDir}/${cfg.profileName}.default/chrome/userChrome.css" =
           mkIf (cfg.userChrome != "") { text = cfg.userChrome; };
 
-        file."${firefoxDir}/${cfg.profileName}.default/chrome/userContent.css" =
+        file."${localDir}/${cfg.profileName}.default/chrome/userContent.css" =
           mkIf (cfg.userContent != "") { text = cfg.userContent; };
       };
   };
