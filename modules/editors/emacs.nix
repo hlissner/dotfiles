@@ -9,7 +9,7 @@ with hey.lib;
 let cfg = config.modules.editors.emacs;
     emacs = with pkgs; (emacsPackagesFor
       (if config.modules.desktop.type == "wayland"
-       then emacs-pgtk
+       then emacs-git-pgtk
        else emacs-git)).emacsWithPackages (epkgs: with epkgs; [
          treesit-grammars.with-all-grammars
          vterm
