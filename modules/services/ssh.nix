@@ -28,8 +28,8 @@ in {
       '';
       # Removes the default RSA key (not that it represents a vulnerability, per
       # se, but is one less key (that I don't plan to use) to the castle laying
-      # around) and ensures the ed25519 key is generated with 100 rounds, rather
-      # than the default (16), to improve its entropy.
+      # around) and improves the ed25519 key's entropy by generating it with 100
+      # rounds (default is 16).
       hostKeys = [
         {
           comment = "${config.networking.hostName}.local";

@@ -32,7 +32,7 @@ parted /dev/nvme0n1 -- set 1 boot on
 mkfs.fat -F32 -n BOOT /dev/nvme0n1p1
 mkfs.ext4 -L nixos /dev/nvme0n1p2
 mkfs.ext4 -L home /dev/nvme0n1p3
-#+END_SRC
+#+end_src
 
 ** /dev/nvme1n1: SN850X NVMe 1TB (windows, games) :windows:
 This is set up on the Windows side, as is my dedicated Windows + game library

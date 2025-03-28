@@ -8,15 +8,14 @@ dotfiles over there.
 > [!IMPORTANT]
 > **Disclaimer:** _This is not a "community framework" or "NixOS distribution"._
 > Please do not use it like one. It is an ongoing and haphazard experiment to
-> feel out NixOS for my own purposes, and is home to all manner of unspeakable,
-> overly-opinionated hackery that make the other 9 circles of hell look like
-> tropical beach resorts.
+> feel out NixOS and the Nix language for my own purposes, and is home to all
+> manner of unspeakable, over-engineered hackery that make the other 9 circles
+> of hell look like tropical beach resorts.
 >
-> Until I can bend spoons with my Nix-fu, please divert your general Nix(OS)
-> questions [to the NixOS discourse][nixos-discourse] instead of my issue
-> tracker. That said, I'm more than happy [to hear input and discuss
-> ideas](/discussions),  but be warned: I struggle to stay on top of Github
-> notifications most of the time.
+> Until I can bend spoons with my Nix-fu, please divert your Nix(OS) questions
+> [to the NixOS discourse][nixos-discourse] instead of my issue tracker. That
+> said, I'm more than happy [to hear input and discuss ideas](/discussions), but
+> be warned: I'm awful at staying on top of my Github notifications.
 
 (screenshots coming soon)
 
@@ -174,7 +173,7 @@ COMMANDS:
   `nixos-rebuild`, `nix-env`, `nix-shell`, etc.
   
   I don't claim `hey` is the answer, but who doesn't like their own brew?
- 
+
 + **How 2 flakes?**
 
   Would it be the NixOS experience if I gave you all the answers in one,

@@ -37,8 +37,7 @@
 #   - wm         -- Dispatch to $DOTFILES_HOME/config/$WM/bin
 #   - vars       -- Get or set session or persistent state in userspace.
 #   - @*         -- Dispatch to $DOTFILES_HOME/config/${1#@}/bin
-#   - .*         -- Tries to be smart. Looks for any executable under host, wm,
-#                   then $DOTFILES_HOME/bin.
+#   - .*         -- Execute first script found under host, wm, or $DOTFILES_HOME/bin.
 
 (use hey)
 (use hey/cmd)

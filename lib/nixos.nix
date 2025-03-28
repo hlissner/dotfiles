@@ -1,7 +1,7 @@
 # lib/flakes.nix --- syntax sugar for flakes
 #
 # This may look a lot like what flake-parts, flake-utils(-plus), and/or digga
-# offer. I reinvent the whell because (besides flake-utils), they are too
+# offer. I reinvent the wheel because (besides flake-utils), they are too
 # volatile to depend on. They see subtle and unannounced changes, often. Since I
 # rely on this flake as a basis for 100+ systems, VMs, and containers, some of
 # whom are mission-critical, I'd rather have a less polished API that I fully

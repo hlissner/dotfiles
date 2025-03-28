@@ -24,9 +24,14 @@ in {
       package = mkDefault cfg.package;
     };
 
-    hey.hooks.reload."98-waybar" = ''
-      hey.do systemctl --user restart waybar.service
-    '';
+    hey.hooks = {
+      # startup."20-waybar" = ''
+      #   hey.do systemctl --user start waybar.service
+      # '';
+      reload."98-waybar" = ''
+        hey.do systemctl --user restart waybar.service
+      '';
+    };
 
     home.configFile."waybar/config".text = ''
       // -*- mode: js-json -*-
