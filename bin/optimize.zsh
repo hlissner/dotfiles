@@ -36,24 +36,26 @@ for file in $@; do
     hey.log "Traversing directory: $file..."
     ${0:a} $file/*
   elif [[ -f $file ]]; then
-    hey.log "Processing file: $file..."
     local pre_size=$(.filesize "$file")
-    case ${file:e} in
-      png)
+    local mimetype=$(file ${file} -b --mime-type)
+    hey.log "Processing file: $file ($mimetype) @ $pre_size..."
+    case $mimetype in
+      image/png)
         [[ $lossy ]] && hey.do -! pngquant -f --ext .png --quality 90-98 $file
         [[ $lossyonly ]] || hey.do -! optipng -nc -nb -o7 $file
         ;;
-      gif)
+      image/gif)
         hey.do -! gifsicle --batch --optimize=3 "$file"
         ;;
-      jpg|jpeg)
+      image/jpeg)
         [[ $lossy ]] && hey.do -! jpegoptim --max=90 "$file"
-        [[ $lossyonly ]] || hey.do -! jpegtran -copy none -optimize -progressive -outfile "$file" "$file"
+        [[ $lossyonly ]] || hey.do -! -p mozjpeg jpegtran -copy none -optimize -progressive -outfile "$file" "$file"
         ;;
-      pdf)
+      application/pdf)
         # Adapted from Alfred Klomp's shrinkpdf script
         # <http://alfredklomp.com/programming/shrinkpdf/>
         local dpi=72
+        local compfile="compressed_${file// /\\ }"
         hey.do -! -p ghostscript gs -q -dNOPAUSE -dBATCH -dSAFER \
           -sDEVICE=pdfwrite \
           -dPDFSETTINGS=/prepress \
@@ -67,11 +69,11 @@ for file in $@; do
           -dGrayImageDownsampleType=/Bicubic \
           -dColorImageResolution=$dpi \
           -dColorImageDownsampleType=/Bicubic \
-          -sOutputFile="compressed_$file" \
-          "$file" && mv -f "compressed_$file" "$file"
+          -sOutputFile="${${file// /_}/.pdf/.compressed.pdf}" \
+          "$file" && mv -f "$compfile" "$file"
         ;;
       *)
-        hey.warn "Unrecognized file: $file"
+        hey.warn "Unrecognized file type: $mimetype"
         ;;
     esac
     local post_size=$(.filesize "$file")
