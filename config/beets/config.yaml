@@ -1,0 +1,7 @@
+plugins: inline convert duplicates edit export fetchart lastgenre thumbnails playlist
+
+directory: ~/music/library
+library: ~/music/library.db
+convert:
+  auto: yes
+  dest: ~/music/converted

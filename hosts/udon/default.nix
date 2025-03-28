@@ -85,6 +85,7 @@ with builtins;
       media.cad.enable = true;
       media.daw.enable = true;
       media.graphics.enable = true;
+      media.music.enable = true;
       media.video.enable = true;
       media.video.capture.enable = true;
     };

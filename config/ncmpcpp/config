@@ -2,10 +2,10 @@
 ncmpcpp_directory = ~/.config/ncmpcpp
 
 ## Directory for storing downloaded lyrics.
-lyrics_directory = ~/music/.db/lyrics
+lyrics_directory = ~/music/lyrics
 
 ##### connection settings #####
-mpd_host = "~/.config/mpd/mpd.sock"
+mpd_host = "~/music/mpd.sock"
 #mpd_host = "127.0.0.1"
 #mpd_port = 6600
 #mpd_connection_timeout = 5
@@ -58,7 +58,7 @@ visualizer_in_stereo = no
 ## synchronization problems, set it to lower value.
 ## Keep in mind that sane values start with >=10.
 ##
-visualizer_sync_interval = 30
+#visualizer_sync_interval = 30
 
 ##
 ## Note: To enable spectrum frequency visualization
