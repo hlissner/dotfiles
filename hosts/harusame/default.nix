@@ -25,6 +25,7 @@ with builtins;
         "audio"
         "ssd"
         "ergodox"
+        "bluetooth"
       ];
     };
 
@@ -81,12 +82,16 @@ with builtins;
       utils.enable = true;
       fs.enable = true;
     };
-    virt.qemu.enable = true;
+    # virt.qemu.enable = true;
   };
 
   ## Local config
   config = { pkgs, ... }: {
     systemd.network.networks.wg0.address = [ "10.10.0.3/32" ];
+
+    environment.systemPackages = with pkgs; [
+      abcde
+    ];
   };
 
   ## Hardware config
