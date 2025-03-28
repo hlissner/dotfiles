@@ -31,18 +31,11 @@ mkIf (elem "wg0" config.modules.profiles.networks) (mkMerge [
         # address = ...;
         matchConfig.Name = "wg0";
         DHCP = "no";
-        dns = [ "10.0.0.1" ];
-        ntp = [ "10.0.0.1" ];
         domains = [ "home.lissner.net" ];
         networkConfig = {
           DNSSEC = false;
           DNSDefaultRoute = false;
         };
-        routes = [{
-          Gateway = "10.0.0.1";
-          GatewayOnLink = true;
-          Destination = "10.0.0.0/24";
-        }];
       };
     };
 
