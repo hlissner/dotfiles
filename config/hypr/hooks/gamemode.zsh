@@ -18,17 +18,18 @@ _osd() {
 local icon=
 case $1 in
   --on)
+    echo "Started gamemode..."
     hey.do hyprctl --batch \
       keyword decoration:blur:enabled 0 \; \
       keyword decoration:shadow:enabled 0 \; \
       keyword general:allow_tearing 1 \; \
       keyword animations:enabled 0 \; \
       keyword misc:vrr 1
-    makoctl mode -s dnd
-    systemctl --user stop swayidle.service   # inhibit idle
     _osd "$icon" "Gamemode started" 1
+    makoctl mode -s dnd
     ;;
   --off)
+    echo "Stopped gamemode..."
     hey.do hyprctl --batch \
       keyword decoration:blur:enabled 1 \; \
       keyword decoration:shadow:enabled 1 \; \
@@ -36,7 +37,8 @@ case $1 in
       keyword animations:enabled 1 \; \
       keyword misc:vrr 0
     makoctl mode -s default
-    systemctl --user start swayidle.service
     _osd "$icon" "Gamemode ended" 0
+    sleep 1
+    systemctl stop --user gamemoded.service
     ;;
 esac
