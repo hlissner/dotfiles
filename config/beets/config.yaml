@@ -1,7 +1,11 @@
 plugins: inline convert duplicates edit export fetchart lastgenre thumbnails playlist
 
-directory: ~/music/library
+directory: ~/music
 library: ~/music/library.db
 convert:
   auto: yes
   dest: ~/music/converted
+paths:
+  default: library/$albumartist/$album%aunique{}/$track $title
+  singleton: library/Unsorted/$artist/$title
+  comp: compilations/$album%aunique{}/$track $title
