@@ -8,7 +8,7 @@
 (use hey)
 (use hey/cmd)
 
-(defcmd sync [_ cmd & args &opts fast? --fast]
+(defcmd sync [_ cmd & args &opts fast? --fast host [--host name]]
   (when (= (flake :host) "nixos")
     (abort "HOST is 'nixos'. Did you forget to change it?"))
 
@@ -36,7 +36,7 @@
     (do? $? sudo --preserve-env=HEYENV nixos-rebuild
          --show-trace
          --impure
-         --flake ,(string (path :home) "#" (flake :host))
+         --flake ,(string (path :home) "#" (or host (flake :host)))
          ,;(opts fast?)
          ,;(opts (or cmd "switch"))
          ,;args)))
