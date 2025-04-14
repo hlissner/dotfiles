@@ -63,6 +63,11 @@ in {
       '')
     ];
 
+    # Treat LibreWolf as our default PDF reader
+    xdg.mime.addedAssociations = {
+      "application/pdf" = [ "LibreWolf.desktop" ];
+    };
+
     modules.desktop.browsers.librewolf.settings = {
       # Allow svgs to take on theme colors
       "svg.context-properties.content.enabled" = true;

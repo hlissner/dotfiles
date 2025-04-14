@@ -88,6 +88,7 @@ with builtins;
       media.music.enable = true;
       media.video.enable = true;
       media.video.capture.enable = true;
+      media.pdf.enable = true;
     };
     dev = {
       cc.enable = true;

@@ -55,21 +55,19 @@ for file in $@; do
         # Adapted from Alfred Klomp's shrinkpdf script
         # <http://alfredklomp.com/programming/shrinkpdf/>
         local dpi=72
-        local compfile="compressed_${file// /\\ }"
-        hey.do -! -p ghostscript gs -q -dNOPAUSE -dBATCH -dSAFER \
+        local compfile="${${file// /_}/.pdf/.compressed.pdf}"
+        hey.requires gs
+        hey.do gs -q -dNOPAUSE -dBATCH -dSAFER \
           -sDEVICE=pdfwrite \
-          -dPDFSETTINGS=/prepress \
-          -dCompatibilityLevel=1.5 \
-          -dEmbedAllFonts=true \
-          -dSubsetFonts=true \
-          -dAutoRotatePages=/None \
+          -dPDFSETTINGS=/ebook \
+          -dCompatibilityLevel=1.4 \
           -dMonoImageResolution=$dpi \
           -dMonoImageDownsampleType=/Bicubic \
           -dGrayImageResolution=$dpi \
           -dGrayImageDownsampleType=/Bicubic \
           -dColorImageResolution=$dpi \
           -dColorImageDownsampleType=/Bicubic \
-          -sOutputFile="${${file// /_}/.pdf/.compressed.pdf}" \
+          -sOutputFile="$compfile" \
           "$file" && mv -f "$compfile" "$file"
         ;;
       *)
