@@ -17,6 +17,9 @@ in {
       ghostscript    # for optimizing pdfs
       poppler_utils  # various pdf tools
       wkhtmltopdf
+      pdfgrep
+      img2pdf
+      ocrmypdf
     ];
   };
 }
