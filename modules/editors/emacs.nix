@@ -69,8 +69,9 @@ in {
       # :lang latex & :lang org (latex previews)
       texlive.combined.scheme-medium
       # :lang beancount
-      beancount
-      fava
+      unstable.beancount
+      unstable.beanquery
+      unstable.fava
       # :lang nix
       age
     ];
