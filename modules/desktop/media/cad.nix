@@ -36,10 +36,10 @@ in {
       #   source = "${hey.configDir}/blender/config";
       #   recursive = true;
       # };
-      "blender/${version}/scripts" = {
-        source = "${hey.configDir}/blender/scripts";
-        recursive = true;
-      };
+      # "blender/${version}/scripts" = {
+      #   source = "${hey.configDir}/blender/scripts";
+      #   recursive = true;
+      # };
     };
 
     # I copy these files manually because they should be mutable, as Blender is
