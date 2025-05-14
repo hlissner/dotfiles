@@ -83,12 +83,12 @@ in {
          else figma-linux)
       ]);
 
-    home.configFile = mkIf cfg.raster.enable {
-      "GIMP/2.10" = {
-        source = "${hey.configDir}/gimp";
-        recursive = true;
-      };
-      # TODO Inkscape dotfiles
-    };
+    # home.configFile = mkIf cfg.raster.enable {
+    #   "GIMP/3.0" = {
+    #     source = "${hey.configDir}/gimp";
+    #     recursive = true;
+    #   };
+    #   # TODO Inkscape dotfiles
+    # };
   };
 }
