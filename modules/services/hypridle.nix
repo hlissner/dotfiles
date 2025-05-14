@@ -4,7 +4,7 @@
 
 with lib;
 with hey.lib;
-let cfg = config.modules.services.swayidle;
+let cfg = config.modules.services.hypridle;
 in {
   options.modules.services.hypridle = with types; {
     enable = mkBoolOpt false;
