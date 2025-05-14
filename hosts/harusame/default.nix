@@ -57,7 +57,7 @@ with builtins;
       media.cad.enable = true;
       media.daw.enable = true;
       media.graphics.enable = true;
-      media.music.enable = true;
+      # media.music.enable = true;
       media.video.enable = true;
       media.video.capture.enable = true;
     };
@@ -90,10 +90,6 @@ with builtins;
   ## Local config
   config = { pkgs, ... }: {
     systemd.network.networks.wg0.address = [ "10.10.0.3/32" ];
-
-    environment.systemPackages = with pkgs; [
-      abcde
-    ];
   };
 
   ## Hardware config
