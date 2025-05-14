@@ -164,7 +164,7 @@ in {
       # hey.inputs.hyprpicker.overlays.default
     ];
 
-    environment.systemPackages = with pkgs.unstable; [
+    environment.systemPackages = with pkgs; [
       hyprlock       # *fast* lock screen
       hyprpicker     # screen-space color picker
       hyprshade      # to apply shaders to the screen
