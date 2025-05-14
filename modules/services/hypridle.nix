@@ -26,10 +26,6 @@ in {
       }
     ];
 
-    nixpkgs.overlays = [
-      self.inputs.hypridle.overlays.default
-    ];
-
     systemd.user.services.swayidle = {
       unitConfig = {
         Description = "Idle manager for Hyprland";
