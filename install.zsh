@@ -1,49 +1,37 @@
 #!/usr/bin/env zsh
 # Deploy and install this nixos system.
 
-zparseopts -E -F -D -- -flake=flake \
-                       -user=user \
-                       -host=host \
-                       -dest=dest \
-                       -disk=disk \
-                       -root=root || exit 1
+function main() {
+  zparseopts -E -D -F -- -flake:=flake -user:=user -host:=host -dest:=dest -root:=root || exit 1
 
-local root="${root[2]:-/mnt}"
-local flake="${flake[2]:-$root/etc/dotfiles}"
-local host="${host[2]:-$HOST}"
-local user="${user[2]:-hlissner}"
-local dest="${dest[2]:-$root/home/$user/.config/dotfiles}"
-local disk="${disk[2]}"
+  local root="${${root[2]}:-/mnt}"
+  local flake="${${flake[2]}:-/etc/dotfiles}"
+  local host="${${host[2]}:-$(hostname)}"
+  local user="${${user[2]}:-hlissner}"
+  local dest="${dest[2]:-$root/home/$user/.config/dotfiles}"
 
-if [[ "$USER" == nixos ]]; then
-  >&2 echo "Error: not in the nixos installer"
-  exit 1
-elif [[ -z "$host" ]]; then
-  >&2 echo "Error: no --host set"
-  exit 2
-fi
-
-set -e
-if [[ ! -d "$flake" ]]; then
-  local url=https://github.com/hlissner/dotfiles
-  [[ "$user" == hlissner ]] && url="git@github.com:hlissner/dotfiles.git"
-  rm -rf "$flake"
-  git clone --recursive "$url" "$flake"
-  chown "$user:users" -R "$flake"
-fi
-
-export HEYENV="{\"user\":\"$user\",\"host\":\"$host\",\"path\":\"${flake#$root}\",\"theme\":\"$THEME\"}"
-if [[ -n "$disk" ]]; then
-  nix run 'github:nix-community/disko/latest#disko-install' -- \
-      --impure \
-      --show-trace \
-      --flake "${flake}#${host}" \
-      --disk main "${disk}"
-else
+  if [[ "$USER" == nixos ]]; then
+    >&2 echo "Error: not in the nixos installer"
+    exit 1
+  elif [[ -z "$host" ]]; then
+    >&2 echo "Error: no --host set"
+    exit 2
+  fi
+  
+  if [[ ! -d "$flake" ]]; then
+    local url=https://github.com/hlissner/dotfiles
+    [[ "$user" == hlissner ]] && url="git@github.com:hlissner/dotfiles.git"
+    rm -rf "$flake"
+    git clone --recursive "$url" "$flake"
+  fi
+  
+  export HEYENV="{\"user\":\"$user\",\"host\":\"$host\",\"path\":\"$flake\",\"theme\":\"$THEME\"}"
   nixos-install \
       --impure \
       --show-trace \
       --root "$root" \
-      --flake "${flake}#${host}"
-fi
+      --flake "${root}${flake}#${host}"
+}
 
+set -e
+main $*
