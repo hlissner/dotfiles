@@ -237,7 +237,9 @@
   (get-in *flake-info* args))
 
 (def- *flake*
-  (delay {:path  (or (os/getenv "DOTFILES_HOME") (error "DOTFILES_HOME not set"))
+  (delay {:path  (os/realpath
+                  (or (os/getenv "DOTFILES_HOME")
+                      (error "DOTFILES_HOME not set")))
           :user  (os/getenv "USER")
           :host  (or (os/getenv "HOST") (string/chomp (slurp "/etc/hostname")))
           :theme (or (os/getenv "THEME") (flake/info :theme :active))}))
