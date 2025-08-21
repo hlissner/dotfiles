@@ -80,8 +80,6 @@ in {
 
     modules.shell.zsh.rcFiles = [ "${hey.configDir}/emacs/aliases.zsh" ];
 
-    fonts.packages = [
-      (pkgs.nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
-    ];
+    fonts.packages = [ pkgs.nerd-fonts.symbols-only ];
   };
 }

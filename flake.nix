@@ -13,22 +13,14 @@
   inputs = 
     {
       # Core dependecies
-      nixpkgs.url = "nixpkgs/nixos-24.11";
+      nixpkgs.url = "nixpkgs/nixos-25.05";
       nixpkgs-unstable.url = "nixpkgs/nixos-unstable";
-      home-manager.url = "github:nix-community/home-manager/release-24.11";
+      home-manager.url = "github:nix-community/home-manager/release-25.05";
       home-manager.inputs.nixpkgs.follows = "nixpkgs";
       agenix.url = "github:ryantm/agenix";
       agenix.inputs.nixpkgs.follows = "nixpkgs";
       disko.url = "github:nix-community/disko";
       disko.inputs.nixpkgs.follows = "nixpkgs";
-
-      # Hyprland + core extensions
-      # hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
-      # hyprland.inputs.nixpkgs.follows = "nixpkgs";
-      # hyprlock.url = "github:hyprwm/Hyprlock";
-      # hyprlock.inputs.nixpkgs.follows = "nixpkgs-unstable";
-      # hypridle.url = "github:hyprwm/hypridle";
-      # hypridle.inputs.nixpkgs.follows = "nixpkgs-unstable";
 
       # Extras (imported directly by modules/hosts that need them)
       # spicetify-nix.url = "github:Gerg-L/spicetify-nix";

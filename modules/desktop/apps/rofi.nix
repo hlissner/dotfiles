@@ -34,7 +34,7 @@ in {
 
       user.packages = with pkgs; [
         rofiPkg
-        (rofimoji.override { rofi = rofiPkg; })
+        rofimoji
         (mkLauncherEntry "Calculator" {
           icon = "calc";
           exec = "hey @rofi calcmenu";
