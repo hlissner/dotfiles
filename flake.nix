@@ -31,8 +31,8 @@
       # hypridle.inputs.nixpkgs.follows = "nixpkgs-unstable";
 
       # Extras (imported directly by modules/hosts that need them)
-      spicetify-nix.url = "github:Gerg-L/spicetify-nix";
-      spicetify-nix.inputs.nixpkgs.follows = "nixpkgs-unstable";
+      # spicetify-nix.url = "github:Gerg-L/spicetify-nix";
+      # spicetify-nix.inputs.nixpkgs.follows = "nixpkgs-unstable";
       # hyprpicker.url = "github:hyprwm/hyprpicker";
       # hyprpicker.inputs.nixpkgs.follows = "nixpkgs-unstable";
       blender-bin.url = "github:edolstra/nix-warez?dir=blender";

@@ -9,9 +9,9 @@ with lib;
 with hey.lib;
 let cfg = config.modules.desktop.apps.spotify;
 in {
-  imports = [
-    hey.modules.spicetify-nix.default
-  ];
+  # imports = [
+  #   hey.modules.spicetify-nix.default
+  # ];
 
   options.modules.desktop.apps.spotify = with types; {
     enable = mkBoolOpt false;
@@ -20,7 +20,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    programs.spicetify.enable = true;
+    # programs.spicetify.enable = true;
 
     user.packages = with pkgs; [
       playerctl   # To control it remotely.

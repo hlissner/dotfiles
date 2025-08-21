@@ -72,7 +72,6 @@ with builtins;
 
       ## Extra
       apps.rofi.enable = true;
-      apps.spotify.enable = true;
       apps.thunar.enable = true;
       apps.steam = {
         enable = true;

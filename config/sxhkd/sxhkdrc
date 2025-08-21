@@ -154,13 +154,13 @@ super + XF86AudioRaiseVolume
 super + XF86AudioLowerVolume
 	hey .osd capture down
 
-XF86Audio{Play,Pause}
-	playerctl -p spotify play-pause
-XF86AudioNext
-	playerctl -p spotify next
-XF86AudioPrev
-	playerctl -p spotify previous
-super + XF86AudioNext
-	playerctl -p spotify position 5+
-super + XF86AudioPrev
-	playerctl -p spotify position 5-
+# XF86Audio{Play,Pause}
+# 	playerctl -p spotify play-pause
+# XF86AudioNext
+# 	playerctl -p spotify next
+# XF86AudioPrev
+# 	playerctl -p spotify previous
+# super + XF86AudioNext
+# 	playerctl -p spotify position 5+
+# super + XF86AudioPrev
+# 	playerctl -p spotify position 5-

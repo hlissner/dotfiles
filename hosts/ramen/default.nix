@@ -49,7 +49,6 @@ with builtins;
       term.default = "foot";
       term.foot.enable = true;
 
-      apps.spotify.enable = true;
       browsers.default = "librewolf";
       browsers.librewolf.enable = true;
       media.cad.enable = true;

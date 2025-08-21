@@ -88,11 +88,11 @@ in mkIf (cfg.active == "autumnal") (mkMerge [
   }
 
   (mkIf (config.modules.desktop.type != null) {
-    modules.desktop.apps.spotify.theme = cfg.active;
+    # modules.desktop.apps.spotify.theme = cfg.active;
 
-    programs.spicetify =
-      let spkgs = hey.inputs.spicetify-nix.legacyPackages.${pkgs.system};
-      in { theme = spkgs.themes.burntSienna; };
+    # programs.spicetify =
+    #   let spkgs = hey.inputs.spicetify-nix.legacyPackages.${pkgs.system};
+    #   in { theme = spkgs.themes.burntSienna; };
 
     home.configFile = with config.modules; mkMerge [
       (mkIf desktop.media.graphics.vector.enable {

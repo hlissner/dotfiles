@@ -47,7 +47,6 @@ with builtins;
       term.foot.enable = true;
 
       apps.rofi.enable = true;
-      apps.spotify.enable = true;
       apps.steam = {
         enable = true;
         libraryDir = "/media/games/SteamLibrary";
