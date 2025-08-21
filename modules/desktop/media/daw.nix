@@ -2,8 +2,7 @@
 #
 # I make games on my spare time (and occasionally edit audio for videos). These
 # need music and sound effects. In the past, I've used Apple Logic, Fruityloops,
-# and Adobe Audition. To replace them on Linux, I've replaced them with Ardour,
-# LMMS, and Audacity, respectively with much success.
+# and Adobe Audition. To replace them on Linux, I use Reaper.
 
 { hey, lib, config, pkgs, ... }:
 
@@ -35,19 +34,20 @@ in {
     services.pipewire.jack.enable = true;
 
     user.packages = with pkgs; [
-      ardour      # My DAW for recording
-      audacity    # For one-off audio editing
-      sunvox      # For chiptune
+      unstable.reaper
+      # ardour      # My DAW for recording
+      # audacity    # For one-off audio editing
+      # sunvox      # For chiptune
 
       # LMMS creates .lmmsrc.xml in $HOME on launch (see LMMS/lmms#5869).
       # Jailing it has the side-effect of rooting all file dialogs in the fake
       # home, but this is easily worked around by adding proper shortcuts.
-      (mkWrapper lmms ''
-        wrapProgram "$out/bin/lmms" \
-          --run 'cfgdir="$XDG_CONFIG_HOME/lmms"' \
-          --run 'mkdir -p "$cfgdir"' \
-          --add-flags '-c "$cfgdir/rc.xml"'
-      '')
+      # (mkWrapper lmms ''
+      #   wrapProgram "$out/bin/lmms" \
+      #     --run 'cfgdir="$XDG_CONFIG_HOME/lmms"' \
+      #     --run 'mkdir -p "$cfgdir"' \
+      #     --add-flags '-c "$cfgdir/rc.xml"'
+      # '')
     ];
   };
 }
