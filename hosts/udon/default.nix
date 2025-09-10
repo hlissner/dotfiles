@@ -73,6 +73,7 @@ with builtins;
       ## Extra
       apps.rofi.enable = true;
       apps.thunar.enable = true;
+      apps.libreoffice.enable = true;
       apps.steam = {
         enable = true;
         libraryDir = "/media/windows/Program Files (x86)/Steam";

@@ -51,6 +51,7 @@ with builtins;
         enable = true;
         libraryDir = "/media/games/SteamLibrary";
       };
+      apps.libreoffice.enable = true;
       apps.godot.enable = true;
       browsers.default = "librewolf";
       browsers.librewolf.enable = true;
