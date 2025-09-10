@@ -7,7 +7,7 @@ yt-dlp --newline \
     --no-playlist \
     -o "%(title).200s-%(id)s.%(ext)s" \
     --output-na-placeholder "NA" \
-    -P ~/downloads/music \
+    -P ./ \
     -f bestaudio \
     --extract-audio \
     --audio-quality 0 \
