@@ -19,7 +19,7 @@ with builtins;
     profiles = {
       role = "workstation";
       user = "hlissner";
-      networks = [ "dk" "wg0" ];
+      networks = [ "ca" "wg0" ];
       hardware = [
         "bluetooth"
         "wifi"
