@@ -34,9 +34,9 @@ with builtins;
             mode = "2560x1440@120";
             position = "1920x2160";
             primary = true; }
-          { output = "DP-3";
-            position = "0x2191"; }
           { output = "DP-2";
+            position = "0x2191"; }
+          { output = "DP-3";
             position = "4480x2191"; }
           { output = "HDMI-A-1";
             mode = "3840x2160@120";
