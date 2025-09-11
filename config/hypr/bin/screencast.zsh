@@ -2,7 +2,7 @@
 # Record a region of the screen to clipboard.
 #
 # SYNOPSIS:
-#   screen-record [webm|mp4|gif] [X,Y WxH]
+#   screencast [webm|mp4|gif] [X,Y WxH]
 #
 # DESCRIPTION:
 #   Prompts the user to select a region, window, or monitor to begin recording
