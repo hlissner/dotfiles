@@ -95,6 +95,9 @@ with builtins;
   hardware = { pkgs, ... }: {
     networking.wireless.interfaces = [ "wlp2s0" ];
 
+    # If I want to sleep the system, I'll do it myself.
+    services.logind.lidSwitch = "ignore";
+
     boot.initrd = {
       kernelModules = [ "dm-snapshot" ];
       luks.devices.home = {
