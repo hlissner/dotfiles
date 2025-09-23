@@ -139,7 +139,8 @@ with builtins;
 
     # Disable all USB wakeup events to ensure restful sleep. This system has
     # many peripherals attached to it (shared between Windows and Linux) that
-    # can unpredictably wake it otherwise.
+    # can unpredictably wake it otherwise. Ensures *only* the power button can
+    # wake it up.
     systemd.services.fixSuspend = {
       script = ''
         for ev in $(grep enabled /proc/acpi/wakeup | cut --delimiter=\  --fields=1); do
@@ -148,6 +149,11 @@ with builtins;
       '';
       wantedBy = [ "multi-user.target" ];
     };
+
+    # ...But sometimes the monitors will fall asleep and I'll forget I haven't
+    # suspended the system so I'll press the power button thinking I'm waking it
+    # up, only to initiate shutdown, so no-op the power button.
+    services.logind.powerKey = "ignore";
 
     # services.xserver = {
     #   # This must be done manually to ensure my screen spaces are arranged
