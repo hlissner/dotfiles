@@ -109,17 +109,10 @@ elif (( $+commands[feh] )); then
   alias -s {jpg,jpeg,gif,png,svg}=feh
 fi
 
-if (( $+commands[mpv] )); then
-  alias -s {mp4,avi,mkv,mov}=mpv
-fi
-
-if (( $+commands[xdg-open] )); then
-  alias open=xdg-open
-fi
-
-if (( $+commands[img2sixel] )); then
-  alias six=img2sixel
-fi
+alias -s pdf='$BROWSER'
+(( $+commands[mpv] )) && alias -s {mp4,avi,mkv,mov}='mpv --loop'
+(( $+commands[xdg-open] )) && alias open=xdg-open
+(( $+commands[img2sixel] )) && alias six=img2sixel
 
 autoload -U zmv
 

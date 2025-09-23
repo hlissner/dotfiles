@@ -22,7 +22,6 @@ for gaming, when Proton isn't enough).
 
 * Filesystems
 ** /dev/nvme0n1: Samsung EVO+ 500gb (nixos, /home)
-
 #+begin_src sh
 parted /dev/nvme0n1 -- mklabel gpt
 parted /dev/nvme0n1 -- mkpart ESP fat32 1MiB 512MiB
@@ -55,6 +54,7 @@ setup needed on Linux, except for a label to consistently refer to it by:
 #+begin_src sh
 $ ntfslabel /dev/sdb video
 #+end_src
+
 ** Mount filesystems
 The final step in the install process, before running ~$DOTFILES_HOME/bin/hey
 install~:

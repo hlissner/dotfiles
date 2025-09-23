@@ -1,8 +1,6 @@
 ## modules/desktop/hyprland.nix
 #
 # Sets up a hyprland-based desktop environment.
-#
-# TODO: Investigate bluetuith for bluetooth TUI
 
 { hey, heyBin, lib, options, config, pkgs, ... }:
 

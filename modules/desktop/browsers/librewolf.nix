@@ -64,8 +64,8 @@ in {
     ];
 
     # Treat LibreWolf as our default PDF reader
-    xdg.mime.addedAssociations = {
-      "application/pdf" = [ "LibreWolf.desktop" ];
+    xdg.mime.defaultApplications = {
+      "application/pdf" = "LibreWolf.desktop";
     };
 
     modules.desktop.browsers.librewolf.settings = {
