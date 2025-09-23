@@ -59,6 +59,8 @@ alias rctl='sudo resolvectl'
 alias nctl='sudo networkctl'
 alias bctl='bluetoothctl'
 
+alias nonet='systemd-run --user --property=PrivateNetwork=yes --same-dir --pty'
+
 if (( $+commands[eza] )); then
   alias exa="eza --group-directories-first --git";
   alias l="eza -blF --icons";
@@ -85,6 +87,8 @@ if (( $+commands[udisksctl] )); then
   alias ud='udisksctl'
   alias udm='udisksctl mount -b'
   alias udu='udisksctl unmount -b'
+  alias udl='udisksctl lock -b'
+  alias udul='udisksctl unlock -b'
 fi
 
 if (( $+commands[nix] )); then
