@@ -19,7 +19,7 @@ local -a footopts=( ${@[1,$idx-1]} )
 local -a tmuxopts=( ${@[$idx+1,-1]} )
 
 if [[ "$(hey .get-activeworkspace .name)" == special:* ]]; then
-  offset=$(( offset + 3 ))
+  offset=$(( offset + 1 ))
 fi
 
 if [[ $title ]]; then
