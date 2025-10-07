@@ -179,6 +179,8 @@ in {
       wlr-randr      # for monitors that hyprctl can't handle
       ## Waiting for NixOS/nixpkgs@7249e6c56141 to reach nixos-unstable
       # wf-recorder    # for screencasting
+
+      hey.inputs.quickshell.packages.${pkgs.system}.default
     ];
 
     systemd.user.targets.hyprland-session = {

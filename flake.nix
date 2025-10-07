@@ -21,6 +21,8 @@
       agenix.inputs.nixpkgs.follows = "nixpkgs";
 
       # Extras (imported directly by modules/hosts that need them)
+      quickshell.url = "git+https://git.outfoxxed.me/outfoxxed/quickshell";
+      quickshell.inputs.nixpkgs.follows = "nixpkgs-unstable";
       # hyprpicker.url = "github:hyprwm/hyprpicker";
       # hyprpicker.inputs.nixpkgs.follows = "nixpkgs-unstable";
       blender-bin.url = "github:edolstra/nix-warez?dir=blender";
