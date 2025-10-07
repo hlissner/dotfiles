@@ -3,6 +3,7 @@
 with lib;
 let cfg = config.modules.profiles;
     username = cfg.user;
+    role = cfg.role;
     key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB71rSnjuC06Qq3NLXQJwSz7jazoB+umydddrxL6vg1a";
 in mkIf (username == "hlissner") (mkMerge [
   {
@@ -21,7 +22,9 @@ in mkIf (username == "hlissner") (mkMerge [
 
     # Allow key-based root access only from private ranges.
     users.users.root.openssh.authorizedKeys.keys = [
-      ''from="10.0.0.0/8" ${key} ${username}''
+      (if role == "workstation"
+       then ''from="10.0.0.0/8,100.100.4.0/24,192.168.4.0/24" ${key} ${username}''
+       else key)
     ];
   }
 ])
