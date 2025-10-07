@@ -19,8 +19,6 @@
       home-manager.inputs.nixpkgs.follows = "nixpkgs";
       agenix.url = "github:ryantm/agenix";
       agenix.inputs.nixpkgs.follows = "nixpkgs";
-      disko.url = "github:nix-community/disko";
-      disko.inputs.nixpkgs.follows = "nixpkgs";
 
       # Extras (imported directly by modules/hosts that need them)
       # spicetify-nix.url = "github:Gerg-L/spicetify-nix";

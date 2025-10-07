@@ -26,7 +26,6 @@ rec {
     , hey ? self
     , nixpkgs ? hey.inputs.nixpkgs
     , nixpkgs-unstable ? hey.inputs.nixpkgs-unstable or hey.inputs.nixpkgs-unstable or nixpkgs
-    , disko ? hey.inputs.disko
     , ...
   } @ inputs: {
     apps ? {}
@@ -119,10 +118,6 @@ rec {
             specialArgs.self = self';
             specialArgs.hey = hey';
             modules = [
-              disko.nixosModules.disko
-              (if isFunction storage
-               then (attrs: { disko.devices = storage attrs; })
-               else { disko.devices = storage; })
               {
                 nixpkgs.pkgs = pkgs;
                 networking.hostName = mkDefault (args.host or hostName);
