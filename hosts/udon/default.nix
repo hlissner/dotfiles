@@ -61,7 +61,7 @@ with builtins;
 
           # To address 1px overscan on my U2724D's
           general {
-            gaps_out = 0,0,1,0
+              gaps_out = 0,0,1,0
           }
 
           exec-once = hyprctl keyword monitor HDMI-A-1,disable
@@ -124,9 +124,9 @@ with builtins;
       gxplugins-lv2
       ladspaPlugins
 
-      calibre
-      signal-desktop
-      zoom-us
+      # calibre
+      # signal-desktop
+      # zoom-us
     ];
   };
 
@@ -189,10 +189,15 @@ with builtins;
         fsType = "ext4";
         options = [ "noatime" ];
       };
+      "/media/data" = {
+        device = "/dev/disk/by-label/data";
+        fsType = "ext4";
+        options = [ "noatime" "noauto" "nofail" "x-systemd.automount" ];
+      };
       "/media/video" = {
         device = "/dev/disk/by-label/video";
-        fsType = "ntfs";
-        options = [ "defaults" "noauto" "nofail" "noatime" "nodev" "exec" "umask=000" "uid=1000" "gid=1000" "x-systemd.automount" ];
+        fsType = "ext4";
+        options = [ "noatime" "noauto" "nofail" "x-systemd.automount" ];
       };
       "/media/windows" = {
         device = "/dev/disk/by-label/windows";
@@ -200,7 +205,7 @@ with builtins;
         options = [ "defaults" "noauto" "nofail" "noatime" "nodev" "exec" "umask=000" "uid=1000" "gid=1000" "x-systemd.automount" ];
       };
       "/media/nas" = {
-        device = "nas0.home.lissner.net:/mnt/nas/users/hlissner/files";
+        device = "nas0.lan:/mnt/nas/users/hlissner/files";
         fsType = "nfs";
         options = [ "noauto" "nofail" "noatime" "nfsvers=4.2" "x-systemd.automount" "x-systemd.idle-timeout=600" ];
       };
