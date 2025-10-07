@@ -1,11 +1,30 @@
-plugins: inline convert duplicates edit export fetchart lastgenre thumbnails playlist
+plugins: inline convert duplicates edit export fetchart lastgenre thumbnails albumtypes
+threaded: yes
+alt_filename: albumart
+original-date: no
+per_disc_numbering: no
 
-directory: ~/music
+directory: ~/music/library
 library: ~/music/library.db
 convert:
-  auto: yes
+  auto: no
   dest: ~/music/converted
+  opts: -ab 320k -ac 2 -ar 48000
+  max_bitrate: 320
+  never_convert_lossy_files: yes
 paths:
-  default: library/$albumartist/$album%aunique{}/$track $title
-  singleton: library/Unsorted/$artist/$title
-  comp: compilations/$album%aunique{}/$track $title
+  default: artists/$albumartist/$album%aunique{} ($year)/$track $title
+  singleton: singles/$artist - $title
+  comp: compilations/$album%aunique{} ($year)/$track $title
+  albumtype:soundtrack: soundtracks/$album ($year)/$track $title
+import:
+  write: yes
+  copy: no
+  move: yes
+  resume: ask
+  incremental: yes
+  quiet_fallback: skip
+  log: ~/music/beet.log
+lastgenre:
+  count: 2
+  force: yes
