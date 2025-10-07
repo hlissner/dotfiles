@@ -174,28 +174,33 @@ in {
            UserKnownHostsFile ~/.config/ssh/known_hosts
        '';
 
+       # HACK: The gotcha of this approach is $XDG_CONFIG_HOME/ssh/config needs
+       #   to contain `Include /etc/ssh/ssh_config` to ensure system-wide
+       #   settings are respected (ssh ignores the system config if -F is given,
+       #   and it doesn't accept multiple).
        environment.systemPackages = with pkgs; with hey.lib.pkgs; [
          (mkWrapper openssh ''
            dir='${sshConfigDir}'
            cfg="$dir/config"
            wrapProgram "$out/bin/ssh" \
-             --run "[ -s \"$cfg\" ] && opts='-F \"$cfg\"'" \
-             --add-flags '$opts'
+             --run "[[ \$@ != *\ -F\ * && -s \"$cfg\" ]] && dir=\"$cfg\"" \
+             --add-flags '${"$"}{dir:+-F "$dir"}'
            wrapProgram "$out/bin/scp" \
-             --run "[ -s \"$cfg\" ] && opts='-F \"$cfg\"'" \
-             --add-flags '$opts'
+             --run "[[ \$@ != *\ -F\ * && -s \"$cfg\" ]] && dir=\"$cfg\"" \
+             --add-flags '${"$"}{dir:+-F "$dir"}'
            wrapProgram "$out/bin/ssh-add" \
              --run "dir=\"$dir\"" \
              --run 'args=()' \
              --run '[ $# -eq 0 ] && for f in ${keyFilesStr}; do [ -f "$dir/$f" ] && args+="$dir/$f"; done' \
-             --add-flags '-H "$dir/known_hosts"' \
-             --add-flags '-H "/etc/ssh/ssh_known_hosts"' \
+             --add-flags '${"$"}{args:+-H "$dir/known_hosts"}' \
+             --add-flags '${"$"}{args:+-H "/etc/ssh/ssh_known_hosts"}' \
              --add-flags '"''${args[@]}"'
          '')
          (mkWrapper ssh-copy-id ''
            wrapProgram "$out/bin/ssh-copy-id" \
              --run 'dir="${sshConfigDir}"' \
-             --run 'opts=(); for f in ${keyFilesStr}; do [ -f "$dir/$f" ] && opts+="-i '$dir/$f'"; done' \
+             --run 'opts=()' \
+             --run '[[ $@ != *\ -i\ * ]] && for f in ${keyFilesStr}; do [ -f "$dir/$f" ] && opts+="-i '$dir/$f'"; done' \
              --append-flags '"''${opts[@]}"'
          '')
        ];
