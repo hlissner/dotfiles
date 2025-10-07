@@ -10,21 +10,16 @@ in {
 
   config = mkIf cfg.enable {
     user.packages = with pkgs; [
-      (ncmpcpp.override { visualizerSupport = true; })
-      beets    # library management
-      yt-dlp
-      mpc
+      unstable.beets          # library management
+      hey.packages.feishin    # REVIEW: NixOS/nixpkgs#445926
+      playerctl               # to control feishen
+      unstable.id3v2          # for editing tags
+      unstable.yt-dlp
     ];
-
-    environment.variables.NCMPCPP_HOME = "$XDG_CONFIG_HOME/ncmpcpp";
 
     home.configFile = {
       "beets" = {
         source = "${hey.configDir}/beets";
-        recursive = true;
-      };
-      "ncmpcpp" = {
-        source    = "${hey.configDir}/ncmpcpp";
         recursive = true;
       };
     };
