@@ -19,7 +19,7 @@ with builtins;
     profiles = {
       role = "workstation";
       user = "hlissner";
-      networks = [ "dk" "wg0" ];
+      networks = [ "dk" "ts0" ];
       hardware = [
         "cpu/amd"
         "gpu/nvidia"
@@ -90,7 +90,7 @@ with builtins;
 
   ## Local config
   config = { pkgs, ... }: {
-    systemd.network.networks.wg0.address = [ "10.10.0.3/32" ];
+
   };
 
   ## Hardware config

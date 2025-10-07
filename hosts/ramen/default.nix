@@ -19,7 +19,7 @@ with builtins;
     profiles = {
       role = "workstation";
       user = "hlissner";
-      networks = [ "ca" "wg0" ];
+      networks = [ "ca" "ts0" ];
       hardware = [
         "bluetooth"
         "wifi"
@@ -88,7 +88,7 @@ with builtins;
 
   ## Local config
   config = { ... }: {
-    systemd.network.networks.wg0.address = [ "10.10.0.2/32" ];
+
   };
 
   ## Hardware config

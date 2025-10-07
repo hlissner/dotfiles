@@ -119,8 +119,6 @@ with builtins;
 
   ## local config
   config = { pkgs, ... }: {
-    networking.search = [ "home.lissner.net" ];
-
     user.packages = with pkgs; [
       guitarix
       gxplugins-lv2
