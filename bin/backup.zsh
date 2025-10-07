@@ -13,7 +13,7 @@
 #   $0 backup [push|pull]
 
 function rcp {
-  rsync -azPJ \
+  rsync -rltDzPJ \
     --include=.git/ \
     --filter=':- .gitignore' \
     --filter=":- $XDG_CONFIG_HOME/git/ignore" \
