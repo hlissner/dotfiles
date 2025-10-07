@@ -60,6 +60,10 @@ in {
       isync
       # :checkers spell
       (aspellWithDicts (ds: with ds; [ en en-computers en-science ]))
+      # :emacs dired +dirvish
+      ffmpegthumbnailer
+      mediainfo
+      vips
       # :tools editorconfig
       editorconfig-core-c # per-project style config
       # :tools lookup & :lang org +roam
