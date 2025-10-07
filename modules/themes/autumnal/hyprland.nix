@@ -254,14 +254,6 @@ in {
       default-timeout = 6000;
     };
 
-    # "app-name=Spotify" = {
-    #   # background-color = "${cfg.colors.types.border}DD";
-    #   group-by = "app-name";
-    #   max-icon-size = 150;
-    #   padding = "0,0,0,18";
-    #   icon-location = "right";
-    # };
-
     "category=preview" = {
       group-by = "app-name";
       max-icon-size = 150;

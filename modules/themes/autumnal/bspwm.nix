@@ -124,10 +124,6 @@ in {
       format = "<b>%s</b> %b";
       script = "hey .play-sound notify-critical";
     };
-    # spotify = {
-    #   appname = "Spotify";
-    #   max_icon_size = 64;
-    # };
   };
 
   home.configFile = with config.modules; mkMerge [

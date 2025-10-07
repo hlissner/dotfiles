@@ -16,8 +16,7 @@
 #   -o
 #     Affect sound output levels.
 #   -p
-#     Affect any players controllable via playerctl (mainly spotify). Does not
-#     support toggle.
+#     Affect any players controllable via playerctl. Does not support toggle.
 
 zparseopts -E -D -- {o,i}=dev p:=player
 
@@ -33,8 +32,7 @@ if [[ $player ]]; then
   hey.requires playerctl
   case ${player[2]} in
     spotify) icon="" ;;
-    # TODO: Add ncmpcpp/mpd/mpc?
-    *) icon=""
+    *) icon=""
   esac
   case $1 in
     toggle) hey.abort "Cannot toggle the player's volume" ;;
