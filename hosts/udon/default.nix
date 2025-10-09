@@ -194,8 +194,8 @@ with builtins;
         fsType = "ext4";
         options = [ "noatime" "noauto" "nofail" "x-systemd.automount" ];
       };
-      "/media/video" = {
-        device = "/dev/disk/by-label/video";
+      "/media/backup" = {
+        device = "/dev/disk/by-label/backup";
         fsType = "ext4";
         options = [ "noatime" "noauto" "nofail" "x-systemd.automount" ];
       };

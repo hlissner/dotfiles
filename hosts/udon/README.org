@@ -47,12 +47,9 @@ parted /dev/sda -- mkpart primary 0% 100%
 mkfs.ext4 -L data /dev/sda1
 #+end_src
 
-** /dev/sdb: ST1000DM010 1TB (for streaming/recording footage) :windows:
-This is set up on the Windows side, as dedicated hot-storage for game and screen
-recordings on either Windows (with ShadowPlay) or Linux (with OBS studio). No
-setup needed on Linux, except for a label to consistently refer to it by:
+** /dev/sdb: ST1000DM010 1TB (for local backups) :windows:
 #+begin_src sh
-$ ntfslabel /dev/sdb video
+$ ntfslabel /dev/sdb backup
 #+end_src
 
 ** Mount filesystems
