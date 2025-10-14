@@ -13,8 +13,9 @@ in {
       unstable.beets          # library management
       hey.packages.feishin    # REVIEW: NixOS/nixpkgs#445926
       playerctl               # to control feishen
-      unstable.id3v2          # for editing tags
       unstable.yt-dlp
+      picard                  # for editing tags
+      unstable.id3v2          # for editing tags (CLI)
     ];
 
     home.configFile = {
