@@ -21,6 +21,13 @@ in {
 
     modules.shell.tmux.term = mkForce "foot";
 
+    # Most remotes don't have foot's terminfo installed and I can't install it
+    # on all of them.
+    programs.ssh.extraConfig = ''
+      Host *
+        SetEnv TERM=xterm-256color
+    '';
+
     home.configFile = {
       "foot/foot.ini".text = ''
         # config/foot/foot.ini
