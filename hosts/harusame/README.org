@@ -49,15 +49,3 @@ On the Linux side, it only needs a label set:
 $ ntfslabel /dev/sdb games
 #+end_src
 
-* Displays
-I have two 27" displays for this system, a Samsung S27E391H and an MSI MD271PW.
-
-To set them up the first time:
-#+begin_src sh :results none
-xrandr \
-    --dpi 72 \
-    --output DP-1 --mode 1920x1080 --rate 75 --pos 0x0 \
-    --output HDMI-0 --mode 1920x1080 --rate 60 --pos 1920x0 --primary
-# Then reload bspwm
-~/.config/bspwm/bspwmrc
-#+end_src

@@ -106,6 +106,5 @@ in mkIf (cfg.active == "autumnal") (mkMerge [
     ];
   })
 
-  (mkIf config.modules.desktop.bspwm.enable    (import ./bspwm.nix args))
   (mkIf config.modules.desktop.hyprland.enable (import ./hyprland.nix args))
 ])

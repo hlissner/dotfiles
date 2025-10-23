@@ -4,7 +4,7 @@
 
 with lib;
 with hey.lib;
-let cfg = config.modules.services.dunst;
+let cfg = config.modules.services.mpd;
 in {
   options.modules.services.mpd = with types; {
     enable = mkBoolOpt false;

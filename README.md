@@ -21,14 +21,12 @@ dotfiles over there.
 
 ------
 
-|               | Wayland                 | X11                                              |
-|---------------|-------------------------|--------------------------------------------------|
-| **Shell:**    | zsh + zgenom            | "                                                |
-| **WM:**       | hyprland + waybar       | lightdm + lightdm-mini-greeter + bspwm + polybar |
-| **Editor:**   | [Doom Emacs][doomemacs] | "                                                |
-| **Terminal:** | foot                    | st                                               |
-| **Launcher:** | rofi                    | "                                                |
-| **Browser:**  | firefox                 | "                                                |
+| **Shell:**    | zsh + zgenom            |
+| **WM:**       | hyprland + waybar       |
+| **Editor:**   | [Doom Emacs][doomemacs] |
+| **Terminal:** | foot                    |
+| **Launcher:** | rofi                    |
+| **Browser:**  | firefox                 |
 
 -----
 

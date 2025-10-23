@@ -277,7 +277,6 @@
   (let [desktop (os/getenv "XDG_CURRENT_DESKTOP")]
     (case desktop
       "Hyprland" :hypr
-      "bspwm"    :bspwm
       nil        (error "XDG_CURRENT_DESKTOP not set")
       (errorf "Unrecognized desktop: %s" desktop))))
 

@@ -153,27 +153,6 @@ with builtins;
     # up, only to initiate shutdown, so no-op the power button.
     services.logind.powerKey = "ignore";
 
-    # services.xserver = {
-    #   # This must be done manually to ensure my screen spaces are arranged
-    #   # exactly as I need them to be *and* the correct monitor is "primary".
-    #   # Using xrandrHeads does not work.
-    #   monitorSection = ''
-    #     VendorName  "Unknown"
-    #     ModelName   "DELL U2515H"
-    #     HorizSync   30.0 - 113.0
-    #     VertRefresh 56.0 - 86.0
-    #     Option      "DPMS"
-    #   '';
-    #   screenSection = ''
-    #     Option "metamodes" "DP-5: nvidia-auto-select +0+31, HDMI-1: nvidia-auto-select +1920+0, DP-3: nvidia-auto-select +4480+31"
-    #     Option "SLI" "Off"
-    #     Option "MultiGPU" "Off"
-    #     Option "BaseMosaic" "off"
-    #     Option "Stereo" "0"
-    #     Option "nvidiaXineramaInfoOrder" "DFP-5"
-    #   '';
-    # };
-
     fileSystems = {
       "/" = {
         device = "/dev/disk/by-label/nixos";

@@ -14,8 +14,8 @@ in {
   config = mkIf cfg.enable {
     assertions = [
       {
-        assertion = config.modules.desktop.type == "wayland";
-        message = "swayidle requires a wayland desktop";
+        assertion = config.modules.desktop.enable;
+        message = "swayidle requires a desktop environment";
       }
     ];
 

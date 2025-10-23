@@ -20,9 +20,7 @@ in {
       agent = {
         enable = true;
         pinentryPackage = pkgs.pinentry-rofi.override {
-          rofi = if config.modules.desktop.type == "wayland"
-                 then pkgs.rofi-wayland-unwrapped
-                 else pkgs.rofi;
+          rofi = pkgs.rofi-wayland-unwrapped;
         };
       };
     };

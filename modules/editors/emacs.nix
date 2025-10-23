@@ -7,23 +7,15 @@
 with lib;
 with hey.lib;
 let cfg = config.modules.editors.emacs;
-    emacs = with pkgs; (emacsPackagesFor
-      (if config.modules.desktop.type == "wayland"
-       then emacs-git-pgtk
-       else emacs-git)).emacsWithPackages (epkgs: with epkgs; [
-         treesit-grammars.with-all-grammars
-         vterm
-         mu4e
-       ]);
+    emacs = with pkgs; (emacsPackagesFor emacs-git-pgtk).emacsWithPackages
+      (epkgs: with epkgs; [
+        treesit-grammars.with-all-grammars
+        vterm
+        mu4e
+      ]);
 in {
   options.modules.editors.emacs = {
     enable = mkBoolOpt false;
-    # doom = rec {
-    #   enable = mkBoolOpt false;
-    #   forgeUrl = mkOpt types.str "https://github.com";
-    #   repoUrl = mkOpt types.str "${forgeUrl}/doomemacs/doomemacs";
-    #   configRepoUrl = mkOpt types.str "${forgeUrl}/hlissner/.doom.d";
-    # };
   };
 
   config = mkIf cfg.enable {

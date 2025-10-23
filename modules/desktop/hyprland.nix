@@ -47,7 +47,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    modules.desktop.type = "wayland";
+    modules.desktop.enable = true;
 
     environment.sessionVariables = {
       ELECTRON_OZONE_PLATFORM_HINT = "auto";

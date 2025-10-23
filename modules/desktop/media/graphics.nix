@@ -53,15 +53,14 @@ in {
 
       # Sprite sheets & animation
       (optionals cfg.sprites.enable [
-        unstable.aseprite-unfree
+        aseprite-unfree
       ]) ++
 
       # Replaces Adobe XD (or Sketch)
       (optionals cfg.design.enable [
-        (if config.modules.desktop.type == "wayland"
-         then figma-linux.overrideAttrs (final: prev: {
-           postFixup = ''
-             substituteInPlace $out/share/applications/figma-linux.desktop \
+        (figma-linux.overrideAttrs (final: prev: {
+          postFixup = ''
+            substituteInPlace $out/share/applications/figma-linux.desktop \
                --replace "Exec=/opt/figma-linux/figma-linux" \
                          "Exec=$out/bin/${final.pname} --enable-features=UseOzonePlatform \
                                                        --ozone-platform=wayland \
@@ -78,9 +77,8 @@ in {
                                                        --enable-features=VaapiVideoDecoder,VaapiVideoEncoder,VaapiIgnoreDriverChecks,RawDraw,Vulkan \
                                                        --enable-hardware-overlays \
                                                        --enable-unsafe-webgpu"
-           '';
-         })
-         else figma-linux)
+          '';
+        }))
       ]);
 
     # home.configFile = mkIf cfg.raster.enable {

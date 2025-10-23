@@ -20,8 +20,8 @@ in {
   config = mkIf cfg.enable {
     assertions = [
       {
-        assertion = config.modules.desktop.type == "wayland";
-        message = "wlsunset requires a wayland desktop";
+        assertion = config.modules.desktop.enable;
+        message = "wlsunset requires a desktop environment";
       }
       {
         assertion = config.location.latitude != null && config.location.longitude != null;

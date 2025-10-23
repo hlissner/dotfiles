@@ -19,9 +19,7 @@ in {
     nixpkgs.overlays = [ hey.inputs.blender-bin.overlays.default ];
 
     user.packages = [
-      (if config.modules.desktop.type == "wayland"
-       then pkgs.freecad-wayland
-       else pkgs.freecad)
+      pkgs.freecad-wayland
 
       # Blender itself doesn't need libxcrypt-legacy, but I use blenderkit,
       # which needs libcrypt.so.1, which libxcrypt no longer provides.

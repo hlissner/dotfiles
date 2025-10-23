@@ -18,16 +18,10 @@
   (if sound (play-sound sound)))
 
 (defn yank [text &named type once]
-  (case (flake/info :desktop :type)
-    "wayland" ($? echo ,text | wl-copy ,;(opts "-t" type) ,;(opts (if once "-o")))
-    "x11"     ($? echo ,text | xclip -selection clipboard -i)))
+  ($? echo ,text | wl-copy ,;(opts "-t" type) ,;(opts (if once "-o"))))
 
 (defn yank-file [file &named type once]
-  (case (flake/info :desktop :type)
-    "wayland" ($? wl-copy ,;(opts "-t" type) ,;(opts (if once "-o")) ,file)
-    "x11"     ($? xclip -selection clipboard -i ,file)))
+  ($? wl-copy ,;(opts "-t" type) ,;(opts (if once "-o")) ,file))
 
 (defn paste []
-  (case (flake/info :desktop :type)
-    "wayland" ($<_ wl-paste)
-    "x11"     ($? xclip -selection clipboard -o)))
+  ($<_ wl-paste))
