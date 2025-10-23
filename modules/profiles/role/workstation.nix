@@ -100,9 +100,6 @@ mkIf (config.modules.profiles.role == "workstation") (mkMerge [
     };
 
     modules.xdg.ssh.enable = true;
-
-    # See systemd/systemd#10579
-    services.resolved.dnssec = "false";
   }
 
   (mkIf config.modules.services.ssh.enable {
