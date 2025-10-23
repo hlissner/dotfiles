@@ -108,13 +108,12 @@ with builtins;
     };
     services = {
       ssh.enable = true;
-      # docker.enable = true;
     };
     system = {
       utils.enable = true;
       fs.enable = true;
     };
-    # virt.qemu.enable = true;
+    virt.qemu.enable = true;
   };
 
   ## local config
