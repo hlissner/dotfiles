@@ -15,7 +15,7 @@ in {
   config = mkIf cfg.enable {
     user.packages = with pkgs.unstable; [
       ghostscript    # for optimizing pdfs
-      poppler_utils  # various pdf tools
+      poppler-utils  # various pdf tools
       wkhtmltopdf
       pdfgrep
       img2pdf
