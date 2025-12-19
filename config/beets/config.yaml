@@ -1,30 +1,44 @@
-plugins: inline convert duplicates edit export fetchart lastgenre thumbnails albumtypes
+plugins: inline convert duplicates edit export fetchart thumbnails albumtypes musicbrainz
 threaded: yes
 alt_filename: albumart
 original-date: no
 per_disc_numbering: no
 
 directory: ~/music/library
-library: ~/music/library.db
+library: ~/music/library/db
 convert:
-  auto: no
-  dest: ~/music/converted
+  auto: yes
+  embed: yes
+  copy_album_art: yes
   opts: -ab 320k -ac 2 -ar 48000
-  max_bitrate: 320
   never_convert_lossy_files: yes
+  extension: mp3
+albumtypes:
+  types:
+    - ep: 'EP'
+    - op: 'OP'
+    - single: 'Single'
+    - live: 'Live'
+    - remix: 'Remix'
+  bracket: '[]'
 paths:
-  default: artists/$albumartist/$album%aunique{} ($year)/$track $title
+  default: artists/$albumartist/$album%aunique{} [$year]$atypes/$track $title
   singleton: singles/$artist - $title
-  comp: compilations/$album%aunique{} ($year)/$track $title
-  albumtype:soundtrack: soundtracks/$album ($year)/$track $title
+  comp: compilations/$album%aunique{} [$year]$atypes/$track $title
+  albumtype:soundtrack: soundtracks/$album [$year]$atypes/$track $title
 import:
-  write: yes
-  copy: no
-  move: yes
+  write: no
+  copy: yes
+  move: no
   resume: ask
   incremental: yes
   quiet_fallback: skip
-  log: ~/music/beet.log
-lastgenre:
-  count: 2
-  force: yes
+  log: ~/music/library/beet.log
+musicbrainz:
+  extra_tags: [barcode, catalognum, country, year]
+  genres: yes
+  external_ids:
+    bandcamp: yes
+    discogs: yes
+    spotify: yes
+    tidal: yes
