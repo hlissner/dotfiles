@@ -77,7 +77,7 @@ with builtins;
     };
     services = {
       ssh.enable = true;
-      # docker.enable = true;
+      flatpak.enable = true;
     };
     system = {
       utils.enable = true;
@@ -96,7 +96,7 @@ with builtins;
     networking.wireless.interfaces = [ "wlp2s0" ];
 
     # If I want to sleep the system, I'll do it myself.
-    services.logind.lidSwitch = "ignore";
+    services.logind.settings.Login.HandleLidSwitch = "ignore";
 
     boot.initrd = {
       kernelModules = [ "dm-snapshot" ];

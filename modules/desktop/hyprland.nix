@@ -9,6 +9,11 @@ with hey.lib;
 let cfg = config.modules.desktop.hyprland;
     primaryMonitor = findFirst (x: x.primary) {} cfg.monitors;
 in {
+  imports = [
+    hey.modules.dankMaterialShell.dankMaterialShell
+    # hey.modules.dankMaterialShell.greeter
+  ];
+
   options.modules.desktop.hyprland = with types; {
     enable = mkBoolOpt false;
     extraConfig = mkOpt lines "";
@@ -22,8 +27,6 @@ in {
         primary = mkOpt bool false;
       };
     })) [{}];
-
-    mako.settings = mkOpt attrs {};
 
     hyprlock = {
       settings = mkOpt (submodule {
@@ -67,8 +70,29 @@ in {
       package = pkgs.unstable.hyprland;
       portalPackage = pkgs.unstable.xdg-desktop-portal-hyprland;
 
-      # package = hey.inputs.hyprland.packages.${final.system}.hyprland;
+      # package = hey.inputs.hyprland.packages.${final.stdenv.hostPlatform.system}.hyprland;
       # portalPackage = hey.inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
+    };
+
+    programs.dankMaterialShell = {
+      enable = true;
+      systemd = {
+        enable = true;
+        restartIfChanged = true;
+      };
+
+      # FIXME: Not working yet
+      # greeter = {
+      #   enable = true;
+      #   compositor.name = "hyprland";
+      #   configHome = "/home/${config.user.name}";
+      #   # configFiles = [
+      #   #   "/home/${config.user.name}/.config/DankMaterialShell/settings.json"
+      #   # ];
+      # };
+
+      enableSystemMonitoring = true;     # System monitoring widgets (dgop)
+      enableDynamicTheming = true;       # Wallpaper-based theming (matugen)
     };
 
     # xdg.portal.configPackages = [ pkgs.xdg-desktop-portal-gtk ];
@@ -110,67 +134,44 @@ in {
       #       on-timeout = "${heyBin} hook idle --sleep";
       #     }]);
       # };
-      swayidle = {
-        enable = true;
-        events = {
-          before-sleep = "${heyBin} hook idle --on sleep";
-          after-resume = "${heyBin} hook idle --off sleep";
-          lock = "${heyBin} hook idle --on lock";
-          unlock = "${heyBin} hook idle --off lock";
-        } // (optionalAttrs (cfg.idle.time > 0) {
-          idlehint = toString cfg.idle.time;
-        });
-        timeouts =
-          (optionals (cfg.idle.time > 0) [{
-            timeout = cfg.idle.time;
-            command = "${heyBin} hook idle --on";
-            resume = "${heyBin} hook idle --off";
-          }]) ++
-          (optionals (cfg.idle.autodpms > 0) [{
-            timeout = cfg.idle.autodpms;
-            command = "${heyBin} hook idle --on dpms";
-            resume = "${heyBin} hook idle --off dpms";
-          }]) ++
-          (optionals (cfg.idle.autolock > 0) [{
-            timeout = cfg.idle.autolock;
-            command = "loginctl lock-session";
-          }]) ++
-          (optionals (cfg.idle.autosleep > 0) [{
-            timeout = cfg.idle.autosleep;
-            command = "systemctl suspend";
-          }]);
-      };
-
-      waybar = {
-        enable = true;
-        primaryMonitor = mkDefault (primaryMonitor.output or "");
-      };
+      # swayidle = {
+      #   enable = true;
+      #   events = {
+      #     before-sleep = "${heyBin} hook idle --on sleep";
+      #     after-resume = "${heyBin} hook idle --off sleep";
+      #     lock = "${heyBin} hook idle --on lock";
+      #     unlock = "${heyBin} hook idle --off lock";
+      #   } // (optionalAttrs (cfg.idle.time > 0) {
+      #     idlehint = toString cfg.idle.time;
+      #   });
+      #   timeouts =
+      #     (optionals (cfg.idle.time > 0) [{
+      #       timeout = cfg.idle.time;
+      #       command = "${heyBin} hook idle --on";
+      #       resume = "${heyBin} hook idle --off";
+      #     }]) ++
+      #     (optionals (cfg.idle.autodpms > 0) [{
+      #       timeout = cfg.idle.autodpms;
+      #       command = "${heyBin} hook idle --on dpms";
+      #       resume = "${heyBin} hook idle --off dpms";
+      #     }]) ++
+      #     (optionals (cfg.idle.autolock > 0) [{
+      #       timeout = cfg.idle.autolock;
+      #       command = "loginctl lock-session";
+      #     }]) ++
+      #     (optionals (cfg.idle.autosleep > 0) [{
+      #       timeout = cfg.idle.autosleep;
+      #       command = "systemctl suspend";
+      #     }]);
+      # };
 
       # REVIEW: Get rid of this when wtype adds mouse support (atx/wtype#24).
       ydotool.enable = true;
     };
 
-    # Retrieve the latest versions.
-    nixpkgs.overlays = [
-      # Avoiding the hyprland input overlays to avoid cachix misses (and not
-      # setting programs.hyprland.package because other packages, like
-      # pkgs.hyprshade, may reference pkgs.hyprland in their derivations).
-      # (prev: final: {
-      #   hyprland = hey.inputs.hyprland.packages.${final.system}.hyprland;
-      # })
-      # hey.inputs.hyprlock.overlays.default
-      # hey.inputs.hyprpicker.overlays.default
-    ];
-
     environment.systemPackages = with pkgs; [
-      hyprlock       # *fast* lock screen
-      hyprpicker     # screen-space color picker
-      hyprshade      # to apply shaders to the screen
-      hyprshot       # instead of grim(shot) or maim/slurp
-
       ## For Hyprland
-      mako           # dunst for wayland
-      swaybg         # feh (as a wallpaper manager)
+      hyprlock       # *fast* lock screen
       xorg.xrandr    # for XWayland windows
 
       ## For CLIs
@@ -178,9 +179,7 @@ in {
       pamixer        # for volume control
       wlr-randr      # for monitors that hyprctl can't handle
       ## Waiting for NixOS/nixpkgs@7249e6c56141 to reach nixos-unstable
-      # wf-recorder    # for screencasting
-
-      hey.inputs.quickshell.packages.${pkgs.system}.default
+      wf-recorder    # for screencasting
     ];
 
     systemd.user.targets.hyprland-session = {
@@ -237,26 +236,7 @@ in {
             echo "Hyprland: reloading instance $i"
             hey.do hyprctl -i ''${i//*\//} reload config-only
           done
-          hey.do makoctl reload
         '';
-
-        # Set wallpaper according to modules.theme.wallpapers
-        startup."10-wallpaper" = ''
-          ${concatStringsSep "\n"
-            (mapAttrsToList
-              (output: w: ''
-                local wallpaper="${w.path}"
-                if [[ -f "$wallpaper" ]]; then
-                  hey.do swaybg \
-                         -o "${output}" \
-                         -i "$wallpaper" \
-                         -m ${w.mode or "center"} &
-                fi
-              '')
-              config.modules.theme.wallpapers)}
-          pgrep -x swaybg >/dev/null && sleep 0.5
-        '';
-        reload."10-wallpaper" = startup."10-wallpaper";
       };
     };
 
@@ -333,45 +313,24 @@ in {
               }
               cfg.hyprlock.settings
             ])));
-
-      "mako/config".text =
-        let toINI = mapAttrsToList (n: v: "${n}=${toString v}");
-        in ''
-          # config/mako/config -*- mode: ini -*-
-          # This was automatically generated by NixOS and my dotfiles
-          ${concatStringsSep "\n"
-            (toINI ({ "output" = (primaryMonitor.output or ""); }
-                    // (filterAttrs (_: v: ! isAttrs v) cfg.mako.settings)))}
-
-          ${concatStringsSep "\n"
-            (mapAttrsToList
-              (n: v: ''
-                [${n}]
-                ${concatStringsSep "\n" (toINI v)}
-              '')
-              (filterAttrs (_: v: isAttrs v) cfg.mako.settings))}
-
-          [mode=dnd]
-          invisible=1
-        '';
     };
 
     user.packages = with pkgs; [
-      (mkLauncherEntry "Toggle blue light filter" {
+      (mkLauncherEntry "Toggle night mode" {
         icon = "redshift";
-        exec = "hyprshade toggle blue-light-filter";
+        exec = "dms ipc night toggle";
       })
       (mkLauncherEntry "Hyprpicker: grab RGB at point" {
         icon = "com.github.finefindus.eyedropper";
-        exec = "hey .picker rgb";
+        exec = "dms color pick --rgb -a";
       })
       (mkLauncherEntry "Hyprpicker: grab HSL at point" {
         icon = "com.github.finefindus.eyedropper";
-        exec = "hey .picker hsl";
+        exec = "dms color pick --hsl -a";
       })
       (mkLauncherEntry "Hyprpicker: grab hex at point" {
         icon = "com.github.finefindus.eyedropper";
-        exec = "hey .picker hex";
+        exec = "dms color pick --hex -a";
       })
     ];
   };

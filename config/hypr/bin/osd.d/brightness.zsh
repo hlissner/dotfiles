@@ -8,6 +8,9 @@
 #   Manipulate the screen's brightness level via brightnessctl, then follow up
 #   with a chirp and OSD popup.
 
+# REVIEW: Can never find the target!
+# hey.do dms ipc class brightness "$command" 10 ""
+
 hey.requires brightnessctl
 
 local sound=
@@ -16,16 +19,4 @@ if (( $(brightnessctl max) <= 1 )); then
   exit 1
 fi
 
-case $1 in
-  +*) sound=brightness-up ;;
-  -*) sound=brightness-down ;;
-  *) hey.abort -c $1 ;;
-esac
-
 IFS=, read _ _ _ state _ <<(hey.do brightnessctl set "${${1/-}/+}%-${1[1]}" -m)
-
-hey .osd display \
-  -s "$sound" \
-  -p "${state%%%}" \
-  -a lcd \
-  "" -

@@ -5,7 +5,7 @@ with lib;
 let inherit (hey.lib.pkgs) mkWrapper mkLauncherEntry;
     cfg = config.modules.desktop.apps.rofi;
 
-    rofiPkg = pkgs.rofi-wayland-unwrapped;
+    rofiPkg = pkgs.rofi-unwrapped;
     rofiFBPkg = pkgs.rofi-file-browser.override { rofi = rofiPkg; };
     rofiCalcPkg = pkgs.rofi-calc.override { rofi-unwrapped = rofiPkg; };
     rofiBlocksPkg = hey.packages.rofi-blocks.override { rofi-unwrapped = rofiPkg; };

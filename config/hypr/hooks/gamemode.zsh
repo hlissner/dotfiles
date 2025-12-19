@@ -11,11 +11,6 @@
 #
 #   @see modules/desktop/apps/steam.nix.
 
-_osd() {
-  hey .osd toggle "${${3//0/--off}//1/--on}" "$1" "$2"
-}
-
-local icon=
 case $1 in
   --on)
     echo "Started gamemode..."
@@ -25,8 +20,7 @@ case $1 in
       keyword general:allow_tearing 1 \; \
       keyword animations:enabled 0 \; \
       keyword misc:vrr 1
-    _osd "$icon" "Gamemode started" 1
-    makoctl mode -s dnd
+    notify-send "   Gamemode started!"
     ;;
   --off)
     echo "Stopped gamemode..."
@@ -36,8 +30,7 @@ case $1 in
       keyword general:allow_tearing 0 \; \
       keyword animations:enabled 1 \; \
       keyword misc:vrr 0
-    makoctl mode -s default
-    _osd "$icon" "Gamemode ended" 0
+    notify-send "   Gamemode ended!"
     sleep 1
     systemctl stop --user gamemoded.service
     ;;

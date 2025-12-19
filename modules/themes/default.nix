@@ -77,23 +77,6 @@ in {
       brightcyan    = mkOpt str "#88FFFF"; # 14
       white         = mkOpt str "#FFFFFF"; # 15
 
-      # base0  = mkOpt str "";
-      # base1  = mkOpt str "";
-      # base2  = mkOpt str "";
-      # base3  = mkOpt str "";
-      # base4  = mkOpt str "";
-      # base5  = mkOpt str "";
-      # base6  = mkOpt str "";
-      # base7  = mkOpt str "";
-      # base8  = mkOpt str "";
-      # base9  = mkOpt str "";
-      # base10 = mkOpt str "";
-      # base11 = mkOpt str "";
-      # base12 = mkOpt str "";
-      # base13 = mkOpt str "";
-      # base14 = mkOpt str "";
-      # base15 = mkOpt str "";
-
       # Color classes
       types = {
         bg        = mkOpt str cfg.colors.black;
@@ -130,8 +113,8 @@ in {
       };
     }
 
-    # GTK support
-    (mkIf (config.modules.desktop.type != null) {
+    (mkIf config.modules.desktop.enable {
+      # GTK support
       modules.theme.gtk = {
         enable = true;
         font = mkAliasDefinitions options.modules.theme.fonts.sans;
@@ -167,9 +150,18 @@ in {
         cfg.fonts.icons.package
       ] ++ cfg.fonts.packages;
 
-      fonts.fontconfig.defaultFonts = {
-        sansSerif = [ cfg.fonts.sans.name ];
-        monospace = [ cfg.fonts.mono.name ];
+      fonts.fontconfig = {
+        useEmbeddedBitmaps = true;
+        defaultFonts = {
+          sansSerif = [ cfg.fonts.sans.name ];
+          monospace = [ cfg.fonts.mono.name ];
+        };
+      };
+
+      # QT support
+      qt = {
+        enable = true;
+        style = "kvantum";
       };
     })
   ]);

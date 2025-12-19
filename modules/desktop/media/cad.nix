@@ -7,7 +7,7 @@
 with lib;
 with hey.lib;
 let cfg = config.modules.desktop.media.cad;
-    version = "4.1";
+    version = "5.0";
 in {
   options.modules.desktop.media.cad = with types; {
     enable = mkBoolOpt false;
@@ -16,17 +16,18 @@ in {
   config = mkIf cfg.enable {
     # Supplies newer versions of Blender with CUDA support baked in.
     # @see https://github.com/edolstra/nix-warez/tree/master/blender
-    nixpkgs.overlays = [ hey.inputs.blender-bin.overlays.default ];
+    # nixpkgs.overlays = [ hey.inputs.blender-bin.overlays.default ];
 
-    user.packages = [
-      pkgs.freecad-wayland
+    user.packages = with pkgs; [
+      freecad
+      blender
 
       # Blender itself doesn't need libxcrypt-legacy, but I use blenderkit,
       # which needs libcrypt.so.1, which libxcrypt no longer provides.
-      (mkWrapper pkgs."blender_${builtins.replaceStrings ["."] ["_"] version}" ''
-        wrapProgram "$out/bin/blender" \
-          --run 'export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${pkgs.libxcrypt-legacy}/lib"'
-      '')
+      # (mkWrapper blender ''
+      #   wrapProgram "$out/bin/blender" \
+      #     --run 'export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${pkgs.libxcrypt-legacy}/lib"'
+      # '')
     ];
 
     home.configFile = {

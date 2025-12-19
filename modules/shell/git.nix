@@ -10,12 +10,12 @@ in {
 
   config = mkIf cfg.enable {
     user.packages = with pkgs; [
-      gitAndTools.git-annex
-      gitAndTools.gh
-      gitAndTools.git-open
-      gitAndTools.diff-so-fancy
+      diff-so-fancy
+      gh
+      git-annex
+      git-open
       (mkIf config.modules.shell.gnupg.enable
-        gitAndTools.git-crypt)
+        git-crypt)
       act
     ];
 

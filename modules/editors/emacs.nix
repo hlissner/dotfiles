@@ -64,10 +64,6 @@ in {
       clang-tools
       # :lang latex & :lang org (latex previews)
       texlive.combined.scheme-medium
-      # :lang beancount
-      unstable.beancount
-      unstable.beanquery
-      unstable.fava
       # :lang nix
       age
     ];

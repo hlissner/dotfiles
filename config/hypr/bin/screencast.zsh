@@ -14,14 +14,6 @@
 #
 #   * Is auto-installed with cached-nix-shell when needed.
 
-.notify() {
-  hey.do notify-send \
-    -a hey.screencast \
-    -h string:x-canonical-private-synchronous:osd \
-    -h string:category:preview \
-    $@
-}
-
 main() {
   hey.requires wf-recorder ffmpeg
 
@@ -55,17 +47,17 @@ main() {
   trap "rm -f '$thumbfile' '$livefile'" EXIT SIGINT SIGTERM
   local geom="$(hey .slurp ${2:-region})"
   [[ -z "$geom" ]] && exit 1
-  hey .osd toggle --on -P "" "Recording started"
+  notify-send -a "" "Recording started..."
   if wf-recorder -g "$geom" ${opts[@]} --file="$file"; then
     sleep 0.1
-    hey .osd toggle --off "" "Recording ended"
+    notify-send -a "" "Recording ended"
     hey.do ffmpeg -y -i "$file" -frames:v 1 "$thumbfile"
     if [[ $1 == gif ]]; then
-      .notify -i "$thumbfile" -u low "Optimizing gif" "This may take a while..."
+      notify-send -a "screencast.zsh" -u low -i "$thumbfile" "Optimizing gif" "This may take a while..."
       hey.do -! gifsicle --optimize=3 "$file"
     fi
     echo "file://$file" | wl-copy -t text/uri-list
-    .notify -i "$thumbfile" "Ended recording" "Sent uri to clipboard"
+    notify-send -a "screencast.zsh" -i "$thumbfile" "Ended recording" "Sent uri to clipboard"
   fi
 }
 

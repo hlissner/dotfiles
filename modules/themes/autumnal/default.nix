@@ -87,8 +87,22 @@ in mkIf (cfg.active == "autumnal") (mkMerge [
     };
   }
 
-  (mkIf (config.modules.desktop.type != null) {
+  (mkIf config.modules.desktop.enable {
+    user.packages = with pkgs; [
+      (catppuccin-kvantum.override {
+        variant = "mocha";
+        accent = "maroon";
+      })
+    ];
+
+    qt.platformTheme = "qt5ct";
+
     home.configFile = with config.modules; mkMerge [
+      {
+        "Kvantum/kvantum.kvconfig".source = (pkgs.formats.ini {}).generate "kvantum.kvconfig" {
+          General.theme = "Catppuccin-Mocha-Mauve";
+        };
+      }
       (mkIf desktop.media.graphics.vector.enable {
         "inkscape/templates/default.svg".source = ./config/inkscape/default-template.svg;
       })

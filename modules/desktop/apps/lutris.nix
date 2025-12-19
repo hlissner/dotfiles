@@ -16,6 +16,6 @@ in {
     ];
 
     # Better for steam proton games
-    systemd.extraConfig = mkDefault "DefaultLimitNOFILE=1048576";
+    systemd.user.extraConfig = mkDefault "DefaultLimitNOFILE=1048576";
   };
 }

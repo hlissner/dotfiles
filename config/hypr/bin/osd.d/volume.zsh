@@ -18,73 +18,16 @@
 #   -p
 #     Affect any players controllable via playerctl. Does not support toggle.
 
-zparseopts -E -D -- {o,i}=dev p:=player
+zparseopts -E -D -- p:=player
 
+local command=()
 case $1 in
-  toggle) sound=volume-toggle ;;
-  +*)     sound=volume-up     ;;
-  -*)     sound=volume-down   ;;
+  mute)    command=( mute )      ;;
+  micmute) command=( micmute )   ;;
+  +*)      command=( increment 5 ) ;;
+  -*)      command=( decrement 5 ) ;;
 
   *) hey.abort $1 ;;
 esac
 
-if [[ $player ]]; then
-  hey.requires playerctl
-  case ${player[2]} in
-    spotify) icon="" ;;
-    *) icon=""
-  esac
-  case $1 in
-    toggle) hey.abort "Cannot toggle the player's volume" ;;
-    +*) hey.do playerctl -p "${player[2]}" volume $(( ${1#+} / 100.0 ))+ ;;
-    -*) hey.do playerctl -p "${player[2]}" volume $(( ${1#-} / 100.0 ))- ;;
-  esac
-  state=$(playerctl -p "${player[2]}" volume)
-  if [[ -z $state ]]; then
-    hey.error "Could not read volume from player: ${player[2]}"
-    exit 1
-  fi
-  state=$(( state * 100.0 ))
-  app=vol
-else
-  case $dev in
-    -i)
-      hey.requires pamixer
-      case $1 in
-        toggle) hey.do pamixer --default-source -t ;;
-        +*)     hey.do pamixer --default-source -i ${1#+}+ ;;
-        -*)     hey.do pamixer --default-source -d ${1#-}- ;;
-      esac
-      state=$(pamixer --default-source --get-volume)
-      if [[ $(pamixer --default-source --get-mute) == true ]] || (( state <= 1 )); then
-        state=0
-        icon=""
-      elif (( state > 1 )); then
-        icon=""
-      fi
-      app=mic
-      ;;
-    -o|'')
-      hey.requires pamixer
-      case $1 in
-        toggle) hey.do pamixer -t ;;
-        +*)     hey.do pamixer -i ${1#+} ;;
-        -*)     hey.do pamixer -d ${1#-} ;;
-      esac
-      state=$(pamixer --get-volume)
-      if [[ $(pamixer --get-mute) == true ]] || (( state <= 1 )); then
-        state=0
-        icon=""
-      elif (( state > 1 )); then
-        icon=""
-      fi
-      app=vol
-      ;;
-  esac
-fi
-
-hey .osd display \
-  -p "$state" \
-  -a "$app" \
-  -s "$sound" \
-  "$icon" "$state"
+hey.do dms ipc call audio ${command[@]}

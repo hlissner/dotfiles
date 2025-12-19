@@ -19,26 +19,14 @@
 #     Write the resulting file to FILE rather than to the clipboard.
 
 main() {
-  hey.requires hyprshot ${swappy:+swappy}
-  if pidof -s hyprshot >/dev/null; then
-    hey.error "Hyprshot already running. Aborting..."
-    exit 0
-  fi
-
   zparseopts -E -D -F -- {s,-swappy}=swappy f:=dest c:=countdown {o,-optimize}=optimize || return 1
   local file="${dest[2]:-$(hey path runtime screencapture.png)}"
-  hey.do hyprshot --silent --mode "${1:-region}" -o "$(dirname $file)" -f "$(basename $file)"
-
-  # It seems hyprshot exits before it's done writing the file...
-  local timer=0.0
-  while [[ ! -s "$file" ]]; do
-    if (( timer >= 3.0 )); then
-      echo "File not created at $file" >&2
-      return 1
-    fi
-    sleep 0.1
-    timer+=0.1
-  done
+  mkdir -p "$(dirname $file)"
+  hey.do dms screenshot \
+    -d $(dirname $file) \
+    --filename $(basename $file) \
+    --no-clipboard ${1:-region} \
+    --no-notify
 
   [[ $dest ]] || trap "rm -f '$file'" EXIT
   if [[ $swappy ]]; then
@@ -54,10 +42,9 @@ main() {
   hey.do notify-send \
     -a hey.screenshot \
     -i $file \
-    -h string:x-canonical-private-synchronous:osd \
-    -h string:category:preview \
     "Sent screenshot to ${dest[2]:-clipboard}"
   hey .play-sound blip
+  sleep 1  # give time for notify to use image file
 }
 
 main $@

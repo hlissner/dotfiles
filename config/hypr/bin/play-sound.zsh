@@ -16,7 +16,8 @@ local dir=$(hey path theme sounds)
 if [[ "$1" == "ls" ]]; then
   ls -l "$dir"
 else
-  [[ $(makoctl mode) == dnd ]] && return
+  dms ipc call inhibit status >/dev/null | grep enabled && return
+
   hey.requires play
   zparseopts -E -D -F -- v:=volume || exit 1
   local file=$(echo "$dir"/$1.{ogg,wav,mp3}(-.N[1]))

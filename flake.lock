@@ -23,25 +23,27 @@
         "type": "github"
       }
     },
-    "blender-bin": {
+    "dankMaterialShell": {
       "inputs": {
+        "dgop": [
+          "dgop"
+        ],
         "nixpkgs": [
-          "nixpkgs-unstable"
-        ]
+          "nixpkgs"
+        ],
+        "quickshell": "quickshell"
       },
       "locked": {
-        "dir": "blender",
-        "lastModified": 1763587309,
-        "narHash": "sha256-thH+603iAFvKojLbI+LiJXtrR0WwlikZpyp68C2nD1A=",
-        "owner": "edolstra",
-        "repo": "nix-warez",
-        "rev": "9417de2cd97c03c12cd063e01e95eda790177dcb",
+        "lastModified": 1765675742,
+        "narHash": "sha256-R6VIWIEB+LxUeHFYd8ffMq2HBjoIzCYzOOJAwF4mkw8=",
+        "owner": "AvengeMedia",
+        "repo": "DankMaterialShell",
+        "rev": "ea205ebd1256eacfa657c0ccb0cf9c81e292b286",
         "type": "github"
       },
       "original": {
-        "dir": "blender",
-        "owner": "edolstra",
-        "repo": "nix-warez",
+        "owner": "AvengeMedia",
+        "repo": "DankMaterialShell",
         "type": "github"
       }
     },
@@ -67,6 +69,26 @@
         "type": "github"
       }
     },
+    "dgop": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1765583951,
+        "narHash": "sha256-QDCrQorCAesnsOQJk+cTszazGitf9NDqIEMxzUEtotE=",
+        "owner": "AvengeMedia",
+        "repo": "dgop",
+        "rev": "57279532bc932b93df79d866b0663b1753cefda1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "AvengeMedia",
+        "repo": "dgop",
+        "type": "github"
+      }
+    },
     "emacs-overlay": {
       "inputs": {
         "nixpkgs": [
@@ -75,11 +97,11 @@
         "nixpkgs-stable": "nixpkgs-stable"
       },
       "locked": {
-        "lastModified": 1763716549,
-        "narHash": "sha256-nZe4Vl3NOJn6HnWM3LUnnUgWNZiI3CteYusb7WEZ/p0=",
+        "lastModified": 1765666576,
+        "narHash": "sha256-nBKciPE1xox0UBcUKgGSjl5NlmX3mZCKPjWUnDP7fD8=",
         "owner": "nix-community",
         "repo": "emacs-overlay",
-        "rev": "17a8fe835d67419003e7592b14f2208ac018fc36",
+        "rev": "fe3b2b9eeef2150992104730612230bbe061dca3",
         "type": "github"
       },
       "original": {
@@ -116,27 +138,27 @@
         ]
       },
       "locked": {
-        "lastModified": 1758463745,
-        "narHash": "sha256-uhzsV0Q0I9j2y/rfweWeGif5AWe0MGrgZ/3TjpDYdGA=",
+        "lastModified": 1765605144,
+        "narHash": "sha256-RM2xs+1HdHxesjOelxoA3eSvXShC8pmBvtyTke4Ango=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "3b955f5f0a942f9f60cdc9cacb7844335d0f21c3",
+        "rev": "90b62096f099b73043a747348c11dbfcfbdea949",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
-        "ref": "release-25.05",
+        "ref": "release-25.11",
         "repo": "home-manager",
         "type": "github"
       }
     },
     "nixos-hardware": {
       "locked": {
-        "lastModified": 1762847253,
-        "narHash": "sha256-BWWnUUT01lPwCWUvS0p6Px5UOBFeXJ8jR+ZdLX8IbrU=",
+        "lastModified": 1764440730,
+        "narHash": "sha256-ZlJTNLUKQRANlLDomuRWLBCH5792x+6XUJ4YdFRjtO4=",
         "owner": "nixos",
         "repo": "nixos-hardware",
-        "rev": "899dc449bc6428b9ee6b3b8f771ca2b0ef945ab9",
+        "rev": "9154f4569b6cdfd3c595851a6ba51bfaa472d9f3",
         "type": "github"
       },
       "original": {
@@ -147,26 +169,26 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1763622513,
-        "narHash": "sha256-1jQnuyu82FpiSxowrF/iFK6Toh9BYprfDqfs4BB+19M=",
+        "lastModified": 1765311797,
+        "narHash": "sha256-mSD5Ob7a+T2RNjvPvOA1dkJHGVrNVl8ZOrAwBjKBDQo=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "c58bc7f5459328e4afac201c5c4feb7c818d604b",
+        "rev": "09eb77e94fa25202af8f3e81ddc7353d9970ac1b",
         "type": "github"
       },
       "original": {
         "id": "nixpkgs",
-        "ref": "nixos-25.05",
+        "ref": "nixos-25.11",
         "type": "indirect"
       }
     },
     "nixpkgs-stable": {
       "locked": {
-        "lastModified": 1763622513,
-        "narHash": "sha256-1jQnuyu82FpiSxowrF/iFK6Toh9BYprfDqfs4BB+19M=",
+        "lastModified": 1765363881,
+        "narHash": "sha256-3C3xWn8/2Zzr7sxVBmpc1H1QfxjNfta5IMFe3O9ZEPw=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "c58bc7f5459328e4afac201c5c4feb7c818d604b",
+        "rev": "d2b1213bf5ec5e62d96b003ab4b5cbc42abfc0d0",
         "type": "github"
       },
       "original": {
@@ -178,11 +200,11 @@
     },
     "nixpkgs-unstable": {
       "locked": {
-        "lastModified": 1763421233,
-        "narHash": "sha256-Stk9ZYRkGrnnpyJ4eqt9eQtdFWRRIvMxpNRf4sIegnw=",
+        "lastModified": 1765472234,
+        "narHash": "sha256-9VvC20PJPsleGMewwcWYKGzDIyjckEz8uWmT0vCDYK0=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "89c2b2330e733d6cdb5eae7b899326930c2c0648",
+        "rev": "2fbfb1d73d239d2402a8fe03963e37aab15abe8b",
         "type": "github"
       },
       "original": {
@@ -194,33 +216,35 @@
     "quickshell": {
       "inputs": {
         "nixpkgs": [
-          "nixpkgs-unstable"
+          "dankMaterialShell",
+          "nixpkgs"
         ]
       },
       "locked": {
-        "lastModified": 1763629934,
-        "narHash": "sha256-jWz10RbNAyylJbH4cUTLS/CsDjkd8gxfT8OsIgQIgEg=",
+        "lastModified": 1764663772,
+        "narHash": "sha256-sHqLmm0wAt3PC4vczJeBozI1/f4rv9yp3IjkClHDXDs=",
         "ref": "refs/heads/master",
-        "rev": "ed036d514b0fdbce03158a0b331305be166f4555",
-        "revCount": 708,
+        "rev": "26531fc46ef17e9365b03770edd3fb9206fcb460",
+        "revCount": 713,
         "type": "git",
-        "url": "https://git.outfoxxed.me/outfoxxed/quickshell"
+        "url": "https://git.outfoxxed.me/quickshell/quickshell"
       },
       "original": {
+        "rev": "26531fc46ef17e9365b03770edd3fb9206fcb460",
         "type": "git",
-        "url": "https://git.outfoxxed.me/outfoxxed/quickshell"
+        "url": "https://git.outfoxxed.me/quickshell/quickshell"
       }
     },
     "root": {
       "inputs": {
         "agenix": "agenix",
-        "blender-bin": "blender-bin",
+        "dankMaterialShell": "dankMaterialShell",
+        "dgop": "dgop",
         "emacs-overlay": "emacs-overlay",
         "home-manager": "home-manager_2",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
-        "nixpkgs-unstable": "nixpkgs-unstable",
-        "quickshell": "quickshell"
+        "nixpkgs-unstable": "nixpkgs-unstable"
       }
     },
     "systems": {

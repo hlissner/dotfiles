@@ -20,7 +20,7 @@ in {
       agent = {
         enable = true;
         pinentryPackage = pkgs.pinentry-rofi.override {
-          rofi = pkgs.rofi-wayland-unwrapped;
+          rofi = pkgs.rofi-unwrapped;
         };
       };
     };

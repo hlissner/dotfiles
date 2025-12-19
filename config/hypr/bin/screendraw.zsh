@@ -50,9 +50,9 @@ cat >$cfgfile <<EOF
 EOF
 trap "rm -f '$cfgfile' '$inifile'" EXIT
 
-hey .osd toggle --on -P "" "Screen draw on"
+notify-send -a "" "Screen draw on"
 hyprctl keyword decoration:dim_inactive false
 # Wayland backend is unreliable on hyprland.
 GDK_BACKEND=x11 hey.do gromit-mpx --active
 hyprctl keyword decoration:dim_inactive true
-hey .osd toggle --off "" "Screen draw off"
+notify-send -a "" "Screen draw off"

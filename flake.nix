@@ -13,20 +13,21 @@
   inputs = 
     {
       # Core dependecies
-      nixpkgs.url = "nixpkgs/nixos-25.05";
+      nixpkgs.url = "nixpkgs/nixos-25.11";
       nixpkgs-unstable.url = "nixpkgs/nixos-unstable";
-      home-manager.url = "github:nix-community/home-manager/release-25.05";
+      home-manager.url = "github:nix-community/home-manager/release-25.11";
       home-manager.inputs.nixpkgs.follows = "nixpkgs";
       agenix.url = "github:ryantm/agenix";
       agenix.inputs.nixpkgs.follows = "nixpkgs";
 
       # Extras (imported directly by modules/hosts that need them)
-      quickshell.url = "git+https://git.outfoxxed.me/outfoxxed/quickshell";
-      quickshell.inputs.nixpkgs.follows = "nixpkgs-unstable";
-      # hyprpicker.url = "github:hyprwm/hyprpicker";
-      # hyprpicker.inputs.nixpkgs.follows = "nixpkgs-unstable";
-      blender-bin.url = "github:edolstra/nix-warez?dir=blender";
-      blender-bin.inputs.nixpkgs.follows = "nixpkgs-unstable";
+      dgop.url = "github:AvengeMedia/dgop";
+      dgop.inputs.nixpkgs.follows = "nixpkgs";
+      dankMaterialShell.url = "github:AvengeMedia/DankMaterialShell";
+      dankMaterialShell.inputs.nixpkgs.follows = "nixpkgs";
+      dankMaterialShell.inputs.dgop.follows = "dgop";
+      # blender-bin.url = "github:edolstra/nix-warez?dir=blender";
+      # blender-bin.inputs.nixpkgs.follows = "nixpkgs-unstable";
       emacs-overlay.url = "github:nix-community/emacs-overlay";
       emacs-overlay.inputs.nixpkgs.follows = "nixpkgs";
       nixos-hardware.url = "github:nixos/nixos-hardware";

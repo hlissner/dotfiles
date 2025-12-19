@@ -29,7 +29,7 @@ in {
       fontDir.enable = true;
       enableGhostscriptFonts = true;
       packages = with pkgs; [
-        ubuntu_font_family
+        ubuntu-classic
         dejavu_fonts
         symbola
       ];

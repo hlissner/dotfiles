@@ -108,6 +108,7 @@ with builtins;
     };
     services = {
       ssh.enable = true;
+      flatpak.enable = true;
     };
     system = {
       utils.enable = true;
@@ -123,9 +124,7 @@ with builtins;
       gxplugins-lv2
       ladspaPlugins
 
-      # calibre
-      # signal-desktop
-      # zoom-us
+      google-chrome  # for sites that hate firefox
     ];
   };
 
@@ -150,7 +149,7 @@ with builtins;
     # ...But sometimes the monitors will fall asleep and I'll forget I haven't
     # suspended the system so I'll press the power button thinking I'm waking it
     # up, only to initiate shutdown, so no-op the power button.
-    services.logind.powerKey = "ignore";
+    services.logind.settings.Login.HandlePowerKey = "ignore";
 
     fileSystems = {
       "/" = {

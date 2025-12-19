@@ -18,7 +18,9 @@ in mkIf (any (s: hasPrefix "gpu/nvidia" s) hardware) (mkMerge [
       graphics = {
         enable = true;
         enable32Bit = true;
-        extraPackages = [ pkgs.vaapiVdpau ];
+        extraPackages = [
+          pkgs.libva-vdpau-driver
+        ];
       };
       nvidia = {
         # Use the NVidia open source kernel module (not to be confused with the
@@ -35,9 +37,6 @@ in mkIf (any (s: hasPrefix "gpu/nvidia" s) hardware) (mkMerge [
         package = config.boot.kernelPackages.nvidiaPackages.beta;
       };
     };
-
-    # REVIEW: Remove when NixOS/nixpkgs#324921 is backported to stable
-    boot.kernelParams = [ "nvidia-drm.fbdev=1" ];
 
     environment = {
       systemPackages = with pkgs; [

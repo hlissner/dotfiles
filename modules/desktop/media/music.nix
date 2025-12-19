@@ -10,12 +10,12 @@ in {
 
   config = mkIf cfg.enable {
     user.packages = with pkgs; [
-      unstable.beets          # library management
-      hey.packages.feishin    # REVIEW: NixOS/nixpkgs#445926
-      playerctl               # to control feishen
-      unstable.yt-dlp
-      picard                  # for editing tags
-      unstable.id3v2          # for editing tags (CLI)
+      beets          # library management
+      feishin        # media player
+      playerctl      # to control feishen
+      yt-dlp
+      picard         # for editing tags
+      id3v2          # for editing tags (CLI)
     ];
 
     home.configFile = {
