@@ -10,8 +10,8 @@ let cfg = config.modules.desktop.hyprland;
     primaryMonitor = findFirst (x: x.primary) {} cfg.monitors;
 in {
   imports = [
-    hey.modules.dankMaterialShell.dankMaterialShell
-    # hey.modules.dankMaterialShell.greeter
+    hey.modules.dank-material-shell.dank-material-shell
+    # hey.modules.dank-material-shell.greeter
   ];
 
   options.modules.desktop.hyprland = with types; {
@@ -74,7 +74,7 @@ in {
       # portalPackage = hey.inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
     };
 
-    programs.dankMaterialShell = {
+    programs.dank-material-shell = {
       enable = true;
       systemd = {
         enable = true;

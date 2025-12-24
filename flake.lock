@@ -23,7 +23,7 @@
         "type": "github"
       }
     },
-    "dankMaterialShell": {
+    "dank-material-shell": {
       "inputs": {
         "dgop": [
           "dgop"
@@ -34,11 +34,11 @@
         "quickshell": "quickshell"
       },
       "locked": {
-        "lastModified": 1765675742,
-        "narHash": "sha256-R6VIWIEB+LxUeHFYd8ffMq2HBjoIzCYzOOJAwF4mkw8=",
+        "lastModified": 1766554434,
+        "narHash": "sha256-wadlRnmdRndJeDC43VEZU0pQQ5kHPDbDG4oTtpad8T8=",
         "owner": "AvengeMedia",
         "repo": "DankMaterialShell",
-        "rev": "ea205ebd1256eacfa657c0ccb0cf9c81e292b286",
+        "rev": "8fdc748ed2c697c8829d480eb58f6056a8cd5012",
         "type": "github"
       },
       "original": {
@@ -216,7 +216,7 @@
     "quickshell": {
       "inputs": {
         "nixpkgs": [
-          "dankMaterialShell",
+          "dank-material-shell",
           "nixpkgs"
         ]
       },
@@ -238,7 +238,7 @@
     "root": {
       "inputs": {
         "agenix": "agenix",
-        "dankMaterialShell": "dankMaterialShell",
+        "dank-material-shell": "dank-material-shell",
         "dgop": "dgop",
         "emacs-overlay": "emacs-overlay",
         "home-manager": "home-manager_2",
