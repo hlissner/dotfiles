@@ -10,8 +10,8 @@ in {
 
   config = mkIf cfg.enable {
     user.packages = with pkgs; [
+      hey.packages.feishin  # media player
       beets          # library management
-      feishin        # media player
       playerctl      # to control feishen
       yt-dlp
       picard         # for editing tags
