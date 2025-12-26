@@ -20,6 +20,23 @@ mkIf (config.modules.profiles.role == "workstation") (mkMerge [
       #   optimizations, these aren't the droids you're looking for!
       # kernelParams = [ "mitigations=off" ];
 
+      # Optimizations for desktops/gaming
+      kernel.sysctl = {
+        "kernel.sched_cfs_bandwidth_slice_us" = 3000;
+        # This is required due to some games being unable to reuse their TCP ports
+        # if they're killed and restarted quickly - the default timeout is too
+        # large.
+        "net.ipv4.tcp_fin_timeout" = 5;
+        # Prevents intentional slowdowns in case games experience split locks This
+        # is valid for kernels v6.0+
+        "kernel.split_lock_mitigate" = 0;
+        # USE MAX_INT - MAPCOUNT_ELF_CORE_MARGIN.
+        # see comment in include/linux/mm.h in the kernel tree.
+        "vm.max_map_count" = 2147483642;
+        # The default maximum is too low, which starves IO hungry apps.
+        "fs.inotify.max_user_watches" = 524288;
+      };
+
       loader = {
         # I'm not a big fan of Grub, so if it's not in use...
         systemd-boot.enable = mkDefault true;
@@ -45,9 +62,6 @@ mkIf (config.modules.profiles.role == "workstation") (mkMerge [
         "ahci"         # SATA devices on modern AHCI controllers
         "sd_mod"       # SCSI, SATA, and IDE devices
       ];
-
-      # The default maximum is too low, which starves IO hungry apps.
-      kernel.sysctl."fs.inotify.max_user_watches" = 524288;
     };
 
     # TODO ...

@@ -80,7 +80,7 @@ with hey.lib;
       # initrd.systemd.enable = true;
       # Prefer the latest kernel; this will be overridden on more security
       # conscious systems, among other settings in modules/security.nix.
-      kernelPackages = mkDefault pkgs.linuxKernel.packages.linux_6_18;
+      kernelPackages = mkDefault pkgs.linuxKernel.packages.linux_xanmod_latest;
       loader = {
         efi.canTouchEfiVariables = mkDefault true;
         # To not overwhelm the boot screen.

@@ -30,7 +30,7 @@ in mkIf (any (s: hasPrefix "gpu/nvidia" s) hardware) (mkMerge [
         # https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus
         # Only available from driver 515.43.04+. Currently alpha-quality/buggy,
         # so false is currently the recommended setting.
-        open = mkDefault true;
+        open = mkDefault false;
         # Save some idle watts.
         powerManagement.enable = true;  # see NixOS/nixos-hardware#348
         modesetting.enable = true;
