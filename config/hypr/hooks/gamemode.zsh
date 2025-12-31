@@ -13,6 +13,7 @@
 
 case $1 in
   --on)
+    # systemctl start --user gamemoded.service
     echo "Started gamemode..."
     hey.do hyprctl --batch \
       keyword decoration:blur:enabled 0 \; \
@@ -32,6 +33,6 @@ case $1 in
       keyword misc:vrr 0
     notify-send "   Gamemode ended!"
     sleep 1
-    systemctl stop --user gamemoded.service
+    # systemctl stop --user gamemoded.service
     ;;
 esac
