@@ -8,11 +8,16 @@ directory: ~/music/library
 library: ~/music/library/db
 convert:
   auto: yes
+  dest: ~/music/converted
   embed: yes
   copy_album_art: yes
-  opts: -ab 320k -ac 2 -ar 48000
   never_convert_lossy_files: yes
-  extension: mp3
+  extension: opus
+  format: opus
+  formats:
+    mp3: ffmpeg -i $source -y -vn -aq 10 -ab 320k -ac 2 -ar 48000 $dest
+    ogg: ffmpeg -i $source -y -vn -acodec libvorbis -aq 10 $dest
+    opus: ffmpeg -i $source -y -vn -acodec libopus -ab 256k -vbr on $dest
 albumtypes:
   types:
     - ep: 'EP'
@@ -27,6 +32,7 @@ paths:
   comp: compilations/$album%aunique{} [$year]$atypes/$track $title
   albumtype:soundtrack: soundtracks/$album [$year]$atypes/$track $title
 import:
+  autotag: no
   write: no
   copy: yes
   move: no
