@@ -20,14 +20,40 @@
 
 zparseopts -E -D -- p:=player
 
-local command=()
-case $1 in
-  mute)    command=( mute )      ;;
-  micmute) command=( micmute )   ;;
-  +*)      command=( increment 5 ) ;;
-  -*)      command=( decrement 5 ) ;;
+if [[ $player ]]; then
+  hey.requires playerctl
 
-  *) hey.abort $1 ;;
-esac
+  local sound=
+  case $1 in
+    mute) sound=volume-toggle ;;
+    +*)   sound=volume-up     ;;
+    -*)   sound=volume-down   ;;
 
-hey.do dms ipc call audio ${command[@]}
+    *) hey.abort $1 ;;
+  esac
+
+  case $1 in
+    toggle) hey.abort "Cannot toggle the player's volume" ;;
+    +*) hey.do playerctl -p "${player[2]}" volume $(( ${1#+} / 100.0 ))+ ;;
+    -*) hey.do playerctl -p "${player[2]}" volume $(( ${1#-} / 100.0 ))- ;;
+  esac
+  state=$(playerctl -p "${player[2]}" volume)
+  if [[ -z $state ]]; then
+    hey.error "Could not read volume from player: ${player[2]}"
+    exit 1
+  fi
+
+  hey .play-sound $sound
+else
+  local command=()
+  case $1 in
+    mute)    command=( mute )      ;;
+    micmute) command=( micmute )   ;;
+    +*)      command=( increment 5 ) ;;
+    -*)      command=( decrement 5 ) ;;
+
+    *) hey.abort $1 ;;
+  esac
+
+  hey.do dms ipc call audio ${command[@]}
+fi
