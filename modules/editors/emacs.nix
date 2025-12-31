@@ -66,6 +66,8 @@ in {
       texlive.combined.scheme-medium
       # :lang nix
       age
+      # :lang python
+      unstable.ty
     ];
 
     environment.variables.PATH = [ "$XDG_CONFIG_HOME/emacs/bin" ];
