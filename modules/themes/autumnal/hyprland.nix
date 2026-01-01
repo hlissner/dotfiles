@@ -36,8 +36,8 @@ in {
     }
 
     # Since we can't focus anything with rofi up anyway, convey this visually.
-    layerrule = dimaround, rofi
-    layerrule = animation slide top, rofi
+    layerrule = dim_around on, match:namespace rofi
+    layerrule = animation slide top, match:namespace rofi
   '';
 
   home.configFile."doom/config.local.el".text = ''
