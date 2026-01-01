@@ -126,6 +126,8 @@ with builtins;
 
       google-chrome  # for sites that hate firefox
     ];
+
+    networking.firewall.allowedTCPPorts = [ 4333 ];
   };
 
   hardware = { ... }: {
@@ -166,6 +168,7 @@ with builtins;
         fsType = "ext4";
         options = [ "noatime" ];
       };
+
       "/media/data" = {
         device = "/dev/disk/by-label/data";
         fsType = "ext4";
@@ -181,8 +184,14 @@ with builtins;
         fsType = "ntfs";
         options = [ "defaults" "noauto" "nofail" "noatime" "nodev" "exec" "umask=000" "uid=1000" "gid=1000" "x-systemd.automount" ];
       };
+
       "/media/nas" = {
         device = "nas0.lan:/mnt/nas/users/hlissner/files";
+        fsType = "nfs";
+        options = [ "noauto" "nofail" "noatime" "nfsvers=4.2" "x-systemd.automount" "x-systemd.idle-timeout=600" ];
+      };
+      "/media/dl" = {
+        device = "nas0.lan:/mnt/nas/media";
         fsType = "nfs";
         options = [ "noauto" "nofail" "noatime" "nfsvers=4.2" "x-systemd.automount" "x-systemd.idle-timeout=600" ];
       };

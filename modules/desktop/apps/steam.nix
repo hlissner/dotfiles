@@ -17,8 +17,8 @@ in {
       steam = {
         enable = true;
         remotePlay.openFirewall = true;
+        gamescopeSession.enable = true;
       };
-      gamescope.enable = true;
       # Makes gamemoderun available, but it must be selectively enabled for
       # games by changing said game's launch options to 'gamemoderun %command%'.
       gamemode = {

@@ -1,4 +1,4 @@
-plugins: inline convert duplicates edit export fetchart thumbnails albumtypes musicbrainz
+plugins: inline convert duplicates edit export replace fetchart thumbnails albumtypes musicbrainz
 threaded: yes
 alt_filename: albumart
 original-date: no

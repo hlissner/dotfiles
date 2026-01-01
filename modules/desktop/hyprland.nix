@@ -166,7 +166,7 @@ in {
       # };
 
       # REVIEW: Get rid of this when wtype adds mouse support (atx/wtype#24).
-      ydotool.enable = true;
+      # ydotool.enable = true;
     };
 
     environment.systemPackages = with pkgs; [

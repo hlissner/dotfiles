@@ -21,7 +21,7 @@ function rcp {
 }
 
 function rcpd {
-  rcp --delete --delete-after "$@"
+  rcp "$@" --delete --delete-during
 }
 
 function available-host {
@@ -82,9 +82,9 @@ case $host in
   htpc)
     if available-host nas0.lan; then
       for category in audiobooks books anime documentaries movies tv; do
-        rcp "root@nas0.lan:/mnt/nas/torrents/complete/$category/" "$HOME/jellyfin/$category/"
+        rcp "root@nas0.lan:/mnt/nas/media/$category/" "$HOME/jellyfin/$category/"
       done
-      ssh root@nas0.lan "rsync -azPJ /mnt/nas/torrents/complete/music/ /mnt/nas/users/hlissner/files/music/unsorted/"
+      ssh root@nas0.lan "rsync -azPJ /mnt/nas/media/music/ /mnt/nas/users/hlissner/files/music/unsorted/"
     else
       hey.error "Couldn't connect to nas0.lan"
     fi
