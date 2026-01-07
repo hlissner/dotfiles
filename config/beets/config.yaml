@@ -1,18 +1,24 @@
-plugins: inline convert duplicates edit export replace fetchart thumbnails albumtypes musicbrainz
-threaded: yes
-alt_filename: albumart
-original-date: no
+plugins:
+  - inline
+  - convert
+  - duplicates
+  - edit
+  - export
+  - fetchart
+  - albumtypes
+  - permissions
+  - bareasc
+  - unimported
 per_disc_numbering: no
 
-directory: ~/music/library
-library: ~/music/library/db
+directory: ~/music
+library: ~/music/db
 convert:
   auto: yes
   dest: ~/music/converted
   embed: yes
   copy_album_art: yes
   never_convert_lossy_files: yes
-  extension: opus
   format: opus
   formats:
     mp3: ffmpeg -i $source -y -vn -aq 10 -ab 320k -ac 2 -ar 48000 $dest
@@ -21,30 +27,28 @@ convert:
 albumtypes:
   types:
     - ep: 'EP'
-    - op: 'OP'
     - single: 'Single'
     - live: 'Live'
     - remix: 'Remix'
   bracket: '[]'
 paths:
-  default: artists/$albumartist/$album%aunique{} [$year]$atypes/$track $title
-  singleton: singles/$artist - $title
-  comp: compilations/$album%aunique{} [$year]$atypes/$track $title
-  albumtype:soundtrack: soundtracks/$album [$year]$atypes/$track $title
+  default: albums/$albumartist/$year - $album%if{$atypes, }$atypes/%if{$multidisc,$disc-}$track $title
+  singleton: singletons/$artist - $title
+  comp: compilations/$year - $album%aunique{}%if{$atypes, }$atypes/%if{$multidisc,$disc-}$track $title
+  albumtype:soundtrack: soundtracks/$year - $album%aunique{}%if{$atypes, }$atypes/%if{$multidisc,$disc-}$track $title
+  albumtype:stream: streams/$albumartist/$year - $album%aunique{}%if{$atypes, }$atypes/%if{$multidisc,$disc-}$track $title
+item_fields:
+  multidisc: 1 if disctotal > 1 else 0
 import:
   autotag: no
   write: no
-  copy: yes
-  move: no
-  resume: ask
   incremental: yes
-  quiet_fallback: skip
-  log: ~/music/library/beet.log
-musicbrainz:
-  extra_tags: [barcode, catalognum, country, year]
-  genres: yes
-  external_ids:
-    bandcamp: yes
-    discogs: yes
-    spotify: yes
-    tidal: yes
+  log: ~/music/beet.log
+fetchart:
+  auto: yes
+permissions:
+  file: 640
+  dir: 750
+unimported:
+  ignore_extensions: nsp ndignore log
+  ignore_subdirectories: unsorted

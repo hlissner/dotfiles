@@ -16,6 +16,11 @@ in {
       yt-dlp
       picard         # for editing tags
       id3v2          # for editing tags (CLI)
+
+      r128gain
+      shntool
+      cuetools
+      flac
     ];
 
     home.configFile = {
