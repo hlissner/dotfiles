@@ -21,13 +21,8 @@
       agenix.inputs.nixpkgs.follows = "nixpkgs";
 
       # Extras (imported directly by modules/hosts that need them)
-      dgop.url = "github:AvengeMedia/dgop";
-      dgop.inputs.nixpkgs.follows = "nixpkgs";
-      dank-material-shell.url = "github:AvengeMedia/DankMaterialShell";
-      dank-material-shell.inputs.nixpkgs.follows = "nixpkgs";
-      dank-material-shell.inputs.dgop.follows = "dgop";
-      # blender-bin.url = "github:edolstra/nix-warez?dir=blender";
-      # blender-bin.inputs.nixpkgs.follows = "nixpkgs-unstable";
+      dms.url = "github:AvengeMedia/DankMaterialShell";
+      dms.inputs.nixpkgs.follows = "nixpkgs-unstable";
       emacs-overlay.url = "github:nix-community/emacs-overlay";
       emacs-overlay.inputs.nixpkgs.follows = "nixpkgs";
       nixos-hardware.url = "github:nixos/nixos-hardware";

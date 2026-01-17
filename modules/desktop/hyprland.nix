@@ -10,8 +10,8 @@ let cfg = config.modules.desktop.hyprland;
     primaryMonitor = findFirst (x: x.primary) {} cfg.monitors;
 in {
   imports = [
-    hey.modules.dank-material-shell.dank-material-shell
-    # hey.modules.dank-material-shell.greeter
+    hey.modules.dms.dank-material-shell
+    # hey.modules.dms.greeter
   ];
 
   options.modules.desktop.hyprland = with types; {
@@ -66,26 +66,27 @@ in {
 
     programs.hyprland = {
       enable = true;
+      # withUWSM = true;
       xwayland.enable = true;
       package = pkgs.unstable.hyprland;
       portalPackage = pkgs.unstable.xdg-desktop-portal-hyprland;
-
-      # package = hey.inputs.hyprland.packages.${final.stdenv.hostPlatform.system}.hyprland;
-      # portalPackage = hey.inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
     };
 
     programs.dank-material-shell = {
       enable = true;
+
       systemd = {
         enable = true;
         restartIfChanged = true;
       };
 
+      dgop.package = pkgs.unstable.dgop;
+
       # FIXME: Not working yet
       # greeter = {
       #   enable = true;
       #   compositor.name = "hyprland";
-      #   configHome = "/home/${config.user.name}";
+      #   # configHome = "/home/${config.user.name}";
       #   # configFiles = [
       #   #   "/home/${config.user.name}/.config/DankMaterialShell/settings.json"
       #   # ];
@@ -222,9 +223,9 @@ in {
                  DISPLAY WAYLAND_DISPLAY \
                  XDG_CURRENT_DESKTOP \
                  HYPRLAND_INSTANCE_SIGNATURE
+          hey.do systemctl start --user dms.service
           hey.do hyprlock --immediate
           sleep 0.1
-          hey.do systemctl --user start hyprland-session.target
           hey .play-sound startup
         '';
 
@@ -320,15 +321,15 @@ in {
         icon = "redshift";
         exec = "dms ipc night toggle";
       })
-      (mkLauncherEntry "Hyprpicker: grab RGB at point" {
+      (mkLauncherEntry "Color picker: grab RGB at point" {
         icon = "com.github.finefindus.eyedropper";
         exec = "dms color pick --rgb -a";
       })
-      (mkLauncherEntry "Hyprpicker: grab HSL at point" {
+      (mkLauncherEntry "Color picker: grab HSL at point" {
         icon = "com.github.finefindus.eyedropper";
         exec = "dms color pick --hsl -a";
       })
-      (mkLauncherEntry "Hyprpicker: grab hex at point" {
+      (mkLauncherEntry "Color picker: grab hex at point" {
         icon = "com.github.finefindus.eyedropper";
         exec = "dms color pick --hex -a";
       })
