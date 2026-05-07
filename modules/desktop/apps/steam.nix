@@ -76,6 +76,6 @@ in {
     ] ++ (if cfg.mangohud.enable then [ pkgs.mangohud ] else []);
 
     # Better for steam proton games
-    systemd.extraConfig = "DefaultLimitNOFILE=1048576";
+    systemd.settings.Manager.DefaultLimitNOFILE = 1048576;
   };
 }

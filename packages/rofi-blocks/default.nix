@@ -11,7 +11,7 @@
 , glib
 , cairo
 , gobject-introspection
-, wrapGAppsHook }:
+, wrapGAppsHook3 }:
 
 stdenv.mkDerivation rec {
   name = "rofi-blocks";
@@ -27,7 +27,7 @@ stdenv.mkDerivation rec {
     autoreconfHook
     pkg-config
     gobject-introspection
-    wrapGAppsHook
+    wrapGAppsHook3
   ];
 
   buildInputs = [

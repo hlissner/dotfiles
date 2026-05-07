@@ -43,7 +43,7 @@ in {
         fontDir.enable = true;
         enableGhostscriptFonts = true;
         packages = with pkgs; [
-          ubuntu_font_family
+          ubuntu-classic
           dejavu_fonts
           symbola
         ];
@@ -82,7 +82,7 @@ in {
 
       user.packages = with pkgs; [
         feh       # image viewer
-        xdragon   # drag'n'drop from the terminal
+        dragon-drop # drag'n'drop from the terminal
         xclip
         xdotool
         xorg.xwininfo
