@@ -39,8 +39,6 @@ else
     XDG_SESSION_DESKTOP
     XDG_SEAT
     XDG_VTNR
-    # bspwm
-    BSPWM_SOCKET
     # hyprland
     HYPRLAND_CMD
     HYPRLAND_INSTANCE_SIGNATURE

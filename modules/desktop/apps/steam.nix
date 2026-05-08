@@ -17,6 +17,7 @@ in {
       steam = {
         enable = true;
         remotePlay.openFirewall = true;
+        gamescopeSession.enable = true;
       };
       gamescope.enable = true;
       # Makes gamemoderun available, but it must be selectively enabled for
@@ -39,6 +40,8 @@ in {
     user.extraGroups = [ "gamemode" ];
 
     environment.systemPackages = with pkgs; [
+      unstable.umu-launcher
+      gamescope
       # Stop Steam from polluting $HOME, and fix symlink/filename issues for a
       # Steam library that lives on an NTFS drive.
       (let pkg = config.programs.steam.package;
@@ -76,6 +79,11 @@ in {
     ] ++ (if cfg.mangohud.enable then [ pkgs.mangohud ] else []);
 
     # Better for steam proton games
-    systemd.settings.Manager.DefaultLimitNOFILE = 1048576;
+    systemd.user.extraConfig = mkDefault "DefaultLimitNOFILE=1048576";
+
+    boot.kernel.sysctl = {
+      "vm.max_map_count" = mkDefault 2147483642;
+      "fs.file-max" = mkDefault 2097152;
+    };
   };
 }

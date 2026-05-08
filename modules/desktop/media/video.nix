@@ -13,43 +13,50 @@ let cfg = config.modules.desktop.media.video;
 in {
   options.modules.desktop.media.video = {
     enable = mkBoolOpt false;
-    capture.enable = mkBoolOpt false;
-    editor.enable = mkBoolOpt false;
     player.enable = mkBoolOpt true;
-    tools.enable = mkBoolOpt true;
   };
 
   config = mkIf cfg.enable (mkMerge [
-    (mkIf cfg.capture.enable {
-      user.packages = with pkgs; [
-        obs-studio  # For streaming/recording footage
-      ];
-    })
-
-    (mkIf cfg.editor.enable {
-      user.packages = with pkgs; [
-        davinci-resolve  # For editing it
-      ];
-    })
-
     (mkIf cfg.player.enable {
-      user.packages = with pkgs; [
+      user.packages = with pkgs.unstable; [
         mpv
         mpvc  # CLI controller for mpv
+        ffmpeg-full
+        yt-dlp
       ];
 
-      # Use hardware decoding, if available
       home.configFile."mpv/mpv.conf".text = ''
-        hwdec=auto
-      '';
-    })
+        profile=gpu-hq
+        vo=gpu-next
+        gpu-api=vulkan
+        hwdec=auto-copy
+        video-sync=display-resample
+        interpolation=yes
+        deband=yes
+        save-position-on-quit=yes
+        osc=no
+        ytdl-format=bestvideo+bestaudio/best
 
-    (mkIf cfg.tools.enable {
-      user.packages = with pkgs; [
-        # Tools for (en|de)coding.
-        ffmpeg-full     # ...in the CLI
-        # handbrake     # ...for the GUI
-      ];
+        [image]
+        profile-cond=path:match('%.jpe?g$') or path:match('%.png$') or path:match('%.webp$') or path:match('%.gif$')
+        image-display-duration=inf
+        loop-file=inf
+      '';
+
+      home.configFile."mpv/input.conf".text = ''
+        MBTN_LEFT cycle pause
+        WHEEL_UP seek 5
+        WHEEL_DOWN seek -5
+        Ctrl+o script-binding select/select-playlist
+      '';
+
+      xdg.mime.defaultApplications = {
+        "video/mp4" = "mpv.desktop";
+        "video/x-matroska" = "mpv.desktop";
+        "video/webm" = "mpv.desktop";
+        "image/png" = "mpv.desktop";
+        "image/jpeg" = "mpv.desktop";
+      };
     })
   ]);
 }

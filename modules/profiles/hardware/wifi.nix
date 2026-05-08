@@ -6,34 +6,65 @@ with builtins;
 with lib;
 with hey.lib;
 let interfaces = config.networking.wireless.interfaces;
+    isWorkstation = config.modules.profiles.role == "workstation";
 in mkIf (elem "wifi" config.modules.profiles.hardware) {
   environment.systemPackages = with pkgs; [
-    wpa_supplicant  # for wpa_cli
+    networkmanager
+    iwd
+    networkmanagerapplet
+    nm-connection-editor
   ];
 
-  networking.supplicant = listToAttrs (map
-    (int: nameValuePair int {
-      # Allow wpa_(cli|gui) to modify networks list
-      userControlled = {
+  networking = mkIf isWorkstation {
+    useDHCP = mkForce false;
+    useNetworkd = mkForce false;
+    wireless = {
+      enable = mkForce false;
+      iwd = {
         enable = true;
-        group = "users";
+        settings = {
+          General = {
+            EnableNetworkConfiguration = true;
+            RoamRetryInterval = 30;
+          };
+          Network = {
+            EnableIPv6 = true;
+            RoutePriorityOffset = 300;
+          };
+          Settings.AutoConnect = true;
+        };
       };
-      configFile = {
-        path = "/etc/wpa_supplicant.d/${int}.conf";
-        writable = true;
+    };
+    networkmanager = {
+      enable = true;
+      wifi.backend = "iwd";
+      dns = "systemd-resolved";
+      unmanaged = [
+        "interface-name:tailscale*"
+        "interface-name:docker*"
+        "interface-name:br-*"
+        "interface-name:virbr*"
+        "interface-name:vboxnet*"
+        "interface-name:waydroid*"
+        "interface-name:wg*"
+        "interface-name:rndis*"
+        "type:bridge"
+      ];
+      settings = {
+        main.no-auto-default = "*";
+        device.wifi.scan-rand-mac-address = "yes";
+        connection.wifi.cloned-mac-address = "stable";
+        connectivity.enabled = "false";
       };
-      extraConf = ''
-        ap_scan=1
-        p2p_disabled=1
-        okc=1
-      '';
-    })
-    interfaces);
+    };
+  };
 
-  systemd.tmpfiles.rules =
-    [ "d /etc/wpa_supplicant.d 700 root root - -" ] ++
-    (map (int: "f /etc/wpa_supplicant.d/${int}.conf 700 root root - -") interfaces);
+  services.resolved = mkIf isWorkstation {
+    enable = true;
+    dnssec = "false";
+  };
 
-  systemd.network.wait-online.ignoredInterfaces = interfaces;
+  systemd.services.NetworkManager-wait-online.enable = mkIf isWorkstation false;
+  systemd.network.wait-online.enable = mkIf isWorkstation false;
   boot.initrd.systemd.network.wait-online.ignoredInterfaces = interfaces;
 }

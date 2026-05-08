@@ -9,10 +9,10 @@
 # EXAMPLES:
 #   hey pull
 #     Update all flakes:
-#   hey pull waybar 'hypr*'
+#   hey pull zen-browser 'hypr*'
 #     Pull only specific inputs (globs are recognized):
-#   hey pull -o waybar@0b6476da32d181ee6b2cabdc5205a46a90521a75 ...
-#   hey pull -o waybar=github:aForkOf/Waybar ...
+#   hey pull -o zen-browser@0b6476da32d181ee6b2cabdc5205a46a90521a75 ...
+#   hey pull -o zen-browser=github:0xc000022070/zen-browser-flake ...
 #     A more concise command for repinning inputs.
 
 (use hey)

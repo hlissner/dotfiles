@@ -1,5 +1,5 @@
 #!/usr/bin/env janet
-# Open a Firefox bookmark via Rofi.
+# Open a Zen/Firefox bookmark via Rofi.
 #
 # SYNOPSIS:
 #   bookmarkmenu [-r|--reload] [--profile PROFILE]
@@ -12,7 +12,7 @@
 
 (defn- profile-dir [&opt profile]
   (some (fn [dir]
-          (def dir (path/join dir ".mozilla" "librewolf"))
+          (def dir (path/join dir ".zen"))
           (when (path/directory? dir)
             (def file (path/join dir "profiles.ini"))
             (when (path/file? file)

@@ -72,22 +72,16 @@ with builtins;
 
       ## Extra
       apps.rofi.enable = true;
-      apps.spotify.enable = true;
       apps.thunar.enable = true;
+      apps.discord.enable = true;
       apps.steam = {
         enable = true;
         libraryDir = "/media/windows/Program Files (x86)/Steam";
       };
       apps.godot.enable = true;
 
-      browsers.default = "librewolf";
-      browsers.librewolf.enable = true;
-      media.cad.enable = true;
-      media.daw.enable = true;
-      media.graphics.enable = true;
-      media.music.enable = true;
+      browsers.zen.enable = true;
       media.video.enable = true;
-      media.video.capture.enable = true;
     };
     dev = {
       cc.enable = true;

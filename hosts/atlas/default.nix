@@ -26,7 +26,7 @@ with builtins;
     };
     # Sometimes it dies, and I need to see why.
     desktop = {
-      bspwm.enable = true;
+      hyprland.enable = true;
       apps = {
         rofi.enable = true;
       };
@@ -35,13 +35,11 @@ with builtins;
         fcitx5-rime.enable = true;
       };
       browsers = {
-        default = "librewolf";
-        librewolf.enable = true;
-        chrome.enable = true;
+        zen.enable = true;
       };
       term = {
         default = "foot";
-        st.enable = true;
+        foot.enable = true;
       };
     };
     dev = {

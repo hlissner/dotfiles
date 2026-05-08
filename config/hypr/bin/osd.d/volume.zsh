@@ -8,7 +8,7 @@
 #   Manipulate input or output volume levels via pamixer, or the volume of any
 #   player controllable via playerctl, then follow up with an OSD popup.
 #
-#   Requires a notification program like mako that supports progress bars.
+#   Requires a notification server that supports progress bars.
 #
 # OPTIONS:
 #   -i
@@ -16,7 +16,7 @@
 #   -o
 #     Affect sound output levels.
 #   -p
-#     Affect any players controllable via playerctl (mainly spotify). Does not
+#     Affect any named player controllable via playerctl. Does not
 #     support toggle.
 
 zparseopts -E -D -- {o,i}=dev p:=player
@@ -32,8 +32,6 @@ esac
 if [[ $player ]]; then
   hey.requires playerctl
   case ${player[2]} in
-    spotify) icon="" ;;
-    # TODO: Add ncmpcpp/mpd/mpc?
     *) icon=""
   esac
   case $1 in

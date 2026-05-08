@@ -46,18 +46,12 @@ with builtins;
       };
 
       apps.rofi.enable = true;
+      apps.discord.enable = true;
       term.default = "foot";
       term.foot.enable = true;
 
-      apps.spotify.enable = true;
-      browsers.default = "librewolf";
-      browsers.librewolf.enable = true;
-      media.cad.enable = true;
-      media.daw.enable = true;
-      media.graphics.enable = true;
-      media.music.enable = true;
+      browsers.zen.enable = true;
       media.video.enable = true;
-      media.video.capture.enable = true;
     };
     dev = {
       cc.enable = true;
