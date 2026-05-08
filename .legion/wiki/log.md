@@ -15,3 +15,5 @@
 - Added task summary for `dotfiles-wayland-visible-shell`.
 - Updated current desktop decisions with the Hyprland visible-session bootstrap rule and foreground startup lock-screen boundary.
 - Extended runtime validation pattern with visible-shell startup hook, session target, DMS/Quickshell, wallpaper, and lock-gate checks.
+- Added task summary for `axiom-autossh-reverse-ssh-tunnel`.
+- Updated current decisions with reverse SSH tunnel port ownership and loopback bind requirements for `charlie` and `axiom`.

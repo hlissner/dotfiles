@@ -17,3 +17,12 @@ When NetworkManager uses iwd as the Wi-Fi backend, NetworkManager owns DHCP/rout
 ## Darwin Boundary
 
 Darwin remains a shared shell/dev/editor/XDG target. Linux desktop/system concerns such as Hyprland, DMS/Quickshell, Steam, NetworkManager/iwd, BlueZ/Blueman, portals, and display-manager wiring must stay out of Darwin imports unless a future Darwin-specific task changes the contract.
+
+## Reverse SSH Tunnels
+
+Current autossh reverse tunnels to `root@8.159.128.125` bind remote loopback explicitly and forward back to each host's local SSH daemon on `127.0.0.1:22`.
+
+- `charlie`: remote `127.0.0.1:2222` -> local `127.0.0.1:22` through the Darwin launchd user agent.
+- `axiom`: remote `127.0.0.1:2223` -> local `127.0.0.1:22` through the NixOS systemd service.
+
+Do not reuse an existing remote port while its host tunnel remains active, and do not relax the remote bind address away from `127.0.0.1` without a new security review.

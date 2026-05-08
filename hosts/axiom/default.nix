@@ -81,6 +81,7 @@ with builtins;
   ## Local config
   config = { pkgs, ... }: {
     user.packages = with pkgs; [
+      autossh
       htop
       k9s
       kubectl
@@ -93,6 +94,26 @@ with builtins;
     services.logrotate.checkConfig = false;
 
     environment.variables.PATH = "$HOME/.opencode/bin:$PATH";
+
+    systemd.services.autossh-reverse-ssh = {
+      description = "Autossh reverse SSH tunnel to 8.159.128.125";
+      after = [ "network-online.target" "sshd.service" ];
+      wants = [ "network-online.target" ];
+      wantedBy = [ "multi-user.target" ];
+      path = [ pkgs.openssh ];
+      environment = {
+        AUTOSSH_GATETIME = "0";
+        HOME = "/home/c1";
+      };
+      serviceConfig = {
+        Type = "simple";
+        User = "c1";
+        WorkingDirectory = "/home/c1";
+        ExecStart = "${pkgs.autossh}/bin/autossh -M 0 -N -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -o ExitOnForwardFailure=yes -o BatchMode=yes -R 127.0.0.1:2223:127.0.0.1:22 root@8.159.128.125";
+        Restart = "always";
+        RestartSec = "10s";
+      };
+    };
 
     networking.firewall = {
       allowedTCPPorts = [ 22 ];
