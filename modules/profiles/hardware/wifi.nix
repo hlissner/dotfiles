@@ -23,7 +23,8 @@ in mkIf (elem "wifi" config.modules.profiles.hardware) {
         enable = true;
         settings = {
           General = {
-            EnableNetworkConfiguration = true;
+            # NetworkManager owns DHCP/routes while using iwd as the Wi-Fi backend.
+            EnableNetworkConfiguration = false;
             RoamRetryInterval = 30;
           };
           Network = {

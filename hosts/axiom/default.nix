@@ -110,8 +110,25 @@ with builtins;
 
   ## Hardware
   hardware = { ... }: {
-    networking.networkmanager.enable = true;
-    networking.interfaces.enp14s0.useDHCP = true;
+    networking = {
+      dhcpcd.enable = mkForce false;
+      networkmanager = {
+        enable = true;
+        ensureProfiles.profiles.enp14s0 = {
+          connection = {
+            id = "enp14s0";
+            type = "ethernet";
+            interface-name = "enp14s0";
+            autoconnect = true;
+          };
+          ipv4.method = "auto";
+          ipv6 = {
+            method = "auto";
+            addr-gen-mode = "stable-privacy";
+          };
+        };
+      };
+    };
 
     boot.supportedFilesystems = [ "ntfs" ];
 

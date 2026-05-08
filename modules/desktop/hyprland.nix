@@ -146,7 +146,7 @@ in {
     services.greetd = {
       enable = true;
       settings.default_session = {
-        command = "${pkgs.unstable.uwsm}/bin/uwsm start -eD Hyprland hyprland.desktop";
+        command = "${config.programs.uwsm.package}/bin/uwsm start -eD Hyprland hyprland-uwsm.desktop";
         user = config.user.name;
       };
     };
