@@ -12,3 +12,6 @@
 - Added task summary for `dotfiles-wayland-runtime-followup`.
 - Updated current desktop/network decisions with Hyprland 0.53 rule syntax and NetworkManager default-connection conclusions.
 - Extended runtime validation pattern with Hyprland `--verify-config` guidance.
+- Added task summary for `dotfiles-wayland-visible-shell`.
+- Updated current desktop decisions with the Hyprland visible-session bootstrap rule and foreground startup lock-screen boundary.
+- Extended runtime validation pattern with visible-shell startup hook, session target, DMS/Quickshell, wallpaper, and lock-gate checks.

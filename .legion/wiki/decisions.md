@@ -10,6 +10,8 @@ Hyprland display-manager wiring should use the evaluated UWSM session entry `hyp
 
 Hyprland 0.53 active configuration must use the current `windowrule`/`layerrule` syntax. `windowrulev2` is a parse error in the evaluated Hyprland 0.53.3 package, and old layer-rule spellings such as `noanim`, `dimaround`, `ignorezero`, and `ignorealpha` should not be used in active config.
 
+Hyprland startup must bootstrap the visible product session before lock-screen or visual hooks can block it. The active startup path is `exec-once = hey hook startup`; the early hook imports compositor environment variables and starts `hyprland-session.target`, while wallpaper remains a later hook. Do not restore foreground `hyprlock --immediate` as a startup gate for DMS/Quickshell or wallpaper; use a real greeter or non-blocking lock flow in a future scoped task if boot-time physical access protection is required.
+
 When NetworkManager uses iwd as the Wi-Fi backend, NetworkManager owns DHCP/routes. iwd's built-in network configuration should stay disabled, and workstation wired DHCP/autoconnect should be modeled through NetworkManager profiles rather than legacy `dhcpcd`. Do not globally set NetworkManager `no-auto-default=*` for workstations unless every required link has a known-good explicit profile, because it can block fallback default connection creation.
 
 ## Darwin Boundary

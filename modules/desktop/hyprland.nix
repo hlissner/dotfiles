@@ -138,11 +138,7 @@ in {
       };
     };
 
-    ## Bootloader.
-    # I don't use a real login screen. Instead, I activate hyprlock immediately
-    # after boot for basic authentication, with a specialized config to make the
-    # boot up process smoother. This is enough to stop casual snoopers from
-    # getting into my desktops.
+    ## Session entry.
     services.greetd = {
       enable = true;
       settings.default_session = {
@@ -158,15 +154,13 @@ in {
         monitors = cfg.monitors;
       };
       hooks = rec {
-        # Launch my hyprlock-powered, pseudo-login screen on `hey hook
-        # on-startup`.
-        startup."05-loginscreen" = ''
+        # UWSM starts Hyprland; this hook connects the product shell services to
+        # the live compositor session before any visual shell/wallpaper hooks run.
+        startup."05-session" = ''
           hey.do systemctl --user import-environment \
                  DISPLAY WAYLAND_DISPLAY \
                  XDG_CURRENT_DESKTOP \
                  HYPRLAND_INSTANCE_SIGNATURE
-          hey.do hyprlock --immediate
-          sleep 0.1
           hey.do systemctl --user start hyprland-session.target
           hey .play-sound startup
         '';

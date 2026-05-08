@@ -13,3 +13,4 @@
 - [Dotfiles Wayland Portal User Units Fix](tasks/dotfiles-wayland-portal-user-units-fix.md)
 - [Dotfiles Wayland Runtime Fixes](tasks/dotfiles-wayland-runtime-fixes.md)
 - [Dotfiles Wayland Runtime Follow-up](tasks/dotfiles-wayland-runtime-followup.md)
+- [Dotfiles Wayland Visible Shell](tasks/dotfiles-wayland-visible-shell.md)
