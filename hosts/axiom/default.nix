@@ -28,7 +28,14 @@ with builtins;
     };
 
     desktop = {
-      hyprland.enable = true;
+      hyprland = {
+        enable = true;
+        monitors = [{
+          mode = "3840x2160@60";
+          position = "0x0";
+          scale = 1.5;
+        }];
+      };
       apps = {
         discord.enable = true;
         steam.enable = true;
