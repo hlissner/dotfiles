@@ -92,6 +92,8 @@ with builtins;
     # ISSUE: https://discourse.nixos.org/t/logrotate-config-fails-due-to-missing-group-30000/28501
     services.logrotate.checkConfig = false;
 
+    environment.variables.PATH = "$HOME/.opencode/bin:$PATH";
+
     networking.firewall = {
       allowedTCPPorts = [ 22 ];
       allowedUDPPorts = [ 7844 ];
@@ -124,6 +126,6 @@ with builtins;
       fsType = "vfat";
     };
 
-    swapDevices = [ ];
+    swapDevices = [ { device = "/dev/disk/by-label/swap"; } ];
   };
 }

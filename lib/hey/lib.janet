@@ -254,7 +254,7 @@
   (when (= "" (or (os/getenv "HEYENV") ""))
     (os/setenv "HEYENV" (flake/json))))
 
-(def- *host-meta* nil)
+(var- *host-meta* nil)
 
 (defn flake/host-meta [&opt key]
   (ensure-heyenv!)
@@ -262,7 +262,7 @@
     (let [host (flake :host)
           flake-path (flake :path)]
       (unless host
-        (abort "HOST environment variable is not set"))
+        (error "HOST environment variable is not set"))
       (set *host-meta*
            (json/decode
             ($<_ nix eval --impure --json

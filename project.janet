@@ -9,7 +9,7 @@
  :dependencies [
    {:url "https://github.com/andrewchambers/janet-posix-spawn.git"}
    {:url "https://github.com/andrewchambers/janet-sh.git"}
-   {:url "https://github.com/janet-lang/spork.git"}
+    {:url "https://github.com/janet-lang/spork.git" :tag "881a92a05f2093d1595ef5bceca93d22675fb0c6"}
    {:url "https://github.com/ianthehenry/judge.git"}
    {:url "https://github.com/janet-lang/sqlite3.git"}
  ])

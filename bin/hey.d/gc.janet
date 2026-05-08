@@ -35,7 +35,7 @@
           (echo :g "> Deleting left-over boot entries...")
           (let [profile (path :profile)]
             (do? $ sudo nix-env --delete-generations old --profile ,profile)
-            (do? $ sudo ,(string profile "/bin/switch-to-configuration") switch)))))
+            (do? $ sudo ,(string profile "/bin/switch-to-configuration") switch))))
       ([err fib]
        (propagate err fib)))
 

@@ -18,8 +18,8 @@ let cfg = config.hey;
     janetTreeDir = "${config.home.dataDir}/janet/jpm_tree";
     isDarwin = pkgs.stdenv.isDarwin;
     heyWrapper = pkgs.writeShellScriptBin "hey" ''
-      export JANET_PATH=${hey.libDir}
-      export JANET_TREE=${hey.libDir}
+      export JANET_PATH=${hey.libDir}:${janetTreeDir}/lib
+      export JANET_TREE=${janetTreeDir}
       exec ${janet}/bin/janet ${hey.binDir}/hey "$@"
     '';
 in {

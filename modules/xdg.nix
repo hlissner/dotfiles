@@ -63,16 +63,19 @@ in {
           '';
         };
 
-        home.configFile."user-dirs.dirs".text = ''
-          XDG_DESKTOP_DIR="${home.fakeDir}/Desktop"
-          XDG_DOCUMENTS_DIR="${home.fakeDir}/Documents"
-          XDG_DOWNLOAD_DIR="${home.fakeDir}/Downloads"
-          XDG_MUSIC_DIR="${home.fakeDir}/Music"
-          XDG_PICTURES_DIR="${home.fakeDir}/Pictures"
-          XDG_PUBLICSHARE_DIR="${home.fakeDir}/Share"
-          XDG_TEMPLATES_DIR="${home.fakeDir}/Templates"
-          XDG_VIDEOS_DIR="${home.fakeDir}/Videos"
-        '';
+        home.configFile."user-dirs.dirs" = {
+          force = true;
+          text = ''
+            XDG_DESKTOP_DIR="${home.fakeDir}/Desktop"
+            XDG_DOCUMENTS_DIR="${home.fakeDir}/Documents"
+            XDG_DOWNLOAD_DIR="${home.fakeDir}/Downloads"
+            XDG_MUSIC_DIR="${home.fakeDir}/Music"
+            XDG_PICTURES_DIR="${home.fakeDir}/Pictures"
+            XDG_PUBLICSHARE_DIR="${home.fakeDir}/Share"
+            XDG_TEMPLATES_DIR="${home.fakeDir}/Templates"
+            XDG_VIDEOS_DIR="${home.fakeDir}/Videos"
+          '';
+        };
 
         system.userActivationScripts.initXDG = ''
           for dir in "$XDG_DESKTOP_DIR" "$XDG_STATE_HOME" "$XDG_DATA_HOME" "$XDG_CACHE_HOME" "$XDG_BIN_HOME" "$XDG_CONFIG_HOME"; do
@@ -96,15 +99,17 @@ in {
       }
 
       (let
-         keyFiles = [ "id_dsa" "id_ecdsa" "id_ecdsa_sk" "id_ed25519" "id_ed25519_sk" "id_rsa" ];
+         keyFiles = [ "id_ed25519" "id_ed25519_sk" "id_ecdsa" "id_ecdsa_sk" "id_rsa" "id_dsa" ];
          keyFilesStr = concatStringsSep " " keyFiles;
          sshConfigDir = "$XDG_CONFIG_HOME/ssh";
-       in mkIf cfg.ssh.enable {
-         programs.ssh.extraConfig = ''
-           Host *
-             ${concatMapStringsSep "\n" (key: "IdentityFile ~/.config/ssh/${key}") keyFiles}
-             UserKnownHostsFile ~/.config/ssh/known_hosts
-         '';
+        in mkIf cfg.ssh.enable {
+          programs.ssh.extraConfig = ''
+            Host *
+              IdentityFile ~/.ssh/id_ed25519
+              ${concatMapStringsSep "\n" (key: "IdentityFile ~/.config/ssh/${key}") keyFiles}
+              AddKeysToAgent yes
+              UserKnownHostsFile ~/.config/ssh/known_hosts
+          '';
 
          environment.systemPackages = with pkgs; with hey.lib.pkgs; [
            (mkWrapper openssh ''
@@ -116,13 +121,14 @@ in {
              wrapProgram "$out/bin/scp" \
                --run "[ -s \"$cfg\" ] && opts='-F \"$cfg\"'" \
                --add-flags '$opts'
-             wrapProgram "$out/bin/ssh-add" \
-               --run "dir=\"$dir\"" \
-               --run 'args=()' \
-               --run '[ $# -eq 0 ] && for f in ${keyFilesStr}; do [ -f "$dir/$f" ] && args+="$dir/$f"; done' \
-               --add-flags '-H "$dir/known_hosts"' \
-               --add-flags '-H "/etc/ssh/ssh_known_hosts"' \
-               --add-flags '"''${args[@]}"'
+              wrapProgram "$out/bin/ssh-add" \
+                --run "dir=\"$dir\"" \
+                --run 'args=()' \
+                --run '[ $# -eq 0 ] && [ -f "$HOME/.ssh/id_ed25519" ] && args+=("$HOME/.ssh/id_ed25519")' \
+                --run '[ $# -eq 0 ] && for f in ${keyFilesStr}; do [ -f "$dir/$f" ] && args+=("$dir/$f"); done' \
+                --add-flags '-H "$dir/known_hosts"' \
+                --add-flags '-H "/etc/ssh/ssh_known_hosts"' \
+                --add-flags '"''${args[@]}"'
            '')
            (mkWrapper ssh-copy-id ''
              wrapProgram "$out/bin/ssh-copy-id" \

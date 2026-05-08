@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "currentTask": "charlie-opencode-server-cloudflare-access",
+  "currentTask": "dotfiles-wayland-product-overhaul",
   "settings": {
     "autoRemind": true,
     "remindBeforeReset": true,
@@ -31,9 +31,16 @@
     {
       "id": "charlie-opencode-server-cloudflare-access",
       "name": "charlie 上 opencode server Cloudflare Access 暴露与自启动",
-      "status": "active",
+      "status": "paused",
       "createdAt": "2026-04-12T03:02:09.684Z",
       "updatedAt": "2026-04-15T09:25:31.226Z"
+    },
+    {
+      "id": "dotfiles-wayland-product-overhaul",
+      "name": "Dotfiles Wayland Product Overhaul",
+      "status": "active",
+      "createdAt": "2026-05-08T00:00:00.000Z",
+      "updatedAt": "2026-05-08T00:00:00.000Z"
     }
   ],
   "pendingProposals": [
