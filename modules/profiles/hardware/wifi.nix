@@ -51,7 +51,6 @@ in mkIf (elem "wifi" config.modules.profiles.hardware) {
         "type:bridge"
       ];
       settings = {
-        main."no-auto-default" = "*";
         device."wifi.scan-rand-mac-address" = "yes";
         connection."wifi.cloned-mac-address" = "stable";
         connectivity.enabled = false;

@@ -8,7 +8,9 @@ Old X11/bspwm/sxhkd/Polybar/Dunst/Waybar/legacy-idle/browser/media/Spotify compa
 
 Hyprland display-manager wiring should use the evaluated UWSM session entry `hyprland-uwsm.desktop`; `hyprland.desktop` is not present when Hyprland is exposed through the NixOS UWSM session package.
 
-When NetworkManager uses iwd as the Wi-Fi backend, NetworkManager owns DHCP/routes. iwd's built-in network configuration should stay disabled, and workstation wired DHCP/autoconnect should be modeled through NetworkManager profiles rather than legacy `dhcpcd`.
+Hyprland 0.53 active configuration must use the current `windowrule`/`layerrule` syntax. `windowrulev2` is a parse error in the evaluated Hyprland 0.53.3 package, and old layer-rule spellings such as `noanim`, `dimaround`, `ignorezero`, and `ignorealpha` should not be used in active config.
+
+When NetworkManager uses iwd as the Wi-Fi backend, NetworkManager owns DHCP/routes. iwd's built-in network configuration should stay disabled, and workstation wired DHCP/autoconnect should be modeled through NetworkManager profiles rather than legacy `dhcpcd`. Do not globally set NetworkManager `no-auto-default=*` for workstations unless every required link has a known-good explicit profile, because it can block fallback default connection creation.
 
 ## Darwin Boundary
 

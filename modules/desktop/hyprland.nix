@@ -251,19 +251,19 @@ in {
         ''}
 
         # Product defaults inspired by Isabel's Hyprland rules.
-        windowrulev2 = workspace 3 silent,class:^(${zenWmClass}|zen|zen-browser)$
-        windowrulev2 = workspace 4 silent,class:^(vesktop|discord)$
-        windowrulev2 = workspace 5 silent,class:^(steam|gamescope)$
-        windowrulev2 = workspace 5 silent,title:^(Friends List|Steam)$
-        windowrulev2 = workspace 8 silent,class:^(blueman-manager|nm-connection-editor)$
-        windowrulev2 = float,class:^(blueman-manager|nm-connection-editor|org.pulseaudio.pavucontrol)$
-        windowrulev2 = float,title:^(Picture-in-Picture)$
-        windowrulev2 = pin,title:^(Picture-in-Picture)$
-        windowrulev2 = suppressevent maximize,class:.*
-        windowrulev2 = immediate,class:^(gamescope|steam_app_.*)$
-        windowrulev2 = idleinhibit fullscreen,class:.*
-        windowrulev2 = idleinhibit focus,class:^(mpv|vesktop|discord|gamescope|steam_app_.*)$
-        layerrule = noanim, selection
+        windowrule = match:class ^(${zenWmClass}|zen|zen-browser)$, workspace 3 silent
+        windowrule = match:class ^(vesktop|discord)$, workspace 4 silent
+        windowrule = match:class ^(steam|gamescope)$, workspace 5 silent
+        windowrule = match:title ^(Friends List|Steam)$, workspace 5 silent
+        windowrule = match:class ^(blueman-manager|nm-connection-editor)$, workspace 8 silent
+        windowrule = match:class ^(blueman-manager|nm-connection-editor|org.pulseaudio.pavucontrol)$, float yes
+        windowrule = match:title ^(Picture-in-Picture)$, float yes
+        windowrule = match:title ^(Picture-in-Picture)$, pin true
+        windowrule = match:class .*, suppress_event maximize
+        windowrule = match:class ^(gamescope|steam_app_.*)$, immediate true
+        windowrule = match:class .*, idle_inhibit fullscreen
+        windowrule = match:class ^(mpv|vesktop|discord|gamescope|steam_app_.*)$, idle_inhibit focus
+        layerrule = match:namespace selection, no_anim true
       '';
       "hypr/hyprland.post.conf".text = cfg.extraConfig;
 

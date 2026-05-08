@@ -9,3 +9,6 @@
 - Added task summary for `dotfiles-wayland-runtime-fixes`.
 - Updated current desktop/network decisions with Hyprland UWSM session entry and NetworkManager+iwd ownership conclusions.
 - Added runtime entry/network ownership validation pattern.
+- Added task summary for `dotfiles-wayland-runtime-followup`.
+- Updated current desktop/network decisions with Hyprland 0.53 rule syntax and NetworkManager default-connection conclusions.
+- Extended runtime validation pattern with Hyprland `--verify-config` guidance.

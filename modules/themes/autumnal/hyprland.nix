@@ -35,10 +35,10 @@ in {
     }
 
     # DMS/Quickshell layers own shell surfaces.
-    layerrule = dimaround, rofi
-    layerrule = animation slide top, rofi
-    layerrule = blur, quickshell
-    layerrule = ignorezero, quickshell
+    layerrule = match:namespace rofi, dim_around true
+    layerrule = match:namespace rofi, animation slide top
+    layerrule = match:namespace quickshell, blur true
+    layerrule = match:namespace quickshell, ignore_alpha 0
   '';
 
   home.configFile."doom/config.local.el".text = ''
