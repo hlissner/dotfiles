@@ -9,6 +9,7 @@
 
 - [Aliyun NixOS Image Host](tasks/aliyun-nixos-image-host.md)
 - [Axiom Autossh Reverse SSH Tunnel](tasks/axiom-autossh-reverse-ssh-tunnel.md)
+- [Axiom Fcitx5 WeChat Input And Wallpaper](tasks/axiom-fcitx5-wechat-wallpaper.md)
 - [Axiom Host](tasks/axiom-host.md)
 - [Axiom Runtime Access And Session Fixes](tasks/axiom-runtime-access-session-fixes.md)
 - [Dotfiles Quickshell Product Desktop](tasks/dotfiles-quickshell-product-desktop.md)

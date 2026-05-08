@@ -177,6 +177,7 @@ in {
 
         # Set wallpaper according to modules.theme.wallpapers
         startup."10-wallpaper" = ''
+          ${pkgs.procps}/bin/pkill -x swaybg || true
           ${concatStringsSep "\n"
             (mapAttrsToList
               (output: w: ''

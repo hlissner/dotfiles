@@ -9,7 +9,13 @@ with builtins;
 
   ## Modules
   modules = {
-    theme.active = "autumnal";
+    theme = {
+      active = "autumnal";
+      wallpapers."*" = {
+        mode = "stretch";
+        path = "/home/c1/the-great-sage.jpg";
+      };
+    };
     xdg.ssh.enable = true;
 
     profiles = {
@@ -43,7 +49,12 @@ with builtins;
       };
       input = {
         colemak.enable = true;
-        fcitx5-rime.enable = true;
+        fcitx5 = {
+          enable = true;
+          rime.enable = true;
+          pinyin.enable = true;
+          theme.flavor = "mocha";
+        };
       };
       browsers = {
         zen.enable = true;

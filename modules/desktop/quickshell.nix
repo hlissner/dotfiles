@@ -34,9 +34,9 @@ in {
 
     systemd.user.services.quickshell = {
       description = "Axiom Quickshell product shell";
-      wantedBy = [ "hyprland-session.target" "graphical-session.target" ];
+      wantedBy = [ "hyprland-session.target" ];
       after = [ "hyprland-session.target" ];
-      partOf = [ "graphical-session.target" ];
+      partOf = [ "hyprland-session.target" ];
       serviceConfig = {
         ExecStart = "${cfg.package}/bin/quickshell --config ${cfg.configName}";
         Restart = "on-failure";

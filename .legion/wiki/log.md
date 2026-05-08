@@ -23,3 +23,4 @@
 - Added task summary for `dotfiles-quickshell-product-desktop`.
 - Updated current desktop decisions with Axiom's Isabel-first repository-owned Quickshell product shell and Rofi/DMS demotion.
 - Added nested worktree `DOTFILES_HOME` / `path:` flake validation pattern.
+- Added task summary for `axiom-fcitx5-wechat-wallpaper`.

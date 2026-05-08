@@ -1,0 +1,26 @@
+# Log
+
+- User requested Fcitx5 plus WeChat input setup on `axiom` using Catppuccin theme.
+- User selected Catppuccin Mocha.
+- User expanded scope from `axiom`-only to a globally reusable Fcitx5 setup with `axiom` enabled.
+- User added wallpaper requirement: use the home-directory `the-great-sage` asset.
+- Local file discovery found `/home/c1/the-great-sage.jpg`.
+- Upstream check found `catppuccin-fcitx5` available and theme directories including `catppuccin-mocha-mauve`.
+- `fcitx5-wechat` / `wechat-input` package attributes were not available in pinned nixpkgs or unstable; fetched `z.weixin.qq.com` assets exposed macOS/Windows downloads but no Linux WeChat Input Method package URL.
+- Added reusable `modules.desktop.input.fcitx5` with GTK/Qt frontends, Rime, Fcitx5 Chinese addons, extra addons, and Catppuccin flavor/accent options.
+- Changed existing `fcitx5-rime` module to delegate to the reusable Fcitx5 module.
+- Updated `axiom` to enable Fcitx5 Rime/Pinyin with Catppuccin Mocha and wallpaper `/home/c1/the-great-sage.jpg`.
+- Review caught that untracked new module files are ignored by git-flake evaluation; staged the new module/task docs so `. #` and `git+file:` validation include them.
+- Verification passed for `axiom` input method enable/type/addons/theme/wallpaper, existing `atlas` compatibility, and `axiom` toplevel derivation evaluation.
+- Review re-run passed with no blocking findings.
+- Wrote walkthrough and PR body evidence. User later explicitly requested continuing the `git-worktree-pr` lifecycle instead of stopping at staged changes.
+- User reported follow-up runtime issues: Quickshell left dock buttons did not respond, and wallpaper appeared small/centered.
+- Adjusted `quickshell.service` to be wanted/part-of only `hyprland-session.target`, preventing early startup from `graphical-session.target` before Hyprland environment import.
+- Adjusted wallpaper startup hook to kill existing `swaybg` before starting the configured wallpaper, preventing stale centered background instances from remaining visible after reload.
+- Changed `axiom` wallpaper mode from `fill` to `stretch` to explicitly scale `/home/c1/the-great-sage.jpg` across the screen.
+- Focused evaluation passed for Quickshell target wiring, generated wallpaper hook, stretched wallpaper path, and `axiom` toplevel derivation after the follow-up fixes.
+- Follow-up review passed with no blocking findings; runtime confirmation remains pending after rebuild/switch.
+- Commit created: `5fe0c6cb feat(axiom): configure fcitx5 input and wallpaper`.
+- PR created: https://github.com/Thrimbda/dotfiles/pull/12
+- Auto-merge could not be enabled because repository setting `enablePullRequestAutoMerge` is off.
+- Required checks reported none; PR merge state is CLEAN with no review blocker. Proceeding with direct squash merge through GitHub PR because checks/review are non-blocking.
