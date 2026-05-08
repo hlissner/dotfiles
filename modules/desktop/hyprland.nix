@@ -77,10 +77,11 @@ in {
     xdg.portal = {
       enable = true;
       xdgOpenUsePortal = true;
-      extraPortals = with pkgs.unstable; [
+      # Avoid duplicate portal user units from merged module defaults.
+      extraPortals = mkForce (with pkgs.unstable; [
         xdg-desktop-portal-hyprland
         xdg-desktop-portal-gtk
-      ];
+      ]);
       config.common.default = [ "hyprland" "gtk" ];
     };
 
