@@ -52,12 +52,7 @@ $ ntfslabel /dev/sdb games
 * Displays
 I have two 27" displays for this system, a Samsung S27E391H and an MSI MD271PW.
 
-To set them up the first time:
+To apply the declarative monitor layout after changing it:
 #+begin_src sh :results none
-xrandr \
-    --dpi 72 \
-    --output DP-1 --mode 1920x1080 --rate 75 --pos 0x0 \
-    --output HDMI-0 --mode 1920x1080 --rate 60 --pos 1920x0 --primary
-# Then reload bspwm
-~/.config/bspwm/bspwmrc
+hyprctl reload
 #+end_src

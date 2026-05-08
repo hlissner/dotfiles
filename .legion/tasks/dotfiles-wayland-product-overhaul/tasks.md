@@ -1,0 +1,22 @@
+# Implementation Tasks
+
+- [x] Mirror/represent task docs in the worktree branch.
+- [x] Remove active X11/bspwm/Waybar/Dunst/swayidle/hypridle and old browser baseline references.
+- [x] Switch workstation hosts to Hyprland product path and Zen browser baseline.
+- [x] Add Hyprland UWSM/greetd, portal, DMS/Quickshell, and Matugen wiring.
+- [x] Add Zen package/input decision and MIME/default-browser direction.
+- [x] Scope multimedia to mpv and Discord/Vesktop.
+- [x] Add Steam/Gamescope/Gamemode/Mangohud/Umu/NOFILE/sysctl tuning.
+- [x] Add workstation Wi-Fi NetworkManager+iwd+resolved reliability and Bluetooth reliability settings.
+- [x] Remove residual config/theme legacy desktop files and Spotify/Spicetify references.
+- [x] Fix validation-discovered package and desktop assertion issues.
+- [x] Fix readiness-review Zen executable, desktop file, and window-class mismatch.
+- [x] Remove remaining host-level Zen default overrides and validate all Zen-enabled hosts.
+- [x] Run and fix `axiom` toplevel dry-run.
+- [x] Run local evaluation/search verification and record blockers.
+- [x] Complete readiness review and record PASS.
+- [x] Create reviewer walkthrough and PR body.
+- [x] Complete Legion wiki writeback.
+- [x] Commit and push PR branch.
+- [ ] Create PR.
+- [ ] Follow PR checks/review, terminal state, cleanup, and main refresh.

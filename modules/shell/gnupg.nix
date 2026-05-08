@@ -32,7 +32,7 @@ in {
             enable = true;
             pinentryPackage = pkgs.pinentry-rofi.override {
               rofi = if config.modules.desktop.type == "wayland"
-                     then pkgs.rofi-wayland-unwrapped
+                     then pkgs.rofi-unwrapped
                      else pkgs.rofi;
             };
           };

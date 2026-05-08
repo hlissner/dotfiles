@@ -59,11 +59,6 @@ in mkIf (any (s: hasPrefix "gpu/nvidia" s) hardware) (mkMerge [
       };
     };
 
-    # Cajole Firefox into video-acceleration (or try).
-    modules.desktop.browsers.librewolf.settings = {
-      "media.ffmpeg.vaapi.enabled" = true;
-      "gfx.webrender.enabled" = true;
-    };
   }
 
   (mkIf (elem "gpu/nvidia/kepler" hardware) {

@@ -10,6 +10,7 @@ with lib;
 with hey.lib;
 let inherit (hey.lib.pkgs.for pkgs) mkLauncherEntry;
     cfg = config.modules.desktop.hyprland;
+    zenWmClass = config.modules.desktop.browsers.zen.wmClass;
     primaryMonitor = findFirst (x: x.primary) {} cfg.monitors;
 in {
   options.modules.desktop.hyprland = with types; {
@@ -25,9 +26,6 @@ in {
         primary = mkOpt bool false;
       };
     })) [{}];
-
-    mako.settings = mkOpt attrs {};
-
     hyprlock = {
       settings = mkOpt (submodule {
         options = {
@@ -67,6 +65,8 @@ in {
     programs.hyprland = {
       enable = true;
       xwayland.enable = true;
+      withUWSM = true;
+      systemd.setPath.enable = true;
       package = pkgs.unstable.hyprland;
       portalPackage = pkgs.unstable.xdg-desktop-portal-hyprland;
 
@@ -74,81 +74,21 @@ in {
       # portalPackage = hey.inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
     };
 
-    # xdg.portal.configPackages = [ pkgs.xdg-desktop-portal-gtk ];
+    xdg.portal = {
+      enable = true;
+      xdgOpenUsePortal = true;
+      extraPortals = with pkgs.unstable; [
+        xdg-desktop-portal-hyprland
+        xdg-desktop-portal-gtk
+      ];
+      config.common.default = [ "hyprland" "gtk" ];
+    };
+
+    services.dbus.enable = true;
+
+    modules.desktop.quickshell.enable = mkDefault true;
 
     modules.services = {
-      # Redshift, but for wayland, but I use hyprshade instead, since wlsunset
-      # is a bit buggy with nvidia and multiple monitors.
-      # wlsunset.enable = true;
-
-      # There's a bug in hypridle that causes hyprlock to not read input after
-      # waking up from suspend (hyprwm/hyprlock#101). swayidle doesn't suffer
-      # from this issue.
-      # hypridle = {
-      #   enable = true;
-      #   settings = {
-      #     before_sleep_cmd = "${heyBin} hook idle --on sleep";
-      #     after_sleep_cmd = "${heyBin} hook idle --off sleep";
-      #     lock_cmd = "${heyBin} hook idle --on lock";
-      #     unlock_cmd = "${heyBin} hook idle --off lock";
-      #     ignore_dbus_inhibit = "false";
-      #   };
-      #   timeouts =
-      #     (optionals (cfg.idle.time > 0) [{
-      #       timeout = cfg.idle.time;
-      #       on-timeout = "${heyBin} hook idle --dim";
-      #       on-resume = "${heyBin} hook idle --resume";
-      #     }]) ++
-      #     (optionals (cfg.idle.autodpms > 0) [{
-      #       timeout = cfg.idle.autodpms;
-      #       on-timeout = "${heyBin} hook idle --dpms";
-      #       on-resume = "${heyBin} hook idle --resume";
-      #     }]) ++
-      #     (optionals (cfg.idle.autolock > 0) [{
-      #       timeout = cfg.idle.autolock;
-      #       on-timeout = "${heyBin} hook idle --lock";
-      #     }]) ++
-      #     (optionals (cfg.idle.autosleep > 0) [{
-      #       timeout = cfg.idle.autosleep;
-      #       on-timeout = "${heyBin} hook idle --sleep";
-      #     }]);
-      # };
-      swayidle = {
-        enable = true;
-        events = {
-          before-sleep = "${heyBin} hook idle --on sleep";
-          after-resume = "${heyBin} hook idle --off sleep";
-          lock = "${heyBin} hook idle --on lock";
-          unlock = "${heyBin} hook idle --off lock";
-        } // (optionalAttrs (cfg.idle.time > 0) {
-          idlehint = toString cfg.idle.time;
-        });
-        timeouts =
-          (optionals (cfg.idle.time > 0) [{
-            timeout = cfg.idle.time;
-            command = "${heyBin} hook idle --on";
-            resume = "${heyBin} hook idle --off";
-          }]) ++
-          (optionals (cfg.idle.autodpms > 0) [{
-            timeout = cfg.idle.autodpms;
-            command = "${heyBin} hook idle --on dpms";
-            resume = "${heyBin} hook idle --off dpms";
-          }]) ++
-          (optionals (cfg.idle.autolock > 0) [{
-            timeout = cfg.idle.autolock;
-            command = "loginctl lock-session";
-          }]) ++
-          (optionals (cfg.idle.autosleep > 0) [{
-            timeout = cfg.idle.autosleep;
-            command = "systemctl suspend";
-          }]);
-      };
-
-      waybar = {
-        enable = true;
-        primaryMonitor = mkDefault (primaryMonitor.output or "");
-      };
-
       # REVIEW: Get rid of this when wtype adds mouse support (atx/wtype#24).
       ydotool.enable = true;
     };
@@ -172,9 +112,12 @@ in {
       hyprshot       # instead of grim(shot) or maim/slurp
 
       ## For Hyprland
-      mako           # dunst for wayland
       swaybg         # feh (as a wallpaper manager)
       xorg.xrandr    # for XWayland windows
+      grim
+      slurp
+      wf-recorder
+      wl-clipboard
 
       ## For CLIs
       gromit-mpx     # for drawing on the screen
@@ -202,10 +145,7 @@ in {
     services.greetd = {
       enable = true;
       settings.default_session = {
-        command = toString (pkgs.writeShellScript "hyprland-wrapper" ''
-          trap 'systemctl --user stop hyprland-session.target; sleep 1' EXIT
-          exec Hyprland >/dev/null
-        '');
+        command = "${pkgs.unstable.uwsm}/bin/uwsm start -eD Hyprland hyprland.desktop";
         user = config.user.name;
       };
     };
@@ -238,7 +178,6 @@ in {
             echo "Hyprland: reloading instance $i"
             hey.do hyprctl -i ''${i//*\//} reload config-only
           done
-          hey.do makoctl reload
         '';
 
         # Set wallpaper according to modules.theme.wallpapers
@@ -309,6 +248,21 @@ in {
           # XWayland windows may start in unpredictbale places without a hint.
           exec-once = xrandr --output $PRIMARY_MONITOR --primary
         ''}
+
+        # Product defaults inspired by Isabel's Hyprland rules.
+        windowrulev2 = workspace 3 silent,class:^(${zenWmClass}|zen|zen-browser)$
+        windowrulev2 = workspace 4 silent,class:^(vesktop|discord)$
+        windowrulev2 = workspace 5 silent,class:^(steam|gamescope)$
+        windowrulev2 = workspace 5 silent,title:^(Friends List|Steam)$
+        windowrulev2 = workspace 8 silent,class:^(blueman-manager|nm-connection-editor)$
+        windowrulev2 = float,class:^(blueman-manager|nm-connection-editor|org.pulseaudio.pavucontrol)$
+        windowrulev2 = float,title:^(Picture-in-Picture)$
+        windowrulev2 = pin,title:^(Picture-in-Picture)$
+        windowrulev2 = suppressevent maximize,class:.*
+        windowrulev2 = immediate,class:^(gamescope|steam_app_.*)$
+        windowrulev2 = idleinhibit fullscreen,class:.*
+        windowrulev2 = idleinhibit focus,class:^(mpv|vesktop|discord|gamescope|steam_app_.*)$
+        layerrule = noanim, selection
       '';
       "hypr/hyprland.post.conf".text = cfg.extraConfig;
 
@@ -335,44 +289,32 @@ in {
               cfg.hyprlock.settings
             ])));
 
-      "mako/config".text =
-        let toINI = mapAttrsToList (n: v: "${n}=${toString v}");
-        in ''
-          # config/mako/config -*- mode: ini -*-
-          # This was automatically generated by NixOS and my dotfiles
-          ${concatStringsSep "\n"
-            (toINI ({ "output" = (primaryMonitor.output or ""); }
-                    // (filterAttrs (_: v: ! isAttrs v) cfg.mako.settings)))}
-
-          ${concatStringsSep "\n"
-            (mapAttrsToList
-              (n: v: ''
-                [${n}]
-                ${concatStringsSep "\n" (toINI v)}
-              '')
-              (filterAttrs (_: v: isAttrs v) cfg.mako.settings))}
-
-          [mode=dnd]
-          invisible=1
-        '';
+      "uwsm/env".text = ''
+        export XDG_CURRENT_DESKTOP=Hyprland
+        export XDG_SESSION_DESKTOP=Hyprland
+        export XDG_SESSION_TYPE=wayland
+        export NIXOS_OZONE_WL=1
+        export MOZ_ENABLE_WAYLAND=1
+        export GTK_USE_PORTAL=1
+      '';
     };
 
     user.packages = with pkgs; [
-      (mkLauncherEntry "Toggle blue light filter" {
+      (mkLauncherEntry "Toggle night mode" {
         icon = "redshift";
-        exec = "hyprshade toggle blue-light-filter";
+        exec = "dms ipc night toggle";
       })
-      (mkLauncherEntry "Hyprpicker: grab RGB at point" {
+      (mkLauncherEntry "Color picker: grab RGB at point" {
         icon = "com.github.finefindus.eyedropper";
-        exec = "hey .picker rgb";
+        exec = "dms color pick --rgb -a";
       })
-      (mkLauncherEntry "Hyprpicker: grab HSL at point" {
+      (mkLauncherEntry "Color picker: grab HSL at point" {
         icon = "com.github.finefindus.eyedropper";
-        exec = "hey .picker hsl";
+        exec = "dms color pick --hsl -a";
       })
-      (mkLauncherEntry "Hyprpicker: grab hex at point" {
+      (mkLauncherEntry "Color picker: grab hex at point" {
         icon = "com.github.finefindus.eyedropper";
-        exec = "hey .picker hex";
+        exec = "dms color pick --hex -a";
       })
     ];
   };

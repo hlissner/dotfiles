@@ -46,7 +46,7 @@ in mkMerge [
     #     _notify () {
     #       ${pkgs.libnotify}/bin/notify-send \
     #         --app-name battery \
-    #         --hint string:x-dunst-stack-tag:battery \
+    #         --app-name battery \
     #         --hint "int:value:$val" \
     #         "$@" "$val%, $remaining"
     #     }

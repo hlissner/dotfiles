@@ -11,10 +11,6 @@
 #
 #   @see modules/desktop/apps/steam.nix.
 
-_osd() {
-  hey .osd toggle "${${3//0/--off}//1/--on}" "$1" "$2"
-}
-
 local icon=
 case $1 in
   --on)
@@ -24,9 +20,7 @@ case $1 in
       keyword general:allow_tearing 1 \; \
       keyword animations:enabled 0 \; \
       keyword misc:vrr 1
-    makoctl mode -s dnd
-    systemctl --user stop swayidle.service   # inhibit idle
-    _osd "$icon" "Gamemode started" 1
+    hey .osd display -a gamemode "$icon" "Gamemode started"
     ;;
   --off)
     hey.do hyprctl --batch \
@@ -35,8 +29,6 @@ case $1 in
       keyword general:allow_tearing 0 \; \
       keyword animations:enabled 1 \; \
       keyword misc:vrr 0
-    makoctl mode -s default
-    systemctl --user start swayidle.service
-    _osd "$icon" "Gamemode ended" 0
+    hey .osd display -a gamemode "$icon" "Gamemode ended"
     ;;
 esac

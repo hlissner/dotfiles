@@ -5,8 +5,7 @@
 #   idle [--on|--off] [dpms|lock|sleep]
 #
 # SYNOPSIS:
-#   Triggered when there's a change in idle state. Requires a tool like
-#   hypridle, swayidle, etc to call it.
+#   Triggered when there's a change in idle state by the session idle driver.
 
 case $2 in
   '')

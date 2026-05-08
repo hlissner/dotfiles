@@ -30,12 +30,8 @@
       # hyprland.inputs.nixpkgs.follows = "nixpkgs";
       # hyprlock.url = "github:hyprwm/Hyprlock";
       # hyprlock.inputs.nixpkgs.follows = "nixpkgs-unstable";
-      # hypridle.url = "github:hyprwm/hypridle";
-      # hypridle.inputs.nixpkgs.follows = "nixpkgs-unstable";
 
       # Extras (imported directly by modules/hosts that need them)
-      spicetify-nix.url = "github:Gerg-L/spicetify-nix";
-      spicetify-nix.inputs.nixpkgs.follows = "nixpkgs-unstable";
       # hyprpicker.url = "github:hyprwm/hyprpicker";
       # hyprpicker.inputs.nixpkgs.follows = "nixpkgs-unstable";
       blender-bin.url = "github:edolstra/nix-warez?dir=blender";
@@ -50,6 +46,11 @@
       nix-ld.inputs.nixpkgs.follows = "nixpkgs";
 
       nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
+
+      # Zen is not exposed by the pinned nixpkgs/unstable set, so keep the
+      # browser source narrow rather than promoting another browser baseline.
+      zen-browser.url = "github:0xc000022070/zen-browser-flake";
+      zen-browser.inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
   outputs = inputs @ { self, nixpkgs, nixpkgs-unstable, nixos-hardware, ... }:

@@ -60,6 +60,7 @@ with builtins;
       apps.thunar.enable = true;
       apps = {
         rofi.enable = true;
+        discord.enable = true;
         steam = {
           enable = true;
           # libraryDir = "/media/windows/Program Files (x86)/Steam";
@@ -70,14 +71,10 @@ with builtins;
         fcitx5-rime.enable = true;
       };
       browsers = {
-        default = "librewolf";
-        librewolf.enable = true;
-        chrome.enable = true;
-        edge.enable = true;
+        zen.enable = true;
       };
 
       media.video.enable = true;
-      # media.video.capture.enable = true;
     };
     dev = {
       node.enable = true;

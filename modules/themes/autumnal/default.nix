@@ -77,28 +77,11 @@ in mkIf (cfg.active == "autumnal") (mkMerge [
 
       shell.zsh.rcFiles  = [ ./config/zsh/prompt.zsh ];
       shell.tmux.rcFiles = [ ./config/tmux.conf ];
-      desktop.browsers = {
-        librewolf = {
-          settings."devtools.theme" = "dark";
-          userChrome = concatMapStringsSep "\n" readFile [
-            ./config/librewolf/userChrome.css
-          ];
-        };
-      };
     };
   }
 
   (mkIf (config.modules.desktop.type != null) {
-    modules.desktop.apps.spotify.theme = cfg.active;
-
-    programs.spicetify =
-      let spkgs = hey.inputs.spicetify-nix.legacyPackages.${pkgs.system};
-      in { theme = spkgs.themes.burntSienna; };
-
     home.configFile = with config.modules; mkMerge [
-      (mkIf desktop.media.graphics.vector.enable {
-        "inkscape/templates/default.svg".source = ./config/inkscape/default-template.svg;
-      })
       (mkIf desktop.apps.rofi.enable {
         "rofi/config.theme.rasi".source = ./config/rofi/config.rasi;
         "rofi/themes" = {
@@ -112,7 +95,5 @@ in mkIf (cfg.active == "autumnal") (mkMerge [
       })
     ];
   })
-
-  (mkIf config.modules.desktop.bspwm.enable    (import ./bspwm.nix args))
   (mkIf config.modules.desktop.hyprland.enable (import ./hyprland.nix args))
 ])
