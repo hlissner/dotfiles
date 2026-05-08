@@ -295,21 +295,13 @@ in {
     };
 
     user.packages = with pkgs; [
-      (mkLauncherEntry "Toggle night mode" {
-        icon = "redshift";
-        exec = "dms ipc night toggle";
+      (mkLauncherEntry "Axiom Desktop Guide" {
+        icon = "help-browser";
+        exec = "xdg-open /home/${config.user.name}/.config/axiom-desktop/guide.md";
       })
-      (mkLauncherEntry "Color picker: grab RGB at point" {
+      (mkLauncherEntry "Color picker: copy hex at point" {
         icon = "com.github.finefindus.eyedropper";
-        exec = "dms color pick --rgb -a";
-      })
-      (mkLauncherEntry "Color picker: grab HSL at point" {
-        icon = "com.github.finefindus.eyedropper";
-        exec = "dms color pick --hsl -a";
-      })
-      (mkLauncherEntry "Color picker: grab hex at point" {
-        icon = "com.github.finefindus.eyedropper";
-        exec = "dms color pick --hex -a";
+        exec = "hyprpicker -a";
       })
     ];
   };

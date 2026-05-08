@@ -24,10 +24,10 @@ dotfiles over there.
 |               | Desktop                 |
 |---------------|-------------------------|
 | **Shell:**    | zsh + zgenom            |
-| **WM:**       | Hyprland + DMS/Quickshell |
+| **WM:**       | Hyprland + Quickshell     |
 | **Editor:**   | [Doom Emacs][doomemacs] |
 | **Terminal:** | foot                    |
-| **Launcher:** | rofi                    |
+| **Launcher:** | Quickshell + fuzzel       |
 | **Browser:**  | Zen                     |
 
 -----

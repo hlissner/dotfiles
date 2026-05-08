@@ -3,42 +3,57 @@
 with lib;
 with hey.lib;
 let cfg = config.modules.desktop.quickshell;
+    quickshellPackage = pkgs.symlinkJoin {
+      name = "axiom-quickshell";
+      paths = with pkgs.unstable; [
+        quickshell
+        kdePackages.qtimageformats
+        kdePackages.kirigami
+        adwaita-icon-theme
+      ];
+      meta.mainProgram = "quickshell";
+    };
 in {
   options.modules.desktop.quickshell = with types; {
     enable = mkBoolOpt false;
-    package = mkOpt package pkgs.unstable.dms;
+    package = mkOpt package quickshellPackage;
+    configName = mkOpt str "axiom-shell";
   };
 
   config = mkIf cfg.enable {
-    environment.systemPackages = with pkgs.unstable; [
+    environment.systemPackages = with pkgs; [
       cfg.package
-      quickshell
-      matugen
-      kdePackages.qtimageformats
-      kdePackages.kirigami
-      adwaita-icon-theme
+      fuzzel
+      wlogout
+      libnotify
+      playerctl
+      networkmanagerapplet
+      blueman
+      pavucontrol
     ];
 
-    systemd.user.services.dms = {
-      description = "DMS Quickshell desktop shell";
+    systemd.user.services.quickshell = {
+      description = "Axiom Quickshell product shell";
       wantedBy = [ "hyprland-session.target" "graphical-session.target" ];
       after = [ "hyprland-session.target" ];
       partOf = [ "graphical-session.target" ];
       serviceConfig = {
-        ExecStart = "${cfg.package}/bin/dms run";
+        ExecStart = "${cfg.package}/bin/quickshell --config ${cfg.configName}";
         Restart = "on-failure";
         RestartSec = 2;
       };
     };
 
-    home.configFile."matugen/templates/hyprland-colors.conf".text = ''
-      $accent = {{colors.primary.default.hex}}
-      $background = {{colors.surface.default.hex}}
-      $foreground = {{colors.on_surface.default.hex}}
-    '';
+    home.configFile = {
+      "quickshell/${cfg.configName}" = {
+        source = "${hey.configDir}/quickshell/${cfg.configName}";
+        recursive = true;
+      };
+      "axiom-desktop/guide.md".source = "${hey.configDir}/axiom-desktop/guide.md";
+    };
 
-    hey.hooks.reload."94-dms" = ''
-      hey.do systemctl --user restart dms.service
+    hey.hooks.reload."94-quickshell" = ''
+      hey.do systemctl --user restart quickshell.service
     '';
   };
 }

@@ -11,6 +11,7 @@
 - [Axiom Autossh Reverse SSH Tunnel](tasks/axiom-autossh-reverse-ssh-tunnel.md)
 - [Axiom Host](tasks/axiom-host.md)
 - [Axiom Runtime Access And Session Fixes](tasks/axiom-runtime-access-session-fixes.md)
+- [Dotfiles Quickshell Product Desktop](tasks/dotfiles-quickshell-product-desktop.md)
 - [Dotfiles Wayland Product Overhaul](tasks/dotfiles-wayland-product-overhaul.md)
 - [Dotfiles Wayland Portal User Units Fix](tasks/dotfiles-wayland-portal-user-units-fix.md)
 - [Dotfiles Wayland Runtime Fixes](tasks/dotfiles-wayland-runtime-fixes.md)

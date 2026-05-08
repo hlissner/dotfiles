@@ -30,9 +30,9 @@ with builtins;
     desktop = {
       hyprland.enable = true;
       apps = {
-        rofi.enable = true;
         discord.enable = true;
         steam.enable = true;
+        thunar.enable = true;
       };
       input = {
         colemak.enable = true;

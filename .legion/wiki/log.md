@@ -20,3 +20,6 @@
 - Added task summary for `axiom-runtime-access-session-fixes`.
 - Updated current decisions for `axiom` persistent `sshd.service` reverse tunnel target and Hyprland/UWSM `start-hyprland` launcher requirement.
 - Extended runtime validation patterns with UWSM command dry-run and autossh local-target service checks.
+- Added task summary for `dotfiles-quickshell-product-desktop`.
+- Updated current desktop decisions with Axiom's Isabel-first repository-owned Quickshell product shell and Rofi/DMS demotion.
+- Added nested worktree `DOTFILES_HOME` / `path:` flake validation pattern.
