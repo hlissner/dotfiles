@@ -82,7 +82,7 @@ in {
     systemd.user.extraConfig = mkDefault "DefaultLimitNOFILE=1048576";
 
     boot.kernel.sysctl = {
-      "vm.max_map_count" = mkDefault 2147483642;
+      "vm.max_map_count" = mkForce 2147483642;
       "fs.file-max" = mkDefault 2097152;
     };
   };

@@ -20,6 +20,7 @@ Refactored Linux workstation dotfiles to a Wayland-first product stack centered 
 
 - `nix flake show --impure --all-systems` passed.
 - Retained NixOS host evaluations passed for `ramen`, `harusame`, `udon`, `azar`, `atlas`, and `axiom`.
+- `axiom` toplevel dry-run passed locally.
 - Key option checks passed for Zen defaults/package/MIME/class, UWSM, DMS service, portals, NetworkManager, Bluetooth, Steam, mpv, and Vesktop config.
 - Legacy active-code searches passed for removed desktop/browser/media/Spotify paths.
 - Darwin static leakage search passed.
@@ -27,6 +28,6 @@ Refactored Linux workstation dotfiles to a Wayland-first product stack centered 
 
 ## Residual Risks
 
-- `nix build --impure --dry-run .#nixosConfigurations.ramen.config.system.build.toplevel` is locally blocked by pre-existing agenix host-key assertion for `/etc/ssh/host_ed25519`.
+- `nix build --impure --dry-run .#nixosConfigurations.ramen.config.system.build.toplevel` is locally blocked by pre-existing agenix host-key assertion for `/etc/ssh/host_ed25519`; `axiom` toplevel dry-run passes.
 - Manual runtime checks remain deferred: Hyprland/UWSM startup, DMS UI, portals/screenshare, Wi-Fi roaming, Bluetooth pairing, Steam launch, and mpv playback.
 - Darwin build/runtime validation remains deferred to a Darwin machine.

@@ -8,6 +8,7 @@
 
 - `nix flake show --impure --all-systems`
 - `nix eval --impure .#nixosConfigurations.{ramen,harusame,udon,azar,atlas,axiom}.config.system.name`
+- `nix build --impure --dry-run .#nixosConfigurations.axiom.config.system.build.toplevel`
 - Key option checks for Zen package/default/MIME/class, Hyprland UWSM, DMS service, portals, NetworkManager, Bluetooth, Steam, mpv, and Vesktop config.
 - Legacy source searches for removed desktop/browser/media/Spotify paths in active Nix modules and Hyprland config.
 - Darwin leakage search in `darwin/*.nix`.
@@ -15,7 +16,7 @@
 
 ## Deferred / Blocked
 
-- `nix build --impure --dry-run .#nixosConfigurations.ramen.config.system.build.toplevel` is blocked locally by the pre-existing agenix assertion: no `/etc/ssh/host_ed25519`.
+- `nix build --impure --dry-run .#nixosConfigurations.ramen.config.system.build.toplevel` is blocked locally by the pre-existing agenix assertion: no `/etc/ssh/host_ed25519`; `axiom` dry-run passes.
 - Manual runtime checks for Hyprland/UWSM, DMS, portals/screenshare, Wi-Fi, Bluetooth, Steam, and mpv are deferred.
 - Darwin runtime/build validation is deferred to a Darwin machine.
 

@@ -22,9 +22,10 @@
 - Git flake validation required marking new modules intent-to-add before Nix could evaluate them; the final commit will track those files normally.
 - Zen integration was corrected to use the selected package's `zen-beta` executable, `zen-beta.desktop` MIME ID, and `zen-beta` Hyprland class.
 - `xwaylandvideobridge` was removed from the Discord module because the pinned unstable alias is no longer usable; screen sharing relies on Vesktop plus the configured portal path.
+- `axiom` dry-run caught build-time issues that plain evaluation missed; NetworkManager INI keys, the removed `nm-connection-editor` package attribute, the removed `rofi-wayland-unwrapped` package, and Steam `vm.max_map_count` priority were corrected.
 
 ## Residual Risks
 
-- Full `ramen` toplevel dry-run is locally blocked by the pre-existing agenix host-key assertion for `/etc/ssh/host_ed25519`.
+- Full `ramen` toplevel dry-run is locally blocked by the pre-existing agenix host-key assertion for `/etc/ssh/host_ed25519`; `axiom` toplevel dry-run passes.
 - Manual runtime checks remain deferred: Hyprland/UWSM startup, DMS UI, portals/screenshare, Wi-Fi roaming, Bluetooth pairing, Steam launch, and mpv playback.
 - Darwin build/runtime validation remains deferred to a Darwin machine per task contract.

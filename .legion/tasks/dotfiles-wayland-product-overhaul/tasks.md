@@ -12,10 +12,11 @@
 - [x] Fix validation-discovered package and desktop assertion issues.
 - [x] Fix readiness-review Zen executable, desktop file, and window-class mismatch.
 - [x] Remove remaining host-level Zen default overrides and validate all Zen-enabled hosts.
+- [x] Run and fix `axiom` toplevel dry-run.
 - [x] Run local evaluation/search verification and record blockers.
 - [x] Complete readiness review and record PASS.
 - [x] Create reviewer walkthrough and PR body.
 - [x] Complete Legion wiki writeback.
 - [x] Commit and push PR branch.
-- [ ] Create PR after GitHub CLI authentication is available.
+- [ ] Create PR.
 - [ ] Follow PR checks/review, terminal state, cleanup, and main refresh.

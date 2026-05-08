@@ -12,7 +12,6 @@ in mkIf (elem "wifi" config.modules.profiles.hardware) {
     networkmanager
     iwd
     networkmanagerapplet
-    nm-connection-editor
   ];
 
   networking = mkIf isWorkstation {
@@ -51,10 +50,10 @@ in mkIf (elem "wifi" config.modules.profiles.hardware) {
         "type:bridge"
       ];
       settings = {
-        main.no-auto-default = "*";
-        device.wifi.scan-rand-mac-address = "yes";
-        connection.wifi.cloned-mac-address = "stable";
-        connectivity.enabled = "false";
+        main."no-auto-default" = "*";
+        device."wifi.scan-rand-mac-address" = "yes";
+        connection."wifi.cloned-mac-address" = "stable";
+        connectivity.enabled = false;
       };
     };
   };
