@@ -17,3 +17,6 @@
 - Extended runtime validation pattern with visible-shell startup hook, session target, DMS/Quickshell, wallpaper, and lock-gate checks.
 - Added task summary for `axiom-autossh-reverse-ssh-tunnel`.
 - Updated current decisions with reverse SSH tunnel port ownership and loopback bind requirements for `charlie` and `axiom`.
+- Added task summary for `axiom-runtime-access-session-fixes`.
+- Updated current decisions for `axiom` persistent `sshd.service` reverse tunnel target and Hyprland/UWSM `start-hyprland` launcher requirement.
+- Extended runtime validation patterns with UWSM command dry-run and autossh local-target service checks.

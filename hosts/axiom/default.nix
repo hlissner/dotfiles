@@ -89,7 +89,7 @@ with builtins;
     ];
 
     programs.ssh.startAgent = true;
-    services.openssh.startWhenNeeded = true;
+    services.openssh.startWhenNeeded = mkForce false;
     # ISSUE: https://discourse.nixos.org/t/logrotate-config-fails-due-to-missing-group-30000/28501
     services.logrotate.checkConfig = false;
 
@@ -98,7 +98,7 @@ with builtins;
     systemd.services.autossh-reverse-ssh = {
       description = "Autossh reverse SSH tunnel to 8.159.128.125";
       after = [ "network-online.target" "sshd.service" ];
-      wants = [ "network-online.target" ];
+      wants = [ "network-online.target" "sshd.service" ];
       wantedBy = [ "multi-user.target" ];
       path = [ pkgs.openssh ];
       environment = {

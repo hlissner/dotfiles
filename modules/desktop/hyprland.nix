@@ -142,7 +142,7 @@ in {
     services.greetd = {
       enable = true;
       settings.default_session = {
-        command = "${config.programs.uwsm.package}/bin/uwsm start -eD Hyprland hyprland-uwsm.desktop";
+        command = "${config.programs.uwsm.package}/bin/uwsm start -eD Hyprland ${config.programs.hyprland.package}/bin/start-hyprland";
         user = config.user.name;
       };
     };

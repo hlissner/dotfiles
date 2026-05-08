@@ -6,7 +6,7 @@ Current Linux workstation desktop direction is Hyprland + UWSM + DMS/Quickshell,
 
 Old X11/bspwm/sxhkd/Polybar/Dunst/Waybar/legacy-idle/browser/media/Spotify compatibility is not preserved unless a future task explicitly reopens that scope.
 
-Hyprland display-manager wiring should use the evaluated UWSM session entry `hyprland-uwsm.desktop`; `hyprland.desktop` is not present when Hyprland is exposed through the NixOS UWSM session package.
+Hyprland display-manager wiring should start through UWSM and resolve to the evaluated `start-hyprland` launcher path. Do not point greetd at `hyprland-uwsm.desktop` when that path reparses to direct `Hyprland`, because Hyprland 0.53 warns that direct startup without `start-hyprland` is only appropriate for debugging.
 
 Hyprland 0.53 active configuration must use the current `windowrule`/`layerrule` syntax. `windowrulev2` is a parse error in the evaluated Hyprland 0.53.3 package, and old layer-rule spellings such as `noanim`, `dimaround`, `ignorezero`, and `ignorealpha` should not be used in active config.
 
@@ -23,6 +23,6 @@ Darwin remains a shared shell/dev/editor/XDG target. Linux desktop/system concer
 Current autossh reverse tunnels to `root@8.159.128.125` bind remote loopback explicitly and forward back to each host's local SSH daemon on `127.0.0.1:22`.
 
 - `charlie`: remote `127.0.0.1:2222` -> local `127.0.0.1:22` through the Darwin launchd user agent.
-- `axiom`: remote `127.0.0.1:2223` -> local `127.0.0.1:22` through the NixOS systemd service.
+- `axiom`: remote `127.0.0.1:2223` -> local `127.0.0.1:22` through the NixOS systemd service; `axiom` uses persistent `sshd.service` rather than OpenSSH socket activation so the local tunnel target is daemon-backed.
 
 Do not reuse an existing remote port while its host tunnel remains active, and do not relax the remote bind address away from `127.0.0.1` without a new security review.
