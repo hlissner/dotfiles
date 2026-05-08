@@ -14,4 +14,5 @@
 - Review-change stage PASS with no remaining blocking findings; residual risks are agenix dry-run blocker, deferred manual runtime checks, and deferred Darwin runtime validation.
 - Report-walkthrough stage produced `docs/report-walkthrough.md` and `docs/pr-body.md` for reviewer handoff.
 - Legion wiki writeback added task summary plus durable decisions/patterns for the new Linux workstation desktop baseline and Git flake validation with new module files.
+- Git lifecycle: committed `13f86455` and pushed branch `legion/dotfiles-wayland-product-overhaul` over SSH. PR creation is blocked because `gh` is not authenticated in this environment; see `docs/pr-blocker.md`.
 - Verification: `nix flake show`, retained NixOS host evaluations, key option checks, legacy searches, and Darwin boundary searches passed; full dry-run build is blocked only by the pre-existing agenix host-key requirement on this machine.

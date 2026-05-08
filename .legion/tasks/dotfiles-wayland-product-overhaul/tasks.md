@@ -16,3 +16,6 @@
 - [x] Complete readiness review and record PASS.
 - [x] Create reviewer walkthrough and PR body.
 - [x] Complete Legion wiki writeback.
+- [x] Commit and push PR branch.
+- [ ] Create PR after GitHub CLI authentication is available.
+- [ ] Follow PR checks/review, terminal state, cleanup, and main refresh.
