@@ -1,43 +1,59 @@
-# 走读：Dots Hyprland 桌面 RFC
+# Walkthrough: Dots Hyprland Desktop Phase 4
 
-> 模式：rfc-only
-> 日期：2026-05-09
+> Mode: implementation
+> Task: `.legion/tasks/dots-hyprland-desktop-rfc/`
+> Branch: `legion/dots-hyprland-desktop-rfc-phase4-services`
 
-## 变更内容
+## Reviewer Summary
 
-- 创建 design-only Legion 任务，用于研究 `end-4/dots-hyprland` 并定义 Axiom 如何向该目标状态演进。
-- 添加任务内 llm-wiki，记录上游桌面配置。
-- 添加 `end-4/dots-hyprland`、Isabel 和当前 Axiom 的对比。
-- 添加 RFC，提出增量 Axiom-native 能力等价路径，而不是整体导入上游。
-- 执行 RFC 评审；结论 PASS，无阻塞问题。
+This change reopens the historical design-only end4 desktop RFC as an implementation task and aligns it with the user-provided `end4.md` direction. The important direction change is that old Axiom dock/guide/button and `autumnal` desktop visuals are no longer compatibility targets; end4 `ii` / `IllogicalImpulseFamily` is the target UX, while Nix remains responsible for host facts, services, dependencies, permissions, and generated-state boundaries.
 
-## 评审阅读顺序
+The implementation is a bounded Phase 4 substrate PR. It does not import the full end4 `ii` tree because `origin/master` still lacks prior Phase 1-3 sources. Instead, it declares the NixOS/user-service substrate that end4 launcher, overview, sidebars, control center, notification center, OSD, wallpaper selector, session/lock, polkit UX, and hardware controls depend on.
 
-- 先读 `docs/rfc.md`，了解决策、目标状态、分阶段路径、验证、回滚和安全边界。
-- 再读 `docs/comparison.md`，了解三方桌面环境对比。
-- 再读 `docs/llm-wiki-dots-hyprland.md`，了解上游能力地图。
-- 再读 `docs/research.md`，了解来源、本地上下文和采用约束。
-- 最后读 `docs/review-rfc.md`，了解 PASS 评审和残余风险。
+## What Changed
 
-## 决策概要
+- Rewrote task contract and RFC from design-only future planning into current Phase 4 implementation evidence.
+- Expanded `modules/desktop/quickshell.nix` with Qt/Kirigami/QML, icons, fonts, clipboard, wallpaper/theme, audio/media, network/Bluetooth, brightness/DDC, power-profile, resource, notification, and fallback control packages.
+- Switched clipboard watcher default to end4-compatible `wl-paste --type text --watch cliphist store`, while retaining a rollback backend option.
+- Enabled Phase 4 system capabilities: polkit, KDE polkit auth agent, power-profiles-daemon, gnome-keyring without gcr SSH agent, i2c/DDC support, `video`/`input`/`i2c` groups, and Axiom keyring module enablement.
+- Removed old Axiom guide entry points from active shell/module paths and deleted the old guide docs/config files.
+- Stopped `autumnal` from writing Hyprland desktop visuals by removing the Hyprland import from the autumnal theme module.
+- Added transitional helper support for brightness, power profiles, resource status, and `cliphist` search/copy/clear behavior.
 
-- 选择路径：Axiom-native 增量能力等价。
-- 第一个未来实现切片：只做 Stage 1，即 shell state 和 notification center；除非用户明确合并 Stage 1 和 Stage 2。
-- 拒绝路径：整体导入 `end-4/dots-hyprland`，原因是 mutable installer assumptions、UWSM conflict、broad dependencies 和 reviewability risk。
-- 延后路径：dynamic theming、OCR/translation、clipboard persistence、AI/cloud features，直到 core shell capabilities 稳定且 privacy/state boundaries 明确。
+## Evidence
 
-## 证据
+- Contract: `.legion/tasks/dots-hyprland-desktop-rfc/plan.md`
+- RFC: `.legion/tasks/dots-hyprland-desktop-rfc/docs/rfc.md`
+- RFC review: `.legion/tasks/dots-hyprland-desktop-rfc/docs/review-rfc.md`
+- Verification: `.legion/tasks/dots-hyprland-desktop-rfc/docs/test-report.md`
+- Change review: `.legion/tasks/dots-hyprland-desktop-rfc/docs/review-change.md`
 
-- 任务契约：`.legion/tasks/dots-hyprland-desktop-rfc/plan.md`
-- 研究记录：`.legion/tasks/dots-hyprland-desktop-rfc/docs/research.md`
-- 上游 wiki：`.legion/tasks/dots-hyprland-desktop-rfc/docs/llm-wiki-dots-hyprland.md`
-- 对比文档：`.legion/tasks/dots-hyprland-desktop-rfc/docs/comparison.md`
-- RFC：`.legion/tasks/dots-hyprland-desktop-rfc/docs/rfc.md`
-- 评审记录：`.legion/tasks/dots-hyprland-desktop-rfc/docs/review-rfc.md`
+## Validation
 
-## 残余风险
+Validation result: PASS with runtime caveats.
 
-- 如果不保持小组件边界，未来 Quickshell growth 可能过大。
-- Notification 和 clipboard history 在持久存储前需要明确 retention 和 disable behavior。
-- Dynamic theming 如果过早采用，可能模糊 generated-state ownership。
-- `end-4/dots-hyprland` 必须继续作为 capability reference；它的 session/install model 与 Axiom 冲突。
+- `nix eval` confirmed Phase 4 config wiring: `cliphist` backend, keyring, polkit, power profiles, i2c, i2c group, user groups, removed guide link, and required packages.
+- `nix eval` confirmed Material Symbols plus `googlesans-code` mapping, without importing the full `google-fonts` bundle.
+- Python helper syntax parse passed for both changed helpers.
+- Active shell/module grep found no old guide references in `config/quickshell/axiom-shell/*.qml` or `modules/desktop/*.nix`.
+- `nix build --impure .#nixosConfigurations.axiom.config.system.build.toplevel --no-link` passed after fixing keyring SSH-agent conflict and narrowing the font package.
+- Post-review cleanup removed unused `hyprpolkitagent`; targeted eval and toplevel build passed again.
+
+## Review Result
+
+Change review result: PASS.
+
+Security lens was applied for clipboard history, keyring/polkit, user groups, and i2c permissions. No blocking security issue was found. Remaining privacy risk is `cliphist` retention: shell display/readback limits do not prune the database, so retention policy remains a follow-up.
+
+## Runtime Caveats
+
+- Live `systemctl --user restart quickshell.service` was not run because this environment is not the live Axiom graphical session.
+- `ii/shell.qml` load was not checked because `origin/master` still lacks the end4 `ii` source tree; this is documented as prior-phase debt.
+- Hardware-backed controls were not live-tested: audio, brightness/DDC, NetworkManager, Bluetooth, power profiles, tray, notifications, sidebars, overview, and launcher must be exercised on Axiom hardware after deployment.
+
+## Reviewer Focus
+
+- Check that Phase 4 remains a substrate PR and does not pretend to complete the full end4 `ii` runtime experience.
+- Check that the permission additions (`video`, `input`, `i2c`, `i2c-dev`) are acceptable for Axiom's desktop control scope.
+- Check that default-on `cliphist` is acceptable for Axiom, given the documented retention caveat and disable/clear controls.
+- Check that removing the old Axiom guide and autumnal Hyprland visual hook matches the `end4.md` direction.

@@ -1,226 +1,192 @@
-# RFC：让 Axiom 演进到 end-4 风格的 Hyprland 产品桌面
+# RFC：Axiom 向 end4 `ii` 桌面推进的 Phase 4 实现
 
-> 状态：已评审，PASS，可用于未来实现规划
-> 类型：RFC Heavy，design-only
-> 创建时间：2026-05-09
+> 状态：已评审，PASS；Phase 4 substrate 已实现
+> 类型：RFC Standard，implementation-bound
+> 日期：2026-05-09
 > 任务：`.legion/tasks/dots-hyprland-desktop-rfc/`
 
 ## 执行摘要
 
-当前 Axiom 已经具备正确的架构主线：NixOS、Hyprland、UWSM、portals、greetd、仓库自有 Quickshell、Zen、Vesktop、Steam、Thunar、fcitx5，以及可见 side dock。`end-4/dots-hyprland` 展示了下一层成熟度：把 Quickshell 做成完整桌面环境，包含 notification center、action/search surface、quick settings、OSD、dynamic wallpaper/theme pipeline、lock/session UI、clipboard history 和 rich capture workflows。
+本任务从历史 design-only RFC 续跑为实现任务。新的方向以 `end4.md` 为准：Axiom 不再把旧 Axiom dock、guide、按钮或 `autumnal` 桌面视觉作为兼容目标，而是把 end4 的 `ii` / `IllogicalImpulseFamily` 桌面体验作为目标形态，同时继续由 NixOS 声明系统集成、host facts、权限、服务和依赖。
 
-决策：Axiom 应向 `end-4/dots-hyprland` 的能力等价演进，但保留 Axiom 的 Nix-native 架构、UWSM/session ownership、host/module 边界和紧凑可评审实现。不要整体导入上游。
+Phase 4 的实现重点不是再设计一个 Axiom-native shell，而是补齐 end4 核心 shell surfaces 所需的声明式服务能力：launcher、overview、左右侧栏、控制中心、通知中心、OSD、wallpaper selector、session/lock、polkit-facing UX，以及 network、Bluetooth、audio、brightness、MPRIS、resource usage、tray、notifications 和 clipboard 等后端能力。
+
+本 PR 的边界是声明式服务/依赖/权限层。若当前 base 仍未完整落地 Phase 1-3 的 end4 `ii` shell tree、Hyprland 分层和 matugen pipeline，本 PR 不用旧 Axiom 体验补回目标缺口；它应记录缺口，并确保 Phase 4 依赖和 NixOS service ownership 对后续 `ii/shell.qml` runtime 可追溯。
 
 ## 目标
 
-- 定义 Axiom 应从 `end-4/dots-hyprland` 参考中获得的目标桌面能力。
-- 保留当前 Axiom 强于上游的决策：Nix ownership、UWSM、systemd user service、declarative monitors 和 scoped host modules。
-- 优先选择增量 Quickshell service growth，而不是用大型上游 framework 替换 Axiom 本地 shell。
-- 在设计中保留 Isabel 的工作站经验：可靠性、app defaults、media/browser/chat/gaming polish、Bluetooth/Wi-Fi 质量，以及 coherent theme/MIME/font coverage。
-- 提供带验证与回滚边界的分阶段未来实现路径。
+- 让 Axiom Phase 4 的服务依赖、user services、permissions 和 host capabilities 由 Nix 声明。
+- 使 end4 launcher、overview、左右侧栏、控制中心、通知中心和 OSD 所需的系统工具可从 Nix 配置追溯。
+- 将 RFC 的阶段模型改成 `end4.md` 的阶段模型，而不是历史的 Axiom-native incremental shell model。
+- 将主题决策改成 end4 Material/Matugen 方向：`IllogicalImpulseFamily` 是默认 panel family，Material Symbols / Google Sans-style fonts 与 Qt/Kirigami 依赖要被承认，mutable generated colors 不进入 Nix store。
+- 保持 Axiom 强项：NixOS host facts、UWSM/greetd/portal ownership、declarative monitor/workspace/default-app configuration、Darwin isolation。
 
 ## 非目标
 
-- 本任务不实现改动。
-- 不整体导入 `end-4/dots-hyprland` 文件、installer、Quickshell tree 或 package lists。
-- 不用上游 session 假设替换 UWSM。
-- 不在没有单独决策的情况下引入 broad KDE/Plasma dependencies。
-- 不在没有 privacy 和 secrets policy 的情况下加入 AI/cloud/booru/wallpaper automation。
-- 第一个实现 pass 不尝试让 Axiom 支持多 shell families。
+- 不运行 end4 `setup`，不把 unmanaged live `~/.config` 变成真源。
+- 不维护 `axiom-shell` 与 end4 `ii` 两套主 shell；旧 Axiom shell 只能作为过渡缺口，不是设计目标。
+- 不维护 `autumnal` 与 matugen 两套桌面主题真源；`autumnal` 仅可作为非桌面 fallback 或后续删除对象。
+- 不在 Phase 4 实现截图、录屏、OCR、翻译、视觉搜索或 AI policy；这些分别属于 Phase 5/6。
+- 不把 cloud/API key、generated color outputs、clipboard secrets 或 shell runtime state 写入仓库或 Nix store。
 
-## 目标状态
+## 当前基线
 
-Axiom 应成为 Nix-native Hyprland 产品桌面，由 Quickshell 拥有日常可见交互：
-
-- persistent side dock 继续作为主要视觉锚点；
-- notification center 支持 history、grouping、actions、unread state 和 clear/dismiss flows；
-- shell-owned search 支持 apps、actions、web、calculator、clipboard、emoji 和 user-defined commands，并以 Fuzzel 作为 fallback；
-- quick controls 暴露 audio devices/streams、network、Bluetooth、media、power/session 和 basic settings；
-- Quickshell OSD 处理 volume/brightness/media feedback，并可与现有 `hey .osd` scripts 互操作；
-- wallpaper/theme handling 可选地把颜色传播到 shell、Hyprland、lock screen、launcher、GTK/Qt 和 terminal surfaces；
-- guide/cheatsheet/onboarding 从 shell 中可用，而不仅是 markdown 文件；
-- screenshot/recording 保持稳定，OCR/translation/clipboard-history enhancements 作为后续可选项；
-- 当前 Axiom workstation apps 和 hardware concerns 继续是一等公民。
+- Axiom 已有 NixOS、Hyprland、UWSM、greetd、portals、`hyprland-session.target` 和 `quickshell.service` ownership。
+- 当前 base 仍包含 Axiom-native Quickshell sources such as `config/quickshell/axiom-shell/*`；它们不能再作为目标体验真源。
+- `modules/desktop/quickshell.nix` 已声明 Quickshell service、search/control helper、部分 runtime packages 和 clipboard watcher，但还不完整覆盖 end4 Phase 4 service surface。
+- `modules/desktop/hyprland.nix` 仍生成 `hyprland.pre.conf` 并包含 old guide launcher/window rules；这与 `end4.md` 的 Phase 2/4 目标有冲突，后续应迁移到 end4 source/layering model。
+- Axiom host 已启用 `wifi`、`bluetooth`、`audio`、`audio/realtime`，并有 NetworkManager、BlueZ、PipeWire/WirePlumber 基础，但缺少 Phase 4 明确需要的 group、i2c、power-profile、keyring/polkit 和 full UI dependency closure。
 
 ## 设计原则
 
-- 功能等价优先于代码等价：复制用户价值，而不是复制上游文件布局。
-- Nix 拥有安装；Quickshell 只能在 state 边界清晰后拥有交互状态。
-- 现有外部工具在 shell-native controls 可靠前继续作为 fallback。
-- 优先使用小型可组合 QML/services，而不是导入大型 opaque shell。
-- Axiom 当前 side dock 是优势；先把它扩展成 control surface，再考虑 alternate families。
-- 每个阶段都必须能通过禁用 module/service 或 revert PR 回滚。
+- end4 `ii` 是产品目标，Nix 是部署和系统集成真源。
+- 功能采用以 `end4.md` 阶段为准，而不是以历史 RFC 的 Axiom shell 兼容性为准。
+- Declarative ownership beats runtime scripts：packages、groups、kernel modules、services、user services 和 generated-state directories 都应能在 Nix 或任务文档中定位。
+- Fallback tools 可以存在，但只能作为 UI 未在线或 inline control 不完整时的救援入口。
+- Generated theme state 是 runtime mutable state；Nix 只管模板、脚本、依赖和初始约定。
 
 ## 备选方案
 
-### 方案 A：整体导入 end-4/dots-hyprland
+### 方案 A：立即整体导入 end4 `ii` 和所有 upstream dependencies
 
-- 优点：最快获得表面功能广度。
-- 缺点：大型 mutable installer model、非 Nix package assumptions、UWSM 冲突、广泛依赖、generated user state、AI/cloud scope、难以评审。
-- 决策：拒绝。
+- 优点：最接近 `end4.md` 的目标表面。
+- 缺点：大规模代码导入，review 面巨大；upstream installer/mutable assumptions 与 Nix/UWSM 冲突；会把 Phase 1-3 和 Phase 4 混成不可回滚大改。
+- 决策：拒绝本轮作为实现方式。可以作为单独 Phase 1/2 补齐任务，但必须保持 Nix ownership。
 
-### 方案 B：保持当前 Axiom shell 不变
+### 方案 B：继续扩展 `axiom-shell` 的本地能力
 
-- 优点：风险最低，且已经可构建。
-- 缺点：Axiom 会明显落后于目标产品：没有 notification center、action search、inline controls、OSD、dynamic theming、clipboard history 或 shell settings。
-- 决策：不作为最终状态；只可作为回滚状态。
+- 优点：当前代码可构建，改动小。
+- 缺点：违背当前用户要求和 `end4.md`，会继续维护旧 Axiom dock/guide/button 目标，并让 theme 方向保留在 `autumnal`。
+- 决策：拒绝作为目标；只允许把现存代码视作过渡基线。
 
-### 方案 C：增量构建 Axiom-native 能力等价
+### 方案 C：先声明 Phase 4 service substrate，明确旧 shell 缺口
 
-- 优点：保留 Nix/UWSM/module 边界，让 Axiom 保留 side dock，允许分阶段验证，并且只导入已证明有价值的产品思路。
-- 缺点：比整体导入更慢，需要谨慎设计 Quickshell service。
-- 决策：选择。
+- 优点：本轮可在可评审范围内补齐 end4 Phase 4 所需 NixOS capabilities；不会把 unmanaged upstream installer 引入仓库；后续 `ii/shell.qml` 可以直接依赖这些服务和工具。
+- 缺点：若 Phase 1-3 未完成，单靠本 PR 不能让所有 end4 QML surface 在 live session 中完整可用。
+- 决策：选择。它是当前 Phase 4 最小正确切片。
 
-### 方案 D：切到 KDE/Plasma-heavy control layer
+## end4.md 对齐阶段模型
 
-- 优点：Network、Bluetooth、system settings 和 portal UX 的控制面板成熟。
-- 缺点：依赖重力大；除非 Axiom 明确选择 KDE 作为 control substrate，否则会与产品视觉/架构不匹配。
-- 决策：延后。只有在明确选择后，外部 KDE 工具才可作为 optional fallback。
+### Phase 1：Quickshell `ii` shell family
 
-## 分阶段演进计划
+目标：默认 panel family 是 end4 `IllogicalImpulseFamily`，`systemctl --user restart quickshell.service` 能加载 `ii/shell.qml`，旧 Axiom dock/guide/button 不再作为成功条件。
 
-### Stage 1：Shell State 与 Notification Center
+Nix 必须承认的基础依赖包括 `quickshell`、Qt6/Kirigami/QML multimedia/positioning/sensors/svg/wayland/qt5compat、`kdialog`、`syntax-highlighting`、`adwaita-icon-theme`、Material Symbols 和 Google Sans-style fonts。
 
-范围：
+### Phase 2：NixOS-native Hyprland 分层
 
-- 在不改变可见 side-dock 概念的前提下，把 Axiom 紧凑 `shell.qml` 拆成小型本地 components/services。
-- 添加 notification history、按 app grouping、actions、unread count、clear/dismiss flows 和可见 notification panel。
-- 保留当前 `NotificationServer` 行为作为最小 fallback。
+目标：采用 end4 `hyprland.conf` source 汇总风格和 shell IPC model，同时保留 monitor/workspace/default apps 由 Nix/host 声明。`hyprland.pre.conf` 不再是长期主干。
 
-验收：
+### Phase 3：Nix 管理 end4 theme/wallpaper chain
 
-- Quickshell 仍作为 `quickshell.service` 在 `hyprland-session.target` 下启动。
-- Notifications 可以接收、列出、在支持时执行 action、dismiss 和 clear。
-- 现有 dock launchers 和 controls 仍可工作。
+目标：matugen 和 wallpaper chain 由 Nix 声明依赖、模板和初始目录；mutable generated colors 只写 runtime state/config/cache targets。`autumnal` 不再是桌面视觉真源。
 
-回滚：
+### Phase 4：声明式补齐 end4 核心服务能力
 
-- 禁用新的 notification panel/service，回到当前 counter-only shell。
+目标：launcher、overview、左右侧栏、控制中心、通知中心、OSD、wallpaper selector、session/lock 和 polkit-facing UX 有完整依赖、服务、权限和 fallback tools。
 
-### Stage 2：Shell-Owned Search 与 Actions
+本轮实现范围：补齐 NixOS/user service substrate，包括 NetworkManager、Bluetooth、PipeWire/WirePlumber、power-profiles-daemon、keyring/polkit、cliphist watcher、i2c/DDC brightness support、tray/notifications/media/resource tooling、fallback control apps。
 
-范围：
+### Phase 5：截图、录屏、OCR、翻译、视觉搜索
 
-- 添加 Quickshell search/launcher panel，支持 apps、configured actions、web search、calculator、clipboard history 和 emoji。
-- 在 shell search 验证前，保留 `fuzzel` 作为 `Super+Space` 或 secondary binding 的 fallback。
-- 在仓库自有、可评审位置添加 user-action configuration。
-- 默认禁用任意脚本执行；在单独策略存在前只允许已评审的本地 actions。
-- 持久 clipboard history 在 retention、clear behavior 和 disable switches 明确前保持 opt-in。
+保留 end4 UX 方向，但云视觉/API key 必须有 policy gate。当前不实现。
 
-验收：
+### Phase 6：end4 AI 与本机 policy
 
-- App launch 和常用 actions 不再依赖 Rofi。
-- Search 失败时可以 fallback 到 Fuzzel 或 direct commands。
-- 不需要 mutable downloaded scripts。
+保留 AI UI/服务结构，但 API key 走 keyring，工具执行默认关闭并有可见 policy。当前不实现。
 
-回滚：
+## Phase 4 设计
 
-- 把 `Super+Space` 和 dock `APP` 恢复为只打开 `fuzzel`。
+### Packages
 
-### Stage 3：Quick Controls 与 OSD
+`modules/desktop/quickshell.nix` 应成为 Phase 4 Quickshell runtime package owner。它应覆盖：
 
-范围：
+- shell/QML：Quickshell package、Qt/Kirigami/QML modules、icons、fonts；
+- launcher/search：`fuzzel` fallback、`xdg-utils`、calculator/search helpers such as `libqalculate`/`qalc`；
+- notifications/tray：`libnotify`、tray-compatible runtime assumptions；
+- audio/media：`wireplumber` CLI/runtime availability, `pamixer` or equivalent, `pavucontrol` fallback, `playerctl`；
+- brightness/display：`brightnessctl`、`ddcutil` and group/module prerequisites；
+- network/Bluetooth：`networkmanager`/`nmcli`, `networkmanagerapplet` or KDE fallback, `bluez`, `blueman` or KDE BlueDevil fallback；
+- resource/music/visual feedback：`cava`, `songrec`, lightweight process/resource tools where needed by shell surfaces；
+- clipboard：`wl-clipboard`, `cliphist`；
+- session/power: `wlogout`, `power-profiles-daemon` service/package path。
 
-- 添加 shell panels 或 popovers，用于 audio output/input、network status、Bluetooth status、media controls、lock/session/power 和 basic desktop settings。
-- 可行时使用 shell-native services；保留 `nm-connection-editor`、`blueman-manager`、`pavucontrol` 和 `wlogout` 作为明确 fallback buttons。
-- 将现有 `hey .osd` volume/brightness feedback 集成进或替换为 Quickshell OSD。
+### Services And Permissions
 
-验收：
+Phase 4 must make system capabilities explicit:
 
-- 用户可以从可见 shell 查看和控制常见桌面状态。
-- 外部 fallback 工具仍可访问。
-- Media keys 和现有 Hyprland bindings 继续工作。
+- NetworkManager remains enabled by host/profile hardware declarations.
+- Bluetooth remains enabled by the `bluetooth` hardware profile.
+- PipeWire and WirePlumber remain enabled by `audio` / `audio/realtime` hardware profiles.
+- `power-profiles-daemon` is enabled for Axiom's desktop session.
+- `gnome-keyring` is enabled on Axiom so keyring-dependent shell and future AI/API-key storage have a service owner.
+- Polkit is enabled and a graphical authentication agent/runtime is available for Quickshell/end4 polkit UX or fallback agents.
+- User groups include `video`, `input`, and `i2c` for brightness/DDC/control surfaces.
+- `i2c-dev` is loaded so DDC brightness controls can work with `ddcutil` on supported monitors.
+- Clipboard history watcher uses the end4-compatible `wl-paste --watch cliphist store` pattern instead of a private Axiom-only helper when Phase 4 clipboard backend is enabled.
 
-回滚：
+### Theme Ownership
 
-- 禁用 quick-control popovers，并把 dock buttons 恢复为外部工具。
+Theme statements in code and docs should stop treating `autumnal` as desktop truth. Acceptable current behavior:
 
-### Stage 4：Wallpaper 与 Theme Pipeline
+- Nix may still set an initial wallpaper path and install non-desktop fallback assets.
+- Matugen templates/scripts and generated-state directories must be declared before runtime generation is relied on.
+- Generated Quickshell/Hyprland/hyprlock/fuzzel/terminal colors are mutable runtime outputs, not committed Nix sources.
+- The default target shell family is end4 `IllogicalImpulseFamily`; any old Axiom shell visuals are migration debt.
 
-范围：
+### Notification Ownership
 
-- 决定 dynamic colors 是 Axiom 核心能力还是 optional theme mode。
-- 如果采用，使用受控 Matugen-style pipeline，只向声明过的 cache/config targets 写 generated files。
-- 只有在每个 target 有明确 owner 后，才把颜色传播到 Quickshell、Hyprland、Hyprlock、launcher、GTK/Qt 和 terminal。
+Quickshell should own the end-user notification UX. The Nix layer must avoid silently starting conflicting notification daemons. If fallback tools are installed, they must not create a second notification server unless explicitly enabled.
 
-验收：
+## Implementation Plan
 
-- Theme generation 足够可复现、可调试。
-- Static autumnal theme 仍可作为 fallback。
-- Generated state boundaries 已记录。
+- Update `modules/desktop/quickshell.nix` to expand Phase 4 runtime dependencies and switch the clipboard watcher to `cliphist store`.
+- Add options where needed so clipboard watcher and Phase 4 service extras can be disabled for rollback.
+- Update desktop/NixOS modules or Axiom host config to enable keyring, polkit, power profiles, i2c, groups, and required fallback tools.
+- Remove or stop installing old Axiom guide launcher/config where it conflicts with `end4.md` target UX.
+- Leave actual Phase 5/6 surfaces out of scope and document missing runtime-only verification if graphical checks cannot run.
 
-回滚：
+## Verification Strategy
 
-- 禁用 dynamic theme generation，回到 static autumnal assets。
+- Run Nix formatting/static checks available in this repository.
+- Evaluate or build Axiom toplevel when feasible: `nix build --impure .#nixosConfigurations.axiom.config.system.build.toplevel`.
+- Inspect evaluated/service configuration where full build is too expensive or blocked.
+- Confirm no `autumnal` desktop-theme fallback language remains in RFC/walkthrough as target truth.
+- Confirm no unmanaged end4 setup script, generated color output, API key, or live home-directory state is committed.
+- Runtime follow-up on Axiom hardware: restart `quickshell.service`, verify `ii/shell.qml` once Phase 1 source exists, test launcher/overview/sidebars/control center/notification center, test audio/brightness/network/Bluetooth/power mode control, and ensure fallback apps launch.
 
-### Stage 5：Power-User Extensions
+## Rollback
 
-范围：
+- Merge-time rollback: revert this PR.
+- Runtime rollback: disable Phase 4 service extras or clipboard watcher options, then switch/reboot to previous NixOS generation if needed.
+- If Quickshell fails: stop `quickshell.service` and rely temporarily on Hyprland keybindings/fallback tools.
+- If `cliphist` causes sensitive retention concerns: disable the watcher option and clear the user cliphist database.
+- If brightness/DDC permissions cause issues: remove `i2c-dev`/`i2c` group from the host and keep `brightnessctl` only.
 
-- 在 core shell features 稳定后，才添加 clipboard history UI、OCR、screen translation、更丰富 recording workflows、Google Lens-like actions 或 AI sidebars。
-- AI/cloud features 必须作为独立 RFC/security review 项目处理。
+## Security And Privacy
 
-验收：
+- Clipboard history can expose secrets; retention and clear UX must be visible before broad enablement is considered final.
+- Keyring enables safer secret storage but does not itself authorize AI/cloud/API features.
+- Polkit agents must not bypass authentication; they only provide graphical prompts.
+- Notification history can contain sensitive content; Quickshell ownership should include clear/dismiss controls.
+- No API keys, generated color files, shell cache, or runtime notification/clipboard state belongs in Git.
 
-- Extensions 是 optional、locally controllable，且不削弱桌面基线。
-- Privacy-sensitive features 有 gate 和文档。
+## Open Questions
 
-回滚：
+- Does the current implementation branch that imports `ii/shell.qml` exist outside `origin/master`, or should Phase 1 be redone in a follow-up PR?
+- Which exact Qt font packages best map Material Symbols and Google Sans Flex in nixpkgs for the target channel?
+- Should the `cliphist` watcher be enabled by default immediately, or default-on only for Axiom because this task is Axiom-specific?
 
-- 各 extension module 可独立禁用。
+## Decision
 
-## 未来实现边界
+Proceed with方案 C：declare the end4 Phase 4 service substrate now, while treating incomplete `ii` source migration as explicit prior-phase debt rather than preserving old Axiom shell behavior. This matches the user's instruction to follow `end4.md` for theme direction and not preserve backward compatibility with the old Axiom desktop UX.
 
-- 保持 `modules/desktop/quickshell.nix` 作为 service/package owner。
-- 保持 `config/quickshell/axiom-shell/` 作为仓库自有 shell source。
-- 保持 `modules/desktop/hyprland.nix` 作为 session、portal、monitor generation 和 Hyprland pre/post config owner。
-- 不添加上游 installer scripts 或 distro package managers。
-- 不让 shell state 成为 host/session configuration 的隐藏真源。
-- 在等价 shell 功能验证前，不移除 Axiom 的外部 fallback tools。
+## References
 
-## 未来实现验证策略
-
-- 构建 Axiom：`nix build --impure .#nixosConfigurations.axiom.config.system.build.toplevel`。
-- 评估 Quickshell service ownership、linked config path、expected packages 和 `hyprland-session.target` dependency。
-- 在 package environment 支持时运行 Quickshell syntax/runtime smoke checks。
-- 任何 binding/rule/session 改动后，用 `Hyprland --verify-config` 验证生成 Hyprland config。
-- 在 Axiom 硬件上演练 notification receipt/actions、launcher/search、quick controls、OSD、screenshots、lock、media keys 和 fallback external tools。
-- 回归搜索：避免 Rofi/DMS primary-shell 重新进入，避免 mutable upstream installer artifacts 进入仓库。
-- 对 dynamic theming，验证 generated files、ownership、回滚到 static theme，以及不会向 repository-managed paths 做 uncontrolled writes。
-
-## 回滚策略
-
-- Merge 前：revert 未来实现 PR，或 revert 引入失败 subsystem 的 stage commit。
-- 部署后：boot/switch 到上一代 NixOS generation。
-- 如果只有 Quickshell 失败：stop/disable `quickshell.service`，临时依赖 Hyprland keybindings 和外部 fallback tools。
-- 如果 dynamic theming 失败：禁用 generated theme mode，恢复 static autumnal theme。
-- 避免数据迁移；shell cache/state directories 可保留，除非它们导致反复启动失败。
-
-## 安全与隐私
-
-- Core shell features 不应引入 secrets。
-- Search/actions 默认不得执行 remote 或 downloaded scripts。
-- AI/cloud/OCR translation integrations 需要单独 opt-in design，覆盖 network behavior、credentials、logging 和 failure modes。
-- Notification 和 clipboard history 可能暴露敏感数据；实现前必须明确 storage、retention、clear controls 和 disable switches。
-
-## 未决问题
-
-- Dynamic Material theming 应成为 Axiom 身份的一部分，还是保持为 autumnal theme 之上的 optional mode？
-- Axiom 的 inline Wi-Fi/Bluetooth/audio 应优先使用什么 control backend：shell-native DBus/service integrations、GTK tools，还是 KDE tooling？
-- Axiom 将来应支持多 shell layouts，还是坚持一个强 side-dock 产品方向？
-- Clipboard history 应保存多少，是否跨 session 持久化？
-
-## 决策
-
-未来实现任务采用方案 C：Axiom-native 增量能力等价。第一个实现任务应只做 Stage 1，除非用户明确合并 Stage 1 和 Stage 2。Stage 2-5 应保持为独立 milestone，因为它们会增加 dependency、state 和 privacy surface area。
-
-## 参考
-
-- 任务契约：`.legion/tasks/dots-hyprland-desktop-rfc/plan.md`
-- 研究：`.legion/tasks/dots-hyprland-desktop-rfc/docs/research.md`
-- llm-wiki：`.legion/tasks/dots-hyprland-desktop-rfc/docs/llm-wiki-dots-hyprland.md`
-- 对比：`.legion/tasks/dots-hyprland-desktop-rfc/docs/comparison.md`
-- 当前 Axiom host：`hosts/axiom/default.nix`
-- 当前 Axiom shell：`config/quickshell/axiom-shell/shell.qml`
-- 当前 Axiom Hyprland config：`config/hypr/hyprland.conf`
-- Isabel 研究：`isa.md`
+- Task contract: `.legion/tasks/dots-hyprland-desktop-rfc/plan.md`
+- Historical research: `.legion/tasks/dots-hyprland-desktop-rfc/docs/research.md`
+- Historical llm-wiki: `.legion/tasks/dots-hyprland-desktop-rfc/docs/llm-wiki-dots-hyprland.md`
+- Historical comparison: `.legion/tasks/dots-hyprland-desktop-rfc/docs/comparison.md`
+- Current Quickshell module: `modules/desktop/quickshell.nix`
+- Current Hyprland module: `modules/desktop/hyprland.nix`
+- Current Axiom host: `hosts/axiom/default.nix`

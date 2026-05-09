@@ -90,6 +90,7 @@ with builtins;
       ssh.enable = true;
       docker.enable = true;
       calibre.enable = true;
+      gnome-keyring.enable = true;
     };
     system = {
       utils.enable = true;

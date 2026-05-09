@@ -101,7 +101,9 @@ Rectangle {
           { "id": "audio", "label": "Audio" },
           { "id": "network", "label": "Network" },
           { "id": "bluetooth", "label": "Bluetooth" },
+          { "id": "brightness", "label": "Brightness" },
           { "id": "media", "label": "Media" },
+          { "id": "power", "label": "Power" },
           { "id": "session", "label": "Session" },
           { "id": "actions", "label": "Actions" }
         ]
@@ -188,6 +190,31 @@ Rectangle {
         }
 
         Column {
+          visible: root.section === "brightness"
+          width: parent.width
+          spacing: 10
+          SectionHeader { title: "Brightness"; subtitle: "Backlight/DDC prerequisites are declared by Nix" }
+          StatusLine { label: "Backlight"; value: root.textAt(["brightness", "label"], "unavailable") }
+          Flow { width: parent.width; spacing: 8
+            Button { text: "Dim"; onClicked: root.runHelper(["brightness", "down"], "Brightness down") }
+            Button { text: "Brighten"; onClicked: root.runHelper(["brightness", "up"], "Brightness up") }
+          }
+        }
+
+        Column {
+          visible: root.section === "power"
+          width: parent.width
+          spacing: 10
+          SectionHeader { title: "Power profile"; subtitle: "power-profiles-daemon" }
+          StatusLine { label: "Current"; value: root.textAt(["power", "profile"], "unavailable") }
+          Flow { width: parent.width; spacing: 8
+            Button { text: "Saver"; onClicked: root.runHelper(["power", "profile", "power-saver"], "Power saver") }
+            Button { text: "Balanced"; onClicked: root.runHelper(["power", "profile", "balanced"], "Balanced") }
+            Button { text: "Performance"; onClicked: root.runHelper(["power", "profile", "performance"], "Performance") }
+          }
+        }
+
+        Column {
           visible: root.section === "session"
           width: parent.width
           spacing: 10
@@ -204,8 +231,9 @@ Rectangle {
           width: parent.width
           spacing: 10
           SectionHeader { title: "Basic actions"; subtitle: "Static local commands" }
+          StatusLine { label: "Load"; value: root.textAt(["resources", "load"], "unknown") }
+          StatusLine { label: "Memory"; value: root.textAt(["resources", "memory"], "unknown") }
           Flow { width: parent.width; spacing: 8
-            Button { text: "Guide"; onClicked: root.runStatic(["xdg-open", Qt.resolvedUrl("../../axiom-desktop/guide.md").toString().replace("file://", "")], "Guide") }
             Button { text: "Terminal"; onClicked: root.runStatic(["uwsm", "app", "--", "foot"], "Terminal") }
             Button { text: "Files"; onClicked: root.runStatic(["uwsm", "app", "--", "thunar"], "Files") }
             Button { text: "Screenshot"; onClicked: root.runStatic(["hey", ".screenshot", "--swappy"], "Screenshot") }

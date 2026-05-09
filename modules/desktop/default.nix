@@ -49,6 +49,8 @@ in {
           ubuntu-classic
           dejavu_fonts
           symbola
+          material-symbols
+          googlesans-code
         ];
       };
 

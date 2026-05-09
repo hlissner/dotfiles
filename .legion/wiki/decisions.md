@@ -2,11 +2,11 @@
 
 ## Linux Workstation Desktop Baseline
 
-Current Axiom Linux workstation desktop direction is Hyprland + UWSM + repository-owned Quickshell, with Zen as the browser baseline, mpv as the scoped media player, Vesktop/Discord as the scoped chat app, Steam Gamescope/Gamemode/Umu tuning, NetworkManager+iwd+resolved for workstation Wi-Fi, and BlueZ/Blueman reliability settings.
+Current Axiom Linux workstation desktop direction is Hyprland + UWSM + NixOS-owned desktop integration, with Zen as the browser baseline, mpv as the scoped media player, Vesktop/Discord as the scoped chat app, Steam Gamescope/Gamemode/Umu tuning, NetworkManager+iwd+resolved for workstation Wi-Fi, and BlueZ/Blueman reliability settings.
 
-Axiom's visible product shell should be Isabel-first and GUI-first: local Quickshell owns the persistent dock/status/control surface, while Rofi and DMS must not be required for primary app launch, control center, help, screenshot/recording, lock, or power flows unless a future task explicitly reopens that decision.
+For the end4 desktop continuation, `end4.md` supersedes the historical Axiom-native incremental shell plan. The target UX is end4 `ii` with `IllogicalImpulseFamily`; old Axiom dock/guide/button preservation and `autumnal` desktop visual truth are no longer current requirements. Axiom still keeps Nix ownership, UWSM, systemd user service startup, declarative host facts, and Darwin isolation.
 
-下一阶段桌面演进应把 `end-4/dots-hyprland` 视为能力参考，而不是导入源。Axiom 应通过本地 Quickshell services 向功能等价演进，同时保留 Nix ownership、UWSM、systemd user service startup、declarative monitors 和 host/module boundaries。除非明确扩大范围，第一个未来实现切片应只做 notification center 和 shell state。
+Phase 4 end4 adoption is a service substrate milestone: declare packages, services, permissions, keyring/polkit, `cliphist`, power profiles, i2c/DDC, fallback controls, and generated-state boundaries in Nix. Do not claim the full end4 runtime is complete until Phase 1-3 source/layout/theme work provides `ii/shell.qml` and live-session validation passes.
 
 Axiom notification center 的第一个实现切片采用 session-local Quickshell panel：使用 `NotificationServer.trackedNotifications` 管理当前会话通知，dock button 负责打开 panel，通知内容不持久化。后续不得在没有 retention、clear、disable 和 privacy policy 的情况下把 notification history 或 clipboard history 落盘。
 
@@ -14,7 +14,7 @@ Axiom Stage 2 search/actions 采用 Quickshell-owned panel，而不是恢复 Rof
 
 Axiom clipboard history is now allowed for the Stage 2 search surface because this single-user workstation task explicitly chose function completeness. The allowed shape is bounded user-local persistence with finite entry/size caps, visible clear-history behavior, a Nix-owned disable path, and rollback by clearing state or disabling `modules.desktop.quickshell.search.clipboard.enable`.
 
-Axiom Stage 3 quick controls and OSD use a Quickshell-owned panel plus fixed-verb local helper, not deep DBus/control-center parity. The panel may expose shallow status and common actions for audio, network, Bluetooth, media, session/power, and basic desktop actions, but external tools (`nm-connection-editor`, `blueman-manager`, `pavucontrol`, `wlogout`, `playerctl`, Fuzzel/direct commands) remain the fallback and full-management path.
+Axiom Stage 3 quick controls and OSD use a Quickshell-owned panel plus fixed-verb local helper, not deep DBus/control-center parity. The panel may expose shallow status and common actions for audio, network, Bluetooth, media, brightness, power profiles, session/power, resource status, and basic desktop actions, but external tools (`nm-connection-editor`, `blueman-manager`, `pavucontrol`, `wlogout`, `playerctl`, Fuzzel/direct commands) remain the fallback and full-management path until end4 `ii` replaces the transitional shell.
 
 Axiom OSD feedback should prefer Quickshell IPC for volume/brightness/media display while preserving existing state-changing commands. Volume and brightness continue through `hey .osd` wrappers, and media keys may route through `axiom-control-helper media ...`; if Quickshell IPC is unavailable, notify/direct command fallback must keep the key behavior operational.
 

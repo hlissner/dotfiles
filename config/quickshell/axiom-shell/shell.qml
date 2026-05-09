@@ -13,8 +13,7 @@ Scope {
     { "label": "TERM", "hint": "Terminal", "command": "uwsm app -- foot || foot" },
     { "label": "FILES", "hint": "Files", "command": "uwsm app -- thunar $HOME || thunar $HOME" },
     { "label": "CHAT", "hint": "Vesktop", "command": "uwsm app -- vesktop || vesktop" },
-    { "label": "GAME", "hint": "Steam", "command": "uwsm app -- steam || steam" },
-    { "label": "HELP", "hint": "Guide", "command": "xdg-open $HOME/.config/axiom-desktop/guide.md" }
+    { "label": "GAME", "hint": "Steam", "command": "uwsm app -- steam || steam" }
   ]
   property var controls: [
     { "label": "APP", "hint": "Search", "action": "search" },
@@ -276,19 +275,6 @@ Scope {
           anchors.right: parent.right
           anchors.margins: 10
           spacing: 8
-
-          DockButton {
-            label: "NIX"
-            hint: "Axiom desktop guide"
-            accent: "#89b4fa"
-            onClicked: root.run("xdg-open $HOME/.config/axiom-desktop/guide.md", "Guide")
-          }
-
-          Rectangle {
-            width: parent.width
-            height: 1
-            color: "#33585b70"
-          }
 
           Repeater {
             model: root.workspaces

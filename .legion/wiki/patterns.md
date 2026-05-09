@@ -59,3 +59,11 @@ For Axiom quick controls, prefer a Quickshell-owned panel plus a narrow fixed-ve
 OSD wrappers must preserve the underlying state change before attempting shell polish. Volume and brightness can continue through `hey .osd` / `pamixer` / `brightnessctl`; media key wrappers should run fixed `playerctl` verbs before attempting Quickshell IPC. If IPC or Quickshell fails, existing `notify-send` or direct command fallback remains the rollback path.
 
 For verification, pair static checks (`qmllint`, helper syntax/smoke, `zsh -n`, Nix eval/build, `Hyprland --verify-config`, scope/fallback greps, and `Variants`/`PanelWindow` counts) with a live-session checklist. Headless validation cannot prove panel focus, layer placement, rapid OSD timing, or disruptive actions such as Wi-Fi/Bluetooth toggles, lock, DPMS off, and `wlogout`.
+
+## End4 Desktop Substrate Pattern
+
+When adopting end4 desktop phases in Axiom, separate product shell source migration from NixOS service substrate. The target UX can be end4 `ii` / `IllogicalImpulseFamily`, but Nix must still own host facts, UWSM/greetd/portal startup, package closure, system services, user services, groups, kernel modules, keyring/polkit, and generated-state boundaries.
+
+Do not use old Axiom shell affordances as compatibility requirements once an end4 phase explicitly supersedes them. It is acceptable to keep transitional helper code alive for currently checked-in shell sources, but task docs and wiki must mark that code as migration debt rather than current product truth.
+
+For `cliphist` adoption, distinguish shell display/readback limits from database retention. `wl-paste --watch cliphist store` proves the backend wiring, but privacy readiness still requires a retention/clear policy and live-session verification.

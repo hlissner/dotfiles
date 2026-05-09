@@ -17,13 +17,12 @@ Rectangle {
   property string calcResult: ""
   property var results: []
   property var actions: [
-    { "id": "guide", "provider": "action", "title": "Open Axiom guide", "subtitle": "Local desktop guide", "keywords": "help guide docs nix axiom", "command": ["xdg-open", Qt.resolvedUrl("../../axiom-desktop/guide.md").toString().replace("file://", "")] },
     { "id": "terminal", "provider": "action", "title": "Open terminal", "subtitle": "foot", "keywords": "terminal shell foot", "command": ["uwsm", "app", "--", "foot"] },
     { "id": "files", "provider": "action", "title": "Open files", "subtitle": "thunar", "keywords": "files folder thunar", "command": ["uwsm", "app", "--", "thunar"] },
     { "id": "browser", "provider": "action", "title": "Open browser", "subtitle": "zen-beta", "keywords": "browser web zen", "command": ["uwsm", "app", "--", "zen-beta"] },
     { "id": "power", "provider": "action", "title": "Power menu", "subtitle": "wlogout", "keywords": "power logout shutdown reboot", "command": ["wlogout"] },
     { "id": "fallback", "provider": "action", "title": "Open fallback launcher", "subtitle": "Fuzzel direct fallback", "keywords": "launcher fallback fuzzel apps", "command": ["fuzzel"] },
-    { "id": "clear-clipboard", "provider": "clipboard", "title": "Clear clipboard history", "subtitle": "Wipe stored Axiom clipboard entries", "keywords": "clipboard clear history privacy", "helper": ["axiom-search-helper", "clipboard", "clear"], "refreshClipboard": true }
+    { "id": "clear-clipboard", "provider": "clipboard", "title": "Clear clipboard history", "subtitle": "Wipe stored cliphist entries", "keywords": "clipboard clear history privacy", "helper": ["axiom-search-helper", "clipboard", "clear"], "refreshClipboard": true }
   ]
 
   color: "#ee080b12"

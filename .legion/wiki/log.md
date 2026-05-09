@@ -39,3 +39,6 @@
 - Added task summary for `axiom-quickshell-quick-controls-osd`.
 - Updated desktop decisions with Stage 3 Quickshell quick controls, fixed-verb helper boundary, external fallbacks, and OSD wrapper behavior.
 - Added Quickshell quick controls and OSD implementation/verification pattern.
+- Updated `dots-hyprland-desktop-rfc` summary for Phase 4 implementation continuation.
+- Updated desktop decisions with end4.md superseding the historical Axiom-native shell plan and Phase 4 substrate ownership.
+- Added End4 desktop substrate pattern and maintenance backlog for missing `ii` source, Hyprland layering, matugen state, cliphist retention, and live Axiom validation.

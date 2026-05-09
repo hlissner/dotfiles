@@ -296,10 +296,6 @@ in {
     };
 
     user.packages = with pkgs; [
-      (mkLauncherEntry "Axiom Desktop Guide" {
-        icon = "help-browser";
-        exec = "xdg-open /home/${config.user.name}/.config/axiom-desktop/guide.md";
-      })
       (mkLauncherEntry "Color picker: copy hex at point" {
         icon = "com.github.finefindus.eyedropper";
         exec = "hyprpicker -a";

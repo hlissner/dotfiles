@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 import shutil
 import subprocess
 import sys
@@ -73,12 +74,56 @@ def media_status() -> dict[str, Any]:
     return {"available": True, "player": player, "status": status, "title": title, "artist": artist, "summary": summary or status}
 
 
+def brightness_status() -> dict[str, Any]:
+    if not have("brightnessctl"):
+        return {"available": False, "label": "brightnessctl unavailable", "percent": 0}
+    raw = out(["brightnessctl", "-m"], "")
+    parts = raw.split(",")
+    if len(parts) >= 4:
+        percent = parts[3].strip().rstrip("%")
+        try:
+            value = int(percent)
+        except ValueError:
+            value = 0
+        return {"available": True, "label": f"{value}%", "percent": value, "device": parts[0]}
+    return {"available": True, "label": out(["brightnessctl", "get"], "unknown"), "percent": 0}
+
+
+def power_status() -> dict[str, Any]:
+    if not have("powerprofilesctl"):
+        return {"available": False, "profile": "powerprofilesctl unavailable"}
+    profile = out(["powerprofilesctl", "get"], "unknown")
+    return {"available": True, "profile": profile}
+
+
+def resource_status() -> dict[str, Any]:
+    try:
+        load = " ".join(Path("/proc/loadavg").read_text(encoding="utf-8").split()[:3])
+    except Exception:
+        load = "unknown"
+    try:
+        meminfo = {}
+        for line in Path("/proc/meminfo").read_text(encoding="utf-8").splitlines():
+            key, value = line.split(":", 1)
+            meminfo[key] = int(value.strip().split()[0])
+        total = meminfo.get("MemTotal", 0)
+        available = meminfo.get("MemAvailable", 0)
+        used = max(total - available, 0)
+        memory = f"{used // 1024} MiB / {total // 1024} MiB" if total else "unknown"
+    except Exception:
+        memory = "unknown"
+    return {"available": True, "load": load, "memory": memory}
+
+
 def status() -> None:
     print(json.dumps({
         "audio": {"output": volume_status(False), "input": volume_status(True)},
         "network": network_status(),
         "bluetooth": bluetooth_status(),
         "media": media_status(),
+        "brightness": brightness_status(),
+        "power": power_status(),
+        "resources": resource_status(),
     }))
 
 
@@ -144,6 +189,31 @@ def media(args: list[str]) -> int:
     return cp.returncode
 
 
+def brightness(args: list[str]) -> int:
+    verbs = {
+        "up": ["brightnessctl", "set", "10%+"],
+        "down": ["brightnessctl", "set", "10%-"],
+    }
+    if len(args) != 1 or args[0] not in verbs:
+        return usage()
+    if not have("brightnessctl"):
+        return 127
+    cp = run(verbs[args[0]])
+    snap = brightness_status()
+    ipc_osd("brightness", snap.get("label", "Brightness"), str(snap.get("percent", 0)), snap.get("device", ""))
+    return cp.returncode
+
+
+def power(args: list[str]) -> int:
+    if len(args) != 2 or args[0] != "profile" or args[1] not in {"power-saver", "balanced", "performance"}:
+        return usage()
+    if not have("powerprofilesctl"):
+        return 127
+    cp = run(["powerprofilesctl", "set", args[1]])
+    ipc_osd("power", args[1], "100", "Power profile")
+    return cp.returncode
+
+
 def session(args: list[str]) -> int:
     verbs = {
         "lock": ["hey", ".lock"],
@@ -156,7 +226,7 @@ def session(args: list[str]) -> int:
 
 
 def usage() -> int:
-    print("usage: axiom-control-helper status|audio|network|bluetooth|media|session ...", file=sys.stderr)
+    print("usage: axiom-control-helper status|audio|network|bluetooth|media|brightness|power|session ...", file=sys.stderr)
     return 2
 
 
@@ -175,6 +245,10 @@ def main(argv: list[str]) -> int:
         return bluetooth(rest)
     if group == "media":
         return media(rest)
+    if group == "brightness":
+        return brightness(rest)
+    if group == "power":
+        return power(rest)
     if group == "session":
         return session(rest)
     return usage()

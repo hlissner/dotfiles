@@ -1,17 +1,18 @@
-## 摘要
+## Summary
 
-- 添加 RFC-only 研究，把 `end-4/dots-hyprland` 作为 Axiom Hyprland + Quickshell 桌面的目标状态参考。
-- 记录任务内 llm-wiki、与 Isabel/当前 Axiom 的三方对比，以及分阶段 Axiom-native 演进路径。
-- 完成 RFC 评审，结论 PASS，无阻塞问题。
+- Reopen the end4 desktop RFC as an implementation task and align the phase/theme direction with `end4.md`.
+- Add Phase 4 declarative substrate for Quickshell/end4 services: runtime packages, `cliphist`, keyring, polkit, power profiles, i2c/DDC, user groups, and fallback controls.
+- Remove old Axiom guide entry points and stop `autumnal` from writing Hyprland desktop visuals.
 
-## 评审备注
+## Validation
 
-- 模式：rfc-only；不包含运行时配置改动。
-- 关键决策：通过增量能力等价演进，而不是导入上游文件或 installer 行为。
-- 第一个未来实现应只聚焦 Stage 1 notification/shell-state，除非明确扩大范围。
+- `nix eval --impure --json --expr ...` for Phase 4 service/package/user-group wiring
+- `python3 -c 'import ast, pathlib; ...'` for changed helper syntax
+- active source grep for old guide references
+- `nix build --impure .#nixosConfigurations.axiom.config.system.build.toplevel --no-link`
 
-## 证据
+## Notes
 
-- RFC：`.legion/tasks/dots-hyprland-desktop-rfc/docs/rfc.md`
-- RFC 评审：`.legion/tasks/dots-hyprland-desktop-rfc/docs/review-rfc.md`
-- 走读：`.legion/tasks/dots-hyprland-desktop-rfc/docs/report-walkthrough.md`
+- This is a Phase 4 substrate PR, not the full end4 `ii/shell.qml` import; `origin/master` still lacks prior Phase 1-3 end4 sources.
+- Live Quickshell/Hyprland and hardware-backed control checks must run on Axiom after deployment.
+- `cliphist` retention pruning is not implemented here; the watcher can be disabled and cleared, and retention policy remains follow-up work.

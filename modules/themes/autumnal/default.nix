@@ -95,5 +95,4 @@ in mkIf (cfg.active == "autumnal") (mkMerge [
       })
     ];
   })
-  (mkIf config.modules.desktop.hyprland.enable (import ./hyprland.nix args))
 ])

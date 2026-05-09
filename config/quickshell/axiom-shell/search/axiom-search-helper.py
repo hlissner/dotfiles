@@ -17,6 +17,7 @@ from pathlib import Path
 MAX_ENTRIES = int(os.environ.get("AXIOM_CLIPBOARD_MAX_ENTRIES", "500"))
 MAX_ENTRY_BYTES = int(os.environ.get("AXIOM_CLIPBOARD_MAX_ENTRY_BYTES", str(64 * 1024)))
 CLIPBOARD_ENABLED = os.environ.get("AXIOM_CLIPBOARD_HISTORY", "1") != "0"
+CLIPBOARD_BACKEND = os.environ.get("AXIOM_CLIPBOARD_BACKEND", "cliphist")
 STATE_HOME = Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local" / "state"))
 STATE_DIR = STATE_HOME / "axiom-shell"
 CLIPBOARD_FILE = STATE_DIR / "clipboard-history.json"
@@ -112,6 +113,9 @@ def app_launch(desktop_id: str) -> int:
 
 
 def read_clipboard() -> list[dict[str, str]]:
+    if CLIPBOARD_BACKEND == "cliphist":
+        return read_cliphist()
+
     try:
         return json.loads(CLIPBOARD_FILE.read_text(encoding="utf-8"))
     except Exception:
@@ -121,6 +125,55 @@ def read_clipboard() -> list[dict[str, str]]:
 def write_clipboard(entries: list[dict[str, str]]) -> None:
     STATE_DIR.mkdir(parents=True, exist_ok=True)
     CLIPBOARD_FILE.write_text(json.dumps(entries[:MAX_ENTRIES], ensure_ascii=False), encoding="utf-8")
+
+
+def cliphist_id(line: str) -> str:
+    return "cliphist:" + hashlib.sha256(line.encode("utf-8", errors="replace")).hexdigest()[:16]
+
+
+def read_cliphist() -> list[dict[str, str]]:
+    try:
+        cp = subprocess.run(["cliphist", "list"], text=True, capture_output=True, check=False)
+    except FileNotFoundError:
+        return []
+    if cp.returncode != 0:
+        return []
+
+    entries = []
+    for line in cp.stdout.splitlines()[:MAX_ENTRIES]:
+        if not line:
+            continue
+        preview = line.split("\t", 1)[1] if "\t" in line else line
+        entries.append({"id": cliphist_id(line), "text": preview[:MAX_ENTRY_BYTES], "cliphistLine": line})
+    return entries
+
+
+def clear_cliphist() -> int:
+    try:
+        return subprocess.run(["cliphist", "wipe"], check=False).returncode
+    except FileNotFoundError:
+        return 127
+
+
+def copy_cliphist(entry_id: str) -> int:
+    for entry in read_cliphist():
+        if entry.get("id") != entry_id:
+            continue
+        try:
+            decoded = subprocess.run(
+                ["cliphist", "decode"],
+                input=entry.get("cliphistLine", ""),
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+        except FileNotFoundError:
+            return 127
+        if decoded.returncode != 0:
+            return decoded.returncode
+        subprocess.run(["wl-copy"], input=decoded.stdout, text=True, check=False)
+        return 0
+    return 2
 
 
 def clipboard_add() -> int:
@@ -145,11 +198,17 @@ def clipboard_list() -> int:
 
 
 def clipboard_clear() -> int:
+    if CLIPBOARD_BACKEND == "cliphist":
+        return clear_cliphist()
+
     write_clipboard([])
     return 0
 
 
 def clipboard_copy(entry_id: str) -> int:
+    if CLIPBOARD_BACKEND == "cliphist":
+        return copy_cliphist(entry_id)
+
     for entry in read_clipboard():
         if entry.get("id") == entry_id:
             subprocess.run(["wl-copy"], input=entry.get("text", ""), text=True, check=False)
