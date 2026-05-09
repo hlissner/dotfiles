@@ -29,7 +29,7 @@ Scope {
             id: panelWindow
             exclusiveZone: 0
             WlrLayershell.namespace: "quickshell:wStartMenu"
-            WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
+            WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
             color: "transparent"
 
             anchors {
@@ -84,7 +84,7 @@ Scope {
     }
 
     IpcHandler {
-        target: "search"
+        target: "startMenu"
 
         function toggle() {
             GlobalStates.searchOpen = !GlobalStates.searchOpen;

@@ -49,3 +49,5 @@
 - Updated end4 decisions, patterns, and maintenance with Kirigami QML module path validation, generated Hyprland host override layering, and live hotkey/layout follow-up.
 - Added task summary for `axiom-foot-notify-config-fix`.
 - Added terminal config validation pattern and Foot notification follow-up after removing unsupported `[main].notify`.
+- Added task summary for `axiom-end4-polish-hotfix`.
+- Updated end4 decisions, patterns, and maintenance with Quickshell service PATH ownership, real IPC liveness probes, XDG cache/state media paths, preset wallpaper/theme integration, and dock default migration.

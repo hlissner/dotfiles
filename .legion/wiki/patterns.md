@@ -77,3 +77,9 @@ For imported end4 QML dependencies, validate that wrapper paths contain real mod
 Keep host-level Hyprland facts in generated `hypr/custom/*.conf` files sourced after upstream end4 config. This is the right layer for Axiom XKB layout/variant/options and host hotkeys such as end4 search/sidebar IPC bindings, because imported upstream defaults may otherwise override local workstation facts.
 
 For `cliphist` adoption, distinguish shell display/readback limits from database retention. `wl-paste --watch cliphist store` proves the backend wiring, but privacy readiness still requires a retention/clear policy and live-session verification.
+
+For end4 live-polish fixes, validate process integration as well as QML imports. Check generated Hyprland bindings, Quickshell IPC targets, service `ExecStart`, service PATH package closure, wallpaper/theme output directories, and the Home Manager source path before relying on live smoke tests.
+
+Use real no-op IPC liveness handlers for fallback probes. A missing or placeholder target can make every fallback path run even while Quickshell is alive, which can hide the intended panel and launch unrelated tools.
+
+When imported shell code writes preview images, screenshots, clipboard decodes, or generated theme state, prefer XDG cache/state paths and ensure parent directories exist before helper processes run. Avoid shared `/tmp` paths for persistent shell integration unless a task explicitly scopes cleanup and collision behavior.

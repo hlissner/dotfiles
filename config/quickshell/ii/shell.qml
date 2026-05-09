@@ -67,6 +67,12 @@ ShellRoot {
         }
     }
 
+    IpcHandler {
+        target: "shell"
+
+        function alive(): void {}
+    }
+
     GlobalShortcut {
         name: "panelFamilyCycle"
         description: "Cycles panel family"
@@ -74,4 +80,3 @@ ShellRoot {
         onPressed: root.cyclePanelFamily()
     }
 }
-

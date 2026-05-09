@@ -101,6 +101,44 @@ let cfg = config.modules.desktop.quickshell;
         wait -n "$text_pid" "$image_pid"
       '';
     };
+    quickshellServicePath = with pkgs; [
+      cfg.package
+      cfg.illogicalImpulsePythonEnv
+      wl-clipboard
+      cliphist
+      libnotify
+      pamixer
+      brightnessctl
+      ddcutil
+      playerctl
+      wireplumber
+      networkmanager
+      bluez
+      networkmanagerapplet
+      blueman
+      pavucontrol
+      jq
+      bc
+      curl
+      libsecret
+      tesseract
+      imagemagick
+      ffmpeg
+      mpvpaper
+      power-profiles-daemon
+      procps
+      lm_sensors
+      kdePackages.kdialog
+      glib
+      xdg-utils
+      matugen
+      unstable.hyprland
+      unstable.grim
+      unstable.slurp
+      unstable.hyprpicker
+      unstable.wf-recorder
+      unstable.swappy
+    ];
 in {
   options.modules.desktop.quickshell = with types; {
     enable = mkBoolOpt false;
@@ -197,6 +235,7 @@ in {
         Restart = "on-failure";
         RestartSec = 2;
       };
+      path = quickshellServicePath;
       environment = {
         ILLOGICAL_IMPULSE_VIRTUAL_ENV = "${cfg.illogicalImpulsePythonEnv}";
       };
@@ -212,6 +251,7 @@ in {
         Restart = "on-failure";
         RestartSec = 2;
       };
+      path = quickshellServicePath;
     };
 
     home.configFile = {

@@ -165,6 +165,11 @@ MouseArea {
                         clip: true
                         model: [
                             {
+                                icon: "wallpaper",
+                                name: "End4 Presets",
+                                path: Directories.presetWallpapers
+                            },
+                            {
                                 icon: "home",
                                 name: "Home",
                                 path: Directories.home

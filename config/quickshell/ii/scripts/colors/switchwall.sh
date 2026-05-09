@@ -45,9 +45,9 @@ pre_process() {
         gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3'
     fi
 
-    if [ ! -d "$CACHE_DIR"/user/generated ]; then
-        mkdir -p "$CACHE_DIR"/user/generated
-    fi
+    mkdir -p "$CACHE_DIR"/user/generated \
+             "$STATE_DIR"/user/generated/wallpaper \
+             "$STATE_DIR"/user/generated/hypr
 }
 
 post_process() {

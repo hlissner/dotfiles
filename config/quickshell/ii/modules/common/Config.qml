@@ -13,6 +13,14 @@ Singleton {
     property int readWriteDelay: 50 // milliseconds
     property bool blockWrites: false
 
+    function applyAxiomMigrations() {
+        if (!root.options.axiom.end4PolishDockMigrated) {
+            root.options.dock.enable = true;
+            root.options.dock.pinnedOnStartup = true;
+            root.options.axiom.end4PolishDockMigrated = true;
+        }
+    }
+
     function setNestedValue(nestedKey, value) {
         let keys = nestedKey.split(".");
         let obj = root.options;
@@ -68,7 +76,10 @@ Singleton {
         blockWrites: root.blockWrites
         onFileChanged: fileReloadTimer.restart()
         onAdapterUpdated: fileWriteTimer.restart()
-        onLoaded: root.ready = true
+        onLoaded: {
+            root.applyAxiomMigrations();
+            root.ready = true;
+        }
         onLoadFailed: error => {
             if (error == FileViewError.FileNotFound) {
                 writeAdapter();
@@ -79,6 +90,10 @@ Singleton {
             id: configOptionsJsonAdapter
 
             property string panelFamily: "ii" // "ii", "waffle"
+
+            property JsonObject axiom: JsonObject {
+                property bool end4PolishDockMigrated: false
+            }
 
             property JsonObject policies: JsonObject {
                 property int ai: 1 // 0: No | 1: Yes | 2: Local
@@ -323,11 +338,11 @@ Singleton {
             }
 
             property JsonObject dock: JsonObject {
-                property bool enable: false
+                property bool enable: true
                 property bool monochromeIcons: true
                 property real height: 60
                 property real hoverRegionHeight: 2
-                property bool pinnedOnStartup: false
+                property bool pinnedOnStartup: true
                 property bool hoverToReveal: true // When false, only reveals on empty workspace
                 property list<string> pinnedApps: [ // IDs of pinned entries
                     "org.kde.dolphin", "kitty",]

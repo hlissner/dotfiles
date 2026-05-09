@@ -53,7 +53,8 @@ Scope { // Scope
                 anchors {
                     top: parent.top
                     topMargin: dockRoot.reveal ? 0 : Config.options?.dock.hoverToReveal ? (dockRoot.implicitHeight - Config.options.dock.hoverRegionHeight) : (dockRoot.implicitHeight + 1)
-                    horizontalCenter: parent.horizontalCenter
+                    left: parent.left
+                    leftMargin: Appearance.sizes.hyprlandGapsOut
                 }
                 implicitWidth: dockHoverRegion.implicitWidth + Appearance.sizes.elevationMargin * 2
                 hoverEnabled: true
@@ -72,7 +73,7 @@ Scope { // Scope
                         anchors {
                             top: parent.top
                             bottom: parent.bottom
-                            horizontalCenter: parent.horizontalCenter
+                            left: parent.left
                         }
 
                         implicitWidth: dockRow.implicitWidth + 5 * 2
