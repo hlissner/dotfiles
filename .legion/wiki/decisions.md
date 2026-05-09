@@ -6,6 +6,10 @@ Current Axiom Linux workstation desktop direction is Hyprland + UWSM + repositor
 
 Axiom's visible product shell should be Isabel-first and GUI-first: local Quickshell owns the persistent dock/status/control surface, while Rofi and DMS must not be required for primary app launch, control center, help, screenshot/recording, lock, or power flows unless a future task explicitly reopens that decision.
 
+下一阶段桌面演进应把 `end-4/dots-hyprland` 视为能力参考，而不是导入源。Axiom 应通过本地 Quickshell services 向功能等价演进，同时保留 Nix ownership、UWSM、systemd user service startup、declarative monitors 和 host/module boundaries。除非明确扩大范围，第一个未来实现切片应只做 notification center 和 shell state。
+
+Axiom notification center 的第一个实现切片采用 session-local Quickshell panel：使用 `NotificationServer.trackedNotifications` 管理当前会话通知，dock button 负责打开 panel，通知内容不持久化。后续不得在没有 retention、clear、disable 和 privacy policy 的情况下把 notification history 或 clipboard history 落盘。
+
 Old X11/bspwm/sxhkd/Polybar/Dunst/Waybar/legacy-idle/browser/media/Spotify compatibility is not preserved unless a future task explicitly reopens that scope.
 
 Hyprland display-manager wiring should start through UWSM and resolve to the evaluated `start-hyprland` launcher path. Do not point greetd at `hyprland-uwsm.desktop` when that path reparses to direct `Hyprland`, because Hyprland 0.53 warns that direct startup without `start-hyprland` is only appropriate for debugging.
@@ -28,9 +32,3 @@ Current autossh reverse tunnels to `root@8.159.128.125` bind remote loopback exp
 - `axiom`: remote `127.0.0.1:2223` -> local `127.0.0.1:22` through the NixOS systemd service; `axiom` uses persistent `sshd.service` rather than OpenSSH socket activation so the local tunnel target is daemon-backed.
 
 Do not reuse an existing remote port while its host tunnel remains active, and do not relax the remote bind address away from `127.0.0.1` without a new security review.
-
-## Axiom Input And Proxy Apps
-
-Fcitx5 Catppuccin Mocha Mauve is the effective `axiom` input-method UI theme. The theme should be selected in both the system Fcitx5 classic UI config and the managed user-level `fcitx5/conf/classicui.conf`, because stale user-level Fcitx config can override `/etc/xdg/fcitx5/conf/classicui.conf`.
-
-Clash Verge on `axiom` is an installed desktop GUI app via `modules.desktop.apps.clash-verge` and `pkgs.clash-verge-rev`. Installing the app does not imply managing proxy profiles, subscriptions, credentials, daemon routing, or system proxy policy.

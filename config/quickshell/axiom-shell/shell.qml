@@ -27,12 +27,95 @@ Scope {
     { "label": "PWR", "hint": "Power", "command": "wlogout" }
   ]
   property string statusText: "Ready"
-  property int notificationCount: 0
+  property bool notificationPanelOpen: false
+  property var unreadNotificationKeys: []
+  property int notificationRevision: 0
+  property int notificationCount: notifications.trackedNotifications.values.length
+  property int unreadNotificationCount: computeUnreadNotificationCount(notificationRevision, notificationCount)
 
   function run(command, label) {
     statusText = label;
     launcher.command = ["sh", "-lc", command];
     launcher.startDetached();
+  }
+
+  function notificationKey(notification) {
+    return (notification.appName || "app") + ":" + notification.id;
+  }
+
+  function markNotificationUnread(notification) {
+    var key = notificationKey(notification);
+    if (unreadNotificationKeys.indexOf(key) >= 0)
+      return;
+
+    var keys = unreadNotificationKeys.slice();
+    keys.push(key);
+    unreadNotificationKeys = keys;
+    notificationRevision += 1;
+  }
+
+  function dropUnreadNotification(notification) {
+    var key = notificationKey(notification);
+    if (unreadNotificationKeys.indexOf(key) < 0)
+      return;
+
+    unreadNotificationKeys = unreadNotificationKeys.filter(function(candidate) {
+      return candidate !== key;
+    });
+    notificationRevision += 1;
+  }
+
+  function markAllNotificationsSeen() {
+    if (unreadNotificationKeys.length === 0)
+      return;
+
+    unreadNotificationKeys = [];
+    statusText = "Notifications seen";
+    notificationRevision += 1;
+  }
+
+  function computeUnreadNotificationCount(revision, count) {
+    var active = notifications.trackedNotifications.values;
+    var total = 0;
+
+    for (var i = 0; i < active.length; i++) {
+      if (unreadNotificationKeys.indexOf(notificationKey(active[i])) >= 0)
+        total += 1;
+    }
+
+    return total;
+  }
+
+  function toggleNotificationPanel() {
+    notificationPanelOpen = !notificationPanelOpen;
+
+    if (notificationPanelOpen)
+      markAllNotificationsSeen();
+  }
+
+  function dismissNotification(notification) {
+    dropUnreadNotification(notification);
+    notification.dismiss();
+    statusText = "Notification dismissed";
+    notificationRevision += 1;
+  }
+
+  function invokeNotificationAction(notification, action) {
+    dropUnreadNotification(notification);
+    statusText = action.text || "Notification action";
+    action.invoke();
+    notificationRevision += 1;
+  }
+
+  function clearNotifications() {
+    var active = notifications.trackedNotifications.values;
+
+    for (var i = active.length - 1; i >= 0; i--)
+      active[i].dismiss();
+
+    unreadNotificationKeys = [];
+    statusText = "Notifications cleared";
+    notificationRevision += 1;
   }
 
   Process {
@@ -47,8 +130,19 @@ Scope {
     persistenceSupported: true
     onNotification: function(notification) {
       notification.tracked = true;
-      root.notificationCount += 1;
+      if (!root.notificationPanelOpen)
+        root.markNotificationUnread(notification);
       root.statusText = notification.summary || "Notification";
+      root.notificationRevision += 1;
+    }
+  }
+
+  Connections {
+    target: notifications.trackedNotifications
+
+    function onObjectRemovedPost(notification, index) {
+      root.dropUnreadNotification(notification);
+      root.notificationRevision += 1;
     }
   }
 
@@ -151,13 +245,13 @@ Scope {
           spacing: 8
 
           DockButton {
-            label: root.notificationCount > 0 ? "N" + root.notificationCount : "NOTE"
-            hint: root.notificationCount > 0 ? root.statusText : "Notifications"
-            accent: root.notificationCount > 0 ? "#f38ba8" : "#a6e3a1"
-            onClicked: {
-              root.notificationCount = 0;
-              root.statusText = "Notifications cleared";
-            }
+            label: root.unreadNotificationCount > 0 ? "N" + root.unreadNotificationCount : "NOTE"
+            hint: root.notificationCount > 0
+              ? root.unreadNotificationCount + " unread / " + root.notificationCount + " total"
+              : "Notifications"
+            active: root.notificationPanelOpen
+            accent: root.unreadNotificationCount > 0 ? "#f38ba8" : "#a6e3a1"
+            onClicked: root.toggleNotificationPanel()
           }
 
           Text {
@@ -181,6 +275,39 @@ Scope {
             }
           }
         }
+      }
+    }
+
+    PanelWindow {
+      id: notificationPanelWindow
+      required property var modelData
+      visible: root.notificationPanelOpen
+      screen: modelData
+      implicitWidth: 380
+      exclusiveZone: 0
+      anchors {
+        left: true
+        top: true
+        bottom: true
+      }
+      margins {
+        left: 100
+        top: 12
+        bottom: 12
+      }
+
+      NotificationPanel {
+        anchors.fill: parent
+        notificationServer: notifications
+        unreadKeys: root.unreadNotificationKeys
+        revision: root.notificationRevision
+        onDismissRequested: function(notification) {
+          root.dismissNotification(notification);
+        }
+        onActionRequested: function(notification, action) {
+          root.invokeNotificationAction(notification, action);
+        }
+        onClearRequested: root.clearNotifications()
       }
     }
   }

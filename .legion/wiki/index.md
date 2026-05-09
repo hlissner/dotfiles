@@ -9,11 +9,12 @@
 
 - [Aliyun NixOS Image Host](tasks/aliyun-nixos-image-host.md)
 - [Axiom Autossh Reverse SSH Tunnel](tasks/axiom-autossh-reverse-ssh-tunnel.md)
-- [Axiom Fcitx Theme And Clash Verge](tasks/axiom-fcitx-theme-clash-verge.md)
 - [Axiom Fcitx5 WeChat Input And Wallpaper](tasks/axiom-fcitx5-wechat-wallpaper.md)
 - [Axiom Host](tasks/axiom-host.md)
+- [Axiom Quickshell Notification Center](tasks/axiom-quickshell-notification-center.md)
 - [Axiom Runtime Access And Session Fixes](tasks/axiom-runtime-access-session-fixes.md)
 - [Dotfiles Quickshell Product Desktop](tasks/dotfiles-quickshell-product-desktop.md)
+- [Dots Hyprland 桌面 RFC](tasks/dots-hyprland-desktop-rfc.md)
 - [Dotfiles Wayland Product Overhaul](tasks/dotfiles-wayland-product-overhaul.md)
 - [Dotfiles Wayland Portal User Units Fix](tasks/dotfiles-wayland-portal-user-units-fix.md)
 - [Dotfiles Wayland Runtime Fixes](tasks/dotfiles-wayland-runtime-fixes.md)

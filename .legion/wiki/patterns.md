@@ -28,4 +28,14 @@ For Hyprland/UWSM startup warnings, validate the actual command resolution inste
 
 For autossh reverse tunnel regressions, validate both sides of the generated shape: the remote-forward string must remain loopback-only and port-unique, and the local target service must exist as an active daemon if the tunnel forwards to `127.0.0.1:22`.
 
-For Fcitx5 theme regressions, validate both config precedence layers. Check the generated system config at `environment.etc."xdg/fcitx5/conf/classicui.conf".text` and the managed user config at `home.configFile."fcitx5/conf/classicui.conf"`; if stale user config is the likely runtime override, force-manage only the classic UI config file and avoid Rime/dictionary paths.
+## 上游桌面参考采用模式
+
+使用大型外部桌面 dotfiles 仓库作为产品灵感时，应先提取能力，再考虑代码移动。需要把 compositor/session model、shell ownership、notification/search/control surfaces、theming、state writes、dependency assumptions 和 rollback boundaries 与 Axiom 当前 Nix-native model 对比。
+
+不要导入 mutable installers、distro package-manager logic、generated user state，或与 Axiom UWSM/systemd ownership 冲突的 session assumptions。优先采用分阶段本地能力等价；在 shell-native replacements 验证前，保留外部工具作为 fallback。
+
+## Quickshell Notification Center Pattern
+
+For Axiom notification UI, keep `NotificationServer` as the ingress and use `trackedNotifications` as the runtime source of truth. Keep notification history session-local unless a task explicitly defines retention, clear behavior, disable switches, and privacy handling.
+
+When validating new Quickshell QML files from a Git-backed flake, stage or intent-to-add the new files before `nix eval`/`nix build`, then pair Nix build evidence with a real-session test plan. Headless/offscreen Quickshell can fail at `No PanelWindow backend loaded`; treat that as an environment limitation, not a substitute for Hyprland layer-shell testing.

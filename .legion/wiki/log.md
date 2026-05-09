@@ -24,6 +24,10 @@
 - Updated current desktop decisions with Axiom's Isabel-first repository-owned Quickshell product shell and Rofi/DMS demotion.
 - Added nested worktree `DOTFILES_HOME` / `path:` flake validation pattern.
 - Added task summary for `axiom-fcitx5-wechat-wallpaper`.
-- Added task summary for `axiom-fcitx-theme-clash-verge`.
-- Updated current decisions for `axiom` Fcitx5 Catppuccin theme precedence and Clash Verge app-only scope.
-- Extended runtime validation patterns with Fcitx5 system/user classic UI theme precedence checks.
+- 添加 `dots-hyprland-desktop-rfc` 任务摘要。
+- 更新桌面决策：把 end-4 作为能力参考，并记录第一个实现切片边界。
+- 添加上游桌面参考采用模式。
+- 将 `dots-hyprland-desktop-rfc` 任务文档和本轮新增 wiki 条目翻译为中文。
+- Added task summary for `axiom-quickshell-notification-center`.
+- Updated desktop decisions with the implemented session-local Quickshell notification center boundary.
+- Added Quickshell notification center implementation/validation pattern.
