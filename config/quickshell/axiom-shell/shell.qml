@@ -18,17 +18,24 @@ Scope {
   ]
   property var controls: [
     { "label": "APP", "hint": "Search", "action": "search" },
-    { "label": "WIFI", "hint": "Network", "command": "nm-connection-editor" },
-    { "label": "BT", "hint": "Bluetooth", "command": "blueman-manager" },
-    { "label": "VOL", "hint": "Audio", "command": "pavucontrol" },
+    { "label": "WIFI", "hint": "Network", "action": "quickControls", "section": "network" },
+    { "label": "BT", "hint": "Bluetooth", "action": "quickControls", "section": "bluetooth" },
+    { "label": "VOL", "hint": "Audio", "action": "quickControls", "section": "audio" },
     { "label": "SHOT", "hint": "Screenshot", "command": "hey .screenshot --swappy" },
     { "label": "REC", "hint": "Record", "command": "hey .screencast" },
     { "label": "LOCK", "hint": "Lock", "command": "hey .lock" },
-    { "label": "PWR", "hint": "Power", "command": "wlogout" }
+    { "label": "PWR", "hint": "Power", "action": "quickControls", "section": "session" }
   ]
   property string statusText: "Ready"
   property bool searchPanelOpen: false
   property bool notificationPanelOpen: false
+  property bool quickControlsOpen: false
+  property string quickControlsSection: "audio"
+  property string osdKind: ""
+  property string osdLabel: ""
+  property int osdValue: 0
+  property string osdDetail: ""
+  property int osdSerial: 0
   property var unreadNotificationKeys: []
   property int notificationRevision: 0
   property int notificationCount: notifications.trackedNotifications.values.length
@@ -90,13 +97,17 @@ Scope {
   function toggleNotificationPanel() {
     notificationPanelOpen = !notificationPanelOpen;
 
-    if (notificationPanelOpen)
+    if (notificationPanelOpen) {
+      searchPanelOpen = false;
+      quickControlsOpen = false;
       markAllNotificationsSeen();
+    }
   }
 
   function openSearchPanel() {
     searchPanelOpen = true;
     notificationPanelOpen = false;
+    quickControlsOpen = false;
   }
 
   function toggleSearchPanel() {
@@ -104,12 +115,45 @@ Scope {
 
     if (searchPanelOpen)
       notificationPanelOpen = false;
+    if (searchPanelOpen)
+      quickControlsOpen = false;
+  }
+
+  function openQuickControls(section) {
+    quickControlsSection = section || "audio";
+    quickControlsOpen = true;
+    searchPanelOpen = false;
+    notificationPanelOpen = false;
+    statusText = "Quick controls";
+  }
+
+  function toggleQuickControls(section) {
+    if (quickControlsOpen && quickControlsSection === section) {
+      quickControlsOpen = false;
+      statusText = "Ready";
+      return;
+    }
+
+    openQuickControls(section);
+  }
+
+  function showOsd(kind, label, value, detail) {
+    osdKind = kind || "osd";
+    osdLabel = label || "";
+    osdValue = Math.max(0, Math.min(100, parseInt(value || 0)));
+    osdDetail = detail || "";
+    osdSerial += 1;
   }
 
   function activateControl(control) {
     if (control.action === "search") {
       toggleSearchPanel();
       statusText = searchPanelOpen ? "Search" : "Ready";
+      return;
+    }
+
+    if (control.action === "quickControls") {
+      toggleQuickControls(control.section || "audio");
       return;
     }
 
@@ -154,6 +198,18 @@ Scope {
 
     function openSearch() {
       root.openSearchPanel();
+    }
+
+    function openQuickControls(section) {
+      root.openQuickControls(section || "audio");
+    }
+
+    function toggleQuickControls(section) {
+      root.toggleQuickControls(section || "audio");
+    }
+
+    function showOsd(kind, label, value, detail) {
+      root.showOsd(kind, label, value, detail);
     }
   }
 
@@ -306,8 +362,8 @@ Scope {
               label: modelData.label
               hint: modelData.hint
               compact: true
-              active: modelData.action === "search" && root.searchPanelOpen
-              accent: modelData.action === "search" ? "#89b4fa" : "#cba6f7"
+              active: (modelData.action === "search" && root.searchPanelOpen) || (modelData.action === "quickControls" && root.quickControlsOpen && root.quickControlsSection === modelData.section)
+              accent: modelData.action === "search" ? "#89b4fa" : (modelData.action === "quickControls" ? "#f9e2af" : "#cba6f7")
               onClicked: root.activateControl(modelData)
             }
           }
@@ -357,6 +413,38 @@ Scope {
     model: Quickshell.screens
 
     PanelWindow {
+      id: quickControlsPanelWindow
+      required property var modelData
+      visible: root.quickControlsOpen
+      screen: modelData
+      implicitWidth: 430
+      implicitHeight: 710
+      exclusiveZone: 0
+      anchors {
+        left: true
+        top: true
+        bottom: true
+      }
+      margins {
+        left: 100
+        top: 12
+        bottom: 12
+      }
+
+      QuickControlsPanel {
+        anchors.fill: parent
+        opened: root.quickControlsOpen
+        initialSection: root.quickControlsSection
+        onCloseRequested: root.quickControlsOpen = false
+        onStatusRequested: function(text) { root.statusText = text; }
+      }
+    }
+  }
+
+  Variants {
+    model: Quickshell.screens
+
+    PanelWindow {
       id: notificationPanelWindow
       required property var modelData
       visible: root.notificationPanelOpen
@@ -386,6 +474,38 @@ Scope {
           root.invokeNotificationAction(notification, action);
         }
         onClearRequested: root.clearNotifications()
+      }
+    }
+  }
+
+  Variants {
+    model: Quickshell.screens
+
+    PanelWindow {
+      id: osdWindow
+      required property var modelData
+      visible: osdOverlay.visible
+      screen: modelData
+      implicitWidth: 360
+      implicitHeight: 96
+      exclusiveZone: 0
+      anchors {
+        top: true
+        right: true
+      }
+      margins {
+        top: 38
+        right: 38
+      }
+
+      OsdOverlay {
+        id: osdOverlay
+        anchors.fill: parent
+        kind: root.osdKind
+        label: root.osdLabel
+        value: root.osdValue
+        detail: root.osdDetail
+        serial: root.osdSerial
       }
     }
   }

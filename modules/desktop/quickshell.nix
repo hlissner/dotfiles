@@ -20,6 +20,13 @@ let cfg = config.modules.desktop.quickshell;
         exec ${pkgs.python3}/bin/python3 ${hey.configDir}/quickshell/${cfg.configName}/search/axiom-search-helper.py "$@"
       '';
     };
+    controlHelper = pkgs.writeShellApplication {
+      name = "axiom-control-helper";
+      runtimeInputs = with pkgs; [ python3 pamixer brightnessctl playerctl networkmanager bluez hyprland wlogout ];
+      text = ''
+        exec ${pkgs.python3}/bin/python3 ${hey.configDir}/quickshell/${cfg.configName}/controls/axiom-control-helper.py "$@"
+      '';
+    };
 in {
   options.modules.desktop.quickshell = with types; {
     enable = mkBoolOpt false;
@@ -36,13 +43,18 @@ in {
     environment.systemPackages = with pkgs; [
       cfg.package
       searchHelper
+      controlHelper
       fuzzel
       gtk3
       xdg-utils
       wl-clipboard
       wlogout
       libnotify
+      pamixer
+      brightnessctl
       playerctl
+      networkmanager
+      bluez
       networkmanagerapplet
       blueman
       pavucontrol

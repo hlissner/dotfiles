@@ -12,6 +12,7 @@
 - [Axiom Fcitx5 WeChat Input And Wallpaper](tasks/axiom-fcitx5-wechat-wallpaper.md)
 - [Axiom Host](tasks/axiom-host.md)
 - [Axiom Quickshell Notification Center](tasks/axiom-quickshell-notification-center.md)
+- [Axiom Quickshell Quick Controls and OSD](tasks/axiom-quickshell-quick-controls-osd.md)
 - [Axiom Quickshell Search and Actions](tasks/axiom-quickshell-search-actions.md)
 - [Axiom Quickshell Side Dock Regression](tasks/axiom-quickshell-side-dock-regression.md)
 - [Axiom Runtime Access And Session Fixes](tasks/axiom-runtime-access-session-fixes.md)

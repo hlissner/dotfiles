@@ -14,6 +14,10 @@ Axiom Stage 2 search/actions 采用 Quickshell-owned panel，而不是恢复 Rof
 
 Axiom clipboard history is now allowed for the Stage 2 search surface because this single-user workstation task explicitly chose function completeness. The allowed shape is bounded user-local persistence with finite entry/size caps, visible clear-history behavior, a Nix-owned disable path, and rollback by clearing state or disabling `modules.desktop.quickshell.search.clipboard.enable`.
 
+Axiom Stage 3 quick controls and OSD use a Quickshell-owned panel plus fixed-verb local helper, not deep DBus/control-center parity. The panel may expose shallow status and common actions for audio, network, Bluetooth, media, session/power, and basic desktop actions, but external tools (`nm-connection-editor`, `blueman-manager`, `pavucontrol`, `wlogout`, `playerctl`, Fuzzel/direct commands) remain the fallback and full-management path.
+
+Axiom OSD feedback should prefer Quickshell IPC for volume/brightness/media display while preserving existing state-changing commands. Volume and brightness continue through `hey .osd` wrappers, and media keys may route through `axiom-control-helper media ...`; if Quickshell IPC is unavailable, notify/direct command fallback must keep the key behavior operational.
+
 Old X11/bspwm/sxhkd/Polybar/Dunst/Waybar/legacy-idle/browser/media/Spotify compatibility is not preserved unless a future task explicitly reopens that scope.
 
 Hyprland display-manager wiring should start through UWSM and resolve to the evaluated `start-hyprland` launcher path. Do not point greetd at `hyprland-uwsm.desktop` when that path reparses to direct `Hyprland`, because Hyprland 0.53 warns that direct startup without `start-hyprland` is only appropriate for debugging.

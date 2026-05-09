@@ -36,3 +36,6 @@
 - Added task summary for `axiom-quickshell-search-actions`.
 - Updated desktop decisions with Quickshell-owned Stage 2 search/actions, Fuzzel fallback, and bounded persistent clipboard history controls.
 - Added Quickshell search/actions provider and verification pattern.
+- Added task summary for `axiom-quickshell-quick-controls-osd`.
+- Updated desktop decisions with Stage 3 Quickshell quick controls, fixed-verb helper boundary, external fallbacks, and OSD wrapper behavior.
+- Added Quickshell quick controls and OSD implementation/verification pattern.

@@ -51,3 +51,11 @@ Search providers should be independently bounded: app launch validates desktop I
 Fallback-first rollout remains required for launcher replacements. Keep Fuzzel available through a direct action and binding until the Quickshell search panel, IPC/focus behavior, and real app/clipboard actions are verified in an Axiom Wayland session.
 
 When verifying Quickshell search changes headlessly, treat Nix eval/build, helper smoke tests, scope grep, `git diff --check`, and `Hyprland --verify-config` as useful evidence, but record that `PanelWindow` runtime behavior still requires a real layer-shell session.
+
+## Quickshell Quick Controls and OSD Pattern
+
+For Axiom quick controls, prefer a Quickshell-owned panel plus a narrow fixed-verb helper over deep QML/DBus control-center logic. The first pass should show useful status, expose common safe actions, and keep full settings apps as visible fallbacks rather than implementing Wi-Fi onboarding, Bluetooth pairing, or audio device switching in one task.
+
+OSD wrappers must preserve the underlying state change before attempting shell polish. Volume and brightness can continue through `hey .osd` / `pamixer` / `brightnessctl`; media key wrappers should run fixed `playerctl` verbs before attempting Quickshell IPC. If IPC or Quickshell fails, existing `notify-send` or direct command fallback remains the rollback path.
+
+For verification, pair static checks (`qmllint`, helper syntax/smoke, `zsh -n`, Nix eval/build, `Hyprland --verify-config`, scope/fallback greps, and `Variants`/`PanelWindow` counts) with a live-session checklist. Headless validation cannot prove panel focus, layer placement, rapid OSD timing, or disruptive actions such as Wi-Fi/Bluetooth toggles, lock, DPMS off, and `wlogout`.
