@@ -31,3 +31,5 @@
 - Added task summary for `axiom-quickshell-notification-center`.
 - Updated desktop decisions with the implemented session-local Quickshell notification center boundary.
 - Added Quickshell notification center implementation/validation pattern.
+- Added task summary for `axiom-quickshell-side-dock-regression`.
+- Extended Quickshell notification center pattern with one `PanelWindow` delegate per `Variants` block guidance.

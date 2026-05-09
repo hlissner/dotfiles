@@ -277,6 +277,10 @@ Scope {
         }
       }
     }
+  }
+
+  Variants {
+    model: Quickshell.screens
 
     PanelWindow {
       id: notificationPanelWindow
