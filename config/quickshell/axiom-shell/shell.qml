@@ -17,7 +17,7 @@ Scope {
     { "label": "HELP", "hint": "Guide", "command": "xdg-open $HOME/.config/axiom-desktop/guide.md" }
   ]
   property var controls: [
-    { "label": "APP", "hint": "Launcher", "command": "fuzzel" },
+    { "label": "APP", "hint": "Search", "action": "search" },
     { "label": "WIFI", "hint": "Network", "command": "nm-connection-editor" },
     { "label": "BT", "hint": "Bluetooth", "command": "blueman-manager" },
     { "label": "VOL", "hint": "Audio", "command": "pavucontrol" },
@@ -27,6 +27,7 @@ Scope {
     { "label": "PWR", "hint": "Power", "command": "wlogout" }
   ]
   property string statusText: "Ready"
+  property bool searchPanelOpen: false
   property bool notificationPanelOpen: false
   property var unreadNotificationKeys: []
   property int notificationRevision: 0
@@ -93,6 +94,28 @@ Scope {
       markAllNotificationsSeen();
   }
 
+  function openSearchPanel() {
+    searchPanelOpen = true;
+    notificationPanelOpen = false;
+  }
+
+  function toggleSearchPanel() {
+    searchPanelOpen = !searchPanelOpen;
+
+    if (searchPanelOpen)
+      notificationPanelOpen = false;
+  }
+
+  function activateControl(control) {
+    if (control.action === "search") {
+      toggleSearchPanel();
+      statusText = searchPanelOpen ? "Search" : "Ready";
+      return;
+    }
+
+    run(control.command, control.hint);
+  }
+
   function dismissNotification(notification) {
     dropUnreadNotification(notification);
     notification.dismiss();
@@ -120,6 +143,18 @@ Scope {
 
   Process {
     id: launcher
+  }
+
+  IpcHandler {
+    target: "axiom"
+
+    function toggleSearch() {
+      root.toggleSearchPanel();
+    }
+
+    function openSearch() {
+      root.openSearchPanel();
+    }
   }
 
   NotificationServer {
@@ -271,9 +306,48 @@ Scope {
               label: modelData.label
               hint: modelData.hint
               compact: true
-              onClicked: root.run(modelData.command, modelData.hint)
+              active: modelData.action === "search" && root.searchPanelOpen
+              accent: modelData.action === "search" ? "#89b4fa" : "#cba6f7"
+              onClicked: root.activateControl(modelData)
             }
           }
+        }
+      }
+    }
+  }
+
+  Variants {
+    model: Quickshell.screens
+
+    PanelWindow {
+      id: searchPanelWindow
+      required property var modelData
+      visible: root.searchPanelOpen
+      screen: modelData
+      implicitWidth: 540
+      implicitHeight: 620
+      exclusiveZone: 0
+      anchors {
+        left: true
+        top: true
+      }
+      margins {
+        left: 100
+        top: 48
+      }
+
+      SearchPanel {
+        id: searchPanel
+        anchors.fill: parent
+        opened: root.searchPanelOpen
+        onCloseRequested: root.searchPanelOpen = false
+        onStatusRequested: function(text) {
+          root.statusText = text;
+        }
+
+        onOpenedChanged: {
+          if (opened)
+            open();
         }
       }
     }

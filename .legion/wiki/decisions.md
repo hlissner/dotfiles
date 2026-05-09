@@ -10,6 +10,10 @@ Axiom's visible product shell should be Isabel-first and GUI-first: local Quicks
 
 Axiom notification center 的第一个实现切片采用 session-local Quickshell panel：使用 `NotificationServer.trackedNotifications` 管理当前会话通知，dock button 负责打开 panel，通知内容不持久化。后续不得在没有 retention、clear、disable 和 privacy policy 的情况下把 notification history 或 clipboard history 落盘。
 
+Axiom Stage 2 search/actions 采用 Quickshell-owned panel，而不是恢复 Rofi/DMS primary path 或导入上游 launcher framework。`APP` dock entry 和 primary launcher binding should open Quickshell search first, while Fuzzel remains installed and directly reachable as fallback. Search providers must execute through fixed verbs, reviewed argv arrays, or repository-owned helper subcommands; user query text must not become shell script.
+
+Axiom clipboard history is now allowed for the Stage 2 search surface because this single-user workstation task explicitly chose function completeness. The allowed shape is bounded user-local persistence with finite entry/size caps, visible clear-history behavior, a Nix-owned disable path, and rollback by clearing state or disabling `modules.desktop.quickshell.search.clipboard.enable`.
+
 Old X11/bspwm/sxhkd/Polybar/Dunst/Waybar/legacy-idle/browser/media/Spotify compatibility is not preserved unless a future task explicitly reopens that scope.
 
 Hyprland display-manager wiring should start through UWSM and resolve to the evaluated `start-hyprland` launcher path. Do not point greetd at `hyprland-uwsm.desktop` when that path reparses to direct `Hyprland`, because Hyprland 0.53 warns that direct startup without `start-hyprland` is only appropriate for debugging.

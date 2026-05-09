@@ -33,3 +33,6 @@
 - Added Quickshell notification center implementation/validation pattern.
 - Added task summary for `axiom-quickshell-side-dock-regression`.
 - Extended Quickshell notification center pattern with one `PanelWindow` delegate per `Variants` block guidance.
+- Added task summary for `axiom-quickshell-search-actions`.
+- Updated desktop decisions with Quickshell-owned Stage 2 search/actions, Fuzzel fallback, and bounded persistent clipboard history controls.
+- Added Quickshell search/actions provider and verification pattern.

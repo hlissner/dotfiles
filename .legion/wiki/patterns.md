@@ -41,3 +41,13 @@ For Axiom notification UI, keep `NotificationServer` as the ingress and use `tra
 When validating new Quickshell QML files from a Git-backed flake, stage or intent-to-add the new files before `nix eval`/`nix build`, then pair Nix build evidence with a real-session test plan. Headless/offscreen Quickshell can fail at `No PanelWindow backend loaded`; treat that as an environment limitation, not a substitute for Hyprland layer-shell testing.
 
 Keep Quickshell `Variants` composition simple: use one per-screen `PanelWindow` delegate per `Variants` block. If multiple windows need the same screen model, create separate `Variants` blocks or an explicit wrapper component; do not add sibling `PanelWindow` delegates in one `Variants` block.
+
+## Quickshell Search and Actions Pattern
+
+For Axiom shell-owned search/actions, keep the visible UI in Quickshell and keep provider execution behind fixed local verbs. QML may compose results and invoke reviewed argv arrays or repository-owned helper subcommands, but it should not parse desktop-entry `Exec` strings into shell commands or pass user query text to `sh -lc`.
+
+Search providers should be independently bounded: app launch validates desktop IDs against scanned entries, calculator input is parsed as data through a restricted expression evaluator or equivalent local backend, emoji data stays local/offline, web search only opens an encoded user-requested URL, and clipboard history has explicit caps, clear, disable, and rollback behavior.
+
+Fallback-first rollout remains required for launcher replacements. Keep Fuzzel available through a direct action and binding until the Quickshell search panel, IPC/focus behavior, and real app/clipboard actions are verified in an Axiom Wayland session.
+
+When verifying Quickshell search changes headlessly, treat Nix eval/build, helper smoke tests, scope grep, `git diff --check`, and `Hyprland --verify-config` as useful evidence, but record that `PanelWindow` runtime behavior still requires a real layer-shell session.
