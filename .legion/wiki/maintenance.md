@@ -2,8 +2,8 @@
 
 ## End4 Desktop Follow-Up
 
-- `origin/master` still lacks the end4 `ii` source tree. Phase 1 must provide `config/quickshell/ii/shell.qml` and verify `systemctl --user restart quickshell.service` loads it before the full end4 desktop UX can be declared complete.
-- Hyprland still has legacy `hyprland.pre.conf` generation. Phase 2 should move to end4-style source layering while keeping monitor/workspace/default-app facts in Nix.
-- Matugen/wallpaper generated-state policy needs Phase 3 completion before generated Quickshell/Hyprland/hyprlock/fuzzel/terminal colors are relied on.
+- Live Axiom validation remains required inside the actual Hyprland session: restart `quickshell.service`, inspect journal output, and exercise sidebars, overview/search, notifications, OSD, lock/session, wallpaper switching, polkit prompts, tray, audio, brightness/DDC, NetworkManager, Bluetooth, and power profiles.
 - `cliphist` backend is wired, but database retention pruning is not implemented. Define retention, clear UX, and disable behavior against the end4 `ii` clipboard/search surface.
-- Live Axiom validation remains required for sidebars, overview, launcher, control center, notification center, OSD, power profiles, brightness/DDC, NetworkManager, Bluetooth, tray, and polkit prompts.
+- Imported AI/cloud/function tooling is present as part of upstream `ii`. Harden default policy/documentation before broader enablement and keep API-key behavior inert without explicit user configuration.
+- Map or hide upstream optional commands that still assume KDE tools, `kitty`/`fish`, Arch-style package updates, or other non-Axiom defaults.
+- Track future Quickshell package updates carefully because imported `ii` currently requires `Quickshell.Services.Polkit`; pinned `0.2.1` is insufficient and the local wrapper builds `0.3.0`.

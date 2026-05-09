@@ -1,4 +1,4 @@
-# RFC Review: Dots Hyprland Desktop Phase 4
+# RFC Review: Complete Axiom End4 Desktop Import
 
 > Conclusion: PASS
 > Date: 2026-05-09
@@ -8,17 +8,13 @@
 
 None.
 
-The rewritten RFC is implementable, bounded, verifiable enough for this environment, and rollbackable. It explicitly resolves the historical contract drift by treating `end4.md` as the current phase/theme source of truth, rejecting old Axiom dock/guide/button and `autumnal` desktop compatibility as target constraints, and narrowing Phase 4 implementation to declarative NixOS/user-service substrate.
+The initial review failed because the RFC did not define a strict enough source import boundary or headless Quickshell/QML loadability evidence. The updated RFC resolves both blockers by requiring a reviewable import manifest and the strongest available static/direct Quickshell validation when no live compositor is available.
 
 ## Non-Blocking Suggestions
 
-- Resolve open questions during implementation notes, especially `cliphist` default behavior and exact font package mapping, so verification/reporting is crisp.
-- Runtime checks are correctly deferred, but verification should explicitly record which graphical/live-session checks are impossible in this environment and why.
-- When adding fallback notification tools, verify they do not autostart a second notification daemon.
+- Keep `docs/import-manifest.md` easy to review by separating copied upstream paths, intentionally omitted upstream paths, generated/runtime/state/secret exclusions, and Nix-generated override paths.
+- For static QML scans, record both the command and what class of imports it can or cannot validate so reviewers do not overinterpret it.
 
 ## Implementation Handoff
 
-- Proceed to Phase 4 implementation.
-- Keep scope limited to declarative NixOS/user service substrate: packages, services, groups, kernel modules, cliphist watcher, keyring/polkit, power profiles, i2c/DDC, fallback tools.
-- Do not preserve old Axiom dock/guide/buttons or `autumnal` desktop truth when conflicts arise.
-- Ensure rollback toggles exist for Phase 4 extras and clipboard history, and record strongest feasible Nix/static validation evidence.
+Proceed to implementation. The design is sufficiently bounded, reviewable, verifiable, and rollbackable for the complete end4 import requirement.

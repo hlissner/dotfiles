@@ -1,24 +1,28 @@
-# Dots Hyprland Desktop Phase 4 Tasks
+# Dots Hyprland Desktop Complete End4 Tasks
 
 ## Status
 
-- Current stage: contract restored and being materialized for implementation continuation.
-- Execution mode: approved-design continuation after RFC rewrite/review.
-- Scope: Phase 4 declarative end4 service capabilities plus RFC/theme realignment.
+- Current stage: wiki writeback complete; commit/PR lifecycle pending.
+- Execution mode: default implementation mode with RFC update/review gate.
+- Scope: import and wire upstream end4 `ii`, matugen/theme, Hyprland layering, and Phase 4 core surfaces; substrate-only is not acceptable.
 - Worktree: `.worktrees/dots-hyprland-desktop-rfc/`
-- Branch: `legion/dots-hyprland-desktop-rfc-phase4-services`
+- Branch: `legion/dots-hyprland-desktop-rfc-end4-complete`
 - Base ref: `origin/master`
 
 ## Checklist
 
-- [x] Restore historical `dots-hyprland-desktop-rfc` task context.
-- [x] Detect contract drift from design-only RFC to Phase 4 implementation.
+- [x] Restore the existing `dots-hyprland-desktop-rfc` task.
+- [x] Identify substrate-only contract drift after user rejection.
 - [x] Open mandatory Legion worktree from `origin/master`.
-- [x] Rewrite `plan.md` and `tasks.md` for current implementation contract.
-- [x] Rewrite `docs/rfc.md` around `end4.md` phase/theme truth.
+- [x] Rewrite `plan.md` and `tasks.md` for complete end4 import.
+- [x] Rewrite RFC for direct upstream import and no-downgrade acceptance.
 - [x] Review the rewritten RFC.
-- [x] Inspect current Phase 1-3 implementation state in the worktree.
-- [x] Implement Phase 4 Nix/service/dependency changes.
+- [x] Fetch upstream `end-4/dots-hyprland` in the worktree.
+- [x] Import `ii` Quickshell source and required adjacent config/scripts.
+- [x] Import matugen/theme/wallpaper chain sources.
+- [x] Import end4 Hyprland layering and add Axiom/Nix overrides.
+- [x] Make Axiom Quickshell default load `ii/shell.qml`.
+- [x] Remove or demote old `axiom-shell` runtime path.
 - [x] Run and record verification in `docs/test-report.md`.
 - [x] Run change review and record readiness/blockers.
 - [x] Generate delivery walkthrough and PR body.
@@ -30,6 +34,6 @@
 
 ## Handoff Notes
 
-- `end4.md` is an input supplied in the main workspace and is authoritative for this continuation; its requirements have been folded into `plan.md`/`docs/rfc.md` rather than relying on an untracked file in the PR.
-- Old Axiom dock/guide/button preservation and `autumnal` desktop fallback are no longer compatibility requirements.
-- Keep Phase 5 visual automation and Phase 6 AI out of implementation scope unless needed to keep existing Phase 4 shell code loading.
+- User explicitly rejected the prior Phase 4 substrate-only downgrade.
+- Upstream source is `https://github.com/end-4/dots-hyprland`.
+- Hostname `axiom` does not imply the tool shell is in a graphical Hyprland session; live checks must record actual session variables.

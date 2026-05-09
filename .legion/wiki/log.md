@@ -42,3 +42,6 @@
 - Updated `dots-hyprland-desktop-rfc` summary for Phase 4 implementation continuation.
 - Updated desktop decisions with end4.md superseding the historical Axiom-native shell plan and Phase 4 substrate ownership.
 - Added End4 desktop substrate pattern and maintenance backlog for missing `ii` source, Hyprland layering, matugen state, cliphist retention, and live Axiom validation.
+- Updated `dots-hyprland-desktop-rfc` summary for the complete end4 `ii` source import continuation.
+- Updated desktop decisions and patterns: substrate-only is no longer current truth; end4 `ii` source import with manifest, omitted generated/secret/state boundaries, and Nix-owned host integration is the active model.
+- Updated End4 maintenance backlog for live session validation, cliphist retention, AI/cloud policy, upstream command mapping, and Quickshell `0.3.0` tracking.

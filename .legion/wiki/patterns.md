@@ -60,10 +60,14 @@ OSD wrappers must preserve the underlying state change before attempting shell p
 
 For verification, pair static checks (`qmllint`, helper syntax/smoke, `zsh -n`, Nix eval/build, `Hyprland --verify-config`, scope/fallback greps, and `Variants`/`PanelWindow` counts) with a live-session checklist. Headless validation cannot prove panel focus, layer placement, rapid OSD timing, or disruptive actions such as Wi-Fi/Bluetooth toggles, lock, DPMS off, and `wlogout`.
 
-## End4 Desktop Substrate Pattern
+## End4 Desktop Import Pattern
 
-When adopting end4 desktop phases in Axiom, separate product shell source migration from NixOS service substrate. The target UX can be end4 `ii` / `IllogicalImpulseFamily`, but Nix must still own host facts, UWSM/greetd/portal startup, package closure, system services, user services, groups, kernel modules, keyring/polkit, and generated-state boundaries.
+When adopting end4 desktop phases in Axiom, treat the upstream `ii` source tree as product source once substrate-only is rejected. Import required upstream files through a manifest, record upstream commits and submodules, and keep omitted installer/generated/secret/state paths explicit.
+
+The target UX can be end4 `ii` / `IllogicalImpulseFamily`, but Nix must still own host facts, UWSM/greetd/portal startup, package closure, system services, user services, groups, kernel modules, keyring/polkit, generated override files, and generated-state boundaries.
 
 Do not use old Axiom shell affordances as compatibility requirements once an end4 phase explicitly supersedes them. It is acceptable to keep transitional helper code alive for currently checked-in shell sources, but task docs and wiki must mark that code as migration debt rather than current product truth.
+
+For large QML imports, pair Nix eval/build with a local QML import scan and a bounded headless Quickshell smoke. If the smoke reaches `ii/shell.qml` and then fails at `No PanelWindow backend loaded`, record that as a TTY/offscreen compositor limitation, not as live layer-shell validation.
 
 For `cliphist` adoption, distinguish shell display/readback limits from database retention. `wl-paste --watch cliphist store` proves the backend wiring, but privacy readiness still requires a retention/clear policy and live-session verification.

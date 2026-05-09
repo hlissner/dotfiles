@@ -3,74 +3,119 @@
 with lib;
 with hey.lib;
 let cfg = config.modules.desktop.quickshell;
+    quickshell03 = pkgs.unstable.quickshell.overrideAttrs (old: rec {
+      version = "0.3.0";
+      src = pkgs.fetchFromGitea {
+        domain = "git.outfoxxed.me";
+        owner = "quickshell";
+        repo = "quickshell";
+        tag = "v${version}";
+        hash = "sha256-gU+VGpwGJ2vvg0mtYqVvj5u+2LteuHlpokH6JSAtueY=";
+      };
+      buildInputs = old.buildInputs ++ (with pkgs.unstable; [
+        glib
+        polkit
+        cpptrace
+      ]);
+      nativeBuildInputs = old.nativeBuildInputs ++ (with pkgs.unstable; [
+        vulkan-headers
+      ]);
+      cmakeFlags = [
+        (lib.cmakeFeature "DISTRIBUTOR" "Nixpkgs")
+        (lib.cmakeBool "DISTRIBUTOR_DEBUGINFO_AVAILABLE" true)
+        (lib.cmakeBool "DO_NOT_CHECK_CPPTRACE_USABILITY" true)
+        (lib.cmakeFeature "INSTALL_QML_PREFIX" pkgs.unstable.qt6.qtbase.qtQmlPrefix)
+        (lib.cmakeFeature "GIT_REVISION" "tag-v${version}")
+      ];
+    });
+    quickshellRuntimeDeps = with pkgs.unstable; [
+      quickshell03
+      kdePackages.qtbase
+      kdePackages.qtdeclarative
+      kdePackages.qtmultimedia
+      kdePackages.qtpositioning
+      kdePackages.qtsensors
+      kdePackages.qtsvg
+      kdePackages.qtwayland
+      kdePackages.qtimageformats
+      kdePackages.kirigami
+      kdePackages.kdialog
+      kdePackages.syntax-highlighting
+      kdePackages.qt5compat
+      adwaita-icon-theme
+    ];
+    qmlImportPath = makeSearchPath "lib/qt-6/qml" quickshellRuntimeDeps;
+    qtPluginPath = makeSearchPath "lib/qt-6/plugins" quickshellRuntimeDeps;
     quickshellPackage = pkgs.symlinkJoin {
       name = "axiom-quickshell";
-      paths = with pkgs.unstable; [
-        quickshell
-        kdePackages.qtbase
-        kdePackages.qtdeclarative
-        kdePackages.qtmultimedia
-        kdePackages.qtpositioning
-        kdePackages.qtsensors
-        kdePackages.qtsvg
-        kdePackages.qtwayland
-        kdePackages.qtimageformats
-        kdePackages.kirigami
-        kdePackages.kdialog
-        kdePackages.syntax-highlighting
-        kdePackages.qt5compat
-        adwaita-icon-theme
-      ];
+      paths = quickshellRuntimeDeps;
+      nativeBuildInputs = [ pkgs.makeWrapper ];
+      postBuild = ''
+        for bin in quickshell qs; do
+          if [[ -e "$out/bin/$bin" ]]; then
+            target="$(readlink -f "$out/bin/$bin")"
+            rm "$out/bin/$bin"
+            makeWrapper "$target" "$out/bin/$bin" \
+              --prefix QML2_IMPORT_PATH : "${qmlImportPath}" \
+              --prefix QT_PLUGIN_PATH : "${qtPluginPath}"
+          fi
+        done
+      '';
       meta.mainProgram = "quickshell";
     };
-    searchHelper = pkgs.writeShellApplication {
-      name = "axiom-search-helper";
-      runtimeInputs = with pkgs; [ python3 wl-clipboard cliphist gtk3 xdg-utils libqalculate ];
+    iiPython = pkgs.python3.withPackages (ps: with ps; [
+      click
+      loguru
+      materialyoucolor
+      numpy
+      opencv4
+      pillow
+      pygobject3
+      tqdm
+    ]);
+    iiPythonEnv = pkgs.runCommand "illogical-impulse-python-env" {} ''
+      mkdir -p "$out/bin"
+      ln -s ${iiPython}/bin/python "$out/bin/python"
+      ln -s ${iiPython}/bin/python3 "$out/bin/python3"
+      cat > "$out/bin/activate" <<EOF
+      export PATH="$out/bin:\$PATH"
+      deactivate() { unset -f deactivate; }
+      EOF
+    '';
+    cliphistWatcher = pkgs.writeShellApplication {
+      name = "axiom-cliphist-watch";
+      runtimeInputs = [ cfg.package pkgs.wl-clipboard pkgs.cliphist ];
       text = ''
-        exec ${pkgs.python3}/bin/python3 ${hey.configDir}/quickshell/${cfg.configName}/search/axiom-search-helper.py "$@"
-      '';
-    };
-    controlHelper = pkgs.writeShellApplication {
-      name = "axiom-control-helper";
-      runtimeInputs = with pkgs; [
-        python3
-        pamixer
-        brightnessctl
-        ddcutil
-        playerctl
-        wireplumber
-        networkmanager
-        bluez
-        hyprland
-        power-profiles-daemon
-        wlogout
-        procps
-        lm_sensors
-      ];
-      text = ''
-        exec ${pkgs.python3}/bin/python3 ${hey.configDir}/quickshell/${cfg.configName}/controls/axiom-control-helper.py "$@"
+        wl-paste --type text --watch bash -c 'cliphist store; qs -c ${cfg.configName} ipc call cliphistService update >/dev/null 2>&1 || true' &
+        text_pid=$!
+        wl-paste --type image --watch bash -c 'cliphist store; qs -c ${cfg.configName} ipc call cliphistService update >/dev/null 2>&1 || true' &
+        image_pid=$!
+
+        trap 'kill "$text_pid" "$image_pid" 2>/dev/null || true' INT TERM EXIT
+        wait -n "$text_pid" "$image_pid"
       '';
     };
 in {
   options.modules.desktop.quickshell = with types; {
     enable = mkBoolOpt false;
     package = mkOpt package quickshellPackage;
-    configName = mkOpt str "axiom-shell";
+    configName = mkOpt str "ii";
+    illogicalImpulsePythonEnv = mkOpt package iiPythonEnv;
     search.clipboard = {
       enable = mkBoolOpt true;
-      backend = mkOpt (enum [ "cliphist" "axiom" ]) "cliphist";
+      backend = mkOpt (enum [ "cliphist" ]) "cliphist";
       maxEntries = mkOpt int 500;
       maxEntryBytes = mkOpt int (64 * 1024);
     };
     phase4Services.enable = mkBoolOpt true;
-    polkitAgent.enable = mkBoolOpt true;
+    polkitAgent.enable = mkBoolOpt false;
   };
 
   config = mkIf cfg.enable {
     environment.systemPackages = with pkgs; [
       cfg.package
-      searchHelper
-      controlHelper
+      cfg.illogicalImpulsePythonEnv
+      cliphistWatcher
       fuzzel
       gtk3
       xdg-utils
@@ -88,6 +133,11 @@ in {
       networkmanagerapplet
       blueman
       pavucontrol
+      jq
+      bc
+      curl
+      libsecret
+      tesseract
     ] ++ optionals cfg.phase4Services.enable (with pkgs; [
       cava
       songrec
@@ -101,12 +151,14 @@ in {
       procps
       lm_sensors
       kdePackages.kdialog
-      kdePackages.polkit-kde-agent-1
     ]);
 
     fonts.packages = mkIf cfg.phase4Services.enable (with pkgs; [
       material-symbols
       googlesans-code
+      nerd-fonts.jetbrains-mono
+      noto-fonts
+      noto-fonts-cjk-sans
     ]);
 
     boot.kernelModules = mkIf cfg.phase4Services.enable [ "i2c-dev" ];
@@ -140,10 +192,7 @@ in {
         RestartSec = 2;
       };
       environment = {
-        AXIOM_CLIPBOARD_HISTORY = if cfg.search.clipboard.enable then "1" else "0";
-        AXIOM_CLIPBOARD_BACKEND = cfg.search.clipboard.backend;
-        AXIOM_CLIPBOARD_MAX_ENTRIES = toString cfg.search.clipboard.maxEntries;
-        AXIOM_CLIPBOARD_MAX_ENTRY_BYTES = toString cfg.search.clipboard.maxEntryBytes;
+        ILLOGICAL_IMPULSE_VIRTUAL_ENV = "${cfg.illogicalImpulsePythonEnv}";
       };
     };
 
@@ -152,16 +201,8 @@ in {
       wantedBy = [ "hyprland-session.target" ];
       after = [ "hyprland-session.target" ];
       partOf = [ "hyprland-session.target" ];
-      environment = {
-        AXIOM_CLIPBOARD_HISTORY = "1";
-        AXIOM_CLIPBOARD_BACKEND = cfg.search.clipboard.backend;
-        AXIOM_CLIPBOARD_MAX_ENTRIES = toString cfg.search.clipboard.maxEntries;
-        AXIOM_CLIPBOARD_MAX_ENTRY_BYTES = toString cfg.search.clipboard.maxEntryBytes;
-      };
       serviceConfig = {
-        ExecStart = if cfg.search.clipboard.backend == "cliphist"
-                    then "${pkgs.wl-clipboard}/bin/wl-paste --type text --watch ${pkgs.cliphist}/bin/cliphist store"
-                    else "${pkgs.wl-clipboard}/bin/wl-paste --type text --watch ${searchHelper}/bin/axiom-search-helper clipboard add";
+        ExecStart = "${cliphistWatcher}/bin/axiom-cliphist-watch";
         Restart = "on-failure";
         RestartSec = 2;
       };
@@ -170,6 +211,14 @@ in {
     home.configFile = {
       "quickshell/${cfg.configName}" = {
         source = "${hey.configDir}/quickshell/${cfg.configName}";
+        recursive = true;
+      };
+      "matugen" = {
+        source = "${hey.configDir}/matugen";
+        recursive = true;
+      };
+      "fuzzel" = {
+        source = "${hey.configDir}/fuzzel";
         recursive = true;
       };
     };

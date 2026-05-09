@@ -1,86 +1,90 @@
-# Dots Hyprland Desktop Phase 4 Implementation
+# Dots Hyprland Desktop Complete End4 Import
 
 ## Task Identity
 
-- Name: Dots Hyprland Desktop Phase 4 Implementation
+- Name: Dots Hyprland Desktop Complete End4 Import
 - Task ID: `dots-hyprland-desktop-rfc`
-- Restored from: historical design-only RFC task, now reopened as an implementation task by explicit user instruction.
-- Current source of truth: this plan plus `docs/rfc.md`; theme-related direction must follow the repository-local `end4.md` requirements supplied for this continuation.
+- Continuation target: complete the end4 desktop migration instead of shipping a substrate-only downgrade.
+- Upstream source: `https://github.com/end-4/dots-hyprland`
+- Current source of truth: this contract, `docs/rfc.md`, the user-provided `end4.md` requirements already folded into task docs, and upstream end4 files imported in this iteration.
 
 ## Goal
 
-Continue the Axiom Hyprland desktop migration by implementing the fourth phase from the end4-aligned plan: make the end4 Quickshell desktop surfaces and supporting NixOS services usable enough for launcher, overview, sidebars, control center, notification center, and related status/control capabilities to be traced to declarative configuration.
+Make Axiom load and use the end4 `ii` Quickshell desktop path from the repository, not the old Axiom shell or a Phase 4-only service substrate. The completed state must include the upstream `ii` shell family, end4-aligned Hyprland layering, matugen/theme/wallpaper chain, and Phase 4 core service/UI surfaces wired through NixOS.
 
 ## Problem
 
-The original task intentionally stopped at a design-only RFC. Subsequent implementation has already moved Axiom closer to an end4-style Quickshell desktop, but the task contract and RFC still describe an Axiom-native incremental shell and an `autumnal`-fallback theme direction. The current continuation explicitly changes that direction: end4's `ii` shell family and Material/Matugen-oriented theme model should be treated as the target, old Axiom desktop shell affordances should not be preserved for their own sake, and Phase 4 service capabilities need to be implemented through Nix rather than unmanaged live config.
+PR #18 correctly declared many Phase 4 services but explicitly downgraded the deliverable to substrate-only because `config/quickshell/ii/shell.qml` was missing. The user rejected that downgrade and pointed to the upstream end4 repository as the missing source. Continuing without importing and wiring `ii` would keep the old Axiom shell alive as the de facto UX, which conflicts with `end4.md` and the explicit user instruction.
 
 ## Acceptance Criteria
 
-- `docs/rfc.md` is rewritten so the current phase model and theme decisions follow `end4.md`, not the historical Axiom-native fallback plan.
-- The Phase 4 implementation keeps the end4 `ii` shell surfaces in scope: left sidebar, right sidebar/control center, overview, search/launcher, notification popup/center, OSD, wallpaper selector, session/lock, and polkit-facing UX where the current repository already carries those sources.
-- `modules/desktop/quickshell.nix` or adjacent Nix modules declare the runtime tools needed by Phase 4 services: network, Bluetooth, audio, brightness, MPRIS/media, resource usage, tray, notifications, clipboard, and fallback control tools.
-- NixOS/user setup declares the service capabilities Phase 4 depends on: NetworkManager, Bluetooth, PipeWire/WirePlumber, power profiles, keyring/polkit support, user cliphist watcher, i2c support, and required user groups.
-- Theme-related statements no longer keep `autumnal` or old Axiom shell visuals as the desktop visual truth; end4 `IllogicalImpulseFamily`, Material Symbols/Google Sans-style font needs, Qt/Kirigami dependencies, matugen/wallpaper ownership, and generated-state boundaries are represented consistently.
-- Validation evidence records the strongest feasible checks for Nix evaluation/build surfaces in this environment, plus any command that cannot run and why.
-- Legion closing artifacts are updated: RFC review, test report, delivery walkthrough, PR body, wiki writeback, and task log.
+- The repository contains the imported end4 Quickshell `ii` source required for `quickshell --config ii` to resolve `ii/shell.qml` and default to `IllogicalImpulseFamily`.
+- Axiom's Quickshell module defaults to the end4 `ii` config path, not `axiom-shell`.
+- The old Axiom shell is no longer the active runtime config; if any legacy files remain, they are not linked as the default shell and are documented as obsolete or removed.
+- The repository contains end4-aligned matugen/theme/wallpaper sources and scripts needed by the `ii` shell to find theme templates and color scripts.
+- The repository contains end4-aligned Hyprland source layering for `hyprland.conf`, `hyprland/*`, `hypridle.conf`, `hyprlock.conf`, and custom/Nix-generated override files.
+- Nix still owns host-specific monitor/workspace/default-app facts, UWSM/greetd/portal startup, Quickshell user service, keyring/polkit, cliphist, power profiles, i2c/DDC, and runtime packages.
+- Phase 4 UI surfaces from end4 `ii` are retained in source scope: left/right sidebars, overview, launcher/search, notifications, OSD, wallpaper selector, session/lock, and polkit-facing UX.
+- `systemctl --user restart quickshell.service` can be attempted in the actual Axiom user environment; if a live graphical session is unavailable from the tool shell, the report must clearly distinguish host identity from session environment and run all feasible static/build checks.
+- Nix evaluation/build evidence is recorded, plus any Quickshell/Hyprland static validation that can run without a live compositor.
+- Legion closing artifacts and PR lifecycle are completed again.
 
 ## Assumptions
 
-- The user-provided `end4.md` is authoritative for the new phase breakdown and theme direction, even when it conflicts with the historical RFC.
-- Current Axiom still means the NixOS host and desktop modules under this repository, especially `hosts/axiom/default.nix`, `modules/desktop/*`, and `config/quickshell/*`.
-- Upstream end4 remains a product/architecture reference; this task does not run an unmanaged end4 setup script or let live `~/.config` become the source of truth.
-- The current repository may already contain earlier phase work; this task should extend it minimally rather than re-importing large upstream trees.
-- PR delivery uses the mandatory Legion worktree lifecycle from base `origin/master`.
+- The current machine is Axiom, but the command shell may still be a TTY/non-Hyprland session; live Wayland validation depends on `WAYLAND_DISPLAY` and `HYPRLAND_INSTANCE_SIGNATURE`, not hostname alone.
+- Upstream end4 files are the required missing source for the rejected substrate downgrade.
+- It is acceptable to vendor upstream shell/config sources into this dotfiles repository, provided no unmanaged setup script, secrets, generated runtime state, or live home-directory writes become the source of truth.
+- The import may be large; correctness and reaching the declared end4 runtime path matter more than preserving old Axiom shell compatibility.
 
 ## Constraints
 
-- Do not preserve backward compatibility with the old Axiom dock, old guide, old buttons, or autumnal desktop theme when they conflict with `end4.md`.
-- Keep Darwin isolation and Axiom host facts declarative in Nix.
-- Do not write secrets, API keys, generated color state, or mutable runtime cache into the Nix store or repository-managed source paths.
-- Do not introduce unmanaged package managers, upstream installer state, or live home-directory edits.
-- Keep Phase 4 bounded to service enablement and dependency/config ownership; deeper screenshot/OCR/translation/AI work remains later phase scope unless already required as a dependency for Phase 4 surfaces to load.
+- Do not run upstream end4 `setup`.
+- Do not commit API keys, generated color outputs, live cache/state, machine-local secrets, or upstream installer artifacts that mutate home directly.
+- Do not keep `autumnal` or old Axiom shell visuals as desktop truth.
+- Keep Darwin isolation.
+- Keep Axiom host facts declarative in Nix.
+- Keep Phase 5 visual automation and Phase 6 AI policy out of mandatory acceptance unless their source files are needed for imported `ii` QML to load; cloud/API functionality must remain inert without keys/policy.
 
 ## Scope
 
-- Rewrite the task contract and RFC from design-only future planning into a current Phase 4 implementation contract.
-- Align the RFC's staged path with `end4.md`, including end4 theme truth and removal of old Axiom visual fallback language.
-- Inspect the current Nix/Quickshell/Hyprland implementation state in the isolated worktree.
-- Implement declarative Phase 4 service/package/user setup with the smallest correct changes.
-- Record verification, review, walkthrough, wiki updates, and PR lifecycle state.
+- Fetch upstream `end-4/dots-hyprland` in the isolated worktree and import the required `dots/.config` sources into repository-managed `config/` paths.
+- Replace Axiom's active Quickshell config default with `ii` and remove/demote the old `axiom-shell` runtime path.
+- Add or adjust Nix linking for `quickshell/ii`, `matugen`, Hyprland config, state directories, runtime packages, services, and host override files.
+- Update RFC/task docs from substrate-only to complete end4 import.
+- Run build/static validation and live-session validation where the environment permits.
+- Complete review, walkthrough, wiki writeback, commit, PR, checks/review, cleanup, and main refresh.
 
 ## Non-Goals
 
-- Do not implement Phase 5 screenshot/OCR/translation/visual-search workflows beyond retaining dependencies already needed by current bindings or Phase 4 shell load.
-- Do not implement Phase 6 AI/key policy work.
-- Do not make generated Material You color outputs immutable or store-managed; Nix should own templates/scripts/dependencies, not mutable generated colors.
-- Do not reintroduce Rofi/DMS/old Axiom shell components as primary UX.
-- Do not perform manual runtime validation on the user's live Hyprland session from this environment.
+- Do not design or enable cloud/API/key-backed AI behavior beyond making source files available if required by `ii` imports.
+- Do not make mutable generated color files Nix-store-managed.
+- Do not preserve old Axiom guide/dock/button behavior.
+- Do not complete Phase 5 screenshot/OCR/translation/cloud visual search as a separate product milestone unless those files are imported as passive dependencies of the `ii` source tree.
 
 ## Design Summary
 
-- Treat `end4.md` as the refreshed product contract: end4 `ii` shell family is the target UX, while Nix remains the source of truth for host facts, package closure, services, permissions, and generated-state boundaries.
-- Phase 4 implementation should be declarative first: packages, services, groups, kernel modules, and user services must be visible in Nix modules rather than hidden inside shell scripts.
-- The RFC should no longer describe `autumnal` as desktop fallback or keep Axiom-specific dock/guide language as a desired end state.
-- Use fallback GUI tools only as operational fallbacks for incomplete inline controls, not as primary product direction.
-- Prefer narrow module edits over large rewrites; add options only where host-specific facts or service toggles need to remain declarative.
+- Treat the end4 upstream tree as the missing product source, not merely inspiration.
+- Vendor the end4 `ii` shell and its required adjacent config/scripts into repository-managed `config/` paths.
+- Nix deploys imported sources into XDG config locations and owns all system integration.
+- Host-generated custom overrides adapt end4 to Axiom: monitors, workspaces, default apps, env, keybind fallbacks, service startup, and hardware facts.
+- Verification should prove both the Nix composition and the concrete presence/loadability of `ii/shell.qml`; live UI verification is attempted only when the tool environment has the necessary Wayland/Hyprland session variables.
 
 ## Risks
 
-- Quickshell/end4 QML runtime dependencies can be broad; missing Qt/Kirigami packages may only appear during live shell startup.
-- Hardware control features depend on permissions and devices (`video`, `input`, `i2c`, `i2c-dev`, `ddcutil`) that may not be fully testable in CI or a non-graphical environment.
-- Notification/keyring/polkit overlap can conflict with other desktop services if ownership is unclear.
-- Dynamic theme generation can blur source-of-truth boundaries if generated outputs are committed or written into store-owned paths.
-- Broad dependency additions increase closure size and may need follow-up pruning after runtime validation.
+- Upstream `ii` has broad QML imports and runtime assumptions; missing packages may only surface during Quickshell startup.
+- Importing large upstream source increases review size and future maintenance cost.
+- Some end4 modules may assume Arch-style commands, KDE tools, or mutable config files; Nix wrappers/overrides may be required.
+- Live Quickshell validation can still fail in a TTY even on host `axiom`.
+- Imported AI/cloud/OCR modules can create privacy/security concerns if enabled without policy; they must stay inert unless explicitly configured later.
 
 ## Phases
 
-- Brainstorm/restore: rewrite the historical design-only contract into this implementation contract.
-- Spec RFC: overhaul `docs/rfc.md` to reflect the end4.md-aligned staged migration and Phase 4 design.
-- Review RFC: run an adversarial design review before implementation proceeds.
-- Engineer: implement bounded Phase 4 Nix/config changes inside the Legion worktree.
-- Verify Change: run feasible Nix/static validation and record a task-local test report.
-- Review Change: assess delivery readiness, blockers, scope, and security implications.
-- Report Walkthrough: produce reviewer-facing summary and PR body.
-- Legion Wiki: write current truth and task summary back to `.legion/wiki`.
-- PR Lifecycle: commit, rebase on `origin/master`, push, open/update PR, attempt auto-merge, follow checks/review, and finish cleanup/refresh when the PR reaches a terminal state.
+- Brainstorm/restore: rewrite the contract so complete end4 import is required and substrate-only is invalid.
+- Spec RFC: update RFC to reflect direct upstream import and integration boundaries.
+- Review RFC: confirm the direct-import design is acceptable before implementation.
+- Engineer: import upstream files, wire Nix/Hyprland/Quickshell, and remove/demote old shell runtime.
+- Verify Change: run Nix build/eval, static checks, and live-session checks where possible.
+- Review Change: assess readiness, scope, and security/privacy impact.
+- Report Walkthrough: generate implementation walkthrough and PR body.
+- Legion Wiki: update current truth and maintenance backlog.
+- PR Lifecycle: commit, rebase, push, open PR, attempt auto-merge, follow checks/review, cleanup, and refresh main workspace.

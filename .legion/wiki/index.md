@@ -18,7 +18,7 @@
 - [Axiom Quickshell Side Dock Regression](tasks/axiom-quickshell-side-dock-regression.md)
 - [Axiom Runtime Access And Session Fixes](tasks/axiom-runtime-access-session-fixes.md)
 - [Dotfiles Quickshell Product Desktop](tasks/dotfiles-quickshell-product-desktop.md)
-- [Dots Hyprland Desktop Phase 4](tasks/dots-hyprland-desktop-rfc.md)
+- [Dots Hyprland Desktop Complete End4 Import](tasks/dots-hyprland-desktop-rfc.md)
 - [Dotfiles Wayland Product Overhaul](tasks/dotfiles-wayland-product-overhaul.md)
 - [Dotfiles Wayland Portal User Units Fix](tasks/dotfiles-wayland-portal-user-units-fix.md)
 - [Dotfiles Wayland Runtime Fixes](tasks/dotfiles-wayland-runtime-fixes.md)

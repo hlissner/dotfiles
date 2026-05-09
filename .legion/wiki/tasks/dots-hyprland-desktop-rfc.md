@@ -1,53 +1,58 @@
-# Dots Hyprland Desktop Phase 4
+# Dots Hyprland Desktop Complete End4 Import
 
-状态：Phase 4 implementation substrate 已完成，PR lifecycle 进行中
+状态：complete end4 import implementation 已验证和 review，PR lifecycle 进行中
 任务：`.legion/tasks/dots-hyprland-desktop-rfc/`
 
 ## 摘要
 
-该任务最初是 design-only 的 end4 desktop RFC。2026-05-09 continuation 明确改变方向：以用户提供的 `end4.md` 为当前阶段和主题真源，允许彻底改写 RFC，并继续实现第四阶段。
+该任务最初是 design-only 的 end4 desktop RFC，随后完成过 Phase 4 service substrate。用户拒绝 substrate-only / prior-phase debt 降级后，本轮 continuation 将目标改为完整导入并加载 upstream end4 `ii` 桌面源。
 
-当前结果把历史 RFC 改写为 end4 `ii` / `IllogicalImpulseFamily` 目标体验，并实现 Phase 4 的 NixOS/user-service substrate：packages、services、groups、i2c/DDC、keyring、polkit、power profiles、`cliphist` watcher、fallback tools，以及旧 Axiom guide/autumnal Hyprland visual cleanup。
+当前结果把 Axiom active shell 切到 repository-managed end4 `ii` / `IllogicalImpulseFamily`：导入 `quickshell/ii`、matugen、fuzzel、Hyprland layering、hypridle 和 hyprlock 源，同时继续让 NixOS 管理 host facts、services、generated overrides、permissions、rollback 和 mutable state boundaries。
 
 ## 当前有效结论
 
-- `end4.md` 是本任务 continuation 的阶段和主题真源；历史 Axiom-native incremental shell RFC 已被当前 RFC supersede。
-- Axiom 当前目标 UX 是 end4 `ii` / `IllogicalImpulseFamily`，不是旧 Axiom dock/guide/button 或 `autumnal` 桌面视觉。
-- NixOS 仍然是 host facts、UWSM/greetd/portal ownership、service dependencies、permissions、runtime package closure 和 generated-state boundaries 的真源。
-- Phase 4 的最小正确实现是声明式 service substrate；它不等价于完整 `ii/shell.qml` runtime import。
-- `origin/master` 当前仍缺 end4 `ii` source tree，因此 `ii/shell.qml` runtime load 是 prior-phase debt，而不是本 Phase 4 PR 用旧 shell 补回的目标。
-- `cliphist` watcher 默认使用 `wl-paste --type text --watch cliphist store`；display/readback 有 shell limits，但 cliphist database retention pruning 尚未实现。
+- Substrate-only 结论已被用户明确拒绝；当前正确目标是完整 end4 `ii` source import 和 NixOS integration。
+- Axiom Quickshell 默认 runtime config 是 `ii`，不是旧 `axiom-shell`；旧 shell 仅作为 deprecated historical source 保留。
+- NixOS 仍然是 host facts、UWSM/greetd/portal ownership、service dependencies、permissions、runtime package closure、generated overrides 和 generated-state boundaries 的真源。
+- Upstream end4 `setup` 不运行；installer scripts、generated color outputs、secrets、cache/state、local user JSON 和 live home mutation artifacts 不进入 Git。
+- Imported `ii` 需要 `Quickshell.Services.Polkit`，因此 Axiom 在本任务中构建 wrapped Quickshell `0.3.0`，而不是继续使用缺少该 service 的 pinned `0.2.1`。
+- `cliphist` watcher 默认使用 `wl-paste --watch cliphist store`；functionality 属于 end4 UI scope，但 database retention/pruning 仍是隐私 follow-up。
 
 ## 实现要点
 
-- `modules/desktop/quickshell.nix` 扩展 Qt/Kirigami/QML、Material Symbols、`googlesans-code`、matugen/wallpaper、media/resource/control、network/Bluetooth、brightness/DDC、clipboard、polkit、power-profile 和 fallback tool package closure。
-- `modules/desktop/quickshell.nix` 声明 `phase4Services.enable`、`polkitAgent.enable` 和 `search.clipboard.backend` rollback knobs。
-- Axiom 启用 gnome-keyring；keyring module 禁用 gcr SSH agent，避免与 `programs.ssh.startAgent` 冲突。
-- `autumnal` 保留为非桌面 theme module，但不再 import Hyprland visual hook。
-- Old guide docs/config/link/launcher/QML guide actions 已删除或移除。
-- Transitional `axiom-shell` helpers 现在支持 `cliphist` list/copy/clear、brightness、power profiles 和 resource status，直到 end4 `ii` tree 完成迁移。
+- 从 upstream `end-4/dots-hyprland` commit `bebf66da89cd2afa4738da47fb3a0a9fa5af7035` 导入 `dots/.config/quickshell/ii`，并补入 rounded-polygon submodule `e31ec4cb4ebf6a46b267f5c42eabf6874916fa16`。
+- 导入 `config/matugen`、`config/fuzzel/fuzzel.ini`、`config/hypr/hyprland.conf`、`config/hypr/hyprland/**`、`config/hypr/hypridle.conf`、`config/hypr/hyprlock.conf` 和 lock helper scripts。
+- `modules/desktop/quickshell.nix` defaults `configName = "ii"`，links `quickshell/ii`、`matugen`、`fuzzel`，builds wrapped Quickshell `0.3.0`，并提供 Python env 给 imported helper scripts。
+- `modules/desktop/hyprland.nix` 采用 upstream Hyprland source layering，并由 Nix 生成 `monitors.conf`、`workspaces.conf` 和 `hypr/custom/*.conf`；`$dontLoadDefaultExecs = 1` 保持 NixOS 对 session services 的 ownership。
+- Generated color/theme/runtime outputs 保持在 XDG config/state/cache runtime path，不作为 repository source committed。
+- External KDE polkit agent 默认关闭，polkit-facing UX 交给 imported `ii` 的 `Quickshell.Services.Polkit`，NixOS 仍启用 `security.polkit`。
 
 ## 验证
 
 - RFC review：PASS。
-- Change review：PASS，security lens 覆盖 clipboard history、keyring/polkit、groups 和 i2c permissions。
-- Targeted `nix eval`：确认 Phase 4 service/package/group/keyring/polkit/i2c/cliphist wiring。
-- Python helper syntax parse：PASS。
-- Active source grep：active shell/module path 无旧 guide references。
-- `nix build --impure .#nixosConfigurations.axiom.config.system.build.toplevel --no-link`：PASS。
+- Repository-local verification：PASS。
+- Targeted `nix eval`：确认 `configName = "ii"`、Quickshell `ExecStart`、linked sources 和 generated Hyprland variables。
+- QML local import scan：577 个 QML 文件，missing local imports 为 0。
+- Generated output 和 common-secret scans：PASS。
+- Wrapped Quickshell package build：PASS。
+- Headless Quickshell smoke 到达 `ii/shell.qml` 并解析 QML imports，随后在 TTY/offscreen 环境预期失败于 `No PanelWindow backend loaded`。
+- `env -u DOTFILES_HOME nix build --impure .#nixosConfigurations.axiom.config.system.build.toplevel --no-link`：PASS。
+- Change review：PASS，security lens 覆盖 polkit/auth UX、keyring/API credentials、clipboard、hardware-control permissions、AI/cloud modules 和 live-session scripts。
 
 ## 残余风险
 
-- Live Quickshell/Hyprland runtime checks 未执行；需要在 Axiom graphical session 中验证。
-- `ii/shell.qml` runtime load 未验证，因为当前 base 缺 Phase 1 `ii` source。
-- `cliphist` retention policy 未实现 pruning；需要后续定义 retention/clear UX。
-- `video`/`input`/`i2c` groups 和 `i2c-dev` 是本地硬件权限扩展，必须保留在 Axiom desktop control scope 内。
+- Live Quickshell/Hyprland runtime checks 未在本 TTY shell 执行；需要在 Axiom graphical session 中验证 restart、sidebars、overview/search、notifications、OSD、lock/session、wallpaper switching、polkit prompts、tray 和 hardware controls。
+- `cliphist` retention policy 未实现 pruning；需要后续定义 retention、clear UX 和 disable behavior。
+- Imported AI/cloud/function tooling powerful；需要后续更保守的 defaults、policy 或 documentation hardening。
+- 一些 upstream optional commands 仍假设 KDE tools、`kitty`/`fish` 或 Arch-style commands；后续应 map 到 Axiom/Nix defaults 或隐藏 unsupported actions。
+- `.upstream/end4-dots-hyprland` 只是本地 import evidence，必须保持未提交并在 PR final cleanup 前移除或保留为明确 local-only state。
 
 ## 相关原始材料
 
 - 计划：`.legion/tasks/dots-hyprland-desktop-rfc/plan.md`
 - RFC：`.legion/tasks/dots-hyprland-desktop-rfc/docs/rfc.md`
 - RFC 评审：`.legion/tasks/dots-hyprland-desktop-rfc/docs/review-rfc.md`
+- Import manifest：`.legion/tasks/dots-hyprland-desktop-rfc/docs/import-manifest.md`
 - 测试报告：`.legion/tasks/dots-hyprland-desktop-rfc/docs/test-report.md`
 - Change review：`.legion/tasks/dots-hyprland-desktop-rfc/docs/review-change.md`
 - Walkthrough：`.legion/tasks/dots-hyprland-desktop-rfc/docs/report-walkthrough.md`

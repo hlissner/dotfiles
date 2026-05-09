@@ -1,145 +1,203 @@
-# Test Report: Dots Hyprland Desktop Phase 4
+# Test Report: Complete Axiom End4 Import
 
 > Date: 2026-05-09
 > Worktree: `.worktrees/dots-hyprland-desktop-rfc/`
-> Branch: `legion/dots-hyprland-desktop-rfc-phase4-services`
+> Branch: `legion/dots-hyprland-desktop-rfc-end4-complete`
 
 ## Summary
 
-PASS with runtime caveats.
+PASS for repository-local validation. Live Wayland restart was skipped because this shell is on host `axiom` but not inside a graphical Hyprland session.
 
-The Axiom NixOS toplevel builds successfully after the Phase 4 changes. Targeted evaluation confirms the new declarative service substrate is present: `cliphist` clipboard watcher, keyring, polkit, power profiles, i2c/DDC support, required user groups, Material Symbols / Google Sans-style font mapping, and Phase 4 packages. Python helper syntax parses successfully. Live Quickshell/Hyprland runtime checks were not run because this environment is not the user's graphical Axiom session.
+The strongest checks prove that Axiom now builds with the imported end4 `ii` source, defaults Quickshell to `ii`, links the adjacent matugen/fuzzel/Hyprland sources, generates Axiom host overrides through Nix, omits generated color outputs, and resolves local QML imports including the required rounded-polygon submodule.
+
+## Environment
+
+Command:
+
+```sh
+hostname && printf 'XDG_SESSION_TYPE=%s\nWAYLAND_DISPLAY=%s\nHYPRLAND_INSTANCE_SIGNATURE=%s\n' "${XDG_SESSION_TYPE-}" "${WAYLAND_DISPLAY-}" "${HYPRLAND_INSTANCE_SIGNATURE-}"
+```
+
+Result:
+
+```text
+axiom
+XDG_SESSION_TYPE=tty
+WAYLAND_DISPLAY=
+HYPRLAND_INSTANCE_SIGNATURE=
+```
+
+Why this command was chosen: the contract requires distinguishing host identity from live compositor/session availability.
 
 ## Commands
 
-### Targeted Nix Evaluation
+### Entrypoint Source Check
 
 Command:
 
 ```sh
-nix eval --impure --json --expr 'let c = (builtins.getFlake "path:/home/c1/dotfiles/.worktrees/dots-hyprland-desktop-rfc").nixosConfigurations.axiom.config; names = builtins.map (p: p.name or (builtins.toString p)) c.environment.systemPackages; has = needle: builtins.any (n: builtins.match (".*" + needle + ".*") n != null) names; in { quickshellExec = c.systemd.user.services.quickshell.serviceConfig.ExecStart; clipboardExec = c.systemd.user.services.axiom-clipboard-history.serviceConfig.ExecStart; clipboardBackend = c.systemd.user.services.quickshell.environment.AXIOM_CLIPBOARD_BACKEND; polkitEnabled = c.security.polkit.enable; polkitAgent = c.systemd.user.services ? axiom-polkit-agent; powerProfiles = c.services.power-profiles-daemon.enable; i2cHardware = c.hardware.i2c.enable; i2cGroupExists = c.users.groups ? i2c; userGroups = c.users.users.c1.extraGroups; gnomeKeyring = c.services.gnome.gnome-keyring.enable; guideLinked = c.home.configFile ? "axiom-desktop/guide.md"; hasCliphist = has "cliphist"; hasDdcutil = has "ddcutil"; hasPowerProfilesPackage = has "power-profiles-daemon"; hasMatugen = has "matugen"; hasCava = has "cava"; hasSongrec = has "songrec"; }'
+test -f 'config/quickshell/ii/shell.qml' && rg --fixed-strings 'IllogicalImpulseFamily' 'config/quickshell/ii/shell.qml'
 ```
 
 Result: PASS.
 
 Key evidence:
 
-```json
-{
-  "clipboardBackend": "cliphist",
-  "clipboardExec": "/nix/store/...-wl-clipboard-2.2.1/bin/wl-paste --type text --watch /nix/store/...-cliphist-0.7.0/bin/cliphist store",
-  "gnomeKeyring": true,
-  "guideLinked": false,
-  "hasCava": true,
-  "hasCliphist": true,
-  "hasDdcutil": true,
-  "hasMatugen": true,
-  "hasPowerProfilesPackage": true,
-  "hasSongrec": true,
-  "i2cGroupExists": true,
-  "i2cHardware": true,
-  "polkitAgent": true,
-  "polkitEnabled": true,
-  "powerProfiles": true,
-  "userGroups": ["wheel", "video", "input", "i2c", "gamemode", "audio", "docker", "ydotool"]
-}
+```text
+component: IllogicalImpulseFamily {}
 ```
 
-Why this command was chosen: it directly proves the NixOS configuration contains the Phase 4 service substrate requested by the contract without requiring a graphical runtime session.
-
-### Font Mapping Evaluation
+### Targeted Nix Runtime Wiring
 
 Command:
 
 ```sh
-nix eval --impure --json --expr 'let c = (builtins.getFlake "path:/home/c1/dotfiles/.worktrees/dots-hyprland-desktop-rfc").nixosConfigurations.axiom.config; names = builtins.map (p: p.name or (builtins.toString p)) (c.environment.systemPackages ++ c.fonts.packages); has = needle: builtins.any (n: builtins.match (".*" + needle + ".*") n != null) names; in { hasMaterialSymbols = has "material-symbols"; hasGoogleSansCode = has "googlesans-code"; hasGoogleFontsBundle = has "google-fonts"; clipboardBackend = c.systemd.user.services.quickshell.environment.AXIOM_CLIPBOARD_BACKEND; powerProfiles = c.services.power-profiles-daemon.enable; polkit = c.security.polkit.enable; i2c = c.hardware.i2c.enable; }'
+env -u DOTFILES_HOME nix eval --impure .#nixosConfigurations.axiom.config.modules.desktop.quickshell.configName
+env -u DOTFILES_HOME nix eval --impure .#nixosConfigurations.axiom.config.systemd.user.services.quickshell.serviceConfig.ExecStart
+env -u DOTFILES_HOME nix eval --impure .#nixosConfigurations.axiom.config.home.configFile.'"quickshell/ii"'.source
+env -u DOTFILES_HOME nix eval --impure .#nixosConfigurations.axiom.config.home.configFile.'"matugen"'.source
+env -u DOTFILES_HOME nix eval --impure .#nixosConfigurations.axiom.config.home.configFile.'"hypr/custom/variables.conf"'.text
 ```
 
 Result: PASS.
 
 Key evidence:
 
-```json
-{
-  "clipboardBackend": "cliphist",
-  "hasGoogleFontsBundle": false,
-  "hasGoogleSansCode": true,
-  "hasMaterialSymbols": true,
-  "i2c": true,
-  "polkit": true,
-  "powerProfiles": true
-}
+```text
+"ii"
+"/nix/store/...-axiom-quickshell/bin/quickshell --config ii"
+"/nix/store/...-source/config/quickshell/ii"
+"/nix/store/...-source/config/matugen"
+$qsConfig = ii
+$dontLoadDefaultExecs = 1
 ```
 
-Why this command was chosen: `end4.md` requires Material Symbols / Google Sans-style font coverage. The implementation intentionally maps that requirement to `material-symbols` plus the narrower `googlesans-code` package rather than the very large `google-fonts` bundle.
+Why these commands were chosen: they directly prove the active runtime config and Nix-generated override boundary.
 
-### Python Helper Syntax
+### QML Local Import Scan
 
 Command:
 
 ```sh
-python3 -c 'import ast, pathlib; [ast.parse(path.read_text(), filename=str(path)) for path in [pathlib.Path("config/quickshell/axiom-shell/search/axiom-search-helper.py"), pathlib.Path("config/quickshell/axiom-shell/controls/axiom-control-helper.py")]]'
+python3 - <<'PY'
+from pathlib import Path
+import re
+root = Path('config/quickshell/ii')
+missing = []
+for path in root.rglob('*.qml'):
+    for lineno, line in enumerate(path.read_text(encoding='utf-8').splitlines(), 1):
+        stripped = line.strip()
+        m = re.match(r'import\s+"([^"]+)"', stripped)
+        if m:
+            target = (path.parent / m.group(1)).resolve()
+            if not target.exists():
+                missing.append(f'{path}:{lineno}: missing relative import {m.group(1)}')
+            continue
+        m = re.match(r'import\s+qs(?:\.([A-Za-z0-9_.]+))?(?:\s+as\s+\w+)?\s*$', stripped)
+        if m:
+            suffix = m.group(1)
+            target = root if not suffix else root.joinpath(*suffix.split('.'))
+            if not target.exists():
+                missing.append(f'{path}:{lineno}: missing qs import {stripped}')
+if missing:
+    print('\n'.join(missing))
+    raise SystemExit(1)
+print('checked qml files:', sum(1 for _ in root.rglob('*.qml')))
+print('missing local imports: 0')
+PY
 ```
 
-Result: PASS, no output.
+Result: PASS.
 
-Why this command was chosen: the changed helper scripts provide cliphist, brightness, power-profile, and resource status behavior. Parsing them catches Python syntax errors without writing `__pycache__` artifacts.
+Key evidence:
 
-### Old Guide References In Active Shell/Modules
+```text
+checked qml files: 577
+missing local imports: 0
+```
+
+Why this command was chosen: it validates the imported source tree has the local `qs.*` and quoted QML imports required for static loadability without a compositor.
+
+### Generated Output And Secret Scans
 
 Commands:
 
 ```sh
-# Grep tool search: config/quickshell/axiom-shell, include *.qml, pattern axiom-desktop|Axiom Desktop Guide|Open Axiom guide|guide.md|HELP
-# Grep tool search: modules/desktop, include *.nix, pattern axiom-desktop|Axiom Desktop Guide|guide.md
+test ! -e 'config/hypr/hyprland/colors.conf'
+test ! -e 'config/hypr/hyprlock/colors.conf'
+test ! -e 'config/fuzzel/fuzzel_theme.ini'
+
+if rg --pcre2 '(AIza[0-9A-Za-z_-]{20,}|sk-[0-9A-Za-z_-]{20,}|-----BEGIN (RSA|OPENSSH|PRIVATE)|ghp_[0-9A-Za-z_]{20,}|github_pat_[0-9A-Za-z_]+)' 'config' '.legion/tasks/dots-hyprland-desktop-rfc/docs/import-manifest.md'; then exit 1; else exit 0; fi
 ```
 
-Result: PASS, no active QML or desktop module references found.
+Result: PASS.
 
-Why this check was chosen: `end4.md` says old Axiom guide/buttons do not need to survive. This verifies active shell/module paths no longer link or launch the old guide. Historical Legion evidence still mentions the removed guide and was intentionally not rewritten.
+Why these commands were chosen: the import boundary explicitly excludes generated color outputs and common committed-secret patterns.
+
+### Wrapped Quickshell Package Build
+
+Command:
+
+```sh
+env -u DOTFILES_HOME nix build --impure .#nixosConfigurations.axiom.config.modules.desktop.quickshell.package --no-link
+```
+
+Result: PASS.
+
+Why this command was chosen: imported `ii` requires Quickshell service modules not present in the pinned `0.2.1`; the wrapped package now builds Quickshell `0.3.0` with the needed QML/service import paths.
+
+### Headless Quickshell Smoke
+
+Command:
+
+```sh
+qs_pkg=$(env -u DOTFILES_HOME nix eval --impure --raw .#nixosConfigurations.axiom.config.modules.desktop.quickshell.package)
+smoke='.legion/tasks/dots-hyprland-desktop-rfc/tmp/quickshell-offscreen'
+rm -rf "$smoke"
+mkdir -p "$smoke/config/quickshell" "$smoke/state" "$smoke/cache"
+ln -s "$PWD/config/quickshell/ii" "$smoke/config/quickshell/ii"
+ln -s "$PWD/config/matugen" "$smoke/config/matugen"
+ln -s "$PWD/config/fuzzel" "$smoke/config/fuzzel"
+ln -s "$PWD/config/hypr" "$smoke/config/hypr"
+env -u DOTFILES_HOME QT_QPA_PLATFORM=offscreen XDG_CONFIG_HOME="$PWD/$smoke/config" XDG_STATE_HOME="$PWD/$smoke/state" XDG_CACHE_HOME="$PWD/$smoke/cache" timeout 8s "$qs_pkg/bin/quickshell" --config ii
+code=$?
+rm -rf "$smoke"
+exit $code
+```
+
+Result: expected headless failure after loading the `ii` entrypoint and resolving QML imports.
+
+Key evidence:
+
+```text
+INFO: Launching config: ".../tmp/quickshell-offscreen/config/quickshell/ii/shell.qml"
+ERROR: Failed to load configuration
+caused by @ReloadPopup.qml[35:3]: No PanelWindow backend loaded.
+```
+
+Why this command was chosen: it is the strongest available Quickshell loadability check without a Wayland/layershell backend. The failure reached a compositor/backend limitation rather than missing `ii`, missing local QML files, `Qt5Compat`, or `Quickshell.Services.Polkit`.
 
 ### Axiom Toplevel Build
 
 Command:
 
 ```sh
-nix build --impure .#nixosConfigurations.axiom.config.system.build.toplevel --no-link
+env -u DOTFILES_HOME nix build --impure .#nixosConfigurations.axiom.config.system.build.toplevel --no-link
 ```
 
 Result: PASS.
 
-The successful run completed after narrowing the Google Sans-style font mapping from `google-fonts` to `googlesans-code`.
-
-Why this command was chosen: it is the strongest available repository-local validation that changed NixOS modules, services, packages, user groups, PAM/keyring settings, and home-manager file changes compose into a buildable Axiom system.
-
-### Post-Review Cleanup Check
-
-Command:
-
-```sh
-nix eval --impure --json --expr 'let c = (builtins.getFlake "path:/home/c1/dotfiles/.worktrees/dots-hyprland-desktop-rfc").nixosConfigurations.axiom.config; names = builtins.map (p: p.name or (builtins.toString p)) c.environment.systemPackages; has = needle: builtins.any (n: builtins.match (".*" + needle + ".*") n != null) names; in { hasHyprpolkitagent = has "hyprpolkitagent"; polkitAgent = c.systemd.user.services ? axiom-polkit-agent; polkitEnabled = c.security.polkit.enable; }'
-```
-
-Result: PASS.
-
-Key evidence:
-
-```json
-{"hasHyprpolkitagent": false, "polkitAgent": true, "polkitEnabled": true}
-```
-
-Why this command was chosen: the change review noted the unused `hyprpolkitagent` package. This confirms the unused package was pruned while the configured KDE polkit agent remains enabled.
-
-The Axiom toplevel build was rerun after this cleanup with the same `nix build --impure .#nixosConfigurations.axiom.config.system.build.toplevel --no-link` command and passed.
+Why this command was chosen: it is the strongest repository-local proof that the imported source, NixOS modules, user services, packages, generated home config files, and Axiom host facts compose into a buildable system.
 
 ## Failures Found And Fixed
 
-- Initial `nix build` failed because enabling `gnome-keyring` also enabled `services.gnome.gcr-ssh-agent`, which conflicts with Axiom's existing `programs.ssh.startAgent`. Fix: `modules/services/gnome-keyring.nix` now disables `services.gnome.gcr-ssh-agent`, preserving Axiom's existing SSH agent ownership.
-- A subsequent `nix build` attempt exceeded the 15 minute timeout while pulling/building the broad `google-fonts` bundle. Fix: use `googlesans-code` plus `material-symbols`, which satisfies the current Google Sans-style requirement without importing the entire Google Fonts package.
+- Static QML scan initially failed because upstream `ii/modules/common/widgets/shapes` is a git submodule. Fix: imported `end-4/rounded-polygon-qmljs` at `e31ec4cb4ebf6a46b267f5c42eabf6874916fa16` without `.git` metadata.
+- The first full build used stale `DOTFILES_HOME=/nix/store/8mx5...-source`, so Nix looked at an old flake source missing `config/fuzzel`. Fix: run validation with `env -u DOTFILES_HOME`; staged new source files so Git-backed flake evaluation includes them.
+- Offscreen Quickshell smoke initially failed on `Qt5Compat.GraphicalEffects`. Fix: wrap `quickshell` and `qs` with QML/plugin paths from Qt runtime dependencies.
+- Offscreen Quickshell smoke then failed on missing `Quickshell.Services.Polkit` because pinned `quickshell 0.2.1` lacks that service module. Fix: build Quickshell `0.3.0` from upstream tag `v0.3.0` with `glib`, `polkit`, and `cpptrace` inputs.
+- Quickshell `0.3.0` initially failed the local `cpptrace` signal-safe unwind check. Fix: set `DO_NOT_CHECK_CPPTRACE_USABILITY=true`, matching the package need without vendoring network-fetched sources during build.
 
 ## Warnings
-
-`cliphist` retention note: `maxEntries` and `maxEntryBytes` currently bound shell display/readback behavior. The `cliphist store` database itself is not pruned by this PR; retention policy remains a runtime/privacy follow-up.
 
 The Nix commands emitted existing repository/channel warnings:
 
@@ -148,14 +206,13 @@ The Nix commands emitted existing repository/channel warnings:
 - `hardware.pulseaudio` has been renamed to `services.pulseaudio`.
 - `system` has been renamed to/replaced by `stdenv.hostPlatform.system`.
 
-These warnings are not introduced by this task's Phase 4 changes and did not prevent evaluation or the final toplevel build.
+These warnings did not prevent evaluation or the final toplevel build.
 
 ## Skipped Runtime Checks
 
-- `systemctl --user restart quickshell.service` was not run because this environment is not the live Axiom Hyprland user session.
-- `ii/shell.qml` runtime load was not checked because `origin/master` still lacks the end4 `ii` source tree; the RFC records this as prior-phase debt.
-- Audio, brightness, network, Bluetooth, power-profile, tray, notification center, sidebar, overview, and launcher behavior were not exercised live because they require the graphical Axiom session and hardware devices.
+- `systemctl --user restart quickshell.service` was not run because `XDG_SESSION_TYPE=tty`, `WAYLAND_DISPLAY` is empty, and `HYPRLAND_INSTANCE_SIGNATURE` is empty.
+- Hardware-backed UI behavior for audio, brightness, DDC, network, Bluetooth, power profile, tray, notifications, sidebars, overview, launcher, lock/session, and wallpaper switching was not exercised live from this TTY shell.
 
 ## Conclusion
 
-The repository-local validation is sufficient for this Phase 4 substrate PR. Remaining risk is live-session integration with the eventual end4 `ii` shell tree and hardware-backed controls.
+The implementation passes repository-local validation for the complete end4 import. Remaining risk is live Wayland/Hyprland behavior, which must be checked from the actual graphical Axiom user session.

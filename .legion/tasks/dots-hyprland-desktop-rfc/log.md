@@ -29,3 +29,25 @@
 - 执行 change review；结论 PASS。按非阻塞建议移除未启动的 `hyprpolkitagent` 包、更新 RFC 状态，并在 test report 中记录 `cliphist` retention caveat。清理后 rerun targeted eval 和 Axiom toplevel build 均通过。
 - 生成 implementation-mode walkthrough 和 PR body：`docs/report-walkthrough.md`、`docs/pr-body.md`。
 - 完成 Legion wiki writeback：更新 task summary、decisions、patterns、index、log，并新增 maintenance backlog。
+
+## 2026-05-09 complete end4 import continuation
+
+- 用户拒绝 Phase 4 substrate-only 降级，并明确要求从 `https://github.com/end-4/dots-hyprland` 补完整。
+- 确认当前机器 hostname 是 `axiom`，但工具 shell 为 `XDG_SESSION_TYPE=tty`，缺少 `WAYLAND_DISPLAY` 和 `HYPRLAND_INSTANCE_SIGNATURE`；后续验证必须区分 host identity 和 live Hyprland session。
+- 按 `git-worktree-pr` envelope 从 `origin/master` 创建新 worktree：`.worktrees/dots-hyprland-desktop-rfc/`，分支 `legion/dots-hyprland-desktop-rfc-end4-complete`。
+- 重写任务契约：本轮 acceptance 是导入并加载 end4 `ii/shell.qml`、matugen/theme/wallpaper chain、Hyprland layering 和 Phase 4 核心 UI surfaces；substrate-only 不再有效。
+- 重写 `docs/rfc.md`：选择 vendor upstream required source + Nix wiring，拒绝 substrate-only 和运行 upstream setup。
+- RFC review 初次 FAIL：source import boundary 和无 live compositor 时的 Quickshell/QML loadability 验证不够明确。已补充 import manifest 规则、省略规则、hypridle/hyprlock 落点和静态/直接 Quickshell 验证要求。
+- RFC re-review PASS。可进入 implementation。
+- 从上游 commit `bebf66da89cd2afa4738da47fb3a0a9fa5af7035` 导入 `dots/.config/quickshell/ii`、`matugen`、`fuzzel/fuzzel.ini`、Hyprland layering、`hypridle.conf` 和 `hyprlock.conf`，未运行 upstream `setup`。
+- 写入 `docs/import-manifest.md`，记录 copied paths、omitted installer/generated/state/secret paths 和 Nix-generated override paths。
+- 将 Axiom Quickshell 默认 `configName` 切到 `ii`，链接 `quickshell/ii`、`matugen`、`fuzzel`，并把旧 `axiom-shell` 标记为 deprecated historical source。
+- 将 upstream Hyprland exec ownership 切给 Nix：`$dontLoadDefaultExecs = 1`，通过 Nix 生成 `custom/env.conf`、`variables.conf`、`execs.conf`、`rules.conf`、`keybinds.conf`、`general.conf`、`monitors.conf` 和 `workspaces.conf`。
+- 删除导入中的 generated color outputs，并把 video wallpaper restore script 改到 XDG state generated path，避免把 runtime state 写回 repository-managed config source。
+- 禁用外部 KDE polkit agent 默认启动，让 imported `ii` 的 `Quickshell.Services.Polkit` 提供 polkit-facing UX；`security.polkit` 仍由 NixOS 启用。
+- 验证时发现 `ii/modules/common/widgets/shapes` 是上游 git submodule，补充导入 `end-4/rounded-polygon-qmljs` at `e31ec4cb4ebf6a46b267f5c42eabf6874916fa16`，未复制 submodule `.git` 元数据。
+- 验证时发现 pinned `quickshell 0.2.1` 缺少 imported `ii` 需要的 `Quickshell.Services.Polkit`，改为在 Nix 中构建 `quickshell 0.3.0`，并包装 Qt QML/plugin import paths。
+- 记录 `docs/test-report.md`。最终 `env -u DOTFILES_HOME nix build --impure .#nixosConfigurations.axiom.config.system.build.toplevel --no-link` 通过；QML local import scan 通过；headless Quickshell smoke 到达 `No PanelWindow backend loaded`，说明当前 TTY 缺少 live Wayland/layershell backend 而不是缺 `ii` source/import。
+- 执行 change review；结论 PASS，无阻塞项。Security lens 已覆盖 polkit/auth UX、keyring/API credentials、clipboard、hardware-control permissions、AI/cloud modules 和 live-session scripts；剩余风险记录为 live Wayland validation、cliphist retention、AI/cloud defaults、上游 Arch/KDE/kitty/fish-oriented optional commands，以及 `.upstream/` 继续保持未提交。
+- 生成 implementation-mode reviewer walkthrough 和 PR body：`docs/report-walkthrough.md`、`docs/pr-body.md`。内容只重组已有证据，记录 end4 `ii` 导入、Nix/Hyprland wiring、repository-local PASS 验证和 live-session residual risks。
+- 完成 Legion wiki writeback：更新 task summary、desktop decisions、End4 import pattern、maintenance backlog、index 和 wiki log。当前 wiki 真源已从 Phase 4 substrate 改为 complete end4 `ii` source import + Nix-owned integration。
