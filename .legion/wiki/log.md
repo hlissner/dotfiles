@@ -45,3 +45,5 @@
 - Updated `dots-hyprland-desktop-rfc` summary for the complete end4 `ii` source import continuation.
 - Updated desktop decisions and patterns: substrate-only is no longer current truth; end4 `ii` source import with manifest, omitted generated/secret/state boundaries, and Nix-owned host integration is the active model.
 - Updated End4 maintenance backlog for live session validation, cliphist retention, AI/cloud policy, upstream command mapping, and Quickshell `0.3.0` tracking.
+- Added task summary for `axiom-end4-regression-fix`.
+- Updated end4 decisions, patterns, and maintenance with Kirigami QML module path validation, generated Hyprland host override layering, and live hotkey/layout follow-up.

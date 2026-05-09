@@ -70,4 +70,8 @@ Do not use old Axiom shell affordances as compatibility requirements once an end
 
 For large QML imports, pair Nix eval/build with a local QML import scan and a bounded headless Quickshell smoke. If the smoke reaches `ii/shell.qml` and then fails at `No PanelWindow backend loaded`, record that as a TTY/offscreen compositor limitation, not as live layer-shell validation.
 
+For imported end4 QML dependencies, validate that wrapper paths contain real module trees. KDE package names can point at wrapper/metadata derivations; if QML imports fail at runtime, add the corresponding unwrapped QML package path and export both `QML2_IMPORT_PATH` and `QML_IMPORT_PATH` from the wrapper.
+
+Keep host-level Hyprland facts in generated `hypr/custom/*.conf` files sourced after upstream end4 config. This is the right layer for Axiom XKB layout/variant/options and host hotkeys such as end4 search/sidebar IPC bindings, because imported upstream defaults may otherwise override local workstation facts.
+
 For `cliphist` adoption, distinguish shell display/readback limits from database retention. `wl-paste --watch cliphist store` proves the backend wiring, but privacy readiness still requires a retention/clear policy and live-session verification.

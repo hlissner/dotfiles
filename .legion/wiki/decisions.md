@@ -8,6 +8,8 @@ For the end4 desktop continuation, `end4.md` supersedes the historical Axiom-nat
 
 Complete end4 import must vendor the upstream `ii` shell and adjacent matugen/fuzzel/Hyprland sources through a manifest, never by running upstream `setup`. Generated color outputs, secrets, cache/state, local user config, and live home mutation artifacts remain outside Git; live-session validation is still required before claiming graphical runtime behavior is fully exercised.
 
+End4 `ii` runtime dependencies must include actual QML module trees, not only wrapped metadata packages. Axiom-specific input facts and primary host hotkeys remain Nix-generated Hyprland overrides layered after imported upstream defaults; `Super+Space` should reach end4 search/launcher IPC and `Super+A` should reach the end4 left-sidebar IPC before any launcher fallback is considered.
+
 Axiom notification center 的第一个实现切片采用 session-local Quickshell panel：使用 `NotificationServer.trackedNotifications` 管理当前会话通知，dock button 负责打开 panel，通知内容不持久化。后续不得在没有 retention、clear、disable 和 privacy policy 的情况下把 notification history 或 clipboard history 落盘。
 
 Axiom Stage 2 search/actions 采用 Quickshell-owned panel，而不是恢复 Rofi/DMS primary path 或导入上游 launcher framework。`APP` dock entry 和 primary launcher binding should open Quickshell search first, while Fuzzel remains installed and directly reachable as fallback. Search providers must execute through fixed verbs, reviewed argv arrays, or repository-owned helper subcommands; user query text must not become shell script.

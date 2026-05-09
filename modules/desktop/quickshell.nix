@@ -44,7 +44,12 @@ let cfg = config.modules.desktop.quickshell;
       kdePackages.qt5compat
       adwaita-icon-theme
     ];
-    qmlImportPath = makeSearchPath "lib/qt-6/qml" quickshellRuntimeDeps;
+    qmlRuntimeDeps = quickshellRuntimeDeps ++ (with pkgs.unstable; [
+      # `kdePackages.kirigami` is a wrapper with only propagation metadata; the
+      # imported end4 Waffle family needs the actual org.kde.kirigami QML files.
+      kdePackages.kirigami.unwrapped
+    ]);
+    qmlImportPath = makeSearchPath "lib/qt-6/qml" qmlRuntimeDeps;
     qtPluginPath = makeSearchPath "lib/qt-6/plugins" quickshellRuntimeDeps;
     quickshellPackage = pkgs.symlinkJoin {
       name = "axiom-quickshell";
@@ -57,6 +62,7 @@ let cfg = config.modules.desktop.quickshell;
             rm "$out/bin/$bin"
             makeWrapper "$target" "$out/bin/$bin" \
               --prefix QML2_IMPORT_PATH : "${qmlImportPath}" \
+              --prefix QML_IMPORT_PATH : "${qmlImportPath}" \
               --prefix QT_PLUGIN_PATH : "${qtPluginPath}"
           fi
         done
