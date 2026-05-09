@@ -12,6 +12,7 @@
 - [Axiom Autossh Reverse SSH Tunnel](tasks/axiom-autossh-reverse-ssh-tunnel.md)
 - [Axiom End4 Regression Fix](tasks/axiom-end4-regression-fix.md)
 - [Axiom Fcitx5 WeChat Input And Wallpaper](tasks/axiom-fcitx5-wechat-wallpaper.md)
+- [Axiom Foot Notify Config Fix](tasks/axiom-foot-notify-config-fix.md)
 - [Axiom Host](tasks/axiom-host.md)
 - [Axiom Quickshell Notification Center](tasks/axiom-quickshell-notification-center.md)
 - [Axiom Quickshell Quick Controls and OSD](tasks/axiom-quickshell-quick-controls-osd.md)

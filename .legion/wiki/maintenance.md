@@ -1,5 +1,9 @@
 # Maintenance
 
+## Terminal Follow-Up
+
+- Foot terminal notification behavior was disabled by removing unsupported `[main].notify` from the global config. If terminal notification behavior is still desired, restore it only through a Foot 1.25-supported option or an explicit external wrapper design validated with `foot --check-config`.
+
 ## End4 Desktop Follow-Up
 
 - Live Axiom validation remains required inside the actual Hyprland session: restart `quickshell.service`, confirm the `org.kde.kirigami` load failure is gone, verify `Super+Space`, `Super+A`, and Colemak behavior, and exercise sidebars, overview/search, notifications, OSD, lock/session, wallpaper switching, polkit prompts, tray, audio, brightness/DDC, NetworkManager, Bluetooth, and power profiles.

@@ -47,3 +47,5 @@
 - Updated End4 maintenance backlog for live session validation, cliphist retention, AI/cloud policy, upstream command mapping, and Quickshell `0.3.0` tracking.
 - Added task summary for `axiom-end4-regression-fix`.
 - Updated end4 decisions, patterns, and maintenance with Kirigami QML module path validation, generated Hyprland host override layering, and live hotkey/layout follow-up.
+- Added task summary for `axiom-foot-notify-config-fix`.
+- Added terminal config validation pattern and Foot notification follow-up after removing unsupported `[main].notify`.

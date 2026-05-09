@@ -28,6 +28,8 @@ For Hyprland/UWSM startup warnings, validate the actual command resolution inste
 
 For autossh reverse tunnel regressions, validate both sides of the generated shape: the remote-forward string must remain loopback-only and port-unique, and the local target service must exist as an active daemon if the tunnel forwards to `127.0.0.1:22`.
 
+For terminal config compatibility regressions, validate the repository source and the Nix-evaluated Home Manager source path with the target terminal binary. For Foot, `foot --check-config --config <path>` is the direct validation surface; do not assume an option remains valid across package upgrades just because an older checked-in config accepted it.
+
 ## 上游桌面参考采用模式
 
 使用大型外部桌面 dotfiles 仓库作为产品灵感时，应先提取能力，再考虑代码移动。需要把 compositor/session model、shell ownership、notification/search/control surfaces、theming、state writes、dependency assumptions 和 rollback boundaries 与 Axiom 当前 Nix-native model 对比。
