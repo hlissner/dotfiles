@@ -58,6 +58,12 @@ in {
 
     (mkIf cfg.theme.enable {
       i18n.inputMethod.fcitx5.settings.addons.classicui.globalSection.Theme = themeName;
+      home.configFile."fcitx5/conf/classicui.conf" = {
+        force = true;
+        text = ''
+          Theme=${themeName}
+        '';
+      };
     })
   ]);
 }

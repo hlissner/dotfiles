@@ -24,3 +24,6 @@
 - Updated current desktop decisions with Axiom's Isabel-first repository-owned Quickshell product shell and Rofi/DMS demotion.
 - Added nested worktree `DOTFILES_HOME` / `path:` flake validation pattern.
 - Added task summary for `axiom-fcitx5-wechat-wallpaper`.
+- Added task summary for `axiom-fcitx-theme-clash-verge`.
+- Updated current decisions for `axiom` Fcitx5 Catppuccin theme precedence and Clash Verge app-only scope.
+- Extended runtime validation patterns with Fcitx5 system/user classic UI theme precedence checks.

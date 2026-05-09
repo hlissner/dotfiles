@@ -27,3 +27,5 @@ For visible-shell startup regressions where Hyprland shows a cursor but the desk
 For Hyprland/UWSM startup warnings, validate the actual command resolution instead of only checking desktop entry existence. A `uwsm start` dry run should resolve to `start-hyprland`; if it resolves to direct `Hyprland`, the generated startup path can still trigger the upstream warning even when UWSM is present.
 
 For autossh reverse tunnel regressions, validate both sides of the generated shape: the remote-forward string must remain loopback-only and port-unique, and the local target service must exist as an active daemon if the tunnel forwards to `127.0.0.1:22`.
+
+For Fcitx5 theme regressions, validate both config precedence layers. Check the generated system config at `environment.etc."xdg/fcitx5/conf/classicui.conf".text` and the managed user config at `home.configFile."fcitx5/conf/classicui.conf"`; if stale user config is the likely runtime override, force-manage only the classic UI config file and avoid Rime/dictionary paths.

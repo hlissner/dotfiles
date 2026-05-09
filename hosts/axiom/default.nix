@@ -43,6 +43,7 @@ with builtins;
         }];
       };
       apps = {
+        clash-verge.enable = true;
         discord.enable = true;
         steam.enable = true;
         thunar.enable = true;

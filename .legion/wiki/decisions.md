@@ -28,3 +28,9 @@ Current autossh reverse tunnels to `root@8.159.128.125` bind remote loopback exp
 - `axiom`: remote `127.0.0.1:2223` -> local `127.0.0.1:22` through the NixOS systemd service; `axiom` uses persistent `sshd.service` rather than OpenSSH socket activation so the local tunnel target is daemon-backed.
 
 Do not reuse an existing remote port while its host tunnel remains active, and do not relax the remote bind address away from `127.0.0.1` without a new security review.
+
+## Axiom Input And Proxy Apps
+
+Fcitx5 Catppuccin Mocha Mauve is the effective `axiom` input-method UI theme. The theme should be selected in both the system Fcitx5 classic UI config and the managed user-level `fcitx5/conf/classicui.conf`, because stale user-level Fcitx config can override `/etc/xdg/fcitx5/conf/classicui.conf`.
+
+Clash Verge on `axiom` is an installed desktop GUI app via `modules.desktop.apps.clash-verge` and `pkgs.clash-verge-rev`. Installing the app does not imply managing proxy profiles, subscriptions, credentials, daemon routing, or system proxy policy.
