@@ -8,7 +8,7 @@ Caelestia Shell supersedes the previous repository-managed end4 `ii` desktop dir
 
 Axiom must use the upstream `caelestia-dots/shell` flake package output `packages.<system>.with-cli` for the desktop shell. Do not run Caelestia's mutable setup flow, clone live shell source under `~/.config`, or preserve end4 as a fallback product path unless a future task explicitly reopens that architecture.
 
-The active shell service is `caelestia-shell.service` under `hyprland-session.target`, with `ExecStart` pointing to `${caelestiaPackage}/bin/caelestia-shell`. Repository-generated config should stay minimal, for example `caelestia/shell.json` with local app defaults and dangerous launcher actions disabled; exhaustive upstream defaults should be left to upstream.
+The active shell service is `caelestia-shell.service` under `hyprland-session.target`, with `ExecStart` pointing to `${caelestiaPackage}/bin/caelestia-shell`. Repository-owned Caelestia shell defaults should stay minimal and seed a mutable user `~/.config/caelestia/shell.json`; exhaustive upstream defaults should be left to upstream, and Home Manager should not continuously own `shell.json` as an immutable Nix-store file.
 
 On Axiom, Caelestia owns wallpaper for the Caelestia desktop session. Do not run the old Hyprland `swaybg` wallpaper hook when `modules.desktop.caelestia.wallpaper.enable` is true. Seed Caelestia's mutable wallpaper state from service startup; do not manage `~/.local/state/caelestia/wallpaper/path.txt` as an immutable home-manager file. If the canonical wallpaper source exceeds Qt image decode limits, point Caelestia at a generated decode-safe derivative while preserving the canonical host source.
 
@@ -24,7 +24,7 @@ Wayland desktop hosts using the reusable Fcitx5 module should use Fcitx5's nativ
 
 Until Caelestia's logind lock crash is proven fixed, ordinary Axiom idle/keybind lock paths should call `hyprlock` directly rather than `loginctl lock-session` or `caelestia:lock`.
 
-Axiom-specific input facts, monitors, workspaces, app rules, environment, and fallback keybinds remain Nix-generated Hyprland config. Primary shell bindings should target Caelestia global shortcuts or reviewed Caelestia CLI commands, not legacy `quickshell --config ii`, end4 IPC names, `IllogicalImpulse`, matugen, or fuzzel shell assumptions.
+Axiom-specific input facts, monitors, workspaces, app rules, environment, and fallback keybinds remain Nix-generated Hyprland config. Generated keybinds should use canonical uppercase Hyprland modifier tokens such as `SUPER`, `CTRL`, `ALT`, and `SHIFT`. Primary shell bindings should target Caelestia global shortcuts or reviewed Caelestia CLI commands, not legacy `quickshell --config ii`, end4 IPC names, `IllogicalImpulse`, matugen, or fuzzel shell assumptions.
 
 When Caelestia global-shortcut dispatch does not work in the live Axiom session, repository-generated keybinds may route through reviewed `caelestia shell ...` IPC commands instead. Do not restore top-level Hyprland `catchall` bindings; if Super-key tap semantics are required again, split a scoped follow-up with parser validation.
 

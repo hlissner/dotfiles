@@ -77,7 +77,37 @@ let cfg = config.modules.desktop.caelestia;
         explorer = [ "thunar" ];
       };
       launcher.enableDangerousActions = false;
+      utilities.toasts.kbLayoutChanged = false;
     } cfg.settings;
+    shellSettingsFile = pkgs.writeText "caelestia-shell.json" (builtins.toJSON shellSettings);
+    shellConfigDir = "${config.home.configDir}/caelestia";
+    shellConfigPath = "${shellConfigDir}/shell.json";
+    seedShellConfigScript = pkgs.writeShellScript "caelestia-seed-shell-config" ''
+      set -eu
+      config_dir=${escapeShellArg shellConfigDir}
+      config_path=${escapeShellArg shellConfigPath}
+      seed=${escapeShellArg "${shellSettingsFile}"}
+
+      ${pkgs.coreutils}/bin/install -d -m 0755 "$config_dir"
+
+      replace_shell_config=false
+      if [ ! -e "$config_path" ] && [ ! -L "$config_path" ]; then
+        replace_shell_config=true
+      elif [ -L "$config_path" ]; then
+        target="$(${pkgs.coreutils}/bin/readlink "$config_path")"
+        case "$target" in
+          /nix/store/*) replace_shell_config=true ;;
+        esac
+      fi
+
+      if [ "$replace_shell_config" = true ]; then
+        tmp="$(${pkgs.coreutils}/bin/mktemp "$config_path.XXXXXX")"
+        trap '${pkgs.coreutils}/bin/rm -f "$tmp"' EXIT
+        ${pkgs.coreutils}/bin/install -m 0644 "$seed" "$tmp"
+        ${pkgs.coreutils}/bin/mv -f "$tmp" "$config_path"
+        trap - EXIT
+      fi
+    '';
 in {
   imports = optional pkgs.stdenv.isLinux hey.inputs.qtengine.nixosModules.default;
 
@@ -163,13 +193,13 @@ in {
         ] ++ config.users.users.${config.user.name}.packages
           ++ config.environment.systemPackages;
         serviceConfig = {
+          ExecStartPre = [ "${seedShellConfigScript}" ]
+            ++ optional (cfg.wallpaper.enable && cfg.wallpaper.path != null) "${seedWallpaperScript}";
           ExecStart = "${cfg.package}/bin/caelestia-shell --no-duplicate";
           Restart = "on-failure";
           RestartSec = 5;
           TimeoutStopSec = 5;
           Slice = "session.slice";
-        } // optionalAttrs (cfg.wallpaper.enable && cfg.wallpaper.path != null) {
-          ExecStartPre = "${seedWallpaperScript}";
         };
         environment = {
           QT_QPA_PLATFORM = qtPlatform;
@@ -179,9 +209,7 @@ in {
         };
       };
 
-      home.configFile = {
-        "caelestia/shell.json".text = builtins.toJSON shellSettings;
-      } // optionalAttrs (cfg.cli.settings != {}) {
+      home.configFile = optionalAttrs (cfg.cli.settings != {}) {
         "caelestia/cli.json".text = builtins.toJSON cfg.cli.settings;
       };
 

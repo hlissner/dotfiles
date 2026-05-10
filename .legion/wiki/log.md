@@ -74,3 +74,5 @@
 - Added maintenance follow-up for deleting mistaken `axiom-opencode.0xc1.space`, verifying Cloudflare Access for `opencode-axiom.0xc1.space`, and post-deploy service smoke tests.
 - Added task summary for `axiom-caelestia-readme-alignment`.
 - Updated current Caelestia decisions and patterns from the historical `qt6ct` workaround to README-aligned `qtengine`, plus Thunar explorer, minimal shell settings, shared font fallback policy, and configured Hyprland parser validation guidance.
+- Added task summary for `axiom-input-caelestia-config-hotfix`.
+- Updated current Caelestia/Hyprland decisions, patterns, and maintenance with mutable seeded `shell.json`, canonical uppercase keybind modifiers, and post-deploy Super-key/layout-toast smoke requirements.
