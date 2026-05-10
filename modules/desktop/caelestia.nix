@@ -4,6 +4,8 @@ with lib;
 with hey.lib;
 let cfg = config.modules.desktop.caelestia;
     system = pkgs.stdenv.hostPlatform.system;
+    themeWallpaper = config.modules.theme.wallpapers."*" or {};
+    defaultWallpaperPath = themeWallpaper.path or null;
     defaultShellPackage =
       if pkgs.stdenv.isLinux
       then hey.inputs.caelestia-shell.packages.${system}.with-cli
@@ -13,7 +15,18 @@ let cfg = config.modules.desktop.caelestia;
       then hey.inputs.caelestia-shell.inputs.caelestia-cli.packages.${system}.default
       else pkgs.runCommand "caelestia-cli-unavailable" {} "mkdir -p $out";
     terminalCommand = config.modules.desktop.term.default or "foot";
+    wallpaperStateDir = "${config.home.stateDir}/caelestia/wallpaper";
+    wallpaperStatePath = "${wallpaperStateDir}/path.txt";
+    seedWallpaperScript =
+      if cfg.wallpaper.path == null then null else pkgs.writeShellScript "caelestia-seed-wallpaper" ''
+        set -eu
+        if [ ! -s ${escapeShellArg wallpaperStatePath} ] && [ -f ${escapeShellArg cfg.wallpaper.path} ]; then
+          install -d -m 0755 ${escapeShellArg wallpaperStateDir}
+          printf '%s\n' ${escapeShellArg cfg.wallpaper.path} > ${escapeShellArg wallpaperStatePath}
+        fi
+      '';
     shellSettings = recursiveUpdate {
+      background.wallpaperEnabled = cfg.wallpaper.enable;
       general.apps = {
         terminal = [ terminalCommand ];
         audio = [ "pavucontrol" ];
@@ -29,6 +42,10 @@ in {
     cliPackage = mkOpt package defaultCliPackage;
     settings = mkOpt attrs {};
     cli.settings = mkOpt attrs {};
+    wallpaper = {
+      enable = mkBoolOpt false;
+      path = mkOpt (nullOr str) defaultWallpaperPath;
+    };
   };
 
   config = mkIf cfg.enable (mkMerge [
@@ -62,12 +79,19 @@ in {
         wantedBy = [ "hyprland-session.target" ];
         after = [ "hyprland-session.target" ];
         partOf = [ "hyprland-session.target" ];
+        path = [
+          cfg.cliPackage
+          pkgs.unstable.app2unit
+          pkgs.util-linux
+        ] ++ config.users.users.${config.user.name}.packages;
         serviceConfig = {
-          ExecStart = "${cfg.package}/bin/caelestia-shell";
+          ExecStart = "${cfg.package}/bin/caelestia-shell --no-duplicate";
           Restart = "on-failure";
           RestartSec = 5;
           TimeoutStopSec = 5;
           Slice = "session.slice";
+        } // optionalAttrs (cfg.wallpaper.enable && cfg.wallpaper.path != null) {
+          ExecStartPre = "${seedWallpaperScript}";
         };
         environment = {
           QT_QPA_PLATFORM = "wayland";

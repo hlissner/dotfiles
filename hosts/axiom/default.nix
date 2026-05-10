@@ -34,6 +34,7 @@ with builtins;
     };
 
     desktop = {
+      caelestia.wallpaper.enable = true;
       hyprland = {
         enable = true;
         monitors = [{

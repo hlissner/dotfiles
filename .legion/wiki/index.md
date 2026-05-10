@@ -12,6 +12,7 @@
 - [Axiom Autossh Reverse SSH Tunnel](tasks/axiom-autossh-reverse-ssh-tunnel.md)
 - [Axiom Caelestia Keybind Fix](tasks/axiom-caelestia-keybind-fix.md)
 - [Axiom Caelestia Shell Migration](tasks/axiom-caelestia-shell-migration.md)
+- [Axiom Caelestia Wallpaper And Launcher Fix](tasks/axiom-caelestia-wallpaper-launcher-fix.md)
 - [Axiom End4 Polish Hotfix](tasks/axiom-end4-polish-hotfix.md)
 - [Axiom End4 Regression Fix](tasks/axiom-end4-regression-fix.md)
 - [Axiom Fcitx5 WeChat Input And Wallpaper](tasks/axiom-fcitx5-wechat-wallpaper.md)

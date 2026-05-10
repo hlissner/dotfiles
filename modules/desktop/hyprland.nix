@@ -23,8 +23,24 @@ let inherit (hey.lib.pkgs.for pkgs) mkLauncherEntry;
     xkbLayout = config.services.xserver.xkb.layout;
     xkbVariant = config.services.xserver.xkb.variant;
     xkbOptions = config.services.xserver.xkb.options;
-    caelestiaShell = "${caelestiaCfg.package}/bin/caelestia-shell";
     caelestiaCli = "${caelestiaCfg.cliPackage}/bin/caelestia";
+    caelestiaOwnsWallpaper = caelestiaCfg.enable && caelestiaCfg.wallpaper.enable;
+    swaybgWallpaperHook = ''
+      ${pkgs.procps}/bin/pkill -x swaybg || true
+      ${concatStringsSep "\n"
+        (mapAttrsToList
+          (output: w: ''
+            local wallpaper="${w.path}"
+            if [[ -f "$wallpaper" ]]; then
+              hey.do swaybg \
+                     -o "${output}" \
+                     -i "$wallpaper" \
+                     -m ${w.mode or "center"} &
+            fi
+          '')
+          config.modules.theme.wallpapers)}
+      pgrep -x swaybg >/dev/null && sleep 0.5
+    '';
     workspaceLines = concatStringsSep "\n" (map
       (n:
         let suffix = optionalString (n == 1) ",default:true,persistent:true";
@@ -190,7 +206,7 @@ in {
         primaryMonitor = primaryMonitor.output or null;
         monitors = cfg.monitors;
       };
-      hooks = rec {
+      hooks = {
         # UWSM starts Hyprland; this hook connects product shell services to the
         # live compositor session before visual shell/wallpaper hooks run.
         startup."05-session" = ''
@@ -211,25 +227,11 @@ in {
             hey.do hyprctl -i ''${i//*\//} reload config-only
           done
         '';
-
-        # Set wallpaper according to modules.theme.wallpapers
-        startup."10-wallpaper" = ''
-          ${pkgs.procps}/bin/pkill -x swaybg || true
-          ${concatStringsSep "\n"
-            (mapAttrsToList
-              (output: w: ''
-                local wallpaper="${w.path}"
-                if [[ -f "$wallpaper" ]]; then
-                  hey.do swaybg \
-                         -o "${output}" \
-                         -i "$wallpaper" \
-                         -m ${w.mode or "center"} &
-                fi
-              '')
-              config.modules.theme.wallpapers)}
-          pgrep -x swaybg >/dev/null && sleep 0.5
-        '';
-        reload."10-wallpaper" = startup."10-wallpaper";
+      } // optionalAttrs (!caelestiaOwnsWallpaper) {
+        # Set wallpaper according to modules.theme.wallpapers when Caelestia is
+        # not the wallpaper owner.
+        startup."10-wallpaper" = swaybgWallpaperHook;
+        reload."10-wallpaper" = swaybgWallpaperHook;
       };
     };
 
@@ -295,7 +297,6 @@ in {
         $volumeMixer = pavucontrol
         $settingsApp = pavucontrol
         $taskManager = ${terminalCommand} -e htop
-        $caelestiaShell = ${caelestiaShell}
         $caelestia = ${caelestiaCli}
       '';
 
@@ -338,7 +339,7 @@ in {
         bind = Super, Space, global, caelestia:launcher
         bind = Super, A, global, caelestia:sidebar
         bind = Ctrl+Alt, Delete, global, caelestia:session
-        bind = Super+Shift, L, global, caelestia:lock
+        bind = Super+Shift, L, exec, hyprlock
         bindl = , XF86MonBrightnessUp, global, caelestia:brightnessUp
         bindl = , XF86MonBrightnessDown, global, caelestia:brightnessDown
         bindl = , XF86AudioPlay, global, caelestia:mediaToggle
@@ -347,8 +348,8 @@ in {
         bindl = , XF86AudioPrev, global, caelestia:mediaPrev
         bindl = , XF86AudioStop, global, caelestia:mediaStop
 
-        bindr = Ctrl+Super+Shift, R, exec, pkill -x caelestia-shell || true
-        bindr = Ctrl+Super+Alt, R, exec, pkill -x caelestia-shell || true; $caelestiaShell
+        bindr = Ctrl+Super+Shift, R, exec, systemctl --user stop caelestia-shell.service
+        bindr = Ctrl+Super+Alt, R, exec, systemctl --user restart caelestia-shell.service
 
         bind = Super+Shift, Return, exec, ${terminalCommand}
         bind = Super, B, exec, app2unit -- ${browserCommand}

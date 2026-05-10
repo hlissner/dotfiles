@@ -10,6 +10,12 @@ Axiom must use the upstream `caelestia-dots/shell` flake package output `package
 
 The active shell service is `caelestia-shell.service` under `hyprland-session.target`, with `ExecStart` pointing to `${caelestiaPackage}/bin/caelestia-shell`. Repository-generated config should stay minimal, for example `caelestia/shell.json` with local app defaults and dangerous launcher actions disabled; exhaustive upstream defaults should be left to upstream.
 
+On Axiom, Caelestia owns wallpaper for the Caelestia desktop session. Do not run the old Hyprland `swaybg` wallpaper hook when `modules.desktop.caelestia.wallpaper.enable` is true. Seed Caelestia's mutable wallpaper state only when missing or empty; do not manage `~/.local/state/caelestia/wallpaper/path.txt` as an immutable home-manager file.
+
+`caelestia-shell.service` must run with duplicate-instance protection and a PATH that can execute launcher/runtime helpers. Keep shell stop/restart paths inside `systemctl --user`; do not spawn `${caelestiaShell}` directly from Hyprland keybinds because unmanaged quickshell instances can duplicate layers and global shortcuts.
+
+Until Caelestia's logind lock crash is proven fixed, ordinary Axiom idle/keybind lock paths should call `hyprlock` directly rather than `loginctl lock-session` or `caelestia:lock`.
+
 Axiom-specific input facts, monitors, workspaces, app rules, environment, and fallback keybinds remain Nix-generated Hyprland config. Primary shell bindings should target Caelestia global shortcuts or reviewed Caelestia CLI commands, not legacy `quickshell --config ii`, end4 IPC names, `IllogicalImpulse`, matugen, or fuzzel shell assumptions.
 
 Axiom notification center 的第一个实现切片采用 session-local Quickshell panel：使用 `NotificationServer.trackedNotifications` 管理当前会话通知，dock button 负责打开 panel，通知内容不持久化。后续不得在没有 retention、clear、disable 和 privacy policy 的情况下把 notification history 或 clipboard history 落盘。

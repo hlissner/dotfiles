@@ -56,3 +56,5 @@
 - Marked end4 task summaries as historical where they were superseded by the Caelestia Shell migration.
 - Added task summary for `axiom-caelestia-keybind-fix`.
 - Extended the Caelestia integration pattern with icon/MIME fallback package exposure and mandatory assembled Hyprland parser validation for generated keybind/rule changes.
+- Added task summary for `axiom-caelestia-wallpaper-launcher-fix`.
+- Updated current Caelestia decisions and patterns with Axiom Caelestia wallpaper ownership, mutable wallpaper state seeding, service PATH, duplicate-instance protection, and hyprlock routing while logind lock handling remains unstable.

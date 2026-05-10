@@ -68,11 +68,19 @@ When adopting Caelestia Shell on Axiom, consume the upstream `caelestia-dots/she
 
 Keep a small local NixOS integration module as the repository boundary: install the shell and CLI package, write minimal `caelestia/shell.json`, start `caelestia-shell.service` under `hyprland-session.target`, and keep reload/restart hooks inside the repo's existing session ownership model.
 
+When Caelestia owns wallpaper, keep it as the only wallpaper owner. Gate the Hyprland `swaybg` hook off, enable `background.wallpaperEnabled` in generated `caelestia/shell.json`, and seed the mutable Caelestia wallpaper state from service startup only if the state file is missing or empty.
+
+Caelestia Shell is a launcher and helper process parent, so its user service needs an explicit runtime PATH that includes `app2unit`, CLI/helper tools such as `util-linux`, and user application packages. Nix build success alone does not prove launcher subprocesses can start if the systemd service PATH is still minimal.
+
+Prevent duplicate shell ownership by using quickshell `--no-duplicate` and systemd-owned restart/stop commands. Avoid Hyprland keybinds that directly launch the shell binary, because they create unmanaged instances outside `caelestia-shell.service`.
+
 Expose standard desktop icon and MIME fallback packages with the local Caelestia integration when the shell is the active product surface. `hicolor-icon-theme`, `adwaita-icon-theme`, `papirus-icon-theme`, `shared-mime-info`, and `xdg-utils` should be in the Axiom user package closure so Qt/app launcher/tray icon lookup does not fall back to checkerboard placeholders.
 
 Use the checked-in Hyprland file as a local base that sources only repository-owned generated config. Host facts such as XKB, monitors, workspaces, rules, default apps, session startup, and fallback keybinds belong in generated `hypr/custom/*.conf` files rather than in upstream shell source or live-home edits.
 
 Validate Caelestia migrations by evaluating the upstream `with-cli` package, generated service command, generated `caelestia/shell.json`, user package closure, active Hyprland keybinds, and absence of active end4 references outside historical `.legion/tasks/**`. Always run an assembled `Hyprland --verify-config` after changing generated keybinds or rules; Nix build alone does not catch parser restrictions such as top-level `catchall`. Pair static evidence with a live Hyprland session smoke when available; headless builds cannot prove layer-shell rendering, tray, launcher focus, icon rendering, OSD, screenshot, or lock/session behavior.
+
+For Caelestia lock/session regressions, treat `loginctl lock-session` as a separate integration path from direct `hyprlock`. If logind-triggered Caelestia lock handling crashes, route ordinary idle/keybind locks to `hyprlock` while keeping a live-session follow-up to confirm lock-before-sleep behavior.
 
 ## Historical End4 Desktop Import Pattern
 
