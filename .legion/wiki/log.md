@@ -62,3 +62,5 @@
 - Updated current Caelestia decisions, patterns, and maintenance with decode-safe wallpaper derivatives and the `QT_QPA_PLATFORMTHEME=qt6ct` workaround for upstream issue #1282.
 - Added task summary for `clash-verge-nixos-service-tun`.
 - Added current Clash Verge NixOS decision and validation pattern for declarative service/TUN mode with TUN firewall allowances.
+- Added task summary for `axiom-desktop-session-path-steam-fix`.
+- Updated current Axiom desktop decisions and patterns with generated UWSM PATH export, systemd user PATH import, and Caelestia service path coverage for system packages.

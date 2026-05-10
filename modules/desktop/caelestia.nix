@@ -119,7 +119,8 @@ in {
           cfg.cliPackage
           pkgs.unstable.app2unit
           pkgs.util-linux
-        ] ++ config.users.users.${config.user.name}.packages;
+        ] ++ config.users.users.${config.user.name}.packages
+          ++ config.environment.systemPackages;
         serviceConfig = {
           ExecStart = "${cfg.package}/bin/caelestia-shell --no-duplicate";
           Restart = "on-failure";

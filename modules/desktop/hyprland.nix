@@ -26,6 +26,13 @@ let inherit (hey.lib.pkgs.for pkgs) mkLauncherEntry;
     caelestiaCli = "${caelestiaCfg.cliPackage}/bin/caelestia";
     caelestiaOwnsWallpaper = caelestiaCfg.enable && caelestiaCfg.wallpaper.enable;
     qtPlatformTheme = "qt6ct";
+    desktopSessionPath = concatStringsSep ":" [
+      config.home.binDir
+      "/etc/profiles/per-user/${config.user.name}/bin"
+      "/run/wrappers/bin"
+      "/run/current-system/sw/bin"
+      "/nix/var/nix/profiles/default/bin"
+    ];
     swaybgWallpaperHook = ''
       ${pkgs.procps}/bin/pkill -x swaybg || true
       ${concatStringsSep "\n"
@@ -215,6 +222,7 @@ in {
         startup."05-session" = ''
           hey.do systemctl --user import-environment \
                  DISPLAY WAYLAND_DISPLAY \
+                 PATH \
                  XDG_CURRENT_DESKTOP \
                  ${optionalString caelestiaCfg.enable "QT_QPA_PLATFORMTHEME \\"}
                  HYPRLAND_INSTANCE_SIGNATURE
@@ -414,6 +422,7 @@ in {
       '';
 
       "uwsm/env".text = ''
+        export PATH=${escapeShellArg desktopSessionPath}
         export XDG_CURRENT_DESKTOP=Hyprland
         export XDG_SESSION_DESKTOP=Hyprland
         export XDG_SESSION_TYPE=wayland

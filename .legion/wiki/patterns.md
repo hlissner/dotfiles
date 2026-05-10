@@ -30,6 +30,8 @@ For autossh reverse tunnel regressions, validate both sides of the generated sha
 
 For terminal config compatibility regressions, validate the repository source and the Nix-evaluated Home Manager source path with the target terminal binary. For Foot, `foot --check-config --config <path>` is the direct validation surface; do not assume an option remains valid across package upgrades just because an older checked-in config accepted it.
 
+For GUI-launched terminal or app command lookup regressions that do not reproduce over SSH, validate graphical session PATH ownership rather than patching shell rc files first. Check generated `uwsm/env`, the Hyprland startup `systemctl --user import-environment` list, relevant launcher service `path` entries, and whether the missing commands live in `config.environment.systemPackages` or user packages.
+
 For NixOS GUI apps that also ship service/TUN installers, prefer the upstream NixOS module over mutable GUI installer flows. Validate the actual exposed option names with `nix eval ...options.<module> --apply builtins.attrNames`, because this repository disables strict module option checking and inert settings can otherwise be silently ignored.
 
 For Clash Verge Rev specifically, validate `programs.clash-verge.serviceMode`, `tunMode`, `autoStart`, the generated `clash-verge.service` `ExecStart`, capability bounding set, `networking.firewall.trustedInterfaces`, `extraReversePathFilterRules`, and the host `system.build.toplevel.drvPath`.
@@ -74,7 +76,7 @@ Keep a small local NixOS integration module as the repository boundary: install 
 
 When Caelestia owns wallpaper, keep it as the only wallpaper owner. Gate the Hyprland `swaybg` hook off, enable `background.wallpaperEnabled` in generated `caelestia/shell.json`, and seed the mutable Caelestia wallpaper state from service startup. If the canonical wallpaper is too large for Qt image IO, generate a display-safe derivative under Caelestia's state directory and update `path.txt` only when it is missing, empty, or still points at the known oversized source.
 
-Caelestia Shell is a launcher and helper process parent, so its user service needs an explicit runtime PATH that includes `app2unit`, CLI/helper tools such as `util-linux`, and user application packages. Nix build success alone does not prove launcher subprocesses can start if the systemd service PATH is still minimal.
+Caelestia Shell is a launcher and helper process parent, so its user service needs an explicit runtime PATH that includes `app2unit`, CLI/helper tools such as `util-linux`, user application packages, and generated system packages when those packages provide desktop-entry commands or terminal-visible tools. Nix build success alone does not prove launcher subprocesses can start if the systemd service PATH is still minimal.
 
 Prevent duplicate shell ownership by using quickshell `--no-duplicate` and systemd-owned restart/stop commands. Avoid Hyprland keybinds that directly launch the shell binary, because they create unmanaged instances outside `caelestia-shell.service`.
 
