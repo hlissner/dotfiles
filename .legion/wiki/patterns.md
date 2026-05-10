@@ -68,13 +68,15 @@ When adopting Caelestia Shell on Axiom, consume the upstream `caelestia-dots/she
 
 Keep a small local NixOS integration module as the repository boundary: install the shell and CLI package, write minimal `caelestia/shell.json`, start `caelestia-shell.service` under `hyprland-session.target`, and keep reload/restart hooks inside the repo's existing session ownership model.
 
-When Caelestia owns wallpaper, keep it as the only wallpaper owner. Gate the Hyprland `swaybg` hook off, enable `background.wallpaperEnabled` in generated `caelestia/shell.json`, and seed the mutable Caelestia wallpaper state from service startup only if the state file is missing or empty.
+When Caelestia owns wallpaper, keep it as the only wallpaper owner. Gate the Hyprland `swaybg` hook off, enable `background.wallpaperEnabled` in generated `caelestia/shell.json`, and seed the mutable Caelestia wallpaper state from service startup. If the canonical wallpaper is too large for Qt image IO, generate a display-safe derivative under Caelestia's state directory and update `path.txt` only when it is missing, empty, or still points at the known oversized source.
 
 Caelestia Shell is a launcher and helper process parent, so its user service needs an explicit runtime PATH that includes `app2unit`, CLI/helper tools such as `util-linux`, and user application packages. Nix build success alone does not prove launcher subprocesses can start if the systemd service PATH is still minimal.
 
 Prevent duplicate shell ownership by using quickshell `--no-duplicate` and systemd-owned restart/stop commands. Avoid Hyprland keybinds that directly launch the shell binary, because they create unmanaged instances outside `caelestia-shell.service`.
 
 Expose standard desktop icon and MIME fallback packages with the local Caelestia integration when the shell is the active product surface. `hicolor-icon-theme`, `adwaita-icon-theme`, `papirus-icon-theme`, `shared-mime-info`, and `xdg-utils` should be in the Axiom user package closure so Qt/app launcher/tray icon lookup does not fall back to checkerboard placeholders.
+
+For Caelestia launcher icon color-block regressions matching upstream issue #1282, set `QT_QPA_PLATFORMTHEME=qt6ct` in generated Hyprland env, generated UWSM env, the Caelestia user service environment, and the systemd user import path. Install `qt6ct` from the Qt 6 package set used by the desktop stack, and validate after a full Hyprland restart rather than relying on config reload alone.
 
 Use the checked-in Hyprland file as a local base that sources only repository-owned generated config. Host facts such as XKB, monitors, workspaces, rules, default apps, session startup, and fallback keybinds belong in generated `hypr/custom/*.conf` files rather than in upstream shell source or live-home edits.
 

@@ -58,3 +58,5 @@
 - Extended the Caelestia integration pattern with icon/MIME fallback package exposure and mandatory assembled Hyprland parser validation for generated keybind/rule changes.
 - Added task summary for `axiom-caelestia-wallpaper-launcher-fix`.
 - Updated current Caelestia decisions and patterns with Axiom Caelestia wallpaper ownership, mutable wallpaper state seeding, service PATH, duplicate-instance protection, and hyprlock routing while logind lock handling remains unstable.
+- Added task summary for `axiom-caelestia-wallpaper-qt-theme-fix`.
+- Updated current Caelestia decisions, patterns, and maintenance with decode-safe wallpaper derivatives and the `QT_QPA_PLATFORMTHEME=qt6ct` workaround for upstream issue #1282.

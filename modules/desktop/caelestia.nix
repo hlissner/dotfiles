@@ -17,12 +17,47 @@ let cfg = config.modules.desktop.caelestia;
     terminalCommand = config.modules.desktop.term.default or "foot";
     wallpaperStateDir = "${config.home.stateDir}/caelestia/wallpaper";
     wallpaperStatePath = "${wallpaperStateDir}/path.txt";
+    wallpaperGeneratedPath = "${wallpaperStateDir}/generated.jpg";
+    qtPlatformThemePackage = pkgs.unstable.qt6Packages.qt6ct;
     seedWallpaperScript =
       if cfg.wallpaper.path == null then null else pkgs.writeShellScript "caelestia-seed-wallpaper" ''
         set -eu
-        if [ ! -s ${escapeShellArg wallpaperStatePath} ] && [ -f ${escapeShellArg cfg.wallpaper.path} ]; then
-          install -d -m 0755 ${escapeShellArg wallpaperStateDir}
-          printf '%s\n' ${escapeShellArg cfg.wallpaper.path} > ${escapeShellArg wallpaperStatePath}
+        source=${escapeShellArg cfg.wallpaper.path}
+        state_dir=${escapeShellArg wallpaperStateDir}
+        state_path=${escapeShellArg wallpaperStatePath}
+        generated=${escapeShellArg wallpaperGeneratedPath}
+        desired=
+
+        ${pkgs.coreutils}/bin/install -d -m 0755 "$state_dir"
+
+        if [ -f "$source" ]; then
+          desired="$source"
+
+          if [ ! -s "$generated" ] || [ "$source" -nt "$generated" ]; then
+            tmp="$(${pkgs.coreutils}/bin/mktemp "$generated.XXXXXX.jpg")"
+            trap '${pkgs.coreutils}/bin/rm -f "$tmp"' EXIT
+            if ${pkgs.imagemagick}/bin/magick "$source" -auto-orient -resize '3840x2160>' -strip -quality 92 "$tmp"; then
+              ${pkgs.coreutils}/bin/mv -f "$tmp" "$generated"
+              trap - EXIT
+            else
+              ${pkgs.coreutils}/bin/rm -f "$tmp"
+              trap - EXIT
+              printf 'caelestia-seed-wallpaper: failed to generate decode-safe wallpaper from %s\n' "$source" >&2
+            fi
+          fi
+
+          if [ -s "$generated" ]; then
+            desired="$generated"
+          fi
+        fi
+
+        current=
+        if [ -s "$state_path" ]; then
+          current="$(${pkgs.coreutils}/bin/cat "$state_path")"
+        fi
+
+        if [ -n "$desired" ] && { [ -z "$current" ] || [ "$current" = "$source" ]; }; then
+          printf '%s\n' "$desired" > "$state_path"
         fi
       '';
     shellSettings = recursiveUpdate {
@@ -60,6 +95,7 @@ in {
       user.packages = with pkgs; [
         cfg.package
         cfg.cliPackage
+        qtPlatformThemePackage
 
         hicolor-icon-theme
         adwaita-icon-theme
@@ -95,6 +131,7 @@ in {
         };
         environment = {
           QT_QPA_PLATFORM = "wayland";
+          QT_QPA_PLATFORMTHEME = "qt6ct";
         };
       };
 

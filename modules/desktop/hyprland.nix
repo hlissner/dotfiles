@@ -25,6 +25,7 @@ let inherit (hey.lib.pkgs.for pkgs) mkLauncherEntry;
     xkbOptions = config.services.xserver.xkb.options;
     caelestiaCli = "${caelestiaCfg.cliPackage}/bin/caelestia";
     caelestiaOwnsWallpaper = caelestiaCfg.enable && caelestiaCfg.wallpaper.enable;
+    qtPlatformTheme = "qt6ct";
     swaybgWallpaperHook = ''
       ${pkgs.procps}/bin/pkill -x swaybg || true
       ${concatStringsSep "\n"
@@ -89,6 +90,8 @@ in {
       ELECTRON_OZONE_PLATFORM_HINT = "auto";
       NIXOS_OZONE_WL = "1";
       MOZ_ENABLE_WAYLAND = "1";
+    } // optionalAttrs caelestiaCfg.enable {
+      QT_QPA_PLATFORMTHEME = qtPlatformTheme;
     };
 
     # Hyprland's aquamarine requires newer MESA drivers.
@@ -213,6 +216,7 @@ in {
           hey.do systemctl --user import-environment \
                  DISPLAY WAYLAND_DISPLAY \
                  XDG_CURRENT_DESKTOP \
+                 ${optionalString caelestiaCfg.enable "QT_QPA_PLATFORMTHEME \\"}
                  HYPRLAND_INSTANCE_SIGNATURE
           hey.do systemctl --user start hyprland-session.target
           hey .play-sound startup
@@ -282,6 +286,7 @@ in {
         env = NIXOS_OZONE_WL,1
         env = MOZ_ENABLE_WAYLAND,1
         env = GTK_USE_PORTAL,1
+        ${optionalString caelestiaCfg.enable "env = QT_QPA_PLATFORMTHEME,${qtPlatformTheme}"}
         env = TERMINAL,${terminalCommand}
         env = BROWSER,${browserCommand}
         env = EDITOR,${editorCommand}
@@ -415,6 +420,7 @@ in {
         export NIXOS_OZONE_WL=1
         export MOZ_ENABLE_WAYLAND=1
         export GTK_USE_PORTAL=1
+        ${optionalString caelestiaCfg.enable "export QT_QPA_PLATFORMTHEME=${qtPlatformTheme}"}
       '';
     };
 
