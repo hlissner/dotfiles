@@ -12,6 +12,7 @@
 - After deploying the Caelestia wallpaper Qt theme fix and README alignment, restart Hyprland, confirm `path.txt` points at `/home/c1/.local/state/caelestia/wallpaper/generated.jpg` unless another wallpaper was manually selected, confirm Caelestia logs no longer show the Qt allocation rejection, and verify `qtengine` does not reintroduce launcher color-block icon rendering.
 - After deploying `axiom-desktop-polish-followup`, confirm the live Axiom session exercises `Super+Space`, sidebar/session, media, brightness, and screenshot keybinds through the CLI IPC route. If Super-key tap-to-launch is still desired, open a scoped follow-up for safe press/release behavior instead of restoring top-level `catchall`.
 - After deploying `axiom-input-caelestia-config-hotfix`, restart `caelestia-shell.service`, confirm `~/.config/caelestia/shell.json` is a writable regular file, exercise `SUPER+Space`, `SUPER+Return`, and workspace bindings, and confirm the keyboard layout `Unknown` toast no longer appears by default. If `hyprctl -j devices` still reports an unknown active keymap, open a separate runtime/upstream input task instead of expanding the config hotfix.
+- After deploying `axiom-keybinding-help-modal`, press `SUPER+/` in the real Axiom Hyprland session and confirm the themed shortcut reference modal opens. When generated keybinds change, update the repository-generated help text in the same task.
 
 ## Axiom Steam / opencode Follow-Up
 

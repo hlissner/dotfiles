@@ -28,6 +28,8 @@ Until Caelestia's logind lock crash is proven fixed, ordinary Axiom idle/keybind
 
 Axiom-specific input facts, monitors, workspaces, app rules, environment, and fallback keybinds remain Nix-generated Hyprland config. Generated keybinds should use canonical uppercase Hyprland modifier tokens such as `SUPER`, `CTRL`, `ALT`, and `SHIFT`. Primary shell bindings should target Caelestia global shortcuts or reviewed Caelestia CLI commands, not legacy `quickshell --config ii`, end4 IPC names, `IllogicalImpulse`, matugen, or fuzzel shell assumptions.
 
+The active Axiom shortcut reference entrypoint is the generated Hyprland `SUPER+/` binding. It opens the repository-generated `axiom-keybinding-help` modal and should be kept in sync with generated keybind changes.
+
 When Caelestia global-shortcut dispatch does not work in the live Axiom session, repository-generated keybinds may route through reviewed `caelestia shell ...` IPC commands instead. Do not restore top-level Hyprland `catchall` bindings; if Super-key tap semantics are required again, split a scoped follow-up with parser validation.
 
 Axiom Steam on fractional-scale Hyprland should treat jagged or low-resolution Steam UI first as an XWayland/HiDPI integration issue: enable XWayland self-scaling for scaled monitor configs and pass Steam an explicit desktop UI scale. Do not expand this into per-game Proton or GPU runtime debugging without live evidence.

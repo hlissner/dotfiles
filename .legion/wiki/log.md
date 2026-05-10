@@ -79,3 +79,5 @@
 - Updated current Caelestia/Hyprland decisions, patterns, and maintenance with mutable seeded `shell.json`, canonical uppercase keybind modifiers, and post-deploy Super-key/layout-toast smoke requirements.
 - Added task summary for `axiom-fcitx5-shell-theme-alignment`.
 - Updated current Fcitx5 decisions, patterns, and maintenance with Axiom `catppuccin-mocha-pink` shell-accent alignment and validation guidance.
+- Added task summary for `axiom-keybinding-help-modal`.
+- Updated current Axiom Hyprland decisions, patterns, and maintenance with the generated `SUPER+/` shortcut reference modal and validation guidance.

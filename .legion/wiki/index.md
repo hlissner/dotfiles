@@ -24,6 +24,7 @@
 - [Axiom Foot Notify Config Fix](tasks/axiom-foot-notify-config-fix.md)
 - [Axiom Host](tasks/axiom-host.md)
 - [Axiom Input And Caelestia Config Hotfix](tasks/axiom-input-caelestia-config-hotfix.md)
+- [Axiom Keybinding Help Modal](tasks/axiom-keybinding-help-modal.md)
 - [Axiom Quickshell Notification Center](tasks/axiom-quickshell-notification-center.md)
 - [Axiom Quickshell Quick Controls and OSD](tasks/axiom-quickshell-quick-controls-osd.md)
 - [Axiom Quickshell Search and Actions](tasks/axiom-quickshell-search-actions.md)
