@@ -105,11 +105,14 @@ with builtins;
   ## Local config
   config = { pkgs, ... }: {
     user.packages = with pkgs; [
+      aria2
       autossh
+      git-lfs
       htop
       k9s
       kubectl
       nvtopPackages.nvidia
+      uv
     ];
 
     programs.ssh.startAgent = true;
