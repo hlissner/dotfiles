@@ -24,6 +24,7 @@
 - [Axiom Quickshell Search and Actions](tasks/axiom-quickshell-search-actions.md)
 - [Axiom Quickshell Side Dock Regression](tasks/axiom-quickshell-side-dock-regression.md)
 - [Axiom Runtime Access And Session Fixes](tasks/axiom-runtime-access-session-fixes.md)
+- [Clash Verge NixOS Service Tun](tasks/clash-verge-nixos-service-tun.md)
 - [Dotfiles Quickshell Product Desktop](tasks/dotfiles-quickshell-product-desktop.md)
 - [Dots Hyprland Desktop Complete End4 Import](tasks/dots-hyprland-desktop-rfc.md)
 - [Dotfiles Wayland Product Overhaul](tasks/dotfiles-wayland-product-overhaul.md)

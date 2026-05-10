@@ -52,3 +52,9 @@ Current autossh reverse tunnels to `root@8.159.128.125` bind remote loopback exp
 - `axiom`: remote `127.0.0.1:2223` -> local `127.0.0.1:22` through the NixOS systemd service; `axiom` uses persistent `sshd.service` rather than OpenSSH socket activation so the local tunnel target is daemon-backed.
 
 Do not reuse an existing remote port while its host tunnel remains active, and do not relax the remote bind address away from `127.0.0.1` without a new security review.
+
+## Clash Verge On NixOS
+
+Clash Verge Rev on NixOS should be integrated through the upstream `programs.clash-verge` NixOS module, not through the GUI's service-mode or TUN installers. Hosts enabling the dotfiles `modules.desktop.apps.clash-verge` module should get declarative service mode, TUN mode, autostart, and package pass-through from NixOS.
+
+For TUN connectivity, the current default trusted interface set is `Mihomo` and `Meta`, paired with a reverse-path filter exception for those names. Do not globally disable reverse-path filtering or migrate to `services.mihomo` unless a future scoped task explicitly chooses that route.

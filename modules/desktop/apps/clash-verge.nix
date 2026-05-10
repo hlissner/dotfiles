@@ -10,6 +10,19 @@ in {
   };
 
   config = mkIf cfg.enable {
-    user.packages = [ cfg.package ];
+    programs.clash-verge = {
+      enable = true;
+      package = cfg.package;
+      serviceMode = true;
+      tunMode = true;
+      autoStart = true;
+    };
+
+    networking.firewall = {
+      trustedInterfaces = [ "Mihomo" "Meta" ];
+      extraReversePathFilterRules = ''
+        iifname { "Mihomo", "Meta" } accept comment "trusted mihomo tun interface"
+      '';
+    };
   };
 }

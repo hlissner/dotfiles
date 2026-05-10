@@ -30,6 +30,10 @@ For autossh reverse tunnel regressions, validate both sides of the generated sha
 
 For terminal config compatibility regressions, validate the repository source and the Nix-evaluated Home Manager source path with the target terminal binary. For Foot, `foot --check-config --config <path>` is the direct validation surface; do not assume an option remains valid across package upgrades just because an older checked-in config accepted it.
 
+For NixOS GUI apps that also ship service/TUN installers, prefer the upstream NixOS module over mutable GUI installer flows. Validate the actual exposed option names with `nix eval ...options.<module> --apply builtins.attrNames`, because this repository disables strict module option checking and inert settings can otherwise be silently ignored.
+
+For Clash Verge Rev specifically, validate `programs.clash-verge.serviceMode`, `tunMode`, `autoStart`, the generated `clash-verge.service` `ExecStart`, capability bounding set, `networking.firewall.trustedInterfaces`, `extraReversePathFilterRules`, and the host `system.build.toplevel.drvPath`.
+
 ## 上游桌面参考采用模式
 
 使用大型外部桌面 dotfiles 仓库作为产品灵感时，应先提取能力，再考虑代码移动。需要把 compositor/session model、shell ownership、notification/search/control surfaces、theming、state writes、dependency assumptions 和 rollback boundaries 与 Axiom 当前 Nix-native model 对比。
