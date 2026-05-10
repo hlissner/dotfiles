@@ -32,6 +32,8 @@ For XDG SSH wrapper regressions, build and inspect the generated wrapped `ssh` s
 
 For opencode over cloudflared, keep the app server bound to `127.0.0.1`, route the public hostname through cloudflared ingress, and treat Cloudflare Access policy verification as a separate上线前置条件. DNS route creation proves the tunnel hostname exists; it does not prove Access policy or app authorization.
 
+For Linux cloudflared services backed by agenix credentials, keep connector config system-owned, for example `/etc/cloudflared/config.yml`. Do not require Home Manager to write `~/.cloudflared/config.yml` if the age secret path also lives under `~/.cloudflared`, because agenix can create the parent directory as root before Home Manager activation.
+
 For terminal config compatibility regressions, validate the repository source and the Nix-evaluated Home Manager source path with the target terminal binary. For Foot, `foot --check-config --config <path>` is the direct validation surface; do not assume an option remains valid across package upgrades just because an older checked-in config accepted it.
 
 For GUI-launched terminal or app command lookup regressions that do not reproduce over SSH, validate graphical session PATH ownership rather than patching shell rc files first. Check generated `uwsm/env`, the Hyprland startup `systemctl --user import-environment` list, relevant launcher service `path` entries, and whether the missing commands live in `config.environment.systemPackages` or user packages.

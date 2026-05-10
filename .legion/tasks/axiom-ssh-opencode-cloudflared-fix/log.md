@@ -23,6 +23,10 @@
 - review-change PASS with external follow-up; no blocking findings.
 - Generated report-walkthrough.md and pr-body.md from verification/review evidence.
 - Legion wiki writeback completed: task summary, decisions, patterns, maintenance, and wiki log updated.
+- Post-deploy inspection found cloudflared was not healthy: `cloudflared.service` was restarting because `/home/c1/.cloudflared/config.yml` was missing, while Home Manager failed to create it due `/home/c1/.cloudflared` being root-owned.
+- Implemented follow-up fix moving Linux cloudflared config generation to `/etc/cloudflared/config.yml` while preserving Darwin home-managed config generation.
+- Runtime follow-up validation passed for cloudflared ExecStart, Linux system config text, Linux absence of home-managed config, Darwin config preservation, and axiom toplevel build.
+- Live deployment from automation is blocked by missing passwordless sudo and `hey sync axiom` failing with `Invalid XDG directory: runtime`.
 
 (暂无)
 ### 🟡 进行中

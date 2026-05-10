@@ -72,6 +72,7 @@
 - Updated current reverse SSH decisions with `azar` port `2224`, added axiom opencode/cloudflared hostname decision, and recorded Linux/Darwin cloudflared secret group ownership.
 - Extended validation patterns with XDG SSH wrapper inspection, encrypted secret flake tracking, and opencode-over-cloudflared boundaries.
 - Added maintenance follow-up for deleting mistaken `axiom-opencode.0xc1.space`, verifying Cloudflare Access for `opencode-axiom.0xc1.space`, and post-deploy service smoke tests.
+- Updated `axiom-ssh-opencode-cloudflared-fix` with runtime follow-up: Linux cloudflared config now lives at `/etc/cloudflared/config.yml` to avoid Home Manager writes into an agenix-owned `~/.cloudflared` directory.
 - Added task summary for `axiom-caelestia-readme-alignment`.
 - Updated current Caelestia decisions and patterns from the historical `qt6ct` workaround to README-aligned `qtengine`, plus Thunar explorer, minimal shell settings, shared font fallback policy, and configured Hyprland parser validation guidance.
 - Added task summary for `axiom-input-caelestia-config-hotfix`.

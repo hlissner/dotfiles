@@ -79,3 +79,47 @@ PASS with external follow-up. Local Nix evaluation/build checks passed for the S
 ## Why These Checks
 
 The targeted evals prove each generated service/config boundary directly, while the two NixOS toplevel builds prove the affected hosts can evaluate and build with the combined changes. External runtime checks remain separate because they depend on deployment, remote SSH auth, remote port availability, Cloudflare account state, and Cloudflare Access policy.
+
+## Runtime Follow-up: cloudflared config path fix
+
+### Problem Found After Deployment
+
+- `systemctl is-active cloudflared opencode-server`
+  - Result: `cloudflared` was `activating`; `opencode-server` was `active`.
+- `journalctl -u cloudflared -n 80 --no-pager`
+  - Result: FAIL before this follow-up.
+  - Evidence: repeated `open /home/c1/.cloudflared/config.yml: no such file or directory` with restart loop.
+- `journalctl -u home-manager-c1 -n 80 --no-pager`
+  - Result: showed root cause.
+  - Evidence: `ln: failed to create symbolic link '/home/c1/.cloudflared/config.yml': Permission denied`.
+- `stat -c '%U:%G %a %n' /home/c1/.cloudflared /home/c1/.cloudflared/bc8b3291-de93-4f7f-807a-23f802ef021f.json`
+  - Result: `/home/c1/.cloudflared` was `root:root 755`; Home Manager running as `c1` could not create `config.yml` there.
+
+### Fix Validation
+
+- `nix eval --impure --raw .#nixosConfigurations.axiom.config.systemd.services.cloudflared.serviceConfig.ExecStart`
+  - Result: PASS.
+  - Evidence: service now runs cloudflared with `--config /etc/cloudflared/config.yml`.
+- `nix eval --impure --raw .#nixosConfigurations.axiom.config --apply 'cfg: cfg.environment.etc."cloudflared/config.yml".text'`
+  - Result: PASS.
+  - Evidence: system-owned config contains tunnel `bc8b3291-de93-4f7f-807a-23f802ef021f`, hostname `opencode-axiom.0xc1.space`, and service `http://127.0.0.1:4096`.
+- `nix eval --impure .#nixosConfigurations.axiom.config --apply 'cfg: cfg.home.file ? ".cloudflared/config.yml"'`
+  - Result: PASS.
+  - Evidence: returned `false`; Linux no longer asks Home Manager to link `~/.cloudflared/config.yml`.
+- `nix eval --impure --json .#darwinConfigurations.charlie.config --apply 'cfg: cfg.home.file.".cloudflared/config.yml".text'`
+  - Result: PASS.
+  - Evidence: Darwin `charlie` still gets its home-managed cloudflared config text.
+- `nix build --impure --no-link .#nixosConfigurations.axiom.config.system.build.toplevel`
+  - Result: PASS.
+  - Evidence: built `nixos-system-axiom-25.11.20260203.e576e3c` with generated `etc-cloudflared-config.yml` and updated `cloudflared.service`.
+
+### Deployment Attempt
+
+- `sudo -n true`
+  - Result: BLOCKED.
+  - Evidence: `sudo: 需要密码`.
+- `hey sync axiom`
+  - Result: BLOCKED in the automation shell.
+  - Evidence: failed before deployment with `error: Invalid XDG directory: runtime`.
+
+The declarative fix is validated, but live service recovery still requires a root-authorized switch/restart on `axiom`.

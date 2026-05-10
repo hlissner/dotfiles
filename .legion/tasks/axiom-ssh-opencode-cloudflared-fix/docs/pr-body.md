@@ -15,3 +15,8 @@
 
 - Delete the accidentally created `axiom-opencode.0xc1.space` CNAME in Cloudflare.
 - Verify Cloudflare Access policy for `opencode-axiom.0xc1.space` before using the public endpoint.
+
+## Runtime Follow-up
+
+- Fix Linux cloudflared config generation to use `/etc/cloudflared/config.yml` instead of Home Manager linking `/home/c1/.cloudflared/config.yml`, because the agenix credential path makes that directory root-owned before Home Manager activation.
+- Validate that `cloudflared.service` points at `/etc/cloudflared/config.yml`, Linux no longer has a home-managed cloudflared config file, Darwin `charlie` still does, and the `axiom` toplevel builds.

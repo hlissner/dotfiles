@@ -101,8 +101,18 @@ let
   user = config.user.name;
   homeDir = config.user.home;
   configDir = "${homeDir}/.cloudflared";
-  configFile = "${configDir}/config.yml";
+  configFile = if pkgs.stdenv.isLinux then "/etc/cloudflared/config.yml" else "${configDir}/config.yml";
   secretGroup = if pkgs.stdenv.isDarwin then "staff" else "users";
+  configText = let
+    baseConfig = {
+      tunnel = cfg.tunnelId;
+      credentials-file = "${configDir}/${cfg.tunnelId}.json";
+    };
+    warpConfig = optionalAttrs cfg.warpRouting.enabled {
+      warp-routing.enabled = true;
+    };
+    mergedConfig = recursiveUpdate (baseConfig // warpConfig) cfg.extraConfig;
+  in builtins.toJSON mergedConfig;
 in {
   options.modules.services.cloudflared = with types; {
     enable = mkBoolOpt false;
@@ -147,24 +157,14 @@ in {
         path = "${configDir}/${cfg.tunnelId}.json";
       };
 
-      # Create config.yml
-      home.file.".cloudflared/config.yml" = {
-        text = let
-          tunnelName = cfg.extraConfig.tunnelName or "home";
-          baseConfig = {
-            tunnel = cfg.tunnelId;
-            credentials-file = "${configDir}/${cfg.tunnelId}.json";
-          };
-          warpConfig = optionalAttrs cfg.warpRouting.enabled {
-            warp-routing.enabled = true;
-          };
-          mergedConfig = recursiveUpdate (baseConfig // warpConfig) cfg.extraConfig;
-        in builtins.toJSON mergedConfig;
-      };
     }
 
     # Ensure config directory exists with correct permissions
     (optionalAttrs pkgs.stdenv.isLinux {
+        # Keep Linux connector config out of ~/.cloudflared. Agenix owns the
+        # credential path there before Home Manager activation can link files.
+        environment.etc."cloudflared/config.yml".text = configText;
+
         systemd.user.tmpfiles.rules = [
           "d ${configDir} 0700 ${user} users - -"
         ];
@@ -220,6 +220,8 @@ in {
       })
 
       (optionalAttrs pkgs.stdenv.isDarwin {
+        home.file.".cloudflared/config.yml".text = configText;
+
         launchd.user.agents.cloudflared = {
           serviceConfig = {
             ProgramArguments = [ "${cfg.package}/bin/cloudflared" "--config" configFile "tunnel" "run" ];

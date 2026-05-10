@@ -14,7 +14,7 @@
 
 This task fixes the XDG SSH wrapper path bug that made OpenSSH look for a literal `$XDG_CONFIG_HOME/ssh/config`, adds a daemon-backed `azar` autossh reverse SSH tunnel on remote loopback port `2224`, and adds `axiom` `opencode-server` plus a new `home-axiom` Cloudflare tunnel for `opencode-axiom.0xc1.space`.
 
-Local validation passed for targeted generated config/service shape and both affected NixOS toplevel builds. Cloudflare tunnel creation and the corrected DNS route also succeeded. Runtime deployment checks, Cloudflare Access policy verification, and cleanup of the mistakenly created `axiom-opencode.0xc1.space` CNAME remain external follow-up.
+Local validation passed for targeted generated config/service shape and both affected NixOS toplevel builds. Cloudflare tunnel creation and the corrected DNS route also succeeded. A post-deploy follow-up found Linux cloudflared config could not be linked by Home Manager under the root-owned agenix credential directory; the module now generates Linux connector config at `/etc/cloudflared/config.yml` while Darwin keeps home-managed config. Runtime switch/restart still requires root authorization on `axiom`.
 
 ## Reusable Decisions
 
@@ -23,6 +23,7 @@ Local validation passed for targeted generated config/service shape and both aff
 - `axiom` opencode exposure uses local-only `opencode serve --hostname 127.0.0.1 --port 4096` plus cloudflared ingress; Cloudflare Access remains required before treating the hostname as safe for use.
 - The active axiom opencode hostname is `opencode-axiom.0xc1.space`; `axiom-opencode.0xc1.space` was a mistaken route and should not be used.
 - Linux cloudflared age secrets should use group `users`; Darwin keeps `staff`.
+- Linux cloudflared connector config should be system-owned under `/etc/cloudflared/config.yml`, not home-managed under `~/.cloudflared`, because agenix may own the credential directory before Home Manager activation.
 
 ## Related Raw Sources
 

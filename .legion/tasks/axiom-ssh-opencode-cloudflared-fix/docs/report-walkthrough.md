@@ -32,6 +32,13 @@ implementation
 - Create or verify Cloudflare Access application and allow policy for `opencode-axiom.0xc1.space` before using the public endpoint.
 - After deployment, run `ssh azar`, `systemctl status autossh-reverse-ssh` on `azar`, and `systemctl status opencode-server cloudflared` on `axiom`.
 
+## Runtime Follow-up
+
+- Post-deploy inspection found `cloudflared` restarting because `/home/c1/.cloudflared/config.yml` did not exist.
+- Home Manager could not create that file because `/home/c1/.cloudflared` was root-owned by the agenix credential path setup.
+- The follow-up fix moves Linux cloudflared config generation to system-owned `/etc/cloudflared/config.yml` and updates `cloudflared.service` to use that path. Darwin continues using the home-managed config path.
+- Targeted evals and the `axiom` toplevel build pass with this fix, but live recovery needs root-authorized deployment.
+
 ## Key Evidence Files
 
 - Plan: `.legion/tasks/axiom-ssh-opencode-cloudflared-fix/plan.md`

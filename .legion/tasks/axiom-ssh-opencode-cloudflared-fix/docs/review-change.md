@@ -39,3 +39,9 @@ Security review was applied because the change touches SSH access, Cloudflare tu
 - Delete the mistakenly created `axiom-opencode.0xc1.space` CNAME in Cloudflare DNS/Zero Trust; the cloudflared CLI used here exposes route create/overwrite, not delete.
 - Create/verify the Cloudflare Access application and allow policy for `opencode-axiom.0xc1.space` before using the public endpoint.
 - After deployment, smoke test `ssh azar`, `systemctl status autossh-reverse-ssh` on `azar`, and `systemctl status opencode-server cloudflared` on `axiom`.
+
+## Runtime Follow-up Review
+
+PASS with deployment blocker. The follow-up fix keeps Linux cloudflared config in `/etc/cloudflared/config.yml`, removing the Home Manager symlink into `/home/c1/.cloudflared` that failed under root-owned agenix parent directory ownership. Darwin `charlie` continues to use the home-managed config path. Targeted evals and the `axiom` toplevel build pass.
+
+Live recovery still requires root-authorized deployment on `axiom`; the automation shell could not use passwordless sudo, and `hey sync axiom` failed before deployment due an XDG runtime environment error.
