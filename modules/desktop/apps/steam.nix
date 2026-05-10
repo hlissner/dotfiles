@@ -5,6 +5,10 @@
 with lib;
 with hey.lib;
 let cfg = config.modules.desktop.apps.steam;
+    hyprlandMonitors = config.modules.desktop.hyprland.monitors or [{}];
+    fallbackMonitor = if hyprlandMonitors == [] then {} else head hyprlandMonitors;
+    steamMonitor = findFirst (monitor: monitor.primary or false) fallbackMonitor hyprlandMonitors;
+    steamDesktopScale = toString (steamMonitor.scale or 1);
 in {
   options.modules.desktop.apps.steam = with types; {
     enable = mkBoolOpt false;
@@ -67,15 +71,16 @@ in {
                fi
              fi
            '';
-       in mkWrapper [
-         pkg
-         pkg.run   # for GOG and humble bundle games
-       ] ''
-         wrapProgram "$out/bin/steam" \
-           --run 'export HOME="$XDG_FAKE_HOME"' \
-           --run '${libFix}/bin/libfix'
-         wrapProgram "$out/bin/steam-run" --run 'export HOME="$XDG_FAKE_HOME"'
-       '')
+        in mkWrapper [
+          pkg
+          pkg.run   # for GOG and humble bundle games
+        ] ''
+          wrapProgram "$out/bin/steam" \
+            --set-default STEAM_FORCE_DESKTOPUI_SCALING ${escapeShellArg steamDesktopScale} \
+            --run 'export HOME="$XDG_FAKE_HOME"' \
+            --run '${libFix}/bin/libfix'
+          wrapProgram "$out/bin/steam-run" --run 'export HOME="$XDG_FAKE_HOME"'
+        '')
     ] ++ (if cfg.mangohud.enable then [ pkgs.mangohud ] else []);
 
     # Better for steam proton games

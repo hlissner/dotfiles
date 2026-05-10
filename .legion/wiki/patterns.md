@@ -32,6 +32,10 @@ For terminal config compatibility regressions, validate the repository source an
 
 For GUI-launched terminal or app command lookup regressions that do not reproduce over SSH, validate graphical session PATH ownership rather than patching shell rc files first. Check generated `uwsm/env`, the Hyprland startup `systemctl --user import-environment` list, relevant launcher service `path` entries, and whether the missing commands live in `config.environment.systemPackages` or user packages.
 
+For out-of-band user tools such as opencode under `$HOME/.opencode/bin`, validate both interactive shell startup and generated desktop session PATH. Avoid literal `environment.variables.PATH` strings as the only integration surface; prefer explicit shell path initialization plus generated `uwsm/env` evidence.
+
+For Steam HiDPI regressions on fractional-scale Hyprland, validate both compositor and application surfaces: generated `xwayland.force_zero_scaling`, the actual wrapped `bin/steam` script exporting `STEAM_FORCE_DESKTOPUI_SCALING`, Steam package closure presence, assembled `Hyprland --verify-config`, and the host toplevel build. Live crispness remains a deployment smoke check.
+
 For NixOS GUI apps that also ship service/TUN installers, prefer the upstream NixOS module over mutable GUI installer flows. Validate the actual exposed option names with `nix eval ...options.<module> --apply builtins.attrNames`, because this repository disables strict module option checking and inert settings can otherwise be silently ignored.
 
 For Clash Verge Rev specifically, validate `programs.clash-verge.serviceMode`, `tunMode`, `autoStart`, the generated `clash-verge.service` `ExecStart`, capability bounding set, `networking.firewall.trustedInterfaces`, `extraReversePathFilterRules`, and the host `system.build.toplevel.drvPath`.
@@ -87,6 +91,8 @@ For Caelestia launcher icon color-block regressions matching upstream issue #128
 Use the checked-in Hyprland file as a local base that sources only repository-owned generated config. Host facts such as XKB, monitors, workspaces, rules, default apps, session startup, and fallback keybinds belong in generated `hypr/custom/*.conf` files rather than in upstream shell source or live-home edits.
 
 Validate Caelestia migrations by evaluating the upstream `with-cli` package, generated service command, generated `caelestia/shell.json`, user package closure, active Hyprland keybinds, and absence of active end4 references outside historical `.legion/tasks/**`. Always run an assembled `Hyprland --verify-config` after changing generated keybinds or rules; Nix build alone does not catch parser restrictions such as top-level `catchall`. Pair static evidence with a live Hyprland session smoke when available; headless builds cannot prove layer-shell rendering, tray, launcher focus, icon rendering, OSD, screenshot, or lock/session behavior.
+
+When Caelestia global-shortcut dispatch is the reported failure, prefer reviewed CLI IPC keybinds for drawers, brightness, media, and picker actions over reworking DBus/global-shortcut plumbing in the same hotfix. Validate command names against the current Caelestia package source or `caelestia shell -s`, and keep direct shell process starts out of Hyprland keybinds.
 
 For Caelestia lock/session regressions, treat `loginctl lock-session` as a separate integration path from direct `hyprlock`. If logind-triggered Caelestia lock handling crashes, route ordinary idle/keybind locks to `hyprlock` while keeping a live-session follow-up to confirm lock-before-sleep behavior.
 

@@ -64,3 +64,5 @@
 - Added current Clash Verge NixOS decision and validation pattern for declarative service/TUN mode with TUN firewall allowances.
 - Added task summary for `axiom-desktop-session-path-steam-fix`.
 - Updated current Axiom desktop decisions and patterns with generated UWSM PATH export, systemd user PATH import, and Caelestia service path coverage for system packages.
+- Added task summary for `axiom-desktop-polish-followup`.
+- Updated current decisions, patterns, and maintenance with Axiom Steam fractional-scale HiDPI handling, Caelestia CLI IPC keybind routing, and explicit opencode zsh/UWSM PATH ownership.

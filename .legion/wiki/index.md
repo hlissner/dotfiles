@@ -14,6 +14,7 @@
 - [Axiom Caelestia Shell Migration](tasks/axiom-caelestia-shell-migration.md)
 - [Axiom Caelestia Wallpaper And Launcher Fix](tasks/axiom-caelestia-wallpaper-launcher-fix.md)
 - [Axiom Caelestia Wallpaper Qt Theme Fix](tasks/axiom-caelestia-wallpaper-qt-theme-fix.md)
+- [Axiom Desktop Polish Followup](tasks/axiom-desktop-polish-followup.md)
 - [Axiom Desktop Session PATH And Steam Fix](tasks/axiom-desktop-session-path-steam-fix.md)
 - [Axiom End4 Polish Hotfix](tasks/axiom-end4-polish-hotfix.md)
 - [Axiom End4 Regression Fix](tasks/axiom-end4-regression-fix.md)
