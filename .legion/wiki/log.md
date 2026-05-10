@@ -68,3 +68,7 @@
 - Updated current decisions, patterns, and maintenance with Axiom Steam fractional-scale HiDPI handling, Caelestia CLI IPC keybind routing, and explicit opencode zsh/UWSM PATH ownership.
 - Added task summary for `dotfiles-fcitx5-wayland-gtk-im-module`.
 - Updated current desktop input-method decision and validation pattern for Fcitx5 Wayland frontend warnings about `GTK_IM_MODULE`.
+- Added task summary for `axiom-ssh-opencode-cloudflared-fix`.
+- Updated current reverse SSH decisions with `azar` port `2224`, added axiom opencode/cloudflared hostname decision, and recorded Linux/Darwin cloudflared secret group ownership.
+- Extended validation patterns with XDG SSH wrapper inspection, encrypted secret flake tracking, and opencode-over-cloudflared boundaries.
+- Added maintenance follow-up for deleting mistaken `axiom-opencode.0xc1.space`, verifying Cloudflare Access for `opencode-axiom.0xc1.space`, and post-deploy service smoke tests.

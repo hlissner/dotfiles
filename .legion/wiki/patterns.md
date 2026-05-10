@@ -1,8 +1,8 @@
 # Patterns
 
-## Git Flake Validation With New Modules
+## Git Flake Validation With New Files
 
-When validating a Git-backed flake after adding new module files, mark those files as tracked or intent-to-add before running `nix eval`/`nix build`. Otherwise Nix may evaluate the Git source without untracked module files, and `_module.check = false` can hide missing option declarations.
+When validating a Git-backed flake after adding new module files or encrypted secret files, mark those files as tracked or intent-to-add before running `nix eval`/`nix build`. Otherwise Nix may evaluate the Git source without untracked files, and `_module.check = false` can hide missing option declarations or missing path inputs.
 
 Recommended pre-validation command shape:
 
@@ -27,6 +27,10 @@ For visible-shell startup regressions where Hyprland shows a cursor but the desk
 For Hyprland/UWSM startup warnings, validate the actual command resolution instead of only checking desktop entry existence. A `uwsm start` dry run should resolve to `start-hyprland`; if it resolves to direct `Hyprland`, the generated startup path can still trigger the upstream warning even when UWSM is present.
 
 For autossh reverse tunnel regressions, validate both sides of the generated shape: the remote-forward string must remain loopback-only and port-unique, and the local target service must exist as an active daemon if the tunnel forwards to `127.0.0.1:22`.
+
+For XDG SSH wrapper regressions, build and inspect the generated wrapped `ssh` script. The wrapper must expand `XDG_CONFIG_HOME` at runtime, fall back to `$HOME/.config`, and pass `-F "$cfg"` as argv elements rather than as a literal `$XDG_CONFIG_HOME/ssh/config` string.
+
+For opencode over cloudflared, keep the app server bound to `127.0.0.1`, route the public hostname through cloudflared ingress, and treat Cloudflare Access policy verification as a separate上线前置条件. DNS route creation proves the tunnel hostname exists; it does not prove Access policy or app authorization.
 
 For terminal config compatibility regressions, validate the repository source and the Nix-evaluated Home Manager source path with the target terminal binary. For Foot, `foot --check-config --config <path>` is the direct validation surface; do not assume an option remains valid across package upgrades just because an older checked-in config accepted it.
 

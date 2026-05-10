@@ -119,6 +119,27 @@ with builtins;
       typeset -U path PATH
     '';
 
+    modules.agenix.sshKey = "/etc/ssh/ssh_host_ed25519_key";
+
+    systemd.services.opencode-server = {
+      description = "Opencode server";
+      after = [ "network.target" ];
+      wantedBy = [ "multi-user.target" ];
+      environment = {
+        HOME = "/home/c1";
+        OPENCODE_ENABLE_EXA = "1";
+        OPENCODE_EXPERIMENTAL = "true";
+      };
+      serviceConfig = {
+        Type = "simple";
+        User = "c1";
+        WorkingDirectory = "/home/c1";
+        ExecStart = "/home/c1/.opencode/bin/opencode serve --hostname 127.0.0.1 --port 4096";
+        Restart = "on-failure";
+        RestartSec = "10s";
+      };
+    };
+
     systemd.services.autossh-reverse-ssh = {
       description = "Autossh reverse SSH tunnel to 8.159.128.125";
       after = [ "network-online.target" "sshd.service" ];
@@ -136,6 +157,24 @@ with builtins;
         ExecStart = "${pkgs.autossh}/bin/autossh -M 0 -N -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -o ExitOnForwardFailure=yes -o BatchMode=yes -R 127.0.0.1:2223:127.0.0.1:22 root@8.159.128.125";
         Restart = "always";
         RestartSec = "10s";
+      };
+    };
+
+    modules.services.cloudflared = {
+      enable = true;
+      tunnelName = "home-axiom";
+      tunnelId = "bc8b3291-de93-4f7f-807a-23f802ef021f";
+      credentialsFile = ./secrets/cloudflared-credentials.age;
+      warpRouting.enabled = false;
+      extraConfig = {
+        tunnelName = "home-axiom";
+        ingress = [
+          {
+            hostname = "opencode-axiom.0xc1.space";
+            service = "http://127.0.0.1:4096";
+          }
+          { service = "http_status:404"; }
+        ];
       };
     };
 

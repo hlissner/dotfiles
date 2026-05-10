@@ -60,8 +60,17 @@ Current autossh reverse tunnels to `root@8.159.128.125` bind remote loopback exp
 
 - `charlie`: remote `127.0.0.1:2222` -> local `127.0.0.1:22` through the Darwin launchd user agent.
 - `axiom`: remote `127.0.0.1:2223` -> local `127.0.0.1:22` through the NixOS systemd service; `axiom` uses persistent `sshd.service` rather than OpenSSH socket activation so the local tunnel target is daemon-backed.
+- `azar`: remote `127.0.0.1:2224` -> local `127.0.0.1:22` through the NixOS systemd service; `azar` uses persistent `sshd.service` rather than OpenSSH socket activation so the local tunnel target is daemon-backed.
 
 Do not reuse an existing remote port while its host tunnel remains active, and do not relax the remote bind address away from `127.0.0.1` without a new security review.
+
+## Opencode Cloudflare Exposure
+
+`axiom` opencode exposure uses a local-only systemd service running `/home/c1/.opencode/bin/opencode serve --hostname 127.0.0.1 --port 4096`, with cloudflared ingress on `opencode-axiom.0xc1.space`. Cloudflare Access policy is an上线前置条件 before treating the public hostname as safe for use.
+
+The hostname `axiom-opencode.0xc1.space` was created by mistake during the axiom task and should not be used.
+
+For cloudflared age secrets, Linux hosts should use group `users`; Darwin hosts should keep group `staff`.
 
 ## Clash Verge On NixOS
 

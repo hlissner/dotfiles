@@ -157,6 +157,7 @@ with builtins;
   config = { pkgs, ... }: {
 
     user.packages = with pkgs; [
+      autossh
       k9s
       kubectl
       clash-meta
@@ -169,9 +170,29 @@ with builtins;
     };
 
     programs.ssh.startAgent = true;
-    services.openssh.startWhenNeeded = true;
+    services.openssh.startWhenNeeded = mkForce false;
     # ISSUE: https://discourse.nixos.org/t/logrotate-config-fails-due-to-missing-group-30000/28501
     services.logrotate.checkConfig = false;
+
+    systemd.services.autossh-reverse-ssh = {
+      description = "Autossh reverse SSH tunnel to 8.159.128.125";
+      after = [ "network-online.target" "sshd.service" ];
+      wants = [ "network-online.target" "sshd.service" ];
+      wantedBy = [ "multi-user.target" ];
+      path = [ pkgs.openssh ];
+      environment = {
+        AUTOSSH_GATETIME = "0";
+        HOME = "/home/c1";
+      };
+      serviceConfig = {
+        Type = "simple";
+        User = "c1";
+        WorkingDirectory = "/home/c1";
+        ExecStart = "${pkgs.autossh}/bin/autossh -M 0 -N -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -o ExitOnForwardFailure=yes -o BatchMode=yes -R 127.0.0.1:2224:127.0.0.1:22 root@8.159.128.125";
+        Restart = "always";
+        RestartSec = "10s";
+      };
+    };
 
   };
 }

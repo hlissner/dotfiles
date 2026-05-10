@@ -102,6 +102,7 @@ let
   homeDir = config.user.home;
   configDir = "${homeDir}/.cloudflared";
   configFile = "${configDir}/config.yml";
+  secretGroup = if pkgs.stdenv.isDarwin then "staff" else "users";
 in {
   options.modules.services.cloudflared = with types; {
     enable = mkBoolOpt false;
@@ -142,7 +143,7 @@ in {
       age.secrets."cloudflared-credentials" = {
         file = cfg.credentialsFile;
         owner = user;
-        group = "staff";
+        group = secretGroup;
         path = "${configDir}/${cfg.tunnelId}.json";
       };
 
