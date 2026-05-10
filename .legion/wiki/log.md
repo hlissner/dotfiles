@@ -51,3 +51,6 @@
 - Added terminal config validation pattern and Foot notification follow-up after removing unsupported `[main].notify`.
 - Added task summary for `axiom-end4-polish-hotfix`.
 - Updated end4 decisions, patterns, and maintenance with Quickshell service PATH ownership, real IPC liveness probes, XDG cache/state media paths, preset wallpaper/theme integration, and dock default migration.
+- Added task summary for `axiom-caelestia-shell-migration`.
+- Updated current desktop decisions and patterns from end4 `ii` to Caelestia Shell with upstream `with-cli`, local NixOS service/config ownership, active end4 source deletion, and live-session follow-up.
+- Marked end4 task summaries as historical where they were superseded by the Caelestia Shell migration.

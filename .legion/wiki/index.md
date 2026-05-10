@@ -10,6 +10,7 @@
 
 - [Aliyun NixOS Image Host](tasks/aliyun-nixos-image-host.md)
 - [Axiom Autossh Reverse SSH Tunnel](tasks/axiom-autossh-reverse-ssh-tunnel.md)
+- [Axiom Caelestia Shell Migration](tasks/axiom-caelestia-shell-migration.md)
 - [Axiom End4 Polish Hotfix](tasks/axiom-end4-polish-hotfix.md)
 - [Axiom End4 Regression Fix](tasks/axiom-end4-regression-fix.md)
 - [Axiom Fcitx5 WeChat Input And Wallpaper](tasks/axiom-fcitx5-wechat-wallpaper.md)

@@ -3,16 +3,16 @@
 ## Metadata
 
 - `task-id`: `axiom-end4-polish-hotfix`
-- `status`: `active`
+- `status`: `historical`
 - `risk`: `low`
 - `schema-version`: `current`
-- `historical`: `false`
+- `historical`: `true`
 - `supersedes`: `(none)`
-- `superseded-by`: `(none)`
+- `superseded-by`: `axiom-caelestia-shell-migration`
 
 ## Outcome Summary
 
-This hotfix keeps the imported end4 `ii` shell as the active desktop and fixes the remaining reported polish paths after the first end4 regression fix. The patch routes `Super+Space` through a dedicated `startMenu` IPC before fallback search/Fuzzel, gives launcher/overview layer-shell windows exclusive keyboard focus, replaces broken `TEST_ALIVE` fallback probes with a no-op `shell alive` IPC, and expands the Quickshell user service PATH with the runtime tools end4 helpers expect.
+This hotfix is historical. It kept the imported end4 `ii` shell active at the time and fixed the remaining reported polish paths after the first end4 regression fix. The patch routed `Super+Space` through a dedicated `startMenu` IPC before fallback search/Fuzzel, gave launcher/overview layer-shell windows exclusive keyboard focus, replaced broken `TEST_ALIVE` fallback probes with a no-op `shell alive` IPC, and expanded the Quickshell user service PATH with the runtime tools end4 helpers expected.
 
 Wallpaper and preview paths now stay inside XDG cache/state boundaries, expose the imported end4 preset wallpapers in the selector, and ensure generated color/wallpaper directories exist before theme regeneration. The end4 dock is enabled and pinned by default, with a one-time Axiom migration for existing user config, and the existing bottom dock is left-aligned to the far-left screen edge.
 
@@ -20,7 +20,7 @@ Repository-local validation passed, including diff hygiene, targeted static chec
 
 ## Reusable Decisions
 
-- End4 `ii` remains the product truth for this desktop; launcher, wallpaper, and dock regressions should be fixed in the end4 integration layer rather than by restoring the legacy Axiom shell.
+- Historical only: end4 `ii` was the product truth for this desktop before `axiom-caelestia-shell-migration`; current work should use Caelestia Shell instead.
 - Host-level primary launcher bindings may try a dedicated end4 IPC target first, then broader search IPC, then external fallback, as long as Nix owns the generated Hyprland override.
 - Imported Hyprland fallback probes should call an actual no-op Quickshell IPC function such as `shell alive`; placeholder targets like `TEST_ALIVE` are not valid liveness checks.
 - Quickshell services started by systemd need an explicit Nix-owned PATH for helper binaries used by imported QML/process code, including network, Bluetooth, clipboard, image, wallpaper, and theme-generation tools.

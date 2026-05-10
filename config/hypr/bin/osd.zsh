@@ -28,18 +28,15 @@ hey.osd.display() {
     mic) kind=mic ;;
     vol) kind=volume ;;
   esac
-  if ! { command -v quickshell >/dev/null 2>&1 && \
-      quickshell ipc -c axiom-shell call axiom showOsd "$kind" "${${@:2}:--}" "$p" "$1" >/dev/null 2>&1; }; then
-    hey.do notify-send \
-        -a OSD \
-        ${pass[@]} \
-        ${hints[@]} \
-        ${stay:+--expire-time=999999999} \
-        -h string:x-canonical-private-synchronous:osd \
-        -h string:category:$a \
-        -h "int:value:${value[2]:-0}" \
-        "${${@:2}:--}" "<span alpha='$(printf "%d" $(( p >= 80 ? 100 : p + 20 )))%'>$1</span>"
-  fi
+  hey.do notify-send \
+      -a OSD \
+      ${pass[@]} \
+      ${hints[@]} \
+      ${stay:+--expire-time=999999999} \
+      -h string:x-canonical-private-synchronous:osd \
+      -h string:category:$a \
+      -h "int:value:${value[2]:-0}" \
+      "${${@:2}:--}" "<span alpha='$(printf "%d" $(( p >= 80 ? 100 : p + 20 )))%'>$1</span>"
   [[ -n $sound ]] && hey .play-sound -v 0.7 "${sound[2]}"
 }
 

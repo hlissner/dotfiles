@@ -40,9 +40,9 @@ in {
       }
     }
 
-    # The local Quickshell product shell owns desktop chrome.
-    layerrule = match:namespace quickshell, blur true
-    layerrule = match:namespace quickshell, ignore_alpha 0
+    # Caelestia owns desktop chrome; keep only compositor-level polish here.
+    layerrule = match:namespace caelestia.*, blur true
+    layerrule = match:namespace caelestia.*, ignore_alpha 0
   '';
 
   home.configFile."doom/config.local.el".text = ''

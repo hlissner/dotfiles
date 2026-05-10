@@ -62,7 +62,17 @@ OSD wrappers must preserve the underlying state change before attempting shell p
 
 For verification, pair static checks (`qmllint`, helper syntax/smoke, `zsh -n`, Nix eval/build, `Hyprland --verify-config`, scope/fallback greps, and `Variants`/`PanelWindow` counts) with a live-session checklist. Headless validation cannot prove panel focus, layer placement, rapid OSD timing, or disruptive actions such as Wi-Fi/Bluetooth toggles, lock, DPMS off, and `wlogout`.
 
-## End4 Desktop Import Pattern
+## Caelestia Shell Integration Pattern
+
+When adopting Caelestia Shell on Axiom, consume the upstream `caelestia-dots/shell` flake package instead of vendoring shell source or running mutable setup scripts. Prefer `packages.<system>.with-cli`, because the upstream default package omits full CLI support.
+
+Keep a small local NixOS integration module as the repository boundary: install the shell and CLI package, write minimal `caelestia/shell.json`, start `caelestia-shell.service` under `hyprland-session.target`, and keep reload/restart hooks inside the repo's existing session ownership model.
+
+Use the checked-in Hyprland file as a local base that sources only repository-owned generated config. Host facts such as XKB, monitors, workspaces, rules, default apps, session startup, and fallback keybinds belong in generated `hypr/custom/*.conf` files rather than in upstream shell source or live-home edits.
+
+Validate Caelestia migrations by evaluating the upstream `with-cli` package, generated service command, generated `caelestia/shell.json`, user package closure, active Hyprland keybinds, and absence of active end4 references outside historical `.legion/tasks/**`. Pair static evidence with a live Hyprland session smoke when available; headless builds cannot prove layer-shell rendering, tray, launcher focus, OSD, screenshot, or lock/session behavior.
+
+## Historical End4 Desktop Import Pattern
 
 When adopting end4 desktop phases in Axiom, treat the upstream `ii` source tree as product source once substrate-only is rejected. Import required upstream files through a manifest, record upstream commits and submodules, and keep omitted installer/generated/secret/state paths explicit.
 

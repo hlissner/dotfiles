@@ -34,6 +34,8 @@
       # Extras (imported directly by modules/hosts that need them)
       # hyprpicker.url = "github:hyprwm/hyprpicker";
       # hyprpicker.inputs.nixpkgs.follows = "nixpkgs-unstable";
+      caelestia-shell.url = "github:caelestia-dots/shell";
+      caelestia-shell.inputs.nixpkgs.follows = "nixpkgs-unstable";
       blender-bin.url = "github:edolstra/nix-warez?dir=blender";
       blender-bin.inputs.nixpkgs.follows = "nixpkgs-unstable";
       emacs-overlay.url = "github:nix-community/emacs-overlay";

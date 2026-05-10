@@ -1,18 +1,18 @@
 # Dots Hyprland Desktop Complete End4 Import
 
-状态：complete end4 import implementation 已验证和 review，PR lifecycle 进行中
+状态：historical；已由 `axiom-caelestia-shell-migration` supersede
 任务：`.legion/tasks/dots-hyprland-desktop-rfc/`
 
 ## 摘要
 
 该任务最初是 design-only 的 end4 desktop RFC，随后完成过 Phase 4 service substrate。用户拒绝 substrate-only / prior-phase debt 降级后，本轮 continuation 将目标改为完整导入并加载 upstream end4 `ii` 桌面源。
 
-当前结果把 Axiom active shell 切到 repository-managed end4 `ii` / `IllogicalImpulseFamily`：导入 `quickshell/ii`、matugen、fuzzel、Hyprland layering、hypridle 和 hyprlock 源，同时继续让 NixOS 管理 host facts、services、generated overrides、permissions、rollback 和 mutable state boundaries。
+历史结果曾把 Axiom active shell 切到 repository-managed end4 `ii` / `IllogicalImpulseFamily`：导入 `quickshell/ii`、matugen、fuzzel、Hyprland layering、hypridle 和 hyprlock 源，同时继续让 NixOS 管理 host facts、services、generated overrides、permissions、rollback 和 mutable state boundaries。当前 active shell truth 已改为 Caelestia Shell。
 
 ## 当前有效结论
 
-- Substrate-only 结论已被用户明确拒绝；当前正确目标是完整 end4 `ii` source import 和 NixOS integration。
-- Axiom Quickshell 默认 runtime config 是 `ii`，不是旧 `axiom-shell`；旧 shell 仅作为 deprecated historical source 保留。
+- Historical only: substrate-only 结论曾被用户明确拒绝；当时目标是完整 end4 `ii` source import 和 NixOS integration。
+- Historical only: Axiom Quickshell 默认 runtime config 曾是 `ii`，不是旧 `axiom-shell`；当前 active shell truth 已由 `axiom-caelestia-shell-migration` 改为 Caelestia Shell。
 - NixOS 仍然是 host facts、UWSM/greetd/portal ownership、service dependencies、permissions、runtime package closure、generated overrides 和 generated-state boundaries 的真源。
 - Upstream end4 `setup` 不运行；installer scripts、generated color outputs、secrets、cache/state、local user JSON 和 live home mutation artifacts 不进入 Git。
 - Imported `ii` 需要 `Quickshell.Services.Polkit`，因此 Axiom 在本任务中构建 wrapped Quickshell `0.3.0`，而不是继续使用缺少该 service 的 pinned `0.2.1`。
