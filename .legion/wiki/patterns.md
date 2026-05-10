@@ -42,6 +42,8 @@ For Steam HiDPI regressions on fractional-scale Hyprland, validate both composit
 
 For Fcitx5 Wayland frontend warnings about `GTK_IM_MODULE`, validate the evaluated input method frontend and the managed environment separately. Check `i18n.inputMethod.fcitx5.waylandFrontend`, then confirm `GTK_IM_MODULE` is absent from both `environment.sessionVariables` and `environment.variables`; do not patch host shell files before proving the Nix-owned environment source.
 
+For Fcitx5 theme alignment on Axiom, prefer the existing Catppuccin `theme.flavor` and `theme.accent` options. Validate both `i18n.inputMethod.fcitx5.settings.addons.classicui.globalSection.Theme` and the force-managed user `fcitx5/conf/classicui.conf`; do not touch Rime schemas, dictionaries, or private input data for a color-only task.
+
 For NixOS GUI apps that also ship service/TUN installers, prefer the upstream NixOS module over mutable GUI installer flows. Validate the actual exposed option names with `nix eval ...options.<module> --apply builtins.attrNames`, because this repository disables strict module option checking and inert settings can otherwise be silently ignored.
 
 For Clash Verge Rev specifically, validate `programs.clash-verge.serviceMode`, `tunMode`, `autoStart`, the generated `clash-verge.service` `ExecStart`, capability bounding set, `networking.firewall.trustedInterfaces`, `extraReversePathFilterRules`, and the host `system.build.toplevel.drvPath`.

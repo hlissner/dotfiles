@@ -22,6 +22,8 @@ Axiom user-installed opencode is exposed through explicit zsh startup and genera
 
 Wayland desktop hosts using the reusable Fcitx5 module should use Fcitx5's native Wayland frontend by default. Do not force `GTK_IM_MODULE=fcitx` from managed session variables when `waylandFrontend` is enabled and working; GTK should use the Wayland text-input path while Fcitx5 GTK/Qt addons can remain installed.
 
+Axiom's Fcitx5 classic UI theme should track the active Autumnal/Graphite pink desktop accent as `catppuccin-mocha-pink`. Keep Rime/Pinyin engine selection separate from visual theme alignment.
+
 Until Caelestia's logind lock crash is proven fixed, ordinary Axiom idle/keybind lock paths should call `hyprlock` directly rather than `loginctl lock-session` or `caelestia:lock`.
 
 Axiom-specific input facts, monitors, workspaces, app rules, environment, and fallback keybinds remain Nix-generated Hyprland config. Generated keybinds should use canonical uppercase Hyprland modifier tokens such as `SUPER`, `CTRL`, `ALT`, and `SHIFT`. Primary shell bindings should target Caelestia global shortcuts or reviewed Caelestia CLI commands, not legacy `quickshell --config ii`, end4 IPC names, `IllogicalImpulse`, matugen, or fuzzel shell assumptions.

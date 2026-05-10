@@ -55,7 +55,10 @@ with builtins;
           enable = true;
           rime.enable = true;
           pinyin.enable = true;
-          theme.flavor = "mocha";
+          theme = {
+            flavor = "mocha";
+            accent = "pink";
+          };
         };
       };
       browsers = {

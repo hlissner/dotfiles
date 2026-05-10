@@ -18,6 +18,10 @@
 - After deploying `axiom-desktop-polish-followup`, confirm Steam renders crisply on the 4K fractional-scale monitor and that games still choose expected render resolutions. If only individual games remain blurry, split a Steam game/runtime task with logs instead of broadening the desktop integration fix.
 - In a fresh Axiom interactive shell and desktop-launched terminal, confirm `command -v opencode` resolves to `$HOME/.opencode/bin/opencode`.
 
+## Axiom Input Follow-Up
+
+- After deploying `axiom-fcitx5-shell-theme-alignment`, restart Fcitx5 or the graphical session and confirm the candidate UI visually uses the pink Catppuccin accent.
+
 ## Axiom Remote Access Follow-Up
 
 - Delete the mistakenly created `axiom-opencode.0xc1.space` CNAME in Cloudflare DNS/Zero Trust. The active axiom opencode hostname is `opencode-axiom.0xc1.space`.
