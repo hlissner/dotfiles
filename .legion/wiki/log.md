@@ -54,3 +54,5 @@
 - Added task summary for `axiom-caelestia-shell-migration`.
 - Updated current desktop decisions and patterns from end4 `ii` to Caelestia Shell with upstream `with-cli`, local NixOS service/config ownership, active end4 source deletion, and live-session follow-up.
 - Marked end4 task summaries as historical where they were superseded by the Caelestia Shell migration.
+- Added task summary for `axiom-caelestia-keybind-fix`.
+- Extended the Caelestia integration pattern with icon/MIME fallback package exposure and mandatory assembled Hyprland parser validation for generated keybind/rule changes.

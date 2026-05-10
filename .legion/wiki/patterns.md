@@ -68,9 +68,11 @@ When adopting Caelestia Shell on Axiom, consume the upstream `caelestia-dots/she
 
 Keep a small local NixOS integration module as the repository boundary: install the shell and CLI package, write minimal `caelestia/shell.json`, start `caelestia-shell.service` under `hyprland-session.target`, and keep reload/restart hooks inside the repo's existing session ownership model.
 
+Expose standard desktop icon and MIME fallback packages with the local Caelestia integration when the shell is the active product surface. `hicolor-icon-theme`, `adwaita-icon-theme`, `papirus-icon-theme`, `shared-mime-info`, and `xdg-utils` should be in the Axiom user package closure so Qt/app launcher/tray icon lookup does not fall back to checkerboard placeholders.
+
 Use the checked-in Hyprland file as a local base that sources only repository-owned generated config. Host facts such as XKB, monitors, workspaces, rules, default apps, session startup, and fallback keybinds belong in generated `hypr/custom/*.conf` files rather than in upstream shell source or live-home edits.
 
-Validate Caelestia migrations by evaluating the upstream `with-cli` package, generated service command, generated `caelestia/shell.json`, user package closure, active Hyprland keybinds, and absence of active end4 references outside historical `.legion/tasks/**`. Pair static evidence with a live Hyprland session smoke when available; headless builds cannot prove layer-shell rendering, tray, launcher focus, OSD, screenshot, or lock/session behavior.
+Validate Caelestia migrations by evaluating the upstream `with-cli` package, generated service command, generated `caelestia/shell.json`, user package closure, active Hyprland keybinds, and absence of active end4 references outside historical `.legion/tasks/**`. Always run an assembled `Hyprland --verify-config` after changing generated keybinds or rules; Nix build alone does not catch parser restrictions such as top-level `catchall`. Pair static evidence with a live Hyprland session smoke when available; headless builds cannot prove layer-shell rendering, tray, launcher focus, icon rendering, OSD, screenshot, or lock/session behavior.
 
 ## Historical End4 Desktop Import Pattern
 

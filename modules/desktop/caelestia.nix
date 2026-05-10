@@ -40,7 +40,16 @@ in {
     }
 
     (mkIf pkgs.stdenv.isLinux {
-      user.packages = [ cfg.package cfg.cliPackage ];
+      user.packages = with pkgs; [
+        cfg.package
+        cfg.cliPackage
+
+        hicolor-icon-theme
+        adwaita-icon-theme
+        papirus-icon-theme
+        shared-mime-info
+        xdg-utils
+      ];
 
       fonts.packages = with pkgs; [
         material-symbols
