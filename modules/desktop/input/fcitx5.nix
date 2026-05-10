@@ -41,6 +41,8 @@ in {
 
   config = mkIf cfg.enable (mkMerge [
     {
+      modules.desktop.input.fcitx5.waylandFrontend = mkDefault (config.modules.desktop.type == "wayland");
+
       i18n.inputMethod = {
         enable = true;
         type = "fcitx5";

@@ -36,6 +36,8 @@ For out-of-band user tools such as opencode under `$HOME/.opencode/bin`, validat
 
 For Steam HiDPI regressions on fractional-scale Hyprland, validate both compositor and application surfaces: generated `xwayland.force_zero_scaling`, the actual wrapped `bin/steam` script exporting `STEAM_FORCE_DESKTOPUI_SCALING`, Steam package closure presence, assembled `Hyprland --verify-config`, and the host toplevel build. Live crispness remains a deployment smoke check.
 
+For Fcitx5 Wayland frontend warnings about `GTK_IM_MODULE`, validate the evaluated input method frontend and the managed environment separately. Check `i18n.inputMethod.fcitx5.waylandFrontend`, then confirm `GTK_IM_MODULE` is absent from both `environment.sessionVariables` and `environment.variables`; do not patch host shell files before proving the Nix-owned environment source.
+
 For NixOS GUI apps that also ship service/TUN installers, prefer the upstream NixOS module over mutable GUI installer flows. Validate the actual exposed option names with `nix eval ...options.<module> --apply builtins.attrNames`, because this repository disables strict module option checking and inert settings can otherwise be silently ignored.
 
 For Clash Verge Rev specifically, validate `programs.clash-verge.serviceMode`, `tunMode`, `autoStart`, the generated `clash-verge.service` `ExecStart`, capability bounding set, `networking.firewall.trustedInterfaces`, `extraReversePathFilterRules`, and the host `system.build.toplevel.drvPath`.

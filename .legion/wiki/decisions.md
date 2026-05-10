@@ -20,6 +20,8 @@ Axiom graphical sessions must export a deterministic command PATH from generated
 
 Axiom user-installed opencode is exposed through explicit zsh startup and generated UWSM/Hyprland session PATH entries for `$HOME/.opencode/bin`; do not rely on literal host-level `environment.variables.PATH = "$HOME/.opencode/bin:$PATH"` as evidence that interactive shells or GUI-launched commands can resolve opencode.
 
+Wayland desktop hosts using the reusable Fcitx5 module should use Fcitx5's native Wayland frontend by default. Do not force `GTK_IM_MODULE=fcitx` from managed session variables when `waylandFrontend` is enabled and working; GTK should use the Wayland text-input path while Fcitx5 GTK/Qt addons can remain installed.
+
 Until Caelestia's logind lock crash is proven fixed, ordinary Axiom idle/keybind lock paths should call `hyprlock` directly rather than `loginctl lock-session` or `caelestia:lock`.
 
 Axiom-specific input facts, monitors, workspaces, app rules, environment, and fallback keybinds remain Nix-generated Hyprland config. Primary shell bindings should target Caelestia global shortcuts or reviewed Caelestia CLI commands, not legacy `quickshell --config ii`, end4 IPC names, `IllogicalImpulse`, matugen, or fuzzel shell assumptions.
