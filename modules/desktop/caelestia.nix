@@ -6,6 +6,14 @@ let cfg = config.modules.desktop.caelestia;
     system = pkgs.stdenv.hostPlatform.system;
     themeWallpaper = config.modules.theme.wallpapers."*" or {};
     defaultWallpaperPath = themeWallpaper.path or null;
+    qtPlatform = "wayland;xcb";
+    qtPlatformTheme = "qtengine";
+    caelestiaFontFamilies = {
+      clock = "Rubik";
+      material = "Material Symbols Rounded";
+      mono = "CaskaydiaCove NF";
+      sans = "Rubik";
+    };
     defaultShellPackage =
       if pkgs.stdenv.isLinux
       then hey.inputs.caelestia-shell.packages.${system}.with-cli
@@ -18,7 +26,6 @@ let cfg = config.modules.desktop.caelestia;
     wallpaperStateDir = "${config.home.stateDir}/caelestia/wallpaper";
     wallpaperStatePath = "${wallpaperStateDir}/path.txt";
     wallpaperGeneratedPath = "${wallpaperStateDir}/generated.jpg";
-    qtPlatformThemePackage = pkgs.unstable.qt6Packages.qt6ct;
     seedWallpaperScript =
       if cfg.wallpaper.path == null then null else pkgs.writeShellScript "caelestia-seed-wallpaper" ''
         set -eu
@@ -61,6 +68,7 @@ let cfg = config.modules.desktop.caelestia;
         fi
       '';
     shellSettings = recursiveUpdate {
+      appearance.font.family = caelestiaFontFamilies;
       background.wallpaperEnabled = cfg.wallpaper.enable;
       general.apps = {
         terminal = [ terminalCommand ];
@@ -71,6 +79,8 @@ let cfg = config.modules.desktop.caelestia;
       launcher.enableDangerousActions = false;
     } cfg.settings;
 in {
+  imports = optional pkgs.stdenv.isLinux hey.inputs.qtengine.nixosModules.default;
+
   options.modules.desktop.caelestia = with types; {
     enable = mkBoolOpt false;
     package = mkOpt package defaultShellPackage;
@@ -92,10 +102,41 @@ in {
     }
 
     (mkIf pkgs.stdenv.isLinux {
+      programs.qtengine = {
+        enable = true;
+        config = {
+          theme = {
+            colorScheme = "${pkgs.kdePackages.breeze}/share/color-schemes/BreezeDark.colors";
+            iconTheme = config.modules.theme.gtk.iconTheme.name;
+            style = "breeze";
+            font = {
+              family = config.modules.theme.fonts.sans.name;
+              size = 12;
+              weight = -1;
+            };
+            fontFixed = {
+              family = config.modules.theme.fonts.mono.name;
+              size = 12;
+              weight = -1;
+            };
+          };
+          misc = {
+            menusHaveIcons = true;
+            singleClickActivate = false;
+            shortcutsForContextMenus = true;
+          };
+        };
+      };
+
+      environment.systemPackages = with pkgs.kdePackages; [
+        breeze
+        breeze.qt5
+        breeze-icons
+      ];
+
       user.packages = with pkgs; [
         cfg.package
         cfg.cliPackage
-        qtPlatformThemePackage
 
         hicolor-icon-theme
         adwaita-icon-theme
@@ -131,8 +172,10 @@ in {
           ExecStartPre = "${seedWallpaperScript}";
         };
         environment = {
-          QT_QPA_PLATFORM = "wayland";
-          QT_QPA_PLATFORMTHEME = "qt6ct";
+          QT_QPA_PLATFORM = qtPlatform;
+          QT_QPA_PLATFORMTHEME = qtPlatformTheme;
+          QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
+          QT_AUTO_SCREEN_SCALE_FACTOR = "1";
         };
       };
 

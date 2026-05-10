@@ -7,6 +7,9 @@
 with lib;
 with hey.lib;
 let cfg = config.modules.desktop.term.foot;
+    defaultSettings = {
+      main.font = "${config.modules.theme.fonts.terminal.name}:size=${toString config.modules.theme.fonts.terminal.size}";
+    };
 in {
   options.modules.desktop.term.foot = with types; {
     enable = mkBoolOpt false;
@@ -29,7 +32,7 @@ in {
         include=${config.home.configDir}/foot/foot.local.ini
       '';
       "foot/foot.global.ini".source = "${hey.configDir}/foot/foot.ini";
-      "foot/foot.local.ini".text = generators.toINI {} cfg.settings;
+      "foot/foot.local.ini".text = generators.toINI {} (recursiveUpdate defaultSettings cfg.settings);
     };
   };
 }

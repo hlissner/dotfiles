@@ -11,6 +11,7 @@
 - [Aliyun NixOS Image Host](tasks/aliyun-nixos-image-host.md)
 - [Axiom Autossh Reverse SSH Tunnel](tasks/axiom-autossh-reverse-ssh-tunnel.md)
 - [Axiom Caelestia Keybind Fix](tasks/axiom-caelestia-keybind-fix.md)
+- [Axiom Caelestia README Alignment](tasks/axiom-caelestia-readme-alignment.md)
 - [Axiom Caelestia Shell Migration](tasks/axiom-caelestia-shell-migration.md)
 - [Axiom Caelestia Wallpaper And Launcher Fix](tasks/axiom-caelestia-wallpaper-launcher-fix.md)
 - [Axiom Caelestia Wallpaper Qt Theme Fix](tasks/axiom-caelestia-wallpaper-qt-theme-fix.md)

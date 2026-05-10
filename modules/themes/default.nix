@@ -178,8 +178,8 @@ in {
       ] ++ cfg.fonts.packages;
 
       fonts.fontconfig.defaultFonts = {
-        sansSerif = [ cfg.fonts.sans.name ];
-        monospace = [ cfg.fonts.mono.name ];
+        sansSerif = [ cfg.fonts.sans.name "LXGW Neo Xihei" "Noto Sans CJK SC" ];
+        monospace = [ cfg.fonts.mono.name "Sarasa Mono SC" "Noto Sans CJK SC" ];
       };
     })
   ]);

@@ -12,7 +12,7 @@ The active shell service is `caelestia-shell.service` under `hyprland-session.ta
 
 On Axiom, Caelestia owns wallpaper for the Caelestia desktop session. Do not run the old Hyprland `swaybg` wallpaper hook when `modules.desktop.caelestia.wallpaper.enable` is true. Seed Caelestia's mutable wallpaper state from service startup; do not manage `~/.local/state/caelestia/wallpaper/path.txt` as an immutable home-manager file. If the canonical wallpaper source exceeds Qt image decode limits, point Caelestia at a generated decode-safe derivative while preserving the canonical host source.
 
-For Caelestia launcher icon color-block regressions matching upstream `caelestia-dots/shell#1282`, Axiom should use `QT_QPA_PLATFORMTHEME=qt6ct` in the repo-owned Hyprland/UWSM/service environment and include `qt6ct` in the user package closure. A full Hyprland restart is required to validate this environment change.
+For the current Axiom Caelestia setup, use upstream README-aligned `QT_QPA_PLATFORMTHEME=qtengine` in the repo-owned Hyprland/UWSM/service/session environment and wire the locked `kossLAN/qtengine` flake module. The earlier `qt6ct` launcher icon workaround for upstream `caelestia-dots/shell#1282` is superseded for this new-machine configuration; restore it only through a future scoped live-regression task if the color-block symptom returns.
 
 `caelestia-shell.service` must run with duplicate-instance protection and a PATH that can execute launcher/runtime helpers. Keep shell stop/restart paths inside `systemctl --user`; do not spawn `${caelestiaShell}` directly from Hyprland keybinds because unmanaged quickshell instances can duplicate layers and global shortcuts.
 

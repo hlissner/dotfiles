@@ -386,6 +386,26 @@
         "type": "indirect"
       }
     },
+    "qtengine": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1772766331,
+        "narHash": "sha256-aJ5ZdIX10nmhzMLjP6QMuFJHvljJD+xcojuKZjPkr70=",
+        "ref": "refs/heads/master",
+        "rev": "abf8c1d3068dd10739b0671fa62f96c5347f276f",
+        "revCount": 25,
+        "type": "git",
+        "url": "https://github.com/kossLAN/qtengine"
+      },
+      "original": {
+        "type": "git",
+        "url": "https://github.com/kossLAN/qtengine"
+      }
+    },
     "quickshell": {
       "inputs": {
         "nixpkgs": [
@@ -422,6 +442,7 @@
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-darwin": "nixpkgs-darwin",
         "nixpkgs-unstable": "nixpkgs-unstable",
+        "qtengine": "qtengine",
         "zen-browser": "zen-browser"
       }
     },

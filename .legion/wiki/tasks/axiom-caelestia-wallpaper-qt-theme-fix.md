@@ -16,7 +16,7 @@ This task follows the first Caelestia wallpaper/launcher fix. After Caelestia be
 
 The seed logic preserves manual user choice: it only rewrites `path.txt` when the state file is missing, empty, or still points at the oversized canonical source. It does not restore `swaybg` or change the prior Caelestia wallpaper ownership decision.
 
-The task also applies the upstream `caelestia-dots/shell#1282` icon-block workaround by setting `QT_QPA_PLATFORMTHEME=qt6ct` in the Caelestia service, generated Hyprland env, generated UWSM env, Hyprland session variables, and systemd user import hook. `pkgs.unstable.qt6Packages.qt6ct` is included in the Caelestia user package closure.
+The task also applied the upstream `caelestia-dots/shell#1282` icon-block workaround by setting `QT_QPA_PLATFORMTHEME=qt6ct` in the Caelestia service, generated Hyprland env, generated UWSM env, Hyprland session variables, and systemd user import hook. That Qt-theme workaround is now historical: `axiom-caelestia-readme-alignment` superseded it for the current new-machine setup with README-aligned `qtengine`.
 
 Validation passed for targeted generated Nix values, the Axiom NixOS toplevel build, and an ImageMagick smoke test that converted the source wallpaper to `3840x1858 757392B`. Live validation remains required after deployment and Hyprland restart for graphical icon rendering and actual Caelestia wallpaper display.
 
@@ -24,7 +24,7 @@ Validation passed for targeted generated Nix values, the Axiom NixOS toplevel bu
 
 - Keep Caelestia as Axiom's wallpaper owner; do not restore `swaybg` for this host while `modules.desktop.caelestia.wallpaper.enable = true`.
 - For oversized host-local wallpaper sources, prefer a decode-safe Caelestia runtime derivative over raising Qt image allocation limits globally.
-- When upstream Caelestia icon rendering hits the issue #1282 color-block symptom, set `QT_QPA_PLATFORMTHEME=qt6ct` in the repo-owned Hyprland/UWSM/service environment and restart Hyprland.
+- Historical note: the issue #1282 `qt6ct` workaround from this task was superseded by `axiom-caelestia-readme-alignment`; current Axiom Caelestia uses `QT_QPA_PLATFORMTHEME=qtengine` unless a future live-regression task reopens the color-block issue.
 - Preserve user-selected Caelestia wallpaper state; seed or correct `path.txt` only for missing/empty state or the known oversized canonical source.
 
 ## Related Raw Sources

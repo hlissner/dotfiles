@@ -6,22 +6,29 @@ with lib;
 with hey.lib;
 let
   cfg = config.modules.theme;
-in mkIf (cfg.active == "autumnal") (mkMerge [
+in {
+  imports = [ ./hyprland.nix ];
+
+  config = mkIf (cfg.active == "autumnal") (mkMerge [
   {
     user.packages = [ pkgs.tela-circle-icon-theme ];
 
     modules = {
       theme = {
         fonts = with pkgs; {
-          sans.name = "Fira Sans";
-          sans.package = fira;
-          mono.name = "JetBrains Mono";
-          mono.package = jetbrains-mono;
+          sans.name = "Rubik";
+          sans.package = rubik;
+          mono.name = "CaskaydiaCove NF";
+          mono.package = nerd-fonts.caskaydia-cove;
+          terminal.name = "FiraCode Nerd Font Mono";
+          terminal.package = nerd-fonts.fira-code;
           packages = [
-            fira-code
-            fira-code-symbols
+            lxgw-neoxihei
+            material-symbols
             open-sans
             montserrat
+            noto-fonts-cjk-sans
+            sarasa-gothic
           ];
         };
         gtk = with pkgs; {
@@ -95,4 +102,5 @@ in mkIf (cfg.active == "autumnal") (mkMerge [
       })
     ];
   })
-])
+  ]);
+}

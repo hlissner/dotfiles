@@ -92,7 +92,11 @@ Prevent duplicate shell ownership by using quickshell `--no-duplicate` and syste
 
 Expose standard desktop icon and MIME fallback packages with the local Caelestia integration when the shell is the active product surface. `hicolor-icon-theme`, `adwaita-icon-theme`, `papirus-icon-theme`, `shared-mime-info`, and `xdg-utils` should be in the Axiom user package closure so Qt/app launcher/tray icon lookup does not fall back to checkerboard placeholders.
 
-For Caelestia launcher icon color-block regressions matching upstream issue #1282, set `QT_QPA_PLATFORMTHEME=qt6ct` in generated Hyprland env, generated UWSM env, the Caelestia user service environment, and the systemd user import path. Install `qt6ct` from the Qt 6 package set used by the desktop stack, and validate after a full Hyprland restart rather than relying on config reload alone.
+For README-aligned Caelestia setup on a new Axiom machine, set `QT_QPA_PLATFORMTHEME=qtengine` in generated Hyprland env, generated UWSM env, the Caelestia user service environment, session variables, and the systemd user import path. Provide `qtengine` through the locked `kossLAN/qtengine` flake input and validate `programs.qtengine.enable`, generated env files, an assembled Hyprland `--verify-config` using the evaluated package, and the Axiom toplevel build. Treat the prior `qt6ct` color-block workaround as historical unless a future live regression explicitly reopens it.
+
+Keep Caelestia shell.json overrides intentionally small. For README-style font and app defaults, set `appearance.font.family` and `general.apps.explorer = ["thunar"]`, but do not copy the whole upstream example config into this repository.
+
+Put font policy in the theme/fontconfig layer. Caelestia should expose the requested shell family names, Foot should derive its font from the theme terminal font, and CJK fallback families should be declared through `fonts.fontconfig.defaultFonts` so non-Caelestia applications share the same fallback behavior.
 
 Use the checked-in Hyprland file as a local base that sources only repository-owned generated config. Host facts such as XKB, monitors, workspaces, rules, default apps, session startup, and fallback keybinds belong in generated `hypr/custom/*.conf` files rather than in upstream shell source or live-home edits.
 
