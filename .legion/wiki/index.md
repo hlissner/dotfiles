@@ -32,6 +32,7 @@
 - [Axiom Runtime Access And Session Fixes](tasks/axiom-runtime-access-session-fixes.md)
 - [Axiom SSH Autossh and Opencode Cloudflared Fix](tasks/axiom-ssh-opencode-cloudflared-fix.md)
 - [Clash Verge NixOS Service Tun](tasks/clash-verge-nixos-service-tun.md)
+- [Cloudflare API Token Age Secret](tasks/cloudflare-api-token-age-secret.md)
 - [Dotfiles Quickshell Product Desktop](tasks/dotfiles-quickshell-product-desktop.md)
 - [Dotfiles Fcitx5 Wayland GTK IM Module](tasks/dotfiles-fcitx5-wayland-gtk-im-module.md)
 - [Dots Hyprland Desktop Complete End4 Import](tasks/dots-hyprland-desktop-rfc.md)

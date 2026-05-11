@@ -81,3 +81,6 @@
 - Updated current Fcitx5 decisions, patterns, and maintenance with Axiom `catppuccin-mocha-pink` shell-accent alignment and validation guidance.
 - Added task summary for `axiom-keybinding-help-modal`.
 - Updated current Axiom Hyprland decisions, patterns, and maintenance with the generated `SUPER+/` shortcut reference modal and validation guidance.
+- Added task summary for `cloudflare-api-token-age-secret`.
+- Updated Cloudflare secret handling patterns with API token vs tunnel runtime credential separation and safe validation guidance.
+- Added Cloudflare API token rotation maintenance follow-up.

@@ -28,3 +28,7 @@
 - Delete the mistakenly created `axiom-opencode.0xc1.space` CNAME in Cloudflare DNS/Zero Trust. The active axiom opencode hostname is `opencode-axiom.0xc1.space`.
 - Before using `opencode-axiom.0xc1.space`, create or verify the Cloudflare Access application, allow policy, and MFA requirement.
 - After deploying the SSH/opencode/cloudflared fix, run `ssh azar`, `systemctl status autossh-reverse-ssh` on `azar`, and `systemctl status opencode-server cloudflared` on `axiom`.
+
+## Cloudflare Credentials Follow-Up
+
+- Rotate the Cloudflare API token stored in `hosts/charlie/secrets/cloudflare-api-token.age`, because the pre-existing token appeared in earlier tool output before being moved into age management.
