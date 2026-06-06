@@ -18,30 +18,30 @@ mkMerge [
     ## easyEffects
     programs.dconf.enable = true;
     user.packages = with pkgs; [
-      alsa-utils  # for CLI utilities
-      pavucontrol
-      easyeffects
-      pulseaudio  # for pactl
+      # alsa-utils  # for CLI utilities
+      # pavucontrol
+      # easyeffects
+      # pulseaudio  # for pactl
       # Not strictly needed, but it silences DBus error noise in journalctl. The
       # error can be ignored, in any case, as easyeffects attachs to the
       # gapplication service.
       at-spi2-core
     ];
-    systemd.user.services.easyeffects = {
-      wantedBy = [ "graphical-session.target" ];
-      unitConfig = {
-        Description = "Easyeffects daemon";
-        Requires = [ "dbus.service" ];
-        After = [ "graphical-session-pre.target" ];
-        PartOf = [ "graphical-session.target" "pipewire.service" ];
-      };
-      serviceConfig = {
-        ExecStart = "${pkgs.easyeffects}/bin/easyeffects --gapplication-service";
-        ExecStop = "${pkgs.easyeffects}/bin/easyeffects --quit";
-        Restart = "on-failure";
-        RestartSec = 5;
-      };
-    };
+    # systemd.user.services.easyeffects = {
+    #   wantedBy = [ "graphical-session.target" ];
+    #   unitConfig = {
+    #     Description = "Easyeffects daemon";
+    #     Requires = [ "dbus.service" ];
+    #     After = [ "graphical-session-pre.target" ];
+    #     PartOf = [ "graphical-session.target" "pipewire.service" ];
+    #   };
+    #   serviceConfig = {
+    #     ExecStart = "${pkgs.easyeffects}/bin/easyeffects --gapplication-service";
+    #     ExecStop = "${pkgs.easyeffects}/bin/easyeffects --quit";
+    #     Restart = "on-failure";
+    #     RestartSec = 5;
+    #   };
+    # };
 
     # Disable Pulseaudio because Pipewire is used.
     services.pulseaudio.enable = lib.mkForce false;
