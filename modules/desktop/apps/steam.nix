@@ -39,8 +39,8 @@ in {
     user.extraGroups = [ "gamemode" ];
 
     environment.systemPackages = with pkgs; [
-      # Simple way to launch non-Steam exe's
-      umu-launcher
+      # Simple way to manage non-Steam exe's
+      faugus-launcher
 
       # Stop Steam from polluting $HOME, and fix symlink/filename issues for a
       # Steam library that lives on an NTFS drive.
