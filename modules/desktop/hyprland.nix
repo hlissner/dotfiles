@@ -86,6 +86,9 @@ in {
         startup."05-startup-sound" = ''
           hey .play-sound startup
         '';
+        shutdown."05-shutdown-sound" = ''
+          hey .play-sound shutdown
+        '';
 
         # I'm using this instead of exec= lines in hyprland.conf so I can ensure
         # these aren't run at startup and sequentially (i.e. predictable order,
@@ -171,6 +174,9 @@ in {
               -- XWayland windows may start in unpredictable places without a hint.
               hl.exec_cmd("xrandr --output $PRIMARY_MONITOR --primary")
             ''}
+        end)
+        hl.on("hyprland.shutdown", function ()
+            os.execute("hey hook shutdown && sleep 0.1")
         end)
 
         ${concatStringsSep "\n"
