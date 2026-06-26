@@ -23,7 +23,7 @@ case $1 in
       cond_str="${cond_str}${cond_str:+ or }.workspace.id == $id"
     done
     hyprctl clients -j | jq -r ".[] | select($cond_str) | .at,.size" \
-                       | jq -s "add | _nwise(4)" \
+                       | jq -s 'add | range(0; length; 4) as $i | .[$i:$i+4]' \
                        | jq -r '"\(.[0]),\(.[1]) \(.[2])x\(.[3])"' \
                        | slurp -r ${@:2}
     ;;
