@@ -21,19 +21,20 @@ main() {
   local livefile=$prefix.live
   local thumbfile=$prefix.thumb.png
   local file
-  local -a opts=()
+  local -a opts=( --audio-backend pipewire )
   if [[ -f "$livefile" ]]; then
     pkill -SIGINT wf-recorder
+    rm -f "$thumbfile" "$livefile"
     return
   fi
   case "${1:-webm}" in
     webm)
       file="$prefix.webm"
-      opts+=( --audio -x yuv420p -c libvpx -C libvorbis )
+      opts+=( --audio="$device" -c libvpx -C libvorbis -p crf=20 -p speed=1 -p lag-in-frames=15 -p cpu-used 0 )
       ;;
     mp4)
       file="$prefix.mp4"
-      opts+=( --audio -x yuv420p )
+      opts+=( --audio="$device" -c libx264 -p preset=slow -p crf=21 )
       wf-recorder -g "$1" --audio --file="$file" &
       ;;
     gif)
