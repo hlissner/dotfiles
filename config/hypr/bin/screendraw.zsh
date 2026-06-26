@@ -51,8 +51,8 @@ EOF
 trap "rm -f '$cfgfile' '$inifile'" EXIT
 
 notify-send -a "" "Screen draw on"
-hyprctl keyword decoration:dim_inactive false
+hyprctl eval 'hl.config({ decoration = { dim_inactive = false } })'
 # Wayland backend is unreliable on hyprland.
 GDK_BACKEND=x11 hey.do gromit-mpx --active
-hyprctl keyword decoration:dim_inactive true
+hyprctl eval 'hl.config({ decoration = { dim_inactive = true } })'
 notify-send -a "" "Screen draw off"

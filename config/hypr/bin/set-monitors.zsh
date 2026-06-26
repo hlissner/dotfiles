@@ -33,17 +33,16 @@ hypr.set-layout() {
   if [[ ${mode[1]} != --off ]]; then
     hey.log -2 "${0} enable: [ ${to_enable[@]} ]"
     for mon in ${to_enable[@]}; do
-      commands+=( "${monitors[$mon]}" )
+      commands+=( eval "hl.monitor({ output = \"${monitors[$mon]}\", disabled = false })" \; )
     done
   fi
   if [[ ${mode[1]} != --on ]]; then
     hey.log -2 "${0} disable: [ ${to_disable[@]} ]"
     for mon in ${to_disable[@]}; do
-      commands+=( "$mon,disable" )
+      commands+=( eval "hl.monitor({ output = \"$mon\", disabled = true })" \; )
     done
   fi
-  hey.do hyprctl --batch \
-    keyword monitor ${(j. \; keyword monitor .)commands} >/dev/null
+  hey.do hyprctl --batch "${commands[1,-2]}" >/dev/null
   [[ -n "$to_enable" ]] && sleep 0.25  # wait for settings to take effect
   for mon in ${to_enable[@]}; do
     # For some reason, hyprctl struggles to turn on some displays the first

@@ -58,8 +58,6 @@ in {
       wev           # xev
       wl-clipboard  # xclip
       wtype         # xdotool (sorta)
-      swappy        # swappy/Snappy/sharex
-      slurp         # slop
       swayimg       # feh (as an image previewer)
       imv
     ];

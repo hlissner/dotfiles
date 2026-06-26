@@ -39,27 +39,28 @@ with builtins;
             position = "4480x2191"; }
           { output = "HDMI-A-1";
             mode = "3840x2160@120";
-            position = "1280x0"; }
+            position = "1280x0";
+            disabled = true; }
         ];
         extraConfig = ''
-          # Bind fixed workspaces to external monitors
-          workspace = name:left, monitor:DP-3, default:true
-          workspace = name:right, monitor:DP-2, default:true
-          workspace = name:tv, monitor:HDMI-A-1, default:true, gapsout:4
+          -- Bind fixed workspaces to external monitors
+          hl.workspace_rule({ workspace = "left", monitor = "DP-3", default = true })
+          hl.workspace_rule({ workspace = "right", monitor = "DP-2", default = true })
+          hl.workspace_rule({ workspace = "tv", monitor = "HDMI-A-1", default = true, gaps_out = 4 })
 
-          # Scroll by holding down a side button, because the wheel is broken
-          device {
-            name = mosart-semi.-2.4g-wireless-mouse
-            scroll_method = on_button_down
+          -- Scroll by holding down a side button, because the wheel is broken
+          hl.device({
+            name = "mosart-semi.-2.4g-wireless-mouse",
+            scroll_method = "on_button_down",
             scroll_button = 276
-          }
+          })
 
-          # To address 1px overscan on my U2724D's
-          general {
-            gaps_out = 0,0,1,0
-          }
-
-          exec-once = hyprctl keyword monitor HDMI-A-1,disable
+          hl.config({
+            -- To address 1px overscan on my U2724D's
+            general = {
+              gaps_out = { top = 0, left = 0, right = 1, bottom = 0 }
+            }
+          })
         '';
       };
       term.default = "foot";
