@@ -19,7 +19,6 @@ in {
     # nixpkgs.overlays = [ hey.inputs.blender-bin.overlays.default ];
 
     user.packages = with pkgs; [
-      freecad
       blender
 
       # Blender itself doesn't need libxcrypt-legacy, but I use blenderkit,
