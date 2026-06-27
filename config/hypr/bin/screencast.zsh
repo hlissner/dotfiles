@@ -30,11 +30,11 @@ main() {
   case "${1:-webm}" in
     webm)
       file="$prefix.webm"
-      opts+=( --audio="$device" -c libvpx -C libvorbis -p crf=20 -p speed=1 -p lag-in-frames=15 -p cpu-used 0 )
+      opts+=( --audio -c libvpx -C libvorbis -p crf=20 -p speed=1 -p lag-in-frames=15 -p cpu-used 0 )
       ;;
     mp4)
       file="$prefix.mp4"
-      opts+=( --audio="$device" -c libx264 -p preset=slow -p crf=21 )
+      opts+=( --audio -c libx264 -p preset=slow -p crf=21 )
       wf-recorder -g "$1" --audio --file="$file" &
       ;;
     gif)
@@ -48,10 +48,17 @@ main() {
   trap "rm -f '$thumbfile' '$livefile'" EXIT SIGINT SIGTERM
   local geom="$(hey .slurp ${2:-region})"
   [[ -z "$geom" ]] && exit 1
-  notify-send -a "" "Recording started..."
+  local id=$(notify-send -p -a "" "Recording starting in 3...")
+  sleep 1
+  hey .play-sound blip
+  notify-send -r "$id" -a "" "<b>Recording starting in 2...</b>"
+  sleep 1
+  hey .play-sound blip
+  notify-send -r "$id" -a "" "<i><b>Recording starting in 1...</b></i>"
+  sleep 1
+  notify-send -r "$id" -a "" "Recording started..."
   if wf-recorder -g "$geom" ${opts[@]} --file="$file"; then
     sleep 0.1
-    notify-send -a "" "Recording ended"
     hey.do ffmpeg -y -i "$file" -frames:v 1 "$thumbfile"
     if [[ $1 == gif ]]; then
       notify-send -a "screencast.zsh" -u low -i "$thumbfile" "Optimizing gif" "This may take a while..."
