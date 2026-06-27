@@ -18,5 +18,5 @@
 #TabsToolbar .titlebar-spacer[type="pre-tabs"], #TabsToolbar .titlebar-spacer[type="post-tabs"] { display: none !important; }
 /* Hide useless header in the sidebar */
 #sidebar-panel-header, .sidebar-panel-heading { display: none !important; }
-/* Hide the mute and close tab buttons. I keep my tabs on the left; it's too easy to fat finger these. */
-.tab-close-button, .tab-icon-overlay:not([sharing], [crashed]):is([soundplaying], [muted]) { display: none !important; }
+/* Hide the close tab buttons. it's too easy to fat finger these on vertical tabs. */
+.tab-close-button { display: none !important; }
