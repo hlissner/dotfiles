@@ -35,7 +35,7 @@ in {
 
     user.packages = with pkgs; [
       reaper        # My DAW for making/recording music
-      # audacity    # For one-off audio editing
+      audacity      # For one-off audio editing
       # sunvox      # For chiptune
     ];
   };
