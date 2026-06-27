@@ -115,7 +115,7 @@ in {
     };
 
     # Delete compiled zgenom state, so that everything can rebuild from scratch.
-    hey.hooks.reload."80-zsh" = ''
+    hey.hooks.onReload."80-zsh" = ''
       rm -fv "$ZGEN_DIR"/init.zsh
       rm -frv "$XDG_CACHE_HOME"/zsh/*(DN)
       rm -fv "$ZDOTDIR"/**/*.zwc(D.N)

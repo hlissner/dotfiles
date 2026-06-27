@@ -45,7 +45,7 @@ in {
     };
 
     # Restarting wlsunset can crash hyprland.
-    # hey.hooks.reload."98-wlsunset" = ''
+    # hey.hooks.onReload."98-wlsunset" = ''
     #   hey.do systemctl --user restart wlsunset.service
     # '';
   };

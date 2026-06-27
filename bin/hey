@@ -28,7 +28,7 @@
 #   - path       -- Display path to area of my dotfiles
 #   - profile    -- Manage or analyze a system or user nix profile
 #   - pull       -- Update flake inputs
-#   - reload     -- Run reload hooks
+#   - reload     -- Run onReload hooks
 #   - repl       -- Open a Janet, Nix, or nix-develop REPL
 #   - swap       -- Swap nix-store symlinks with copies (and back)
 #   - sync|s     -- Rebuild this flake (using nixos-rebuild)

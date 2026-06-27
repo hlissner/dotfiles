@@ -12,7 +12,7 @@
 #   @see modules/desktop/apps/steam.nix.
 
 case $1 in
-  --on)
+  on)
     # systemctl start --user gamemoded.service
     echo "Started gamemode..."
     hey.do hyprctl --batch \
@@ -21,9 +21,9 @@ case $1 in
       keyword general:allow_tearing 1 \; \
       keyword animations:enabled 0 \; \
       keyword misc:vrr 1
-    notify-send "   Gamemode started!"
+    dms ipc toast warn "Gamemode started!"
     ;;
-  --off)
+  off)
     echo "Stopped gamemode..."
     hey.do hyprctl --batch \
       keyword decoration:blur:enabled 1 \; \
@@ -31,7 +31,7 @@ case $1 in
       keyword general:allow_tearing 0 \; \
       keyword animations:enabled 1 \; \
       keyword misc:vrr 0
-    notify-send "   Gamemode ended!"
+    dms ipc toast info "Gamemode ended!"
     # { sleep 3; systemctl stop --user gamemoded.service; }
     ;;
 esac

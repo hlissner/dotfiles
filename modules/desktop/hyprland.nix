@@ -83,24 +83,6 @@ in {
           sans = "Fira Sans";
         };
       };
-      hooks = rec {
-        startup."05-startup-sound" = ''
-          hey .play-sound startup
-        '';
-        shutdown."05-shutdown-sound" = ''
-          hey .play-sound shutdown
-        '';
-
-        # I'm using this instead of exec= lines in hyprland.conf so I can ensure
-        # these aren't run at startup and sequentially (i.e. predictable order,
-        # since Hyprland's exec= calls are parallelized).
-        reload."95-hyprland" = ''
-          for i in $(hyprctl instances -j | jq -r '.[].instance'); do
-            echo "Hyprland: reloading instance $i"
-            hey.do hyprctl -i ''${i//*\//} reload config-only
-          done
-        '';
-      };
     };
 
     home.configFile = {
@@ -139,11 +121,6 @@ in {
 
       "swappy" = {
         source = "${hey.configDir}/swappy";
-        recursive = true;
-      };
-
-      "hypr/hooks" = {
-        source = "${hey.configDir}/hypr/hooks";
         recursive = true;
       };
 

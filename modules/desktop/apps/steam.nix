@@ -29,8 +29,8 @@ in {
             renice = 10;
           };
           custom = {
-            start = "${heyBin} hook gamemode --on";
-            end = "${heyBin} hook gamemode --off";
+            start = "${heyBin} hook onGamemode on";
+            end = "${heyBin} hook onGamemode off";
           };
         };
       };
