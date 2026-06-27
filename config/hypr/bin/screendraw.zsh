@@ -50,9 +50,11 @@ cat >$cfgfile <<EOF
 EOF
 trap "rm -f '$cfgfile' '$inifile'" EXIT
 
-notify-send -a "" "Screen draw on"
+dms ipc toast dismiss draw  # debouncing
+dms ipc toast warnWith "Screen draw ON" "" "" draw
 hyprctl eval 'hl.config({ decoration = { dim_inactive = false } })'
 # Wayland backend is unreliable on hyprland.
 GDK_BACKEND=x11 hey.do gromit-mpx --active
 hyprctl eval 'hl.config({ decoration = { dim_inactive = true } })'
-notify-send -a "" "Screen draw off"
+dms ipc toast dismiss draw
+dms ipc toast infoWith "Screen draw OFF" "" "" draw

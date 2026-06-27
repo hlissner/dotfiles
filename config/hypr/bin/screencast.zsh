@@ -19,12 +19,11 @@ main() {
 
   local prefix=$(hey path runtime screencast)
   local livefile=$prefix.live
-  local thumbfile=$prefix.thumb.png
   local file
   local -a opts=( --audio-backend pipewire )
   if [[ -f "$livefile" ]]; then
     pkill -SIGINT wf-recorder
-    rm -f "$thumbfile" "$livefile"
+    rm -f "$livefile"
     return
   fi
   case "${1:-webm}" in
@@ -45,27 +44,25 @@ main() {
   esac
   rm -f "$file"
   touch "$livefile"
-  trap "rm -f '$thumbfile' '$livefile'" EXIT SIGINT SIGTERM
+  trap "rm -f '$livefile'" EXIT SIGINT SIGTERM
   local geom="$(hey .slurp ${2:-region})"
   [[ -z "$geom" ]] && exit 1
-  local id=$(notify-send -p -a "" "Recording starting in 3...")
-  sleep 1
-  hey .play-sound blip
-  notify-send -r "$id" -a "" "<b>Recording starting in 2...</b>"
-  sleep 1
-  hey .play-sound blip
-  notify-send -r "$id" -a "" "<i><b>Recording starting in 1...</b></i>"
-  sleep 1
-  notify-send -r "$id" -a "" "Recording started..."
+
+  for i in {3..1}; do
+    hey .play-sound blip &
+    dms ipc toast dismiss countdown  # debounce
+    dms ipc toast warnWith "Recording starting in... $i" "" "" countdown
+    sleep 1
+  done
+  dms ipc toast dismiss countdown
   if wf-recorder -g "$geom" ${opts[@]} --file="$file"; then
     sleep 0.1
-    hey.do ffmpeg -y -i "$file" -frames:v 1 "$thumbfile"
     if [[ $1 == gif ]]; then
-      notify-send -a "screencast.zsh" -u low -i "$thumbfile" "Optimizing gif" "This may take a while..."
+      dms ipc toast warn "Optimizing gif. This may take a while..."
       hey.do -! gifsicle --optimize=3 "$file"
     fi
     echo "file://$file" | wl-copy -t text/uri-list
-    notify-send -a "screencast.zsh" -i "$thumbfile" "Ended recording" "Sent uri to clipboard"
+    dms ipc toast info "Recording complete. Copied to clipboard!"
   fi
 }
 

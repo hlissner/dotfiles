@@ -35,7 +35,7 @@ main() {
 local cache_key=hypr.slurp.last
 if [[ "$1" == last ]]; then
   if ! hey get $cache_key; then
-    notify-send -u critical "No previous screenshot selection to retake"
+    dms ipc toast error "No previous screenshot selection to retake"
     exit 1
   fi
 else

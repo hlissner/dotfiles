@@ -65,3 +65,4 @@ if (( $#monitors == 0 )); then
   exit 1
 fi
 hypr.set-layout $@
+dms ipc toast info "Set monitors: $*"

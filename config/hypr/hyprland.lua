@@ -216,7 +216,7 @@ hl.bind("SUPER + c",              hl.dsp.exec_cmd("hey @rofi calcmenu"))
 hl.bind("SUPER + p",              hl.dsp.exec_cmd("hey @rofi vaultmenu"))
 hl.bind("SUPER + SHIFT + p",      hl.dsp.exec_cmd("hey @rofi vaultmenu -l"))
 hl.bind("SUPER + d",              hl.dsp.exec_cmd("hey .screendraw"))
-hl.bind("SUPER + Escape",         hl.dsp.exec_cmd("dms ipc call notifications clearAll"))
+hl.bind("SUPER + Escape",         hl.dsp.exec_cmd("dms ipc call notifications clearAll; dms ipc toast hide"))
 
 -- ** Zoom
 local function zoomIn(ratio)

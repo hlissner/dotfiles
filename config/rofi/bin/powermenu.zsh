@@ -19,7 +19,7 @@ rofi.powermenu.dpms() {
   elif (( $+commands[xset] )); then
     hey.do xset dpms force off
   else
-    notify-send "Unexpected error" "No known method to sleep monitors" -i system-error
+    dms ipc toast error "Can't sleep! No known methods."
     exit 1
   fi
 }
