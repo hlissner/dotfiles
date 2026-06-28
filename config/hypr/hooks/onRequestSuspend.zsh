@@ -7,6 +7,5 @@
 # SYNOPSIS:
 #   Triggered by Dank Actions plugin when the system is put to sleep.
 
-hey .play-sound shutdown
 playerctl -a pause
-sleep 1
+hey .play-sound shutdown
