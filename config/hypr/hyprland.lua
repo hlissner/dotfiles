@@ -2,6 +2,14 @@
 -- Common settings for hyprland.
 -- https://wiki.hypr.land/Configuring/Start/
 
+hl.on("hyprland.start", function ()
+    hl.exec_cmd("hey hook onStartup")
+end)
+hl.on("hyprland.shutdown", function ()
+    os.execute("hey hook onShutdown && sleep 1")
+end)
+
+
 -- * Options
 
 hl.config({
@@ -123,6 +131,28 @@ hl.layer_rule({
 
 -- * Workspace rules
 
+-- Provided by NixOS config in hyprland-pre.lua
+if PRIMARY_MONITOR then
+    -- Designate workspaces 1-9 for my main monitor
+    for i = 1, 9 do
+      hl.workspace_rule({
+          workspace = i,
+          monitor = PRIMARY_MONITOR,
+          default = i == 1,
+          persistent = i == 1
+      })
+    end
+end
+-- A workspace exclusive for games
+hl.workspace_rule({
+    workspace = 10,
+    layout = "monocle",
+    no_border = true,
+    no_shadow = true,
+    gaps_in = 0,
+    gaps_out = 0
+})
+
 hl.workspace_rule({
     workspace = "special:term",
     gaps_in = 6,
@@ -135,25 +165,16 @@ hl.workspace_rule({
     gaps_out = 80
 })
 
-hl.workspace_rule({
-    workspace = 10,
-    layout = "monocle",
-    no_border = true,
-    no_shadow = true,
-    gaps_in = 0,
-    gaps_out = 0
-})
-
 
 -- * Window rules
 
-hl.window_rule({
+hl.window_rule({   -- see coniig/hypr/bin/screenshot.zsh
     name = "swappy",
     match = { class = "swappy" },
     dim_around = true
 })
 
-hl.window_rule({
+hl.window_rule({   -- see coniig/hypr/bin/screendraw.zsh
     name = "gromit-mpx-rule",
     match = { class = "^(Gromit-mpx)$" },
     suppress_event = "fullscreen maximize",
@@ -211,10 +232,10 @@ hl.window_rule({
 -- keybind directly, as it might cause undefined behavior. Instead, consider
 -- something like..."
 local function dpms(state)
-    function()
+    return function()
         hl.timer(function()
             hl.dispatch(hl.dsp.dpms({ action = state and "enable" or "disable" }))
-        end, {timeout = 500, type = "oneshot"})
+        end, { timeout = 500, type = "oneshot"})
     end
 end
 
@@ -234,7 +255,9 @@ hl.bind("SUPER + Escape",         hl.dsp.exec_cmd("dms ipc call notifications cl
 -- ** Zoom
 local function zoomIn(ratio)
     local zoomvalue = hl.get_config("cursor:zoom_factor")
-    if (zoomvalue + ratio) > 3.0 then
+    if ratio == 0.0 then
+        hl.config({ cursor = { zoom_factor = 1.0 } })
+    elseif (zoomvalue + ratio) > 3.0 then
         hl.config({ cursor = { zoom_factor = 3.0 } })
     elseif (zoomvalue + ratio) < 1.0 then
         hl.config({ cursor = { zoom_factor = 1.0 } })
@@ -245,6 +268,7 @@ end
 
 hl.bind("SUPER + Minus", function() zoomIn(-0.3) end, { repeating = true })
 hl.bind("SUPER + Equal", function() zoomIn(0.3) end,  { repeating = true })
+hl.bind("SUPER + SHIFT + Equal", function() zoomIn(0.0) end) -- reset
 
 -- ** Quit/Session control
 hl.bind("SUPER + q", hl.dsp.submap("session"))

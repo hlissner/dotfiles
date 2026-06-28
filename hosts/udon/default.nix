@@ -44,9 +44,26 @@ with builtins;
         ];
         extraConfig = ''
           -- Bind fixed workspaces to external monitors
-          hl.workspace_rule({ workspace = "left", monitor = "DP-3", default = true })
-          hl.workspace_rule({ workspace = "right", monitor = "DP-2", default = true })
-          hl.workspace_rule({ workspace = "tv", monitor = "HDMI-A-1", default = true, gaps_out = 4 })
+          hl.workspace_rule({
+            workspace = "name:left",
+            monitor = "DP-3",
+            default = true,
+            persistent = true,
+            layout = "scrolling"
+          })
+          hl.workspace_rule({
+            workspace = "name:right",
+            monitor = "DP-2",
+            default = true,
+            persistent = true,
+            layout = "scrolling"
+          })
+          hl.workspace_rule({
+            workspace = "name:tv",
+            monitor = "HDMI-A-1",
+            default = true,
+            gaps_out = 4
+          })
 
           -- Scroll by holding down a side button, because the wheel is broken
           hl.device({
