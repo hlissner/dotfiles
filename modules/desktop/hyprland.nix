@@ -182,12 +182,13 @@ in {
       #     "darker"
       #   ];
       # })
-      (catppuccin-papirus-folders.override {
-        flavor = "mocha";
-        accent = "maroon";
-      })
+      # (catppuccin-papirus-folders.override {
+      #   flavor = "mocha";
+      #   accent = "blue";
+      # })
       catppuccin-cursors.mochaDark
       tela-circle-icon-theme
+      dracula-icon-theme
 
       (mkLauncherEntry "Toggle night mode" {
         icon = "redshift";
