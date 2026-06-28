@@ -205,6 +205,19 @@ hl.window_rule({
 })
 
 
+-- * Helpers
+
+-- Upstream warning: "It is NOT recommended to set DPMS or forceidle with a
+-- keybind directly, as it might cause undefined behavior. Instead, consider
+-- something like..."
+local function dpms(state)
+    function()
+        hl.timer(function()
+            hl.dispatch(hl.dsp.dpms({ action = state and "enable" or "disable" }))
+        end, {timeout = 500, type = "oneshot"})
+    end
+end
+
 
 -- * Keybinds
 
@@ -236,11 +249,13 @@ hl.bind("SUPER + Equal", function() zoomIn(0.3) end,  { repeating = true })
 -- ** Quit/Session control
 hl.bind("SUPER + q", hl.dsp.submap("session"))
 hl.define_submap("session", "reset", function()
-    hl.bind("SUPER + q",       hl.dsp.window.close())
-    hl.bind("SUPER + k",       hl.dsp.window.kill())
-    hl.bind("SUPER + p",       hl.dsp.exec_cmd("hey @rofi powermenu"))
+    hl.bind("SUPER + q", hl.dsp.window.close())
+    hl.bind("SUPER + k", hl.dsp.window.kill())
+    hl.bind("SUPER + p", hl.dsp.exec_cmd("hey @rofi powermenu"))
+    hl.bind("SUPER + SHIFT + l", hl.dsp.exec_cmd("loginctl lock-session"))
+    hl.bind("SUPER + d", dpms(false))
     hl.bind("SUPER + SUPER_L", hl.dsp.submap("reset"), { release = true })
-    hl.bind("catchall",        hl.dsp.submap("reset"))
+    hl.bind("catchall", hl.dsp.submap("reset"))
 end)
 
 -- ** Screenshot/recording
@@ -315,15 +330,9 @@ hl.bind("SUPER + mouse:272",      hl.dsp.window.drag(),   { mouse = true })
 hl.bind("SUPER + mouse:273",      hl.dsp.window.resize(), { mouse = true })
 
 -- ** Monitor brightness control
-hl.bind("XF86MonBrightnessUp",    hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 10%+"),                  { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessDown",  hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 10%-"),                  { locked = true, repeating = true })
-hl.bind("XF86PowerOff",
-        function()
-            hl.timer(function()
-                hl.dispatch(hl.dsp.dpms({ action = "disable" }))
-            end, {timeout = 500, type = "oneshot"})
-        end,
-        { locked = true; })
+hl.bind("XF86MonBrightnessUp",    hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 10%+"), { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessDown",  hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 10%-"), { locked = true, repeating = true })
+hl.bind("XF86PowerOff",           dpms(false), { locked = true; })
 
 -- ** Audio and player controls
 hl.bind("XF86AudioRaiseVolume",        hl.dsp.exec_cmd("dms ipc audio increment 10"), { locked = true, repeating = true })
