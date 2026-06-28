@@ -81,7 +81,7 @@ with builtins;
       utils.enable = true;
       fs.enable = true;
     };
-    virt.qemu.enable = true;
+    # virt.qemu.enable = true;
   };
 
   ## Local config
