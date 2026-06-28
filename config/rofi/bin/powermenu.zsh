@@ -24,13 +24,25 @@ rofi.powermenu.dpms() {
   fi
 }
 
-rofi.powermenu.lock()     { hey.do loginctl lock-session; }
+rofi.powermenu.lock()     {
+  hey hook onSessionLocked
+  hey.do loginctl lock-session;
+}
 
-rofi.powermenu.suspend()  { hey.do systemctl suspend; }
+rofi.powermenu.suspend()  {
+  hey hook onRequestSuspend
+  hey.do systemctl suspend;
+}
 
-rofi.powermenu.reboot()   { hey.do systemctl reboot; }
+rofi.powermenu.reboot()   {
+  hey hook onShutdown
+  hey.do systemctl reboot;
+}
 
-rofi.powermenu.poweroff() { hey.do systemctl poweroff; }
+rofi.powermenu.poweroff() {
+  hey hook onShutdown
+  hey.do systemctl poweroff;
+}
 
 rofi.powermenu.reboot-into() {
   local entries=$(bootctl list --json=short)
