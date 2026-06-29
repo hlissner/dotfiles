@@ -24,44 +24,44 @@ hl.config({
     },
 
     input = {
-      kb_layout = "us",
-      kb_variant = "",
-      kb_model   = "",
-      kb_options = "compose:ralt",
-      kb_rules   = "",
-      follow_mouse = 2,
-      touchpad = {
-          natural_scroll = false,
-      },
-      sensitivity = 0  -- -1.0 - 1.0, 0 means no modification.
+        kb_layout = "us",
+        kb_variant = "",
+        kb_model   = "",
+        kb_options = "compose:ralt",
+        kb_rules   = "",
+        follow_mouse = 2,
+        touchpad = {
+            natural_scroll = false,
+        },
+        sensitivity = 0  -- -1.0 - 1.0, 0 means no modification.
     },
 
     decoration = {
-      dim_strength = 0.2,
-      dim_inactive = true,
-      dim_special = 0.4,
-      dim_around = 0.4,
-      -- shadow {
-      --   enabled = true
-      --   range = 10
-      --   render_power = 4
-      --   color = rgba(0f0f0f88)
-      -- }
-      blur = {
-        enabled = true,
-        size = 4,
-        passes = 1
-      }
+        dim_strength = 0.2,
+        dim_inactive = true,
+        dim_special = 0.4,
+        dim_around = 0.4,
+        -- shadow {
+        --   enabled = true
+        --   range = 10
+        --   render_power = 4
+        --   color = rgba(0f0f0f88)
+        -- }
+        blur = {
+            enabled = true,
+            size = 4,
+            passes = 1
+        }
     },
 
     render = {
-      direct_scanout = 2,
+        direct_scanout = 2,
     },
 
     -- Obnoxious.
     ecosystem = {
-      no_update_news = true,
-      no_donation_nag = true
+        no_update_news = true,
+        no_donation_nag = true
     },
 
     animations = {
@@ -69,32 +69,32 @@ hl.config({
     },
 
     dwindle = {
-      -- pseudotile = yes # master switch for pseudotiling. Enabling is bound to
-      -- mainMod + P in the keybinds section below
-      preserve_split = true  -- you probably want this
+        -- pseudotile = yes # master switch for pseudotiling. Enabling is bound to
+        -- mainMod + P in the keybinds section below
+        preserve_split = true  -- you probably want this
     },
 
     -- See https://wiki.hyprland.org/Configuring/Master-Layout/ for more
     master = {
-      new_status = "master",
-      mfact = 0.65
+        new_status = "master",
+        mfact = 0.65
     },
 
     -- See https://wiki.hyprland.org/Configuring/Variables/ for more
     misc = {
-      background_color = 0xff000000,
-      force_default_wallpaper = 0,  -- Set to 0 to disable the anime mascot wallpapers
-      disable_watchdog_warning = true,
-      disable_hyprland_logo = true,
-      disable_autoreload = true,
-      disable_splash_rendering = true,
-      key_press_enables_dpms = true
+        background_color = 0xff000000,
+        force_default_wallpaper = 0,  -- Set to 0 to disable the anime mascot wallpapers
+        disable_watchdog_warning = true,
+        disable_hyprland_logo = true,
+        disable_autoreload = true,
+        disable_splash_rendering = true,
+        key_press_enables_dpms = true
     },
 
     cursor = {
-      hide_on_key_press = false,
-      enable_hyprcursor = true,
-      zoom_rigid = true
+        hide_on_key_press = false,
+        enable_hyprcursor = true,
+        zoom_rigid = true
     },
 
     scrolling = {
@@ -143,7 +143,7 @@ if PRIMARY_MONITOR then
       })
     end
 end
--- A workspace exclusive for games
+-- A workspace exclusively for games
 hl.workspace_rule({
     workspace = 10,
     layout = "monocle",
