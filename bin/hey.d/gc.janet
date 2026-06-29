@@ -19,12 +19,15 @@
 (defcmd gc [_ &opts
             all? -a
             system? -s
-            delete-old? -d]
+            delete-old? -d
+            delete-all-old? -D]
   (when (or all? system?)
     (echo :g "> Cleaning your system profile...")
-    (do? $ sudo nix-collect-garbage ,;(opts delete-old?))
+    (do? $ sudo nix-collect-garbage
+         ,;(if delete-old? ["--delete-older-than" "14d"] [])
+         ,;(if delete-all-old? ["-d"] []))
     (try
-      (when delete-old?
+      (when delete-all-old?
         # nix-collect-garbage is a Nix tool, not a NixOS tool. It won't delete
         # old boot entries until you do a nixos-rebuild (which means we'll
         # always have 2 boot entries at any time); reloading the current
