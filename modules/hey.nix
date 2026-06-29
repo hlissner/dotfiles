@@ -69,12 +69,15 @@ in {
             export JANET_BINPATH="${config.home.binDir}";
             mkdir -p "$JANET_TREE"
             cd '${hey.dir}'
-            jpm deps --verbose
-            jpm run deploy --verbose
+            ${pkgs.zsh}/bin/zsh -c "jpm deps --verbose"
+            ${pkgs.zsh}/bin/zsh -c "jpm run deploy --verbose"
           '';
       in ''
         runuser -u ${config.user.name} -- ${script}
       '';
+    system.userActivationScripts.initHeyPath = ''
+      ${pkgs.zsh}/bin/zsh -c 'echo $PATH' >"$XDG_DATA_HOME/hey/path"
+    '';
 
     # Setting PATH in both environment.{variables,sessionVariables} causes
     # merge-conflict errors, so do these separately.
