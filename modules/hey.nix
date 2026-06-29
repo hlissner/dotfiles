@@ -11,9 +11,7 @@ with hey.lib;
 let cfg = config.hey;
 
     janet = pkgs.janet;
-    jpm = mkWrapper pkgs.jpm ''
-      wrapProgram $out/bin/jpm --add-flags '--tree="$JANET_TREE" --binpath="$XDG_BIN_HOME" --headerpath=${janet}/include --libpath=${janet}/lib --ldflags=-L${pkgs.glibc}/lib '
-    '';
+    jpm = pkgs.jpm;
     janetTreeDir = "${config.home.dataDir}/janet/jpm_tree";
 in {
   options = with types; {
@@ -44,25 +42,44 @@ in {
     ];
 
     environment.sessionVariables = {
-      JANET_PATH = "${janetTreeDir}/lib";
       JANET_TREE = janetTreeDir;
+      JANET_PATH = "${janetTreeDir}/lib";
+      JANET_LIBPATH = "${janet}/lib";
+      JANET_HEADERPATH = "${janet}/include";
+      JANET_BINPATH = "${config.home.binDir}";
     };
+
+    # Compile bin/hey to trivialize janet startup time. And no, I don't want
+    # this to be done in /nix/store, because I tinker with 'hey' too often.
+    system.activationScripts.initHey =
+      # TODO: Use pkgs.buildEnv instead
+      let script = pkgs.writeShellScript "initHey" ''
+            export PATH="${pkgs.gcc}/bin:${janet}/bin:${jpm}/bin:$PATH"
+            export DOTFILES_HOME="${hey.dir}"
+            export XDG_RUNTIME_DIR="/run/user/${toString config.user.uid}"
+            export XDG_BIN_HOME="${config.home.binDir}"
+            export XDG_CACHE_HOME="${config.home.cacheDir}"
+            export XDG_CONFIG_HOME="${config.home.configDir}"
+            export XDG_DATA_HOME="${config.home.dataDir}"
+            export XDG_STATE_HOME="${config.home.stateDir}"
+            export JANET_TREE="${janetTreeDir}"
+            export JANET_PATH="${janetTreeDir}/lib";
+            export JANET_LIBPATH="${janet}/lib";
+            export JANET_HEADERPATH="${janet}/include";
+            export JANET_BINPATH="${config.home.binDir}";
+            mkdir -p "$JANET_TREE"
+            cd '${hey.dir}'
+            jpm deps --verbose
+            jpm run deploy --verbose
+          '';
+      in ''
+        runuser -u ${config.user.name} -- ${script}
+      '';
 
     # Setting PATH in both environment.{variables,sessionVariables} causes
     # merge-conflict errors, so do these separately.
     environment.extraInit = mkAfter ''
       export PATH="${janetTreeDir}/bin:${hey.binDir}:$PATH"
-    '';
-
-    # Compile bin/hey to trivialize janet startup time
-    # TODO: Include gcc for 'jpm deps'
-    system.userActivationScripts.initHey = ''
-      ${pkgs.zsh}/bin/zsh -c 'echo $PATH' >"$XDG_DATA_HOME/hey/path"
-
-      export JANET_PATH="${janetTreeDir}/lib"
-      export JANET_TREE="${janetTreeDir}"
-      ${pkgs.zsh}/bin/zsh -c "cd '${hey.dir}'; jpm deps"
-      ${pkgs.zsh}/bin/zsh -c "cd '${hey.dir}'; jpm run deploy"
     '';
 
     programs.zsh.shellInit = mkBefore ''
