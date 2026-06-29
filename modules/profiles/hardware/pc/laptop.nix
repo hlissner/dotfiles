@@ -12,6 +12,7 @@ in mkMerge [
     user.packages = with pkgs; [
       brightnessctl  # instead of programs.light
       acpi
+      upower
     ];
   })
 ]
