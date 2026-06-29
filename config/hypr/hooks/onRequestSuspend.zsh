@@ -7,5 +7,6 @@
 # SYNOPSIS:
 #   Triggered by Dank Actions plugin when the system is put to sleep.
 
+dms ipc toast info "Going to sleep.."
 playerctl -a pause
-hey .play-sound shutdown
+hey .play-sound sleep
