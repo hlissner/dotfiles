@@ -20,7 +20,7 @@ main() {
     local out_file=$prefix.tmp
     local error_file=$prefix.err
     echo "$hypr_tree" | jq -r ".[] | select($cond_str)" \
-                      | jq -r ".at,.size" | jq -s "add" | jq '_nwise(4)' \
+                      | jq -r ".at,.size" | jq -s 'add | range(0; length; 4) as $i | .[$i:$i+4]' \
                       | jq -r '"\(.[0]),\(.[1]) \(.[2])x\(.[3])"' \
                       | slurp -r > $out_file 2> $error_file &
     PID=$!
