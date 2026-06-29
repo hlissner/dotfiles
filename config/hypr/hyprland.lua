@@ -2,6 +2,11 @@
 -- Common settings for hyprland.
 -- https://wiki.hypr.land/Configuring/Start/
 
+require("lib/util")
+
+
+-- * Events
+
 hl.on("hyprland.start", function ()
     hl.exec_cmd("hey hook onStartup")
 end)
@@ -226,49 +231,20 @@ hl.window_rule({
 })
 
 
--- * Helpers
-
--- Upstream warning: "It is NOT recommended to set DPMS or forceidle with a
--- keybind directly, as it might cause undefined behavior. Instead, consider
--- something like..."
-local function dpms(state)
-    return function()
-        hl.timer(function()
-            hl.dispatch(hl.dsp.dpms({ action = state and "enable" or "disable" }))
-        end, { timeout = 500, type = "oneshot"})
-    end
-end
-
-
 -- * Keybinds
 
 hl.bind("SUPER + Space",          hl.dsp.exec_cmd("hey @rofi appmenu"))
 hl.bind("SUPER + Return",         hl.dsp.exec_cmd("hey .open-term"))
 hl.bind("SUPER + SHIFT + Return", hl.dsp.exec_cmd("foot"))
-hl.bind("SUPER + e",              hl.dsp.exec_cmd("emacsclient --eval \"(emacs-everywhere)\""))
 hl.bind("SUPER + c",              hl.dsp.exec_cmd("hey @rofi calcmenu"))
-hl.bind("SUPER + p",              hl.dsp.exec_cmd("hey @rofi vaultmenu"))
-hl.bind("SUPER + SHIFT + p",      hl.dsp.exec_cmd("hey @rofi vaultmenu -l"))
 hl.bind("SUPER + d",              hl.dsp.exec_cmd("hey .screendraw"))
 hl.bind("SUPER + Escape",         hl.dsp.exec_cmd("dms ipc call notifications clearAll; dms ipc toast hide"))
 
 -- ** Zoom
-local function zoomIn(ratio)
-    local zoomvalue = hl.get_config("cursor:zoom_factor")
-    if ratio == 0.0 then
-        hl.config({ cursor = { zoom_factor = 1.0 } })
-    elseif (zoomvalue + ratio) > 3.0 then
-        hl.config({ cursor = { zoom_factor = 3.0 } })
-    elseif (zoomvalue + ratio) < 1.0 then
-        hl.config({ cursor = { zoom_factor = 1.0 } })
-    else
-        hl.config({ cursor = { zoom_factor = zoomvalue + ratio } })
-    end
-end
 
-hl.bind("SUPER + Minus", function() zoomIn(-0.3) end, { repeating = true })
-hl.bind("SUPER + Equal", function() zoomIn(0.3) end,  { repeating = true })
-hl.bind("SUPER + SHIFT + Equal", function() zoomIn(0.0) end) -- reset
+hl.bind("SUPER + Minus", my.dsp.zoomIn(-0.3), { repeating = true })
+hl.bind("SUPER + Equal", my.dsp.zoomIn(0.3),  { repeating = true })
+hl.bind("SUPER + SHIFT + Equal", my.dsp.zoomIn(0.0)) -- reset
 
 -- ** Quit/Session control
 hl.bind("SUPER + q", hl.dsp.submap("session"))
@@ -277,7 +253,7 @@ hl.define_submap("session", "reset", function()
     hl.bind("SUPER + k", hl.dsp.window.kill())
     hl.bind("SUPER + p", hl.dsp.exec_cmd("hey @rofi powermenu"))
     hl.bind("SUPER + SHIFT + l", hl.dsp.exec_cmd("loginctl lock-session"))
-    hl.bind("SUPER + d", dpms(false))
+    hl.bind("SUPER + d", my.dsp.dpms(false))
     hl.bind("SUPER + SUPER_L", hl.dsp.submap("reset"), { release = true })
     hl.bind("catchall", hl.dsp.submap("reset"))
 end)
@@ -304,23 +280,38 @@ hl.define_submap("screencap", "reset", function()
     hl.bind("catchall",              hl.dsp.submap("reset"))
 end)
 
--- ** Window state toggles
+-- ** Layout controls
 hl.bind("SUPER + f",              hl.dsp.window.float({ action = "toggle" }))
 hl.bind("SUPER + SHIFT + f",      hl.dsp.window.fullscreen({ action = "toggle" }))
-hl.bind("SUPER + o",              hl.dsp.focus({ last = true }))
-
--- ** Layout controls
-hl.bind("SUPER + TAB",                hl.dsp.layout("swapwithmaster"))
-hl.bind("SUPER + SHIFT + TAB",        hl.dsp.layout("addmaster"))
-hl.bind("SUPER + SHIFT + CTRL + TAB", hl.dsp.layout("removemaster"))
-hl.bind("SUPER + Left",               hl.dsp.layout("orientationleft"))
-hl.bind("SUPER + Right",              hl.dsp.layout("orientationright"))
-hl.bind("SUPER + Up",                 hl.dsp.layout("orientationtop"))
-hl.bind("SUPER + Down",               hl.dsp.layout("orientationbottom"))
-hl.bind("SUPER + SHIFT + Down",       hl.dsp.layout("orientationcenter"))
+hl.bind("SUPER + o", my.dsp.layout({
+    scrolling = hl.dsp.layout("consume_or_expel next"),
+    monocle   = hl.dsp.focus({ last = true }),
+    master    = hl.dsp.layout("addmaster"),
+}))
+hl.bind("SUPER + SHIFT + o", my.dsp.layout({
+    scrolling = hl.dsp.layout("consume_or_expel prev"),
+    monocle   = hl.dsp.focus({ urgent_or_last = true }),
+    master    = hl.dsp.layout("removemaster"),
+}))
+hl.bind("SUPER + TAB", my.dsp.layout({
+    scrolling = hl.dsp.layout("swapcol r"),
+    monocle   = hl.dsp.layout("cyclenext"),
+    master    = hl.dsp.layout("swapwithmaster"),
+}))
+hl.bind("SUPER + SHIFT + TAB", my.dsp.layout({
+    scrolling = hl.dsp.layout("swapcol l"),
+    monocle   = hl.dsp.layout("cycleprev"),
+    master    = hl.dsp.exec_cmd("hey @rofi windowmenu"),
+}))
+hl.bind("SUPER + Left",         hl.dsp.layout("orientationleft"))
+hl.bind("SUPER + Right",        hl.dsp.layout("orientationright"))
+hl.bind("SUPER + Up",           hl.dsp.layout("orientationtop"))
+hl.bind("SUPER + Down",         hl.dsp.layout("orientationbottom"))
+hl.bind("SUPER + SHIFT + Down", hl.dsp.layout("orientationcenter"))
 
 -- ** Scratchpads
 hl.bind("SUPER + grave",     hl.dsp.workspace.toggle_special("term"))
+hl.bind("SUPER + e",         hl.dsp.exec_cmd([[emacsclient --eval "(emacs-everywhere)"]]))
 hl.bind("SUPER + s",         hl.dsp.workspace.toggle_special("pad"))
 hl.bind("SUPER + SHIFT + s", hl.dsp.window.move({ workspace = "special:pad" }))
 
@@ -356,7 +347,7 @@ hl.bind("SUPER + mouse:273",      hl.dsp.window.resize(), { mouse = true })
 -- ** Monitor brightness control
 hl.bind("XF86MonBrightnessUp",    hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 10%+"), { locked = true, repeating = true })
 hl.bind("XF86MonBrightnessDown",  hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 10%-"), { locked = true, repeating = true })
-hl.bind("XF86PowerOff",           dpms(false), { locked = true; })
+hl.bind("XF86PowerOff",           my.dsp.dpms(false), { locked = true; })
 
 -- ** Audio and player controls
 hl.bind("XF86AudioRaiseVolume",        hl.dsp.exec_cmd("dms ipc audio increment 10"), { locked = true, repeating = true })
