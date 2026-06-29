@@ -15,19 +15,6 @@ hl.on("hyprland.shutdown", function ()
     os.execute("hey hook onShutdown && sleep 1")
 end)
 
-hl.on("monitor.added", function ()
-    os.execute("hey .play-sound notify-long")
-end)
-
-hl.on("monitor.removed", function ()
-    os.execute("hey .play-sound off")
-end)
-
-hl.on("config.reloaded", function ()
-    os.execute("hey .play-sound success")
-    os.execute([[dms ipc toast info "Hyprland config reloaded"]])
-end)
-
 
 -- * Options
 
