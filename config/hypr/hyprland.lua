@@ -36,6 +36,7 @@ hl.config({
         kb_options = "compose:ralt",
         kb_rules   = "",
         follow_mouse = 2,
+        float_switch_override_focus = 0,
         touchpad = {
             natural_scroll = false,
         },
