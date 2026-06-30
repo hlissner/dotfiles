@@ -1,0 +1,41 @@
+! There is no simple way to inject this into firefox/librewolf, so copy-paste it
+! into ublock manually! Keep rules as short and compact as possible so they
+! don't have to be maintained as often.
+
+
+! ## DISCORD ANTI-SILLY ##
+! Hide your typing indicator. Silly!
+||discord.com/api/*/typing
+
+! Hide Discord top-bar. Silly!
+discord.com##body:style(--custom-app-top-bar-height: 0)
+
+! Hide gifts, gifs, stickers, emoji, apps buttons in chat textbox. Silly!
+discord.com##div[class^="channelTextArea_"] div[class^="buttons__"]
+
+! Hide Nitro, Shop, and Quests buttons in "Direct Messages" sidebar. Silly!
+discord.com##li[role="listitem"]:has([href="/store"], [href="/shop"], [href="/quest-home"])
+
+! Hide "Download apps" button in sidebar. Silly!
+discord.com##div[class^="listItem__"]:has([data-list-item-id="guildsnav___app-download-button"])
+
+! Hide server badges (in chat, only). Silly (in compact mode)!
+discord.com##ol[data-list-id="chat-messages"] span[class*="clanTagChiplet_"]
+
+! Hide "More Active {Threads,Posts}" channel popups. Silly!
+discord.com###app-mount div[id^="popout_"] > div > div[class*="popout_"]
+
+! Hide super reactions. Super silly!
+discord.com##div[role="button"][aria-label="Add Super Reaction"]
+discord.com##div[id^="message-reactions-"] > div:has(div[aria-label*='super react'])
+
+
+! ## YOUTUBE ANTI-SILLY ##
+! Hide youtube chat panel. Buggy, slow, stupid, and nothing worth reading. Silly!
+youtube.com###chat
+youtube.com###panels-full-bleed-container
+! Hide "Live chat replay" modal below description. Silly!
+youtube.com###teaser-carousel
+
+! Hide Share button. Social media is silly!
+youtube.com##yt-button-view-model:has(button[aria-label="Share"])
