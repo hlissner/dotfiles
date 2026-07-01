@@ -55,6 +55,13 @@ in {
       editorconfig-core-c # per-project style config
       # :tools lookup & :lang org +roam
       sqlite
+      # :tools pdf (for building pdf-tools)
+      automake
+      autoconf
+      pkg-config
+      libpng
+      zlib
+      poppler
       # :lang cc
       clang-tools
       # :lang latex & :lang org (latex previews)
