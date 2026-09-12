@@ -64,9 +64,6 @@ mkIf (config.modules.profiles.role == "workstation") (mkMerge [
       ];
     };
 
-    # TODO ...
-    powerManagement.cpuFreqGovernor = mkDefault "performance";
-
     # Use systemd-{network,resolve}d; a more unified networking backend that's
     # easier to reconfigure downstream, especially where split-DNS setups (e.g.
     # VPNs) are concerned.
