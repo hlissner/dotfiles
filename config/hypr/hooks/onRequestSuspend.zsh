@@ -9,4 +9,4 @@
 
 dms ipc toast info "Going to sleep.."
 playerctl -a pause
-hey .play-sound sleep
+hey .play-sound -w sleep
