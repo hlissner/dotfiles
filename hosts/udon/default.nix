@@ -129,7 +129,6 @@ with builtins;
     };
     system = {
       utils.enable = true;
-      fs.enable = true;
     };
     virt.qemu.enable = true;
   };
