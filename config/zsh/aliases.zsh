@@ -11,8 +11,6 @@ alias mkdir='mkdir -pv'
 alias wget='wget -c'
 alias path='echo -e ${PATH//:/\\n}'
 alias ports='netstat -tulanp'
-
-alias reload='source /run/current-system/etc/set-environment'
 alias mk=make
 alias gurl='curl --compressed'
 
@@ -38,13 +36,14 @@ alias rcpd='rcp --delete --delete-after'
 alias rcpu='rcp --chmod=go='
 alias rcpdu='rcpd --chmod=go='
 
-if (( $+commands[wl-copy] )); then
-  alias y='wl-copy'
-  alias p='wl-paste'
-elif (( $+commands[xclip] )); then
-  alias y='xclip -selection clipboard -in'
-  alias p='xclip -selection clipboard -out'
-fi
+autoload -U zmv
+
+function mkcd { mkdir "$1" && cd "$1"; }; compdef mkcd=mkdir
+
+function zman { PAGER="less -g -I -s '+/^       "$1"'" man zshall; }
+
+
+# Systemd
 
 alias jc='journalctl -xe'
 alias jcu='journalctl -xe -u'
@@ -60,6 +59,9 @@ alias nctl='sudo networkctl'
 alias bctl='bluetoothctl'
 
 alias nonet='systemd-run --user --property=PrivateNetwork=yes --same-dir --pty'
+
+
+# External programs
 
 if (( $+commands[eza] )); then
   alias exa="eza --group-directories-first --git";
@@ -89,20 +91,3 @@ if (( $+commands[nix] )); then
   alias ns='nix search'
   alias nsp='nix search nixpkgs'
 fi
-
-if (( $+commands[swayimg] )); then
-  alias -s {jpg,jpeg,gif,png,svg}=swayimg
-elif (( $+commands[feh] )); then
-  alias -s {jpg,jpeg,gif,png,svg}=feh
-fi
-
-alias -s pdf='$BROWSER'
-(( $+commands[mpv] )) && alias -s {mp4,avi,mkv,mov}='mpv --loop'
-(( $+commands[xdg-open] )) && alias open=xdg-open
-(( $+commands[img2sixel] )) && alias six=img2sixel
-
-autoload -U zmv
-
-function mkcd { mkdir "$1" && cd "$1"; }; compdef mkcd=mkdir
-
-function zman { PAGER="less -g -I -s '+/^       "$1"'" man zshall; }

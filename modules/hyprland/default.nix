@@ -137,6 +137,8 @@ in {
       };
     };
 
+    modules.shell.zsh.rcFiles = [ "${hey.configDir}/hypr/aliases.zsh" ];
+
     home.configFile = {
       # If DMS is launched vya systemd, it won't see the profile envvars, so...
       "environment.d/90-dms.conf".text = ''
