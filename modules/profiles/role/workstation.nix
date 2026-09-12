@@ -111,6 +111,10 @@ mkIf (config.modules.profiles.role == "workstation") (mkMerge [
     };
 
     modules.xdg.ssh.enable = true;
+
+    # A compressed swap device in RAM, so memory pressure degrades into slower
+    # memory instead of straight into OOM.
+    zramSwap.enable = mkDefault true;
   }
 
   (mkIf config.modules.services.ssh.enable {
