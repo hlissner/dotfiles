@@ -72,7 +72,7 @@ with builtins;
     services.udisks2.enable = true;
   };
 
-  hardware = { ... }: {
+  hardware = { config, ... }: {
     # networking.interfaces.eno1.useDHCP = true;
 
     # GTX 1080 (Pascal, GP104) requires v580

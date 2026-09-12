@@ -83,7 +83,7 @@ with builtins;
     '';
   };
 
-  hardware = { ... }: {
+  hardware = { config, ... }: {
     # GTX 960 (Maxwell 2.0, GM206) requires v580
     hardware.nvidia = {
       open = false;  # Turing and later only
