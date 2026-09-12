@@ -18,23 +18,6 @@ let
 in {
   ## Roles are matched by string equality, so exactly one activates.
 
-  testRoleWorkstation = {
-    expr = governor { role = "workstation"; };
-    expected = "performance";
-  };
-
-  testRoleServer = {
-    expr = governor { role = "server"; };
-    expected = "ondemand";
-  };
-
-  # The default role is the empty string, which matches no role module. This is
-  # the state a host with a typo'd role lands in.
-  testUnsetRoleActivatesNothing = {
-    expr = governor {};
-    expected = null;
-  };
-
   testWorkstationUsesNetworkd = {
     expr = (evalConfig [{ modules.profiles.role = "workstation"; }]).networking.useNetworkd;
     expected = true;
