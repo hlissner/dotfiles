@@ -152,16 +152,18 @@ with builtins;
   };
 
   hardware = { ... }: {
-    networking.interfaces.eno1.useDHCP = true;
-
     # Disable all USB wakeup events to ensure restful sleep. This system has
     # many peripherals attached to it (shared between Windows and Linux) that
     # can unpredictably wake it otherwise. Ensures *only* the power button can
     # wake it up.
     systemd.services.fixSuspend = {
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+      };
       script = ''
-        for ev in $(grep enabled /proc/acpi/wakeup | cut --delimiter=\  --fields=1); do
-           echo $ev > /proc/acpi/wakeup
+        for ev in $(grep enabled /proc/acpi/wakeup | cut --fields=1); do
+           echo $ev > /proc/acpi/wakeup || true
         done
       '';
       wantedBy = [ "multi-user.target" ];
