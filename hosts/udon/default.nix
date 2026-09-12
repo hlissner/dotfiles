@@ -109,6 +109,7 @@ with builtins;
     };
     dev = {
       cc.enable = true;
+      lua.enable = true;
     };
     editors = {
       default = "nvim";
