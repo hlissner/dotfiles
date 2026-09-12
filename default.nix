@@ -98,6 +98,9 @@ with hey.lib;
     # For unfree hardware my laptops/refurbed systems will likely have.
     hardware.enableRedistributableFirmware = true;
 
+    # By default, journal size caps at 10% of storage; way too big.
+    services.journald.settings.Journal.SystemMaxUse = mkDefault "2G";
+
     # For `hey sync build-vm` (or `nixos-rebuild build-vm`)
     virtualisation.vmVariant.virtualisation = {
       memorySize = 2048;  # default: 1024
