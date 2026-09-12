@@ -49,4 +49,7 @@ mkIf (config.modules.profiles.role == "server") {
   };
   # Prevent replacing the running kernel w/o reboot
   security.protectKernelImage = true;
+
+  # Kill processes that pressure + swap
+  systemd.oomd.enableSystemSlice = true;
 }
