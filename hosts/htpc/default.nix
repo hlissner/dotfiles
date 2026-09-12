@@ -8,8 +8,7 @@ with builtins;
   system = "x86_64-linux";
 
   imports = [
-    hey.modules.nixos-hardware.common-cpu-intel-skylake
-    hey.modules.nixos-hardware.common-gpu-nvidia-maxwell
+    hey.modules.nixos-hardware.common-cpu-intel
   ];
 
   modules = {
@@ -85,7 +84,14 @@ with builtins;
   };
 
   hardware = { ... }: {
-    networking.interfaces.eno1.useDHCP = true;
+    # GTX 960 (Maxwell 2.0, GM206) requires v580
+    hardware.nvidia = {
+      open = false;  # Turing and later only
+      package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
+    };
+
+    # Skylake = gen9, the generic compute module requires gen12+
+    hardware.intelgpu.computeRuntime = "legacy";
 
     services.logind.settings.Login = {
       HandlePowerKey = "ignore";

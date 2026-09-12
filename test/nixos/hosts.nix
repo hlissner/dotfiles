@@ -13,23 +13,9 @@
 
 with lib;
 let
-  # Hosts that cannot be evaluated right now. Each entry names an upstream
-  # rename that needs a hardware decision, which is not the test suite's call
-  # to make, so they are quarantined rather than guessed at.
-  #
-  # Neither failure is catchable: builtins.tryEval traps neither a missing
-  # attribute nor an unbound variable, so a broken host here would take the
-  # whole aggregate down rather than reporting as one failed test. Hence a
-  # static list.
-  #
-  # Removing a host from this list is how you put it back under test.
-  #
-  # TODO htpc: nixos-hardware dropped common-cpu-intel-skylake and
-  #   common-gpu-nvidia-maxwell. The surviving modules are common-cpu-intel
-  #   and common-gpu-nvidia{,-nonprime,-sync}; which nvidia module is right
-  #   depends on the card.
-  # TODO soba: same common-cpu-intel-skylake, plus common-gpu-nvidia-pascal.
-  broken = [ "htpc" "soba" ];
+  # Hosts that cannot be evaluated right now, quarantined rather than guessed
+  # at when the fix needs a hardware decision the test suite cannot make.
+  broken = [ ];
 
   live = removeAttrs hosts broken;
 
@@ -59,11 +45,6 @@ in {
     expected = [ "harusame" "htpc" "ramen" "soba" "udon" ];
   };
 
-  testQuarantinedHostsAreExcluded = {
-    expr = attrNames live;
-    expected = [ "harusame" "ramen" "udon" ];
-  };
-
   # There is no aarch64 or server host yet, despite modules/profiles/role/
   # carrying server.nix, vm.nix and platform/linode.nix. When that changes,
   # this test and the meta.platforms in ./default.nix both need revisiting.
@@ -76,7 +57,9 @@ in {
     expr = mapAttrs (n: h: (applyHost n h).host.system) live;
     expected = {
       harusame = "x86_64-linux";
+      htpc     = "x86_64-linux";
       ramen    = "x86_64-linux";
+      soba     = "x86_64-linux";
       udon     = "x86_64-linux";
     };
   };
@@ -87,7 +70,9 @@ in {
     expr = forEachHost (c: c.networking.hostName);
     expected = {
       harusame = "harusame";
+      htpc     = "htpc";
       ramen    = "ramen";
+      soba     = "soba";
       udon     = "udon";
     };
   };
@@ -96,7 +81,9 @@ in {
     expr = forEachHost (c: { inherit (c.modules.profiles) role user; });
     expected = {
       harusame = { role = "workstation"; user = "hlissner"; };
+      htpc     = { role = "workstation"; user = "hlissner"; };
       ramen    = { role = "workstation"; user = "hlissner"; };
+      soba     = { role = "workstation"; user = "hlissner"; };
       udon     = { role = "workstation"; user = "hlissner"; };
     };
   };
@@ -109,7 +96,9 @@ in {
     expr = forEachHost (c: c.fileSystems."/".fsType);
     expected = {
       harusame = "ext4";
+      htpc     = "ext4";
       ramen    = "ext4";
+      soba     = "ext4";
       udon     = "ext4";
     };
   };
@@ -123,7 +112,9 @@ in {
     expr = forEachHost (c: attrNames c.age.secrets);
     expected = {
       harusame = [ "wg0PrivateKey" ];
+      htpc     = [];
       ramen    = [ "wg0PrivateKey" ];
+      soba     = [];
       udon     = [];
     };
   };
@@ -138,7 +129,9 @@ in {
     expr = mapAttrs (_: c: isString c.system.build.toplevel.drvPath) buildable;
     expected = {
       harusame = true;
+      htpc     = true;
       ramen    = true;
+      soba     = true;
       udon     = true;
     };
   };

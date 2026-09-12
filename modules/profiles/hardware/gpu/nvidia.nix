@@ -34,7 +34,7 @@ in mkIf (any (s: hasPrefix "gpu/nvidia" s) hardware) (mkMerge [
         # Save some idle watts.
         powerManagement.enable = true;  # see NixOS/nixos-hardware#348
         modesetting.enable = true;
-        package = config.boot.kernelPackages.nvidiaPackages.latest;
+        package = mkDefault config.boot.kernelPackages.nvidiaPackages.latest;
       };
     };
 

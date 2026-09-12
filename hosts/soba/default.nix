@@ -1,4 +1,4 @@
-# htpc -- my HTPC (shocker)
+# soba -- my secondary workstation
 
 { hey, lib, ... }:
 
@@ -8,8 +8,7 @@ with builtins;
   system = "x86_64-linux";
 
   imports = [
-    hey.modules.nixos-hardware.common-cpu-intel-skylake
-    hey.modules.nixos-hardware.common-gpu-nvidia-pascal
+    hey.modules.nixos-hardware.common-cpu-intel-cpu-only
   ];
 
   modules = {
@@ -75,6 +74,12 @@ with builtins;
 
   hardware = { ... }: {
     # networking.interfaces.eno1.useDHCP = true;
+
+    # GTX 1080 (Pascal, GP104) requires v580
+    hardware.nvidia = {
+      open = false;  # Turing and later only
+      package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
+    };
 
     fileSystems = {
       "/" = {
