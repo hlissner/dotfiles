@@ -150,8 +150,6 @@ with builtins;
   };
 
   hardware = { ... }: {
-    boot.supportedFilesystems = [ "ntfs" ];
-
     networking.interfaces.eno1.useDHCP = true;
 
     # Disable all USB wakeup events to ensure restful sleep. This system has
@@ -201,10 +199,12 @@ with builtins;
         fsType = "ext4";
         options = [ "noatime" "noauto" "nofail" "x-systemd.automount" ];
       };
+      # ntfs3 (in-kernel) > ntfs-3g (FUSE). Since my Steam library lives on this
+      # partition, this saves steam the userspace round trip per IO.
       "/media/windows" = {
         device = "/dev/disk/by-label/windows";
-        fsType = "ntfs";
-        options = [ "defaults" "noauto" "nofail" "noatime" "nodev" "exec" "umask=000" "uid=1000" "gid=1000" "x-systemd.automount" ];
+        fsType = "ntfs3";
+        options = ["noatime" "nodev" "nosuid" "exec" "umask=000" "uid=1000" "gid=100" "noauto" "nofail" "x-systemd.automount" ];
       };
 
       "/media/nas" = {
@@ -217,12 +217,6 @@ with builtins;
         fsType = "nfs";
         options = [ "noauto" "nofail" "noatime" "nfsvers=4.2" "x-systemd.automount" "x-systemd.idle-timeout=600" ];
       };
-
-      # "/media/llissner" = {
-      #   device = "nas0.lan:/mnt/nas/users/llissner/files";
-      #   fsType = "nfs";
-      #   options = [ "noauto" "nofail" "noatime" "nfsvers=4.2" "x-systemd.automount" "x-systemd.idle-timeout=600" ];
-      # };
     };
     swapDevices = [];
   };
