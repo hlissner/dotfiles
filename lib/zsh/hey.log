@@ -1,16 +1,23 @@
 #!/usr/bin/env zsh
+# hey.log [-c COLOR] [-1|-2|-3] [--] [MESSAGE...]
+#
+# Prints MESSAGE to stderr when $HEYDEBUG is at or above the given level (1).
+# Reads stdin if MESSAGE is omitted.
 
-typeset -F SECONDS
+[[ -z $HEYDEBUG ]] && return
 
-main() {
-  [ -z "$HEYDEBUG" ] && return
-  if [[ $1 == -[123] ]]; then
-    (( ${1#-} > HEYDEBUG )) && return
-    shift
-  fi
-  hey.echo -c blue \
-    -p "$(printf '%.4f' $SECONDS):${ZSH_ARGZERO:t:r}[$$]: " \
-    "${@:-$(cat)}" >&2
-}
+local color=blue
+while true; do
+  case $1 in
+    -c) color=$2; shift 2 ;;
+    -[123]) (( ${1#-} > HEYDEBUG )) && return; shift ;;
+    --) shift; break ;;
+    *) break ;;
+  esac
+done
 
-main $@
+# Global, or SECONDS is local to this function and every timestamp reads ~0.
+typeset -gF SECONDS
+hey.echo -c $color \
+  -p "$(printf '%.4f' $SECONDS):${ZSH_ARGZERO:t:r}[$$]: " \
+  -- "${@:-$(cat)}" >&2

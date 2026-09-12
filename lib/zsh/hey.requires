@@ -4,16 +4,12 @@
 # Asserts that each shell executable in COMMANDS is available (in $PATH). Throws
 # an error and exits otherwise.
 
-main() {
-  hey.log -2 "hey.requires: $@"
-  local ok=1
-  for arg in $@; do
-    if ! command -v $arg >/dev/null; then
-      hey.error "Required dependency not met: $arg"
-      ok=
-    fi
-  done
-  [[ $ok ]] || exit 1
-}
-
-main $@
+hey.log -2 "hey.requires: $*"
+local arg ok=1
+for arg in "$@"; do
+  if ! command -v $arg >/dev/null; then
+    hey.error "Required dependency not met: $arg"
+    ok=
+  fi
+done
+[[ $ok ]] || exit 1

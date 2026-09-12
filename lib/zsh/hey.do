@@ -3,7 +3,7 @@
 #           ( -! [[-p PACKAGE]...] [[--keep VAR]...] ) ]
 #        COMMAND [ARGS...]
 #
-# TODO
+# Runs COMMAND, announcing it under HEYDEBUG and skipping it under HEYDRYRUN.
 #
 # ENVIRONMENT VARIABLES:
 #   HEYDEBUG
@@ -18,29 +18,33 @@
 #     Makes the command no-op if COMMAND isn't in $PATH. -e can be used to
 #     provide explicit executables to check against (instead of COMMAND).
 #   -! [[-p PACKAGE]...] [[--keep VAR]...] )
-#     If COMMAND isn't in $PATH, run the command in cached-nix-shell and try to
-#     automatically provision them. Use -p to specify package names explicitly
-#     (instead of COMMAND), and --keep to allow certain environment variables to
-#     persist into the nix-shell session.
+#     Run COMMAND in cached-nix-shell, provisioning it there. Use -p to specify
+#     package names explicitly (instead of COMMAND), and --keep to allow certain
+#     environment variables to persist into the nix-shell session.
 
 case $1 in
   -o)
     shift
+    local -a exes
+    local _ exe
     zparseopts -D -- e+:=exes
     (( $#exes == 0 )) && exes=( -e "$1" )
-    for _ exe in ${exes[@]}; do
+    for _ exe in "${exes[@]}"; do
       if ! command -v $exe >/dev/null; then
-        hey.log -2 "$exe absent, skipping: $ $@"
-        exit 1
+        hey.log -2 "$exe absent, skipping: $ $*"
+        return 1
       fi
     done
     ;;
   -!)
     shift
+    local -a pkgs keep
     zparseopts -D -- p+:=pkgs keep+:=keep
     (( $#pkgs == 0 )) && pkgs=( -p "$1" )
-    cached-nix-shell "${keep[@]}" "${pkgs[@]}" --run "$*"
-    exit
+    # --run takes one string that the shell re-parses, so each argument has to
+    # survive a round trip through quoting.
+    cached-nix-shell "${keep[@]}" "${pkgs[@]}" --run "${(j: :)${(q)@}}"
+    return
     ;;
 esac
 

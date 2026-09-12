@@ -1,10 +1,19 @@
 #!/usr/bin/env zsh
+# hey.echo [-n] [-c COLOR] [-p PREFIX] [--] [MESSAGE...]
+#
+# Prints MESSAGE, coloured unless $HEYPIPE is set. Pass -- when MESSAGE may
+# begin with a dash.
 
-# TODO
-main() {
-  zparseopts -E -D -- p:=prefix c:=color n=nl || return
-  [[ -n $HEYPIPE ]] && color=
-  print -P $nl "${color[2]:+%F\{$color[2]\}}${prefix[2]}$@${color[2]:+%f}"
-}
+local -a prefix color nl
+zparseopts -E -D -- p:=prefix c:=color n=nl || return
+[[ $1 == -- ]] && shift
+[[ -n $HEYPIPE ]] && color=()
 
-main $@
+# Only the colour spec goes through prompt expansion; the message is printed
+# verbatim, so a % in it can't be read as an escape.
+local on= off=
+if [[ -n $color[2] ]]; then
+  on=${(%):-%F{$color[2]}}
+  off=${(%):-%f}
+fi
+print -r $nl -- "$on$prefix[2]$*$off"
