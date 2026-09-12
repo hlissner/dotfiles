@@ -25,7 +25,7 @@ with builtins;
       ];
     };
 
-    hyprland = rec {
+    hyprland = {
       enable = true;
       monitors = [
         { output = "HDMI-A-2";
@@ -59,6 +59,7 @@ with builtins;
           persistent = true,
           layout = "scrolling"
         })
+        -- Staged for when the tv is switched on
         hl.workspace_rule({
           workspace = "name:tv",
           monitor = "HDMI-A-1",

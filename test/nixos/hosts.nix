@@ -111,7 +111,7 @@ in {
   testHostSecretsAreDiscovered = {
     expr = forEachHost (c: attrNames c.age.secrets);
     expected = {
-      harusame = [ "wg0PrivateKey" ];
+      harusame = [];
       htpc     = [];
       ramen    = [ "tailscaleAuthKey" ];
       soba     = [];

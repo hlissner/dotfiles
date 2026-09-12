@@ -32,7 +32,6 @@ with hey.lib;
       NIXPKGS_ALLOW_UNFREE = "1";   # Forgive me Stallman-senpai.
     };
 
-    # FIXME: Make this optional
     user = {
       description = mkDefault "The primary user account";
       extraGroups = [ "wheel" ];

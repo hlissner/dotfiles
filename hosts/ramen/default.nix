@@ -28,7 +28,7 @@ with builtins;
       ];
     };
 
-    hyprland = rec {
+    hyprland = {
       enable = true;
       monitors = [ { output = "eDP-1"; primary = true; } ];
       extraConfig = ''
