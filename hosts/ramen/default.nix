@@ -106,7 +106,7 @@ with builtins;
       "/" = {
         device = "/dev/disk/by-label/nixos";
         fsType = "ext4";
-        options = [ "noatime" ];
+        options = [ "noatime" "errors=remount-ro" ];
       };
       "/boot" = {
         device = "/dev/disk/by-label/BOOT";
