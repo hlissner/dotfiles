@@ -113,14 +113,14 @@ in {
     expected = {
       harusame = [ "wg0PrivateKey" ];
       htpc     = [];
-      ramen    = [ "wg0PrivateKey" ];
+      ramen    = [ "tailscaleAuthKey" ];
       soba     = [];
       udon     = [];
     };
   };
 
   testSecretsAreOwnedByTheHostUser = {
-    expr = (configs.ramen.age.secrets.wg0PrivateKey).owner;
+    expr = (configs.ramen.age.secrets.tailscaleAuthKey).owner;
     expected = "hlissner";
   };
 
