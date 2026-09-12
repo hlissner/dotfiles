@@ -8,7 +8,6 @@ let inherit (hey.lib.pkgs) mkWrapper mkLauncherEntry;
     rofiPkg = pkgs.rofi-unwrapped;
     rofiFBPkg = pkgs.rofi-file-browser.override { rofi = rofiPkg; };
     rofiCalcPkg = pkgs.rofi-calc.override { rofi-unwrapped = rofiPkg; };
-    rofiBlocksPkg = hey.packages.rofi-blocks.override { rofi-unwrapped = rofiPkg; };
 in {
   options.modules.apps.rofi = with hey.lib.options; {
     enable = mkBoolOpt false;
@@ -30,7 +29,6 @@ in {
 
       environment.variables.ROFI_PLUGIN_PATH = [
         "$XDG_CONFIG_HOME/rofi/plugins"  # for local development
-        "${rofiBlocksPkg}/lib/rofi"
         "${rofiFBPkg}/lib/rofi"
         "${rofiCalcPkg}/lib/rofi"
       ];

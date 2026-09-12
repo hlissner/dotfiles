@@ -19,8 +19,6 @@
   (def cfg (merge config (struct ;plist)))
   (with-envvars ["ROFI_PLACEHOLDER" (if-let [ph (get cfg :placeholder)]
                                       (fmt "\"%s\"" ph))]
-    # (each binds (get cfg :bind)
-    #   )
     (os/spawn ["rofi" "-dmenu" "-markup-rows"
                ;(opts "-i" (not (get cfg :case-sensitive)))
                ;(opts "-p" (get cfg :prompt))
@@ -56,13 +54,11 @@
                            :div (fn [self & plist]
                                   (ev/write
                                    (self :in)
-                                   (prep-line "<span alpha='30%%'>------------------------------------------------------------</span>"
+                                   (prep-line (fmt "<span alpha='30%%'>%s</span>"
+                                                   (string/repeat "-" 60))
                                               [:nonselectable true ;plist])))
                            :on-code (fn [self code action] (put binds code action))
-                           :sleep (fn [self n] (ev/sleep n))
-                           # :set (fn [self & plist]
-                           #        (ev/write (self :in) (prep-line "" plist)))
-                          }))
+                           :sleep (fn [self n] (ev/sleep n))}))
                      ([err fib]
                       # in case of premature abort
                       (or (= err "stream is closed")
