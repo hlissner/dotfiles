@@ -39,6 +39,6 @@ in {
       name = "${prefix}${hashString "md5" "${title}\n${exec}"}";
       desktopName = title;
     } // optionalAttrs (description != "") {
-      comment = description;
+      genericName = description;
     });
 }
