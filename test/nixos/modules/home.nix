@@ -6,8 +6,9 @@
 # upstream breaks it: files simply stop being deployed. These tests assert each
 # alias still lands where it claims to.
 
-{ evalConfig, ... }:
+{ evalConfig, lib, ... }:
 
+with lib;
 let
   # The alias targets all hang off the user's home-manager config.
   hm = modules: (evalConfig modules).home-manager.users.test;
@@ -71,17 +72,26 @@ in {
     };
   };
 
-  testSessionVariablesExportXdgDirs = {
+  testSessionVariablesExportXdgDirsRelativeToHome = {
     expr =
       let v = (evalConfig []).environment.sessionVariables;
       in {
         inherit (v) XDG_BIN_HOME XDG_CONFIG_HOME XDG_FAKE_HOME;
       };
     expected = {
-      XDG_BIN_HOME    = "/home/test/.local/bin";
-      XDG_CONFIG_HOME = "/home/test/.config";
-      XDG_FAKE_HOME   = "/home/test/.local/user";
+      XDG_BIN_HOME    = "$HOME/.local/bin";
+      XDG_CONFIG_HOME = "$HOME/.config";
+      XDG_FAKE_HOME   = "$HOME/.local/user";
     };
+  };
+
+  testNoXdgVariableNamesTheUsersHomeInPamEnv = {
+    expr =
+      let c = evalConfig [];
+          isXdg = l: hasPrefix "XDG_" l;
+          lines = filter isXdg (splitString "\n" c.environment.etc."pam/environment".text);
+      in filter (hasInfix c.home.dir) lines;
+    expected = [];
   };
 
   # home-manager needs a stateVersion of its own or it looks for a nixpkgs

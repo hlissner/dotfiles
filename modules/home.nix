@@ -42,21 +42,27 @@ in {
   config = {
     environment.localBinInPath = true;
 
-    environment.sessionVariables = mkOrder 10 {
-      # These are the defaults, and xdg.enable does set them, but due to load
-      # order, they're not set before environment.variables are set, which
-      # could cause race conditions.
-      XDG_BIN_HOME    = cfg.binDir;
-      XDG_CACHE_HOME  = cfg.cacheDir;
-      XDG_CONFIG_HOME = cfg.configDir;
-      XDG_DATA_HOME   = cfg.dataDir;
-      XDG_STATE_HOME  = cfg.stateDir;
+    environment.sessionVariables = mkOrder 10 (
+      # Deliberately $HOME-relative, so as not to hard-code these for all users.
+      let underHome = dir:
+            if hasPrefix "${cfg.dir}/" dir
+            then "$HOME" + removePrefix cfg.dir dir
+            else dir;
+      in {
+        # These are the defaults, and xdg.enable does set them, but due to load
+        # order, they're not set before environment.variables are set, which
+        # could cause race conditions.
+        XDG_BIN_HOME    = underHome cfg.binDir;
+        XDG_CACHE_HOME  = underHome cfg.cacheDir;
+        XDG_CONFIG_HOME = underHome cfg.configDir;
+        XDG_DATA_HOME   = underHome cfg.dataDir;
+        XDG_STATE_HOME  = underHome cfg.stateDir;
 
-      # This is not in the XDG standard. It's my jail for stubborn programs,
-      # like Firefox, Steam, and LMMS.
-      XDG_FAKE_HOME = cfg.fakeDir;
-      XDG_DESKTOP_DIR = cfg.fakeDir;
-    };
+        # This is not in the XDG standard. It's my jail for stubborn programs,
+        # like Firefox, Steam, and LMMS.
+        XDG_FAKE_HOME = underHome cfg.fakeDir;
+        XDG_DESKTOP_DIR = underHome cfg.fakeDir;
+      });
 
     home.file =
       mapAttrs' (k: v: nameValuePair "${config.home.fakeDir}/${k}" v)
