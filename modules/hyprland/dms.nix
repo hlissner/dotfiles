@@ -35,8 +35,6 @@ in {
     programs.dms-shell = {
       enable = true;
       systemd.enable = true;
-      enableSystemMonitoring = true;
-      enableDynamicTheming = true;
       enableCalendarEvents = false;
 
       # Only puts them on disk; still have to toggle them on in DMS settings.
