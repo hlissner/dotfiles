@@ -39,6 +39,10 @@ in {
       enableDynamicTheming = true;
     };
 
+    # Needed for changing charge thresholds in Settings > Power & Security >
+    # Battery since 26.11 (the setuid wrapper is opt-in from NixOS 26.11+)
+    security.polkit.enablePkexecWrapper = true;
+
     services.greetd.enable = true;
 
     services.displayManager = {
