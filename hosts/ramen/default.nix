@@ -30,6 +30,10 @@ with builtins;
 
     hyprland = {
       enable = true;
+      plymouth = {
+        enable = true;
+        seamless = true;
+      };
       monitors = [ { output = "eDP-1"; primary = true; } ];
       extraConfig = ''
         -- trigger when the lid is up
