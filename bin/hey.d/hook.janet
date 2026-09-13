@@ -33,7 +33,8 @@
 #     List the scripts that would be run, instead of running them. Without a
 #     HOOK, list them for every known hook, grouped by hook.
 #   -v
-#     Be verbose.
+#     Be verbose; logs the path of each handler as it runs. Equivalent to
+#     hey -? for this command alone.
 #
 # ARGUMENTS:
 #   1 HOOK @hooks
@@ -44,6 +45,28 @@
 (import hey/vars)
 
 (def- *vars* (vars/new (:dir vars/temp :hook)))
+
+(defn- ls
+  "The names in DIR, or nothing if it can't be read."
+  [dir]
+  (or (ignore-errors (os/dir dir)) []))
+
+(defn- ls-in
+  "Like ls, but as absolute paths."
+  [dir]
+  (map |(path/join dir $) (ls dir)))
+
+(defn- hook-names-in
+  "The hook each script in DIR handles; its filename, sans extension."
+  [dir]
+  (map |(path/no-ext $ ;*script-exts* ".d") (ls dir)))
+
+(defn- runnable?
+  ``Whether CMD is a [SCRIPT ARGS...] we can execute. resolve yields nil when it
+  finds nothing, and a match that isn't an executable file is no handler.``
+  [cmd]
+  (when-let [script (and cmd (first cmd))]
+    (and (path/file? script) (path/executable? script))))
 
 (defn parse-area
   ``Split a leading @AREA off HOOK, returning [AREA HOOK ARGS]. Without the
@@ -58,83 +81,91 @@
   always known because it names hosts/$HOST/hooks.``
   [names &opt wm]
   (let [names (distinct (filter |(not= $ "host") names))]
-    [;(if (index-of wm names) [wm] [])
+    [;(filter |(= $ wm) names)
      ;(sorted (filter |(not= $ wm) names))
      "host"]))
 
-(defn- areas [&opt area]
-  (let [names (sort-areas
-               (filter |(path/directory? (path :config $ "hooks"))
-                       (or (ignore-errors (os/dir (path :config))) []))
-               (ignore-errors (path/basename (path :wm))))]
+(defn- areas
+  ``Every area with a hooks/ directory, in run order; or only AREA, if given and
+  known.``
+  [&opt area]
+  (let [dirs  (filter |(path/directory? (path :config $ "hooks")) (ls (path :config)))
+        wm    (ignore-errors (path/basename (path :wm)))
+        names (sort-areas dirs wm)]
     (cond (nil? area) names
           (index-of area names) [area]
           (abort "Unknown area: %s" area))))
 
-(defn- area-dirs [names]
+(defn- area-dirs
   ``The hooks/ directories of NAMES, grouped as [LIVE HOST REPO]. The host's
   hooks aren't user-editable elsewhere, so it has no live counterpart.``
+  [names]
   (let [cfgs (filter |(not= $ "host") names)]
     [(map |(path/xdg :config $ "hooks") cfgs)
      (if (index-of "host" names) [(path :host "hooks")] [])
      (map |(path :config $ "hooks") cfgs)]))
 
-(defn- hooks [area hook args]
-  (let [[live host repo] (area-dirs (areas area))]
-    (each f [;(catseq [dir :in live]
-                [(resolve dir "all" (string "--" hook) ;args)
-                 (resolve dir hook ;args)])
+(defn- hooks
+  "The [SCRIPT ARGS...] commands HOOK resolves to, in the order they run."
+  [area hook args]
+  (let [[live host repo] (area-dirs (areas area))
+        # An area's `all` handler runs ahead of its handler for this hook.
+        resolve-in |[(resolve $ "all" (string "--" hook) ;args)
+                     (resolve $ hook ;args)]
+        # Third party handlers (see modules/hey.nix) belong to no area.
+        third-party (if area [] (ls-in (path :data "hooks.d" (string hook ".d"))))]
+    (filter runnable?
+            [;(catseq [dir :in live] (resolve-in dir))
              ;(map |(resolve $ hook ;args) host)
-             ;(catseq [dir :in repo]
-                [(resolve dir "all" (string "--" hook) ;args)
-                 (resolve dir hook ;args)])
-             # Third party handlers (see modules/hey.nix) belong to no area.
-             ;(if area []
-                (map |[$ ;args]
-                     (or (ignore-errors
-                          (path/files-in (path :data "hooks.d" (string hook ".d"))))
-                         [])))]
-      (when (and f
-                 (path/file? (first f))
-                 (path/executable? (first f)))
-        (yield f)))))
+             ;(catseq [dir :in repo] (resolve-in dir))
+             ;(map |[$ ;args] third-party)])))
 
-(defn- all-hooks [&opt area]
-  (defn names-in [dir]
-    (map |(path/no-ext $ ;*script-exts* ".d") (or (ignore-errors (os/dir dir)) [])))
-  (let [names @{}
-        [live host repo] (area-dirs (areas area))]
-    (each dir [;live ;host ;repo]
-      (each name (names-in dir)
-        (unless (= name "all")  # fallthrough handler for all hooks
-          (put names name true))))
-    (unless area
-      (each name (names-in (path :data "hooks.d"))
-        (put names name true)))
-    (sorted (keys names))))
+(defn- all-hooks
+  "The name of every hook that has a handler anywhere."
+  [&opt area]
+  (let [[live host repo] (area-dirs (areas area))
+        names (catseq [dir :in [;live ;host ;repo]] (hook-names-in dir))]
+    (sorted
+     (distinct
+      [;(filter |(not= $ "all") names)  # fallthrough handler for all hooks
+       ;(if area [] (hook-names-in (path :data "hooks.d")))]))))
 
-(defcmd hook [_ hook & args &opts force? -f list? [-l --list] verbose? -v]
-  (def [area hook args] (parse-area hook args))
-  (when list?
-    (if hook
-      (echo ;(map first (coro (hooks area hook args))))
-      (each name (all-hooks area)
-        (let [paths (map first (coro (hooks area name args)))]
-          (unless (empty? paths)
-            (echo name)
-            (echo ;(map |(string "  " $) paths))))))
-    (break))
-  (unless hook
-    (abort "No hook specified"))
-  (let [hash [;(if area [(string "@" area)] []) hook ;args]]
-    (when (and (not force?) (deep= (:get *vars* :last) hash))
-      (abort "Redundant hook triggered: %q" hash))
+(defn- list-hooks
+  ``Print the handlers HOOK would run; or, without one, every hook's, indented
+  under its name.``
+  [area hook args]
+  (def paths-for |(map first (hooks area $ args)))
+  (if hook
+    (echo ;(paths-for hook))
+    (each name (all-hooks area)
+      (let [paths (paths-for name)]
+        (unless (empty? paths)
+          (echo name)
+          (echo ;(map |(string "  " $) paths)))))))
+
+(defn- run-hooks
+  ``Run every handler for HOOK, unless the last trigger was the same one (and
+  not FORCE?). Resolution happens before the lock, so a trigger that can't
+  resolve fails with its own error instead of being recorded as the last one.``
+  [area hook args force?]
+  (let [sig  [;(if area [(string "@" area)] []) hook ;args]
+        cmds (hooks area hook args)]
+    (when (and (not force?) (deep= (:get *vars* :last) sig))
+      (abort "Redundant hook triggered: %q" sig))
     (os/with-lock (path :runtime "hook.lock")  # don't clobber hooks
-      (defer (unless (dryrun?) (:set *vars* :last hash))
-        (var c 0)
-        (each cmd (coro (hooks area hook args))
+      # Record the trigger even if a handler fails, so a broken one can't be
+      # retriggered in a loop.
+      (defer (unless (dryrun?) (:set *vars* :last sig))
+        (each cmd cmds
           (log "Hook: %s" (path/abbrev (first cmd)))
           (echof :g "Running %s..." (path/basename (first cmd)))
-          (do? $? ,;cmd)
-          (++ c))
-        (echof :pass "Triggered %d hook(s) for: %q" c hash)))))
+          (do? $? ,;cmd))
+        (echof :pass "Triggered %d hook(s) for: %q" (length cmds) sig)))))
+
+(defcmd hook [_ hook & args &opts force? -f list? [-l --list] verbose? -v]
+  (when verbose?
+    (setdyn :debug (max 1 (dyn :debug -1))))
+  (def [area hook args] (parse-area hook args))
+  (cond list?       (list-hooks area hook args)
+        (nil? hook) (abort "No hook specified")
+        (run-hooks area hook args force?)))
