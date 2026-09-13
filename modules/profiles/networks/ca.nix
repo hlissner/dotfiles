@@ -1,4 +1,4 @@
-# modules/profiles/network/ca.nix --- TODO
+# modules/profiles/networks/ca.nix --- TODO
 
 { hey, lib, config, pkgs, ... }:
 

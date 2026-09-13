@@ -1,4 +1,4 @@
-# modules/profiles/network/dk.nix --- TODO
+# modules/profiles/networks/dk.nix --- TODO
 
 { hey, lib, config, pkgs, ... }:
 

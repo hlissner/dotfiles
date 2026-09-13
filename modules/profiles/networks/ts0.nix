@@ -1,4 +1,4 @@
-# modules/profiles/network/ts0 -- tailscale network
+# modules/profiles/networks/ts0 -- tailscale network
 
 { hey, lib, config, pkgs, ... }:
 
