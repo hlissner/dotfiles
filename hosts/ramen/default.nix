@@ -87,8 +87,6 @@ with builtins;
 
   ## Hardware config
   hardware = { pkgs, ... }: {
-    networking.wireless.interfaces = [ "wlp2s0" ];
-
     # If I want to sleep the system, I'll do it myself.
     services.logind.settings.Login.HandleLidSwitch = "ignore";
     # Tapping power button should do nothing
