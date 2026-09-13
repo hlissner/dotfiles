@@ -16,6 +16,15 @@ with lib;
 with hey.lib;
 let cfg = config.modules.xdg;
     home = config.home;
+    # Kept $HOME-relative, like modules/home.nix, so a value isn't hard-coded to
+    # one user. PAM renders $HOME as @{HOME} and the shell profile expands it
+    # directly; neither depends on the order variables are defined in.
+    underHome = dir:
+      if hasPrefix "${home.dir}/" dir
+      then "$HOME" + removePrefix home.dir dir
+      else dir;
+    # Takes paths relative to DIR, and returns them under it.
+    inDir = dir: mapAttrs (_: path: "${underHome dir}/${path}");
 in {
   imports = [
     hey.modules.home-manager.default
@@ -33,9 +42,7 @@ in {
       # ~/.nix-profile -> $XDG_DATA_HOME/nix/profile
       # ~/.nix-channels -> $XDG_DATA_HOME/nix/channels
       nix.settings.use-xdg-base-directories = true;
-      # nix.extraOptions = ''
-      #   use-xdg-base-directories = true
-      # '';
+
 
       ### A tidy $HOME is a tidy mind
       # home-manager.users.${config.user.name}.xdg.enable = true;
@@ -45,9 +52,10 @@ in {
         # available (sigh).
         systemPackages = [ pkgs.xdg-user-dirs ];
 
-        # These are set early in the login process by PAM; much sooner than
-        # environment.variables, so the important variables go here. The actual
-        # XDG_*_HOME variables are defined in home-manager.nix.
+        # These must be set early in the login process and end up in
+        # /etc/set-environment, but also in the PAM env, where $XDG_*_HOME
+        # variables aren't available, so we must build them from $HOME. More are
+        # set from other modules.
         sessionVariables = {
           __GL_SHADER_DISK_CACHE_PATH = "/tmp/nv";
 
@@ -55,39 +63,34 @@ in {
           # set especially early to intercept this silliness:
           # https://github.com/NixOS/nixpkgs/blob/25865a40d14b3f9cf19f19b924e2ab4069b09588/nixos/modules/services/x11/display-managers/default.nix#L98-L105,
           XCOMPOSECACHE = "/tmp/xcompose";
-        };
 
-        # Conform common programs to XDG conventions, leaving the rest to their
-        # respective modules.
-        variables = {
-          # Common shells
-          BASH_COMPLETION_USER_FILE = "$XDG_CONFIG_HOME/bash/completion";
-          ENV             = "$XDG_CONFIG_HOME/shell/shrc";  # sh, ksh
-          # Common databases
-          MYSQL_HISTFILE  = "$XDG_STATE_HOME/mysql/history";
-          PGPASSFILE      = "$XDG_CONFIG_HOME/pg/pgpass";
-          PGSERVICEFILE   = "$XDG_CONFIG_HOME/pg";
-          PSQLRC          = "$XDG_CONFIG_HOME/pg/psqlrc";
-          PSQL_HISTORY    = "$XDG_STATE_HOME/psql_history";
-          SQLITE_HISTORY  = "$XDG_STATE_HOME/sqlite/history";
-          # Misc
-          ASPELL_CONF     = ''per-conf $XDG_CONFIG_HOME/aspell/aspell.conf; personal $XDG_CONFIG_HOME/aspell/en_US.pws; repl $XDG_CONFIG_HOME/aspell/en.prepl;'';
-          BZRPATH         = "$XDG_CONFIG_HOME/bazaar";
-          BZR_HOME        = "$XDG_CACHE_HOME/bazaar";
-          BZR_PLUGIN_PATH = "$XDG_DATA_HOME/bazaar";
-          DVDCSS_CACHE    = "$XDG_CACHE_HOME/dvdcss";
-          ICEAUTHORITY    = "$XDG_CACHE_HOME/ICEauthority";
-          INPUTRC         = "$XDG_CONFIG_HOME/readline/inputrc";
-          LESSHISTFILE    = "$XDG_STATE_HOME/less/history";
-          LESSKEY         = "$XDG_CONFIG_HOME/less/keys";
-          SUBVERSION_HOME = "$XDG_CONFIG_HOME/subversion";
-          WGETRC          = "$XDG_CONFIG_HOME/wgetrc";
+          ASPELL_CONF =
+            let f = p: "${underHome home.configDir}/aspell/${p}"; in
+            "per-conf ${f "aspell.conf"}; personal ${f "en_US.pws"}; repl ${f "en.prepl"};";
+        }
+        // inDir home.configDir {
+          BASH_COMPLETION_USER_FILE = "bash/completion";
+          ENV           = "shell/shrc";       # sh, ksh
+          INPUTRC       = "readline/inputrc"; # readline
+          PGPASSFILE    = "pg/pgpass";        # postgres
+          PGSERVICEFILE = "pg";
+          PSQLRC        = "pg/psqlrc";
+          WGETRC        = "wgetrc";
+        }
+        // inDir home.stateDir {
+          MYSQL_HISTFILE = "mysql/history";
+          PSQL_HISTORY   = "psql_history";
+          SQLITE_HISTORY = "sqlite/history";
+        }
+        // inDir home.cacheDir {
+          DVDCSS_CACHE = "dvdcss";
+          ICEAUTHORITY = "ICEauthority";
         };
 
         # For programs that don't expose an envvar or for whom XDG compliance is
         # only relevant during interactive shell use.
         shellAliases = {
-          sqlite3 = ''sqlite3 -init "$XDG_CONFIG_HOME/sqlite3/sqliterc"'';
+          sqlite3 = ''sqlite3 -init "$XDG_CONFIG_HOME/sqlite/sqliterc"'';
           wget = ''wget --hsts-file="$XDG_CACHE_HOME/wget-hsts"'';
         };
 
@@ -140,19 +143,10 @@ in {
         mkdir -p "$XDG_DATA_HOME/pki/nssdb"
       '';
 
-      # dbus-broker doesn't produce a $HOME/.dbus like the dbus daemon does.
-      services.dbus.implementation = "broker";
-
       # Ensures .Xauthority is written (by the display manager or X11-compatible
       # programs) to $XDG_RUNTIME_DIR and /run/lightdm/*/, instead of $HOME.
       services.xserver.displayManager.lightdm.extraConfig = "user-authority-in-system-dir = true\n";
       services.displayManager.generic.environment.XAUTHORITY = "$XDG_RUNTIME_DIR/xauthority";
-
-      # See https://kdemonkey.blogspot.com/2008/04/magic-trick.html, then
-      # https://github.com/NixOS/nixpkgs/blob/25865a40d14b3f9cf19f19b924e2ab4069b09588/nixos/modules/services/x11/display-managers/default.nix#L98-L105,
-      # which creates $HOME/.compose-cache without this.
-      services.displayManager.generic.environment.XCOMPOSECACHE =
-        config.environment.sessionVariables.XCOMPOSECACHE;
     }
 
     ## Forcing SSH to respect XDG.
