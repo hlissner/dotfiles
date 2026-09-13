@@ -28,4 +28,9 @@ in mkIf (elem "ts0" config.modules.profiles.networks) {
     # relaying everything through a DERP server.
     openFirewall = true;
   };
+
+  # Reduce wait for tailscale0.auto-connect at startup (otherwise I have to wait
+  # an extra 1:30min when the system has no internet).
+  systemd.services.tailscaled-autoconnect =
+    mkIf (secrets ? tailscaleAuthKey) { serviceConfig.TimeoutStartSec = "20s"; };
 }
