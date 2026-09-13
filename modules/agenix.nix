@@ -54,12 +54,13 @@ in {
 
     age = {
       identityPaths = [ hostKey ];
+      # Anything a secrets.nix entry declares besides publicKeys and armor
+      # (agenix's fields) is forwarded to that age.secrets's submodule. Takes
+      # file, path, mode, owner, group and symlink.
       secrets = foldl (a: b: a // b) {}
         (map (dir: mapAttrs'
-          (n: v: nameValuePair (removeSuffix ".age" n) {
-            file = "${dir}/${n}";
-            owner = mkDefault config.user.name;
-          })
+          (n: v: nameValuePair (removeSuffix ".age" n)
+            ({ file = "${dir}/${n}"; } // removeAttrs v [ "publicKeys" "armor" ]))
           (import "${dir}/secrets.nix"))
           (filter (dir: pathExists "${dir}/secrets.nix")
             config.modules.agenix.dirs));

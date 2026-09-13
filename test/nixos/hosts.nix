@@ -119,9 +119,12 @@ in {
     };
   };
 
-  testSecretsAreOwnedByTheHostUser = {
+  # agenix.nix sets no owner, so these land on agenix's default of root (as the
+  # uid, not the name). root is what reads them; a secret a user service needs
+  # has to ask for that ownership itself.
+  testSecretsAreOwnedByRoot = {
     expr = (configs.ramen.age.secrets.tailscaleAuthKey).owner;
-    expected = "hlissner";
+    expected = "0";
   };
 
   # The one that actually evaluates each configuration end to end.
