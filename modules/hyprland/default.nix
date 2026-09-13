@@ -8,6 +8,9 @@ with lib;
 with hey.lib;
 let cfg = config.modules.hyprland;
     primaryMonitor = findFirst (x: x.primary) {} cfg.monitors;
+    iconTheme   = "Dracula";
+    cursorTheme = "catppuccin-mocha-dark-cursors";
+    cursorSize  = 32;
 in {
   options.modules.hyprland = with types; {
     enable = mkBoolOpt false;
@@ -26,81 +29,20 @@ in {
   };
 
   config = mkIf cfg.enable {
+    hey.info.hypr = {
+      primaryMonitor = primaryMonitor.output or null;
+      monitors = cfg.monitors;
+    };
+
     programs.hyprland = {
       enable = true;
       withUWSM = true;
       systemd.setPath.enable = true;
     };
 
-    programs.dms-shell = {
-      enable = true;
-      systemd.enable = true;
-      enableSystemMonitoring = true;
-      enableDynamicTheming = true;
-      enableCalendarEvents = false;
-    };
-
-    # Needed for changing charge thresholds in Settings > Power & Security >
-    # Battery since 26.11 (the setuid wrapper is opt-in from NixOS 26.11+)
-    security.polkit.enablePkexecWrapper = true;
-
-    services.greetd.enable = true;
-
-    services.displayManager = {
-      # In case I ever want to enable greetd's autologin in the future.
-      # dms-greeter greeter doesn't respect this otherwise.
-      defaultSession = "hyprland-uwsm";
-
-      dms-greeter = {
-        enable = true;
-        logs.save = true;
-        compositor.name = "hyprland";
-        compositor.customConfig = ''
-          hl.config({
-            misc = {
-              background_color = 0xff000000,
-              force_default_wallpaper = 0,
-              disable_hyprland_logo = true,
-              disable_splash_rendering = true
-            },
-            ecosystem = {
-              no_update_news = true,
-              no_donation_nag = true
-            },
-            cursor = {
-              inactive_timeout = 1,
-              hide_on_key_press = true
-            }
-          })
-
-          ${optionalString (primaryMonitor ? output) ''
-            hl.monitor({ output = "", disabled = true })
-            hl.monitor({
-              output = "${primaryMonitor.output}",
-              mode = "${primaryMonitor.mode}",
-              position = "0x0",
-              scale = ${toString primaryMonitor.scale}
-            })
-          ''}
-        '';
-        # The user's wallpaper and theme, carried onto the login screen. Wants the
-        # home directory itself, not $XDG_CONFIG_HOME; the module appends the XDG
-        # paths to it.
-        configHome = config.home.dir;
-      };
-    };
-
-    systemd.services.greetd.preStart = mkBefore ''
-      # The module's own preStart copies the user's config in but never clears
-      # what the last boot left behind.
-      rm -f /var/lib/dms-greeter/session.json /var/lib/dms-greeter/wallpaper*
-    '';
-
     environment.systemPackages = with pkgs; [
-      ## For Hyprland & DMS
+      ## For Hyprland
       xrandr         # for XWayland windows
-      adw-gtk3       # for DMS
-      libinput       # For screenkey plugin
 
       ## For CLIs
       gromit-mpx     # for drawing on the screen
@@ -110,8 +52,12 @@ in {
       slurp          # slop
       grim           # screenshot (hyprshot, dms screenshot, etc)
       swappy         # satty/Snappy/sharex
-
-      ## Generic
+      ripdrag        # Replaces xdragon
+      wev            # Replaces xev
+      wl-clipboard   # Replaces xclip
+      wtype          # Replaces xdotool (sorta)
+      swayimg        # Replaces feh (as an image previewer)
+      imv
       libnotify      # notify-send
       xdg-utils
       sox            # for `play` utility
@@ -142,21 +88,32 @@ in {
         open-sans
       ];
     };
+    hey.info.theme.fonts = {
+      mono = "JetBrainsMono Nerd Font";
+      sans = "Fira Sans";
+    };
 
-    user.extraGroups = [ "input" ];   # For DMS Screenkey plugin
-
-    ## So DMS+Matugen can theme QT apps
-    qt = {
+    # DMS resolves "System Default" for icons and the cursor by shelling out to
+    # gsettings, so the defaults have to live in dconf for it to find them.
+    programs.dconf = {
       enable = true;
-      platformTheme = "qt5ct";
+      profiles.user.databases = [{
+        settings."org/gnome/desktop/interface" = {
+          icon-theme = iconTheme;
+          cursor-theme = cursorTheme;
+          cursor-size = gvariant.mkInt32 cursorSize;
+        };
+      }];
     };
 
     environment.sessionVariables = {
       ELECTRON_OZONE_PLATFORM_HINT = "auto";
       NIXOS_OZONE_WL = "1";
       MOZ_ENABLE_WAYLAND = "1";
-      QT_QPA_PLATFORMTHEME = "qt5ct";
-      QT_QPA_PLATFORMTHEME_QT6 = "qt6ct";
+      # nixpkgs ships schemas outside XDG_DATA_DIRS, so gsettings needs pointing.
+      GSETTINGS_SCHEMA_DIR = pkgs.glib.getSchemaPath pkgs.gsettings-desktop-schemas;
+      XCURSOR_THEME = cursorTheme;
+      XCURSOR_SIZE = toString cursorSize;
     };
 
     modules.hyprland.matugen.templates.hyprland = {
@@ -164,28 +121,9 @@ in {
       output_path = "${config.home.configDir}/hypr/hyprland-colors.lua";
     };
 
-    hey = {
-      info = {
-        hypr = {
-          primaryMonitor = primaryMonitor.output or null;
-          monitors = cfg.monitors;
-        };
-        theme.fonts = {
-          mono = "JetBrainsMono Nerd Font";
-          sans = "Fira Sans";
-        };
-      };
-    };
-
     modules.shell.zsh.rcFiles = [ "${hey.configDir}/hypr/aliases.zsh" ];
 
     home.configFile = {
-      # If DMS is launched vya systemd, it won't see the profile envvars, so...
-      "environment.d/90-dms.conf".text = ''
-        QT_QPA_PLATFORMTHEME = "qt5ct";
-        QT_QPA_PLATFORMTHEME_QT6 = "qt6ct";
-      '';
-
       "swappy/config".text = ''
         [Default]
         early_exit=true
@@ -232,32 +170,5 @@ in {
 
       "hypr/hyprland-post.lua".text = cfg.extraConfig;
     };
-
-    user.packages = with pkgs; [
-      # Program     Substitutes for
-      ripdrag       # xdragon
-      wev           # xev
-      wl-clipboard  # xclip
-      wtype         # xdotool (sorta)
-      swayimg       # feh (as an image previewer)
-      imv
-
-      (mkLauncherEntry "Toggle night mode" {
-        icon = "redshift";
-        exec = "dms ipc night toggle";
-      })
-      (mkLauncherEntry "Color picker: grab RGB at point" {
-        icon = "com.github.finefindus.eyedropper";
-        exec = "dms color pick --rgb -a";
-      })
-      (mkLauncherEntry "Color picker: grab HSL at point" {
-        icon = "com.github.finefindus.eyedropper";
-        exec = "dms color pick --hsl -a";
-      })
-      (mkLauncherEntry "Color picker: grab hex at point" {
-        icon = "com.github.finefindus.eyedropper";
-        exec = "dms color pick --hex -a";
-      })
-    ];
   };
 }
