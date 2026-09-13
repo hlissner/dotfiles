@@ -34,31 +34,62 @@ in {
 
     programs.dms-shell = {
       enable = true;
-      # package = hey.inputs.dms.packages."${pkgs.stdenv.hostPlatform.system}".default;
-      # quickshell.package = hey.inputs.quickshell.packages."${pkgs.stdenv.hostPlatform.system}".default;
       systemd.enable = true;
       enableSystemMonitoring = true;
       enableDynamicTheming = true;
     };
 
-    services.greetd = {
-      enable = true;
-      settings.default_session = {
-        command = "uwsm start -eD Hyprland hyprland.desktop";
-        user = config.user.name;
+    services.greetd.enable = true;
+
+    services.displayManager = {
+      # In case I ever want to enable greetd's autologin in the future.
+      # dms-greeter greeter doesn't respect this otherwise.
+      defaultSession = "hyprland-uwsm";
+
+      dms-greeter = {
+        enable = true;
+        logs.save = true;
+        compositor.name = "hyprland";
+        compositor.customConfig = ''
+          hl.config({
+            misc = {
+              background_color = 0xff000000,
+              force_default_wallpaper = 0,
+              disable_hyprland_logo = true,
+              disable_splash_rendering = true
+            },
+            ecosystem = {
+              no_update_news = true,
+              no_donation_nag = true
+            },
+            cursor = {
+              inactive_timeout = 1,
+              hide_on_key_press = true
+            }
+          })
+
+          ${optionalString (primaryMonitor ? output) ''
+            hl.monitor({ output = "", disabled = true })
+            hl.monitor({
+              output = "${primaryMonitor.output}",
+              mode = "${primaryMonitor.mode}",
+              position = "0x0",
+              scale = ${toString primaryMonitor.scale}
+            })
+          ''}
+        '';
+        # The user's wallpaper and theme, carried onto the login screen. Wants the
+        # home directory itself, not $XDG_CONFIG_HOME; the module appends the XDG
+        # paths to it.
+        configHome = config.home.dir;
       };
     };
 
-    # services.displayManager.dms-greeter = {
-    #   enable = true;
-    #   logs.save = true;
-    #   compositor.name = "hyprland";
-    #   # configHome = "${config.home.configDir}";
-    # };
-
-    # systemd.services.greetd.preStart = lib.mkBefore ''
-    #   rm -f /var/lib/dms-greeter/session.json /var/lib/dms-greeter/wallpaper*
-    # '';
+    systemd.services.greetd.preStart = mkBefore ''
+      # The module's own preStart copies the user's config in but never clears
+      # what the last boot left behind.
+      rm -f /var/lib/dms-greeter/session.json /var/lib/dms-greeter/wallpaper*
+    '';
 
     environment.systemPackages = with pkgs; [
       ## For Hyprland & DMS
@@ -79,6 +110,11 @@ in {
       libnotify      # notify-send
       xdg-utils
       sox            # for `play` utility
+
+      ## For theme
+      catppuccin-cursors.mochaDark
+      tela-circle-icon-theme
+      dracula-icon-theme
     ];
 
     fonts = {
@@ -117,7 +153,6 @@ in {
       QT_QPA_PLATFORMTHEME = "qt5ct";
       QT_QPA_PLATFORMTHEME_QT6 = "qt6ct";
     };
-
 
     modules.hyprland.matugen.templates.hyprland = {
       input_path = "${hey.configDir}/hypr/hyprland-colors.template.lua";
@@ -201,10 +236,6 @@ in {
       wtype         # xdotool (sorta)
       swayimg       # feh (as an image previewer)
       imv
-
-      catppuccin-cursors.mochaDark
-      tela-circle-icon-theme
-      dracula-icon-theme
 
       (mkLauncherEntry "Toggle night mode" {
         icon = "redshift";

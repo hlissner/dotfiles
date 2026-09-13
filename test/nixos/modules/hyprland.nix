@@ -18,6 +18,8 @@ let
   }];
 
   lua = monitors: (hyprland monitors).home.configFile."hypr/hyprland.lua".text;
+  greeterConfig = monitors:
+    (hyprland monitors).services.displayManager.dms-greeter.compositor.customConfig;
 
   countMonitors = text: (length (splitString "hl.monitor({" text)) - 1;
 in {
@@ -146,5 +148,59 @@ in {
           afterElse = last (splitString "else" tail);
       in hasInfix ''require("hyprland-colors")'' afterElse;
     expected = true;
+  };
+
+  ## The login path.
+
+  testGreeterIsEnabled = {
+    expr = (hyprland [{}]).services.displayManager.dms-greeter.enable;
+    expected = true;
+  };
+
+  testGreeterRunsInHyprland = {
+    expr = (hyprland [{}]).services.displayManager.dms-greeter.compositor.name;
+    expected = "hyprland";
+  };
+
+  testGreeterDisablesEveryOutputButThePrimary = {
+    expr = hasInfix ''
+      hl.monitor({ output = "", disabled = true })
+      hl.monitor({
+        output = "DP-2",
+        mode = "3840x2160@120",
+        position = "0x0",
+        scale = 2
+      })
+    '' (greeterConfig [
+      { output = "DP-1"; }
+      { output = "DP-2"; mode = "3840x2160@120"; scale = 2; primary = true; }
+    ]);
+    expected = true;
+  };
+
+  testGreeterNeedsAPrimaryMonitor = {
+    expr = hasInfix "hl.monitor" (greeterConfig [{ output = "DP-1"; }]);
+    expected = false;
+  };
+
+  # The greeter now owns greetd's default session and runs as its own system
+  # user. If this ever reads back as the real user, the greeter has been
+  # displaced and the machine is autologging in again.
+  testGreetdRunsTheGreeterNotTheUser = {
+    expr = (hyprland [{}]).services.greetd.settings.default_session.user;
+    expected = "dms-greeter";
+  };
+
+  # Declaring the compositor here would generate a second, competing
+  # hyprland-uwsm.desktop that collides with the one the Hyprland package
+  # already ships.
+  testUwsmSessionIsNotGeneratedTwice = {
+    expr = attrNames (hyprland [{}]).programs.uwsm.waylandCompositors;
+    expected = [];
+  };
+
+  testGreeterReadsTheUsersHomeNotItsConfigDir = {
+    expr = (hyprland [{}]).services.displayManager.dms-greeter.configHome;
+    expected = (hyprland [{}]).user.home;
   };
 }
