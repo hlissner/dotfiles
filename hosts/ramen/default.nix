@@ -124,7 +124,9 @@ with builtins;
       "/home" = {
         device = "/dev/disk/by-label/home";
         fsType = "ext4";
-        options = [ "noatime" ];
+        # Don't drop me into an emergency console while it's waiting for luks
+        # passphrase.
+        options = [ "noatime" "x-systemd.device-timeout=0" ];
         neededForBoot = true;
       };
     };
