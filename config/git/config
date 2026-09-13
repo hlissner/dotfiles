@@ -14,7 +14,7 @@
 	user = hlissner
 [gitlab]
 	user = hlissner
-[push]
+[rebase]
 	autoSquash = true
 [push]
 	default = current
