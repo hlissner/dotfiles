@@ -7,13 +7,21 @@
 
 (def- driver (hey/path :home "test/hey/completion.d/driver.zsh"))
 (def- null (file/open "/dev/null"))
+# janet-sh routes a redirect into a buffer through file/temp, which always
+# writes to /tmp. Capturing into hey's own runtime directory keeps these tests
+# runnable where /tmp isn't writable; it's tmpfs, so it clears at logout.
+(def- scratch
+  (let [dir (hey/path :runtime "test.d")]
+    (os/mkdir (hey/path :runtime))
+    (os/mkdir dir)
+    (hey/path/join dir "test-completion.out")))
 
 (defn- complete
   "Run CASE with WORDS and return _hey's offers, one string per line."
   [case & words]
-  (def out @"")
-  ($? zsh ,driver ,case ,;words > ,out > [stderr null])
-  (filter |(not (empty? $)) (string/split "\n" (string/trim out))))
+  (with [out (file/open scratch :w)]
+    ($? zsh ,driver ,case ,;words > ,out > [stderr null]))
+  (filter |(not (empty? $)) (string/split "\n" (string/trim (slurp scratch)))))
 
 (defn- offers?
   "True if any line of the completion OUT contains TEXT."
