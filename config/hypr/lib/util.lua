@@ -50,7 +50,8 @@ function my.dsp.resize_width_to(spec)
     local usable = m.width / m.scale - m.reserved.left - m.reserved.right
     local frac = math.max(0.1, math.min(1.0, spec > 1 and spec / usable or spec))
     local px = spec > 1 and spec or math.floor(usable * frac)
-    local layout = not w.floating and hl.get_active_workspace().tiled_layout
+    local ws = hl.get_active_special_workspace() or hl.get_active_workspace()
+    local layout = not w.floating and ws.tiled_layout
     if layout == "scrolling" then
       hl.dispatch(hl.dsp.layout("colresize " .. frac))
     elseif layout == "master" then
