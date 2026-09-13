@@ -1,10 +1,201 @@
 {
+  "env": {
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+    "DISABLE_GROWTHBOOK": "1",
+    "DO_NOT_TRACK": "1"
+  },
+
   "permissions": {
+    "disableBypassPermissionsMode": "disable",
+    "ask": [
+      "Bash(ssh *)",
+      "Bash(scp *)",
+      "Bash(sftp *)",
+      "Bash(rsync *)",
+      "Bash(heyops *)",
+      "Bash(hey ops *)",
+      "Bash(agenix *)",
+
+      "Bash(hey sync)",
+      "Bash(hey sync --*)",
+      "Bash(hey sync switch*)",
+      "Bash(hey sync boot*)",
+      "Bash(hey sync test*)",
+      "Bash(hey sync rollback*)",
+      "Bash(nixos-rebuild *)",
+      "Bash(sudo *)",
+
+      "Bash(git push)",
+      "Bash(git push *)",
+      "Bash(gh pr create *)",
+      "Bash(gh release *)",
+      "Bash(gh repo delete *)",
+      "Bash(gh secret *)",
+      "Bash(gh gist *)",
+      "Bash(gh auth token*)"
+    ],
     "deny": [
       "Read(**/*.age)",
       "Edit(**/*.age)",
-      "Read(**/*.bean)",
-      "Edit(**/*.bean)"
+
+      "Read(//run/agenix/**)",
+      "Edit(//run/agenix/**)",
+
+      "Read(~/.config/ssh/*_ed25519)",
+      "Edit(~/.config/ssh/*_ed25519)",
+      "Read(~/.config/ssh/*_rsa)",
+      "Edit(~/.config/ssh/*_rsa)",
+      "Read(~/.config/secrets/**)",
+      "Edit(~/.config/secrets/**)",
+      "Read(//etc/ssh/*_ed25519)",
+      "Edit(//etc/ssh/*_ed25519)",
+      "Read(//etc/ssh/*_rsa)",
+      "Edit(//etc/ssh/*_rsa)",
+      "Read(//etc/ssh/*_key)",
+      "Edit(//etc/ssh/*_key)",
+      "Read(**/id_rsa)",
+      "Edit(**/id_rsa)",
+      "Read(**/id_ed25519)",
+      "Edit(**/id_ed25519)",
+      "Read(**/id_ecdsa)",
+      "Edit(**/id_ecdsa)",
+      "Read(**/host_ed25519)",
+      "Edit(**/host_ed25519)",
+      "Read(**/global_ed25519)",
+      "Edit(**/global_ed25519)",
+      "Read(**/*.pem)",
+      "Edit(**/*.pem)",
+      "Read(**/*.gpg)",
+      "Edit(**/*.gpg)",
+      "Read(**/*.kdbx)",
+      "Edit(**/*.kdbx)",
+
+      "Read(~/.gnupg/**)",
+      "Edit(~/.gnupg/**)",
+      "Read(~/.config/gnupg/**)",
+      "Edit(~/.config/gnupg/**)",
+      "Read(~/.config/gh/**)",
+      "Edit(~/.config/gh/**)",
+      "Read(~/.config/anthropic/**)",
+      "Edit(~/.config/anthropic/**)",
+      "Read(~/.config/npm/**)",
+      "Edit(~/.config/npm/**)",
+      "Read(~/.config/librewolf/**)",
+      "Read(~/.mozilla/**)",
+      "Read(~/.local/share/keyrings/**)",
+      "Read(~/.local/share/maildir/**)",
+      "Read(~/.local/share/zsh/**)",
+      "Read(~/.netrc)",
+      "Read(~/.npmrc)",
+      "Read(~/.git-credentials)",
+      "Read(~/.aws/**)",
+      "Read(~/.config/rclone/**)",
+      "Read(~/.password-store/**)",
+
+      "Read(~/projects/org/**)",
+      "Edit(~/projects/org/**)",
+      "Read(~/projects/ledger/**)",
+      "Edit(~/projects/ledger/**)",
+
+      "WebFetch(domain:home.lissner.net)",
+      "WebFetch(domain:*.home.lissner.net)",
+      "WebFetch(domain:*.henrik.io)"
     ]
+  },
+  "sandbox": {
+    "enabled": true,
+    "failIfUnavailable": true,
+    "autoAllowBashIfSandboxed": false,
+    "credentials": {
+      "files": [
+        { "path": "~/.config/gnupg", "mode": "deny" },
+        { "path": "~/.config/gh", "mode": "deny" },
+        { "path": "~/.config/anthropic", "mode": "deny" },
+        { "path": "~/.config/npm", "mode": "deny" },
+        { "path": "~/.config/secrets", "mode": "deny" },
+        { "path": "~/.config/librewolf", "mode": "deny" },
+        { "path": "~/.local/share/maildir", "mode": "deny" },
+        { "path": "~/.local/share/zsh", "mode": "deny" }
+      ],
+      "envVars": [
+        { "name": "GITHUB_TOKEN", "mode": "deny" },
+        { "name": "GH_TOKEN", "mode": "deny" },
+        { "name": "ANTHROPIC_API_KEY", "mode": "deny" },
+        { "name": "NPM_TOKEN", "mode": "deny" },
+        { "name": "CACHIX_AUTH_TOKEN", "mode": "deny" },
+        { "name": "OPENAI_API_KEY", "mode": "deny" },
+        { "name": "PGPASSFILE", "mode": "deny" }
+      ]
+    },
+    "network": {
+      "allowUnixSockets": [
+        "/nix/var/nix/daemon-socket/socket"
+      ],
+      "allowedDomains": [
+        "cache.nixos.org",
+        "channels.nixos.org",
+        "*.cachix.org",
+        "registry.npmjs.org",
+        "code.claude.com",
+        "docs.claude.com",
+        "docs.anthropic.com"
+      ],
+      "deniedDomains": [
+        "home.lissner.net",
+        "*.home.lissner.net",
+        "*.henrik.io"
+      ]
+    },
+    "filesystem": {
+      "denyRead": [
+        "/run/agenix.d",
+        "/etc/ssh",
+        "~/.gnupg",
+        "~/.ssh",
+        "~/.config/ssh",
+        "~/.config/secrets",
+        "~/.cache/librewolf",
+        "~/.cache/mozilla",
+        "~/.mozilla",
+        "~/.local/share/keyrings",
+        "~/.netrc",
+        "~/.npmrc",
+        "~/.git-credentials",
+        "~/.aws",
+        "~/.docker",
+        "~/.config/rclone",
+        "~/projects/org",
+        "~/projects/ledger",
+        "/media"
+      ],
+      "allowRead": [
+        "/etc/ssh/ssh_config",
+        "/etc/ssh/sshd_config",
+        "/etc/ssh/ssh_known_hosts",
+        "/etc/ssh/authorized_keys.d",
+        "/etc/ssh/host_ed25519.pub",
+        "/etc/ssh/global_ed25519.pub",
+        "/etc/ssh/ssh_host_ed25519_key.pub",
+        "~/.config/ssh/config",
+        "~/.config/ssh/known_hosts",
+        "~/.config/ssh/host_ed25519.pub",
+        "~/.config/ssh/id_ed25519.pub",
+        "/nix/store"
+      ],
+      "denyWrite": [
+        "~/projects/config/dotfiles/.claude",
+        "~/projects/config/dotfiles/config/claude"
+      ],
+      "allowWrite": [
+        "/run/user/1000/hey",
+        "~/.local/share/hey",
+        "~/.local/share/janet",
+        "~/.cache/nix",
+        "~/.cache/npm",
+        "~/projects/config/dotfiles",
+        "~/projects/claude",
+        "/tmp"
+      ]
+    }
   }
 }

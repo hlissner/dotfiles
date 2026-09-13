@@ -26,6 +26,7 @@ Icon?
 .ccls-cache/
 .sass-cache/
 __pycache__/
+.claude/
 
 # Compiled thangs #
 ###################
