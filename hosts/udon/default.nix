@@ -27,6 +27,10 @@ with builtins;
 
     hyprland = {
       enable = true;
+      plymouth = {
+        enable = true;
+        seamless = true;
+      };
       monitors = [
         { output = "HDMI-A-2";
           mode = "2560x1440@120";
