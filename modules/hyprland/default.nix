@@ -37,6 +37,7 @@ in {
       systemd.enable = true;
       enableSystemMonitoring = true;
       enableDynamicTheming = true;
+      enableCalendarEvents = false;
     };
 
     # Needed for changing charge thresholds in Settings > Power & Security >
