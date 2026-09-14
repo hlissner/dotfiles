@@ -34,6 +34,15 @@ rofi.powermenu.suspend()  {
   hey.do systemctl suspend;
 }
 
+rofi.powermenu.logout()   {
+  hey hook onShutdown
+  if uwsm check is-active &>/dev/null; then
+    hey.do uwsm stop;
+  else
+    hey.do loginctl terminate-session ${XDG_SESSION_ID:-self};
+  fi
+}
+
 rofi.powermenu.reboot()   {
   hey hook onShutdown
   hey.do systemctl reboot;
@@ -61,6 +70,7 @@ rofi.powermenu.reboot-into() {
 local cmds=(
   "Turn off displays;display-symbolic;rofi.powermenu.dpms"
   "Lock session;system-lock-screen-symbolic;rofi.powermenu.lock"
+  "Log out;system-log-out-symbolic;rofi.powermenu.logout"
   "Suspend;system-suspend-symbolic;rofi.powermenu.suspend"
   "Reboot;system-reboot-symbolic;rofi.powermenu.reboot"
   "Reboot into...;go-jump-symbolic;rofi.powermenu.reboot-into"
