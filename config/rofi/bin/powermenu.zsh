@@ -59,12 +59,12 @@ rofi.powermenu.reboot-into() {
 }
 
 local cmds=(
-  "Turn off displays;system-config-display;rofi.powermenu.dpms"
-  "Lock session;system-lock-screen;rofi.powermenu.lock"
-  "Suspend;system-suspend;rofi.powermenu.suspend"
-  "Reboot;system-reboot;rofi.powermenu.reboot"
-  "Reboot into...;system-log-out;rofi.powermenu.reboot-into"
-  "Power off;system-shutdown;rofi.powermenu.poweroff"
+  "Turn off displays;display-symbolic;rofi.powermenu.dpms"
+  "Lock session;system-lock-screen-symbolic;rofi.powermenu.lock"
+  "Suspend;system-suspend-symbolic;rofi.powermenu.suspend"
+  "Reboot;system-reboot-symbolic;rofi.powermenu.reboot"
+  "Reboot into...;go-jump-symbolic;rofi.powermenu.reboot-into"
+  "Power off;system-shutdown-symbolic;rofi.powermenu.poweroff"
 )
 
 local i=$(for item in ${(k)cmds}; do
