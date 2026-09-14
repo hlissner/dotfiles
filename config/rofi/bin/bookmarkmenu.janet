@@ -12,6 +12,7 @@
 
 (use hey)
 (use hey/cmd)
+(use sh)
 (import hey/rofi)
 (import hey/vars)
 (import sqlite3 :as sql)

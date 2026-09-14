@@ -68,10 +68,10 @@
 (defn- run-hey [args]
   (var suite? false)
   (def args (let [suites (hey-suites)]
-              (map |(if (index-of $ suites)
+              (map |(if (index-of $0 suites)
                       (do (set suite? true)
-                        (path :test "hey" (string $ ".janet")))
-                      $)
+                        (path :test "hey" (string $0 ".janet")))
+                      $0)
                    args)))
   (echo :g "> Running the Hey suite...")
   (flush)
@@ -80,8 +80,8 @@
 (defcmd test [_ suite & args &opts list? [-l --list]]
   (case* suite
     nil (if list?
-          (do (echo ;(map |(string "hey:" $) (hey-suites)))
-            (echo ;(map |(string "nixos:" $) (nixos-suites))))
+          (do (echo ;(map |(string "hey:" $0) (hey-suites)))
+            (echo ;(map |(string "nixos:" $0) (nixos-suites))))
           (and (run-hey []) (run-nixos [])))
     "hey" (if list? (echo ;(hey-suites)) (run-hey args))
     ["nixos" "nix"] (if list? (echo ;(nixos-suites)) (run-nixos args))

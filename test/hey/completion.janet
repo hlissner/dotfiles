@@ -21,12 +21,12 @@
   [case & words]
   (with [out (file/open scratch :w)]
     ($? zsh ,driver ,case ,;words > ,out > [stderr null]))
-  (filter |(not (empty? $)) (string/split "\n" (string/trim (slurp scratch)))))
+  (filter |(not (empty? $0)) (string/split "\n" (string/trim (slurp scratch)))))
 
 (defn- offers?
   "True if any line of the completion OUT contains TEXT."
   [out text]
-  (not= nil (some |(string/find text $) out)))
+  (not= nil (some |(string/find text $0) out)))
 
 
 (deftest completion/subcommand-arguments
@@ -67,7 +67,7 @@
   # sigil belongs to the first word whether the NAME.d walk consumes it or it is
   # the leaf, and @DIR must keep its sigil while wm and host do not.
   (defn- dumped [& words]
-    (find |(string/has-prefix? "DUMP " $) (complete "reconstruct" ;words)))
+    (find |(string/has-prefix? "DUMP " $0) (complete "reconstruct" ;words)))
 
   (test (dumped ".solo" "") "DUMP .solo")
   (test (dumped ".nest" "deep" "") "DUMP .nest deep")

@@ -6,7 +6,7 @@
 (deftest atom?
   (test (all atom? [true false 0 1 1.5 "string" :keyword 'symbol])
         true)
-  (test (all |(not (atom? $))
+  (test (all |(not (atom? $0))
              [[1 2 3] @[1 2 3] {:foo 1 :bar 2} @{:foo 1 :bar 2} (fn (&)) atom?])
         true))
 

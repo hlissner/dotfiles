@@ -29,6 +29,7 @@
 
 (use hey)
 (use hey/cmd)
+(use sh)
 
 (def- *store* (delay (path :data "swap")))
 (def- *ext* ".swapped")
@@ -36,7 +37,7 @@
 
 (defn- list []
   (if (path/file? (*store*))
-    (filter |(path/file? (string $ *ext*)) (unmarshal (string/chomp (slurp (*store*)))))
+    (filter |(path/file? (string $0 *ext*)) (unmarshal (string/chomp (slurp (*store*)))))
     @[]))
 
 (defn- save [swapped]

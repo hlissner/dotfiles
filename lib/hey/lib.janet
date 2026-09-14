@@ -177,14 +177,14 @@
 
 (defn path/sibling [type path & exts]
   (when-let [base (path/no-ext path ;exts)
-             ext (find |(= (os/stat (string base $) :mode) type)
+             ext (find |(= (os/stat (string base $0) :mode) type)
                        exts)]
     (string base ext)))
 
 (defn path/files-in
   "Like os/dir, but returns a list of absolute paths."
   [dir]
-  (map |(path/join dir $) (os/dir dir)))
+  (map |(path/join dir $0) (os/dir dir)))
 
 (defn path/abbrev "Replace /home/$USER to ~ in PATH."
   [path]
@@ -264,7 +264,7 @@
   [name &opt paths]
   (if (path/abspath? name)
     (if (path/exists? name) name)
-    (some |(let [p (path/join $ name)]
+    (some |(let [p (path/join $0 name)]
              (if (os/stat p :mode) p))
           (or paths exec-path))))
 

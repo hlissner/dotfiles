@@ -99,7 +99,7 @@
   out)
 
 (defn- head-tokens [head]
-  (filter |(not (empty? $))
+  (filter |(not (empty? $0))
           (string/split " " (->> head
                                  # "," delimit aliases of an option while "|"
                                  # delimit mutually exclusive options.
@@ -147,7 +147,7 @@
   "," and "|" separators aren't mistaken for one.``
   [text]
   (and (peg/match (peg! '(* (some (+ (range "AZ" "09") (set "-_"))) -1)) text)
-       (some |(<= 65 $ 90) text)
+       (some |(<= 65 $0 90) text)
        true))
 
 (defn- option->specs
@@ -161,14 +161,14 @@
   [head body]
   (def i     (string/find " -- " head))
   (def toks  (head-tokens (if i (slice head 0 i) head)))
-  (def flags (filter |(string/has-prefix? "-" $) toks))
+  (def flags (filter |(string/has-prefix? "-" $0) toks))
   (def desc  (string/trim (string/join [;(if i [(slice head (+ i 4))] []) ;body] " ")))
   (if (or (empty? flags) (empty? desc))
     []
-    (let [ref    (find |(string/has-prefix? "@" $) toks)
-          value  (find |(and (not (string/has-prefix? "-" $))
-                             (not (string/has-prefix? "@" $))
-                             (value-name? $))
+    (let [ref    (find |(string/has-prefix? "@" $0) toks)
+          value  (find |(and (not (string/has-prefix? "-" $0))
+                             (not (string/has-prefix? "@" $0))
+                             (value-name? $0))
                        toks)
           group  (if (> (length flags) 1)
                    (string "(" (string/join flags " ") ")")
@@ -177,7 +177,7 @@
                    (string ":" (esc-msg (string/ascii-lower value)) ":"
                            (if ref (completer ref) " "))
                    "")]
-      (map |(string group $ "[" (esc-desc desc) "]" action) flags))))
+      (map |(string group $0 "[" (esc-desc desc) "]" action) flags))))
 
 (defn- esc-value
   ``Escape an enumerated value's name.
@@ -211,8 +211,8 @@
   # CURRENT re-sliced (zsh's "*::"), which is what lets a subcommand dispatch
   # again into its own arguments.
   (when (peg/match (peg! '(* (+ (some (range "09")) (between 1 2 "*")) -1)) pos)
-    (let [ref (find |(string/has-prefix? "@" $) toks)
-          name (or (find |(and (not (string/has-prefix? "@" $)) (not= $ pos)) toks)
+    (let [ref (find |(string/has-prefix? "@" $0) toks)
+          name (or (find |(and (not (string/has-prefix? "@" $0)) (not= $0 pos)) toks)
                    "arg")
           values (seq [line :in body]
                    (let [[v d] (entry-value line)]

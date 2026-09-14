@@ -27,6 +27,7 @@
 
 (use hey)
 (use hey/cmd)
+(use sh)
 
 (defcmd sync [_ cmd & args &opts fast? --fast host [--host name]]
   (when (= (flake :host) "nixos")

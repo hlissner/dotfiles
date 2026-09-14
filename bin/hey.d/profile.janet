@@ -28,6 +28,7 @@
 
 (use hey)
 (use hey/cmd)
+(use sh)
 (import hey/vars)
 
 (def- *vars* (vars/new (:dir vars/temp :profile)))
@@ -40,9 +41,9 @@
 
 (defn- generation-at [idx &opt reload?]
   (let [gens (generations reload?)]
-    (cond (= idx 0) (find |(get $ :current) gens)
+    (cond (= idx 0) (find |(get $0 :current) gens)
           (< idx 0) (in gens (+ (length gens) idx))
-          (find |(= idx (get $ :generation)) gens))))
+          (find |(= idx (get $0 :generation)) gens))))
 
 (defn- generation-file [gen &opt exists?]
   (let [path (string/format "%s-%d-link"
@@ -67,8 +68,8 @@
         bfile (path :runtime "profile.diff.b")]
     (spit afile ($< nix-store -q --references ,(generation-file from) | sort))
     (spit bfile ($< nix-store -q --references ,(generation-file to) | sort))
-    (echo :r ;(map |(string "-" $) ($<_ comm -23 ,afile ,bfile)))
-    (echo :g ;(map |(string "+" $) ($<_ comm -23 ,bfile ,afile)))))
+    (echo :r ;(map |(string "-" $0) ($<_ comm -23 ,afile ,bfile)))
+    (echo :g ;(map |(string "+" $0) ($<_ comm -23 ,bfile ,afile)))))
 
 
 (defcmd profile [_ cmd & args &opts

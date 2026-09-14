@@ -146,7 +146,7 @@
         # Options come in pairs: a binding name, then its spelling(s).
         flag? (do
                 (set flag? false)
-                (array/push out ;(filter |(string/has-prefix? "-" $)
+                (array/push out ;(filter |(string/has-prefix? "-" $0)
                                          (map string (if (indexed? item) item [item])))))
         (set flag? true)))
     out)
@@ -179,7 +179,7 @@
   # Reported as one list rather than a test per file, so a failure names every
   # offender at once: [command documented-flags declared-flags]
   (def cmds (path/join dir "../../bin/hey.d"))
-  (test (seq [name :in (sort (filter |(string/has-suffix? ".janet" $) (os/dir cmds)))
+  (test (seq [name :in (sort (filter |(string/has-suffix? ".janet" $0) (os/dir cmds)))
               :let [file (path/join cmds name)
                     documented (sorted (header-flags file))
                     declared (sorted (argspec-flags file))]

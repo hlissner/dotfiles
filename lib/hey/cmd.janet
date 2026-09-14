@@ -17,11 +17,11 @@
 
 (defn- make-opt [name spec]
   (let [spec (if (tuple? spec) spec [spec])
-        {false args true opts} (group-by |(string/has-prefix? "-" $) spec)]
+        {false args true opts} (group-by |(string/has-prefix? "-" $0) spec)]
     {:name name
      :multiple (and args (index-of '* args) true)
      :options (map string opts)
-     :arguments (if args (map make-arg (filter |(not= $ '*) args)))}))
+     :arguments (if args (map make-arg (filter |(not= $0 '*) args)))}))
 
 # TODO: Add opt validation
 # TODO: Add arg validation
@@ -70,7 +70,7 @@
                         (> (length arg) 2)
                         (not (string/has-prefix? "--" arg)))
                    (array/insert
-                    ,$argv 0 ;(map |(string "-" (string/from-bytes $))
+                    ,$argv 0 ;(map |(string "-" (string/from-bytes $0))
                                    (slice arg 1)))
 
                    (string/has-prefix? "-" arg)
@@ -91,13 +91,13 @@
                         ~(abort "Unrecognized option: %s" arg)))
 
                    (array/push ,$rest arg)))
-           (let [[,;(map |($ :name) argbinds) & ,(get restbinds 0 '_)] ,$rest
+           (let [[,;(map |($0 :name) argbinds) & ,(get restbinds 0 '_)] ,$rest
                  ,;(if-not (index-of (get restbinds 1) ['_ nil]) [(get restbinds 1) $all] [])]
              ,;(catseq [o :in optbinds]
                  (let [sym (get o :name)]
                    ~((def ,sym (or (get ,$argmap ',sym)
                                    ,(when-let [args (get o :arguments)
-                                               vals (map |($ :default) args)]
+                                               vals (map |($0 :default) args)]
                                       (if (or (get o :multiple)
                                               (> (length args) 1))
                                         vals (first vals))))))))

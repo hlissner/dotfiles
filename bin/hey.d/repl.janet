@@ -14,6 +14,7 @@
 
 (use hey)
 (use hey/cmd)
+(use sh)
 
 (defcmd repl [_ & args &opts
               janet? -j

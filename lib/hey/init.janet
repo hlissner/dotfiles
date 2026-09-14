@@ -1,6 +1,6 @@
 (import spork/path :export true)
 (import spork/json :export true)
-(import sh :export true :prefix "")
+(import sh :export true)
 (import ./lib :export true :prefix "")
 (import ./docs :export true :prefix "")
 
@@ -47,7 +47,7 @@
 
 (defn- resolve-1 [kind base & args]
   (if (index-of (type base) [:array :tuple])
-    (some |(resolve-1 kind $ ;args) base)
+    (some |(resolve-1 kind $0 ;args) base)
     (let [base (if (path/abspath? base) base (or (path/find base) base))]
       (case (os/stat base :mode)
         nil nil
@@ -173,8 +173,8 @@
   ~(if (,dryrun?)
      (,(first args)
        echo "DRYRUN:"
-       ,;(map |(if (index-of $ '[| || & && ; > >> < ^])
-                 (string $) $)
+       ,;(map |(if (index-of $0 '[| || & && ; > >> < ^])
+                 (string $0) $0)
               args))
      (,;args)))
 
@@ -206,7 +206,7 @@
       # system units or cronjobs).
       (with-envvars ["PATH" (string/join exec-path ":")
                      "DOTFILES_HOME" (path :home)]
-        (let [args [;(filter |(not (index-of $ ["-?" "-??" "-???" "-!" "-h" "--help"])) largs)
+        (let [args [;(filter |(not (index-of $0 ["-?" "-??" "-???" "-!" "-h" "--help"])) largs)
                     ;rargs]
               op (case* (first args)
                    ["h" "help"] :help
@@ -238,7 +238,7 @@
   # function this needs to call to re-raise the subcommand's own error.
   ~(do (def output @"")
        (def errout @"")
-       (cond ,(tuple '$? (path :bin "hey") ;args
+       (cond ,(tuple 'sh/$? (path :bin "hey") ;args
                       '> '(unquote output)
                       '> '[stderr errout])
              (do (when (debug?)
@@ -250,12 +250,12 @@
                  (,exit 16)))))
 
 (defmacro hey! [& args]
-  (tuple 'do? '$? (path :bin "hey") ;args))
+  (tuple 'do? 'sh/$? (path :bin "hey") ;args))
 
 (defmacro hey? [& args]
   ~(do (def output @"")
        (def errout @"")
-       (if ,(tuple '$? (path :bin "hey") ;args
+       (if ,(tuple 'sh/$? (path :bin "hey") ;args
                    '> '(unquote output)
                    '> '[stderr errout])
          (do (when (debug?)

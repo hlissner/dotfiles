@@ -19,6 +19,7 @@
 
 (use hey)
 (use hey/cmd)
+(use sh)
 
 (defn- build-vm [type & args]
   (echo :g "> Building an VM of this flake...")

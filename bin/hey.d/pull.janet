@@ -24,6 +24,7 @@
 
 (use hey)
 (use hey/cmd)
+(use sh)
 (import hey/glob)
 
 (var- *metadata* nil)

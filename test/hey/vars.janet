@@ -2,6 +2,7 @@
 
 (use judge)
 (use hey)
+(use sh)
 (import hey/vars)
 
 (def- vars (vars/new (:dir vars/temp :test)))

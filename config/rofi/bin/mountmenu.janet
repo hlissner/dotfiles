@@ -8,6 +8,7 @@
 
 (use hey)
 (use hey/cmd)
+(use sh)
 (import hey/sys)
 (import hey/rofi)
 
@@ -50,7 +51,7 @@
         actionable))
 
 (defn- mountpoint-of [name]
-  (some |(and (= ($ :name) name) (mountpoint $))
+  (some |(and (= ($0 :name) name) (mountpoint $0))
         (removable-devices)))
 
 (defn- unlock

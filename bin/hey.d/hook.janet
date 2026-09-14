@@ -42,6 +42,7 @@
 
 (use hey)
 (use hey/cmd)
+(use sh)
 (import hey/vars)
 
 (def- *vars* (vars/new (:dir vars/temp :hook)))
@@ -54,12 +55,12 @@
 (defn- ls-in
   "Like ls, but as absolute paths."
   [dir]
-  (map |(path/join dir $) (ls dir)))
+  (map |(path/join dir $0) (ls dir)))
 
 (defn- hook-names-in
   "The hook each script in DIR handles; its filename, sans extension."
   [dir]
-  (map |(path/no-ext $ ;*script-exts* ".d") (ls dir)))
+  (map |(path/no-ext $0 ;*script-exts* ".d") (ls dir)))
 
 (defn- runnable?
   ``Whether CMD is a [SCRIPT ARGS...] we can execute. resolve yields nil when it
@@ -80,16 +81,16 @@
   ``Order area NAMES with WM first, the rest alphabetically, then host, which is
   always known because it names hosts/$HOST/hooks.``
   [names &opt wm]
-  (let [names (distinct (filter |(not= $ "host") names))]
-    [;(filter |(= $ wm) names)
-     ;(sorted (filter |(not= $ wm) names))
+  (let [names (distinct (filter |(not= $0 "host") names))]
+    [;(filter |(= $0 wm) names)
+     ;(sorted (filter |(not= $0 wm) names))
      "host"]))
 
 (defn- areas
   ``Every area with a hooks/ directory, in run order; or only AREA, if given and
   known.``
   [&opt area]
-  (let [dirs  (filter |(path/directory? (path :config $ "hooks")) (ls (path :config)))
+  (let [dirs  (filter |(path/directory? (path :config $0 "hooks")) (ls (path :config)))
         wm    (ignore-errors (path/basename (path :wm)))
         names (sort-areas dirs wm)]
     (cond (nil? area) names
@@ -100,25 +101,25 @@
   ``The hooks/ directories of NAMES, grouped as [LIVE HOST REPO]. The host's
   hooks aren't user-editable elsewhere, so it has no live counterpart.``
   [names]
-  (let [cfgs (filter |(not= $ "host") names)]
-    [(map |(path/xdg :config $ "hooks") cfgs)
+  (let [cfgs (filter |(not= $0 "host") names)]
+    [(map |(path/xdg :config $0 "hooks") cfgs)
      (if (index-of "host" names) [(path :host "hooks")] [])
-     (map |(path :config $ "hooks") cfgs)]))
+     (map |(path :config $0 "hooks") cfgs)]))
 
 (defn- hooks
   "The [SCRIPT ARGS...] commands HOOK resolves to, in the order they run."
   [area hook args]
   (let [[live host repo] (area-dirs (areas area))
         # An area's `all` handler runs ahead of its handler for this hook.
-        resolve-in |[(resolve $ "all" (string "--" hook) ;args)
-                     (resolve $ hook ;args)]
+        resolve-in |[(resolve $0 "all" (string "--" hook) ;args)
+                     (resolve $0 hook ;args)]
         # Third party handlers (see modules/hey.nix) belong to no area.
         third-party (if area [] (ls-in (path :data "hooks.d" (string hook ".d"))))]
     (filter runnable?
             [;(catseq [dir :in live] (resolve-in dir))
-             ;(map |(resolve $ hook ;args) host)
+             ;(map |(resolve $0 hook ;args) host)
              ;(catseq [dir :in repo] (resolve-in dir))
-             ;(map |[$ ;args] third-party)])))
+             ;(map |[$0 ;args] third-party)])))
 
 (defn- all-hooks
   "The name of every hook that has a handler anywhere."
@@ -127,21 +128,21 @@
         names (catseq [dir :in [;live ;host ;repo]] (hook-names-in dir))]
     (sorted
      (distinct
-      [;(filter |(not= $ "all") names)  # fallthrough handler for all hooks
+      [;(filter |(not= $0 "all") names)  # fallthrough handler for all hooks
        ;(if area [] (hook-names-in (path :data "hooks.d")))]))))
 
 (defn- list-hooks
   ``Print the handlers HOOK would run; or, without one, every hook's, indented
   under its name.``
   [area hook args]
-  (def paths-for |(map first (hooks area $ args)))
+  (def paths-for |(map first (hooks area $0 args)))
   (if hook
     (echo ;(paths-for hook))
     (each name (all-hooks area)
       (let [paths (paths-for name)]
         (unless (empty? paths)
           (echo name)
-          (echo ;(map |(string "  " $) paths)))))))
+          (echo ;(map |(string "  " $0) paths)))))))
 
 (defn- run-hooks
   ``Run every handler for HOOK, unless the last trigger was the same one (and
