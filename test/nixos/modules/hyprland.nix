@@ -162,21 +162,41 @@ in {
     expected = "hyprland";
   };
 
-  testGreeterDisablesEveryOutputButThePrimary = {
-    expr = hasInfix ''
-      hl.monitor({ output = "", disabled = true })
-      hl.monitor({
-        output = "DP-2",
-        mode = "3840x2160@120",
-        position = "0x0",
-        scale = 2
-      })
-    '' (greeterConfig [
-      { output = "DP-1"; }
-      { output = "DP-2"; mode = "3840x2160@120"; scale = 2; primary = true; }
-    ]);
-    expected = true;
-  };
+  # The greeter used to sweep the outputs away with `output = ""` and put the
+  # primary back on the next line. That wildcard took the primary down with it,
+  # and on nvidia bringing a monitor back is a full link retrain -- the screen
+  # physically blinking off and on between plymouth and the login prompt. Every
+  # output is named individually now, and the primary is never disabled.
+  testGreeterDisablesEveryOutputButThePrimary =
+    let greeter = greeterConfig [
+          { output = "DP-1"; }
+          { output = "DP-2"; mode = "3840x2160@120"; scale = 2; primary = true; }
+          { output = "HDMI-A-1"; disabled = true; }
+        ];
+    in {
+      expr = {
+        wildcard   = hasInfix ''output = "",'' greeter;
+        disablesDP1 = hasInfix ''hl.monitor({ output = "DP-1", disabled = true })'' greeter;
+        disablesTV  = hasInfix ''hl.monitor({ output = "HDMI-A-1", disabled = true })'' greeter;
+        keepsPrimary = hasInfix ''
+          hl.monitor({
+            output = "DP-2",
+            mode = "3840x2160@120",
+            position = "0x0",
+            scale = 2
+          })
+        '' greeter;
+        # One rule per monitor, no wildcard sweep in front of them.
+        count = countMonitors greeter;
+      };
+      expected = {
+        wildcard     = false;
+        disablesDP1  = true;
+        disablesTV   = true;
+        keepsPrimary = true;
+        count        = 3;
+      };
+    };
 
   testGreeterNeedsAPrimaryMonitor = {
     expr = hasInfix "hl.monitor" (greeterConfig [{ output = "DP-1"; }]);

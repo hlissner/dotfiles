@@ -121,15 +121,27 @@ in {
             }
           })
 
-          ${optionalString (primaryMonitor ? output) ''
-            hl.monitor({ output = "", disabled = true })
-            hl.monitor({
-              output = "${primaryMonitor.output}",
-              mode = "${primaryMonitor.mode}",
-              position = "0x0",
-              scale = ${toString primaryMonitor.scale}
-            })
-          ''}
+          ${optionalString (primaryMonitor ? output)
+              # Name every monitor I don't want, rather than sweeping them all
+              # away with `output = ""` and putting the primary back a frame
+              # later. That wildcard took the primary down with it, and on
+              # nvidia every re-enable is a full link retrain -- the monitor
+              # physically blinking off and on. The others still flicker; they
+              # have to, they're being turned off.
+              (concatStringsSep "\n" (map (m:
+                if m.output == primaryMonitor.output
+                then ''
+                  hl.monitor({
+                    output = "${m.output}",
+                    mode = "${m.mode}",
+                    position = "0x0",
+                    scale = ${toString m.scale}
+                  })
+                ''
+                else ''
+                  hl.monitor({ output = "${m.output}", disabled = true })
+                '')
+                cfg.monitors))}
         '';
         # The user's wallpaper and theme, carried onto the login screen. Wants the
         # home directory itself, not $XDG_CONFIG_HOME; the module appends the XDG
