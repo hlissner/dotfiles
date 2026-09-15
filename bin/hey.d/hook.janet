@@ -47,10 +47,10 @@
 
 (def- *vars* (delay (vars/new (:dir (vars/temp) :hook))))
 
-(defn- ls
-  "The names in DIR, or nothing if it can't be read."
+(defn ls
+  ``The names in DIR, sorted, as an array.``
   [dir]
-  (or (ignore-errors (os/dir dir)) []))
+  (sorted (or (ignore-errors (os/dir dir)) [])))
 
 (defn- ls-in
   "Like ls, but as absolute paths."
