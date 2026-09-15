@@ -62,8 +62,6 @@ in {
       # Simple way to manage non-Steam exe's
       faugus-launcher
 
-      # Stop Steam from polluting $HOME, and fix symlink/filename issues for a
-      # Steam library that lives on an NTFS drive.
       (let pkg = config.programs.steam.package;
            # If the steam library lives on a shared NTFS drive, then we must
            # symlink steamapps/compatdata to a local directory, because Proton
@@ -87,15 +85,19 @@ in {
                fi
              fi
            '';
-       in mkWrapper [
-         pkg
-         pkg.run   # for GOG and humble bundle games
-       ] ''
-         wrapProgram "$out/bin/steam" \
-           --run 'export HOME="$XDG_FAKE_HOME"' \
-           --run '${libFix}/bin/libfix'
-         wrapProgram "$out/bin/steam-run" --run 'export HOME="$XDG_FAKE_HOME"'
-       '')
+           # Falls back rather than exporting an empty HOME, which programs tend
+           # to handle worse than a real one (flatpak asserts and dies).
+           fakeHome = ''--run 'export HOME="''${XDG_FAKE_HOME:-$HOME}"' '';
+           xdg = config.modules.xdg.enable;
+        # Stop Steam from polluting $HOME, and fix symlink/filename issues for a
+        # Steam library that lives on an NTFS drive.
+      in mkWrapper [ pkg pkg.run ] (''
+        wrapProgram "$out/bin/steam" \
+          ${optionalString xdg fakeHome} \
+          --run '${libFix}/bin/libfix'
+      '' + optionalString xdg ''
+        wrapProgram "$out/bin/steam-run" ${fakeHome}
+      ''))
     ];
 
     # Better for steam proton games
