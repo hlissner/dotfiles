@@ -61,17 +61,6 @@
     (unless (or (empty? desc) (= desc "TODO"))
       desc)))
 
-(defn rule-pairs
-  ``Partition RULES into [pattern destination] pairs, dropping the fallback.``
-  [rules]
-  (partition 2 (slice rules 0 (if (odd? (length rules)) -2 -1))))
-
-
-## * ZSH Completion
-
-# A script's comment header is the single source of truth for its flags and
-# arguments. config/zsh/completions/_hey needs it to generate a _arguments call.
-
 (defn- header-sections
   "Group LINES by their `ALL CAPS:` headings, into @{HEADING @[line ...]}."
   [lines]
@@ -85,6 +74,46 @@
       (when current
         (array/push (in out current) line))))
   out)
+
+(defn script-path
+  ``FILE as an absolute path. :current-file is relative to the project root
+  while compiling and absolute while interpreting, and the macros that bake it
+  in record it verbatim; this is the only place that knows which it got.``
+  [file]
+  (if (path/abspath? file) file (path :home file)))
+
+(defn usage-lines
+  "The lines of FILE's SYNOPSIS: section, trimmed, or nil if it has none."
+  [file]
+  (when-let [lines (header-lines file)
+             block (get (header-sections lines) "SYNOPSIS")
+             out (filter |(not (empty? $0)) (map string/trim block))]
+    (unless (empty? out) out)))
+
+(defn usage-abort
+  "Abort with FILE's SYNOPSIS:, or a shrug if it hasn't got one."
+  [file]
+  (if-let [lines (usage-lines file)]
+    (abort "Usage:\n  %s" (string/join lines "\n  "))
+    (abort "Wrong arguments, and %s has no SYNOPSIS: to quote at you"
+           (path/abbrev file))))
+
+(defmacro usage
+  ``Abort with this script's own SYNOPSIS:, so the header stays the only copy of
+  it. The file is baked in while compiling, the way defcmd and dispatch do it.``
+  []
+  ~(,usage-abort (,script-path ,(dyn :current-file ""))))
+
+(defn rule-pairs
+  ``Partition RULES into [pattern destination] pairs, dropping the fallback.``
+  [rules]
+  (partition 2 (slice rules 0 (if (odd? (length rules)) -2 -1))))
+
+
+## * ZSH Completion
+
+# A script's comment header is the single source of truth for its flags and
+# arguments. config/zsh/completions/_hey needs it to generate a _arguments call.
 
 (defn- header-entries
   ``Group a section's LINES into [head [body ...]] pairs.``

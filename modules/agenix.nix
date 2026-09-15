@@ -27,7 +27,7 @@ in {
 
     # Each system gets a host key, used for decrypting Agenix secrets and as a
     # deployment key via Git. It's expected to be provisioned before the system
-    # is initially installe (presumably with 'hey ops push-keys $HOST' from a
+    # is initially installe (presumably with 'heyops push-keys $HOST' from a
     # system with bitwarden set up).
     programs.ssh.extraConfig = ''
       Host *

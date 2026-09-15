@@ -112,12 +112,6 @@
       |[:exec (last rules) ;$&]
       (last rules))))
 
-# :current-file is relative to the project root while compiling and absolute
-# while interpreting, and defcmd records it verbatim. Sorting that out here is
-# the only place that knows which of the two it got.
-(defn- script-path [file]
-  (if (path/abspath? file) file (path :home file)))
-
 (defn- eval-dispatcher
   "Build the op handler for a rule that resolves to Janet code."
   [command spec]

@@ -28,7 +28,6 @@
 (import ./hey.d/gc)
 (import ./hey.d/hook)
 (import ./hey.d/info)
-(import ./hey.d/ops)
 (import ./hey.d/path)
 (import ./hey.d/profile)
 (import ./hey.d/pull)
@@ -48,7 +47,6 @@
              :host          (with-doc "Dispatch to hosts/$HOST/bin."
                               |[:exec (path (keyword $0) "bin") ;$&])
              :info          (cmd 'info)
-             :ops           (cmd 'ops)
              :path          (cmd 'path)
              [:profile :pr] (cmd 'profile)
              :pull          (cmd 'pull)

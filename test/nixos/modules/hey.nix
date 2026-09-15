@@ -103,6 +103,15 @@ in {
     expected = true;
   };
 
+  # No sense carrying the tool for pushing builds at other machines on one that
+  # only ever receives them.
+  testHeyopsIsWorkstationOnly = {
+    expr = map (c: any (p: (p.pname or p.name or "") == "heyops")
+                       c.environment.systemPackages)
+               [ workstation vm bare ];
+    expected = [ true false false ];
+  };
+
   # What downstream modules call instead of dealing with $PATH in a unit file
   # (modules/apps/steam.nix's gamemode hooks, for one). Asked for the way they
   # ask for it, because config._module is not on the config evalConfig returns.

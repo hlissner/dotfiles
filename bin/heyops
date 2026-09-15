@@ -1,0 +1,42 @@
+#!/usr/bin/env janet
+# Manage remote HeyOS machines.
+#
+# SYNOPSIS:
+#   heyops [-?|-??|-???|-!] [-h|--help] COMMAND [ARGS...]
+#
+# DESCRIPTION:
+#   Commands meant for managing remote NixOS systems that are built from these
+#   dotfiles. Built only for workstations (see modules/hey.nix), and refuses to
+#   run anywhere else.
+#
+# OPTIONS:
+#   -!
+#     Do a dry run. WARNING: It's up to called scripts to obey!
+#   -? | -?? | -???
+#     Enable debug (verbose) mode, at increasing verbosity.
+#   -h, --help
+#     Display the documentation embedded in a target script's header.
+
+(use hey)
+(use hey/cmd)
+
+(import ./heyops.d/edit)
+(import ./heyops.d/info)
+(import ./heyops.d/push)
+(import ./heyops.d/push-keys)
+(import ./heyops.d/ssh)
+(import ./heyops.d/sync)
+
+(defn main [_ & args]
+  # ignore-errors because info.json may not be there at all (a fresh install, a
+  # box that got the binary but not the flake), and a missing role is the same
+  # answer as the wrong one -- said in a sentence rather than a stack trace.
+  (unless (= "workstation" (ignore-errors (flake/info :profiles :role)))
+    (abort "heyops is only available on workstations"))
+  (dispatch [:edit      (cmd 'edit)
+             :info      (cmd 'info)
+             :push      (cmd 'push)
+             :push-keys (cmd 'push-keys)
+             :ssh       (cmd 'ssh)
+             :sync      (cmd 'sync)]
+            ;args))

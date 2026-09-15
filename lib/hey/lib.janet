@@ -3,6 +3,11 @@
 
 (def fmt string/format)
 
+(defn shell-quote
+  "TEXT as exactly one word to whatever shell ends up reading it."
+  [text]
+  (string "'" (string/replace-all "'" `'\''` text) "'"))
+
 (defmacro ignore-errors
   "Like protect, but returns the result of BODY or nil on errors."
   [& body]

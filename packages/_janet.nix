@@ -1,4 +1,4 @@
-# packages/_janet.nix -- the machinery behind hey
+# packages/_janet.nix -- the machinery behind hey and heyops
 #
 # Both binaries are the same derivation with a different entry point, so the
 # builder lives here rather than twice over. The '_' prefix keeps this file out
