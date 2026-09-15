@@ -38,7 +38,7 @@ require("lazy").setup({
   performance = {
     rtp = {
       reset = false, -- or lazy drops what the loader put on the rtp
-      disabled_plugins = { "gzip", "matchparen", "tarPlugin", "tohtml", "tutor", "zipPlugin" },
+      disabled_plugins = { "matchparen", "tohtml", "tutor" },
     },
   },
 })
