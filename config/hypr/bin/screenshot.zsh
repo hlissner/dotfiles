@@ -1,35 +1,34 @@
 #!/usr/bin/env zsh
-# Capture (and edit) a screenshot to clibpoard.
+# Capture a screenshot to clibpoard.
 #
 # SYNOPSIS:
 #   screenshot [last|region|window|output]
 #
 # DESCRIPTION:
-#   Captures a screenshot and sends it to satty.
-#
-#   The region selection in `dms screenshot` seemed slow, so I prefer the
-#   slurp+grim+swappy stack.
+#   Captures a screenshot using `dms screenshot`, but compresses it with
+#   pngquant before copying it to your clipboard. If you want graphics, use `hey
+#   .screendraw` to draw on the screen before calling this script.
 #
 # ARGUMENTS:
 #   1 TARGET
-#     last      -- Reuse the previous selection.
-#     region    -- Select an arbitrary region (the default).
-#     window    -- Select a window.
+#     all       -- Capture all outputs combined
+#     full      -- Capture the focused output
+#     last      -- Capture the previous selection.
+#     region    -- Select a region interactively (the default).
+#     window    -- Select selected window.
 #     output    -- Select a monitor.
 
 main() {
   set -eo pipefail
-  hey.requires slurp grim swappy pngquant
-  wl-copy --clear  # don't process PNGs already in clipboard
-  # ppm is fastest. I leave it to swappy to generate an optimized png
-  if grim -t ppm -g "$(hey .slurp ${1:-region})" - | swappy -f -; then
-    if [[ "$(wl-paste --list-types | grep -Fx 'image/png')" ]]; then
-      if wl-paste --type image/png \
-        | pngquant -Q 90-95 -s 1 -f - \
-        | wl-copy --type image/png; then
-        dms ipc toast info "Copied screenshot to clipboard"
-      fi
-    fi
+  hey.requires pngquant
+  local preview_file=$(hey path runtime screenshot.png)
+  if dms screenshot --no-file --no-clipboard --stdout ${1:-region} | \
+       pngquant --strip -s 10 - >$preview_file | \
+       wl-copy -t image/png; then
+    trap "rm -f $preview_file" EXIT
+    dms notify "Screenshot captured" "Copied to clipboard" \
+      --icon $preview_file \
+      --file $preview_file
   else
     dms ipc toast warn "Aborted"
   fi

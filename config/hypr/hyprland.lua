@@ -207,8 +207,6 @@ hl.window_rule({ match={ class = "^librewolf$" }, scrolling_width = 0.8 })
 
 hl.window_rule({ match={ class = "^foot$" }, scrolling_width = 0.3 })
 
-hl.window_rule({ match={ class = "^swappy$" }, dim_around = true }) -- see config/hypr/bin/screenshot.zsh
-
 hl.window_rule({ -- see config/hypr/bin/screendraw.zsh
     match = { class = "^Gromit-mpx$" },
     float = true,
@@ -289,7 +287,7 @@ hl.bind("Print", hl.dsp.submap("screenshot"))
 hl.define_submap("screenshot", "reset", function()
     hl.bind("Print",    hl.dsp.exec_cmd("hey .screenshot region"))
     hl.bind("w",        hl.dsp.exec_cmd("hey .screenshot window"))
-    hl.bind("m",        hl.dsp.exec_cmd("hey .screenshot output"))
+    hl.bind("m",        hl.dsp.exec_cmd("hey .screenshot full"))
     hl.bind("l",        hl.dsp.exec_cmd("hey .screenshot last"))
     hl.bind("catchall", hl.dsp.submap("reset"))
 end)
