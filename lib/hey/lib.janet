@@ -286,10 +286,15 @@
           (or paths (exec-path)))))
 
 (defn- wm []
-  (let [desktop (string/ascii-lower (os/getenv "XDG_CURRENT_DESKTOP"))]
-    (cond (string/find "hyprland" desktop) :hypr
-          (= desktop nil) (error "XDG_CURRENT_DESKTOP not set")
-          (errorf "Unrecognized desktop: %s" desktop))))
+  # hey.desktop should be set from a NixOS module, and is written to to hey info
+  # in modules/hey.nix. Can't rely on $XDG_CURRENT_DESKTOP because there are
+  # cases where it isn't set (in TTYs) and may have inconsistent names.
+  (def desktop (ignore-errors (flake/info :desktop)))
+  (case* desktop
+    "hyprland" :hypr
+    "niri"     :niri
+    ["" nil]   (error "hey.desktop is not set")
+    (errorf "Unrecognized desktop: %s" desktop)))
 
 (def- *paths*
   {:home     [|(flake :path)]

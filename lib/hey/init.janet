@@ -51,7 +51,9 @@
 
 (defn- resolve-1 [kind base & args]
   (if (index-of (type base) [:array :tuple])
-    (some |(resolve-1 kind $0 ;args) base)
+    # A nil entry is one fewer place to look, not an error, so a caller can
+    # offer a directory it isn't sure of (config/$WM/bin on a tty) as-is.
+    (some |(if $0 (resolve-1 kind $0 ;args)) base)
     (let [base (if (path/abspath? base) base (or (path/find base) base))]
       (case (os/stat base :mode)
         nil nil

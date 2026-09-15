@@ -20,7 +20,10 @@
   (def area (if (and area (not (string/has-prefix? "@" area)))
               (string "@" area)
               area))
-  (echof :g "Reloading %s..." (or area (os/getenv "XDG_CURRENT_DESKTOP")))
+  # hey.desktop, not XDG_CURRENT_DESKTOP: a tty has the latter unset, and this
+  # is only a label, so it shouldn't be the thing that says "nil".
+  (echof :g "Reloading %s..."
+         (or area (ignore-errors (flake/info :desktop)) "everything"))
   (when (hey! hook ,;(opts area) onReload -f -v)
     (sys/notify "Finished reloading system" :icon 'checkmark :sound 'notify))
   (echo :check "Done!"))

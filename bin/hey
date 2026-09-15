@@ -57,7 +57,11 @@
              :test          (cmd 'test)
              :vars          (cmd 'vars)
              :wm            (with-doc "Dispatch to config/$WM/bin."
-                              |[:exec (path (keyword $0) "bin") ;$&])
+                              # Asking for the desktop's scripts on a machine
+                              # with no desktop is a sentence, not a backtrace.
+                              |[:exec (try (path (keyword $0) "bin")
+                                           ([e] (abort "%s" e)))
+                                      ;$&])
              :exec          (with-doc "Execute a program on $PATH through hey."
                               (fn [_ &opt arg & args]
                                 [:exec (if arg
@@ -69,7 +73,7 @@
                               |[:exec ;$&])
              '(* ".")       (with-doc "Execute the first script found under host, wm, or bin/." ".*"
                               |[:exec ;(or (resolve [(path :host "bin")
-                                                     (path :wm "bin")
+                                                     (ignore-errors (path :wm "bin"))
                                                      (path :bin)]
                                                     (slice $0 1) ;$&)
                                            (abort "%s: command not found" $0))])

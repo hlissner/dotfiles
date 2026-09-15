@@ -39,7 +39,9 @@ let cfg = config.hey;
         cfg.hooks;
 in {
   options.hey = with types; {
-    info = mkOpt' (attrsOf attrs) {}
+    desktop = mkOpt' (nullOr str) null
+      "The desktop this system runs, naming the config/NAME hey looks in.";
+    info = mkOpt' (attrsOf (pkgs.formats.json {}).type) {}
       "Facts about this system, for scripts to sniff at runtime.";
     hooks = mkOpt' (attrsOf (attrsOf lines)) {}
       "Zsh script fragments, as { HOOK = { NAME = script; } }, run by `hey hook`.";
@@ -121,6 +123,7 @@ in {
       "d ${janetTreeDir} 755 - - - -"
     ];
 
+    hey.info.desktop = cfg.desktop;
     home.dataFile = hookFiles // {
       "hey/info.json".text = toJSON cfg.info;
     };

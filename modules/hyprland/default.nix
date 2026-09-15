@@ -29,6 +29,8 @@ in {
   };
 
   config = mkIf cfg.enable {
+    hey.desktop = "hyprland";
+
     hey.info.hypr = {
       primaryMonitor = primaryMonitor.output or null;
       monitors = cfg.monitors;
