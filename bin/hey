@@ -61,9 +61,12 @@
              :wm            (with-doc "Dispatch to config/$WM/bin."
                               |[:exec (path (keyword $0) "bin") ;$&])
              :exec          (with-doc "Execute a program on $PATH through hey."
-                              |[:exec (or (path/find $1)
-                                          (abort "%s: command not found" $1))
-                                      ;$&])
+                              (fn [_ &opt arg & args]
+                                [:exec (if arg
+                                         (or (path/find arg)
+                                             (abort "%s: command not found" arg))
+                                         (abort "exec: which program?"))
+                                       ;args]))
              '(+ "./" "/")  (with-doc "Execute a script by path." "./"
                               |[:exec ;$&])
              '(* ".")       (with-doc "Execute the first script found under host, wm, or bin/." ".*"
