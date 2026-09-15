@@ -29,6 +29,36 @@
 (use hey/cmd)
 (use sh)
 
+(defn- yes?
+  ``Ask. Anything that isn't an explicit yes is a no -- including a closed
+  stdin, because the only caller follows this with rm -rf.``
+  [message & args]
+  (prin (fmt "%s [y/N] " (fmt message ;args)))
+  (flush)
+  (def answer (string/ascii-lower (string/trim (or (file/read stdin :line) ""))))
+  (string/has-prefix? "y" answer))
+
+(defn- link-dotfiles
+  ``Point /etc/dotfiles at wherever I actually keep them. install.zsh clones
+  over https and leaves the repo under /etc, but I move it afterwards, and
+  shell/zsh.nix and agenix.nix pathExists their way into hey.dir while nix is
+  evaluating -- they find nothing, quietly, if the two disagree.
+
+  A real directory there gets asked about first. Whatever it is, it isn't mine
+  to rm on a hunch.``
+  [&opt link]
+  (default link "/etc/dotfiles")
+  (def home (path :home))
+  (def real (ignore-errors (os/realpath link)))
+  (unless (= real home)
+    (when (= real link)
+      (unless (or (dryrun?) (yes? "%s is a directory, not a link. Delete it?" link))
+        (echof :warn "Left %s alone; it and hey.dir will keep disagreeing" link)
+        (break))
+      (do? $? sudo rm -rf ,link))
+    (unless (do? $? sudo ln -sfn ,home ,link)
+      (echof :warn "Couldn't point %s at %s" link (path/abbrev home)))))
+
 (defcmd sync [_ cmd & args &opts fast? --fast host [--host name]]
   (when (= (flake :host) "nixos")
     (abort "HOST is 'nixos'. Did you forget to change it?"))
@@ -39,6 +69,7 @@
   (os/setenv "HEYENV" (flake/json))
   (log "HEYENV=%s" (os/getenv "HEYENV"))
 
+  (link-dotfiles)
   (case* cmd
     "rollback"
     (if (empty? args)
