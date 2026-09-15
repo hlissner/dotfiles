@@ -1,0 +1,10 @@
+#!/usr/bin/env zsh
+# hey.comp.dump ARG...
+#
+# Leaves the lines of `$_hey_bin help --dump ARG...` in $_hey_reply: ready-made
+# _arguments specs, generated from a script's comment header by lib/hey/docs.janet.
+
+local bin=${_hey_bin:-hey}
+(( $+commands[$bin] )) || return 1
+_hey_reply=( ${(f)"$(command $bin help --dump "$@" 2>/dev/null)"} )
+(( $#_hey_reply ))

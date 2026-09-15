@@ -1,0 +1,13 @@
+#!/usr/bin/env zsh
+# hey.comp.hosts [SUFFIX]
+#
+# The machines with a config in this flake. What docs.janet turns @hosts into.
+#
+# SUFFIX, if given, is inserted after the host instead of the usual space --
+# for the SYSTEM:FILE shape `heyops edit` takes, where the host is only half a
+# word.
+
+local expl
+local -a hosts=( $_hey_root/hosts/*(N-/:t) ) suffix
+(( $# )) && suffix=( -S "$1" )
+(( $#hosts )) && _wanted hosts expl 'host' compadd $suffix -a hosts

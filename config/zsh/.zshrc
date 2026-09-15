@@ -113,8 +113,7 @@ if [[ $TERM != dumb ]]; then
     # Must be explicit because zgenom compile ignores nix-store symlinks
     zgenom compile \
       {$ZDOTDIR,@{0:a:h}}/{*.zsh,.zsh*}~*.zwc(-.N) \
-      ${0:a:h}/completions/_*~*.zwc(-.N) \
-      $DOTFILES_HOME/lib/zsh/*~*.zwc(.N)
+      $DOTFILES_HOME/lib/zsh/{,completions/}*~*.zwc(-.N)
   fi
 
   ## My dotfiles

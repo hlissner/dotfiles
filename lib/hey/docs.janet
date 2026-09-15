@@ -54,7 +54,7 @@
 
 (defn synopsis
   ``Return the one-line description on the second line of script FILE, or nil.
-  This is the same convention config/zsh/completions/_hey's __hey_scan uses.``
+  This is the same convention lib/zsh/completions/_hey's hey.comp.scan uses.``
   [file]
   (when-let [lines (header-lines file)
              desc (string/trim (get lines 0 ""))]
@@ -113,7 +113,7 @@
 ## * ZSH Completion
 
 # A script's comment header is the single source of truth for its flags and
-# arguments. config/zsh/completions/_hey needs it to generate a _arguments call.
+# arguments. lib/zsh/completions/_hey needs it to generate a _arguments call.
 
 (defn- header-entries
   ``Group a section's LINES into [head [body ...]] pairs.``
@@ -160,11 +160,19 @@
        (string/replace-all "$" "\\$")
        (string/replace-all "`" "\\`")))
 
+# The @REFs that aren't spelled the default way: zsh's own builtins, and the
+# handful of completers shared between front-ends, which live in lib/zsh under
+# the hey.comp.* name every zsh script may call them by.
 (def- *completers*
-  {"files" "_files" "default" "_default" "commands" "_command_names -e"})
+  {"files"    "_files"
+   "default"  "_default"
+   "commands" "_command_names -e"
+   "hosts"    "hey.comp.hosts"})
 
 (defn- completer
-  "Resolve a @REF from a header to the zsh function or builtin it names."
+  ``Resolve a @REF from a header to the zsh function or builtin it names.
+  Everything else is private to the completion that defines it, and named for
+  it: lib/zsh/completions/_hey.``
   [ref]
   (def name (slice ref 1))
   (or (get *completers* name)
@@ -349,7 +357,7 @@
 (defn print-commands
   ``Print commands as NAME:DESCRIPTION lines in three groups: commands, aliases,
   then sigils. Intended to be passed directly to zsh's _describe (see
-  config/zsh/completions/_hey).``
+  lib/zsh/completions/_hey).``
   [rules]
   (def groups @[@[] @[] @[]])
   (each entry (all-entries rules)

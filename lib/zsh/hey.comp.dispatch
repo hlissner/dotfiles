@@ -1,0 +1,35 @@
+#!/usr/bin/env zsh
+# hey.comp.dispatch
+#
+# The half of dispatch that every hey front-end shares: recurse under help, and
+# otherwise let the subcommand's own comment header answer for it. A command
+# with no OPTIONS:/ARGUMENTS: section takes no arguments, so an empty dump means
+# there is nothing to offer, not an error.
+#
+# A front-end with dispatch rules of its own declares __${_hey_bin}_rules
+# and gets first refusal. It says "not one of mine" with exit 2 rather than 1:
+# a rule that matched and found nothing to offer is still an answer, and must
+# not fall through to a dump of a word it has already rewritten.
+
+local bin=${_hey_bin:-hey}
+local curcontext="${curcontext%:*:*}:$bin-${words[1]}:"
+local state line
+typeset -A opt_args
+local -a _hey_reply
+
+local rules=__${bin}_rules ret
+if (( $+functions[$rules] )); then
+  $rules; ret=$?
+  (( ret == 2 )) || return ret
+fi
+
+case $words[1] in
+  (h|help|which)
+    _arguments -C \
+      '1: :hey.comp.commands' \
+      '*:: :->args' && return 0
+    [[ $state == args ]] && hey.comp.dispatch
+    ;;
+
+  (*) hey.comp.dump "$words[1]" && _arguments -C $_hey_reply ;;
+esac

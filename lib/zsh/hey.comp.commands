@@ -1,0 +1,50 @@
+#!/usr/bin/env zsh
+# hey.comp.commands
+#
+# $_hey_bin's subcommand menu. `help --dump` with no arguments emits ready-made
+# _describe pairs in three groups: commands, aliases, then the sigil patterns.
+# It always emits all three, and the first holds every command, so neither can
+# be empty in practice; the (@) is still load-bearing, to keep an empty group
+# from shifting later ones.
+#
+# A front-end that also dispatches into script directories hands me
+# $_hey_bindirs and $_hey_cfgdirs, and the menu grows the sigils that reach them.
+
+local -a cmds aliases groups scripts dirs _hey_reply
+local expl bin=${_hey_bin:-hey}
+
+if (( $#_hey_bindirs )); then
+  # Use ./path and /path verbatim
+  [[ $PREFIX == (|.)/* ]] && { _files; return }
+
+  # @FOO dispatches to config/FOO/bin
+  if compset -P '@'; then
+    (( $#_hey_cfgdirs )) || return 1
+    _wanted directories expl 'config directory' compadd -a _hey_cfgdirs
+    return
+  fi
+
+  # .FOO searches the host, wm, then top-level bin directories
+  if compset -P '.'; then
+    hey.comp.scripts $_hey_bindirs
+    return
+  fi
+fi
+
+(( $+commands[$bin] )) || return 1
+groups=( "${(@ps:\n\n:)"$(command $bin help --dump 2>/dev/null)"}" )
+(( $#groups >= 2 )) || return 1
+cmds=( ${(f)groups[1]} )
+aliases=( ${(f)groups[2]} )
+_describe -t commands "$bin command" cmds -- aliases
+
+# Offer the dynamic namespaces too, so a bare `hey TAB` is a full menu. The
+# sigils are part of the match so they don't shadow real subcommands.
+(( $#_hey_bindirs )) || return
+if hey.comp.scan $_hey_bindirs; then
+  scripts=( ${_hey_reply/#/.} )
+  _describe -t scripts 'script' scripts
+fi
+dirs=( ${_hey_cfgdirs/#/@} )
+(( $#dirs )) &&
+  _wanted directories expl 'config directory' compadd -a dirs

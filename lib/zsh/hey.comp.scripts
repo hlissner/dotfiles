@@ -1,0 +1,8 @@
+#!/usr/bin/env zsh
+# hey.comp.scripts DIR...
+#
+# The scripts in DIR..., as a menu.
+
+local -a _hey_reply
+hey.comp.scan "$@" || return 1
+_describe -t scripts 'script' _hey_reply

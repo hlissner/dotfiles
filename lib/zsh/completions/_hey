@@ -1,9 +1,20 @@
-#compdef hey
+#compdef hey lab
 #
 # Almost nothing here is hardcoded. `hey help --dump [CMD]` supplies the
 # subcommand list and each command's flags and arguments, generated from the
 # OPTIONS: and ARGUMENTS: sections of its comment header, and `hey help --scan
 # DIRS` describes the scripts in a directory. Both live in lib/hey/docs.janet.
+#
+# The generic half of all that -- dumping, scanning, walking script directories,
+# the subcommand menu -- is shared with _heyops, and lives in lib/zsh as one
+# autoloaded hey.comp.* function apiece (see modules/hey.nix). The prefix is how
+# to tell the two apart: hey.comp.* is public and anyone's to call, __hey_* is
+# defined in this file and nobody else's business.
+#
+# The second name up there is bin/lab, which is `exec hey .lab "$@"` and nothing
+# else. Any such wrapper gets hey's completion by being named on that line (or
+# with `compdef NAME _hey`); there is no per-wrapper file to write, because
+# there is nothing to complete but what hey resolves .NAME to.
 #
 # What's left here is the dynamic half of hey's dispatcher, which has to walk
 # $DOTFILES_HOME:
@@ -22,117 +33,6 @@
 # It also declares `local -a reply`, which is why the results below go into
 # $_hey_reply: zstyle -e assigns into the caller's $reply, so handing that name
 # to _describe risks it being clobbered out from under us.
-
-# Leave "name:description" pairs for the scripts in DIRS in $_hey_reply.
-__hey_scan() {
-  (( $# )) || return 1
-  (( $+commands[hey] )) || return 1
-  _hey_reply=( ${(f)"$(command hey help --scan "$@" 2>/dev/null)"} )
-  (( $#_hey_reply ))
-}
-
-# Leave the lines of `hey help --dump ARGS` in $_hey_reply.
-__hey_dump() {
-  (( $+commands[hey] )) || return 1
-  _hey_reply=( ${(f)"$(command hey help --dump "$@" 2>/dev/null)"} )
-  (( $#_hey_reply ))
-}
-
-__hey_scripts() {
-  local -a _hey_reply
-  __hey_scan "$@" || return 1
-  _describe -t scripts 'script' _hey_reply
-}
-
-# Walk scripts in FOO.d/BAR directories for each word. Expects $words[1] to be
-# the first argument to hey's resolver. Once a leaf script is reached, its own
-# arguments are completed from its comment header, the same way __hey_dispatch
-# does for hey's subcommands.
-__hey_scriptdir() {
-  local -a dirs=( "$@" ) next _hey_reply
-  local dir word
-  # Rebuild the command line for `hey help --dump`: $_hey_cmd is what the
-  # calling arm already consumed, $_hey_sigil the prefix it stripped from
-  # $words[1] in place (the "." of ".NAME").
-  local -a cmd=( $_hey_cmd )
-  local sigil=$_hey_sigil
-
-  while (( CURRENT > 1 )); do
-    word=$words[1]
-    [[ -z $word || $word == -* ]] && break
-    next=()
-    for dir in $dirs; do
-      # hey resolves NAME before NAME.d; offering both is a harmless superset.
-      [[ -d $dir/$word ]] && next+=( $dir/$word )
-      [[ -d $dir/$word.d ]] && next+=( $dir/$word.d )
-    done
-    (( $#next )) || break
-    dirs=( $next )
-    # The sigil belongs to whichever word comes first, consumed or leaf.
-    cmd+=( $sigil$word ); sigil=
-    shift words
-    (( CURRENT-- ))
-  done
-
-  if (( CURRENT == 1 )); then
-    __hey_scripts $dirs
-    return
-  fi
-
-  # $cmd stays unquoted: it is an array, one word per element.
-  [[ $words[1] == -* ]] || __hey_dump $cmd "$sigil$words[1]" || { _default; return }
-  _arguments -C $_hey_reply
-}
-
-# Consume $words[1] as a dispatch prefix, then complete the scripts under DIRS.
-__hey_subdir() {
-  local -a _hey_cmd=( $words[1] )
-  shift words
-  (( CURRENT-- ))
-  __hey_scriptdir "$@"
-}
-
-__hey_commands() {
-  local -a cmds aliases groups scripts _hey_reply
-  local expl
-
-  # Use ./path and /path verbatim
-  [[ $PREFIX == (|.)/* ]] && { _files; return }
-
-  # @FOO dispatches to config/FOO/bin
-  if compset -P '@'; then
-    (( $#_hey_cfgdirs )) || return 1
-    _wanted directories expl 'config directory' compadd -a _hey_cfgdirs
-    return
-  fi
-
-  # .FOO searches the host, wm, then top-level bin directories
-  if compset -P '.'; then
-    __hey_scripts $_hey_bindirs
-    return
-  fi
-
-  # `hey help --dump` emits ready-made _describe pairs in three groups:
-  # commands, aliases, then the sigil patterns. It always emits all three, and
-  # the first holds every command, so neither can be empty in practice; the (@)
-  # is still load-bearing, to keep an empty group from shifting later ones.
-  (( $+commands[hey] )) || return 1
-  groups=( "${(@ps:\n\n:)"$(command hey help --dump 2>/dev/null)"}" )
-  (( $#groups >= 2 )) || return 1
-  cmds=( ${(f)groups[1]} )
-  aliases=( ${(f)groups[2]} )
-  _describe -t commands 'hey command' cmds -- aliases
-
-  # Offer dynamic namespaces too, so a bare `hey TAB` is a full menu. The sigils
-  # are part of the match so they don't shadow real subcommands.
-  if __hey_scan $_hey_bindirs; then
-    scripts=( ${_hey_reply/#/.} )
-    _describe -t scripts 'script' scripts
-  fi
-  local -a dirs=( ${_hey_cfgdirs/#/@} )
-  (( $#dirs )) &&
-    _wanted directories expl 'config directory' compadd -a dirs
-}
 
 # The areas a hook can be scoped to, as bin/hey.d/hook.janet's areas sees them.
 # Bare after an @, sigil-prefixed otherwise, so they can share a menu with the
@@ -162,7 +62,7 @@ __hey_hooks() {
       )
     fi
   done
-  __hey_scan $dirs
+  hey.comp.scan $dirs
   # all runs for every hook, taking --HOOK; it is not a hook of its own
   _hey_reply=( ${_hey_reply:#all:*} )
 
@@ -203,12 +103,6 @@ __hey_path_segment() {
   fi
 }
 
-__hey_hosts() {
-  local expl
-  local -a hosts=( $_hey_root/hosts/*(N-/:t) )
-  (( $#hosts )) && _wanted hosts expl 'host' compadd -a hosts
-}
-
 __hey_generations() {
   local expl
   local -a gens=( /nix/var/nix/profiles/system-*-link(N:t:s/system-//:s/-link//) )
@@ -223,11 +117,15 @@ __hey_inputs() {
   (( $#inputs )) && _wanted inputs expl 'flake input' compadd -a inputs
 }
 
+# The Janet suites, named as bin/hey.d/test.janet's hey-suites names them: the
+# path under test/, minus the .nix, with test/nixos and anything _-prefixed left
+# out of it.
 __hey_hey_suites() {
-  local expl root=$_hey_root/test/hey
-  local -a suites
-  suites=( $root/*.janet(N.:t:r) )
-  suites=( ${suites:#_*} )
+  local expl root=$_hey_root/test
+  local -a suites=( $root/*/*.janet(N.) )
+  suites=( ${${suites#$root/}%.janet} )
+  suites=( ${suites:#(nixos|_*)/*} )
+  suites=( ${suites:#*/_*} )
   (( $#suites )) && _wanted suites expl 'hey suite' compadd -a suites
 }
 
@@ -281,33 +179,24 @@ __hey_test_arg() {
   esac
 }
 
-__hey_dispatch() {
-  local curcontext="${curcontext%:*:*}:hey-${words[1]}:"
-  local state line
-  typeset -A opt_args
-  local -a _hey_reply
-
+# hey's dispatch rules that aren't "read the subcommand's header". Exit 2 hands
+# the word back to hey.comp.dispatch, which does exactly that; every other status
+# is an answer, even an empty one.
+__hey_rules() {
   case $words[1] in
-    (h|help|which)
-      _arguments -C \
-        '1: :__hey_commands' \
-        '*:: :->args' && return 0
-      [[ $state == args ]] && __hey_dispatch
-      ;;
-
     # Paths are executed verbatim. This must precede (.*), which would
     # otherwise claim ./foo and search for a script named /foo.
     (./*|/*) _default ;;
 
     # These dispatch into a directory of scripts instead of taking arguments of
     # their own, so there is no header of their own to read.
-    (host)  __hey_subdir $_hey_root/hosts/$_hey_host/bin ;;
-    (wm)    __hey_subdir $_hey_root/config/$_hey_wm/bin ;;
-    (@*)    __hey_subdir $_hey_root/config/${words[1]#@}/bin ;;
+    (host)  hey.comp.subdir $_hey_root/hosts/$_hey_host/bin ;;
+    (wm)    hey.comp.subdir $_hey_root/config/$_hey_wm/bin ;;
+    (@*)    hey.comp.subdir $_hey_root/config/${words[1]#@}/bin ;;
     (.*)
       local _hey_sigil=.
       words[1]=${words[1]#.}
-      __hey_scriptdir $_hey_bindirs
+      hey.comp.scriptdir $_hey_bindirs
       ;;
 
     # Dispatch rules with no script of their own to read a header from. bin/hey
@@ -323,10 +212,7 @@ __hey_dispatch() {
         '1: :__hey_vars'
       ;;
 
-    # Everything else is generated from the subcommand's own comment header. A
-    # command with no OPTIONS:/ARGUMENTS: section takes no arguments, so an
-    # empty dump means there is nothing to offer, not an error.
-    (*) __hey_dump "$words[1]" && _arguments -C $_hey_reply ;;
+    (*) return 2 ;;
   esac
 }
 
@@ -334,6 +220,7 @@ _hey() {
   local curcontext="$curcontext" state line
   typeset -A opt_args
   local -a globals _hey_reply
+  local _hey_bin=hey
 
   # `hey` resolves these internally (see lib/hey/lib.janet)
   local _hey_root=${DOTFILES_HOME:-${${(%):-%x}:A:h:h:h:h}}
@@ -351,18 +238,28 @@ _hey() {
   # host is always an area; it names hosts/$HOST/hooks, which needn't exist.
   local -a _hey_hookareas=( $_hey_root/config/*/hooks(N-/:h:t) host )
 
+  # Anything else this is compdef'd onto is a `hey .NAME "$@"` wrapper, so hand
+  # the line to the .* rule and let it walk. $service rather than $words[1],
+  # which is whatever spelling of the command I happened to type.
+  if [[ $service != hey ]]; then
+    local _hey_sigil=.
+    words[1]=$service
+    hey.comp.scriptdir $_hey_bindirs
+    return
+  fi
+
   # hey's own flags come from bin/hey's header, like every other command's. By
   # absolute path, not `.hey`, which would resolve through the search path and
   # let a script named `hey` in an earlier bin/ shadow it.
-  __hey_dump $_hey_root/bin/hey && globals=( $_hey_reply )
+  hey.comp.dump $_hey_root/bin/hey && globals=( $_hey_reply )
 
   _arguments -C -A '-*' \
     $globals \
-    '1: :__hey_commands' \
+    '1: :hey.comp.commands' \
     '*:: :->args' && return 0
 
   [[ $state == args ]] || return 1
-  __hey_dispatch
+  hey.comp.dispatch
 }
 
 _hey "$@"

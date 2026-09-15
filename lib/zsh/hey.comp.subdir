@@ -1,0 +1,9 @@
+#!/usr/bin/env zsh
+# hey.comp.subdir DIR...
+#
+# Consume $words[1] as a dispatch prefix, then complete the scripts under DIR...
+
+local -a _hey_cmd=( $words[1] )
+shift words
+(( CURRENT-- ))
+hey.comp.scriptdir "$@"

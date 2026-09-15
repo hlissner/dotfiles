@@ -1,0 +1,41 @@
+#!/usr/bin/env zsh
+# hey.comp.scriptdir DIR...
+#
+# Walk scripts in FOO.d/BAR directories under DIR..., for each word. Expects
+# $words[1] to be the first argument to hey's resolver. Once a leaf script is
+# reached, its own arguments are completed from its comment header, the same way
+# hey.comp.dispatch does for a command's subcommands.
+
+local -a dirs=( "$@" ) next _hey_reply
+local dir word
+# Rebuild the command line for `hey help --dump`: $_hey_cmd is what the calling
+# arm already consumed, $_hey_sigil the prefix it stripped from $words[1] in
+# place (the "." of ".NAME").
+local -a cmd=( $_hey_cmd )
+local sigil=$_hey_sigil
+
+while (( CURRENT > 1 )); do
+  word=$words[1]
+  [[ -z $word || $word == -* ]] && break
+  next=()
+  for dir in $dirs; do
+    # hey resolves NAME before NAME.d; offering both is a harmless superset.
+    [[ -d $dir/$word ]] && next+=( $dir/$word )
+    [[ -d $dir/$word.d ]] && next+=( $dir/$word.d )
+  done
+  (( $#next )) || break
+  dirs=( $next )
+  # The sigil belongs to whichever word comes first, consumed or leaf.
+  cmd+=( $sigil$word ); sigil=
+  shift words
+  (( CURRENT-- ))
+done
+
+if (( CURRENT == 1 )); then
+  hey.comp.scripts $dirs
+  return
+fi
+
+# $cmd stays unquoted: it is an array, one word per element.
+[[ $words[1] == -* ]] || hey.comp.dump $cmd "$sigil$words[1]" || { _default; return }
+_arguments -C $_hey_reply

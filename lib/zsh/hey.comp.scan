@@ -1,0 +1,11 @@
+#!/usr/bin/env zsh
+# hey.comp.scan DIR...
+#
+# Leaves "name:description" pairs for the scripts in DIR... in $_hey_reply.
+# See lib/zsh/completions/_hey for what reads it.
+
+local bin=${_hey_bin:-hey}
+(( $# )) || return 1
+(( $+commands[$bin] )) || return 1
+_hey_reply=( ${(f)"$(command $bin help --scan "$@" 2>/dev/null)"} )
+(( $#_hey_reply ))
