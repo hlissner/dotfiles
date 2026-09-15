@@ -22,6 +22,7 @@ with builtins;
         "ssd"
         "ergodox"
         "bluetooth"
+        "vr"
       ];
     };
 
