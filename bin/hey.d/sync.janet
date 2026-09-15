@@ -42,11 +42,13 @@
   (case* cmd
     "rollback"
     (if (empty? args)
-      (array/push args "--rollback" "switch")
-      (do (do? $? sudo nix-env
-               --switch-generation ,(in args 0)
-               --profile ,(path :profile))
-          (break)))
+      # Neither form can go through the rebuild below: --rollback is mutually
+      # exclusive with --flake, and nix-env isn't nixos-rebuild at all. Nothing
+      # is evaluated either way, so neither wants the flake.
+      (do? $? sudo nixos-rebuild switch --rollback)
+      (do? $? sudo nix-env
+           --switch-generation ,(in args 0)
+           --profile ,(path :profile)))
     ["check" "ch"]
     (do? $? nix flake check --impure
          --no-warn-dirty
