@@ -12,7 +12,7 @@
 #
 # ARGUMENTS:
 #   1 SUITE
-#     hey    -- Run the Janet suite in test/hey through judge.
+#     hey    -- Run the Janet suites in test/* through judge.
 #     nixos  -- Run the NixOS suite in test/nixos through nix build.
 #   * ARGS @test-arg
 
@@ -23,16 +23,18 @@
 
 # NixOS suites
 
+(def- *system*
+  # Set once; my architecture won't change mid-run
+  (delay ($<_ nix eval --raw --impure --expr "builtins.currentSystem")))
+
 (defn- nixos-checks [&opt suite]
-  (string (path :home) "#checks."
-          ($<_ nix eval --raw --impure --expr "builtins.currentSystem")
-          ".nixos" (if suite (string ".passthru." suite) "")))
+  (string (path :home) "#checks." (*system*) ".nixos"
+          (if suite (string ".passthru." suite) "")))
 
 (defn- nixos-suites []
-  (string/split
-   "\n"
-   ($<_ nix eval --raw --no-warn-dirty ,(nixos-checks)
-        --apply "d: builtins.concatStringsSep \"\\n\" (builtins.attrNames d.passthru)")))
+  (json/decode
+   ($<_ nix eval --json --no-warn-dirty ,(nixos-checks)
+        --apply "d: builtins.attrNames d.passthru")))
 
 (defn- run-nixos [args]
   (def suite (first args))
@@ -42,37 +44,46 @@
     (abort "Unknown NixOS suite: %s (see hey test -l)" suite))
   (echo :g "> Running the NixOS suite...")
   (flush)
-  # No --impure and no HEYENV: test/nixos fabricates the `hey` argument itself
-  # rather than going through nixosConfigurations, precisely so this stays a
-  # pure build. See test/nixos/_lib.nix.
-  #
-  # A passing nix build says nothing at all, which next to judge's "N passed"
-  # reads like the suite never ran, hence the confirmation.
-  (if (do? $? nix build --no-link --no-warn-dirty ,(nixos-checks suite))
-    (do (echo :check (if suite
-                       (string "NixOS suite passed: " suite)
-                       "NixOS suites passed"))
-        true)
-    (abort "NixOS suite failed")))
+  # No --impure and no HEYENV: test/nixos fabricates `specialArgs.hey` itself to
+  # keep the test build pure (see test/nixos/_lib.nix)
+  (unless (do? $? nix build --no-link --no-warn-dirty ,(nixos-checks suite))
+    (abort "NixOS suite failed"))
+  # A passing nix build says nothing at all
+  (echo :check (if suite
+                 (string "NixOS suite passed: " suite)
+                 "NixOS suites passed"))
+  true)
 
 
 # Hey suites (Janet)
 
-# Can't list tests with judge, so a filesystem crawl it is.
+# Can't list tests with judge, so a filesystem crawl it is. One directory per
+# binary under test (test/hey, test/heyops, ...); test/nixos is the other kind
+# of suite entirely, and _-prefixed names are shared plumbing.
+(defn- hey-dirs []
+  (sorted (seq [dir :in (os/dir (path :test))
+                :when (not= dir "nixos")
+                :when (not (string/has-prefix? "_" dir))
+                :when (= :directory (os/stat (path :test dir) :mode))]
+            dir)))
+
 (defn- hey-suites []
-  (sorted (seq [file :in (os/dir (path :test "hey"))
-                     :when (string/has-suffix? ".janet" file)
-                     :when (not (string/has-prefix? "_" file))]
-            (string/no-suffix ".janet" file))))
+  (sorted (seq [dir :in (hey-dirs)
+                file :in (os/dir (path :test dir))
+                :when (string/has-suffix? ".janet" file)
+                :when (not (string/has-prefix? "_" file))]
+            (string dir "/" (string/no-suffix ".janet" file)))))
 
 (defn- run-hey [args]
-  (var suite? false)
-  (def args (let [suites (hey-suites)]
-              (map |(if (index-of $0 suites)
-                      (do (set suite? true)
-                        (path :test "hey" (string $0 ".janet")))
-                      $0)
-                   args)))
+  (def suites (hey-suites))
+  (def file-of |(if (index-of $0 suites) (path :test (string $0 ".janet"))))
+  # A suite name becomes its file; anything else is judge's business
+  (def args [;(if (some file-of args) [] (map |(path :test $0) (hey-dirs)))
+             ;(map |(or (file-of $0) $0) args)])
+  (unless (path/find "judge")
+    (echo :g "> Test dependencies are missing; installing them...")
+    (os/cd (path :home))  # jpm wants a project.janet to read
+    (do? $ jpm deps))
   (echo :g "> Running the Hey suite...")
   (flush)
 
@@ -90,9 +101,12 @@
 (defcmd test [_ suite & args &opts list? [-l --list]]
   (case* suite
     nil (if list?
-          (do (echo ;(map |(string "hey:" $0) (hey-suites)))
+          (do
+            (echo ;(map |(string "hey:" $0) (hey-suites)))
             (echo ;(map |(string "nixos:" $0) (nixos-suites))))
-          (and (run-hey []) (run-nixos [])))
+          # Short-circuits: no sense waiting on nix if janet already said no.
+          (and (run-hey [])
+               (run-nixos [])))
     "hey" (if list? (echo ;(hey-suites)) (run-hey args))
     ["nixos" "nix"] (if list? (echo ;(nixos-suites)) (run-nixos args))
     (abort "Unknown suite: %s" suite)))
