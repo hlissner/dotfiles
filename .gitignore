@@ -2,3 +2,6 @@
 /result
 *.zwc
 *.janet.tested
+
+# Symlinked in by nixos modules
+*.meta.lua

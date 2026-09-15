@@ -1,0 +1,5 @@
+{
+  "workspace": { "useGitIgnore": false,
+                 "ignoreDir": ["config/nvim", "*.template.lua", "result"] },
+  "diagnostics": { "globals": ["HOSTNAME", "PRIMARY_MONITOR"] }
+}
