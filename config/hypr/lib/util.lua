@@ -47,17 +47,19 @@ function my.dsp.resize_width_to(spec)
     local w = hl.get_active_window()
     if not w then return end
     local m = w.monitor
-    local usable = m.width / m.scale - m.reserved.left - m.reserved.right
-    local frac = math.max(0.1, math.min(1.0, spec > 1 and spec / usable or spec))
-    local px = spec > 1 and spec or math.floor(usable * frac)
-    local ws = hl.get_active_special_workspace() or hl.get_active_workspace()
-    local layout = not w.floating and ws.tiled_layout
-    if layout == "scrolling" then
-      hl.dispatch(hl.dsp.layout("colresize " .. frac))
-    elseif layout == "master" then
-      hl.dispatch(hl.dsp.layout("mfact exact " .. (w.layout.is_master and frac or 1 - frac)))
-    else
-      hl.dispatch(hl.dsp.window.resize({ x = px, y = w.size.y }))
+    if m then
+        local usable = m.width / m.scale - m.reserved.left - m.reserved.right
+        local frac = math.max(0.1, math.min(1.0, spec > 1 and spec / usable or spec))
+        local px = spec > 1 and spec or math.floor(usable * frac)
+        local ws = hl.get_active_special_workspace() or hl.get_active_workspace()
+        local layout = not w.floating and ws and ws.tiled_layout
+        if layout == "scrolling" then
+            hl.dispatch(hl.dsp.layout("colresize " .. frac))
+        elseif layout == "master" then
+            hl.dispatch(hl.dsp.layout("mfact exact " .. (w.layout.is_master and frac or 1 - frac)))
+        else
+            hl.dispatch(hl.dsp.window.resize({ x = px, y = w.size.y }))
+        end
     end
   end
 end

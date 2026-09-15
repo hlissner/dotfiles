@@ -90,7 +90,7 @@ hl.config({
 
     -- See https://wiki.hyprland.org/Configuring/Variables/ for more
     misc = {
-        background_color = 0xff000000,
+        background_color = "0xff000000",
         force_default_wallpaper = 0,  -- Set to 0 to disable the anime mascot wallpapers
         disable_watchdog_warning = true,
         disable_hyprland_logo = true,
@@ -144,7 +144,7 @@ if PRIMARY_MONITOR then
     -- Designate workspaces 1-9 for my main monitor
     for i = 1, 9 do
       hl.workspace_rule({
-          workspace = i,
+          workspace = tostring(i),
           monitor = PRIMARY_MONITOR,
           default = i == 1,
           persistent = i == 1
@@ -152,7 +152,7 @@ if PRIMARY_MONITOR then
     end
     -- A workspace exclusively for games
     hl.workspace_rule({
-        workspace = 10,
+        workspace = tostring(10),
         layout = "monocle",
         monitor = PRIMARY_MONITOR,
         gaps_in = 0,
