@@ -47,6 +47,7 @@ in mkIf (any (s: hasPrefix "gpu/nvidia" s) hardware) (mkMerge [
             --append-flags '--config="$XDG_CONFIG_HOME/nvidia/rc.conf"'
         '')
 
+        vulkan-tools
         cudaPackages.cudatoolkit  # required for CUDA support
       ];
       variables = {

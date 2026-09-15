@@ -25,6 +25,7 @@ in {
         remotePlay.openFirewall = true;
         # gamescopeSession.enable = true;
         extraPackages = with pkgs; [ gamescope mangohud ];
+        extraCompatPackages = with pkgs; [ proton-ge-bin ];
       };
 
       # Makes gamemoderun available, but it must be selectively enabled for
