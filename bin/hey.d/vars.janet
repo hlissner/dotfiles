@@ -23,6 +23,11 @@
 
 (defcmd vars [_ cmd & args &opts global? -g]
   (echo ;(case cmd
-          "get" [(vars/get (first args) global?)]
-          "set" [(vars/set (in args 0) (get args 1) global?)]
-          nil   (vars/list global?))))
+          "get" [(vars/get (or (first args) (abort "No variable specified"))
+                           global?)]
+          "set" [(vars/set (or (first args) (abort "No variable specified"))
+                           (get args 1) global?)]
+          # As strings, or echo eats them: it reads leading keywords as its own
+          # style flags, and every var name arrives as one.
+          nil   (map string (vars/list global?))
+          (abort "No such vars command: %s" cmd))))
