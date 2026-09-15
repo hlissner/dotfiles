@@ -14,14 +14,7 @@
 
 rofi.powermenu.dpms() {
   sleep 0.2
-  if (( $+commands[hyprctl] )); then
-    hey.do hyprctl dispatch dpms off
-  elif (( $+commands[xset] )); then
-    hey.do xset dpms force off
-  else
-    dms ipc toast error "Can't sleep! No known methods."
-    exit 1
-  fi
+  hey.do hyprctl eval 'hl.dispatch(hl.dsp.dpms({ action = "disable" }))'
 }
 
 rofi.powermenu.lock()     {
