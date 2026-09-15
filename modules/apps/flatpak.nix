@@ -16,11 +16,17 @@ in {
   config = mkIf cfg.enable {
     services.flatpak = {
       enable = true;
+      package = mkIf config.modules.xdg.enable
+        # Respect XDG, damn it!
+        (mkWrapper pkgs.flatpak ''
+          wrapProgram "$out/bin/flatpak" \
+            --run 'export HOME="''${XDG_FAKE_HOME:-$HOME}"'
+        '');
     };
 
     systemd.services.flatpak-repo = {
       wantedBy = [ "multi-user.target" ];
-      path = [ pkgs.flatpak ];
+      path = [ config.services.flatpak.package ];
       script = ''
         flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
       '';
