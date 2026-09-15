@@ -101,8 +101,9 @@
   [message & args]
   (os/spawn ["rofi" "-markup" "-e" (fmt message ;args)] :pd))
 
-(defn error [message & args]
+(defn error
   "Display MESSAGE in a Rofi dialog as an error. MESSAGE supports Pango markup."
+  [message & args]
   (notice "<b>Uncaught error:</b>\n\n%s" (escape (fmt message ;args)))
   (errorf message ;args))
 
