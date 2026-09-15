@@ -35,17 +35,19 @@
                     (:get self key))
                   (:set self key (valfn))))}))
 
-(def global (new (path :data "vars.d")))
-(def temp   (new (path :runtime "vars.d")))
+# Deferred because jpm quickbin compiles top-level values AOT with hey (see
+# modules/hey.nix).
+(def global (delay (new (path :data "vars.d"))))
+(def temp   (delay (new (path :runtime "vars.d"))))
 
 (defn get [key &opt global?]
-  (:get (if global? global temp) key))
+  (:get (if global? (global) (temp)) key))
 
 (defn set [key val &opt global?]
-  (:set (if global? global temp) key val))
+  (:set (if global? (global) (temp)) key val))
 
 (defn list [&opt global?]
-  (:list (if global? global temp)))
+  (:list (if global? (global) (temp))))
 
 (defmacro cached [vars key & body]
   ~(:cache ,vars ,key (fn [] ,;body)))

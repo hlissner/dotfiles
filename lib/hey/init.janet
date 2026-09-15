@@ -45,6 +45,10 @@
        (,trap (fn [&] (os/rm ,$file)) :exit)
        ,;body)))
 
+# Where a script's own arguments start, and my path walk stops.
+(defn- flag? [arg]
+  (peg/match (peg! '(+ (* "-" :w*) (* "--" :w*))) arg))
+
 (defn- resolve-1 [kind base & args]
   (if (index-of (type base) [:array :tuple])
     (some |(resolve-1 kind $0 ;args) base)
@@ -59,7 +63,7 @@
             (each arg args
               (cond
                 (= arg "--") (do (-- depth) (break))
-                (peg/match (peg! '(+ (* "-" :w*) (* "--" :w*))) arg) (break)
+                (flag? arg) (break)
                 (let [crumb (path/join (or target base) arg)
                       dir (path/sibling :directory crumb "" ".d")]
                   (++ depth)
@@ -108,6 +112,12 @@
       |[:exec (last rules) ;$&]
       (last rules))))
 
+# :current-file is relative to the project root while compiling and absolute
+# while interpreting, and defcmd records it verbatim. Sorting that out here is
+# the only place that knows which of the two it got.
+(defn- script-path [file]
+  (if (path/abspath? file) file (path :home file)))
+
 (defn- eval-dispatcher
   "Build the op handler for a rule that resolves to Janet code."
   [command spec]
@@ -117,7 +127,9 @@
         cargs (slice spec 2)]
     (fn [op]
       (let [{:cmd cmd :file file}
-            (if (struct? f) f {:cmd f :file (dyn :script)})]
+            (if (struct? f)
+              {:cmd (f :cmd) :file (script-path (f :file))}
+              {:cmd f :file (dyn :script)})]
         (case op
           :which (echo (string/join [file ;cargs] " "))
           :help  (help [file ;cargs])
@@ -157,9 +169,14 @@
       :exec (exec-dispatcher command spec)
       (abort "Unknown command: %q" command))))
 
-(defdyn *script* "TODO")
-(defdyn *dryrun* "TODO")
-(defdyn *debug* "TODO")
+# Set once by dispatch-1, read everywhere. Also exported as HEYSCRIPT,
+# HEYDRYRUN and HEYDEBUG, for the shell scripts downstream of me.
+(defdyn *script* "The script hey dispatched to.")
+(defdyn *dryrun* "Whether to print commands instead of running them.")
+(defdyn *debug* "Verbosity, 0-3. See the -? flags.")
+
+# The flags hey eats before a subcommand ever sees them.
+(def- *global-flags* ["-?" "-??" "-???" "-!" "-h" "--help"])
 
 (defn dryrun? []
   (dyn :dryrun false))
@@ -184,9 +201,7 @@
         rargs (if (= idx -1) [] (slice args idx -1))
         help? (or (index-of "-h" largs)
                   (index-of "--help" largs))]
-    # During compilation, :current-file is relative to the root of the project
-    # (which is $DOTFILES_HOME). At runtime, it's an absolute path.
-    (setdyn :script (if (path/abspath? file) file (path :home file)))
+    (setdyn :script (script-path file))
     (setdyn :dryrun
        (or (index-of "-!" largs)
            (dyn :dryrun (not (empty? (or (os/getenv "HEYDRYRUN") ""))))))
@@ -204,9 +219,9 @@
       (if (dryrun?) (log "Enabled dry run mode"))
       # For child processes that may not have its environment available (like
       # system units or cronjobs).
-      (with-envvars ["PATH" (string/join exec-path ":")
+      (with-envvars ["PATH" (string/join (exec-path) ":")
                      "DOTFILES_HOME" (path :home)]
-        (let [args [;(filter |(not (index-of $0 ["-?" "-??" "-???" "-!" "-h" "--help"])) largs)
+        (let [args [;(filter |(not (index-of $0 *global-flags*)) largs)
                     ;rargs]
               op (case* (first args)
                    ["h" "help"] :help
@@ -233,12 +248,17 @@
 (defmacro dispatch [rules & args]
   ~(,dispatch-1 ,(dyn :current-file) [,;rules] ;args))
 
+# Resolved on $PATH instead of absolute path b/c hey is compiled ahead of time
+# now (see modules/hey.nix).
+(def- *hey-bin* "hey")
+
+# These three expand to sh/$?, which resolves wherever they are *used*, not here
+# -- so the namespaced spelling is the one that has to travel, and it does, via
+# the re-export above. Callers needs only `(use hey)`.
 (defmacro hey [& args]
-  # The stderr buffer is deliberately not named `error`; that shadows the
-  # function this needs to call to re-raise the subcommand's own error.
   ~(do (def output @"")
-       (def errout @"")
-       (cond ,(tuple 'sh/$? (path :bin "hey") ;args
+       (def errout @"")  # naming this `error` would shadow the function
+       (cond ,(tuple 'sh/$? *hey-bin* ;args
                       '> '(unquote output)
                       '> '[stderr errout])
              (do (when (debug?)
@@ -250,12 +270,12 @@
                  (,exit 16)))))
 
 (defmacro hey! [& args]
-  (tuple 'do? 'sh/$? (path :bin "hey") ;args))
+  (tuple 'do? 'sh/$? *hey-bin* ;args))
 
 (defmacro hey? [& args]
   ~(do (def output @"")
        (def errout @"")
-       (if ,(tuple 'sh/$? (path :bin "hey") ;args
+       (if ,(tuple 'sh/$? *hey-bin* ;args
                    '> '(unquote output)
                    '> '[stderr errout])
          (do (when (debug?)

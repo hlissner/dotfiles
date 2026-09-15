@@ -31,10 +31,10 @@
 (use sh)
 (import hey/vars)
 
-(def- *vars* (vars/new (:dir vars/temp :profile)))
+(def- *vars* (delay (vars/new (:dir (vars/temp) :profile))))
 
 (defn- generations [&opt reload?]
-  (:cache *vars* :generations
+  (:cache (*vars*) :generations
     |(json/decode ($<_ nixos-rebuild list-generations --json)
                   :keywords true)
     reload?))

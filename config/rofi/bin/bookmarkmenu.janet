@@ -52,7 +52,7 @@
         (ignore-errors (os/rm copy))
         (propagate err fib))))
 
-(def- *vars*  (vars/new (:dir vars/global :rofi :bookmarkmenu)))
+(def- *vars*  (vars/new (:dir (vars/global) :rofi :bookmarkmenu)))
 (def- *icons* (vars/new (:dir *vars* :icons) true))
 
 (defn- icon-file [data]

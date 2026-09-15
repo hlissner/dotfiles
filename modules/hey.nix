@@ -9,24 +9,48 @@ with builtins;
 with lib;
 with hey.lib;
 let cfg = config.hey;
-
     janet = pkgs.janet;
-    jpm = pkgs.jpm;
-    janetTreeDir = "${config.home.dataDir}/janet/jpm_tree";
+
+    heyPkg = hey.packages.hey;
+
+    # My own janet tree, deliberately outside the store, so `jpm install` has
+    # somewhere to put things.
+    janetTreeDir = "${config.home.dataDir}/janet";
+
+    hookName = name:
+      if match "[0-9]{2}-.+" name == null then "50-${name}" else name;
+
+    # { onFoo = { bar = "..."; }; } -> { "hey/hooks.d/onFoo.d/50-bar" = {...}; }
+    hookFiles =
+      concatMapAttrs
+        (hook: scripts:
+          mapAttrs'
+            (name: script:
+              nameValuePair "hey/hooks.d/${hook}.d/${hookName name}" {
+                text = ''
+                  #!/usr/bin/env zsh
+                  ${script}
+                '';
+                # `hey hook` ignores non-executable scripts
+                executable = true;
+              })
+            scripts)
+        cfg.hooks;
 in {
-  options = with types; {
-    hey = {
-      info = mkOpt (attrsOf attrs) {};
-      hooks = mkOpt (attrsOf (attrsOf lines)) {};
-    };
+  options.hey = with types; {
+    info = mkOpt' (attrsOf attrs) {}
+      "Facts about this system, for scripts to sniff at runtime.";
+    hooks = mkOpt' (attrsOf (attrsOf lines)) {}
+      "Zsh script fragments, as { HOOK = { NAME = script; } }, run by `hey hook`.";
   };
 
   config = {
     # So systemd services in downstream modules/profiles can call hey without
     # dealing with PATH shenanigans.
-    _module.args.heyBin = "${janet}/bin/janet ${hey.binDir}/hey";
+    _module.args.heyBin = getExe heyPkg;
 
     environment.systemPackages = with pkgs; [
+      heyPkg
       gcc
       janet
       jpm
@@ -41,82 +65,61 @@ in {
       zsh
     ];
 
+    # For the global Janet ecosystem (separate from Hey's).
+    #
+    # janet makes the LAST JANET_PATH entry :syspath and searches it ahead of
+    # every other, so mine goes last and wins. hey's own libraries are the
+    # fallback behind it, there for the scripts hey dispatches to but doesn't
+    # compile in (config/rofi/bin/*.janet). hey itself reads none of this; it's
+    # a quickbin and carries its libraries inside.
     environment.sessionVariables = {
       JANET_TREE = janetTreeDir;
-      JANET_PATH = "${janetTreeDir}/lib";
+      JANET_PATH = "${heyPkg.janetLibs}:${janetTreeDir}/lib";
+      JANET_BINPATH = "${janetTreeDir}/bin";
       JANET_LIBPATH = "${janet}/lib";
       JANET_HEADERPATH = "${janet}/include";
-      JANET_BINPATH = "${config.home.binDir}";
     };
 
-    # Compile bin/hey to trivialize janet startup time. And no, I don't want
-    # this to be done in /nix/store, because I tinker with 'hey' too often.
-    system.activationScripts.initHey =
-      # TODO: Use pkgs.buildEnv instead
-      let script = pkgs.writeShellScript "initHey" ''
-            export PATH="${pkgs.gcc}/bin:${janet}/bin:${jpm}/bin:$PATH"
-            export DOTFILES_HOME="${hey.dir}"
-            export XDG_RUNTIME_DIR="/run/user/${toString config.user.uid}"
-            export XDG_BIN_HOME="${config.home.binDir}"
-            export XDG_CACHE_HOME="${config.home.cacheDir}"
-            export XDG_CONFIG_HOME="${config.home.configDir}"
-            export XDG_DATA_HOME="${config.home.dataDir}"
-            export XDG_STATE_HOME="${config.home.stateDir}"
-            export JANET_TREE="${janetTreeDir}"
-            export JANET_PATH="${janetTreeDir}/lib";
-            export JANET_LIBPATH="${janet}/lib";
-            export JANET_HEADERPATH="${janet}/include";
-            export JANET_BINPATH="${config.home.binDir}";
-            mkdir -p "$JANET_TREE"
-            cd '${hey.dir}'
-            ${pkgs.zsh}/bin/zsh -c "jpm deps --verbose"
-            ${pkgs.zsh}/bin/zsh -c "jpm run deploy --verbose"
-          '';
-      in ''
-        runuser -u ${config.user.name} -- ${script}
-      '';
+    # Where lib/hey/lib.janet gets a usable PATH from, for hey invocations
+    # in systemd units with no/incomplete $PATH.
     system.userActivationScripts.initHeyPath = ''
+      mkdir -p "$XDG_DATA_HOME/hey"
       ${pkgs.zsh}/bin/zsh -c 'echo $PATH' >"$XDG_DATA_HOME/hey/path"
     '';
+
+    # Let me know when Hey is rebuilt.
+    system.activationScripts.heyVersion =
+      let stamp = "/var/lib/hey/installed"; in ''
+        if [ "$(cat ${stamp} 2>/dev/null)" != "${heyPkg}" ]; then
+          printf '\033[32m✓ hey rebuilt:\033[0m %s\n' "${heyPkg}"
+          mkdir -p "${dirOf stamp}"
+          printf '%s\n' "${heyPkg}" >${stamp}
+        fi
+      '';
+
+    environment.shellAliases = {
+      reboot = "hey hook onShutdown; systemctl reboot";
+      poweroff = "hey hook onShutdown; systemctl poweroff";
+    };
 
     # Setting PATH in both environment.{variables,sessionVariables} causes
     # merge-conflict errors, so do these separately.
     environment.extraInit = mkAfter ''
-      export PATH="${janetTreeDir}/bin:${hey.binDir}:$PATH"
+      export PATH="${janetTreeDir}/bin:$PATH:${hey.binDir}"
     '';
 
     programs.zsh.shellInit = mkBefore ''
       export DOTFILES_HOME="${hey.dir}"
-      export fpath=( "${hey.libDir}/zsh" "''${fpath[@]}" )
+      export fpath=( "${hey.libDir}/zsh" "${hey.libDir}/zsh/completions" "''${fpath[@]}" )
       autoload -Uz "''${fpath[1]}"/hey.*(.:t)
     '';
 
     systemd.user.tmpfiles.rules = [
-      "d %h/.local/share/janet/jpm_tree 755 - - - -"
+      "d ${janetTreeDir} 755 - - - -"
     ];
 
-    home.dataFile = {
-      # This file is intended as a reference for shell scripts to peek into to
-      # do cheap feature-detection (using `hey vars ...`)
+    home.dataFile = hookFiles // {
       "hey/info.json".text = toJSON cfg.info;
-    } //
-    # FIXME: Refactor me?
-    (listToAttrs
-      (flatten
-        (mapAttrsToList
-          (hook: hooks: mapAttrsToList
-            (n: v: nameValuePair
-              (let filename =
-                     if (match "^[0-9]{2}-.+" n) == null
-                     then "50-${n}"
-                     else n;
-               in "hey/hooks.d/${hook}.d/${filename}") {
-                 text = ''
-                   #!/usr/bin/env zsh
-                   ${v}
-                 '';
-                 executable = true;
-               }) hooks)
-          config.hey.hooks)));
+    };
   };
 }

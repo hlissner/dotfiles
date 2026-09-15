@@ -45,7 +45,7 @@
 (use sh)
 (import hey/vars)
 
-(def- *vars* (vars/new (:dir vars/temp :hook)))
+(def- *vars* (delay (vars/new (:dir (vars/temp) :hook))))
 
 (defn- ls
   "The names in DIR, or nothing if it can't be read."
@@ -151,12 +151,12 @@
   [area hook args force?]
   (let [sig  [;(if area [(string "@" area)] []) hook ;args]
         cmds (hooks area hook args)]
-    (when (and (not force?) (deep= (:get *vars* :last) sig))
+    (when (and (not force?) (deep= (:get (*vars*) :last) sig))
       (abort "Redundant hook triggered: %q" sig))
     (os/with-lock (path :runtime "hook.lock")  # don't clobber hooks
       # Record the trigger even if a handler fails, so a broken one can't be
       # retriggered in a loop.
-      (defer (unless (dryrun?) (:set *vars* :last sig))
+      (defer (unless (dryrun?) (:set (*vars*) :last sig))
         (each cmd cmds
           (log "Hook: %s" (path/abbrev (first cmd)))
           (echof :g "Running %s..." (path/basename (first cmd)))

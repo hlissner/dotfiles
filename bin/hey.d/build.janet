@@ -1,14 +1,9 @@
 #!/usr/bin/env janet
-# Build nix images, or recompile bin/hey.
+# Build nix images.
 #
 # SYNOPSIS:
-#   build [-a]
-#   build iso [-a]
+#   build iso
 #   build vm|vm-with-bootloader
-#
-# OPTIONS:
-#   -a
-#     Build hey's dependencies too.
 #
 # ARGUMENTS:
 #   1 TARGET
@@ -33,19 +28,10 @@
        --profile ,(path :profile)
        --print-out-paths))
 
-(defn- build-hey [&opt all?]
-  (os/cd (path :home))
-  # Build hey out of tree, in case $DOTFILES_HOME is in the nix-store (and
-  # therefore read-only).
-  (with-envvars ["HEYBUILDDEPS" (if all? "1")]
-    (echof :g "> Building & deploying bin/hey%s..." (if all? " and dependencies" ""))
-    (do? $ jpm run deploy ,;(opts (if (debug?) "--verbose")))
-    (echo :check "Done!")))
-
 (defcmd build [_ cmd & args]
   (case* cmd
-    "iso" ((cmdfn [all? -a] (build-iso all?)) ;args)
+    "iso" (build-iso ;args)
     ["vm" "vm-with-bootloader"] (build-vm cmd)
-    (if (or (nil? cmd) (string/has-prefix? "-" cmd))
-      (build-hey cmd ;args)
+    (if (nil? cmd)
+      (abort "No build target specified")
       (abort "Unknown build command: %s" cmd))))

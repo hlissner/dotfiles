@@ -5,7 +5,7 @@
 (use sh)
 (import hey/vars)
 
-(def- vars (vars/new (:dir vars/temp :test)))
+(def- vars (vars/new (:dir (vars/temp) :test)))
 
 (defn- setup []
   ($ rm -rf ,(:dir vars)))  # Always start from scratch

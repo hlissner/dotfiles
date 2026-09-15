@@ -115,7 +115,7 @@
     (,(case type :public 'def :private 'def- (errorf "Unknown type: %s" type))
       ,name (cmdfn [,;argspec] ,;body))
     ,(unless (= name 'main)
-       ~(,defcmd* ',name ,name ,(path/abspath (dyn :current-file ""))))))
+       ~(,defcmd* ',name ,name ,(dyn :current-file "")))))
 
 (defmacro defcmd- [name argspec & body]
   ~(defcmd-1 :private ,name [,;argspec] ,;body))

@@ -75,7 +75,17 @@
                    args)))
   (echo :g "> Running the Hey suite...")
   (flush)
-  (do? $? judge ,;(if suite? [] [(path :test "hey")]) ,;args))
+
+  # This ordering is important and unintuitive! janet reads the last entry in
+  # JANET_PATH as :syspath and searches it ahead of all other entries.
+  (with-envvars
+    ["JANET_PATH" (string/join [(path :lib)
+                                ;(opts (os/getenv "JANET_PATH"))
+                                ;(opts (if-let [tree (os/getenv "JANET_TREE")]
+                                         (string tree "/lib")))]
+                               # shadows lib if :syspath is set
+                               ":")]
+    (do? $? judge ,;args)))
 
 (defcmd test [_ suite & args &opts list? [-l --list]]
   (case* suite
