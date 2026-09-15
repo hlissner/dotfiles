@@ -134,9 +134,23 @@
   "Build the op handler for a rule that resolves to a script on disk."
   [command spec]
   (let [sargs (slice spec 1)
-        pargs (unless (empty? sargs) (resolve ;sargs))]
+        pargs (unless (empty? sargs) (resolve ;sargs))
+        base (first sargs)]
     (unless pargs
-      (abort "Unknown command: %q" command))
+      (cond
+        (nil? base)
+        (abort "Unknown command: %q" command)
+
+        (not (path/directory? base))
+        (abort "%s: not found" (path/abbrev base))
+
+        (one? (length sargs))
+        (abort "%s: which script? %s has: %s" command (path/abbrev base)
+               (string/join (sorted (map |(path/no-ext $0 ;*script-exts* ".d")
+                                         (os/dir base)))
+                            " "))
+
+        (abort "%s: no such script in %s" (in sargs 1) (path/abbrev base))))
     (fn [op]
       (case op
         :which (echo (string/join pargs " "))
