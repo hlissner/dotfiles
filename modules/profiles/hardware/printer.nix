@@ -23,4 +23,22 @@ in mkMerge [
       openFirewall = true;
     };
   })
+
+  (mkIf (any (s: hasPrefix "printer/share" s) hardware) {
+    services.printing = {
+      listenAddresses = [ "*:631" ];
+      allowFrom = [ "all" ];
+      defaultShared = true;
+    };
+    services.avahi = {
+      publish = {
+        enable = true;
+        userServices = true;
+      };
+    };
+    networking.firewall = mkIf config.services.printing.enable {
+      allowedUDPPorts = [ 631 ];
+      allowedTCPPorts = [ 631 ];
+    };
+  })
 ]
