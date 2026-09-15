@@ -44,6 +44,7 @@ with builtins;
     };
 
     apps = {
+      flatpak.enable = true;
       rofi.enable = true;
       term.default = "foot";
       term.foot.enable = true;
@@ -76,7 +77,6 @@ with builtins;
     };
     services = {
       ssh.enable = true;
-      flatpak.enable = true;
     };
     system = {
       utils.enable = true;

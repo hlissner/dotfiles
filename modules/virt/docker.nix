@@ -1,10 +1,12 @@
+# modules/virt/docker.nix
+
 { hey, lib, options, config, pkgs, ... }:
 
 with lib;
 with hey.lib;
-let cfg = config.modules.services.docker;
+let cfg = config.modules.virt.docker;
 in {
-  options.modules.services.docker = {
+  options.modules.virt.docker = {
     enable = mkBoolOpt false;
     # portainer.enable = mkBoolOpt false;
   };

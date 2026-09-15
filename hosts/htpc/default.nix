@@ -40,6 +40,7 @@ with builtins;
       term.foot.enable = true;
 
       ## Extra
+      flatpak.enable = true;
       rofi.enable = true;
       thunar.enable = true;
       steam.enable = true;
@@ -58,7 +59,6 @@ with builtins;
     };
     services = {
       ssh.enable = true;
-      flatpak.enable = true;
     };
     system = {
       utils.enable = true;
