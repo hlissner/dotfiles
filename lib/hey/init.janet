@@ -142,7 +142,9 @@
         :which (echo (string/join pargs " "))
         :help  (help pargs)
         :dump  (print-specs (first pargs))
-        :call  (os/execute pargs :p)))))
+        :call  (let [code (os/execute pargs :p)]
+                 (unless (zero? code) (exit code))
+                 code)))))
 
 (defn- dispatcher-for [rules &opt command & args]
   (unless command (break))
