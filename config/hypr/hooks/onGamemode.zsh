@@ -2,24 +2,34 @@
 # Display notifications about gamemode's state.
 #
 # SYNOPSIS:
-#   on-gamemode 1
-#   on-gamemode 0
+#   onGamemode on
+#   onGamemode off
 #
 # DESCRIPTION:
 #   Display a notification indicating the status of gamemode. This ought to be
 #   triggered by gamemode's start/end hooks.
 #
+#   `off` also queues gamemoded's own shutdown, a few seconds out, which is why
+#   there's a third argument I never type myself: idle-stop.
+#
 #   @see modules/apps/steam.nix.
 
 case $1 in
   on)
-    # systemctl start --user gamemoded.service
-    echo "Started gamemode..."
     dms ipc toast warn "Gamemode started!"
     ;;
   off)
-    echo "Stopped gamemode..."
-    dms ipc toast info "Gamemode ended!"
-    # { sleep 3; systemctl stop --user gamemoded.service; }
+    # HACK: End gamemoded.service once all its clients have disconnected
+    #   (killing it now would just restart it).
+    systemd-run --user --quiet --collect --on-active=5s "${0:A}" kill
+    ;;
+  kill)
+    # --auto-start=no, or merely asking would start the thing I came to stop.
+    if [[ "$(busctl --user --auto-start=no get-property \
+             com.feralinteractive.GameMode /com/feralinteractive/GameMode \
+             com.feralinteractive.GameMode ClientCount 2>/dev/null)" == "i 0" ]]; then
+      dms ipc toast info "Gamemode ended!"
+      systemctl --user stop gamemoded.service
+    fi
     ;;
 esac
