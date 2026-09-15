@@ -1,0 +1,44 @@
+#compdef heyops
+#
+# The same machinery as _hey, and mostly the same code: `heyops help --dump
+# [CMD]` supplies the subcommand list and each command's flags and arguments,
+# generated from the OPTIONS: and ARGUMENTS: sections of its comment header
+# (lib/hey/docs.janet), and the hey.comp.* functions that read it are autoloaded
+# out of lib/zsh.
+#
+# There is next to nothing else here because heyops has no dynamic dispatch of
+# its own -- no sigils, no script directories, no hooks. Every subcommand is a
+# file under bin/heyops.d with a header, so --dump answers everything, which is
+# what hey.comp.dispatch does when a front-end declares no rules of its own.
+
+# heyops edit takes SYSTEM:FILE. I know the systems. The files are on a machine
+# I am not about to hang a TAB on an ssh round trip to, so past the colon I have
+# nothing to say and say it.
+__hey_edit_target() {
+  compset -P '*:' && return 1
+  hey.comp.hosts ':'
+}
+
+_heyops() {
+  local curcontext="$curcontext" state line
+  typeset -A opt_args
+  local -a globals _hey_reply
+  local _hey_root=${DOTFILES_HOME:-${${(%):-%x}:A:h:h:h:h}}
+
+  # heyops' own flags come from bin/heyops' header -- but read by hey, which is
+  # the one with a rule for "dump the header of the script at this path". heyops
+  # dispatches to a fixed handful of keywords and nothing else, deliberately.
+  local _hey_bin=hey
+  hey.comp.dump $_hey_root/bin/heyops && globals=( $_hey_reply )
+  _hey_bin=heyops
+
+  _arguments -C -A '-*' \
+    $globals \
+    '1: :hey.comp.commands' \
+    '*:: :->args' && return 0
+
+  [[ $state == args ]] || return 1
+  hey.comp.dispatch
+}
+
+_heyops "$@"
