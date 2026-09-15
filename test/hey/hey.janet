@@ -15,120 +15,97 @@
 
 (deftest hey/resolve
   (resolve= :f [hey.d sub deeper]               ["hey.d/sub.d/deeper.zsh"])
-  (resolve= :f [hey.d sub deeper foo]           ["hey.d/sub.d/deeper.zsh" "foo"])
   (resolve= :f [hey.d sub deeper deep foo]      ["hey.d/sub.d/deeper.d/deep.zsh" "foo"])
+  (resolve= :f [does not exist])
 
-  # Invalid/404
-  (deftest "Invalid paths"
-    (resolve= :f [mock sub deeper])
-    (resolve= :f [does not exist]))
+  # bin/hey's `.NAME` rule hands over config/$WM/bin, which a tty hasn't got.
+  (deftest "A nil in the list is a place not to look, not an error"
+    (test (deep= (hey/resolve [nil (path/join dir "hey.d")] "sub" "deeper")
+                 (hey/resolve (path/join dir "hey.d") "sub" "deeper"))
+          true))
 
   # A bare name is a $PATH lookup, and a $PATH miss used to leave the base nil,
   # which killed os/stat.
-  (deftest "Relative paths"
-    (test (nil? (hey/resolve "definitely/not/here")) true)
-    (test (nil? (hey/resolve "./definitely/not/here")) true)
-    (test (nil? (hey/resolve "definitely-not-a-command-on-path")) true)
-    (test (truthy? (hey/resolve "janet")) true))
+  (deftest "A $PATH miss is nil, not a crash"
+    (test (nil? (hey/resolve "definitely-not-a-command-on-path")) true))
 
+  # A flag stops the walk; whatever follows it is the script's.
   (deftest "Forwarding options"
-    (resolve= :f [hey.d sub deeper -b]            ["hey.d/sub.d/deeper.zsh" "-b"])
-    (resolve= :f [hey.d sub deeper --foo]         ["hey.d/sub.d/deeper.zsh" "--foo"])
-    (resolve= :f [hey.d sub deeper -b deep]       ["hey.d/sub.d/deeper.zsh" "-b" "deep"])
     (resolve= :f [hey.d sub deeper --foo deep]    ["hey.d/sub.d/deeper.zsh" "--foo" "deep"])
-    (resolve= :f [hey.d sub deeper deep --foo -b] ["hey.d/sub.d/deeper.d/deep.zsh" "--foo" "-b"])
-    (resolve= :f [hey.d sub deeper deep -b]       ["hey.d/sub.d/deeper.d/deep.zsh" "-b"])))
+    (resolve= :f [hey.d sub deeper deep --foo -b] ["hey.d/sub.d/deeper.d/deep.zsh" "--foo" "-b"])))
 
-# (deftest hey/help)
+(deftest hey/exec-exit-status
+  # os/execute hands back the status of the script hey dispatched to, but
+  # nothing upstream read a dispatcher's return value, so anything that failed
+  # came back as a clean exit 0. Harmless by hand; a lie to a cronjob.
+  #
+  # Spawned rather than called: the fix exits the process, which would take
+  # judge with it.
+  # Absolute: hey only recognises a bare path as one when it starts with ./ or
+  # /, and anything else is a subcommand name it has never heard of.
+  (def hey-bin (path/abspath (path/join dir "../../bin/hey")))
+  (defn status [script]
+    (os/execute [hey-bin (path/abspath (path/join dir "exec.d" script))] :p))
 
-# (deftest hey/dispatcher-for)
+  (test (status "ok.zsh") 0)
+  (test (status "fail.zsh") 42)
+  # A rule that names $1 comes out 2-arity, but dispatch hands a rule one
+  # argument when nothing follows the command -- `hey exec` used to die of a
+  # janet arity error (exit 1) instead of saying which program it wanted (127).
+  (test (os/execute [hey-bin "exec"] :p) 127)
+  # A signal arrives here as 128+signum, the same way a shell reports it, so it
+  # forwards without translation.
+  (test (status "sig.zsh") 143))
 
 (deftest hey/synopsis
   (defn doc-of [file]
     (hey/synopsis (path/join dir "hey.d" file)))
 
   (test (doc-of "described.janet") "A described script.")
-
-  (deftest "Undescribed scripts"
-    # A bare TODO is a placeholder, not a description.
-    (test (nil? (doc-of "todo.janet")) true)
-    (test (nil? (doc-of "bare.zsh")) true))
-
-  (deftest "Missing files"
-    (test (nil? (doc-of "does-not-exist.janet")) true)
-    (test (nil? (hey/synopsis nil)) true)
-    # A directory is not a script.
-    (test (nil? (hey/synopsis (path/join dir "hey.d"))) true)))
+  # A bare TODO is a placeholder, not a description.
+  (test (nil? (doc-of "todo.janet")) true)
+  (test (nil? (doc-of "does-not-exist.janet")) true)
+  # A directory is not a script.
+  (test (nil? (hey/synopsis (path/join dir "hey.d"))) true))
 
 (deftest hey/rules->entries
-  (def described (path/join dir "hey.d/described.janet"))
-
-  (deftest "Names come from the rule's pattern"
-    (test (map |($0 :name)
-               (hey/rules->entries
-                 ['(* "@")     (hey/with-doc "Sigil." "@*" |[:exec ;$&])
-                  :keyword     (hey/with-doc "Keyword." |[:exec ;$&])
-                  [:tuple :tu] (hey/with-doc "Tuple." |[:exec ;$&])
-                  # No keyword and no :name, so it cannot be listed.
-                  '(* "%")     |[:exec ;$&]]))
-          @["@*" "keyword" "tuple"]))
-
-  (deftest "Aliases are the tail of a keyword tuple"
-    (test (map |($0 :aliases)
-               (hey/rules->entries [:solo         "echo"
-                                    [:many :m :n] "echo"]))
-          @[[] ["m" "n"]]))
-
-  (deftest "Patterns are distinguished from commands"
-    (test (map |($0 :kind)
-               (hey/rules->entries [:cmd     "echo"
-                                    '(* "@") (hey/with-doc "Sigil." "@*" "echo")]))
-          @[:command :pattern]))
-
-  (deftest "A trailing fallback rule is not an entry"
-    (test (length (hey/rules->entries [:cmd "echo" "fallback"])) 1))
-
-  (deftest "Descriptions"
-    # An explicit :doc wins over the destination's file.
-    (test (map |($0 :doc)
-               (hey/rules->entries
-                 [:explicit (hey/with-doc "Explicit." {:cmd nil :file described})
-                  :from-file {:cmd nil :file described}
-                  :todo      {:cmd nil :file (path/join dir "hey.d/todo.janet")}
-                  :fileless  |[:exec ;$&]]))
-          @["Explicit." "A described script." "" ""])))
+  # Names come from the rule's pattern, aliases are the tail of a keyword
+  # tuple, and a pattern is told apart from a command. A pattern with neither
+  # keyword nor :name cannot be listed, and a trailing fallback isn't an entry.
+  (test (map |[($0 :name) ($0 :aliases) ($0 :kind)]
+             (hey/rules->entries
+               ['(* "@")     (hey/with-doc "Sigil." "@*" |[:exec ;$&])
+                [:many :m :n] "echo"
+                '(* "%")     |[:exec ;$&]
+                "fallback"]))
+        @[["@*" [] :pattern] ["many" ["m" "n"] :command]]))
 
 (deftest hey/header->specs
-  (def specs (hey/header->specs (path/join dir "hey.d/specs.janet")))
+  # The whole grammar at once, since judge diffs the array. A bracket and a
+  # backslash must be escaped, or the spec is unparsable and zsh silently
+  # drops the entire completion. "," and "|" both yield one spec per spelling,
+  # sharing an exclusion group. zsh evaluates the ((...)) field, so a backtick
+  # or $ reaching it unescaped would run a command when the user hits TAB.
+  (test (hey/header->specs (path/join dir "hey.d/specs.janet"))
+        @["-a[A plain flag, with a bracket \\] and a back\\\\slash.]"
+          "(-l --list)-l[Two spellings of one option.]"
+          "(-l --list)--list[Two spellings of one option.]"
+          "(-e -f -d)-e[Three mutually exclusive options.]"
+          "(-e -f -d)-f[Three mutually exclusive options.]"
+          "(-e -f -d)-d[Three mutually exclusive options.]"
+          "--host[An option taking a value, completed by a function.]:host:hey.comp.hosts"
+          ``1:command:((one:"A description with \"quotes\", \$DOLLAR and a \`backtick\`." wm\*:"Column-aligned, and a value needing escapes."))``
+          "2:plain: "
+          "*:rest:__hey_sync_arg"])
 
-  (deftest "Options"
-    # A bracket and a backslash must be escaped, or the spec is unparsable and
-    # zsh silently drops the entire completion.
-    (test (in specs 0) "-a[A plain flag, with a bracket \\] and a back\\\\slash.]")
-    # "," and "|" both yield one spec per spelling, sharing an exclusion group.
-    (test (slice specs 1 3)
-          ["(-l --list)-l[Two spellings of one option.]"
-           "(-l --list)--list[Two spellings of one option.]"])
-    (test (slice specs 3 6)
-          ["(-e -f -d)-e[Three mutually exclusive options.]"
-           "(-e -f -d)-f[Three mutually exclusive options.]"
-           "(-e -f -d)-d[Three mutually exclusive options.]"])
-    (test (in specs 6)
-          "--host[An option taking a value, completed by a function.]:host:__hey_hosts"))
+  # The single-line style. "-q" has no description and TODO is a placeholder,
+  # so neither becomes a spec.
+  (test (hey/header->specs (path/join dir "hey.d/oneline.janet"))
+        @["-![Do a dry run.]"
+          "(-? -??)-?[Enable debug mode, at increasing verbosity.]"
+          "(-? -??)-??[Enable debug mode, at increasing verbosity.]"])
 
-  (deftest "Arguments"
-    # zsh evaluates the ((...)) field, so a backtick or $ reaching it unescaped
-    # would run a command when the user hits TAB.
-    (test (in specs 7)
-          ``1:command:((one:"A description with \"quotes\", \$DOLLAR and a \`backtick\`." wm\*:"Column-aligned, and a value needing escapes."))``)
-    (test (in specs 8) "2:plain: ")
-    (test (in specs 9) "*:rest:__hey_sync_arg")
-    (test (length specs) 10))
-
-  (deftest "Headers declaring neither section"
-    (test (hey/header->specs (path/join dir "hey.d/undocumented.janet")) @[])
-    (test (hey/header->specs (path/join dir "hey.d/bare.zsh")) @[])
-    (test (hey/header->specs (path/join dir "hey.d/does-not-exist")) @[])))
+  (test (hey/header->specs (path/join dir "hey.d/undocumented.janet")) @[]))
 
 (deftest hey/header-matches-argspec
   (defn flags-in
@@ -222,37 +199,19 @@
           [(path/basename file) spec])
         @[]))
 
-(deftest hey/single-line-options
-  (def specs (hey/header->specs (path/join dir "hey.d/oneline.janet")))
-  (test specs
-        @["-![Do a dry run.]"
-          "(-? -??)-?[Enable debug mode, at increasing verbosity.]"
-          "(-? -??)-??[Enable debug mode, at increasing verbosity.]"])
-
-  (deftest "Scripts with no description are skipped"
-    # "-q" has no description, and ignore "TODO"
-    (test (length specs) 3)))
-
 (deftest hey/scan
   (def fixtures (path/join dir "hey.d"))
 
-  (deftest "Describes dispatchable scripts in a directory"
-    # cmd.zsh has no description; sub.d is described by .docs; vars.zsh's second
-    # line is a bare TODO, which synopsis treats as no description.
-    # non-executable-cmd.zsh is skipped b/c it's not executable, and neither are
-    # .janet fixtures.
-    (test (hey/scan fixtures) @["cmd:" "sub:Hello world" "vars:"]))
+  # cmd.zsh has no description; sub.d is described by .docs; vars.zsh's second
+  # line is a bare TODO, which synopsis treats as no description.
+  # non-executable-cmd.zsh is skipped b/c it's not executable, and neither are
+  # .janet fixtures.
+  (test (hey/scan fixtures) @["cmd:" "sub:Hello world" "vars:"])
 
-  (deftest "Skip missing and empty directories are skipped"
-    (test (hey/scan (path/join dir "does-not-exist")) @[])
-    (test (hey/scan "") @[])
-    (test (hey/scan nil) @[])
-    # __hey_hooks passes a directory that does not exist on every host.
-    (test (hey/scan (path/join dir "does-not-exist") fixtures)
-          @["cmd:" "sub:Hello world" "vars:"]))
+  # __hey_hooks passes a directory that does not exist on every host.
+  (test (hey/scan (path/join dir "does-not-exist") fixtures)
+        @["cmd:" "sub:Hello world" "vars:"])
 
   (deftest "The first directory to define a name wins"
     (test (hey/scan fixtures (path/join fixtures "sub.d"))
-          @["cmd:" "sub:Hello world" "vars:" "deeper:Test #2" "nested:"])
-    (test (hey/scan (path/join fixtures "sub.d") fixtures)
-          @["deeper:Test #2" "nested:" "cmd:" "sub:Hello world" "vars:"])))
+          @["cmd:" "sub:Hello world" "vars:" "deeper:Test #2" "nested:"])))

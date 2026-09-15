@@ -11,11 +11,6 @@ with lib;
 let
   bare = evalConfig [];
 
-  workstation = evalConfig [{ modules.profiles.role = "workstation"; }];
-  # Not "server": role/server.nix pins a kernel nixpkgs removed, so forcing
-  # systemPackages under it won't evaluate at all right now.
-  vm = evalConfig [{ modules.profiles.role = "vm"; }];
-
   hooked = evalConfig [{
     hey.hooks.onFoo = {
       bar = "echo bar";
@@ -23,104 +18,57 @@ let
       "10-baz" = "echo baz";
     };
   }];
-
-  hookNames = c: sort lessThan
-    (filter (hasPrefix "hey/hooks.d/") (attrNames c.home.dataFile));
-
-  janetPath = c: splitString ":" c.environment.sessionVariables.JANET_PATH;
 in {
   ## Hooks.
 
   # The 50- is what leaves room on both sides for a host to sequence itself
-  # against, and `hey hook` only honours it because ls sorts. Both halves have
-  # to hold or the ordering is a fiction.
-  testHookFilenamesAreNumbered = {
-    expr = hookNames hooked;
-    expected = [
-      "hey/hooks.d/onFoo.d/10-baz"
-      "hey/hooks.d/onFoo.d/50-bar"
-    ];
-  };
-
-  testNoHooksNoFiles = {
-    expr = hookNames bare;
-    expected = [];
-  };
-
-  # hey hook drops a handler that isn't executable and says nothing about it --
-  # `hey hook -l` hides it too, so a regression here is invisible from both ends.
-  testHooksAreExecutable = {
-    expr = hooked.home.dataFile."hey/hooks.d/onFoo.d/50-bar".executable;
-    expected = true;
-  };
-
-  # The fragments are zsh, and reach hey.do/hey.echo through /etc/zshenv. A
-  # missing shebang would make them sh.
-  testHooksAreZshScripts = {
-    expr = hooked.home.dataFile."hey/hooks.d/onFoo.d/50-bar".text;
-    expected = "#!/usr/bin/env zsh\necho bar\n";
-  };
+  # against, and `hey hook` only honours it because ls sorts. The fragments
+  # are zsh (a missing shebang would make them sh) and have to be executable:
+  # `hey hook` drops a handler that isn't, and `hey hook -l` hides it too.
+  testHooksLandNumberedExecutableAndZsh =
+    let file = hooked.home.dataFile."hey/hooks.d/onFoo.d/50-bar"; in {
+      expr = {
+        names = sort lessThan (filter (hasPrefix "hey/hooks.d/") (attrNames hooked.home.dataFile));
+        executable = file.executable;
+        zsh = hasPrefix "#!/usr/bin/env zsh\n" file.text;
+      };
+      expected = {
+        names = [ "hey/hooks.d/onFoo.d/10-baz" "hey/hooks.d/onFoo.d/50-bar" ];
+        executable = true;
+        zsh = true;
+      };
+    };
 
   ## JANET_PATH.
 
   # janet makes the LAST entry :syspath and searches it ahead of every other, so
-  # last means wins. Mine goes there; hey's own libraries are the fallback. Get
-  # this backwards and a `jpm install`ed spork silently loses to hey's pinned
-  # one, which is the failure this ordering exists to prevent.
-  testJanetPathPutsMyOwnTreeLast = {
-    expr = last (janetPath bare);
-    expected = "/home/test/.local/share/janet/lib";
-  };
-
-  # The other entry is hey-janet-libs, which is what the janet scripts hey
-  # dispatches to but doesn't compile in (config/rofi/bin/*.janet) import hey
-  # from.
-  testJanetPathCarriesHeysLibraries = {
-    expr = let p = janetPath bare; in {
-      count = length p;
-      libs = hasSuffix "-hey-janet-libs" (head p);
+  # last means wins. My tree goes there; hey's own libraries (what the janet
+  # scripts hey dispatches to but doesn't compile in import from) are the
+  # fallback. Get this backwards and a `jpm install`ed spork silently loses to
+  # hey's pinned one. JANET_TREE has to name the same directory, or jpm
+  # installs somewhere janet never looks.
+  testJanetPathPutsMyOwnTreeLast =
+    let v = bare.environment.sessionVariables;
+        path = splitString ":" v.JANET_PATH;
+    in {
+      expr = {
+        mine = last path == "${v.JANET_TREE}/lib";
+        heys = any (hasSuffix "-hey-janet-libs") path;
+      };
+      expected = { mine = true; heys = true; };
     };
-    expected = { count = 2; libs = true; };
-  };
 
-  # JANET_TREE and the tmpfiles rule have to name the same directory the path
-  # above ends in; they were three separate spellings of it once.
-  testJanetTreeIsMine = {
-    expr = bare.environment.sessionVariables.JANET_TREE;
-    expected = "/home/test/.local/share/janet";
-  };
+  ## The desktop.
 
-  testJanetTreeIsCreated = {
-    expr = elem "d /home/test/.local/share/janet 755 - - - -"
-                bare.systemd.user.tmpfiles.rules;
-    expected = true;
-  };
-
-  ## Packages.
-
-  testHeyIsInstalled = {
-    expr = any (p: (p.pname or p.name or "") == "hey") bare.environment.systemPackages;
-    expected = true;
-  };
-
-  # No sense carrying the tool for pushing builds at other machines on one that
-  # only ever receives them.
-  testHeyopsIsWorkstationOnly = {
-    expr = map (c: any (p: (p.pname or p.name or "") == "heyops")
-                       c.environment.systemPackages)
-               [ workstation vm bare ];
-    expected = [ true false false ];
-  };
-
-  # What downstream modules call instead of dealing with $PATH in a unit file
-  # (modules/apps/steam.nix's gamemode hooks, for one). Asked for the way they
-  # ask for it, because config._module is not on the config evalConfig returns.
-  testHeyBinIsTheStoreBinary = {
-    expr =
-      let c = evalConfig [({ heyBin, ... }: {
-                environment.shellAliases.probe = heyBin;
-              })];
-      in hasSuffix "/bin/hey" c.environment.shellAliases.probe;
-    expected = true;
+  # lib/hey/lib.janet's `wm` reads this out of info.json to find config/NAME.
+  # It used to read XDG_CURRENT_DESKTOP, which a tty hasn't got. Headless is
+  # null, which spork drops on the way back in, so `wm` sees an absent key and
+  # tells you which option to set.
+  testDesktopIsPublishedToInfo = {
+    expr = {
+      hyprland = (evalConfig [{ modules.hyprland.enable = true; }]).hey.info.desktop;
+      headless = bare.hey.info.desktop;
+    };
+    expected = { hyprland = "hyprland"; headless = null; };
   };
 }

@@ -1,0 +1,20 @@
+#!/usr/bin/env zsh
+# Stand-in for scp, for test/heyops/push-keys.janet.
+#
+# Called as `scp -q FILE... HOST:PATH`. Faithful about the two ways real scp
+# says no, because both are things push-keys has to not walk into: it refuses a
+# directory without -r, and it won't create the destination for you.
+[[ -n $HEYOPS_TEST_LOG ]] && print -r -- "scp: $*" >>$HEYOPS_TEST_LOG
+
+local dest=${@[-1]}
+local -a files
+files=(${${@[1,-2]}:#-*})
+dest=$HEYOPS_TEST_REMOTE/${dest#*:}
+
+[[ -d $dest ]] || { print -ru2 -- "scp: $dest: No such file or directory"; exit 1 }
+
+local f
+for f in $files; do
+  [[ -d $f ]] && { print -ru2 -- "scp: $f: not a regular file"; exit 1 }
+  cp -- $f $dest || exit 1
+done

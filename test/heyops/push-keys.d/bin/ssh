@@ -1,0 +1,25 @@
+#!/usr/bin/env zsh
+# Stand-in for ssh, for test/heyops/push-keys.janet.
+#
+# $1 is the host, which I ignore: there is one machine here and it's a directory
+# ($HEYOPS_TEST_REMOTE, playing its $HOME). $2 is the command, logged so a test
+# can tell what was asked for from what merely worked.
+[[ -n $HEYOPS_TEST_LOG ]] && print -r -- "ssh: $2" >>$HEYOPS_TEST_LOG
+
+case $2 in
+  # lib/hey/ops.janet's probe. A directory has no opinion about os-release, so
+  # here is one I made earlier; the role is what push-keys picks its ssh
+  # directory from, and is deliberately not this machine's.
+  (*os-release*)
+    print -r -- "variant=${HEYOPS_TEST_VARIANT-}"
+    print -r -- "hey=${HEYOPS_TEST_HEY-1}"
+    print -r -- "role=${HEYOPS_TEST_ROLE-workstation}"
+    print -r -- "path=$HEYOPS_TEST_REMOTE"
+    ;;
+  # Everything else -- the mkdir and the tidy script -- is run for real against
+  # the fake $HOME, because the chmods and symlinks it makes are the half of
+  # push-keys worth checking.
+  (*)
+    ( export HOME=$HEYOPS_TEST_REMOTE; cd $HOME && eval "$2" )
+    ;;
+esac

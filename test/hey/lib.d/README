@@ -1,0 +1,3 @@
+Fixture $XDG_DATA_HOME trees for test/hey/lib.janet's wm tests. One info.json
+per answer, because flake/info caches the first one it reads for the life of a
+process, so each case needs a subprocess of its own.

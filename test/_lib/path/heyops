@@ -1,0 +1,4 @@
+#!/usr/bin/env zsh
+# See ./hey. heyops isn't even built off a workstation, so on those machines
+# this shim is the only one there is.
+exec ${0:A:h:h:h:h}/bin/heyops "$@"

@@ -1,0 +1,6 @@
+#!/usr/bin/env zsh
+# Stand-in for ssh-copy-id, for test/heyops/push-keys.janet. There is no
+# authorized_keys to append to here; what matters is that push-keys does this
+# first, and stops if it fails.
+[[ -n $HEYOPS_TEST_LOG ]] && print -r -- "ssh-copy-id: $*" >>$HEYOPS_TEST_LOG
+exit ${HEYOPS_TEST_COPYID_EXIT:-0}

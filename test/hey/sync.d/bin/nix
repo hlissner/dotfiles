@@ -1,0 +1,6 @@
+#!/usr/bin/env zsh
+# Stand-in for nix, for test/hey/sync.janet. Prints $HEY_TEST_NIX_SETTINGS as
+# what `nix eval` would have said of a host's nix.settings, or fails as nix does
+# when the flake won't evaluate if that isn't set at all.
+[[ -v HEY_TEST_NIX_SETTINGS ]] || exit 1
+print -rn -- "$HEY_TEST_NIX_SETTINGS"

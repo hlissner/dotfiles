@@ -7,7 +7,7 @@ branch of the walkers in lib/modules.nix, so nothing in it is arbitrary:
   _hiddendir/         '_' prefix on a directory; must be skipped
   beta/default.nix    a directory with a default.nix; mapModules takes the dir
   gamma/inner.nix     a directory WITHOUT a default.nix; mapModules skips it,
-                      but mapModulesRec still recurses into it
+                      but mapModulesRec' still recurses into it
   notes.txt           not a .nix file; must be skipped
 
 The '.d' suffix is what keeps this directory out of collectSuites in

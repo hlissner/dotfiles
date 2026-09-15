@@ -1,0 +1,9 @@
+#!/usr/bin/env zsh
+# Stand-in for $EDITOR, for test/heyops/edit.janet. Appends $HEYOPS_TEST_EDIT to
+# every file it's handed, or touches nothing if that's empty, then exits
+# $HEYOPS_TEST_EDITOR_EXIT -- the :cq an editor uses to say "forget it".
+local f
+for f in "$@"; do
+  [[ -n $HEYOPS_TEST_EDIT ]] && print -r -- "$HEYOPS_TEST_EDIT" >>$f
+done
+exit ${HEYOPS_TEST_EDITOR_EXIT:-0}

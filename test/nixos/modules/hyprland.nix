@@ -1,14 +1,12 @@
 # test/nixos/modules/hyprland.nix --- tests for modules/hyprland/default.nix
 #
-# This module generates config/hypr/hyprland.lua from cfg.monitors, so a change
-# to the option schema or the template silently produces a Hyprland config that
-# is wrong rather than one that fails to build. These tests read the generated
-# Lua back and assert on what came out.
-#
-# TODO testExtraConfigLandsInHyprlandPostLua
-# TODO testMatugenTemplatesFollowTerminalChoice
+# The module splices hey.info into config/hypr/hyprland.lua as a Lua table and
+# wires the session's edges (greeter, sleep, shutdown) to hey's hooks. None of
+# that fails a build when it drifts: the Lua indexes nil, the hook never fires.
+# So the tests read the data the module publishes, and only touch the generated
+# Lua for the one thing that has to be there -- the table itself.
 
-{ evalConfig, lib, ... }:
+{ evalConfig, lib, flake, system, ... }:
 
 with lib;
 let
@@ -17,210 +15,109 @@ let
     modules.hyprland.monitors = monitors;
   }];
 
-  lua = monitors: (hyprland monitors).home.configFile."hypr/hyprland.lua".text;
-  greeterConfig = monitors:
-    (hyprland monitors).services.displayManager.dms-greeter.compositor.customConfig;
-
-  countMonitors = text: (length (splitString "hl.monitor({" text)) - 1;
+  one = hyprland [{ output = "DP-1"; }];
+  two = hyprland [
+    { output = "DP-1"; }
+    { output = "DP-2"; primary = true; }
+  ];
 in {
-  ## Enabling the module.
+  ## The compositor itself.
 
-  # The generic desktop payload -- fonts, the wayland replacements for the old
-  # X utilities, rtprio limits -- used to sit in modules/desktop/default.nix
-  # and applied to every host unconditionally. It rides with hyprland now, so
-  # it has to arrive with the module and stay away when the module is off.
-  testEnableBringsTheDesktopPayload = {
-    expr = (hyprland [{}]).fonts.fontDir.enable;
+  # Hyprland comes from its own flake (whose nixpkgs the whole system follows),
+  # and the portal has to be the matching one or the two drift out of
+  # protocol. The flake isn't built by Hydra either, so without its cachix
+  # every bump compiles the compositor. A stray override or a fallback to
+  # nixpkgs' hyprland shows up here rather than as an hour-long rebuild.
+  testHyprlandComesFromTheFlakeWithItsCache =
+    let cfg = one.programs.hyprland;
+        s = one.nix.settings;
+        theirs = flake.inputs.hyprland.packages.${system};
+    in {
+      expr = {
+        hyprland = cfg.package.outPath == theirs.hyprland.outPath;
+        portal   = cfg.portalPackage.outPath == theirs.xdg-desktop-portal-hyprland.outPath;
+        cachix   = elem "https://hyprland.cachix.org" s.substituters
+                   && any (hasPrefix "hyprland.cachix.org-1:") s.trusted-public-keys;
+      };
+      expected = { hyprland = true; portal = true; cachix = true; };
+    };
+
+  ## The hey table.
+
+  # hey/info.json is spliced in as a lua literal rather than read at runtime,
+  # so config/hypr/ reaches it as `hey.*`. Everything the Lua side knows about
+  # this machine arrives through this one table -- if it stops being emitted,
+  # every consumer silently indexes nil.
+  testHeyTableIsEmitted = {
+    expr = hasInfix ''["host"] = "test"'' one.home.configFile."hypr/hyprland.lua".text;
     expected = true;
   };
 
-  testDisabledBringsNoDesktopPayload = {
-    expr = (evalConfig []).fonts.fontDir.enable;
-    expected = false;
-  };
-
-  testDisabledByDefault = {
-    expr = (evalConfig []).modules.hyprland.enable;
-    expected = false;
-  };
-
-  # Needed by the DMS screenkey plugin, and easy to lose in a refactor because
-  # nothing else in the module mentions it.
-  testEnableAddsUserToInputGroup = {
-    expr = elem "input" (hyprland [{}]).user.extraGroups;
-    expected = true;
-  };
-
-  ## Monitor emission.
-
-  testOneMonitorCallPerMonitor = {
-    expr = countMonitors (lua [
-      { output = "DP-1"; }
-      { output = "DP-2"; }
-      { output = "DP-3"; }
-    ]);
-    expected = 3;
-  };
-
-  # The submodule's defaults end up verbatim in the Lua, so they are part of
-  # this module's contract with config/hypr/, not just with Nix.
-  testMonitorDefaultsAreEmitted = {
-    expr = hasInfix ''
-      hl.monitor({
-        output = "DP-1",
-        mode = "preferred",
-        position = "auto",
-        scale = 1,
-        disabled = false,
-        vrr = 0
-      })
-    '' (lua [{ output = "DP-1"; }]);
-    expected = true;
-  };
-
-  testMonitorOverridesAreEmitted = {
-    expr = hasInfix ''
-      hl.monitor({
-        output = "DP-2",
-        mode = "3840x2160@120",
-        position = "0x0",
-        scale = 2,
-        disabled = true,
-        vrr = 1
-      })
-    '' (lua [{
-      output = "DP-2";
-      mode = "3840x2160@120";
-      position = "0x0";
-      scale = 2;
-      disabled = true;
-      vrr = 1;
-    }]);
-    expected = true;
-  };
-
-  testHostnameIsEmitted = {
-    expr = hasInfix ''HOSTNAME = "test"'' (lua [{ output = "DP-1"; }]);
-    expected = true;
-  };
-
-  ## The primary monitor, which Wayland has no notion of and which the module
-  ## fakes with an xrandr call on session start.
-
-  testPrimaryMonitorIsPickedFromTheList = {
-    expr = hasInfix ''PRIMARY_MONITOR = "DP-2"'' (lua [
-      { output = "DP-1"; }
-      { output = "DP-2"; primary = true; }
-    ]);
-    expected = true;
-  };
-
-  # findFirst returns {} when no monitor is primary, and the whole block is
-  # guarded on `primaryMonitor ? output`, so nothing is emitted at all. This is
-  # the default case: monitors defaults to [{}], none of them primary.
-  testNoPrimaryMonitorEmitsNothing = {
-    expr = hasInfix "PRIMARY_MONITOR" (lua [{ output = "DP-1"; }]);
-    expected = false;
-  };
-
-  testFirstPrimaryWins = {
-    expr = hasInfix ''PRIMARY_MONITOR = "DP-1"'' (lua [
-      { output = "DP-1"; primary = true; }
-      { output = "DP-2"; primary = true; }
-    ]);
-    expected = true;
-  };
-
-  ## The matugen colour fallback.
-
-  # This one reads backwards on purpose, and is pinned so that correcting it has
-  # to be a deliberate act. The generated Lua opens hyprland-colors.lua and
-  # requires it only in the branch where the file could NOT be opened:
-  #
-  #   local f = io.open(".../hyprland-colors.lua")
-  #   if f ~= nil then io.close(f) else require("hyprland-colors") end
-  #
-  # If that is ever inverted, the require moves out of the else branch and this
-  # test fails.
-  testColorsRequireSitsInTheElseBranch = {
+  # Monitors reach config/hypr/ as data, overrides and all.
+  testMonitorsReachHeyInfo = {
     expr =
-      let tail = last (splitString "local f = io.open" (lua [{ output = "DP-1"; }]));
-          afterElse = last (splitString "else" tail);
-      in hasInfix ''require("hyprland-colors")'' afterElse;
-    expected = true;
+      let m = head (hyprland [{
+            output = "DP-2"; mode = "3840x2160@120"; scale = 2; vrr = 1;
+          }]).hey.info.hypr.monitors;
+      in { inherit (m) output mode scale vrr; };
+    expected = { output = "DP-2"; mode = "3840x2160@120"; scale = 2; vrr = 1; };
+  };
+
+  # Wayland has no notion of a primary monitor; config/hypr/ fakes it with an
+  # xrandr call on session start, and all this module owes it is the name.
+  # With no primary the key has to be null: generators.toLua drops it, and
+  # `if hey.hypr.primaryMonitor then` needs that. An empty string would be
+  # truthy in Lua and name a monitor that doesn't exist.
+  testPrimaryMonitorIsNamedOrAbsent = {
+    expr = {
+      named  = two.hey.info.hypr.primaryMonitor;
+      absent = one.hey.info.hypr.primaryMonitor;
+    };
+    expected = { named = "DP-2"; absent = null; };
   };
 
   ## The login path.
 
-  testGreeterIsEnabled = {
-    expr = (hyprland [{}]).services.displayManager.dms-greeter.enable;
-    expected = true;
+  # The greeter's compositor lights every output unless told which one, and on
+  # nvidia every re-enable is a full link retrain. Pinned to the primary; a
+  # host without one is left alone rather than pinned to nothing.
+  testGreeterIsPinnedToThePrimaryMonitor = {
+    expr = {
+      pinned   = two.services.displayManager.noctalia-greeter.settings.output.name;
+      unpinned = one.services.displayManager.noctalia-greeter.settings ? output;
+    };
+    expected = { pinned = "DP-2"; unpinned = false; };
   };
 
-  testGreeterRunsInHyprland = {
-    expr = (hyprland [{}]).services.displayManager.dms-greeter.compositor.name;
-    expected = "hyprland";
-  };
+  ## The session's edges.
 
-  # The greeter used to sweep the outputs away with `output = ""` and put the
-  # primary back on the next line. That wildcard took the primary down with it,
-  # and on nvidia bringing a monitor back is a full link retrain -- the screen
-  # physically blinking off and on between plymouth and the login prompt. Every
-  # output is named individually now, and the primary is never disabled.
-  testGreeterDisablesEveryOutputButThePrimary =
-    let greeter = greeterConfig [
-          { output = "DP-1"; }
-          { output = "DP-2"; mode = "3840x2160@120"; scale = 2; primary = true; }
-          { output = "HDMI-A-1"; disabled = true; }
-        ];
-    in {
+  # The backstop for a shutdown nobody announced (a bare `systemctl poweroff`).
+  # It only buys anything by stopping before what it needs: ordered after the
+  # compositor and pipewire, so ExecStop lands while both can still serve a fade
+  # and a sound. partOf is what makes the session dying stop it at all.
+  testShutdownHookWaitsForTheShell =
+    let unit = one.systemd.user.services.hey-shutdown-hook; in {
       expr = {
-        wildcard   = hasInfix ''output = "",'' greeter;
-        disablesDP1 = hasInfix ''hl.monitor({ output = "DP-1", disabled = true })'' greeter;
-        disablesTV  = hasInfix ''hl.monitor({ output = "HDMI-A-1", disabled = true })'' greeter;
-        keepsPrimary = hasInfix ''
-          hl.monitor({
-            output = "DP-2",
-            mode = "3840x2160@120",
-            position = "0x0",
-            scale = 2
-          })
-        '' greeter;
-        # One rule per monitor, no wildcard sweep in front of them.
-        count = countMonitors greeter;
+        after  = all (s: elem s unit.after)
+                   [ "wayland-wm@hyprland.desktop.service" "pipewire.service" ];
+        partOf = elem "graphical-session.target" unit.partOf;
+        stop   = hasInfix "hook -f on-shutting-down" unit.serviceConfig.ExecStop;
       };
-      expected = {
-        wildcard     = false;
-        disablesDP1  = true;
-        disablesTV   = true;
-        keepsPrimary = true;
-        count        = 3;
-      };
+      expected = { after = true; partOf = true; stop = true; };
     };
 
-  testGreeterNeedsAPrimaryMonitor = {
-    expr = hasInfix "hl.monitor" (greeterConfig [{ output = "DP-1"; }]);
-    expected = false;
-  };
-
-  # The greeter now owns greetd's default session and runs as its own system
-  # user. If this ever reads back as the real user, the greeter has been
-  # displaced and the machine is autologging in again.
-  testGreetdRunsTheGreeterNotTheUser = {
-    expr = (hyprland [{}]).services.greetd.settings.default_session.user;
-    expected = "dms-greeter";
-  };
-
-  # Declaring the compositor here would generate a second, competing
-  # hyprland-uwsm.desktop that collides with the one the Hyprland package
-  # already ships.
-  testUwsmSessionIsNotGeneratedTwice = {
-    expr = attrNames (hyprland [{}]).programs.uwsm.waylandCompositors;
-    expected = [];
-  };
-
-  testGreeterReadsTheUsersHomeNotItsConfigDir = {
-    expr = (hyprland [{}]).services.displayManager.dms-greeter.configHome;
-    expected = (hyprland [{}]).user.home;
-  };
+  # Noctalia has no suspend/resume events, so these are systemd's, run as the
+  # user from root's side of the fence. Each has to name its own hook, and
+  # on-wakeup only runs at all because stopping the unit is what triggers it.
+  testSleepHooksReachTheUsersSession =
+    let unit = one.systemd.services.hey-sleep-hook; in {
+      expr = {
+        down    = hasInfix "hook -f on-suspend" unit.script;
+        up      = hasInfix "hook -f on-wakeup" unit.preStop;
+        asUser  = hasInfix "--machine=test@.host" unit.script;
+        onSleep = elem "sleep.target" unit.wantedBy;
+        stops   = unit.unitConfig.StopWhenUnneeded;
+      };
+      expected = { down = true; up = true; asUser = true; onSleep = true; stops = true; };
+    };
 }

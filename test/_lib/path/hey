@@ -1,0 +1,4 @@
+#!/usr/bin/env zsh
+# On $PATH for the duration of a completion test, so that the completions talk
+# to this working copy's hey rather than whichever one is installed.
+exec ${0:A:h:h:h:h}/bin/hey "$@"

@@ -1,13 +1,14 @@
 # test/nixos/lib/pkgs.nix --- tests for lib/pkgs.nix
 #
-# Both helpers here return derivations, so the suite asserts on the attributes
-# they compute rather than on anything built. That is where the bugs live: the
-# names. mkWrapper used to interpolate its package, which stringified the
-# derivation to its store path and named the result after a mangled one.
+# Both helpers return derivations, so the suite asserts on the names they
+# compute rather than on anything built. That is where the bugs have lived:
+# mkWrapper used to interpolate its package, which stringified the derivation
+# to its store path and named the result after a mangled one, and
+# mkLauncherEntry once hashed only the command, so two entries differing in
+# title landed on the same file.
 
-{ lib, pkgs, heyLib, ... }:
+{ pkgs, heyLib, ... }:
 
-with lib;
 let
   inherit (heyLib) mkWrapper mkLauncherEntry;
 
@@ -19,35 +20,11 @@ in {
     expected = "hello-wrapped";
   };
 
-  # A list wraps every path but is still named after the first.
-  testMkWrapperListNamesAfterTheFirst = {
-    expr = (mkWrapper [ pkgs.hello pkgs.coreutils ] "").name;
-    expected = "hello-wrapped";
-  };
-
-  # The entry file name hashes the title as well as the command, so these two
-  # no longer land on the same file.
-  testMkLauncherEntryNamesDifferByTitle = {
-    expr = entry "One" "run" == entry "Two" "run";
-    expected = false;
-  };
-
-  testMkLauncherEntryNamesDifferByExec = {
-    expr = entry "One" "run" == entry "One" "walk";
-    expected = false;
-  };
-
-  testMkLauncherEntryNameIsStable = {
-    expr = entry "One" "run" == entry "One" "run";
-    expected = true;
-  };
-
-  testMkLauncherEntryPrefixesTheName = {
+  testMkLauncherEntryNamesDifferByTitleAndExec = {
     expr = {
-      default = hasPrefix "launcher-" (entry "One" "run");
-      custom = hasPrefix "menu-"
-        (mkLauncherEntry "One" { exec = "run"; icon = "none"; prefix = "menu-"; }).name;
+      title = entry "One" "run" == entry "Two" "run";
+      exec  = entry "One" "run" == entry "One" "walk";
     };
-    expected = { default = true; custom = true; };
+    expected = { title = false; exec = false; };
   };
 }

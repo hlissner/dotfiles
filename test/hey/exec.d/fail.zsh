@@ -1,2 +1,2 @@
 #!/usr/bin/env zsh
-echo hi
+exit 42

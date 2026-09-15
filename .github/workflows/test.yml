@@ -11,11 +11,16 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test:
+  # The two halves of the repo fail for unrelated reasons and at wildly
+  # different speeds, so they get a job each rather than `hey test`, which
+  # short-circuits nixos the moment janet says no.
+  hey:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 20
     env:
-      # So CI builds hey against the same toolchain my systems do
+      # So CI runs hey against the same toolchain my systems build it with.
+      # Deliberately no nixpkgs#nix: the installer's is already on PATH and a
+      # second one would be talking to a daemon it doesn't match.
       TOOLCHAIN: nixpkgs#janet nixpkgs#jpm nixpkgs#gcc nixpkgs#zsh nixpkgs#git
     steps:
       - uses: actions/checkout@v4
@@ -39,19 +44,43 @@ jobs:
             echo "XDG_STATE_HOME=$HOME/.local/state"
             echo "XDG_RUNTIME_DIR=$HOME/.run"
             echo "JANET_TREE=$tree"
-            echo "JANET_PATH=$tree/lib"
-            echo "JANET_BINPATH=$HOME/.local/bin"
+            # Ordering is inverted: the last entry becomes :syspath and is
+            # searched first, so lib/ leads and the tree trails it.
+            echo "JANET_PATH=$GITHUB_WORKSPACE/lib:$tree/lib"
+            echo "JANET_BINPATH=$tree/bin"
           } >>"$GITHUB_ENV"
-          { echo "$tree/bin"; echo "$HOME/.local/bin"; } >>"$GITHUB_PATH"
+          echo "$tree/bin" >>"$GITHUB_PATH"
           mkdir -p "$tree" "$HOME/.run" "$HOME/.local/bin" "$HOME/.cache" \
                    "$HOME/.config" "$HOME/.local/state" "$HOME/.local/share/hey"
           # modules/hey.nix generates this on a real system
           echo '{}' >"$HOME/.local/share/hey/info.json"
 
-      - name: Build hey
-        run: |
-          nix shell --inputs-from . $TOOLCHAIN --command \
-            bash -c 'jpm deps && jpm run deploy'
+      - name: Install the janet dependencies
+        run: nix shell --inputs-from . $TOOLCHAIN --command jpm deps
 
-      - name: Run the test suites
-        run: nix shell --inputs-from . $TOOLCHAIN --command hey test
+      # The working copy, not a build of it: packages/hey.nix compiles
+      # bin/hey.d/* into the binary, so an installed hey would be testing the
+      # last commit's code. `nix build .#hey` below covers the build itself.
+      - name: Run the Hey suites
+        run: nix shell --inputs-from . $TOOLCHAIN --command ./bin/hey test hey
+
+      - name: Build hey and heyops
+        run: nix build --no-link --print-build-logs .#hey .#heyops
+
+  nixos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            warn-dirty = false
+
+      # What `hey test nixos` runs, minus the janet. Needs neither $HEYENV nor
+      # --impure (test/nixos/_lib.nix fabricates its own `hey` argument), and
+      # the suite is x86_64-only by meta.platforms.
+      - name: Run the NixOS suites
+        run: nix build --no-link --print-build-logs .#checks.x86_64-linux.nixos

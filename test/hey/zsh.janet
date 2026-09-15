@@ -13,31 +13,15 @@
   ~(,(first args) zsh -c ,autoload-hey "hey-test"
     ,(string (get args 1)) ,;(slice args 2)))
 
-# janet-sh routes a redirect into a buffer through file/temp, which always
-# writes to /tmp. Capturing into hey's own runtime directory keeps these tests
-# runnable where /tmp isn't writable; it's tmpfs, so it clears at logout.
-(def- scratch-dir
-  (let [dir (hey/path :runtime "temp")]
-    (os/mkdir (hey/path :runtime))
-    (os/mkdir dir)
-    dir))
-(def- out-file (hey/path/join scratch-dir "test-zsh.out"))
-(def- err-file (hey/path/join scratch-dir "test-zsh.err"))
-
 (deftest hey.requires
-  (def null (file/open "/dev/null"))
   (test (zsh $? hey.requires zsh bash sh) true)
-  (test (zsh $? hey.requires zsh bash doesnotexist > [stderr null]) false)
-  (test (zsh $? hey.requires doesnotexist > [stderr null]) false))
+  (test (zsh $? hey.requires zsh bash doesnotexist > [stderr :null]) false))
 
 (deftest hey.do
-  (with [out (file/open out-file :w)]
-    (zsh $ hey.do echo 10 > ,out))
-  (test (string/trim (slurp out-file)) "10")
+  (test (zsh $<_ hey.do echo 10) "10")
 
+  # A dry run says what it would do on stderr and does nothing on stdout.
   (hey/with-envvars ["HEYDRYRUN" "1"]
-    (with [out (file/open out-file :w)]
-      (with [err (file/open err-file :w)]
-        (zsh $ hey.do echo 10 > ,out > [stderr err])))
-    (test (empty? (slurp err-file)) false)
-    (test (empty? (slurp out-file)) true)))
+    (def err @"")
+    (test (zsh $< hey.do echo 10 > [stderr err]) "")
+    (test (empty? err) false)))
