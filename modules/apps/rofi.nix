@@ -46,6 +46,10 @@ in {
           icon = "bookmark-new-symbolic";
           exec = "hey @rofi bookmarkmenu";
         })
+        (mkLauncherEntry "Copy Icon ->" {
+          icon = "icons";
+          exec = "hey @rofi iconmenu";
+        })
         (mkLauncherEntry "Open File ->" {
           icon = "folder";
           exec = ''hey @rofi filemenu -file-browser-dir "\$HOME"'';
