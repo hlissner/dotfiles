@@ -11,7 +11,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    environment.variables.TMUX_HOME = "$XDG_CONFIG_HOME/tmux";
+    environment.variables.TMUX_HOME = "${hey.configDir}/tmux";
 
     # I avoid programs.tmux because it comes with extra magic I don't need.
     user.packages = [ pkgs.tmux ];
@@ -29,11 +29,6 @@ in {
     modules.hyprland.matugen.templates.tmux = {
       input_path = "${hey.configDir}/tmux/colors.template.conf";
       output_path = "${config.home.configDir}/tmux/colors.conf";
-    };
-
-    home.configFile."tmux" = {
-      source = "${hey.configDir}/tmux";
-      recursive = true;
     };
 
     modules.shell.zsh.rcFiles = [ "${hey.configDir}/tmux/aliases.zsh" ];
