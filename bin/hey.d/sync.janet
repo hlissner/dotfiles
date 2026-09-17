@@ -4,6 +4,7 @@
 # SYNOPSIS:
 #   sync [--fast] [--host HOST] [COMMAND] [ARGS...]
 #   sync rollback [GENERATION]
+#   sync build-image [VARIANT]
 #
 # OPTIONS:
 #   --fast
@@ -19,6 +20,7 @@
 #     build                     -- Build only.
 #     dry-build                 -- Show what would be built.
 #     dry-activate              -- Show what would be activated.
+#     build-image               -- Build a deployable image of the given VARIANT.
 #     build-vm                  -- Build a VM of this flake.
 #     build-vm-with-bootloader  -- Build a VM with a bootloader.
 #     rollback                  -- Switch back to an older generation.
@@ -59,6 +61,17 @@
     (unless (do? $? sudo ln -sfn ,home ,link)
       (echof :warn "Couldn't point %s at %s" link (path/abbrev home)))))
 
+(defn- image-args
+  ``nixos-rebuild spells the image variant as a flag; I'd rather type it as the
+  argument it reads like. A leading flag is left alone, so --image-variant still
+  works if I reach for it, and no argument at all leaves nixos-rebuild to list
+  what this host can actually build.``
+  [args]
+  (def variant (first args))
+  (if (or (nil? variant) (string/has-prefix? "-" variant))
+    args
+    ["--image-variant" variant ;(drop 1 args)]))
+
 (defcmd sync [_ cmd & args &opts fast? --fast host [--host name]]
   (when (= (flake :host) "nixos")
     (abort "HOST is 'nixos'. Did you forget to change it?"))
@@ -68,6 +81,8 @@
 
   (os/setenv "HEYENV" (flake/json))
   (log "HEYENV=%s" (os/getenv "HEYENV"))
+
+  (def args (if (= cmd "build-image") (image-args args) args))
 
   (link-dotfiles)
   (case* cmd

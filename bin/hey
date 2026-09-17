@@ -24,7 +24,6 @@
 (use hey)
 (use hey/cmd)
 
-(import ./hey.d/build)
 (import ./hey.d/gc)
 (import ./hey.d/hook)
 (import ./hey.d/info)
@@ -39,8 +38,7 @@
 (import ./hey.d/vars)
 
 (defn main [_ & args]
-  (dispatch [[:build :b]    (cmd 'build)
-             [:get :set]    (with-doc "Alias for hey vars {get,set} ..."
+  (dispatch [[:get :set]    (with-doc "Alias for hey vars {get,set} ..."
                               |[:eval (cmd 'vars) ;$&])
              :gc            (cmd 'gc)
              :hook          (cmd 'hook)

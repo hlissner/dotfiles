@@ -166,7 +166,24 @@ __hey_vars() {
   (( $#vars )) && _wanted vars expl 'variable' compadd -a vars
 }
 
-__hey_sync_arg()    { [[ $line[1] == rollback ]] && { __hey_generations; return }; _default }
+__hey_image_variants() {
+  local expl
+  local -a variants=(
+    amazon azure cloudstack digital-ocean google-compute hyperv
+    iso iso-installer kexec kubevirt linode lxc lxc-metadata
+    oci openstack openstack-zfs proxmox proxmox-lxc
+    qemu qemu-efi raw raw-efi sd-card vagrant-virtualbox virtualbox vmware
+  )
+  _wanted variants expl 'image variant' compadd -a variants
+}
+
+__hey_sync_arg() {
+  case $line[1] in
+    (rollback) __hey_generations ;;
+    (build-image) (( $#line > 2 )) || __hey_image_variants ;;
+    (*) _default ;;
+  esac
+}
 __hey_profile_arg() { [[ $line[1] == (rm|diff) ]] && { __hey_generations; return }; return 1 }
 
 # `test nixos SUITE` takes a single suite name; `test hey ARGS` passes its
