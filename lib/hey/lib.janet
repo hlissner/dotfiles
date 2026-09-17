@@ -19,11 +19,11 @@
   (eval ~(peg/compile ,pat)))
 
 (defmacro with-envvars [args & body]
-  (let [xs (struct ;args)
+  (let [xs (partition 2 args)
         $old (gensym)]
-    ~(let [,$old ,(struct ;(catseq [[k _] :pairs xs] [k ~(os/getenv ,k)]))]
-       (defer (do ,;(catseq [k :keys xs] [~(os/setenv ,k (get ,$old ,k))]))
-         ,;(catseq [[k v] :pairs xs] [~(os/setenv ,k ,v)])
+    ~(let [,$old ,(struct ;(catseq [[k _] :in xs] [k ~(os/getenv ,k)]))]
+       (defer (do ,;(catseq [[k _] :in xs] [~(os/setenv ,k (get ,$old ,k))]))
+         ,;(catseq [[k v] :in xs] [~(os/setenv ,k ,v)])
          ,;body))))
 
 (defmacro with-umask [umask & body]
