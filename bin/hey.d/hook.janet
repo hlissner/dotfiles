@@ -69,7 +69,7 @@
   (when-let [script (and cmd (first cmd))]
     (and (path/file? script) (path/executable? script))))
 
-(defn parse-area
+(defn- parse-area
   ``Split a leading @AREA off HOOK, returning [AREA HOOK ARGS]. Without the
   sigil, AREA is nil and the arguments are returned untouched.``
   [hook args]
@@ -77,7 +77,7 @@
     [(string/slice hook 1) (first args) (tuple ;(drop 1 args))]
     [nil hook (tuple ;args)]))
 
-(defn sort-areas
+(defn- sort-areas
   ``Order area NAMES with WM first, the rest alphabetically, then host, which is
   always known because it names hosts/$HOST/hooks.``
   [names &opt wm]

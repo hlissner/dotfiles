@@ -29,7 +29,7 @@
 
 (var- *metadata* nil)
 
-(defn metadata []
+(defn- metadata []
   (unless *metadata*
     (set *metadata*
          (json/decode ($<_ nix flake metadata --json ,(path :home))
