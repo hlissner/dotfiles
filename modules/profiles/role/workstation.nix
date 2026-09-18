@@ -90,6 +90,9 @@ mkIf (config.modules.profiles.role == "workstation") (mkMerge [
     # A compressed swap device in RAM, so memory pressure degrades into slower
     # memory instead of straight into OOM.
     zramSwap.enable = mkDefault true;
+
+    # OOM-kill memory hungry processes in userland too.
+    systemd.oomd.enableUserSlices = true;
   }
 
   (mkIf config.modules.services.ssh.enable {
