@@ -97,5 +97,16 @@ mkIf (config.modules.profiles.role == "workstation") (mkMerge [
     services.openssh.startWhenNeeded = true;
   })
 
+  # dms-shell installs power-profiles-daemon. This is necessary to revert to the
+  # balanced power profile on each startup (in case it was changed from a
+  # dankbar widget).
+  (mkIf config.services.power-profiles-daemon.enable {
+    # `balanced` defers to amd-pstate's firmware (full boost under load, actual
+    # clock down at idle), which is superior to `performance`, which parks EPP
+    # near max. My poor baby.
+    hey.hooks.onStartup.power-profile =
+      "${getExe' config.services.power-profiles-daemon.package "powerprofilesctl"} set balanced";
+  })
+
   # ...
 ])
