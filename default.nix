@@ -89,8 +89,11 @@ with hey.lib;
       kernelPackages = mkDefault pkgs.linuxKernel.packages.linux_xanmod_latest;
       loader = {
         efi.canTouchEfiVariables = mkDefault true;
-        # To not overwhelm the boot screen.
-        systemd-boot.configurationLimit = mkDefault 10;
+        systemd-boot = {
+          # To not overwhelm the boot screen and save space on /boot
+          configurationLimit = mkDefault 8;
+          memtest86.enable = mkDefault true;
+        };
       };
     };
 
