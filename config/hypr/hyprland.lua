@@ -1,15 +1,9 @@
 -- config/hypr/hyprland.lua
--- Common settings for hyprland.
--- https://wiki.hypr.land/Configuring/Start/
 
 require("lib/util")
 
 
 -- * Events
-
-hl.on("hyprland.start", function ()
-    hl.exec_cmd("hey hook onStartup")
-end)
 
 hl.on("hyprland.shutdown", function ()
     os.execute("hey hook onShutdown")
@@ -18,96 +12,99 @@ end)
 
 -- * Options
 
+-- https://wiki.hypr.land/Configuring/Start/
 hl.config({
-    general = {
-        gaps_in = 0,
-        gaps_out = 0,
-        border_size = 1,
-        no_focus_fallback = true,
-        layout = "master",
-        allow_tearing = false,
-        resize_on_border = false
-    },
+  general = {
+    gaps_in = 0,
+    gaps_out = 0,
+    border_size = 1,
+    no_focus_fallback = true,
+    layout = "master",
+    allow_tearing = false,
+    resize_on_border = false
+  },
 
-    input = {
-        kb_layout = "us",
-        kb_variant = "",
-        kb_model   = "",
-        kb_options = "compose:ralt",
-        kb_rules   = "",
-        follow_mouse = 2,
-        focus_on_close = 2,
-        float_switch_override_focus = 0,
-        touchpad = {
-            natural_scroll = false,
-        },
-        sensitivity = 0  -- -1.0 - 1.0, 0 means no modification.
+  input = {
+    kb_layout = "us",
+    kb_variant = "",
+    kb_model   = "",
+    kb_options = "compose:ralt",
+    kb_rules   = "",
+    follow_mouse = 2,
+    focus_on_close = 2,
+    float_switch_override_focus = 0,
+    touchpad = {
+        natural_scroll = false,
     },
+    sensitivity = 0  -- -1.0 - 1.0, 0 means no modification.
+  },
 
-    decoration = {
-        dim_strength = 0.2,
-        dim_inactive = true,
-        dim_special = 0.4,
-        dim_around = 0.4,
-        -- shadow {
-        --   enabled = true
-        --   range = 10
-        --   render_power = 4
-        --   color = rgba(0f0f0f88)
-        -- }
-        blur = {
-            enabled = true,
-            size = 4,
-            passes = 1
-        }
-    },
+  decoration = {
+    dim_strength = 0.2,
+    dim_inactive = true,
+    dim_special = 0.4,
+    dim_around = 0.4,
+    -- shadow {
+    --   enabled = true
+    --   range = 10
+    --   render_power = 4
+    --   color = rgba(0f0f0f88)
+    -- }
+    blur = {
+        enabled = true,
+        size = 4,
+        passes = 1
+    }
+  },
 
-    render = {
-        direct_scanout = 2,
-    },
+  render = {
+    direct_scanout = 2,
+  },
 
-    -- Obnoxious.
-    ecosystem = {
-        no_update_news = true,
-        no_donation_nag = true
-    },
+  -- Obnoxious.
+  ecosystem = {
+    no_update_news = true,
+    no_donation_nag = true
+  },
 
-    animations = {
-        enabled = true
-    },
+  animations = {
+    enabled = true
+  },
 
-    dwindle = {
-        -- pseudotile = yes # master switch for pseudotiling. Enabling is bound to
-        -- mainMod + P in the keybinds section below
-        preserve_split = true  -- you probably want this
-    },
+  dwindle = {
+    -- pseudotile = yes # master switch for pseudotiling. Enabling is bound to
+    -- mainMod + P in the keybinds section below
+    preserve_split = true  -- you probably want this
+  },
 
-    -- See https://wiki.hyprland.org/Configuring/Master-Layout/ for more
-    master = {
-        new_status = "master",
-        mfact = 0.65
-    },
+  -- See https://wiki.hyprland.org/Configuring/Master-Layout/ for more
+  master = {
+    new_status = "master",
+    mfact = 0.65
+  },
 
-    -- See https://wiki.hyprland.org/Configuring/Variables/ for more
-    misc = {
-        background_color = "0xff000000",
-        force_default_wallpaper = 0,  -- Set to 0 to disable the anime mascot wallpapers
-        disable_watchdog_warning = true,
-        disable_hyprland_logo = true,
-        disable_autoreload = true,
-        disable_splash_rendering = true,
-        key_press_enables_dpms = true,
-    },
+  -- See https://wiki.hyprland.org/Configuring/Variables/ for more
+  misc = {
+    background_color = "0xff000000",
+    force_default_wallpaper = 0,  -- Set to 0 to disable the anime mascot wallpapers
+    disable_watchdog_warning = true,
+    disable_hyprland_logo = true,
+    disable_autoreload = true,
+    disable_splash_rendering = true,
+    key_press_enables_dpms = true,
+    initial_workspace_token_timeout = 20
+  },
 
-    cursor = {
-        hide_on_key_press = false,
-        enable_hyprcursor = true,
-        zoom_rigid = true
-    },
+  cursor = {
+    default_monitor = hey.hypr.primaryMonitor,
+    hide_on_key_press = false,
+    enable_hyprcursor = true,
+    zoom_rigid = true
+  },
 
-    scrolling = {
-        fullscreen_on_one_column = false
-    },
+  scrolling = {
+    fullscreen_on_one_column = false
+  },
 })
 
 -- ** Animations
@@ -125,51 +122,51 @@ hl.animation({ leaf = "specialWorkspace", enabled = true, speed = 5.0, bezier = 
 
 -- Invisible margins/padding will get blurred too; ignorezero fixes this.
 hl.layer_rule({
-    match = { namespace = "notifications" },
-    blur = true,
-    ignore_alpha = 0.3
+  match = { namespace = "notifications" },
+  blur = true,
+  ignore_alpha = 0.3
 })
 -- Since we can't focus anything with rofi up anyway, convey this visually.
 hl.layer_rule({
-    match = { namespace = "rofi" },
-    dim_around = true,
-    animation = "slide top"
+  match = { namespace = "rofi" },
+  dim_around = true,
+  animation = "slide top"
 })
 
 
 -- * Workspace rules
 
--- Provided by NixOS config in hyprland-pre.lua
-if PRIMARY_MONITOR then
-    -- Designate workspaces 1-9 for my main monitor
-    for i = 1, 9 do
-      hl.workspace_rule({
-          workspace = tostring(i),
-          monitor = PRIMARY_MONITOR,
-          default = i == 1,
-          persistent = i == 1
-      })
-    end
-    -- A workspace exclusively for games
+-- hey is spliced in by modules/hyprland/default.nix, from hey/info.json.
+if hey.hypr.primaryMonitor then
+  -- Designate workspaces 1-9 for my main monitor
+  for i = 1, 9 do
     hl.workspace_rule({
-        workspace = tostring(10),
-        layout = "monocle",
-        monitor = PRIMARY_MONITOR,
-        gaps_in = 0,
-        gaps_out = 0,
-        no_border = true,
-        no_shadow = true,
-        no_rounding = true
+        workspace = tostring(i),
+        monitor = hey.hypr.primaryMonitor,
+        default = i == 1,
+        persistent = i == 1
     })
+  end
+  -- A workspace exclusively for games
+  hl.workspace_rule({
+    workspace = tostring(10),
+    layout = "monocle",
+    monitor = hey.hypr.primaryMonitor,
+    gaps_in = 0,
+    gaps_out = 0,
+    no_border = true,
+    no_shadow = true,
+    no_rounding = true
+  })
 
-    hl.window_rule({
-        name  = "games-workspace",
-        match = { workspace = "10" },
-        no_blur      = true,
-        no_anim      = true,
-        immediate    = true,
-        idle_inhibit = "fullscreen"
-    })
+  hl.window_rule({
+    name  = "games-workspace",
+    match = { workspace = "10" },
+    no_blur      = true,
+    no_anim      = true,
+    immediate    = true,
+    idle_inhibit = "fullscreen"
+  })
 end
 
 hl.workspace_rule({
@@ -266,9 +263,9 @@ hl.bind("SUPER + Escape",         hl.dsp.exec_cmd("dms ipc call notifications cl
 
 -- ** Zoom
 
-hl.bind("SUPER + Minus", my.dsp.zoomIn(-0.3), { repeating = true })
-hl.bind("SUPER + Equal", my.dsp.zoomIn(0.3),  { repeating = true })
-hl.bind("SUPER + SHIFT + Equal", my.dsp.zoomIn(0.0)) -- reset
+hl.bind("SUPER + Minus", hey.dsp.zoomIn(-0.3), { repeating = true })
+hl.bind("SUPER + Equal", hey.dsp.zoomIn(0.3),  { repeating = true })
+hl.bind("SUPER + SHIFT + Equal", hey.dsp.zoomIn(0.0)) -- reset
 
 -- ** Quit/Session control
 hl.bind("SUPER + q", hl.dsp.submap("session"))
@@ -307,25 +304,25 @@ end)
 -- ** Layout controls
 hl.bind("SUPER + f",              hl.dsp.window.float({ action = "toggle" }))
 hl.bind("SUPER + SHIFT + f",      hl.dsp.window.fullscreen({ action = "toggle" }))
-hl.bind("SUPER + o", my.dsp.layout({
-    scrolling = hl.dsp.layout("consume_or_expel next"),
-    monocle   = hl.dsp.focus({ last = true }),
-    master    = hl.dsp.layout("addmaster"),
+hl.bind("SUPER + o", hey.dsp.layout({
+  scrolling = hl.dsp.layout("consume_or_expel next"),
+  monocle   = hl.dsp.focus({ last = true }),
+  master    = hl.dsp.layout("addmaster"),
 }))
-hl.bind("SUPER + SHIFT + o", my.dsp.layout({
-    scrolling = hl.dsp.layout("consume_or_expel prev"),
-    monocle   = hl.dsp.focus({ urgent_or_last = true }),
-    master    = hl.dsp.layout("removemaster"),
+hl.bind("SUPER + SHIFT + o", hey.dsp.layout({
+  scrolling = hl.dsp.layout("consume_or_expel prev"),
+  monocle   = hl.dsp.focus({ urgent_or_last = true }),
+  master    = hl.dsp.layout("removemaster"),
 }))
-hl.bind("SUPER + TAB", my.dsp.layout({
-    scrolling = hl.dsp.layout("swapcol r"),
-    monocle   = hl.dsp.layout("cyclenext"),
-    master    = hl.dsp.layout("swapwithmaster"),
+hl.bind("SUPER + TAB", hey.dsp.layout({
+  scrolling = hl.dsp.layout("swapcol r"),
+  monocle   = hl.dsp.layout("cyclenext"),
+  master    = hl.dsp.layout("swapwithmaster"),
 }))
-hl.bind("SUPER + SHIFT + TAB", my.dsp.layout({
-    scrolling = hl.dsp.layout("swapcol l"),
-    monocle   = hl.dsp.layout("cycleprev"),
-    master    = hl.dsp.exec_cmd("hey @rofi windowmenu"),
+hl.bind("SUPER + SHIFT + TAB", hey.dsp.layout({
+  scrolling = hl.dsp.layout("swapcol l"),
+  monocle   = hl.dsp.layout("cycleprev"),
+  master    = hl.dsp.exec_cmd("hey @rofi windowmenu"),
 }))
 hl.bind("SUPER + Left",         hl.dsp.layout("orientationleft"))
 hl.bind("SUPER + Right",        hl.dsp.layout("orientationright"))
@@ -365,14 +362,14 @@ end)
 
 -- ** Workspaces
 for i = 1, 10 do
-    local key = i % 10
-    hl.bind("SUPER + " .. key, hl.dsp.focus({ workspace = i }))
-    hl.bind("SUPER + SHIFT + " .. key, hl.dsp.window.move({ workspace = i }))
+  local key = i % 10
+  hl.bind("SUPER + " .. key, hl.dsp.focus({ workspace = i }))
+  hl.bind("SUPER + SHIFT + " .. key, hl.dsp.window.move({ workspace = i }))
 end
 
 -- Quick-resize windows
 for i, spec in ipairs({ 640, 0.4, 0.5, 0.6, 0.8, 1.0 }) do
-  hl.bind("SUPER + CTRL + " .. i, my.dsp.resize_width_to(spec))
+  hl.bind("SUPER + CTRL + " .. i, hey.dsp.resize_width_to(spec))
 end
 
 -- ** Move/resize windows with mouse LMB/RMB
@@ -382,7 +379,7 @@ hl.bind("SUPER + mouse:273",      hl.dsp.window.resize(), { mouse = true })
 -- ** Monitor brightness control
 hl.bind("XF86MonBrightnessUp",    hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 10%+"), { locked = true, repeating = true })
 hl.bind("XF86MonBrightnessDown",  hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 10%-"), { locked = true, repeating = true })
-hl.bind("XF86PowerOff",           my.dsp.dpms(false), { locked = true; })
+hl.bind("XF86PowerOff",           hey.dsp.dpms(false), { locked = true; })
 
 -- ** Audio and player controls
 hl.bind("XF86AudioRaiseVolume",        hl.dsp.exec_cmd("dms ipc audio increment 10"), { locked = true, repeating = true })
