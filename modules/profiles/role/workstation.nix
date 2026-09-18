@@ -31,9 +31,9 @@ mkIf (config.modules.profiles.role == "workstation") (mkMerge [
       loader = {
         # I'm not a big fan of Grub, so if it's not in use...
         systemd-boot.enable = mkDefault true;
-        # For much quicker boot up to NixOS. I can use `systemctl reboot
-        # --boot-loader-entry=X` instead.
-        timeout = mkDefault 1;
+        # For much quicker boot up to NixOS. Hold down a key to bring it up or
+        # use `systemctl reboot --boot-loader-entry=X` instead.
+        timeout = mkDefault 0;
       };
 
       # Common kernels across workstations
