@@ -10,9 +10,6 @@ fi
 
 ## Bootstrap interactive session
 if [[ $TERM != dumb ]]; then
-  # Don't call compinit too early. I'll do it myself, at the right time.
-  export ZGEN_AUTOLOAD_COMPINIT=0
-
   ## ZSH configuration
   # Treat these characters as part of a word.
   WORDCHARS='-*?[]~&.;!#$%^(){}<>'
@@ -82,45 +79,39 @@ if [[ $TERM != dumb ]]; then
   # zsh-autosuggest
   export ZSH_AUTOSUGGEST_MANUAL_REBIND=1
 
-  ## Bootstrap zgenom
-  export ZGEN_DIR="${ZGEN_DIR:-${XDG_DATA_HOME:-~/.local/share}/zgenom}"
-  if [[ ! -d "$ZGEN_DIR" ]]; then
-    # Use zgenom because zgen is no longer maintained
-    echo "Installing jandamm/zgenom"
-    git clone https://github.com/jandamm/zgenom "$ZGEN_DIR"
+  ## Bootstrap zpm
+  export ZPM_DIR="${ZPM_DIR:-${XDG_DATA_HOME:-~/.local/share}/zpm}"
+  if [[ ! -f $ZPM_DIR/zpm.zsh ]]; then
+    echo "Installing zpm-zsh/zpm"
+    git clone --recursive https://github.com/zpm-zsh/zpm "$ZPM_DIR"
+  fi
+  source $ZPM_DIR/zpm.zsh
+
+  # fzf's shell integration comes from the nix module
+  if (( $+commands[fzf] )); then
+    source "$(fzf-share)/key-bindings.zsh"
+    source "$(fzf-share)/completion.zsh"
   fi
 
-  source $ZGEN_DIR/zgenom.zsh
-  if ! zgenom saved; then
-    echo "Initializing zgenom"
-    rm -frv {$ZDOTDIR,${0:a:h}}/*.zwc(DN) \
-            $XDG_CACHE_HOME/zsh \
-            $ZGEN_INIT.zwc
-
-    # Be extra careful about plugin load order, or subtle breakage can emerge.
-    # This is the best order I've sussed out for these plugins.
-    zgenom load junegunn/fzf shell
-    zgenom load jeffreytse/zsh-vi-mode
-    zgenom load zdharma-continuum/fast-syntax-highlighting
-    zgenom load zsh-users/zsh-completions src
-    zgenom load zsh-users/zsh-autosuggestions
-    zgenom load dxrcy/zsh-history-substring-search
-    zgenom load romkatv/powerlevel10k powerlevel10k
-    zgenom load hlissner/zsh-autopair autopair.zsh
-
-    zgenom save
-
-    # Must be explicit because zgenom compile ignores nix-store symlinks
-    zgenom compile \
-      {$ZDOTDIR,@{0:a:h}}/{*.zsh,.zsh*}~*.zwc(-.N) \
-      $DOTFILES_HOME/lib/zsh/{,completions/}*~*.zwc(-.N)
-  fi
+  # One `zpm load` per plugin, deliberately: load order is important to ensure
+  # these packages cooperate.
+  zpm load jeffreytse/zsh-vi-mode
+  zpm load zdharma-continuum/fast-syntax-highlighting
+  # No `fpath:/src` needed (it'll break zpm, which finds the completions there
+  # on its own).
+  zpm load zsh-users/zsh-completions
+  zpm load zsh-users/zsh-autosuggestions
+  zpm load dxrcy/zsh-history-substring-search
+  zpm load romkatv/powerlevel10k
+  zpm load hlissner/zsh-autopair
 
   ## My dotfiles
-  source ${0:a:h}/completion.zsh
-  source ${0:a:h}/keybinds.zsh
-  source ${0:a:h}/aliases.zsh
-  source ${0:a:h}/prompt.zsh
+  # zpm compiles its own (and fpath), but these must be handled manually:
+  for _zfile in ${0:a:h}/{completion,keybinds,aliases,prompt}.zsh; do
+    [[ -e $_zfile.zwc && $_zfile.zwc -nt $_zfile ]] || zcompile -R -- $_zfile 2>/dev/null
+    source $_zfile
+  done
+  unset _zfile
 
   hey.cache dircolors -b
   hey.cache zoxide init zsh

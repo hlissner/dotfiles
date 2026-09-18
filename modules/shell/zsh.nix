@@ -62,7 +62,7 @@ in {
     # Ensure XDG compliance
     environment.variables = {
       ZDOTDIR = "$XDG_CONFIG_HOME/zsh";
-      ZGEN_DIR = "$XDG_DATA_HOME/zgenom";
+      ZPM_DIR = "$XDG_DATA_HOME/zpm";
     };
 
     # Ensure that ZSH's cache directory exists, lest we have IO errors early on.

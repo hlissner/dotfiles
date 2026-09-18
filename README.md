@@ -22,7 +22,7 @@ dotfiles over there.
 
 ------
 
-| **Shell:**    | zsh + zgenom                   |
+| **Shell:**    | zsh + zpm                      |
 | **WM:**       | hyprland + dank-material-shell |
 | **Editor:**   | [Doom Emacs][doomemacs]        |
 | **Terminal:** | foot                           |

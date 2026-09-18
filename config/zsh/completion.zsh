@@ -101,11 +101,3 @@ zstyle ':completion:*:ssh:*' group-order users hosts-domain hosts-host users hos
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-host' ignored-patterns '*(.|:)*' loopback ip6-loopback localhost ip6-localhost broadcasthost
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-domain' ignored-patterns '<->.<->.<->.<->' '^[-[:alnum:]]##(.[-[:alnum:]]##)##' '*@*'
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
-
-# Only generate the dump if it doesn't exist. `hey reload` will clear it. And
-# yes, -d is necessary. compinit doesn't respect cache-path.
-ZCOMPCACHE="$XDG_CACHE_HOME/zsh/zcompdump.$ZSH_VERSION"
-if autoload -Uz compinit; then
-  compinit -u -C -d "$ZCOMPCACHE"
-  [[ ! -f "$ZCOMPCACHE.zwc" && -f $ZCOMPCACHE ]] && zcompile "$ZCOMPCACHE"
-fi
