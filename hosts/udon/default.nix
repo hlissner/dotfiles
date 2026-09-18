@@ -123,7 +123,6 @@ with builtins;
       vim.enable = true;
     };
     shell = {
-      # vaultwarden.enable = true;
       claude.enable = true;
       direnv.enable = true;
       git.enable = true;

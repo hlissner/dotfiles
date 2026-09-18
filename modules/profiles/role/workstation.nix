@@ -23,18 +23,9 @@ mkIf (config.modules.profiles.role == "workstation") (mkMerge [
       # Optimizations for desktops/gaming
       kernel.sysctl = {
         "kernel.sched_cfs_bandwidth_slice_us" = 3000;
-        # This is required due to some games being unable to reuse their TCP ports
-        # if they're killed and restarted quickly - the default timeout is too
-        # large.
-        "net.ipv4.tcp_fin_timeout" = 5;
         # Prevents intentional slowdowns in case games experience split locks This
         # is valid for kernels v6.0+
         "kernel.split_lock_mitigate" = 0;
-        # USE MAX_INT - MAPCOUNT_ELF_CORE_MARGIN.
-        # see comment in include/linux/mm.h in the kernel tree.
-        "vm.max_map_count" = 2147483642;
-        # The default maximum is too low, which starves IO hungry apps.
-        "fs.inotify.max_user_watches" = 524288;
       };
 
       loader = {
@@ -44,15 +35,6 @@ mkIf (config.modules.profiles.role == "workstation") (mkMerge [
         # --boot-loader-entry=X` instead.
         timeout = mkDefault 1;
       };
-
-      # For a truly silent boot!
-      # kernelParams = [
-      #   "quiet"
-      #   "splash"
-      #   "udev.log_level=3"
-      # ];
-      # consoleLogLevel = 0;
-      # initrd.verbose = false;
 
       # Common kernels across workstations
       initrd.availableKernelModules = [
@@ -96,18 +78,11 @@ mkIf (config.modules.profiles.role == "workstation") (mkMerge [
         # systemd-networkd-wait-online waits forever for *all* interfaces to be
         # online before passing; which is unlikely to ever happen.
         wait-online = {
-          anyInterface = true;
-          timeout = 30;
-
           # The anyInterface setting is still finnicky for some networks, so I
           # simply turn off the whole check altogether.
           enable = false;
         };
       };
-    };
-    boot.initrd.systemd.network.wait-online = {
-      anyInterface = true;
-      timeout = 10;
     };
 
     modules.xdg.ssh.enable = true;
