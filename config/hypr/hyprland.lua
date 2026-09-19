@@ -382,13 +382,13 @@ hl.bind("XF86MonBrightnessDown",  hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 10%
 hl.bind("XF86PowerOff",           hey.dsp.dpms(false), { locked = true; })
 
 -- ** Audio and player controls
-hl.bind("XF86AudioRaiseVolume",        hl.dsp.exec_cmd("dms ipc audio increment 10"), { locked = true, repeating = true })
-hl.bind("XF86AudioLowerVolume",        hl.dsp.exec_cmd("dms ipc audio decrement 10"), { locked = true, repeating = true })
-hl.bind("XF86AudioMute",               hl.dsp.exec_cmd("dms ipc audio mute"),         { locked = true })
-hl.bind("SHIFT + XF86AudioMute",       hl.dsp.exec_cmd("dms ipc audio micmute"),      { locked = true })
--- hl.bind("XF86AudioMicMute",            hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"),      { locked = true, repeating = true })
-hl.bind("CTRL + XF86AudioRaiseVolume", hl.dsp.exec_cmd("dms ipc mpris increment 10"), { locked = true, repeating = true })
-hl.bind("CTRL + XF86AudioLowerVolume", hl.dsp.exec_cmd("dms ipc mpris decrement 10"), { locked = true, repeating = true })
+local step = 10
+hl.bind("XF86AudioRaiseVolume",        hey.dsp.volume("up", step),               { locked = true, repeating = true })
+hl.bind("XF86AudioLowerVolume",        hey.dsp.volume("down", step),             { locked = true, repeating = true })
+hl.bind("CTRL + XF86AudioRaiseVolume", hey.dsp.player_volume("up", step),        { locked = true, repeating = true })
+hl.bind("CTRL + XF86AudioLowerVolume", hey.dsp.player_volume("down", step),      { locked = true, repeating = true })
+hl.bind("XF86AudioMute",               hl.dsp.exec_cmd("dms ipc audio mute"),    { locked = true })
+hl.bind("SHIFT + XF86AudioMute",       hl.dsp.exec_cmd("dms ipc audio micmute"), { locked = true })
 
 hl.bind("XF86AudioPlay",  hl.dsp.exec_cmd("dms ipc mpris playPause"))
 hl.bind("XF86AudioPause", hl.dsp.exec_cmd("dms ipc mpris playPause"))

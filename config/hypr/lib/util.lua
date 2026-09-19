@@ -27,6 +27,31 @@ function hey.dsp.dpms(state)
              end, { timeout = 500, type = "oneshot"})
   end
 end
+
+-- Clamp audio increment/decrement to the nearest multiple of STEP in the
+-- direction it's being adjusted. OCD-maxxing.
+local function snap_volume(dir, step, read, set)
+  return hl.dsp.exec_cmd(
+    -- Do arithmetic in the shell to spare us the IPC cost of reading the
+    -- current volume first. Terrible if you hold down the key.
+    "v=$(" .. read .. "); [ -n \"$v\" ] || exit 0; s=" .. (step or 10) .. "; " ..
+    "if [ " .. dir .. " = up ]; then n=$((v - v % s + s)); " ..
+    "else r=$((v % s)); [ \"$r\" -eq 0 ] && r=$s; n=$((v - r)); fi; " ..
+    "[ \"$n\" -lt 0 ] && n=0; [ \"$n\" -gt 100 ] && n=100; " ..
+    set .. " \"$n\"")
+end
+
+function hey.dsp.volume(dir, step)
+  return snap_volume(dir, step,
+    [[dms ipc audio status | sed -n 's/^Output: \([0-9]*\)%.*/\1/p']],
+    "dms ipc audio setvolume")
+end
+
+-- Requires playerctl
+function hey.dsp.player_volume(dir, step)
+  return snap_volume(dir, step,
+    [[playerctl volume | awk '{printf "%d", $1 * 100}']],
+    "dms ipc mpris setvolume")
 end
 
 function hey.dsp.layout(bind_table)
