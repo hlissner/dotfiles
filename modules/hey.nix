@@ -123,7 +123,9 @@ in {
       "d ${janetTreeDir} 755 - - - -"
     ];
 
+    hey.info.host = config.networking.hostName;
     hey.info.desktop = cfg.desktop;
+    hey.info.profiles = config.modules.profiles;
     home.dataFile = hookFiles // {
       "hey/info.json".text = toJSON cfg.info;
     };
