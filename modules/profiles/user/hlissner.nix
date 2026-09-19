@@ -1,4 +1,4 @@
-{ hey, lib, config, ... }:
+{ hey, lib, config, pkgs, ... }:
 
 with lib;
 let cfg = config.modules.profiles;
@@ -16,15 +16,33 @@ in mkIf (username == "hlissner") (mkMerge [
     # only need LAN access to, if ever. Other systems, particularly servers, are
     # remoted into often, so I leave their access control to an upstream router
     # or local firewall.
-    user.openssh.authorizedKeys.keys = [
-      key
-    ];
+    user.openssh.authorizedKeys.keys = [ key ];
 
     # Allow key-based root access only from private ranges.
     users.users.root.openssh.authorizedKeys.keys = [
       (if role == "workstation"
-       then ''from="10.0.0.0/8,100.100.4.0/24,192.168.4.0/24" ${key} ${username}''
+       then ''from="10.0.0.0/16,100.100.4.0/24,192.168.10.0/24" ${key} ${username}''
        else key)
     ];
   }
+
+  (mkIf (role == "workstation") {
+    environment.systemPackages = with pkgs; [
+      cloudflared           # for authenticated ssh
+    ];
+
+    programs.ssh.extraConfig = ''
+      Match originalhost git.henrik.io exec "nc -z -w1 10.0.0.1 22"
+        Port 33014
+        ProxyCommand none
+      Host git.henrik.io
+        User git
+        ProxyCommand cloudflared access ssh --hostname %h
+
+      Match originalhost dev.henrik.io exec "nc -z -w1 10.0.0.1 22"
+        ProxyCommand none
+      Host dev.henrik.io
+        ProxyCommand cloudflared access ssh --hostname %h
+    '';
+  })
 ])
