@@ -2,38 +2,51 @@
 (import spork/sh)
 (use ./lib)
 
+(defn- key->file
+  ``Sanitized DIR/KEY, to prevent escaping.``
+  [dir key]
+  (def name (string key))
+  (if (or (empty? name)
+          (= name ".")
+          (= name "..")
+          (string/find "/" name)
+          (string/find `\` name))
+    (errorf "Invalid var name: %q" name)
+    (path/join dir name)))
+
 (defn new [dir &opt raw?]
   (let [dir (path/abspath dir)]
     {:dir (fn [self & segments] (path/join dir ;segments))
-     :file (fn [self key]
-             (path/join dir ;(if (atom? key) [key] key)))
-     :list (fn [self] (map keyword (os/dir dir)))
+     :file (fn [self key] (key->file dir key))
+     # Nothing has been set yet is an empty store, not an error.
+     :list (fn [self] (map keyword (or (ignore-errors (os/dir dir)) [])))
      :get (fn [self key &opt dflt]
             (let [file (:file self key)]
               (if (path/file? file)
-                (with-umask 8r077
-                  ((if raw? identity unmarshal) (slurp file)))
+                ((if raw? identity unmarshal) (slurp file))
                 dflt)))
      :set (fn [self key val]
             (let [file (:file self key)]
-              (if (= val nil)
+              (if (nil? val)
                 (when (path/file? file)
-                  (os/rm file)
-                  key)
+                  (os/rm file))
                 (do (unless (path/directory? dir)
                       (sh/create-dirs dir))
                     (with-umask 8r077
-                      (spit file ((if raw? identity marshal) val)))
-                    val))))
+                      (spit file ((if raw? identity marshal) val)))))
+              key))
      :clear (fn [self]
               (when (path/directory? dir)
                 (each f (path/files-in dir)
                   (when (path/file? f)
                     (os/rm f)))))
      :cache (fn [self key valfn &opt reset?]
-              (or (unless reset?
-                    (:get self key))
-                  (:set self key (valfn))))}))
+              (let [cached (unless reset? (:get self key))]
+                (if (nil? cached)
+                  (let [val (valfn)]
+                    (:set self key val)
+                    val)
+                  cached)))}))
 
 # Deferred because jpm quickbin compiles top-level values AOT with hey (see
 # modules/hey.nix).

@@ -20,7 +20,6 @@ main() {
   case $1 in
     '') slurp $@ ;;
     output)
-      hey set $cache_key "-o ${@:2}"
       slurp -o ${@:2}
       ;;
     region)
@@ -46,5 +45,5 @@ if [[ "$1" == last ]]; then
     exit 1
   fi
 else
-  hey set $cache_key "$(main "$@")"
+  hey set -v $cache_key "$(main "$@")"
 fi
