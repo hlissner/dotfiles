@@ -22,6 +22,7 @@ if [[ $TERM != dumb ]]; then
   unsetopt MAIL_WARNING     # Don't print a warning message if a mail file has been accessed.
   unsetopt BEEP             # Hush now, quiet now.
   setopt IGNOREEOF
+  unsetopt CASE_GLOB
   ## Jobs
   setopt LONG_LIST_JOBS     # List jobs in the long format by default.
   setopt AUTO_RESUME        # Attempt to resume existing job before creating a new process.
