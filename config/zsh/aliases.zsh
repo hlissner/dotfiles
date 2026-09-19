@@ -72,14 +72,6 @@ if (( $+commands[eza] )); then
   alias tree='eza --tree'
 fi
 
-if (( $+commands[udisksctl] )); then
-  alias ud='udisksctl'
-  alias udm='udisksctl mount -b'
-  alias udu='udisksctl unmount -b'
-  alias udl='udisksctl lock -b'
-  alias udul='udisksctl unlock -b'
-fi
-
 if (( $+commands[nix] )); then
   alias n=nix
   alias ne=nix-env
