@@ -28,6 +28,9 @@ in mkIf (username == "hlissner") (mkMerge [
 
   (mkIf (role == "workstation") {
     environment.systemPackages = with pkgs; [
+      windmill              # for the CLI
+      tailcat               # for giving one-shot access to outsiders
+      nixos-firewall-tool   # for toggling ports
       cloudflared           # for authenticated ssh
     ];
 
