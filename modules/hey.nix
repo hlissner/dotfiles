@@ -102,10 +102,6 @@ in {
         fi
       '';
 
-    environment.shellAliases = {
-      reboot = "hey hook onShutdown; systemctl reboot";
-      poweroff = "hey hook onShutdown; systemctl poweroff";
-    };
 
     # Setting PATH in both environment.{variables,sessionVariables} causes
     # merge-conflict errors, so do these separately.

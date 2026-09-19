@@ -28,7 +28,6 @@ rofi.powermenu.suspend()  {
 }
 
 rofi.powermenu.logout()   {
-  hey hook onShutdown
   if uwsm check is-active &>/dev/null; then
     hey.do uwsm stop;
   else
@@ -36,15 +35,9 @@ rofi.powermenu.logout()   {
   fi
 }
 
-rofi.powermenu.reboot()   {
-  hey hook onShutdown
-  hey.do systemctl reboot;
-}
+rofi.powermenu.reboot()   { hey.do systemctl reboot; }
 
-rofi.powermenu.poweroff() {
-  hey hook onShutdown
-  hey.do systemctl poweroff;
-}
+rofi.powermenu.poweroff() { hey.do systemctl poweroff; }
 
 rofi.powermenu.reboot-into() {
   local entries=$(bootctl list --json=short)

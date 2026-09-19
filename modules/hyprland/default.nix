@@ -158,6 +158,29 @@ in {
 
     modules.shell.zsh.rcFiles = [ "${hey.configDir}/hypr/aliases.zsh" ];
 
+    # Trigger onShutdown hook at the end of graphical-session, so we can have a
+    # fade-out transition and shutdown sound.
+    systemd.user.services.hey-shutdown-hook = {
+      description = "Run hey hook onShutdown before session dies";
+      wantedBy = [ "graphical-session.target" ];
+      partOf = [ "graphical-session.target" ];
+      after = [
+        "graphical-session.target"
+        "wayland-wm@hyprland.desktop.service"  # the compositor, for the fade
+        "dms.service"                          # the toast
+        "pipewire.service"                     # the sound; sox goes out
+        "pipewire-pulse.service"               # through the pulse shim
+      ];
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        ExecStart = "${getExe' pkgs.coreutils "true"}";
+        ExecStop = "${heyBin} hook onShutdown";
+        # A wedged hook must not hold the shutdown open indefinitely.
+        TimeoutStopSec = 15;
+      };
+    };
+
     # So lua-language-server completion and linting is aware of hyprland's API,
     # and of the hey table this module splices in beside it. Both are gitignored
     # by .gitignore's *.meta.lua.

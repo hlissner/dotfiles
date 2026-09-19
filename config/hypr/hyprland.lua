@@ -3,13 +3,6 @@
 require("lib/util")
 
 
--- * Events
-
-hl.on("hyprland.shutdown", function ()
-    os.execute("hey hook onShutdown")
-end)
-
-
 -- * Options
 
 -- https://wiki.hypr.land/Configuring/Start/

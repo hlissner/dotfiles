@@ -53,6 +53,13 @@ in {
         services.systemd-ask-password-plymouth.wantedBy = [ "sysinit.target" ];
         paths.systemd-ask-password-plymouth.wantedBy = [ "sysinit.target" ];
       };
+
+      # Make sure plymouth doesn't kick in on shut-down before the user session
+      # is over. Giving us time to create a nice "fade out" transition (see
+      # hey-shutdown-hook in ./default.nix).
+      systemd.services = genAttrs
+        [ "plymouth-poweroff" "plymouth-reboot" "plymouth-halt" "plymouth-kexec" ]
+        (_: { after = [ "user.slice" ]; });
     }
 
     # On Nvidia cards, the transitions between initrd, plymouth, dms-greeter,
