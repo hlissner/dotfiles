@@ -1,0 +1,16 @@
+// config/zellij/config.kdl
+
+// generates by matugen
+theme "colors"
+
+default_layout "compact"
+pane_frames false
+simplified_ui true
+
+default_mode "normal"
+
+copy_on_select true
+scrollback_editor "nvim"
+
+// Without this zellij keeps sessions alive even after the last pane exits
+on_force_close "quit"
