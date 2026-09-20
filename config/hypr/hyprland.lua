@@ -1,6 +1,45 @@
 -- config/hypr/hyprland.lua
 
-require("lib/util")
+hey.dsp = require("lib/dsp")          -- bind actions
+hey.gesture = require("lib/gesture")  -- trackpad actions
+
+-- The trackpad lies about being a touchpad only half the time, so everything
+-- here is per-device — the global input.touchpad block is for laptops.
+local natural_scroll = false    -- the only orientation that isn't a lie on glass
+hl.device({
+  name = "apple-inc.-magic-trackpad",
+  natural_scroll = natural_scroll,
+  scroll_method = "2fg",
+  scroll_factor = 0.75,         -- stock is absurdly fast on a surface this big
+  accel_profile = "adaptive",
+  sensitivity = 0.3,            -- -1.0 - 1.0
+  clickfinger_behavior = true,  -- 1fg = LMB, 2fg = RMB, 3fg = MMB
+  tap_to_click = true,
+  tap_and_drag = true,
+  tap_button_map = "lrm",
+  drag_lock = 2,                -- 0 off, 1 sticky, 2 timeout
+  disable_while_typing = false, -- next to my kbd, not under my palm
+})
+
+-- 4-finger swipes = focus monitor in that direction
+for _, dir in ipairs({ "left", "right", "up", "down" }) do
+  hl.gesture({ fingers = 4, direction = dir, action = function() hl.dispatch(hl.dsp.focus({ monitor = dir })) end })
+end
+-- 3-finger swipe up = open dashboard
+hl.gesture({ fingers = 3, direction = "up",   action = function() hl.exec_cmd("dms ipc dash toggle overview") end })
+-- 3-finger swipe down = open workspaces UI ("expose")
+hl.gesture({ fingers = 3, direction = "down", action = function() hl.exec_cmd("dms ipc hypr toggleOverview") end })
+
+-- 3-finger swipe left/right = scroll in scrolling layouts OR switch workspaces
+local workspace_anim = { leaf = "workspaces", enabled = true, speed = 4.0, bezier = "default", style = "slidevert" }
+hey.gesture.per_layout({ fingers = 3, direction = "horizontal" }, {
+  scrolling = { action = "scroll_move", scale = natural_scroll and 1 or -1 },
+  master = hey.gesture.workspace_hop({
+    natural_scroll = natural_scroll,
+    animation = workspace_anim,
+    hop_style = "slide",
+  }),
+})
 
 
 -- * Options
@@ -107,7 +146,7 @@ hl.animation({ leaf = "layers",     enabled = true, speed = 3.0, bezier = "defau
 hl.animation({ leaf = "windows",    enabled = true, speed = 5.0, bezier = "myBezier", style = "slide" })
 hl.animation({ leaf = "border",     enabled = false })
 hl.animation({ leaf = "fade",       enabled = true, speed = 4.0, bezier = "default" })
-hl.animation({ leaf = "workspaces", enabled = true, speed = 4.0, bezier = "default", style = "slidevert" })
+hl.animation(workspace_anim)  -- defined up in Gestures
 hl.animation({ leaf = "specialWorkspace", enabled = true, speed = 5.0, bezier = "default", style = "slidefadevert -100%" })
 
 
@@ -134,10 +173,10 @@ if hey.hypr.primaryMonitor then
   -- Designate workspaces 1-9 for my main monitor
   for i = 1, 9 do
     hl.workspace_rule({
-        workspace = tostring(i),
-        monitor = hey.hypr.primaryMonitor,
-        default = i == 1,
-        persistent = i == 1
+      workspace = tostring(i),
+      monitor = hey.hypr.primaryMonitor,
+      default = i == 1,
+      persistent = i == 1
     })
   end
   -- A workspace exclusively for games
@@ -163,16 +202,16 @@ if hey.hypr.primaryMonitor then
 end
 
 hl.workspace_rule({
-    workspace = "special:term",
-    gaps_in = 15,
-    gaps_out = 80,
-    layout = "scrolling",
-    on_created_empty = "hey .scratch term"
+  workspace = "special:term",
+  gaps_in = 15,
+  gaps_out = 80,
+  layout = "scrolling",
+  on_created_empty = "hey .scratch term"
 })
 hl.workspace_rule({
-    workspace = "special:pad",
-    gaps_in = 6,
-    gaps_out = 80
+  workspace = "special:pad",
+  gaps_in = 6,
+  gaps_out = 80
 })
 
 
@@ -187,10 +226,10 @@ hl.window_rule({ match={ float = true }, suppress_event = "fullscreen maximize" 
 -- dialogs can "remember" their last size in larger monitors and be maximized
 -- beyond the current monitor's boundaries, so...
 hl.window_rule({
-    name = "dialog-windows",
-    match = { float = true, class = "^(xdg-desktop-portal-gtk|librewolf)" },
-    center = true,
-    max_size = { "monitor_w*0.9", "monitor_h*0.9" }
+  name = "dialog-windows",
+  match = { float = true, class = "^(xdg-desktop-portal-gtk|librewolf)" },
+  center = true,
+  max_size = { "monitor_w*0.9", "monitor_h*0.9" }
 })
 
 hl.window_rule({ match={ class = "^librewolf$" }, scrolling_width = 0.8 })
@@ -198,50 +237,49 @@ hl.window_rule({ match={ class = "^librewolf$" }, scrolling_width = 0.8 })
 hl.window_rule({ match={ class = "^foot$" }, scrolling_width = 0.3 })
 
 hl.window_rule({ -- see config/hypr/bin/screendraw.zsh
-    match = { class = "^Gromit-mpx$" },
-    float = true,
-    no_blur = true,
-    no_max_size = true,
-    no_anim = true,
-    no_shadow = true
+  match = { class = "^Gromit-mpx$" },
+  float = true,
+  no_blur = true,
+  no_max_size = true,
+  no_anim = true,
+  no_shadow = true
 })
 
 
 -- ** Steam
 
 hl.window_rule({
-    name = "steam-all-windows",
-    match = { class = "steam" },
-    workspace = "5 silent",
-    immediate = true,
-    no_blur = true,
-    no_anim = true,
-    no_shadow = true,
-    no_max_size = true,
-    min_size = {1, 1}
+  name = "steam-all-windows",
+  match = { class = "steam" },
+  workspace = "5 silent",
+  immediate = true,
+  no_blur = true,
+  no_anim = true,
+  no_shadow = true,
+  no_max_size = true,
+  min_size = {1, 1}
 })
 hl.window_rule({
-    name = "steam-main-window",
-    match = { class = "steam", initial_title = "Steam" },
-    suppress_event = "fullscreen maximize",
-    float = false,
-    fullscreen = false
+  name = "steam-main-window",
+  match = { class = "steam", initial_title = "Steam" },
+  suppress_event = "fullscreen maximize",
+  float = false,
+  fullscreen = false
 })
 hl.window_rule({
-    name = "steam-popups",
-    match = { class = "steam", initial_title = "negative:Steam" },
-    float = true,
-    center = true
+  name = "steam-popups",
+  match = { class = "steam", initial_title = "negative:Steam" },
+  float = true,
 })
 hl.window_rule({
-    name = "steam-games",
-    match = { initial_class = "(gamescope|steam_app_\\d+)" },
-    workspace = "10 silent",
-    suppress_event = "maximize",
-    content = "game",
-    fullscreen = true,
-    float = false,
-    tile = false
+  name = "steam-games",
+  match = { initial_class = "(gamescope|steam_app_\\d+)" },
+  workspace = "10 silent",
+  suppress_event = "maximize",
+  content = "game",
+  fullscreen = true,
+  float = false,
+  tile = false
 })
 
 
@@ -253,12 +291,12 @@ hl.bind("SUPER + SHIFT + Return", hl.dsp.exec_cmd("foot"))
 hl.bind("SUPER + c",              hl.dsp.exec_cmd("hey @rofi calcmenu"))
 hl.bind("SUPER + d",              hl.dsp.exec_cmd("hey .screendraw"))
 hl.bind("SUPER + Escape",         hl.dsp.exec_cmd("dms ipc call notifications clearAll; dms ipc toast hide"))
+hl.bind("SUPER + r",              hl.dsp.exec_cmd("hey reload @hypr"), { description = "Reload hyprland's config" })
 
 -- ** Zoom
-
-hl.bind("SUPER + Minus", hey.dsp.zoomIn(-0.3), { repeating = true })
-hl.bind("SUPER + Equal", hey.dsp.zoomIn(0.3),  { repeating = true })
-hl.bind("SUPER + SHIFT + Equal", hey.dsp.zoomIn(0.0)) -- reset
+hl.bind("SUPER + Minus",         hey.dsp.zoom(-0.3), { repeating = true })
+hl.bind("SUPER + Equal",         hey.dsp.zoom(0.3),  { repeating = true })
+hl.bind("SUPER + SHIFT + Equal", hey.dsp.zoom(0)) -- reset
 
 -- ** Quit/Session control
 hl.bind("SUPER + q", hl.dsp.submap("session"))
@@ -267,7 +305,7 @@ hl.define_submap("session", "reset", function()
     hl.bind("SUPER + k", hl.dsp.window.kill())
     hl.bind("SUPER + p", hl.dsp.exec_cmd("hey @rofi powermenu"))
     hl.bind("SUPER + SHIFT + l", hl.dsp.exec_cmd("loginctl lock-session"))
-    hl.bind("SUPER + d", my.dsp.dpms(false))
+    hl.bind("SUPER + d", hey.dsp.dpms(false))
     hl.bind("SUPER + SUPER_L", hl.dsp.submap("reset"), { release = true })
     hl.bind("catchall", hl.dsp.submap("reset"))
 end)
@@ -324,28 +362,19 @@ hl.bind("SUPER + Down",         hl.dsp.layout("orientationbottom"))
 hl.bind("SUPER + SHIFT + Down", hl.dsp.layout("orientationcenter"))
 
 -- ** Scratchpads
-hl.bind("SUPER + grave",     hl.dsp.workspace.toggle_special("term"))
+hl.bind("SUPER + grave",     hey.dsp.scratchpad("term"))
 hl.bind("SUPER + e",         hl.dsp.exec_cmd([[emacsclient --eval "(emacs-everywhere)"]]))
-hl.bind("SUPER + s",         hl.dsp.workspace.toggle_special("pad"))
+hl.bind("SUPER + s",         hey.dsp.scratchpad("pad"))
 hl.bind("SUPER + SHIFT + s", hl.dsp.window.move({ workspace = "special:pad" }))
 
 -- ** Windows
-hl.bind("SUPER + h",                hl.dsp.focus({ direction = "left" }))
-hl.bind("SUPER + j",                hl.dsp.focus({ direction = "down" }))
-hl.bind("SUPER + k",                hl.dsp.focus({ direction = "up" }))
-hl.bind("SUPER + l",                hl.dsp.focus({ direction = "right" }))
-hl.bind("SUPER + SHIFT + h",        hl.dsp.window.move({ direction = "left" }))
-hl.bind("SUPER + SHIFT + j",        hl.dsp.window.move({ direction = "down" }))
-hl.bind("SUPER + SHIFT + k",        hl.dsp.window.move({ direction = "up" }))
-hl.bind("SUPER + SHIFT + l",        hl.dsp.window.move({ direction = "right" }))
-hl.bind("SUPER + SHIFT + CTRL + h", hl.dsp.window.move({ monitor = "left" }))
-hl.bind("SUPER + SHIFT + CTRL + j", hl.dsp.window.move({ monitor = "down" }))
-hl.bind("SUPER + SHIFT + CTRL + k", hl.dsp.window.move({ monitor = "up" }))
-hl.bind("SUPER + SHIFT + CTRL + l", hl.dsp.window.move({ monitor = "right" }))
-hl.bind("SUPER + CTRL + h",         hl.dsp.focus({ monitor = "l" }))
-hl.bind("SUPER + CTRL + j",         hl.dsp.focus({ monitor = "d" }))
-hl.bind("SUPER + CTRL + k",         hl.dsp.focus({ monitor = "u" }))
-hl.bind("SUPER + CTRL + l",         hl.dsp.focus({ monitor = "r" }))
+-- hjkl focuses, SHIFT moves, CTRL does the same across monitors.
+for key, dir in pairs({ h = "left", j = "down", k = "up", l = "right" }) do
+  hl.bind("SUPER + " .. key,                hl.dsp.focus({ direction = dir }))
+  hl.bind("SUPER + SHIFT + " .. key,        hl.dsp.window.move({ direction = dir }))
+  hl.bind("SUPER + CTRL + " .. key,         hl.dsp.focus({ monitor = dir }))
+  hl.bind("SUPER + SHIFT + CTRL + " .. key, hl.dsp.window.move({ monitor = dir }))
+end
 -- Cycle between floats and tiles
 hl.bind("SUPER + w", function()
   local w = hl.get_active_window()
@@ -372,7 +401,7 @@ hl.bind("SUPER + mouse:273",      hl.dsp.window.resize(), { mouse = true })
 -- ** Monitor brightness control
 hl.bind("XF86MonBrightnessUp",    hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 10%+"), { locked = true, repeating = true })
 hl.bind("XF86MonBrightnessDown",  hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 10%-"), { locked = true, repeating = true })
-hl.bind("XF86PowerOff",           hey.dsp.dpms(false), { locked = true; })
+hl.bind("XF86PowerOff",           hey.dsp.dpms(false), { locked = true })
 
 -- ** Audio and player controls
 local step = 10
