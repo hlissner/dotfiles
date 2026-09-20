@@ -157,11 +157,22 @@
       # Record the trigger even if a handler fails, so a broken one can't be
       # retriggered in a loop.
       (defer (unless (dryrun?) (:set (*vars*) :last sig))
-        (each cmd cmds
-          (log "Hook: %s" (path/abbrev (first cmd)))
-          (echof :g "Running %s..." (path/basename (first cmd)))
-          (do? $? ,;cmd))
-        (echof :pass "Triggered %d hook(s) for: %q" (length cmds) sig)))))
+        (def failed @[])
+        (with-envvars ["HEY_AREA" area "HEY_HOOK" hook]
+          (each cmd cmds
+            (def name (path/basename (first cmd)))
+            (log "Hook: %s" (path/abbrev (first cmd)))
+            (echof :g "Running %s..." name)
+            # A failure is still only this handler's problem -- the rest run
+            # regardless -- but it used to pass in total silence, and the summary
+            # below would cheerfully count it as triggered.
+            (unless (do? $? ,;cmd)
+              (array/push failed name)
+              (echof :warn "Handler failed: %s" name))))
+        (echof :pass "Triggered %d hook(s) for: %q" (length cmds) sig)
+        (unless (empty? failed)
+          (echof :warn "%d of %d failed: %s"
+                 (length failed) (length cmds) (string/join failed ", ")))))))
 
 (defcmd hook [_ hook & args &opts force? -f list? [-l --list] verbose? -v]
   (when verbose?
