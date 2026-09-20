@@ -22,6 +22,19 @@
             :pd)
   (if sound (play-sound sound)))
 
+(defn toast [type message &named details command category sound]
+  (os/spawn ["dms" "ipc" "toast"
+             (case* type
+               :info  "infoWith"
+               :error "errorWith"
+               :warn  "warnWith")
+             message
+             (or details "")
+             (or command "")
+             (or category "")]
+            :pd)
+  (if sound (play-sound sound)))
+
 (defn yank [text &named type once]
   ($? echo ,text | wl-copy ,;(opts "-t" type) ,;(opts (if once "-o"))))
 

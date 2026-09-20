@@ -25,5 +25,5 @@
   (echof :g "Reloading %s..."
          (or area (ignore-errors (flake/info :desktop)) "everything"))
   (when (hey! hook ,;(opts area) onReload -f -v)
-    (sys/notify "Finished reloading system" :icon 'checkmark :sound 'notify))
+    (sys/toast :info "Finished reloading system" :sound 'notify))
   (echo :check "Done!"))
