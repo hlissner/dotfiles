@@ -1,2 +1,4 @@
 #!/usr/bin/env zsh
+# Scripts for managing servers/services in my homelab..
+
 exec hey .lab $@
