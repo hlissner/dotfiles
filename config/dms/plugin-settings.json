@@ -6,6 +6,19 @@
     "showReadyPlaceholder": false,
     "displayFormat": "minimal"
   },
+  "peripheralBattery": {
+    "deviceIcons": [
+      { "match": "magic trackpad", "icon": "touch_app", "color": "" },
+      { "match": "magic keyboard", "icon": "keyboard", "color": "" }
+    ],
+    "deviceFilter": [],
+    "showLabels": false,
+    "warnThreshold": 20,
+    "criticalThreshold": 15,
+    "meterThreshold": 60,
+    "notifyCritical": true,
+    "hideWhenEmpty": true
+  },
   "hyprlandSubmapIndicator": {
     "submapIcons": [
       { "submap": "screenshot", "icon": "linked_camera", "color": "" },

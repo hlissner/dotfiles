@@ -62,14 +62,6 @@ let cfg = config.modules.hyprland;
           hash = "sha256-o5kcFV7VAmHJqsKgnjDuuryubnuI9U+GQIPOlENZ5ao=";
         };
       };
-      gameControllerBattery = {
-        enable = config.modules.apps.steam.enable;
-        src = dmsPlugin {
-          owner = "Hujair"; repo = "gameControllerBattery";
-          rev = "8ab63f4274e505cbefc2432e9a2e1dd8a1809113";
-          hash = "sha256-irWI2LI8IOhva/DpfF8nI23wQMKyOPGNv86G9ZDjJ4g=";
-        };
-      };
       dankKDEConnect = {
         enable = config.programs.kdeconnect.enable;
         src = dmsPlugin {
@@ -77,6 +69,12 @@ let cfg = config.modules.hyprland;
           rev = "bb90a1db7d540e64ae049c5906afba9b24baa865";
           hash = "sha256-NYmw2wCZYAKNU1xcodKMDXs5wwtAguOUNazRxcLjsUE=";
         };
+      };
+
+      # My plugins
+      peripheralBattery = {
+        enable = config.hardware.bluetooth.enable or config.hardware.steam-hardware.enable;
+        src = "${hey.configDir}/dms/plugins/peripheralBattery";
       };
     };
 
@@ -263,8 +261,8 @@ in {
         }
 
         ${concatMapStringsSep "\n"
-            (m: "merge ${escapeShellArgs ([ m.file m.filter ] ++ m.args)}")
-            dmsMerges}
+          (m: "merge ${escapeShellArgs ([ m.file m.filter ] ++ m.args)}")
+          dmsMerges}
       '';
     };
 

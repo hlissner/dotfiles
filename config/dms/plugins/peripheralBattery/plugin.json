@@ -1,0 +1,11 @@
+{
+  "id": "peripheralBattery",
+  "name": "Peripheral Battery",
+  "description": "Battery indicators for bluetooth and HID peripherals that report one",
+  "version": "1.0.0",
+  "author": "Henrik Lissner",
+  "icon": "battery_horiz_050",
+  "type": "widget",
+  "component": "./PeripheralBatteryWidget.qml",
+  "permissions": ["settings_read", "process"]
+}

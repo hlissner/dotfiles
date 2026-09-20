@@ -48,6 +48,10 @@
       "enabled": true
     },
     {
+      "id": "peripheralBattery",
+      "enabled": true
+    },
+    {
       "id": "battery",
       "enabled": true,
       "showBatteryPercent": true,
