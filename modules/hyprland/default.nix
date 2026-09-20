@@ -73,10 +73,19 @@ in {
       monitors = cfg.monitors;
     };
 
-    programs.hyprland = {
-      enable = true;
-      withUWSM = true;
-      systemd.setPath.enable = true;
+    programs.hyprland =
+      let flake = hey.inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system};
+      in {
+        enable = true;
+        withUWSM = true;
+        systemd.setPath.enable = true;
+        package = flake.hyprland;
+        portalPackage = flake.xdg-desktop-portal-hyprland;
+      };
+
+    nix.settings = {
+      substituters = [ "https://hyprland.cachix.org" ];
+      trusted-public-keys = [ "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=" ];
     };
 
     environment.systemPackages = with pkgs; [

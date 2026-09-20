@@ -13,7 +13,12 @@
   inputs = 
     {
       # Core dependecies
-      nixpkgs.url = "nixpkgs/nixos-unstable";
+      # Hyprland is the pickiest thing in this stack and I want its fixes as
+      # they land, so it gets to pin nixpkgs: the system follows the flake's
+      # rather than the other way round. That's also what keeps
+      # hyprland.cachix.org's hashes matching ours.
+      hyprland.url = "github:hyprwm/Hyprland";
+      nixpkgs.follows = "hyprland/nixpkgs";
       home-manager.url = "github:nix-community/home-manager";
       home-manager.inputs.nixpkgs.follows = "nixpkgs";
       agenix.url = "github:ryantm/agenix";

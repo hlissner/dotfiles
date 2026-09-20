@@ -15,8 +15,8 @@ let cfg = config.modules.hyprland;
 
     dankHooksSrc = dmsPlugin {
       owner = "AvengeMedia"; repo = "dms-plugins"; subdir = "DankHooks";
-      rev = "6fc7f25bfb24f93b6488fb8a36ed67b5f242abdb";
-      hash = "sha256-KGpNgxN/zXiMjLLm4zLX+Wgnj1vx8bGGd6WwGBWo7Ds=";
+      rev = "bb90a1db7d540e64ae049c5906afba9b24baa865";
+      hash = "sha256-NYmw2wCZYAKNU1xcodKMDXs5wwtAguOUNazRxcLjsUE=";
     };
 
     # Every event the pinned plugin reads, all pointed back at `hey hook`.
@@ -54,7 +54,6 @@ let cfg = config.modules.hyprland;
         rev = "c7cb5fbbd393ff8c1d76bf73633abd9fe9859236";
         hash = "sha256-eyQ/Y4gqJVjatmolgGnpTsnVAnN6xUYpU//cC4wgIjo=";
       };
-
       dankscale = {
         enable = elem "ts0" config.modules.profiles.networks;
         src = dmsPlugin {
@@ -75,8 +74,8 @@ let cfg = config.modules.hyprland;
         enable = config.programs.kdeconnect.enable;
         src = dmsPlugin {
           owner = "AvengeMedia"; repo = "dms-plugins"; subdir = "DankKDEConnect";
-          rev = "6fc7f25bfb24f93b6488fb8a36ed67b5f242abdb";
-          hash = "sha256-KGpNgxN/zXiMjLLm4zLX+Wgnj1vx8bGGd6WwGBWo7Ds=";
+          rev = "bb90a1db7d540e64ae049c5906afba9b24baa865";
+          hash = "sha256-NYmw2wCZYAKNU1xcodKMDXs5wwtAguOUNazRxcLjsUE=";
         };
       };
     };
@@ -165,6 +164,9 @@ in {
         logs.save = true;
         compositor.name = "hyprland";
         compositor.customConfig = ''
+          -- Fixes hyprwm/Hyprland#15776; prevents DMS starting in dms-greeter.
+          hl.env("HYPRLAND_NO_SD_TARGET", "1")
+
           hl.config({
             misc = {
               background_color = 0xff000000,
