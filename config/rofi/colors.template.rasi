@@ -15,17 +15,6 @@
 
   selected: @bg-light;
 
-  font-mono-0: "{{ theme.fonts.mono }} 10";
-  font-mono-1: "{{ theme.fonts.mono }} 12";
-  font-mono-2: "{{ theme.fonts.mono }} 14";
-  font-mono-3: "{{ theme.fonts.mono }} 16";
-  font-mono-4: "{{ theme.fonts.mono }} 20";
-
-  font-sans-0: "{{ theme.fonts.sans }} 14";
-  font-sans-1: "{{ theme.fonts.sans }} 16";
-  font-sans-2: "{{ theme.fonts.sans }} 18";
-  font-sans-3: "{{ theme.fonts.sans }} 22";
-
   pad1: 4px;
   pad2: 8px;
   pad3: 12px;
@@ -51,11 +40,11 @@ window {
   anchor: env(ROFI_ANCHOR, north);
   location: north;
   x-offset: env(ROFI_X, 0);
-  y-offset: env(ROFI_Y, 2%);
+  y-offset: env(ROFI_Y, 10%);
   transparency: "real";
   background-color: transparent;
   width: 760px;
-  height: 800px;
+  height: 100%;
 }
 
 error-message {

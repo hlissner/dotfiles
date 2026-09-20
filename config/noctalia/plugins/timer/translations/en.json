@@ -1,0 +1,36 @@
+{
+  "settings": {
+    "color": {
+      "description": "Accent color for the time and progress bar",
+      "label": "Color"
+    },
+    "duration": {
+      "description": "Countdown length in seconds",
+      "label": "Duration (seconds)"
+    },
+    "notify_color": {
+      "description": "Color while the timer is up; empty inherits the widget's own colors",
+      "label": "Expired color"
+    },
+    "running_color": {
+      "description": "Color while the timer counts down; empty inherits the widget's own colors",
+      "label": "Running color"
+    },
+    "show_idle": {
+      "description": "Show or hide the widget when timer stopped at zero",
+      "label": "Show count when idle on horizontal bar"
+    },
+    "show_progress": {
+      "label": "Show Progress Bar"
+    }
+  },
+  "ui": {
+    "duration_label": "Timer Duration",
+    "duration_placeholder": "e.g. 400 → 4:00",
+    "notify_body": "Time is up!",
+    "notify_title": "Timer",
+    "pause": "Pause",
+    "reset": "Reset",
+    "start": "Start"
+  }
+}

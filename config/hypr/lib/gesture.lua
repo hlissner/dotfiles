@@ -9,8 +9,8 @@ local M = {}
 
 function M.per_layout(spec, actions)
   local current, fields
-  local function sync()
-    local layout = util.active_layout()
+  local function sync(mon)
+    local layout = util.active_layout(mon)
     if layout == current then return end
     -- unset only matches a gesture registered with the very same fields.
     if fields then hl.gesture(util.with(fields, { action = "unset" })) end
@@ -21,10 +21,14 @@ function M.per_layout(spec, actions)
     fields = util.with(spec, wrapped and entry or { action = entry })
     hl.gesture(fields)
   end
-  -- All three fire after the state they describe has settled.
-  hl.on("workspace.active", sync)
-  hl.on("workspace.special_active", sync)
   hl.on("monitor.focused", sync)
+  local function if_focused(ws, mon)
+    mon = mon or (ws and ws.monitor)
+    local focused = hl.get_active_monitor()
+    if mon and focused and mon.id == focused.id then sync(mon) end
+  end
+  hl.on("workspace.active", if_focused)
+  hl.on("workspace.special_active", if_focused)
   sync()
 end
 

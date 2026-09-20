@@ -1,0 +1,62 @@
+# config/noctalia/plugins/screencast/plugin.toml
+#
+# `hey wm screencast` is the recorder. This is only its light on the bar.
+#
+# I tried h-jangra/region-recorder for this first. It reimplements the whole
+# recorder in Lua -- slurp, wf-recorder, the lot -- to end up somewhere worse
+# than the script I already had, and it hands wf-recorder `-c h264`, a codec
+# name where the flag wants an ffmpeg encoder name, so it never recorded
+# anything here at all. One recorder, one indicator.
+
+id           = "hey/screencast"
+name         = "Screencast"
+version      = "1.1.0"
+plugin_api   = 21     # direct-argv
+author       = "hlissner"
+license      = "MIT"
+dependencies = ["hey", "wf-recorder"]
+tags         = ["recording", "video", "bar"]
+icon         = "player-play-filled"
+description  = "A bar glyph for as long as `hey wm screencast` is recording. Click it to stop."
+
+[[widget]]
+id    = "bar"
+entry = "widget.luau"
+
+  [[widget.setting]]
+  key             = "glyph"
+  type            = "glyph"
+  label_key       = "settings.glyph.label"
+  description_key = "settings.glyph.description"
+  default         = "player-play-filled"
+
+  # Empty = inherit the widget's own color/icon_color/capsule_foreground, like
+  # every other widget on the bar. Both states name a color by default because
+  # a recording light that looks like the clock beside it isn't a light.
+  [[widget.setting]]
+  key             = "recording_color"
+  type            = "color"
+  label_key       = "settings.recording_color.label"
+  description_key = "settings.recording_color.description"
+  default         = "primary"
+
+  [[widget.setting]]
+  key             = "stopping_color"
+  type            = "color"
+  label_key       = "settings.stopping_color.label"
+  description_key = "settings.stopping_color.description"
+  default         = "error"
+
+  [[widget.setting]]
+  key             = "blink"
+  type            = "bool"
+  label_key       = "settings.blink.label"
+  description_key = "settings.blink.description"
+  default         = true
+
+  [[widget.setting]]
+  key             = "show_elapsed"
+  type            = "bool"
+  label_key       = "settings.show_elapsed.label"
+  description_key = "settings.show_elapsed.description"
+  default         = true

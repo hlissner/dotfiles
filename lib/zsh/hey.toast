@@ -1,0 +1,24 @@
+#!/usr/bin/env zsh
+# hey.toast [-c CATEGORY] [-i ICON] (info|warn|error) SUMMARY [BODY]
+#
+# Pops a Noctalia notification under hey's name. error is critical, the rest
+# are normal. No-op when noctalia isn't around (a tty, another shell).
+#
+# OPTIONS:
+#   -c CATEGORY
+#     A notification category, for Noctalia's filters.
+#   -i ICON
+#     A Noctalia glyph name, or a path to an image.
+
+local -a category icon
+zparseopts -D -- c:=category i:=icon
+local type=$1 summary=$2 body=$3
+local urgency=normal
+[[ $type == error ]] && urgency=critical
+local json
+json=$(jq -cn --arg s "$summary" --arg b "$body" --arg u $urgency \
+             --arg c "${category[2]}" --arg i "${icon[2]}" \
+          '{ app_name: "hey", summary: $s, body: $b, urgency: $u }
+           + (if $c != "" then { category: $c } else {} end)
+           + (if $i != "" then { icon: $i } else {} end)')
+hey.do -o noctalia msg notification-show "$json"

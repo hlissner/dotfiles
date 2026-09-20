@@ -28,6 +28,8 @@
       emacs-overlay.url = "github:nix-community/emacs-overlay";
       emacs-overlay.inputs.nixpkgs.follows = "nixpkgs";
       nixos-hardware.url = "github:nixos/nixos-hardware";
+      noctalia.url = "github:noctalia-dev/noctalia";
+      noctalia.inputs.nixpkgs.follows = "nixpkgs";
     };
 
   outputs = inputs @ { self, nixpkgs, nixos-hardware, ... }:

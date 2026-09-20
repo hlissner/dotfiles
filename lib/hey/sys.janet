@@ -2,6 +2,7 @@
 #
 # An API for the desktop session: sounds, notifications, and the clipboard.
 
+(import spork/json)
 (import spork/path)
 (use ./lib)
 (use sh)
@@ -22,16 +23,14 @@
             :pd)
   (if sound (play-sound sound)))
 
-(defn toast [type message &named details command category sound]
-  (os/spawn ["dms" "ipc" "toast"
-             (case* type
-               :info  "infoWith"
-               :error "errorWith"
-               :warn  "warnWith")
-             message
-             (or details "")
-             (or command "")
-             (or category "")]
+(defn toast [type message &named details category icon sound]
+  (def payload @{:app_name "hey"
+                 :summary message
+                 :urgency (if (= type :error) "critical" "normal")})
+  (when details (put payload :body details))
+  (when category (put payload :category category))
+  (when icon (put payload :icon icon))
+  (os/spawn ["noctalia" "msg" "notification-show" (string (json/encode payload))]
             :pd)
   (if sound (play-sound sound)))
 

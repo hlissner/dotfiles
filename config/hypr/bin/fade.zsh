@@ -9,7 +9,7 @@
 # DESCRIPTION:
 #   Paints a quickshell overlay across every monitor and animates a fade-in/out
 #   effect (also hides/shows the cursor). Useful for pre-shutdown or
-#   post-startup scripts (like hey's onStartup and onRequestSuspend hooks). Also
+#   post-startup scripts (like hey's on-started and on-suspend hooks). Also
 #   temporarily binds Escape to kill the fade overlay.
 #
 #   Its defaults come from modules.hyprland.fade. Turning that module off makes

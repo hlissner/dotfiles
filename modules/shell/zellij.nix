@@ -16,7 +16,7 @@ in {
     # Respect XDG, damn it!
     environment.variables.ZELLIJ_CONFIG_DIR = "${hey.configDir}/zellij";
 
-    modules.hyprland.matugen.templates.zellij = {
+    modules.hyprland.theme.templates.zellij = {
       input_path = "${hey.configDir}/zellij/colors.template.kdl";
       output_path = "${hey.configDir}/zellij/themes/colors.kdl";
     };

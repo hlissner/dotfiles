@@ -1,9 +1,9 @@
 # profiles/hardware/wifi.nix --- wifi via iwd
 #
-# I chose iwd because DMS doesn't support wpa_supplicant (it supports
-# NetworkManager, ConnMan, iwd, and bare systemd-networkd). Beyond that, DMS
-# displays the WiFi as always off, even if it's functional. Only downside: DMS
-# needs Networkmanager for the VPN panel, but that I'm find managing manually.
+# I chose iwd back when DMS didn't support wpa_supplicant; Noctalia speaks
+# NetworkManager, wpa_supplicant and iwd natively, so there's no reason to
+# move. Enterprise (802.1X) networks are NetworkManager-only in its UI, which
+# I'm fine managing by hand.
 
 { hey, lib, options, config, pkgs, ... }:
 

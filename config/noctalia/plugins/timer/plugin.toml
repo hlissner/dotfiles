@@ -1,0 +1,97 @@
+# config/noctalia/plugins/timer/plugin.toml
+#
+# Forked from noctalia/timer 1.2.1 (MIT), whose four entries all talk to each
+# other over noctalia.state -- which is per-plugin and in-memory, so nothing
+# outside the shell can hand it a duration. Two additions, both marked HEY:
+#
+#   service.luau -> an onIpc handler, so `hey @noctalia timer 25m` works
+#   bar.luau     -> setVisible, so an idle timer isn't a dead hourglass
+#   bar.luau     -> state colors inherit the widget's own color settings
+#
+# Everything else is upstream's, verbatim, including the translations for
+# languages I don't read. Forked from noctalia-dev/official-plugins at
+# 62b1830eb1e76998c7e3b8133de608f79c6c1be8; diff timer/ against a newer rev
+# before taking anything down from upstream.
+#
+# --- upstream's own header, still true ---
+#
+# Reference multi-entry plugin: a countdown timer whose bar widget, panel, and
+# desktop widget are all thin UI clients of one headless service, sharing a
+# single timer through noctalia.state. Demonstrates:
+#
+# service -> headless countdown logic + state, with command handling (START/PAUSE/RESET)
+# bar     -> declarative UI with per-placement settings; opens the panel
+# panel   -> interactive controls (typed duration input) driving the service
+# desktop -> keyboard-free +/- duration adjusters + a progress bar, pinned to the desktop
+#
+# All three UI entries watch noctalia.state, so they reflect and control the
+# same countdown live.
+
+id = "hey/timer"
+name = "Timer"
+version = "1.2.3"
+plugin_api = 3
+author = "noctalia, hlissner"
+license = "MIT"
+dependencies = []
+tags = ["countdown", "utility"]
+icon = "clock"
+description = "A countdown timer with bar widget, panel, and desktop widget."
+
+[[widget]]
+id = "bar"
+entry = "bar.luau"
+
+  [[widget.setting]]
+  key = "show_idle_on_horizontal"
+  type = "bool"
+  label_key = "settings.show_idle.label"
+  description_key = "settings.show_idle.description"
+  default = true
+
+  # Empty = inherit the widget's color/icon_color/capsule_foreground, like every
+  # other widget on the bar. Only NOTIFY overrides by default; an expired timer
+  # is the one state worth taking the styling away from you.
+  [[widget.setting]]
+  key = "running_color"
+  type = "color"
+  label_key = "settings.running_color.label"
+  description_key = "settings.running_color.description"
+  default = ""
+
+  [[widget.setting]]
+  key = "notify_color"
+  type = "color"
+  label_key = "settings.notify_color.label"
+  description_key = "settings.notify_color.description"
+  default = "error"
+
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 320
+height = 280
+placement = "attached"
+position = "auto"
+open_near_click = true
+
+[[service]]
+id = "timer"
+entry = "service.luau"
+
+[[desktop_widget]]
+id = "desktop"
+entry = "desktop.luau"
+
+  [[desktop_widget.setting]]
+  key = "color"
+  type = "color"
+  label_key = "settings.color.label"
+  description_key = "settings.color.description"
+  default = "primary"
+
+  [[desktop_widget.setting]]
+  key = "show_progress"
+  type = "bool"
+  label_key = "settings.show_progress.label"
+  default = true

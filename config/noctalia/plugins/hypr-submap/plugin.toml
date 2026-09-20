@@ -1,0 +1,60 @@
+# config/noctalia/plugins/hypr-submap/plugin.toml
+#
+# Forked from k4n4t4/hypr-submap (MIT), which draws one static glyph and a text
+# label. The label was the only part that moved, and a glyph says "you are
+# holding down the session keymap" faster than the word "session" does. Both
+# wants live inside render(), so owning the file beats patching it -- and here
+# it hot-reloads instead of needing a rebuild.
+#
+# Everything but render() is still upstream's.
+
+id           = "hey/hypr-submap"
+name         = "Hyprland Submap"
+version      = "1.1.0"
+plugin_api   = 6      # string_map settings
+author       = "hlissner"
+license      = "MIT"
+dependencies = ["socat", "stdbuf", "hyprctl"]
+tags         = ["hyprland", "bar"]
+icon         = "keyboard"
+description  = "The active Hyprland submap, as a glyph of its own."
+
+[[widget]]
+id    = "hypr-submap"
+entry = "submap.luau"
+
+  [[widget.setting]]
+  key             = "glyphs"
+  type            = "string_map"
+  label_key       = "settings.glyphs.label"
+  description_key = "settings.glyphs.description"
+  default         = {}
+
+  [[widget.setting]]
+  key             = "glyph"
+  type            = "glyph"
+  label_key       = "settings.glyph.label"
+  description_key = "settings.glyph.description"
+  default         = "keyboard"
+
+  [[widget.setting]]
+  key             = "hide_when_default"
+  type            = "bool"
+  label_key       = "settings.hide_when_default.label"
+  description_key = "settings.hide_when_default.description"
+  default         = false
+
+  [[widget.setting]]
+  key             = "show_label"
+  type            = "bool"
+  label_key       = "settings.show_label.label"
+  description_key = "settings.show_label.description"
+  default         = true
+
+  [[widget.setting]]
+  key             = "prefix"
+  type            = "string"
+  label_key       = "settings.prefix.label"
+  description_key = "settings.prefix.description"
+  default         = ""
+  visible_when    = { key = "show_label", values = ["true"] }

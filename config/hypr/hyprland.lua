@@ -3,8 +3,19 @@
 hey.dsp = require("lib/dsp")          -- bind actions
 hey.gesture = require("lib/gesture")  -- trackpad actions
 
+
+-- * Events
+
+hl.on("keybinds.submap", function(submap)
+  local quoted = (submap:gsub("'", [['\'']]))
+  hl.exec_cmd("hey hook -f on-submap '" .. quoted .. "'")
+end)
+
+
+-- * Gestures
+
 -- The trackpad lies about being a touchpad only half the time, so everything
--- here is per-device — the global input.touchpad block is for laptops.
+-- here is per-device -- the global input.touchpad block is for laptops.
 local natural_scroll = false    -- the only orientation that isn't a lie on glass
 hl.device({
   name = "apple-inc.-magic-trackpad",
@@ -12,7 +23,7 @@ hl.device({
   scroll_method = "2fg",
   scroll_factor = 0.75,         -- stock is absurdly fast on a surface this big
   accel_profile = "adaptive",
-  sensitivity = 0.3,            -- -1.0 - 1.0
+  sensitivity = 0.35,           -- -1.0 - 1.0
   clickfinger_behavior = true,  -- 1fg = LMB, 2fg = RMB, 3fg = MMB
   tap_to_click = true,
   tap_and_drag = true,
@@ -21,14 +32,20 @@ hl.device({
   disable_while_typing = false, -- next to my kbd, not under my palm
 })
 
--- 4-finger swipes = focus monitor in that direction
+-- 4-finger swipes = throw the window at the monitor in that direction, or swap
+-- it that way (like SUPER+SHIFT+hjkl) when there's no monitor to throw it at
 for _, dir in ipairs({ "left", "right", "up", "down" }) do
-  hl.gesture({ fingers = 4, direction = dir, action = function() hl.dispatch(hl.dsp.focus({ monitor = dir })) end })
+  hl.gesture({ fingers = 4, direction = dir, action = function()
+    -- get_monitor resolves a direction relative to the focused monitor; nil
+    -- means the edge of the world.
+    local target = hl.get_monitor(dir) and { monitor = dir } or { direction = dir }
+    hl.dispatch(hl.dsp.window.move(target))
+  end })
 end
--- 3-finger swipe up = open dashboard
-hl.gesture({ fingers = 3, direction = "up",   action = function() hl.exec_cmd("dms ipc dash toggle overview") end })
--- 3-finger swipe down = open workspaces UI ("expose")
-hl.gesture({ fingers = 3, direction = "down", action = function() hl.exec_cmd("dms ipc hypr toggleOverview") end })
+-- 3-finger swipe up = the window switcher (Noctalia has no overview)
+hl.gesture({ fingers = 3, direction = "up",   action = function() hl.exec_cmd("noctalia msg window-switcher") end })
+-- 3-finger swipe down = the launcher
+hl.gesture({ fingers = 3, direction = "down", action = function() hl.exec_cmd("noctalia msg panel-toggle control-center") end })
 
 -- 3-finger swipe left/right = scroll in scrolling layouts OR switch workspaces
 local workspace_anim = { leaf = "workspaces", enabled = true, speed = 4.0, bezier = "default", style = "slidevert" }
@@ -201,15 +218,20 @@ if hey.hypr.primaryMonitor then
   })
 end
 
+-- Every scratchpad scrolls; the rules below only differ in their gaps.
+hl.workspace_rule({
+  workspace = "s[true]",
+  layout = "scrolling"
+})
 hl.workspace_rule({
   workspace = "special:term",
+  on_created_empty = "hey .scratch term",
   gaps_in = 15,
-  gaps_out = 80,
-  layout = "scrolling",
-  on_created_empty = "hey .scratch term"
+  gaps_out = 80
 })
 hl.workspace_rule({
   workspace = "special:pad",
+  on_created_empty = "hey .open-term",
   gaps_in = 6,
   gaps_out = 80
 })
@@ -235,15 +257,6 @@ hl.window_rule({
 hl.window_rule({ match={ class = "^librewolf$" }, scrolling_width = 0.8 })
 
 hl.window_rule({ match={ class = "^foot$" }, scrolling_width = 0.3 })
-
-hl.window_rule({ -- see config/hypr/bin/screendraw.zsh
-  match = { class = "^Gromit-mpx$" },
-  float = true,
-  no_blur = true,
-  no_max_size = true,
-  no_anim = true,
-  no_shadow = true
-})
 
 
 -- ** Steam
@@ -289,8 +302,8 @@ hl.bind("SUPER + Space",          hl.dsp.exec_cmd("hey @rofi appmenu"))
 hl.bind("SUPER + Return",         hl.dsp.exec_cmd("hey .open-term"))
 hl.bind("SUPER + SHIFT + Return", hl.dsp.exec_cmd("foot"))
 hl.bind("SUPER + c",              hl.dsp.exec_cmd("hey @rofi calcmenu"))
-hl.bind("SUPER + d",              hl.dsp.exec_cmd("hey .screendraw"))
-hl.bind("SUPER + Escape",         hl.dsp.exec_cmd("dms ipc call notifications clearAll; dms ipc toast hide"))
+hl.bind("SUPER + d",              hl.dsp.exec_cmd("noctalia msg annotate"))
+hl.bind("SUPER + Escape",         hl.dsp.exec_cmd("noctalia msg notification-clear-active"))
 hl.bind("SUPER + r",              hl.dsp.exec_cmd("hey reload @hypr"), { description = "Reload hyprland's config" })
 
 -- ** Zoom
@@ -409,10 +422,10 @@ hl.bind("XF86AudioRaiseVolume",        hey.dsp.volume("up", step),              
 hl.bind("XF86AudioLowerVolume",        hey.dsp.volume("down", step),             { locked = true, repeating = true })
 hl.bind("CTRL + XF86AudioRaiseVolume", hey.dsp.player_volume("up", step),        { locked = true, repeating = true })
 hl.bind("CTRL + XF86AudioLowerVolume", hey.dsp.player_volume("down", step),      { locked = true, repeating = true })
-hl.bind("XF86AudioMute",               hl.dsp.exec_cmd("dms ipc audio mute"),    { locked = true })
-hl.bind("SHIFT + XF86AudioMute",       hl.dsp.exec_cmd("dms ipc audio micmute"), { locked = true })
+hl.bind("XF86AudioMute",               hl.dsp.exec_cmd("noctalia msg volume-mute"), { locked = true })
+hl.bind("SHIFT + XF86AudioMute",       hl.dsp.exec_cmd("noctalia msg mic-mute"),    { locked = true })
 
-hl.bind("XF86AudioPlay",  hl.dsp.exec_cmd("dms ipc mpris playPause"))
-hl.bind("XF86AudioPause", hl.dsp.exec_cmd("dms ipc mpris playPause"))
-hl.bind("XF86AudioNext",  hl.dsp.exec_cmd("dms ipc mpris next"))
-hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd("dms ipc mpris previous"))
+hl.bind("XF86AudioPlay",  hl.dsp.exec_cmd("noctalia msg media toggle"))
+hl.bind("XF86AudioPause", hl.dsp.exec_cmd("noctalia msg media toggle"))
+hl.bind("XF86AudioNext",  hl.dsp.exec_cmd("noctalia msg media next"))
+hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd("noctalia msg media previous"))

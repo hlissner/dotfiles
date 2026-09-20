@@ -1,0 +1,16 @@
+{
+  "settings.poll_seconds.label": "Poll interval",
+  "settings.poll_seconds.description": "Seconds between UPower polls. Shared by every widget of this plugin.",
+  "settings.device.label": "Device",
+  "settings.device.description": "Any substring of the device's model, serial, kernel name, UPower path, or vendor.",
+  "settings.glyph.label": "Glyph",
+  "settings.glyph.description": "The icon shown beside the meter. Pick one that matches the device.",
+  "settings.show_label.label": "Show percentage",
+  "settings.warn_below.label": "Warning threshold",
+  "settings.warn_below.description": "Below this charge the meter turns the error color, unless it's plugged in.",
+  "settings.meter_width.label": "Meter width",
+  "settings.meter_height.label": "Meter height",
+  "settings.meter_height.description": "In pixels. The bar capsule clips anything taller than the bar.",
+  "settings.gap.label": "Spacing",
+  "settings.gap.description": "In pixels, between the glyph, meter, and percentage alike."
+}

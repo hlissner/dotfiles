@@ -78,7 +78,7 @@ with builtins;
       user = config.user.name;
     };
 
-    hey.hooks.onStartup."10-flex-launcher" = ''
+    hey.hooks."on-started"."10-flex-launcher" = ''
       hey.do flex-launcher
     '';
   };

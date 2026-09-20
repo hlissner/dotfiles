@@ -1,0 +1,177 @@
+# config/noctalia/config.toml
+#
+# Serves as defaults for ~/.local/state/noctalia/settings.toml.
+
+[shell]
+setup_wizard_enabled = false
+telemetry_enabled    = false
+show_location        = false
+settings_window_translucent = true
+
+[shell.greeter_sync]
+auto_sync = true
+
+[shell.panel]
+session_position = "center"
+control_center_placement = "floating"
+open_near_click_control_center = true
+transparency_mode = "glass"
+
+[shell.shadow]
+alpha = 0.45
+
+[control_center]
+sidebar = "full"
+sidebar_section = "none"
+width = 800
+
+[control_center.calendar]
+show_events_card = false
+
+[audio]
+enable_sounds = true
+
+[theme]
+mode   = "dark"
+source = "wallpaper"
+wallpaper_scheme = "m3-tonal-spot"
+
+[wallpaper]
+transition_on_startup = true
+
+[idle]
+behavior_order = [ "lock", "screen-off" ]
+pre_action_fade_seconds = 15
+
+    [idle.behavior.lock]
+    action = "command"
+    command = "hey hook on-idle --on"
+    enabled = true
+    resume_command = "hey hook on-idle --off"
+    timeout = 900.0
+
+    [idle.behavior.screen-off]
+    action = "screen_off"
+    enabled = true
+    timeout = 1800.0
+
+[notification]
+history_retention_hours = 24
+offset_x = 10
+layer = "overlay"
+
+[nightlight]
+enabled = true
+
+# Poll less often (default: 30)
+[weather]
+refresh_minutes = 60
+
+[battery]
+warning_threshold = 15
+
+[battery.device."Apple Inc. Magic Trackpad"]
+warning_threshold = 15
+
+[battery.device."TOZO-T6"]
+warning_threshold = 15
+
+
+## Power dropdown
+
+[shell.session]
+grid = true
+grid_columns = 2
+show_shortcuts = false
+
+    [[shell.session.actions]]
+    action = "lock"
+    countdown_seconds = 0.0
+    enabled = true
+    shortcut = "1"
+    variant = "default"
+
+    [[shell.session.actions]]
+    action = "logout"
+    countdown_seconds = 0.0
+    enabled = true
+    shortcut = "2"
+    variant = "default"
+
+    [[shell.session.actions]]
+    action = "suspend"
+    countdown_seconds = 0.0
+    enabled = true
+    shortcut = "3"
+    variant = "default"
+
+    [[shell.session.actions]]
+    action = "command"
+    command = "hey @rofi powermenu reboot-into"
+    countdown_seconds = 0.0
+    enabled = true
+    glyph = "restore"
+    label = "Reboot into..."
+    variant = "outline"
+
+    [[shell.session.actions]]
+    action = "shutdown"
+    countdown_seconds = 3.0
+    enabled = true
+    shortcut = "5"
+    variant = "destructive"
+
+    [[shell.session.actions]]
+    action = "reboot"
+    countdown_seconds = 3.0
+    enabled = true
+    shortcut = "4"
+    variant = "secondary"
+
+
+## Lockscreen
+
+[lockscreen]
+enabled = true
+blur_intensity = 0.59999998658895493
+
+[lockscreen_widgets]
+enabled = true
+
+[lockscreen_widgets.widget.lockscreen-date]
+type = "clock"
+cx = 50.0
+cy = 44.0
+placement_width  = 100.0
+placement_height = 100.0
+box_width  = 600.0   # 0 = auto-fit, i.e. Noctalia's default 56px
+box_height = 100.0
+
+    [lockscreen_widgets.widget.lockscreen-date.settings]
+    background_opacity = 0.0
+    background_padding = 12.0
+    format = "{:%A, %B %d, %Y}"
+    font_family = "Montserrat"
+
+[lockscreen_widgets.widget.lockscreen-clock]
+type = "clock"
+cx = 50.0
+cy = 36.0
+placement_width  = 100.0
+placement_height = 100.0
+box_width  = 1000.0
+box_height = 260.0
+
+    [lockscreen_widgets.widget.lockscreen-clock.settings]
+    background_opacity = 0.0
+    background_padding = 4.0
+    font_family = "Montserrat Thin"
+
+
+## Plugins
+
+[plugin_settings."icefish/phone-connect"]
+battery_display = "hidden"
+
+[plugin_settings."aristides/udiskie"]
+manager_open_near_click = true

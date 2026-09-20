@@ -1,0 +1,97 @@
+# config/noctalia/plugins/peripheral-battery/plugin.toml
+#
+# The built-in battery widget draws the glyph its charge level says to draw,
+# and picks its graphic meter's orientation off the capsule's aspect ratio
+# (battery_widget.cpp: `m_isVertical = containerHeight > containerWidth`), so
+# on a top bar it is always horizontal. Neither is a setting. Hence this: a
+# vertical meter with a glyph I choose per device.
+#
+# Two entries. The service does the polling -- once, for however many widgets
+# ask -- and the widget only draws.
+
+id           = "hey/peripheral-battery"
+name         = "Peripheral Battery"
+version      = "1.0.0"
+plugin_api   = 9
+author       = "hlissner"
+license      = "MIT"
+dependencies = ["upower", "stdbuf", "bluetoothctl"]
+tags         = ["battery", "bar"]
+icon         = "battery-vertical-3"
+description  = "A vertical battery meter with a per-device glyph, for peripherals."
+
+# Plugin-level, so the service sees it too (widget settings don't reach it).
+[[setting]]
+key             = "poll_seconds"
+type            = "int"
+label_key       = "settings.poll_seconds.label"
+description_key = "settings.poll_seconds.description"
+default         = 30
+min             = 5
+max             = 600
+
+[[service]]
+id    = "poll"
+entry = "poll.luau"
+
+[[widget]]
+id    = "battery"
+entry = "widget.luau"
+
+  [[widget.setting]]
+  key             = "device"
+  type            = "string"
+  label_key       = "settings.device.label"
+  description_key = "settings.device.description"
+  default         = ""
+
+  [[widget.setting]]
+  key             = "glyph"
+  type            = "glyph"
+  label_key       = "settings.glyph.label"
+  description_key = "settings.glyph.description"
+  default         = "battery-vertical"
+
+  [[widget.setting]]
+  key             = "show_label"
+  type            = "bool"
+  label_key       = "settings.show_label.label"
+  default         = true
+
+  [[widget.setting]]
+  key             = "warn_below"
+  type            = "int"
+  label_key       = "settings.warn_below.label"
+  description_key = "settings.warn_below.description"
+  default         = 20
+  min             = 0
+  max             = 100
+
+  [[widget.setting]]
+  key             = "meter_width"
+  type            = "int"
+  label_key       = "settings.meter_width.label"
+  default         = 9
+  min             = 3
+  max             = 40
+  advanced        = true
+
+  [[widget.setting]]
+  key             = "meter_height"
+  type            = "int"
+  label_key       = "settings.meter_height.label"
+  description_key = "settings.meter_height.description"
+  default         = 16
+  min             = 6
+  max             = 64
+  advanced        = true
+
+  [[widget.setting]]
+  key             = "gap"
+  type            = "int"
+  label_key       = "settings.gap.label"
+  description_key = "settings.gap.description"
+  default         = 4
+  min             = 0
+  max             = 24
+  advanced        = true

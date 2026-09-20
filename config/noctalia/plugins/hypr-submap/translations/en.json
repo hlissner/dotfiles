@@ -1,0 +1,12 @@
+{
+  "settings.glyphs.label": "Glyph per submap",
+  "settings.glyphs.description": "Submap name to glyph name. Anything unnamed falls back to the glyph below; \"default\" names the no-submap state.",
+  "settings.glyph.label": "Fallback glyph",
+  "settings.glyph.description": "Shown for a submap the map above doesn't name.",
+  "settings.hide_when_default.label": "Hide when default submap",
+  "settings.hide_when_default.description": "Hides the widget entirely while no submap is active.",
+  "settings.show_label.label": "Show the submap name",
+  "settings.show_label.description": "Off leaves only the glyph; the name is still on the tooltip.",
+  "settings.prefix.label": "Label prefix",
+  "settings.prefix.description": "Put in front of the submap name in the label."
+}

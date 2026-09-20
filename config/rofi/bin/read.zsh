@@ -13,9 +13,9 @@
 #     Mask what is typed.
 
 zparseopts -E -D -F -- P:=placeholder I:=icon -password=secret || exit 1
+export ROFI_ICON=${icon[2]:+"\"${icon[2]}\""}
+export ROFI_PLACEHOLDER=${placeholder[2]:+"\"${placeholder[2]}\""}
 hey.do rofi \
   -dmenu -lines 1 \
   -theme-str 'mainbox{children:[inputbar,message];}' \
-  ${icon[2]:+-theme-str "icon{filename:\"${icon[2]}\";}"} \
-  ${placeholder[2]:+-theme-str "entry{placeholder:\"${placeholder:1}\";}"} \
   ${secret:+-password}

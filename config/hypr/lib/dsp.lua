@@ -38,15 +38,18 @@ end
 
 function M.volume(dir, step)
   return snap_volume(dir, step,
-    [[dms ipc audio status | sed -n 's/^Output: \([0-9]*\)%.*/\1/p']],
-    "dms ipc audio setvolume")
+    -- Noctalia has no volume getter, but its OSD tracks PipeWire, so it still
+    -- shows for a change made behind its back.
+    [[wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{printf "%d", $2 * 100}']],
+    "noctalia msg volume-set")
 end
 
 -- Requires playerctl
 function M.player_volume(dir, step)
   return snap_volume(dir, step,
     [[playerctl volume | awk '{printf "%d", $1 * 100}']],
-    "dms ipc mpris setvolume")
+    -- playerctl wants 0..1; snap_volume hands over 0..100.
+    [[playerctl volume $(awk "BEGIN { print $n / 100 }") #]])
 end
 
 -- One bind, a dispatcher per layout.
@@ -57,7 +60,8 @@ function M.layout(by_layout)
     if by_layout[layout] then
       hl.dispatch(by_layout[layout])
     else
-      hl.exec_cmd([[dms ipc toast error "No keybind for ]] .. layout .. [[ layout"]])
+      -- exec_cmd is sh, not zsh, so no hey.toast here.
+      hl.exec_cmd([[noctalia msg notification-show '{"app_name":"hey","urgency":"critical","summary":"No keybind for ]] .. layout .. [[ layout"}']])
     end
   end
 end

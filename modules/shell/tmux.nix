@@ -26,7 +26,7 @@ in {
       run-shell ${yank.rtp}
     '';
 
-    modules.hyprland.matugen.templates.tmux = {
+    modules.hyprland.theme.templates.tmux = {
       input_path = "${hey.configDir}/tmux/colors.template.conf";
       output_path = "${config.home.configDir}/tmux/colors.conf";
     };

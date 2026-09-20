@@ -5,7 +5,7 @@
 #   reload [@AREA]
 #
 # DESCRIPTION:
-#   Triggers the onReload hook, which restarts or reloads whatever the active
+#   Triggers the on-reload hook, which restarts or reloads whatever the active
 #   host and window manager have registered for it. Given an AREA, only that
 #   area's handler is triggered (see hey hook).
 #
@@ -24,6 +24,8 @@
   # is only a label, so it shouldn't be the thing that says "nil".
   (echof :g "Reloading %s..."
          (or area (ignore-errors (flake/info :desktop)) "everything"))
-  (when (hey! hook ,;(opts area) onReload -f -v)
-    (sys/toast :info "Finished reloading system" :sound 'notify))
+  (when (hey! hook ,;(opts area) on-reload -f -v)
+    (sys/toast :info "Finished reloading system"
+               :icon "refresh-alert"
+               :sound 'notify))
   (echo :check "Done!"))

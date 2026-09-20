@@ -51,7 +51,7 @@ in {
 
     # Seeds for rainbow-delimiters. blend harmonises each hue toward the
     # current scheme, so they stay distinguishable without clashing with it.
-    modules.hyprland.matugen.colors = {
+    modules.hyprland.theme.colors = {
       rainbow_red    = { color = "#e53935"; blend = true; };
       rainbow_orange = { color = "#fb8c00"; blend = true; };
       rainbow_yellow = { color = "#fdd835"; blend = true; };
@@ -61,7 +61,7 @@ in {
       rainbow_violet = { color = "#8e24aa"; blend = true; };
     };
 
-    modules.hyprland.matugen.templates.nvim = {
+    modules.hyprland.theme.templates.nvim = {
       input_path = "${hey.configDir}/nvim/colors.template.lua";
       output_path = "${config.home.stateDir}/nvim/colors.lua";
 

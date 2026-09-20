@@ -10,12 +10,6 @@ with hey.lib;
 let cfg = config.modules.hyprland.fade;
 in {
   options.modules.hyprland.fade = with types; {
-    enable = mkOpt' bool config.modules.hyprland.enable ''
-      Fade to black on suspend and shutdown instead of cutting straight to it.
-      Follows modules.hyprland.enable, because the hooks that drive it live in
-      config/hypr/hooks and the overlay is drawn by the desktop's own quickshell.
-    '';
-
     duration = mkOpt' int 1250 ''
       How long the fade takes, in milliseconds. This is dead time on the way
       down: config/rofi/bin/powermenu.zsh waits for the hook to finish before it
@@ -28,7 +22,9 @@ in {
       "What to fade to. Anything QML parses as a color.";
   };
 
-  config = mkIf cfg.enable {
+  # No switch of its own: any desktop that gets this far has the hooks to drive
+  # a fade, and there's no host that wants one without the other.
+  config = mkIf config.modules.hyprland.enable {
     # Needed by config/hypr/bin/fade.zsh
     hey.info.hypr.fade = { inherit (cfg) duration color; };
 

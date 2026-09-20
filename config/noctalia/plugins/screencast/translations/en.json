@@ -1,0 +1,14 @@
+{
+  "settings.glyph.label": "Glyph",
+  "settings.glyph.description": "The icon shown while recording. The stopping spinner draws its own frames.",
+  "settings.recording_color.label": "Recording color",
+  "settings.recording_color.description": "Leave empty to inherit the widget's own icon color, like every other widget on the bar.",
+  "settings.stopping_color.label": "Stopping color",
+  "settings.stopping_color.description": "The spinner shown while the recording is still being written out. Empty inherits.",
+  "settings.blink.label": "Blink while recording",
+  "settings.blink.description": "Fade the glyph between the recording color and the inherited one. Does nothing if that color is empty.",
+  "settings.show_elapsed.label": "Show elapsed time",
+  "settings.show_elapsed.description": "Count up beside the glyph from the moment wf-recorder starts, not from when the region was picked. Horizontal bars only.",
+  "tooltip.recording": "Recording — click to stop",
+  "tooltip.stopping": "Finishing the recording…"
+}

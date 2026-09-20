@@ -1,8 +1,18 @@
 #!/usr/bin/env zsh
-# Control the system's power state.
+# Control the current session's state.
 #
 # SYNOPSIS:
-#   TODO
+#   hey @rofi powermenu [dpms|lock|suspend|logout|reboot|poweroff|reboot-into]
+#
+# ARGUMENTS:
+#   1 ACTION
+#     dpms
+#     lock
+#     suspend
+#     logout
+#     reboot
+#     poweroff
+#     reboot-into
 
 .rofi() {
   rofi -dmenu -i -theme powermenu.rasi $@
@@ -18,14 +28,11 @@ rofi.powermenu.dpms() {
 }
 
 rofi.powermenu.lock()     {
-  hey hook onSessionLocked
+  hey hook on-session-locked
   hey.do loginctl lock-session;
 }
 
-rofi.powermenu.suspend()  {
-  hey hook onRequestSuspend
-  hey.do systemctl suspend;
-}
+rofi.powermenu.suspend()  { hey.do systemctl suspend; }
 
 rofi.powermenu.logout()   {
   if uwsm check is-active &>/dev/null; then
@@ -35,9 +42,15 @@ rofi.powermenu.logout()   {
   fi
 }
 
-rofi.powermenu.reboot()   { hey.do systemctl reboot; }
+rofi.powermenu.reboot()   {
+  hey hook on-rebooting
+  hey.do systemctl reboot;
+}
 
-rofi.powermenu.poweroff() { hey.do systemctl poweroff; }
+rofi.powermenu.poweroff() {
+  hey hook on-shutting-down
+  hey.do systemctl poweroff;
+}
 
 rofi.powermenu.reboot-into() {
   local entries=$(bootctl list --json=short)
@@ -49,6 +62,7 @@ rofi.powermenu.reboot-into() {
               echo -e "$title\0icon\x1ffolder\x1fmeta\x1f$id"
             done | .rofi -format d)
   hey.log "Rebooting into: ${lines[$i]}"
+  hey hook on-rebooting
   hey.do systemctl reboot --boot-loader-entry \
     $(jq -r --arg id "${lines[$i]/;*}" '.[] | select(.id == $id) | .id' <<<$entries)
 }
@@ -63,8 +77,12 @@ local cmds=(
   "Power off;system-shutdown-symbolic;rofi.powermenu.poweroff"
 )
 
-local i=$(for item in ${(k)cmds}; do
-            IFS=\; read title icon cmd <<<"$item"
-            echo -e "$title\0icon\x1f$icon"
-          done | .rofi -format d)
-${cmds[$i]/*;/}
+if [[ -n "$1" ]]; then
+  "rofi.powermenu.$1"
+else
+  local i=$(for item in ${(k)cmds}; do
+              IFS=\; read title icon cmd <<<"$item"
+              echo -e "$title\0icon\x1f$icon"
+            done | .rofi -format d)
+  ${cmds[$i]/*;/}
+fi

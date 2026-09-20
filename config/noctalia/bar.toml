@@ -1,0 +1,159 @@
+# config/noctalia/bar.toml
+#
+# Serves as defaults for ~/.local/state/noctalia/settings.toml.
+
+[bar.main]
+position           = "top"
+background_opacity = 0.8
+padding            = 8
+radius             = 0
+margin_ends        = 0
+margin_edge        = 0
+font_scale         = 1.0
+shadow             = false
+reserve_space      = true
+capsule            = false
+widget_spacing     = 8
+
+start = [ "submap", "workspaces" ]
+center = [ "clock" ]
+end = [ "screencast", "timer", "tray", "weather", "group:devices", "group:system", "notifications", "privacy" ]
+
+    [[bar.main.capsule_group]]
+    accordion = false
+    accordion_direction = "end"
+    enabled = true
+    fill = "surface_variant"
+    foreground = "primary"
+    id = "devices"
+    members = [ "phone", "earphones-battery", "trackpad-battery" ]
+    opacity = 1.0
+    padding = 8.0
+
+    [[bar.main.capsule_group]]
+    accordion = false
+    accordion_direction = "end"
+    enabled = true
+    fill = "surface_variant"
+    foreground = "primary"
+    id = "system"
+    members = [ "caffeine", "battery", "disks", "network", "bluetooth", "input_volume", "output_volume" ]
+    opacity = 1.0
+    padding = 8.0
+
+[widget.clock]
+anchor = true
+capsule = true
+capsule_opacity = 0.0
+format = "{:%H:%M}  {:%a, %b %d}"
+tooltip_format = "{:%A %B, %D, %H:%M}"
+
+[widget.privacy]
+hide_inactive = true
+
+[widget.screencast]
+type = "hey/screencast:bar"
+capsule = true
+capsule_fill = "on_secondary"
+font_family = "Fira Mono"
+font_scale = 0.80
+icon_color = "primary"
+scale = 1.10
+
+[widget.printers]
+type = "andrewdems/printers:printer"
+
+[widget.submap]
+type = "hey/hypr-submap:hypr-submap"
+hide_when_default = true
+show_label = false
+capsule = true
+capsule_fill = "primary"
+capsule_foreground = "shadow"
+
+    [widget.submap.glyphs]
+    screencap = "video"
+    screenshot = "screenshot"
+    session = "power"
+
+[widget.timer]
+type = "hey/timer:bar"
+show_idle_on_horizontal = false
+capsule_padding = 8
+
+[widget.lid-guard]
+type = "8bury/lid-guard:lid-guard"
+
+[widget.disks]
+type = "aristides/udiskie:status"
+hide_when_empty = true
+
+[widget.tailscale]
+type = "davemhammer/tailscale:status"
+show_counts = false
+
+[widget.phone]
+type = "icefish/phone-connect:bar"
+
+[widget.trackpad-battery]
+type = "hey/peripheral-battery:battery"
+device = "Magic Trackpad"
+glyph = "device-ipad"
+meter_height = 10
+meter_width = 3
+gap = 1
+show_label = false
+scale = 0.90
+
+[widget.earphones-battery]
+type = "hey/peripheral-battery:battery"
+device = "TOZO-T6"
+glyph = "bluetooth-device-earbuds"
+meter_height = 10
+meter_width = 3
+show_label = false
+gap = 1
+
+[widget.battery]
+type = "battery"
+device = "auto"
+hide_when_full = true
+
+[widget.bluetooth]
+hide_when_adapter_off = true
+hide_when_no_connected_device = true
+
+[widget.gap]
+length = 18
+
+[widget.weather]
+show_condition = false
+
+[widget.workspaces]
+occupied_color = "on_secondary"
+
+[widget.network]
+show_label = false
+
+[widget.input_volume]
+hide_when_inactive = true
+
+[widget.output_volume]
+show_label = false
+
+[widget.cpu]
+show_value = false
+
+[widget.ram]
+show_value = false
+
+[widget.sysmon]
+show_value = false
+stat = "cpu_temp"
+
+[widget.media]
+capsule = true
+capsule_opacity = 0.0
+capsule_padding = 18
+hide_when_no_media = true
+show_progress = true

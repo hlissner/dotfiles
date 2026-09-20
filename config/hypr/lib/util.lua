@@ -14,10 +14,11 @@ function M.clamp(x, lo, hi)
   return math.max(lo, math.min(hi, x))
 end
 
--- The tiled layout under the cursor: the scratchpad's if one is up, else the
--- workspace's. nil between workspaces.
-function M.active_layout()
-  local ws = hl.get_active_special_workspace() or hl.get_active_workspace()
+-- The tiled layout on MON (the focused monitor if none): the scratchpad's if
+-- one is up, else the workspace's. nil between workspaces.
+function M.active_layout(mon)
+  mon = mon or hl.get_active_monitor()
+  local ws = mon and (mon.active_special_workspace or mon.active_workspace)
   return ws and ws.tiled_layout
 end
 

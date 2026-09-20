@@ -97,8 +97,8 @@ with builtins;
     services.logind.settings.Login.HandlePowerKey = "ignore";
 
     # Cap the battery charge for longetivity. My laptop is almost always plugged
-    # in anyway. DMS's "Apply to Hardware" button does the same over pkexec, but
-    # only for the current boot.
+    # in anyway. DMS/Noctalia's "apply to hardware" button does the same over
+    # pkexec, but only for the current boot.
     services.udev.extraRules = ''
       ACTION=="add|change", SUBSYSTEM=="power_supply", KERNEL=="BAT*", ATTR{charge_control_end_threshold}=="?*", ATTR{charge_types}="Custom", ATTR{charge_control_end_threshold}="80"
     '';

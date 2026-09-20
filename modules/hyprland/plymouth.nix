@@ -62,7 +62,7 @@ in {
         (_: { after = [ "user.slice" ]; });
     }
 
-    # On Nvidia cards, the transitions between initrd, plymouth, dms-greeter,
+    # On Nvidia cards, the transitions between initrd, plymouth, the greeter,
     # and hyprland are *much* more visible (monitors flicker off then on). This
     # addresses the flicker between initrd and plymouth.
     (mkIf cfg.nvidia {

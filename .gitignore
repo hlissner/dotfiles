@@ -6,5 +6,5 @@
 # Symlinked in by nixos modules
 *.meta.lua
 
-# Rendered by matugen
+# Rendered by Noctalia (modules/hyprland/theme.nix)
 /config/zellij/themes/colors.kdl

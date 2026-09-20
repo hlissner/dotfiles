@@ -202,26 +202,28 @@ main() {
   if [[ -n "$delay" ]] && (( delay > 0 )); then
     for i in {$delay..1}; do
       hey .play-sound blip &
-      dms ipc toast dismiss countdown  # debounce
-      dms ipc toast warnWith "Recording starting in... $i" "" "" countdown
+      hey.toast -c countdown warn "Recording starting in... $i"
       sleep 1
     done
-    dms ipc toast dismiss countdown
   fi
+  # The bar widget (config/noctalia/plugins/screencast) counts up from this.
+  print -r -- $EPOCHSECONDS >| $livefile
   wf-recorder -g "$geom" ${opts[@]} --file="$file"
   local rc=$?
   _indicator_stop  # dies with the recording, not with gifsicle
   if (( rc == 0 )); then
     sleep 0.1
     if [[ $1 == gif ]]; then
-      dms ipc toast warn "Optimizing gif. This may take a while..."
+      hey.toast warn "Optimizing gif. This may take a while..."
       hey.do -! gifsicle --optimize=3 "$file"
     fi
     echo "file://$file" | wl-copy -t text/uri-list
     hey .play-sound success &
-    dms ipc toast info "Recording complete. Copied to clipboard!"
+    hey.toast info "Recording complete. Copied to clipboard!"
   fi
 }
+
+zmodload zsh/datetime  # EPOCHSECONDS
 
 typeset -g prefix=$(hey path runtime screencast)
 typeset -g livefile=$prefix.live

@@ -193,5 +193,6 @@ icon, icon-current-entry, prompt, num-filtered-rows {
   expand: false;
 }
 
-/* Import nix-generated files */
+/* Import nix-generated files. */
+@import "fonts.rasi"
 @import "colors.rasi"

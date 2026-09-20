@@ -9,6 +9,10 @@ with hey.lib;
 let hardware = config.modules.profiles.hardware;
 in mkMerge [
   (mkIf (any (s: hasPrefix "printer" s) hardware) {
+    environment.systemPackages = with pkgs; [
+      system-config-printer
+    ];
+
     services.printing = {
       enable = true;
       startWhenNeeded = true;

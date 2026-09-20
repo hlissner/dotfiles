@@ -22,6 +22,7 @@ in {
         ntfs3g      # Windows drives
         hfsprogs    # MacOS drives
         cryptsetup  # for Luks drives
+        udiskie     # For simple mounting and plugins
       ];
 
       # A daemon that lets us mount/poll disks in userspace. I'd prefer udevil,
