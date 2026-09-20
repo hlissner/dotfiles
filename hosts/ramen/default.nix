@@ -68,6 +68,7 @@ with builtins;
       vim.enable = true;
     };
     shell = {
+      claude.enable = true;
       direnv.enable = true;
       git.enable = true;
       gnupg.enable = true;
