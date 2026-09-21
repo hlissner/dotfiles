@@ -156,17 +156,38 @@ in {
     #   itself), like DropBear. None of my tools/workflows on my workstations
     #   are broken by this, so I can ignore it, but it's opt-in for a reason.
     #
-    #   Only issue I've found, so far, is that ssh-keygen writes to ~/.ssh by
-    #   default (use -f to overwrite).
-    (let keyFiles = [ "id_dsa" "id_ecdsa" "id_ecdsa_sk" "id_ed25519" "id_ed25519_sk" "id_rsa" ];
-         keyFilesStr = concatStringsSep " " keyFiles;
-         sshConfigDir = "$XDG_CONFIG_HOME/ssh";
+    #   Only issue I've found, so far, is that ssh-keygen still generates into
+    #   ~/.ssh by default (use -f to overwrite); its wrapper below only
+    #   redirects the two modes that edit known_hosts.
+    (let
+       keyFiles = [ "id_ecdsa" "id_ecdsa_sk" "id_ed25519" "id_ed25519_sk" "id_rsa" ];
+       keyFilesStr = concatStringsSep " " keyFiles;
+       sshConfigDir = "$XDG_CONFIG_HOME/ssh";
+
+       identityArgs = ''
+         dir="${sshConfigDir}"
+         case " $* " in
+           *" -F "*) ;;
+           *) [ -s "$dir/config" ] && cfg="$dir/config" ;;
+         esac
+         ids=()
+         for f in ${keyFilesStr}; do
+           [ -f "$dir/$f" ] && ids+=(-o "IdentityFile=$dir/$f")
+         done
+       '';
+
+       wrapSshLike = prog: ''
+         wrapProgram "$out/bin/${prog}" \
+           --run ${escapeShellArg identityArgs} \
+           --add-flags '${"$"}{cfg:+-F "$cfg"}' \
+           --add-flags '"''${ids[@]}"'
+       '';
      in mkIf cfg.ssh.enable {
-       # To spare us passing the extra options to the executables, we set these
-       # in the system config file.
+       # A fallback when the wrappers aren't enough, like sshfs and nix-daemon,
+       # those get no keys out of this, but they should at least agree with me
+       # about hosts.
        programs.ssh.extraConfig = ''
          Host *
-           ${concatMapStringsSep "\n" (key: "IdentityFile ~/.config/ssh/${key}") keyFiles}
            UserKnownHostsFile ~/.config/ssh/known_hosts
        '';
 
@@ -175,29 +196,52 @@ in {
        #   settings are respected (ssh ignores the system config if -F is given,
        #   and it doesn't accept multiple).
        environment.systemPackages = with pkgs; with hey.lib.pkgs; [
+         # Note to self: openssh's ssh-copy-id != pkgs.ssh-copy-id
          (mkWrapper openssh ''
-           dir='${sshConfigDir}'
-           cfg="$dir/config"
-           wrapProgram "$out/bin/ssh" \
-             --run "[[ \$@ != *\ -F\ * && -s \"$cfg\" ]] && dir=\"$cfg\"" \
-             --add-flags '${"$"}{dir:+-F "$dir"}'
-           wrapProgram "$out/bin/scp" \
-             --run "[[ \$@ != *\ -F\ * && -s \"$cfg\" ]] && dir=\"$cfg\"" \
-             --add-flags '${"$"}{dir:+-F "$dir"}'
+           ${concatMapStrings wrapSshLike [ "ssh" "scp" "sftp" ]}
+           # Given no arguments at all, ssh-add goes looking in ~/.ssh.
            wrapProgram "$out/bin/ssh-add" \
-             --run "dir=\"$dir\"" \
-             --run 'args=()' \
-             --run '[ $# -eq 0 ] && for f in ${keyFilesStr}; do [ -f "$dir/$f" ] && args+="$dir/$f"; done' \
-             --add-flags '${"$"}{args:+-H "$dir/known_hosts"}' \
-             --add-flags '${"$"}{args:+-H "/etc/ssh/ssh_known_hosts"}' \
+             --run ${escapeShellArg ''
+               dir="${sshConfigDir}"
+               args=()
+               if [ $# -eq 0 ]; then
+                 for f in ${keyFilesStr}; do
+                   [ -f "$dir/$f" ] && args+=("$dir/$f")
+                 done
+                 if [ ''${#args[@]} -gt 0 ]; then
+                   args=(-H "$dir/known_hosts" -H /etc/ssh/ssh_known_hosts "''${args[@]}")
+                 fi
+               fi
+             ''} \
              --add-flags '"''${args[@]}"'
-         '')
-         (mkWrapper ssh-copy-id ''
+           # Which key to hand over, which is a different question from which
+           # key to authenticate with, hence -i and not -o.
            wrapProgram "$out/bin/ssh-copy-id" \
-             --run 'dir="${sshConfigDir}"' \
-             --run 'opts=()' \
-             --run '[[ $@ != *\ -i\ * ]] && for f in ${keyFilesStr}; do [ -f "$dir/$f" ] && opts+="-i '$dir/$f'"; done' \
+             --run ${escapeShellArg ''
+               dir="${sshConfigDir}"
+               opts=()
+               case " $* " in
+                 *" -i "*) ;;
+                 *)
+                   for f in ${keyFilesStr}; do
+                     [ -f "$dir/$f" ] && opts+=(-i "$dir/$f")
+                   done
+                   ;;
+               esac
+             ''} \
              --append-flags '"''${opts[@]}"'
+           # -R and -F are the two modes that edit known_hosts, and the only
+           # part of ssh-keygen I can talk out of ~/.ssh; everything else it
+           # writes still wants an explicit -f.
+           wrapProgram "$out/bin/ssh-keygen" \
+             --run ${escapeShellArg ''
+               args=()
+               case " $* " in
+                 *" -f "*) ;;
+                 *" -R "*|*" -F "*) args=(-f "${sshConfigDir}/known_hosts") ;;
+               esac
+             ''} \
+             --add-flags '"''${args[@]}"'
          '')
        ];
      })
