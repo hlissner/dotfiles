@@ -315,6 +315,7 @@ hl.bind("SUPER + c",              hl.dsp.exec_cmd("hey @rofi calcmenu"))
 hl.bind("SUPER + d",              hl.dsp.exec_cmd("noctalia msg annotate"))
 hl.bind("SUPER + Escape",         hl.dsp.exec_cmd("noctalia msg notification-clear-active"))
 hl.bind("SUPER + r",              hl.dsp.exec_cmd("hey reload @hypr"), { description = "Reload hyprland's config" })
+hl.bind("SUPER + x",              hl.dsp.exec_cmd("hey @hypr ocr"), { description = "OCR region" })
 
 -- ** Zoom
 hl.bind("SUPER + Minus",         hey.dsp.zoom(-0.3), { repeating = true })
