@@ -244,6 +244,16 @@ hl.window_rule({ match={ fullscreen = true }, idle_inhibit = "fullscreen" })
 -- No floats should be fullscreening/maximizing themselves
 hl.window_rule({ match={ float = true }, suppress_event = "fullscreen maximize" })
 
+-- image previewers
+hl.window_rule({
+  match={ class = "^(imv|swayimg)$" },
+  float = true,
+  center = true,
+  dim_around = true,
+  border_size = 1,
+  max_size = { "monitor_w*0.96", "monitor_h*0.96" }
+})
+
 -- In multi-monitor setups where some displays are smaller than others, file
 -- dialogs can "remember" their last size in larger monitors and be maximized
 -- beyond the current monitor's boundaries, so...
