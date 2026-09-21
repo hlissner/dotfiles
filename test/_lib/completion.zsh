@@ -25,14 +25,20 @@ _alternative() { print -r -- "ALT ${(j: :)@}" }
 _default()   { print -r -- "DEFAULT" }
 _files()     { print -r -- "FILES" }
 _command_names() { print -r -- "COMMANDS ${(j: :)@}" }
+_hosts()     { print -r -- "HOSTS ${(j: :)@}" }
+_remote_files() { print -r -- "REMOTE[${IPREFIX%:}] ${(j: :)@} $PREFIX" }
 compadd()    { print -r -- "ADD ${(j: :)@}" }
 # globsubst because the real compset takes a pattern, and NO_glob_subst -- which
 # _comp_setup sets, and which the builtin is not subject to -- would make `-P
 # '*:'` a search for two literal characters.
 compset()    { setopt localoptions globsubst
-               local p=$2
-               [[ $PREFIX == $p* ]] && { PREFIX=${PREFIX#$p}; return 0 }
-               return 1 }
+               local p=$@[-1] before=$PREFIX
+               [[ $PREFIX == $p* ]] || return 1
+               if [[ $# -ge 3 && $2 == <-> ]]; then PREFIX=${PREFIX#$p}
+               else                                 PREFIX=${PREFIX##$p}
+               fi
+               IPREFIX+=${before[1,$#before-$#PREFIX]}
+               return 0 }
 
 local root=${0:A:h:h:h}
 local completion=$1 case=$2; shift 2
@@ -78,7 +84,7 @@ fi
 __driver_nodump() { hey.comp.dump() { print -r -- "DUMP ${(j: :)@}"; return 1 } }
 __driver_nohey()  { hey.comp.scan() { return 1 }; hey.comp.dump() { return 1 } }
 
-words=( "$@" ); CURRENT=$#words; PREFIX=""; SUFFIX=""; line=( "$@" )
+words=( "$@" ); CURRENT=$#words; PREFIX=""; IPREFIX=""; SUFFIX=""; line=( "$@" )
 case $case in
   (dispatch) hey.comp.dispatch ;;
   (menu) PREFIX=${1-}; hey.comp.commands ;;

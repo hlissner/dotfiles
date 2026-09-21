@@ -103,6 +103,18 @@ __hey_path_segment() {
   fi
 }
 
+# One hitch: the stock _ssh_hosts completer can't deal with the PATH component
+# in [user@]host[:PATH], so I gotta reinvent this wheel out of wheels
+# that, fortunately, already exist (_remote_files, which _ssh uses).
+#
+# Turn it off with `zstyle ':completion:*:*:hey:*:files' remote-access false` if
+# you don't like it. The directories-only syntax (-/) won't work here though.
+__hey_ssh_target() {
+  compset -P 1 '*:' && { _remote_files -- ssh; return }
+  compset -P '*@'
+  _hosts -qS:
+}
+
 __hey_generations() {
   local expl
   local -a gens=( /nix/var/nix/profiles/system-*-link(N:t:s/system-//:s/-link//) )

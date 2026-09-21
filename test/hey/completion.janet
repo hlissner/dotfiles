@@ -29,6 +29,16 @@
   # Commands that take no such thing are left to zsh.
   (test (hey "syncarg" "switch" "") @["DEFAULT"]))
 
+(deftest completion/ssh-target
+  # @ssh-target completes both halves of `lab fs [user@]host[:/path]`, ala _ssh
+  (test (hey "call" "__hey_ssh_target" "") @["HOSTS -qS:"])
+  (test (hey "call" "__hey_ssh_target" "root@") @["HOSTS -qS:"])
+  (test (hey "call" "__hey_ssh_target" "root@nas0.lan:/mnt/ap")
+        @["REMOTE[root@nas0.lan] -- ssh /mnt/ap"])
+  # Only the first colon belongs to the host.
+  (test (hey "call" "__hey_ssh_target" "nas0.lan:/mnt/a:b/")
+        @["REMOTE[nas0.lan] -- ssh /mnt/a:b/"]))
+
 (deftest completion/hook-areas
   # The menu carries the sigil, so areas and hooks can share it; past the
   # sigil, the areas are bare.
