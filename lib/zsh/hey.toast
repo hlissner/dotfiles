@@ -1,24 +1,55 @@
 #!/usr/bin/env zsh
-# hey.toast [-c CATEGORY] [-i ICON] (info|warn|error) SUMMARY [BODY]
+# Create a notification toast.
 #
-# Pops a Noctalia notification under hey's name. error is critical, the rest
-# are normal. No-op when noctalia isn't around (a tty, another shell).
+# SYNOPSIS:
+#   hey.toast [-a NAME] [-c CATEGORY] [-i ICON] [-t MS] [-H]
+#             (info|warn|error) SUMMARY [BODY]
+#
+# DESCRIPTION:
+#   Pops a Noctalia notification under hey's name. error is critical, the rest
+#   are normal. No-op when noctalia isn't around (a tty, another shell).
 #
 # OPTIONS:
+#   -a NAME
+#     The app the toast claims to be from. Defaults to hey.
 #   -c CATEGORY
 #     A notification category, for Noctalia's filters.
+#   -H
+#     Send it over DBus instead of over `noctalia msg notification-show`, which
+#     noctalia treats as "internal" so they don't get filed away in the control
+#     center's history.
 #   -i ICON
-#     A Noctalia glyph name, or a path to an image.
+#     A Noctalia glyph name or path to an image.
+#   -t MS
+#     How long the toast lingers, in milliseconds. 0 pins it until dismissed.
 
-local -a category icon
-zparseopts -D -- c:=category i:=icon
+local -a app category icon timeout keep
+zparseopts -D -- a:=app c:=category i:=icon t:=timeout H=keep
 local type=$1 summary=$2 body=$3
 local urgency=normal
 [[ $type == error ]] && urgency=critical
+
+if (( $#keep )); then
+  local -a opts=(-a "${app[2]:-hey}" -u $urgency)
+  # :- on every one of these: zparseopts leaves the array empty when the flag
+  # is absent, and a caller with set -u dies on the subscript otherwise.
+  [[ -n ${category[2]:-} ]] && opts+=(-c "${category[2]}")
+  [[ -n ${icon[2]:-} ]] && opts+=(-i "${icon[2]}")
+  [[ -n ${timeout[2]:-} ]] && opts+=(-t "${timeout[2]}")
+  # Still gated on noctalia: notify-send exists on a headless box too, and
+  # there it would just hang about waiting for a daemon that never answers.
+  hey.do -o -e notify-send -e noctalia \
+    notify-send $opts -- "$summary" "$body"
+  return
+fi
+
 local json
 json=$(jq -cn --arg s "$summary" --arg b "$body" --arg u $urgency \
-             --arg c "${category[2]}" --arg i "${icon[2]}" \
-          '{ app_name: "hey", summary: $s, body: $b, urgency: $u }
+             --arg a "${app[2]:-hey}" --arg c "${category[2]:-}" --arg i "${icon[2]:-}" \
+             --argjson t "${timeout[2]:-null}" \
+          '{ app_name: $a, summary: $s, body: $b, urgency: $u }
            + (if $c != "" then { category: $c } else {} end)
-           + (if $i != "" then { icon: $i } else {} end)')
+           + (if $i != "" then { icon: $i } else {} end)
+           # 0 means "until dismissed", so null is the only absent value.
+           + (if $t != null then { timeout_ms: $t } else {} end)')
 hey.do -o noctalia msg notification-show "$json"
