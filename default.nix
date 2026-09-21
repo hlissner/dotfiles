@@ -63,14 +63,6 @@ with hey.lib;
         ];
         registry = mapAttrs (_: v: { flake = v; }) filteredInputs;
         settings = {
-          substituters = [
-            "https://nix-community.cachix.org"
-            "https://emacs-ci.cachix.org"
-          ];
-          trusted-public-keys = [
-            "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-            "emacs-ci.cachix.org-1:B5FVOrxhXXrOL0S+tQ7USrhjMT5iOPH+QN9q0NItom4="
-          ];
           trusted-users = [ "root" config.user.name ];
           allowed-users = [ "root" config.user.name ];
           auto-optimise-store = true;
