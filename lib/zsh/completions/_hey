@@ -115,6 +115,13 @@ __hey_ssh_target() {
   _hosts -qS:
 }
 
+# The host half of the above, for the commands that take somewhere to ssh to
+# and no path to put things at (config/*/bin/infect.zsh).
+__hey_ssh_host() {
+  compset -P '*@'
+  _hosts
+}
+
 __hey_generations() {
   local expl
   local -a gens=( /nix/var/nix/profiles/system-*-link(N:t:s/system-//:s/-link//) )

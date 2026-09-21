@@ -1,0 +1,15 @@
+#!/usr/bin/env zsh
+# Source ZSH files, but compile them first.
+#
+# SYNOPSIS:
+#   hey.load PATH...
+#
+# DESCRIPTION:
+#   Sources each PATH, compiling it to a .zwc beside it first if that's missing
+#   or stale. zpm does this for the things it loads; these are mine.
+
+local _zfile
+for _zfile in $@; do
+  [[ -e $_zfile.zwc && $_zfile.zwc -nt $_zfile ]] || zcompile -R -- $_zfile 2>/dev/null
+  source $_zfile
+done

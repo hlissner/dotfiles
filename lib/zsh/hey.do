@@ -49,4 +49,4 @@ case $1 in
 esac
 
 HEYDEBUG=${HEYDEBUG:-${HEYDRYRUN:+1}} hey.log -c green "$" "$*"
-[[ $HEYDRYRUN ]] || "$@"
+[[ ${HEYDRYRUN:-} ]] || "$@"

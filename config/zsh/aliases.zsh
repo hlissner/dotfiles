@@ -70,6 +70,20 @@ if (( $+commands[eza] )); then
   alias llm='ll --sort=modified'
   alias la="LC_COLLATE=C eza -ablF";
   alias tree='eza --tree'
+else
+  # BSD ls doesn't know --color or --group-directories-first, so ask once
+  # instead of emitting four aliases that error on use.
+  if ls --color=auto -d . >/dev/null 2>&1; then
+    _ls='ls -F --color=auto --group-directories-first'
+  else
+    _ls='ls -FG'
+  fi
+  alias l="$_ls -lh"
+  alias ll="$_ls -lhAi"
+  alias llm='ll -t'
+  alias la="LC_COLLATE=C $_ls -lhA"
+  unset _ls
+  # No `tree`: that's a real program, and it can speak for itself.
 fi
 
 if (( $+commands[nix] )); then

@@ -7,6 +7,14 @@ bindkey -M viins '^d' push-line-or-edit
 bindkey -M viins '^b' backward-word
 bindkey -M viins '^f' forward-word
 
+# dxrcy/zsh-history-substring-search comes from zpm, which a host without git
+# or a network never got. zsh's own prefix search does the 80% case, so alias
+# it into the names below rather than teach them to be conditional.
+if (( ! $+widgets[history-substring-search-up] )); then
+  zle -A history-beginning-search-backward history-substring-search-up
+  zle -A history-beginning-search-forward history-substring-search-down
+fi
+
 # Up arrow:
 bindkey -M viins '\e[A' history-substring-search-up
 bindkey -M viins '\eOA' history-substring-search-up

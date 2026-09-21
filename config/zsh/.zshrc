@@ -82,42 +82,47 @@ if [[ $TERM != dumb ]]; then
 
   ## Bootstrap zpm
   export ZPM_DIR="${ZPM_DIR:-${XDG_DATA_HOME:-~/.local/share}/zpm}"
-  if [[ ! -f $ZPM_DIR/zpm.zsh ]]; then
+  if [[ ! -f $ZPM_DIR/zpm.zsh ]] && (( $+commands[git] )); then
     echo "Installing zpm-zsh/zpm"
     git clone --recursive https://github.com/zpm-zsh/zpm "$ZPM_DIR"
   fi
-  source $ZPM_DIR/zpm.zsh
+  [[ -f $ZPM_DIR/zpm.zsh ]] && source $ZPM_DIR/zpm.zsh
 
-  # fzf's shell integration comes from the nix module
   if (( $+commands[fzf] )); then
-    source "$(fzf-share)/key-bindings.zsh"
-    source "$(fzf-share)/completion.zsh"
+      # fzf-share is a nixpkgs-ism
+    hey.cache fzf --zsh 2>/dev/null || if (( $+commands[fzf-share] )); then
+      source "$(fzf-share)/key-bindings.zsh"
+      source "$(fzf-share)/completion.zsh"
+    fi
   fi
 
-  # One `zpm load` per plugin, deliberately: load order is important to ensure
-  # these packages cooperate.
-  zpm load jeffreytse/zsh-vi-mode
-  zpm load zdharma-continuum/fast-syntax-highlighting
-  # No `fpath:/src` needed (it'll break zpm, which finds the completions there
-  # on its own).
-  zpm load zsh-users/zsh-completions
-  zpm load zsh-users/zsh-autosuggestions
-  zpm load dxrcy/zsh-history-substring-search
-  zpm load romkatv/powerlevel10k
-  zpm load hlissner/zsh-autopair
+  # No git, no network, or a first run on a host I've infected: no plugins, and
+  # the rest of this file still has to work. $functions, not $commands -- zpm
+  # is a shell function, so $commands would never have found it, plugins or no.
+  if (( $+functions[zpm] )); then
+    # One `zpm load` per plugin, deliberately: load order is important to ensure
+    # these packages cooperate.
+    zpm load jeffreytse/zsh-vi-mode
+    zpm load zdharma-continuum/fast-syntax-highlighting
+    # No `fpath:/src` needed (it'll break zpm, which finds the completions there
+    # on its own).
+    zpm load zsh-users/zsh-completions
+    zpm load zsh-users/zsh-autosuggestions
+    zpm load dxrcy/zsh-history-substring-search
+    zpm load romkatv/powerlevel10k
+    zpm load hlissner/zsh-autopair
+  elif (( ! $+functions[compdef] )); then
+    # Without zpm, nobody runs compinit, so...
+    autoload -Uz compinit
+    compinit -i -C -d "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump-$ZSH_VERSION"
+  fi
 
-  ## My dotfiles
-  # zpm compiles its own (and fpath), but these must be handled manually:
-  for _zfile in ${0:a:h}/{completion,keybinds,aliases,prompt}.zsh; do
-    [[ -e $_zfile.zwc && $_zfile.zwc -nt $_zfile ]] || zcompile -R -- $_zfile 2>/dev/null
-    source $_zfile
-  done
-  unset _zfile
+  # zpm compiles its own (and fpath), but my zsh libs must be compiled manually.
+  hey.load ${${(%):-%x}:A:h}/{completion,keybinds,aliases,prompt}.zsh
 
   hey.cache dircolors -b
   hey.cache zoxide init zsh
-
-  autopair-init
+  (( $+functions[autopair-init] )) && autopair-init
 
   # CD-able vars
   cfg=~/.config

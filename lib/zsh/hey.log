@@ -4,11 +4,11 @@
 # Prints MESSAGE to stderr when $HEYDEBUG is at or above the given level (1).
 # Reads stdin if MESSAGE is omitted.
 
-[[ -z $HEYDEBUG ]] && return
+[[ -z ${HEYDEBUG:-} ]] && return
 
 local color=blue
 while true; do
-  case $1 in
+  case ${1-} in
     -c) color=$2; shift 2 ;;
     -[123]) (( ${1#-} > HEYDEBUG )) && return; shift ;;
     --) shift; break ;;

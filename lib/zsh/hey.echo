@@ -7,7 +7,7 @@
 local -a prefix color nl
 zparseopts -E -D -- p:=prefix c:=color n=nl || return
 [[ $1 == -- ]] && shift
-[[ -n $HEYPIPE ]] && color=()
+[[ -n ${HEYPIPE:-} ]] && color=()
 
 # Only the colour spec goes through prompt expansion; the message is printed
 # verbatim, so a % in it can't be read as an escape.
