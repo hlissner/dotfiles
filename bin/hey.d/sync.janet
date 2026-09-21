@@ -9,11 +9,12 @@
 # DESCRIPTION:
 #   Dynamically constructs --option {substituters,trusted-public-keys} from the
 #   nix config, ensurign that there is no binary cache miss on the first
-#   invocation of `hey sync`.
+#   invocation of `hey sync` (use --fast to skip that).
 #
 # OPTIONS:
 #   --fast
-#     Skip nix's evaluation checks.
+#     Skip nix's evaluation checks and building the substitutors options from
+#     nix.settings.
 #   --host HOST @hosts
 #     Build the config of another host.
 #
@@ -132,7 +133,10 @@
            --show-trace
            --impure
            --flake ,(string (path :home) "#" host)
-           ,;(cache-options-of (string (path :home) "#nixosConfigurations." host))
+           # An extra eval of the whole host config is the last thing --fast wants.
+           ,;(if fast?
+               []
+               (cache-options-of (string (path :home) "#nixosConfigurations." host)))
            ,;(opts fast?)
            ,;(opts (or cmd "switch"))
            ,;args))))
