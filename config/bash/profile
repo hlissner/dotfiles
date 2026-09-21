@@ -1,0 +1,4 @@
+#!/usr/bin/bash
+# For login shells
+
+[ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"

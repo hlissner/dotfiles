@@ -1,0 +1,170 @@
+#!/usr/bin/bash
+# A bash approximation of my zsh config, intentionally designed to be
+# self-contained and minimalistic, and intended for remotes without zsh.
+#
+# Use `hey @bash infect SSHHOST` to "infect" a remote with this config.
+
+[[ $- != *i* ]] && return   # interactive only!
+
+: ${XDG_CONFIG_HOME:=$HOME/.config}
+: ${XDG_CACHE_HOME:=$HOME/.cache}
+: ${XDG_DATA_HOME:=$HOME/.local/share}
+: ${XDG_STATE_HOME:=$HOME/.local/state}
+export XDG_CONFIG_HOME XDG_CACHE_HOME XDG_DATA_HOME XDG_STATE_HOME
+
+
+## Options
+shopt -s extglob            # EXTENDED_GLOB
+shopt -s globstar           # ** , which zsh has had since before I was born
+shopt -s nocaseglob         # no CASE_GLOB
+shopt -s cdable_vars        # CDABLE_VARS
+shopt -s checkwinsize       # bash, unlike zsh, needs telling
+shopt -u huponexit          # no HUP
+set -o notify               # NOTIFY
+IGNOREEOF=1                 # IGNOREEOF, less patient than zsh's ten
+
+
+## History
+HISTFILE="$XDG_STATE_HOME/bash/history"
+HISTSIZE=1000
+HISTFILESIZE=1000
+HISTCONTROL=ignorespace:ignoredups:erasedups   # HIST_IGNORE_(SPACE|ALL_DUPS)
+HISTTIMEFORMAT='%F %T '                        # EXTENDED_HISTORY
+shopt -s histappend         # APPEND_HISTORY
+shopt -s cmdhist            # HIST_REDUCE_BLANKS, roughly
+shopt -s histverify         # HIST_VERIFY
+[[ -d ${HISTFILE%/*} ]] || mkdir -p -m 700 "${HISTFILE%/*}"
+
+
+## Prompt
+__prompt() {
+  local status=$?
+  history -a   # INC_APPEND_HISTORY
+
+  local reset=$'\001\e[0m\002' blue=$'\001\e[34m\002' \
+        grey=$'\001\e[90m\002' green=$'\001\e[32m\002' red=$'\001\e[31m\002'
+
+  local git=
+  if command -v git >/dev/null; then
+    local branch
+    branch=$(git symbolic-ref --short HEAD 2>/dev/null ||
+             git rev-parse --short HEAD 2>/dev/null)
+    if [[ -n $branch ]]; then
+      [[ -n $(git status --porcelain -uno --ignore-submodules 2>/dev/null) ]] &&
+        branch+='*'
+      git=" ${grey}${branch}${reset}"
+    fi
+  fi
+
+  local caret=$green
+  (( status != 0 )) && caret=$red
+  PS1="\n${blue}\w${reset}${git}\n${caret}❯${reset} "
+}
+PROMPT_COMMAND=__prompt
+
+
+## Completion
+# Whatever the distro happens to ship. Not going to vendor bash-completion!
+if ! shopt -oq posix; then
+  for _f in /usr/share/bash-completion/bash_completion \
+            /etc/bash_completion \
+            /opt/homebrew/etc/profile.d/bash_completion.sh; do
+    [[ -r $_f ]] && { . "$_f"; break; }
+  done
+  unset _f
+fi
+bind 'set completion-ignore-case on'
+bind 'set completion-prefix-display-length 3'
+bind 'set show-all-if-ambiguous on'     # AUTO_LIST
+bind 'set menu-complete-display-prefix on'
+bind 'set colored-stats on'
+bind 'set colored-completion-prefix on'
+
+
+## Keybinds
+# zsh-vi-mode, minus everything that made it worth using
+set -o vi
+bind 'set bell-style none'         # no BEEP BEEP, NOT A SHEEP
+bind -m vi-insert '"\C-a": beginning-of-line'
+bind -m vi-insert '"\C-e": end-of-line'
+bind -m vi-insert '"\C-b": backward-word'
+bind -m vi-insert '"\C-f": forward-word'
+bind -m vi-insert '"\C-k": kill-line'
+bind -m vi-insert '"\C-x\C-v": complete-command'
+bind -m vi-insert '"\e[A": history-search-backward'
+bind -m vi-insert '"\eOA": history-search-backward'
+bind -m vi-insert '"\e[B": history-search-forward'
+bind -m vi-insert '"\eOB": history-search-forward'
+
+## External programs
+if command -v fd >/dev/null; then
+  export FZF_DEFAULT_OPTS="--reverse --ansi"
+  export FZF_DEFAULT_COMMAND="fd ."
+  export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+  export FZF_ALT_C_COMMAND="fd -t d . $HOME"
+fi
+if command -v bat >/dev/null; then
+  export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+  export MANROFFOPT='-c'
+fi
+# No hey.cache out here, so these are three forks a shell. Bash is the fallback
+# config; it doesn't have to be fast, it has to work.
+command -v dircolors >/dev/null && eval "$(dircolors -b)"
+command -v zoxide >/dev/null && eval "$(zoxide init bash)"
+command -v fzf >/dev/null && eval "$(fzf --bash 2>/dev/null)"
+
+
+## Aliases
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias q=exit
+alias clr=clear
+alias sudo='sudo '
+alias rm='rm -i'
+alias mkdir='mkdir -pv'
+alias wget='wget -c'
+alias path='echo -e ${PATH//:/\\n}'
+alias ports='netstat -tulanp'
+alias mk=make
+alias gurl='curl --compressed'
+alias l='ls -lhF --color=auto'
+alias ll='ls -alhF --color=auto'
+alias la='LC_COLLATE=C ls -alF --color=auto'
+
+# An rsync that respects gitignore
+rcp() {
+  rsync -azPJ \
+    --include=.git/ \
+    --filter=':- .gitignore' \
+    --filter=":- $XDG_CONFIG_HOME/git/ignore" \
+    "$@"
+}
+alias rcpd='rcp --delete --delete-after'
+alias rcpu='rcp --chmod=go='
+alias rcpdu='rcpd --chmod=go='
+
+mkcd() { mkdir "$1" && cd "$1"; }
+
+if command -v systemctl >/dev/null; then
+  alias jc='journalctl -xe'
+  alias jcu='journalctl -xe -u'
+  alias sc=systemctl
+  alias scu='systemctl --user'
+  alias scur='systemctl --user restart'
+  alias scus='systemctl --user status'
+  alias ssc='sudo systemctl'
+  alias sscr='sudo systemctl restart'
+  alias sscs='sudo systemctl status'
+fi
+
+if command -v nix >/dev/null; then
+  alias n=nix
+  alias nf='nix flake'
+  alias nr='nix repl'
+  alias ns='nix search'
+  alias nsp='nix search nixpkgs'
+fi
+
+# Anything host-specific I don't want to push around
+[[ -r $XDG_CONFIG_HOME/bash/local.bash ]] && . "$XDG_CONFIG_HOME/bash/local.bash"
