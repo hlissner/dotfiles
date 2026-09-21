@@ -25,8 +25,8 @@ let
     })
     (fetchFromGitHub {
       owner = "janet-lang"; repo = "spork";
-      rev = "0667f96b74de52747ffe5e19e185563ebf53816b";
-      hash = "sha256-F/wU9XBvsL56JySUzcYdC/w+ETn9c2L3AdEgs5tInyY=";
+      rev = "ff672b677b52c995f39b50c5f2114f79bd4e601c";
+      hash = "sha256-DnsEL478BKTviCTP2N9OgrexMvbWrwpXMrIvOiWBGbM=";
     })
     (fetchFromGitHub {
       owner = "janet-lang"; repo = "sqlite3";
