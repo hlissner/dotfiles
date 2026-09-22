@@ -59,6 +59,22 @@ in {
         python    # for hey @noctalia reset & some Noc plugins
       ];
 
+      # For `hey @rofi iconmenu`
+      home.dataFile."hey/tabler-icons".source =
+        let src = pkgs.fetchFromGitHub {
+              owner = "tabler"; repo = "tabler-icons";
+              rev = "v3.34.0";
+              sparseCheckout = [ "icons" ];   # 3.5M of a 50M repo
+              hash = "sha256-oP6nfTHlMVT6nO+ntSQFewBT2hMCkm2rq4+pTlAtYs8=";
+            };
+        in pkgs.runCommand "tabler-icons" {} ''
+          mkdir -p $out
+          cp -t $out ${src}/icons/outline/*.svg
+          for f in ${src}/icons/filled/*.svg; do
+            cp "$f" "$out/$(basename "$f" .svg)-filled.svg"
+          done
+        '';
+
       modules.shell.zsh.rcFiles = [ "${hey.configDir}/noctalia/aliases.zsh" ];
     }
 
