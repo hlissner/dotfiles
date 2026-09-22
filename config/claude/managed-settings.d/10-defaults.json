@@ -2,7 +2,26 @@
   "env": {
     "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
     "DISABLE_GROWTHBOOK": "1",
-    "DO_NOT_TRACK": "1"
+    "DO_NOT_TRACK": "1",
+    "MAX_MCP_OUTPUT_TOKENS": "25000"
+  },
+
+  "outputStyle": "Concise",
+  "spinnerTipsEnabled": false,
+  "disableClaudeAiConnectors": true,
+
+  "skillOverrides": {
+    "dataviz": "off",
+    "claude-api": "off",
+    "code-review": "user-invocable-only",
+    "simplify": "user-invocable-only",
+    "security-review": "user-invocable-only",
+    "fewer-permission-prompts": "user-invocable-only",
+    "init": "user-invocable-only",
+    "loop": "user-invocable-only",
+    "schedule": "user-invocable-only",
+    "run": "user-invocable-only",
+    "workflow-authoring": "name-only"
   },
 
   "permissions": {
@@ -181,10 +200,6 @@
         "~/.config/ssh/host_ed25519.pub",
         "~/.config/ssh/id_ed25519.pub",
         "/nix/store"
-      ],
-      "denyWrite": [
-        "~/projects/config/dotfiles/.claude",
-        "~/projects/config/dotfiles/config/claude"
       ],
       "allowWrite": [
         "/run/user/1000/hey",
