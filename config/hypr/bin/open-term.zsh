@@ -29,10 +29,6 @@ local idx=${@[(i)(--)]}
 local -a footopts=( ${@[1,$idx-1]} )
 local -a tmuxopts=( ${@[$idx+1,-1]} )
 
-if [[ "$(hey .get-activeworkspace .name)" == special:* ]]; then
-  offset=$(( offset + 1 ))
-fi
-
 if [[ $title ]]; then
   footopts=( -T "${title[2]}" ${footopts[@]} )
   tmuxopts=( new -A -s "${title[2]}" ${tmuxopts[@]} )
@@ -47,6 +43,6 @@ fi
 fontname="${font[2]%%:*}"
 fontsize="${${font[2]//*:*size=}%%:*}"
 fontsize="${fontsize:-9}"
-footopts+=( -o "main.font=${fontname:-JetBrainsMono Nerd Font}:size=$(( fontsize + offset ))" ${opts[@]} )
+footopts+=( -o "main.font=${fontname:-JetBrainsMono Nerd Font}:size=$fontsize" ${opts[@]} )
 
 hey.do foot "${footopts[@]}" -- tmux ${tmuxopts[@]}
