@@ -52,19 +52,54 @@ rofi.powermenu.poweroff() {
   hey.do systemctl poweroff;
 }
 
+# bootctl entries are noisy and pack too much into rofi I can't see the
+# important things, so massage the list a bit.
+.bootentries() {
+  local icons=${XDG_CONFIG_HOME:-$HOME/.config}/rofi/icons
+  local booted=$(readlink -f /run/booted-system)
+  local id title version options default icon gen desc date kernel nixos
+  local -a tags
+  while IFS=$'\t' read -r id title version options default; do
+    title=${title:-$id}
+    title=${${${title//&/&amp;}//</&lt;}//>/&gt;}  # -markup-rows is on
+    icon=$icons/linux.svg
+    [[ $title == *[Ww]indows* ]]  && icon=$icons/windows.svg
+    [[ $title == *[Mm]emtest* ]]  && icon=gnome-dev-memory  # a RAM stick
+    [[ $title == *[Ff]irmware* ]] && icon=preferences-system-symbolic
+    if [[ $version =~ '^Generation ([0-9]+) (.*), built on ([0-9-]+)$' ]]; then
+      icon=$icons/nixos.svg
+      gen=$match[1] desc=$match[2] date=$match[3]
+      # "NixOS Zokor 26.11.20260917.e554fab (Linux 7.2.6-xanmod1)"
+      [[ $desc =~ '\(Linux ([^)]+)\)' ]] && kernel="Linux $match[1]" || kernel=
+      desc=${desc%% \(Linux*}
+      [[ $desc =~ '[0-9]+(\.[0-9]+)+' ]] && nixos=$MATCH || nixos=$desc
+      tags=()
+      [[ $options == *init=$booted/init* ]] && tags+=(running)
+      [[ $default == true ]] && tags+=(default)
+      title=$(printf '<b>%-5s</b> %-15s <span alpha="55%%">%-20s %s</span>%s' \
+                     "$gen" "$nixos" "$kernel" "$date" \
+                     "${tags:+ <i>${(j:, :)tags}</i>}")
+    fi
+    echo -e "$title\0icon\x1f$icon\x1fmeta\x1f$id"
+  done
+}
+
 rofi.powermenu.reboot-into() {
-  local entries=$(bootctl list --json=short)
-  IFS=$'\n' local -a lines=( $(jq -r '.[] | (.id+";"+.title+";"+.version)' <<<$entries) )
-  local i=$(for line in ${lines[@]}; do
-              IFS=\; read id title version <<<"$line"
-              title=${title:-$id}
-              [[ $version ]] && title="$title ($version)"
-              echo -e "$title\0icon\x1ffolder\x1fmeta\x1f$id"
-            done | .rofi -format d)
-  hey.log "Rebooting into: ${lines[$i]}"
+  # type1  = an entry file on the ESP
+  # auto   = sd-boot's own (Windows, firmware setup)
+  # loader = dead boot loader entry (leftover from rebuilds)
+  local -a lines=( ${(f)"$(bootctl list --json=short |
+                           jq -r '.[] | select(.type != "loader")
+                                      | [.id, .title, .version, (.options // ""), .isDefault] | @tsv')"} )
+  local i=$(printf '%s\n' $lines | .bootentries | .rofi -markup-rows -format d)
+  # .rofi's exit only kills its own subshell, and falling through from here
+  # reboots the machine. Escape should mean escape.
+  [[ $i ]] || exit 1
+  local id title version
+  IFS=$'\t' read -r id title version _ <<<$lines[$i]
+  hey.log "Rebooting into: ${version:-$title}"
   hey hook on-rebooting
-  hey.do systemctl reboot --boot-loader-entry \
-    $(jq -r --arg id "${lines[$i]/;*}" '.[] | select(.id == $id) | .id' <<<$entries)
+  hey.do systemctl reboot --boot-loader-entry $id
 }
 
 local cmds=(
