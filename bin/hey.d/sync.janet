@@ -129,6 +129,9 @@
          --no-update-lock-file
          ,(path :home))
     (let [host (or host (flake :host))]
+      (unless (do? $? sudo --validate)
+        # Prompt for sudo password sooner than later
+        (abort "Never got root; stopping before the long part"))
       (do? $? sudo --preserve-env=HEYENV nixos-rebuild
            --show-trace
            --impure
