@@ -66,11 +66,8 @@ hl.config({
   general = {
     gaps_in = 0,
     gaps_out = 0,
-    border_size = 1,
     no_focus_fallback = true,
-    layout = "master",
-    allow_tearing = false,
-    resize_on_border = false
+    layout = "scrolling"
   },
 
   input = {
@@ -118,12 +115,6 @@ hl.config({
 
   animations = {
     enabled = true
-  },
-
-  dwindle = {
-    -- pseudotile = yes # master switch for pseudotiling. Enabling is bound to
-    -- mainMod + P in the keybinds section below
-    preserve_split = true  -- you probably want this
   },
 
   -- See https://wiki.hyprland.org/Configuring/Master-Layout/ for more
@@ -440,3 +431,70 @@ hl.bind("XF86AudioPlay",  hl.dsp.exec_cmd("noctalia msg media toggle"))
 hl.bind("XF86AudioPause", hl.dsp.exec_cmd("noctalia msg media toggle"))
 hl.bind("XF86AudioNext",  hl.dsp.exec_cmd("noctalia msg media next"))
 hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd("noctalia msg media previous"))
+
+
+-- * Plugins
+
+-- We have niri at home
+if hl.plugin.scrolloverview then
+  local so = hl.plugin.scrolloverview
+  hey.plugins = hey.plugins or {}
+  hey.plugins.so = require("lib/scrolloverview")
+  hl.config({
+    plugin = {
+      scrolloverview = {
+        scale = 0.6,
+        layout = "auto",       -- follows each monitor's orientation
+        workspace_gap = 75,
+        gesture_distance = 300,
+        wallpaper = 2,
+        blur = true,
+        cross_monitor_drag = true,
+        shadow = {
+          enabled = true,
+          range = 50,
+          color = 0x1196cdf8
+        },
+        input = {
+          touchpad_scroll_factor = 2.5
+        }
+      }
+    }
+  })
+
+  so.gesture({ fingers = 4, direction = "pinch" })
+
+  hl.bind("SUPER + w", function()
+    so.overview("toggle all")
+  end)
+
+  hl.define_submap("scrolloverview", function()
+    -- Same shape as the hjkl binds outside the overview: SHIFT moves, CTRL
+    -- crosses monitors. The difference is that plain hjkl crosses them too,
+    -- once the selection has nowhere left to go on this one.
+    for key, dir in pairs({ h = "left", j = "down", k = "up", l = "right" }) do
+      hl.bind(key,                       hey.plugins.so.navigate(dir))
+      hl.bind("SHIFT + " .. key,         hey.plugins.so.move(dir))
+      hl.bind("CTRL + " .. key,          hl.dsp.focus({ monitor = dir }))
+      hl.bind("CTRL + SHIFT + " .. key,  hey.plugins.so.move_to_edge(dir))
+    end
+
+    for i, spec in ipairs({ 700, 0.4, 0.5, 0.6, 0.8, 1.0 }) do
+      hl.bind(tostring(i), hey.dsp.resize_width_to(spec))
+    end
+
+    hl.bind("Return", function() so.overview("select"); so.overview("off") end)
+    hl.bind("Space", so.overview("select"))
+    hl.bind("Escape", so.overview("off"))
+    hl.bind("SUPER + w", so.overview("off"))
+    hl.bind("SUPER + q", so.window("close"))
+    hl.bind("mouse:272", function()
+      so.overview("select")
+      so.window("select")
+      so.overview("off")
+    end, { mouse = true })
+    hl.bind("mouse:274", so.window("close"), { mouse = true })
+    -- Don't forward keys to the underlying application!
+    hl.bind("catchall", hl.dsp.no_op(), { ignore_mods = true })
+  end)
+end

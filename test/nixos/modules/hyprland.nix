@@ -53,6 +53,23 @@ in {
     expected = true;
   };
 
+  ## Plugins.
+
+  # There's no programs.hyprland.plugins to lean on, so the generated file
+  # dlopens them itself -- and it has to do it above `require("hyprland")`,
+  # because config/hypr/ reaches straight for hl.plugin.*. Losing the line
+  # doesn't fail a build; the guards there just skip the overview forever.
+  testPluginsLoadBeforeTheConfig =
+    let lua = one.home.configFile."hypr/hyprland.lua".text;
+        preamble = head (splitString ''require("hyprland")'' lua);
+    in {
+      expr = {
+        overview = hasInfix "/lib/libscrolloverview.so" lua;
+        early    = hasInfix "hl.plugin.load(" preamble;
+      };
+      expected = { overview = true; early = true; };
+    };
+
   # Monitors reach config/hypr/ as data, overrides and all.
   testMonitorsReachHeyInfo = {
     expr =

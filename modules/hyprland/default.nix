@@ -11,6 +11,7 @@ in {
   options.modules.hyprland = with types; {
     enable = mkBoolOpt false;
     extraConfig = mkOpt lines "";
+    plugins = mkOpt (listOf package) [];
     monitors = mkOpt (listOf (submodule {
       options = {
         output = mkOpt str "";
@@ -37,6 +38,12 @@ in {
         package = flake.hyprland;
         portalPackage = flake.xdg-desktop-portal-hyprland;
       };
+
+      # Niri-style overview. Nothing caches this one, so every hyprland bump
+      # buys a two-minute compile.
+      modules.hyprland.plugins = [
+        hey.inputs.scroll-overview.packages.${pkgs.stdenv.hostPlatform.system}.scrolloverview
+      ];
 
       nix.settings = {
         substituters = [ "https://hyprland.cachix.org" ];
@@ -96,6 +103,11 @@ in {
             hl.exec_cmd("${pkgs.xrandr}/bin/xrandr --output " .. hey.hypr.primaryMonitor .. " --primary")
           end)
         end
+
+        -- Before config/hypr/, which reaches for hl.plugin.*. A plugin can only
+        -- be loaded once per session, so this is a restart, not a `hey reload`.
+        ${concatMapStringsSep "\n"
+            (p: ''hl.plugin.load("${p}/lib/lib${p.pname}.so")'') cfg.plugins}
 
         require("hyprland")
         pcall(require, "hyprland-post")

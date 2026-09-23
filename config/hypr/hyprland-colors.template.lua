@@ -29,3 +29,15 @@ hl.config({
         },
     },
 })
+
+if hl.plugin.scrolloverview then
+  hl.config({
+    plugin = {
+      scrolloverview = {
+        shadow = {
+          color = primary
+        }
+      }
+    }
+  })
+end

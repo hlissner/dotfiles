@@ -23,6 +23,9 @@
       home-manager.inputs.nixpkgs.follows = "nixpkgs";
       agenix.url = "github:ryantm/agenix";
       agenix.inputs.nixpkgs.follows = "nixpkgs";
+      scroll-overview.url = "github:yayuuu/hyprland-scroll-overview/new-release";
+      scroll-overview.inputs.hyprland.follows = "hyprland";
+      scroll-overview.inputs.nixpkgs.follows = "nixpkgs";
 
       # Extras (imported directly by modules/hosts that need them)
       emacs-overlay.url = "github:nix-community/emacs-overlay";

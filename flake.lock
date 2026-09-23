@@ -115,6 +115,27 @@
         "type": "github"
       }
     },
+    "flake-parts": {
+      "inputs": {
+        "nixpkgs-lib": [
+          "scroll-overview",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1782949081,
+        "narHash": "sha256-vp6Y/Grm98ESt6ceOkWiHWyZRDV3J1RID4w+6NWK9yA=",
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "rev": "17c9d6cdfc60c64f4ee8d306f9bc0b4ccb51481e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -591,7 +612,33 @@
           "hyprland",
           "nixpkgs"
         ],
-        "noctalia": "noctalia"
+        "noctalia": "noctalia",
+        "scroll-overview": "scroll-overview"
+      }
+    },
+    "scroll-overview": {
+      "inputs": {
+        "flake-parts": "flake-parts",
+        "hyprland": [
+          "hyprland"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1789346277,
+        "narHash": "sha256-2TzMdMGobmWPTeRS4Z305/cjlvHPsyN+rLEF86NsZQg=",
+        "owner": "yayuuu",
+        "repo": "hyprland-scroll-overview",
+        "rev": "f08c5f7de06c1165952cc1c5318cf6f5c87140ff",
+        "type": "github"
+      },
+      "original": {
+        "owner": "yayuuu",
+        "ref": "new-release",
+        "repo": "hyprland-scroll-overview",
+        "type": "github"
       }
     },
     "systems": {
