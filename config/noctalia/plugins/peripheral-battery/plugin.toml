@@ -11,8 +11,8 @@
 
 id           = "hey/peripheral-battery"
 name         = "Peripheral Battery"
-version      = "1.0.0"
-plugin_api   = 9
+version      = "1.1.0"
+plugin_api   = 24  # runAsync's argv form, for on_connect/on_disconnect
 author       = "hlissner"
 license      = "MIT"
 dependencies = ["upower", "stdbuf", "bluetoothctl"]
@@ -29,6 +29,33 @@ description_key = "settings.poll_seconds.description"
 default         = 30
 min             = 5
 max             = 600
+
+[[setting]]
+key             = "notify"
+type            = "select"
+label_key       = "settings.notify.label"
+description_key = "settings.notify.description"
+default         = "never"
+options = [
+  { value = "never",      label_key = "settings.notify.options.never" },
+  { value = "both",       label_key = "settings.notify.options.both" },
+  { value = "connect",    label_key = "settings.notify.options.connect" },
+  { value = "disconnect", label_key = "settings.notify.options.disconnect" },
+]
+
+[[setting]]
+key             = "on_connect"
+type            = "string"
+label_key       = "settings.on_connect.label"
+description_key = "settings.on_connect.description"
+default         = ""
+
+[[setting]]
+key             = "on_disconnect"
+type            = "string"
+label_key       = "settings.on_disconnect.label"
+description_key = "settings.on_disconnect.description"
+default         = ""
 
 [[service]]
 id    = "poll"

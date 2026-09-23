@@ -175,3 +175,7 @@ battery_display = "hidden"
 
 [plugin_settings."aristides/udiskie"]
 manager_open_near_click = true
+
+[plugin_settings."hey/peripheral-battery"]
+on_connect = "hey hook -f on-peripheral -f \"$model\" \"$percent\""
+on_disconnect = "hey hook -f on-peripheral --off \"$model\" \"$percent\""

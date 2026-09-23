@@ -143,6 +143,83 @@ local function dropDisconnected(devices, text)
   end
 end
 
+local PREAMBLE = "event=$1 device=$2 model=$3 vendor=$4 " ..
+  "serial=$5 native=$6 path=$7 percent=$8 state=$9; "
+
+local function label(dev)
+  if dev.model ~= "" then
+    return dev.model
+  elseif dev.vendor ~= "" then
+    return dev.vendor
+  end
+  return dev.native ~= "" and dev.native or dev.path
+end
+
+local function fire(event, dev)
+  local cmd = noctalia.getConfig(`on_{event}`)
+  if cmd == nil or cmd == "" then
+    return
+  end
+  noctalia.runAsync({
+    "/bin/sh", "-c", PREAMBLE .. cmd, "peripheral-battery",
+    event, key(dev), dev.model, dev.vendor, dev.serial, dev.native, dev.path,
+    tostring(math.floor(dev.percent + 0.5)), dev.state,
+  }, function(result)
+    if result.exitCode ~= 0 then
+      noctalia.log(`on_{event} exited {result.exitCode}: {noctalia.string.trim(result.stderr)}`)
+    end
+  end)
+end
+
+local function announce(event, dev)
+  local notify = noctalia.getConfig("notify") or "never"
+  if notify == "both" or notify == event then
+    noctalia.notify(label(dev), noctalia.tr(`notify.{event}`, {
+      percent = tostring(math.floor(dev.percent + 0.5)),
+    }))
+  end
+  fire(event, dev)
+end
+
+-- Connect/disconnect is the difference between two settled scans, not upower's
+-- own added/removed.
+local known = nil
+
+local function anyUpower(byKey)
+  for _, dev in pairs(byKey) do
+    if dev.path ~= "" then
+      return true
+    end
+  end
+  return false
+end
+
+local function diff(devices, upowerOk)
+  local now = {}
+  for _, dev in ipairs(devices) do
+    now[key(dev)] = dev
+  end
+  -- A dead upowerd takes every BlueZ device off the list at once. That's one
+  -- outage, not five disconnects.
+  if not upowerOk and known ~= nil and anyUpower(known) then
+    return
+  end
+  -- The first scan is only a baseline; don't announce the already paired
+  if known ~= nil then
+    for k, dev in pairs(now) do
+      if known[k] == nil then
+        announce("connect", dev)
+      end
+    end
+    for k, dev in pairs(known) do
+      if now[k] == nil then
+        announce("disconnect", dev)
+      end
+    end
+  end
+  known = now
+end
+
 local scanning, queued = false, false
 local scan
 
@@ -154,8 +231,10 @@ scan = function()
   scanning = true
 
   local devices, seen = {}, {}
+  local upowerOk = false
 
   local function publish()
+    diff(devices, upowerOk)
     noctalia.state.set("batteries", devices)
     scanning = false
     if queued then
@@ -187,6 +266,7 @@ scan = function()
   -- leaves the sysfs half standing.
   local started = noctalia.runAsync("upower -d", function(result)
     if result.exitCode == 0 then
+      upowerOk = true
       fromUpower(result.stdout, devices, seen)
     end
     filterBluez()
