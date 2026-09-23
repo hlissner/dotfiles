@@ -37,7 +37,7 @@ end = [ "screencast", "timer", "tray", "weather", "group:devices", "group:system
     fill = "surface_variant"
     foreground = "primary"
     id = "system"
-    members = [ "caffeine", "battery", "disks", "network", "bluetooth", "input_volume", "output_volume" ]
+    members = [ "battery", "caffeine", "disks", "network", "bluetooth", "input_volume", "output_volume" ]
     opacity = 1.0
     padding = 8.0
 
