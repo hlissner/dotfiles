@@ -1,6 +1,7 @@
 -- config/hypr/lib/dsp.lua
 
-local util = require("lib/util")
+local util  = require("lib/util")
+local match = require("lib/match")
 
 local M = {}
 
@@ -24,16 +25,15 @@ function M.dpms(state)
 end
 
 -- Clamp audio increment/decrement to the nearest multiple of STEP in the
--- direction it's being adjusted. OCD-maxxing.
+-- direction it's being adjusted. OCD-maxxing. Do the arithmetic in the shell to
+-- spare us IPC overhead (hurts especially bad if you hold the key down).
 local function snap_volume(dir, step, read, set)
-  return hl.dsp.exec_cmd(
-    -- Do arithmetic in the shell to spare us the IPC cost of reading the volume
-    -- first (hurts if you hold down the key).
-    "v=$(" .. read .. "); [ -n \"$v\" ] || exit 0; s=" .. (step or 10) .. "; " ..
-    "if [ " .. dir .. " = up ]; then n=$((v - v % s + s)); " ..
-    "else r=$((v % s)); [ \"$r\" -eq 0 ] && r=$s; n=$((v - r)); fi; " ..
-    "[ \"$n\" -lt 0 ] && n=0; [ \"$n\" -gt 100 ] && n=100; " ..
-    set .. " \"$n\"")
+  local n = dir == "up" and "$((v - v % s + s))"
+                         or "$((v - (v % s == 0 ? s : v % s)))"
+  return hl.dsp.exec_cmd((
+    [[v=$(%s); [ -n "$v" ] || exit 0; s=%d; n=%s; ]] ..
+    [[[ "$n" -lt 0 ] && n=0; [ "$n" -gt 100 ] && n=100; %s]]
+  ):format(read, step or 10, n, set:format("$n")))
 end
 
 function M.volume(dir, step)
@@ -41,7 +41,7 @@ function M.volume(dir, step)
     -- Noctalia has no volume getter, but its OSD tracks PipeWire, so it still
     -- shows for a change made behind its back.
     [[wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{printf "%d", $2 * 100}']],
-    "noctalia msg volume-set")
+    "noctalia msg volume-set %s")
 end
 
 -- Requires playerctl
@@ -49,26 +49,55 @@ function M.player_volume(dir, step)
   return snap_volume(dir, step,
     [[playerctl volume | awk '{printf "%d", $1 * 100}']],
     -- playerctl wants 0..1; snap_volume hands over 0..100.
-    [[playerctl volume $(awk "BEGIN { print $n / 100 }") #]])
+    [[playerctl volume $(awk "BEGIN { print %s / 100 }")]])
 end
 
--- One bind, a dispatcher per layout.
-function M.layout(by_layout)
-  return function()
-    local layout = util.active_layout()
-    if not layout then return end
-    if by_layout[layout] then
-      hl.dispatch(by_layout[layout])
-    else
-      -- exec_cmd is sh, not zsh, so no hey.toast here.
-      hl.exec_cmd([[noctalia msg notification-show '{"app_name":"hey","urgency":"critical","summary":"No keybind for ]] .. layout .. [[ layout"}']])
+-- A case statement for dispatcher, basically. Go down MATCHERS and run the
+-- action of the first matcher that applies. A matcher is hl.window_rule's
+-- `match` table plus an `action`; anything that isn't one is an action with no
+-- conditions, which is how a fallback is specified (put it last). No-op's
+-- otherwise.
+local function selector(name)
+  local over = name == "over"
+  return function(...)
+    local rules = {}
+    for i = 1, select("#", ...) do
+      local arg, spec = select(i, ...), nil
+      -- A dispatcher is a table too, but a marked one -- its metatable's
+      -- __call is the "use hl.dispatch(dispatcher)" scold -- so a matcher is
+      -- the bare literal.
+      if type(arg) == "table" and getmetatable(arg) == nil then
+        spec, arg = arg, arg.action
+      end
+      if arg == nil then
+        error(("hey.dsp.%s: matcher %d has no action"):format(name, i), 0)
+      end
+      rules[#rules + 1] = { action = arg, tests = spec and match.compile(spec) }
+    end
+
+    return function()
+      -- Pointing at nothing is an answer, so no falling back to focus here.
+      local win
+      if over then win = util.window_at() else win = hl.get_active_window() end
+      -- The cursor can be parked over a monitor running a different layout.
+      local layout = util.active_layout(over and win and win.monitor)
+      for _, r in ipairs(rules) do
+        if not r.tests or match.ok(r.tests, win, layout) then
+          -- If it doesn't quack like a function...
+          if type(r.action) == "function" then r.action(win) else hl.dispatch(r.action) end
+          return
+        end
+      end
     end
   end
 end
 
--- toggle_special on scratchpads that's already on another monitor drags it over
--- to this one. I'd rather we go to it, instead! Only if it's focused does it
--- dismiss it.
+M.on   = selector("on")    -- tests against the currently focused app
+M.over = selector("over")  -- tests against the app under the cursor
+
+-- toggle_special on a scratchpad that's already on another monitor drags it
+-- over to this one. I'd rather we go to it! Only dismiss it if it's already
+-- focused.
 function M.scratchpad(name)
   local special = "special:" .. name
   return function()
@@ -76,20 +105,19 @@ function M.scratchpad(name)
     -- scratchpad still names the monitor it was last shown on.
     local host, ws
     for _, m in ipairs(hl.get_monitors() or {}) do
-      ws = m.active_special_workspace
-      if ws and ws.name == special then host = m break end
+      local w = m.active_special_workspace
+      if w and w.name == special then host, ws = m, w break end
     end
 
     -- By name: named workspaces have no id to compare.
     local win = host and hl.get_active_window()
-    local inside = win and win.workspace and win.workspace.name == special
-    if not win or inside then
+    if not win or (win.workspace and win.workspace.name == special) then
       hl.dispatch(hl.dsp.workspace.toggle_special(name))
-      return
+    else
+      -- last_window is nil for a pad that's up but empty; go to the monitor.
+      local go = host.focused and ws.last_window
+      hl.dispatch(hl.dsp.focus(go and { window = go } or { monitor = host }))
     end
-
-    local go = host.focused and hl.dsp.focus({ window = ws.last_window })
-    hl.dispatch(go or hl.dsp.focus({ monitor = host }))
   end
 end
 
@@ -107,10 +135,17 @@ function M.resize_width_to(spec)
     if layout == "scrolling" then
       hl.dispatch(hl.dsp.layout("colresize " .. frac))
     elseif layout == "master" then
-      hl.dispatch(hl.dsp.layout("mfact exact " .. (w.layout.is_master and frac or 1 - frac)))
+      local master = w.layout and w.layout.is_master
+      hl.dispatch(hl.dsp.layout("mfact exact " .. (master and frac or 1 - frac)))
     else
       hl.dispatch(hl.dsp.window.resize({ x = math.floor(px), y = w.size.y }))
     end
+  end
+end
+
+function M.send_key(mods, key)
+  return function(w)
+    hl.dispatch(hl.dsp.send_shortcut({ mods = mods, key = key, window = w }))
   end
 end
 

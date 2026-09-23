@@ -35,12 +35,6 @@ with builtins;
         seamless = true;
       };
       monitors = [ { output = "eDP-1"; primary = true; } ];
-      extraConfig = ''
-        -- trigger when the lid is up
-        -- hl.bind("switch:off:Lid Switch", hl.dsp.dpms({ action = "disable" }))
-        -- trigger when the lid is down
-        -- hl.bind("switch:on:Lid Switch", hl.dsp.exec_cmd("hyprctl dispatch dpms off && hey .lock --no-fade-in --no-fade-out"))
-      '';
     };
 
     apps = {

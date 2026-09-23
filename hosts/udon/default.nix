@@ -50,34 +50,32 @@ with builtins;
       ];
       extraConfig = ''
         -- Bind fixed workspaces to external monitors
-        hl.workspace_rule({
-          workspace = "name:right",
-          monitor = "DP-3",
-          default = true,
-          persistent = true,
-          layout = "scrolling"
-        })
-        hl.workspace_rule({
-          workspace = "name:left",
-          monitor = "DP-2",
-          default = true,
-          persistent = true,
-          layout = "scrolling"
-        })
+        hl.workspace_rule({ workspace = "name:right",
+                            monitor = "DP-3",
+                            default = true,
+                            persistent = true })
+        hl.workspace_rule({ workspace = "name:left",
+                            monitor = "DP-2",
+                            default = true,
+                            persistent = true })
         -- Staged for when the tv is switched on
-        hl.workspace_rule({
-          workspace = "name:tv",
-          monitor = "HDMI-A-1",
-          default = true,
-          gaps_out = 4
-        })
+        hl.workspace_rule({ workspace = "name:tv",
+                            monitor = "HDMI-A-1",
+                            default = true,
+                            gaps_out = 4 })
 
-        -- Scroll by holding down a side button, because the wheel is broken
-        hl.device({
-          name = "mosart-semi.-2.4g-wireless-mouse",
-          scroll_method = "on_button_down",
-          scroll_button = 276
-        })
+        hl.device({ name = "apple-inc.-magic-trackpad",
+                    natural_scroll = false,
+                    scroll_method = "2fg",
+                    scroll_factor = 0.75,
+                    accel_profile = "adaptive",
+                    sensitivity = 0.35,
+                    clickfinger_behavior = true, -- 1fg = LMB, 2fg = RMB, 3fg = MMB
+                    tap_to_click = true,
+                    tap_and_drag = false,
+                    tap_button_map = "lrm",
+                    drag_lock = 2,
+                    disable_while_typing = false })
 
         hl.config({
           -- To address 1px overscan on my U2724D's

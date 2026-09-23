@@ -2,16 +2,25 @@
 
 local M = {}
 
--- Shallow copy of T with OVERRIDES on top.
-function M.with(t, overrides)
-  local out = {}
-  for k, v in pairs(t) do out[k] = v end
-  for k, v in pairs(overrides) do out[k] = v end
-  return out
-end
-
 function M.clamp(x, lo, hi)
   return math.max(lo, math.min(hi, x))
+end
+
+-- The window under POS (the cursor if none)
+function M.window_at(pos)
+  pos = pos or hl.get_cursor_pos()
+  if not pos then return nil end
+  local found, rank = nil, 0
+  for _, w in ipairs(hl.get_windows() or {}) do
+    local at, size = w.at, w.size
+    if w.visible and w.accepts_input and not w.hidden
+       and pos.x >= at.x and pos.x < at.x + size.x
+       and pos.y >= at.y and pos.y < at.y + size.y then
+      local r = w.pinned and 3 or w.floating and 2 or 1
+      if r >= rank then found, rank = w, r end
+    end
+  end
+  return found
 end
 
 -- The tiled layout on MON (the focused monitor if none): the scratchpad's if
