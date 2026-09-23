@@ -1,4 +1,4 @@
-# modules/shell/claude.nix
+# modules/ai/claude.nix
 #
 # Oh AI, destroyer of the internet, open source, and all that is creative. Owned
 # by the most morally bankrupt humans on Earth, a deleterious economic/politic
@@ -9,9 +9,11 @@
 
 with lib;
 with hey.lib;
-let cfg = config.modules.shell.claude;
+let cfg = config.modules.ai.claude;
     system = pkgs.stdenv.hostPlatform.system;
     settingsFormat = pkgs.formats.json {};
+
+    llmAgents = hey.inputs.llm-agents.packages.${system};
 
     # I ask claude about my stack (Hyprland, Noctalia, Nix, NixOS, and Janet)
     # often and it burns way too many tokens just sifting through HTML docs
@@ -293,7 +295,7 @@ let cfg = config.modules.shell.claude;
       # Local documentation mirrors
 
       Offline copies of the docs for tools installed on this machine, built
-      by `modules/shell/claude.nix`. Grep before you read: these trees are
+      by `modules/ai/claude.nix`. Grep before you read: these trees are
       large, and the answer is usually a few lines of one file.
 
       ```sh
@@ -311,7 +313,7 @@ let cfg = config.modules.shell.claude;
       - **claude-code/** has no version pin, and isn't even in the nix store:
         `claude-code-docs.service` refills it on every nixos-rebuild and
         leaves it alone in between. The CLI here is
-        ${pkgs.claude-code.version}, but these pages are whatever upstream
+        ${llmAgents.claude-code.version}, but these pages are whatever upstream
         published as of the last rebuild. For flag-level questions
         `claude --help` outranks this tree. An empty directory means the
         fetch hasn't succeeded yet --- `systemctl start claude-code-docs`.
@@ -333,7 +335,7 @@ let cfg = config.modules.shell.claude;
       cp ${resourcesIndex} "$out"/README.md
     '';
 in {
-  options.modules.shell.claude = with types; {
+  options.modules.ai.claude = with types; {
     enable = mkBoolOpt false;
 
     settings = mkOpt' settingsFormat.type {} ''
@@ -376,7 +378,7 @@ in {
         re-pin, take the `got:` hash out of the failure, or ask for it:
 
           nix build --no-link \
-            .#nixosConfigurations.HOST.config.modules.shell.claude.resources.sources.hyprland
+            .#nixosConfigurations.HOST.config.modules.ai.claude.resources.sources.hyprland
 
         Nothing else in the system depends on it, so a stale pin costs
         nothing until you choose to move it. `resources.enable = false` gets
@@ -388,9 +390,7 @@ in {
   config = mkIf cfg.enable (mkMerge [
     ## The CLI itself ------------------------------------------------------
     {
-      user.packages = with pkgs; [
-        claude-code
-      ];
+      user.packages = [ llmAgents.claude-code ];
 
       environment.shellAliases = {
         cl  = "claude";
@@ -430,7 +430,7 @@ in {
     (mkIf cfg.resources.enable {
       environment.etc."claude-code/resources".source = resources;
 
-      modules.shell.claude.resources = {
+      modules.ai.claude.resources = {
         sources = mapAttrs (_: mkDefault) ({
           claude-code = claudeCodeDir;
           janet       = janetDocs;

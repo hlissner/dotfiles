@@ -208,7 +208,7 @@
         "~/.cache/nix",
         "~/.cache/npm",
         "~/projects/config/dotfiles",
-        "~/projects/claude",
+        "~/projects/ai",
         "/tmp"
       ]
     }

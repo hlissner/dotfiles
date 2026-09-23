@@ -33,6 +33,7 @@
       nixos-hardware.url = "github:nixos/nixos-hardware";
       noctalia.url = "github:noctalia-dev/noctalia";
       noctalia.inputs.nixpkgs.follows = "nixpkgs";
+      llm-agents.url = "github:numtide/llm-agents.nix";
     };
 
   outputs = inputs @ { self, nixpkgs, nixos-hardware, ... }:

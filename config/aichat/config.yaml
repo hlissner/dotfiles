@@ -1,0 +1,17 @@
+# config/aichat/config.yaml
+#
+# aichat won't start without this file, so it exists mainly to declare the
+# OpenRouter client.
+
+model: openrouter:anthropic/claude-sonnet-4.5
+
+# `ask` is one-shot; nothing should accumulate in this directory.
+save: false
+save_session: false
+keybindings: vim
+highlight: true
+stream: true
+
+clients:
+  - type: openai-compatible
+    name: openrouter

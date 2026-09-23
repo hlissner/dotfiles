@@ -76,7 +76,7 @@ local -a _claude_bools=( true false 1 0 yes no on off )
 # 2. Dynamic lookups
 # ---------------------------------------------------------------------------
 
-# Where claude keeps state. modules/shell/claude.nix points this at
+# Where claude keeps state. modules/ai/claude.nix points this at
 # ~/.local/share/claude; upstream's default is ~/.claude.
 __claude_config_dir() { print -r -- ${CLAUDE_CONFIG_DIR:-$HOME/.claude} }
 

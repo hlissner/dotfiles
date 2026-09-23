@@ -86,6 +86,10 @@ with builtins;
       '';
     };
 
+    ai = {
+      claude.enable = true;
+    };
+
     apps = {
       term.default = "foot";
       term.foot.enable = true;
@@ -121,7 +125,6 @@ with builtins;
       vim.enable = true;
     };
     shell = {
-      claude.enable = true;
       direnv.enable = true;
       git.enable = true;
       gnupg.enable = true;

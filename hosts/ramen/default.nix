@@ -37,6 +37,8 @@ with builtins;
       monitors = [ { output = "eDP-1"; primary = true; } ];
     };
 
+    ai.claude.enable = true;
+
     apps = {
       flatpak.enable = true;
       rofi.enable = true;
@@ -62,7 +64,6 @@ with builtins;
       vim.enable = true;
     };
     shell = {
-      claude.enable = true;
       direnv.enable = true;
       git.enable = true;
       gnupg.enable = true;
