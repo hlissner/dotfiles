@@ -10,6 +10,10 @@ fi
 
 ## Bootstrap interactive session
 if [[ $TERM != dumb ]]; then
+  if [[ -r ${XDG_CACHE_HOME}/p10k-instant-prompt-${(%):-%n}.zsh ]]; then
+    source ${XDG_CACHE_HOME}/p10k-instant-prompt-${(%):-%n}.zsh
+  fi
+
   ## ZSH configuration
   # Treat these characters as part of a word.
   WORDCHARS='-*?[]~&.;!#$%^(){}<>'
