@@ -24,7 +24,8 @@ let cfg = config.modules.hyprland;
 in {
   options.modules.hyprland.noctalia = with types; {
     settings = mkOpt' format.type {} ''
-      Defaults for Noctalia. Lower precedence than config/noctalia/.
+      Defaults for Noctalia. Higher precedence than config/noctalia/, but lower
+      than $XDG_STATE_HOME/noctalia/.
     '';
 
     plugins = mkOpt' (attrsOf (submodule {

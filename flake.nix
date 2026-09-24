@@ -17,20 +17,22 @@
       # they land, so it gets to pin nixpkgs: the system follows the flake's
       # rather than the other way round. That's also what keeps
       # hyprland.cachix.org's hashes matching ours.
-      hyprland.url = "github:hyprwm/Hyprland";
       nixpkgs.follows = "hyprland/nixpkgs";
       agenix.url = "github:ryantm/agenix";
       agenix.inputs.nixpkgs.follows = "nixpkgs";
+
+      # Desktop dependencies
+      hyprland.url = "github:hyprwm/Hyprland";
       scroll-overview.url = "github:yayuuu/hyprland-scroll-overview/new-release";
       scroll-overview.inputs.hyprland.follows = "hyprland";
       scroll-overview.inputs.nixpkgs.follows = "nixpkgs";
+      noctalia.url = "github:noctalia-dev/noctalia";
+      noctalia.inputs.nixpkgs.follows = "nixpkgs";
 
       # Extras (imported directly by modules/hosts that need them)
       emacs-overlay.url = "github:nix-community/emacs-overlay";
       emacs-overlay.inputs.nixpkgs.follows = "nixpkgs";
       nixos-hardware.url = "github:nixos/nixos-hardware";
-      noctalia.url = "github:noctalia-dev/noctalia";
-      noctalia.inputs.nixpkgs.follows = "nixpkgs";
       llm-agents.url = "github:numtide/llm-agents.nix";
     };
 
