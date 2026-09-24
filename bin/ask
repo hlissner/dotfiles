@@ -1,0 +1,186 @@
+#!/usr/bin/env zsh
+# Fire off a one-shot prompt to the free LLM I'm least annoyed with today.
+#
+# SYNOPSIS:
+#   ask [-f FILE]... [PROVIDER|VENDOR/MODEL] PROMPT...
+#   COMMAND | ask [-f FILE]... [PROVIDER|VENDOR/MODEL] [PROMPT...]
+#
+# DESCRIPTION:
+#   For quick, sandboxed searches that I don't want to bother claude with. The
+#   codex/grok backends require oauth pre-authentication, but will use your free
+#   tier limits.
+#
+#   Any input piped to this command is appended to PROMPT (after two newlines).
+#   Or use -f/--file to pass it a file through their sandbox.
+#
+# OPTIONS:
+#   -f, --file FILE
+#     Attach FILE; repeatable. Text goes along as a file, images as images, and
+#     anything else is refused. Codex takes no text attachments, so it gets
+#     it appended to your input.
+#
+# ARGUMENTS:
+#   1 PROVIDER
+#     chatgpt     -- codex, on a ChatGPT login. The default.
+#     grok        -- Grok Build, on a `grok login` session.
+#     deepseek    -- No CLI exists; goes to OpenRouter.
+#     gemma       -- google/gemma-4-31b-it:free
+#     qwen        -- qwen/qwen3.8-27b:free
+#     glm         -- z-ai/glm-5.2:free
+#     nemotron    -- nvidia/nemotron-3-ultra-550b-a55b:free
+#     inkling     -- thinkingmachines/inkling:free
+#     laguna      -- poolside/laguna-s-2.1:free
+#     north       -- cohere/north-mini-code:free
+#     llama       -- meta-llama/llama-3.3-70b-instruct:free
+#   * PROMPT
+#
+# EXAMPLES:
+#   ask "What's the difference between TCP and UDP?"
+#   ask grok "What's new in Linux this month?"
+#   ask deepseek "Explain this proof"
+#   ask anthropic/claude-sonnet-4.5 "Explain this error message"
+#   cat error.log | ask grok "Diagnose this"
+#   ask -f screenshot.png -f app.log grok "Why is this dialog lying to me?"
+#
+# DEPENDENCIES:
+#   codex, grok (modules/ai/default.nix), aichat (modules/ai/aichat.nix),
+#   file, jq
+
+emulate -L zsh
+setopt err_exit pipe_fail
+
+.usage() { hey help .ask >&2; exit 2 }
+
+# openrouter provider to fall back to when their CLI is missing
+typeset -A fallback=(
+  chatgpt   openai/gpt-5
+  grok      x-ai/grok-4
+  deepseek  deepseek/deepseek-chat
+)
+
+local -a o_help o_files files images
+zparseopts -E -D -F -- h=o_help -help=o_help f+:=o_files -file+:=o_files || exit 1
+(( ! $#o_help )) || exec hey help .ask
+for flag f in $o_files; do files+=$f; done
+
+# Every CLI wants images and text handed over differently, and nothing wants the
+# rest. The encoding goes first so an SVG counts as the text it is.
+typeset -A mime
+for f in $files; do
+  [[ -f $f && -r $f ]] || hey.abort "Can't read $f"
+  mime[$f]=$(file -b --mime-type -- $f)
+  if [[ $(file -b --mime-encoding -- $f) == binary ]]; then
+    [[ $mime[$f] == image/* ]] ||
+      hey.abort "$f is neither text nor an image ($mime[$f])"
+    images+=$f
+  fi
+done
+
+local provider model
+case ${1-} in
+  chatgpt|gpt|openai) provider=chatgpt; shift ;;
+  grok|xai)           provider=grok;    shift ;;
+  deepseek|ds)        provider=deepseek; shift ;;
+
+  # Free OpenRouter models. They come and go without notice; when one 404s,
+  # `curl -s https://openrouter.ai/api/v1/models | jq '.data[].id' | grep
+  # :free`.
+
+  # Llama 3.3. Good for single-turn, conversations, summarization, RAG, and
+  # basic content generation. Very slow. Not good for complex tasks.
+  llama)    model=meta-llama/llama-3.3-70b-instruct:free; shift ;;
+  # Gemma 4 31B, dense. Summaries, rewording, translation, "explain this
+  # screenshot". Out of its depth on multi-step math or gnarly code.
+  gemma)    provider=openrouter model=google/gemma-4-31b-it:free; shift ;;
+  # Qwen 3.8 27B. Code, regexes, shell one-liners, math; good all-rounder. Thin
+  # on niche trivia and its prose reads like a translated manual.
+  qwen)     provider=openrouter model=qwen/qwen3.8-27b:free; shift ;;
+  # GLM 5.2. Strong reasoner for architecture and debugging questions. The free
+  # tier caps context at 32k, so don't pipe it a whole log file.
+  glm)      provider=openrouter model=z-ai/glm-5.2:free; shift ;;
+  # Nemotron 3 Ultra, 550B. Proofs, logic puzzles, anything with a 1M-token
+  # haystack. Thinks at length before answering, even "what's 2+2".
+  nemotron) provider=openrouter model=nvidia/nemotron-3-ultra-550b-a55b:free; shift ;;
+  # Inkling, 975B. The best all-rounder in the free tier; my pick when I'd
+  # otherwise ask chatgpt. Slow, and the first to hit the rate limit.
+  inkling)  provider=openrouter model=thinkingmachines/inkling:free; shift ;;
+  # Laguna S 2.1. Terminal-bench tuned: shell, build errors, "why won't this
+  # compile". Useless off the keyboard -- history, advice, prose.
+  laguna)   provider=openrouter model=poolside/laguna-s-2.1:free; shift ;;
+  # North Mini Code, 3B active. Fast answers to small code questions. Shallow on
+  # anything that needs reasoning beyond a single function.
+  north)    provider=openrouter model=cohere/north-mini-code:free; shift ;;
+
+  # An OpenRouter model, distinguishable on sight by its vendor/ prefix. The
+  # space test is what keeps `ask "TCP vs UDP: which/what?"` a prompt.
+  */*)
+    [[ ${1} == *[[:space:]]* ]] || { provider=openrouter; model=$1; shift } ;;
+esac
+: ${provider:=chatgpt}
+
+local prompt=$*
+if [[ ! -t 0 ]]; then
+  local stdin_text=$(cat)
+  if [[ -n $stdin_text ]]; then
+    prompt=${prompt:+$prompt$'\n\n'}$stdin_text
+  fi
+fi
+[[ -n $prompt ]] || .usage
+
+if [[ $provider != openrouter ]] && (( ! $+commands[${provider/chatgpt/codex}] )); then
+  model=$fallback[$provider]
+  provider=openrouter
+fi
+
+case $provider in
+  chatgpt)
+    # Codex attaches images, but a text file should be appended to the prompt.
+    for f in ${files:|images}; do
+      prompt+=$'\n\n'"<file name=\"${f:t}\">"$'\n'"$(<$f)"$'\n</file>'
+    done
+    exec codex exec \
+      --ephemeral \
+      --sandbox read-only \
+      --skip-git-repo-check \
+      ${images/#/--image=} \
+      "$prompt" </dev/null
+    ;;
+
+  grok)
+    # -p prints the answer and exits, but gump the agent toolbelt because this
+    # -is only for quick Q&A, not agentic anything.
+    local -a grok=(grok --sandbox strict --tools web_search --always-approve)
+    (( $#files )) || exec $grok -p "$prompt" </dev/null
+
+    # Attachments work with -f, but there's a 128kb filesize limit for inline
+    # base64, so I copy the file into the sandbox for grok to read directly.
+    local blocks=$(mktemp --suffix=.json)
+    trap "rm -f ${(q)blocks}" EXIT
+    {
+      jq -n --arg t $prompt '{type: "text", text: $t}'
+      for f in $files; do
+        if (( $images[(Ie)$f] )); then
+          jq -n --arg m $mime[$f] --rawfile d <(base64 -w0 -- $f) \
+            '{type: "image", mimeType: $m, data: $d}'
+        else
+          jq -n --arg u file://${f:a} --arg m $mime[$f] --rawfile t $f \
+            '{type: "resource", resource: {uri: $u, mimeType: $m, text: $t}}'
+        fi
+      done
+    } | jq -s . >$blocks
+    $grok --prompt-file $blocks </dev/null
+    ;;
+
+  openrouter)
+    if [[ -z ${OPENROUTER_API_KEY-} && -r ${OPENROUTER_API_KEY_FILE-} ]]; then
+      export OPENROUTER_API_KEY="$(<$OPENROUTER_API_KEY_FILE)"
+    fi
+    [[ -n ${OPENROUTER_API_KEY-} ]] ||
+      hey.abort "No \$OPENROUTER_API_KEY, and nothing readable at \$OPENROUTER_API_KEY_FILE"
+    # aichat sorts out text from images on its own.
+    exec aichat --no-stream \
+      --model "openrouter:$model" \
+      ${files/#/--file=} \
+      -- "$prompt" </dev/null
+    ;;
+esac

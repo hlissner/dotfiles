@@ -90,7 +90,9 @@ with builtins;
     };
 
     ai = {
+      enable = true;
       claude.enable = true;
+      aichat.enable = true;
     };
 
     apps = {
@@ -144,7 +146,7 @@ with builtins;
   };
 
   ## local config
-  config = { pkgs, ... }: {
+  config = { pkgs, config, ... }: {
     user.packages = with pkgs; [
       guitarix
       gxplugins-lv2
@@ -155,6 +157,8 @@ with builtins;
       enable = true;
       package = pkgs.kdePackages.kdeconnect-kde;
     };
+
+    modules.ai.aichat.openrouterKeyFile = config.age.secrets.openrouterKey.path;
   };
 
   hardware = { ... }: {
