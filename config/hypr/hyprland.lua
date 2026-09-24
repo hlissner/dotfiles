@@ -66,7 +66,11 @@ hl.config({
   cursor = {
     default_monitor = hey.hypr.primaryMonitor,
     zoom_rigid = true
-  }
+  },
+
+  scrolling = {
+    fullscreen_on_one_column = false
+  },
 })
 
 
@@ -95,28 +99,21 @@ hl.layer_rule({ match = { namespace = "rofi" },
 
 -- * Workspace rules
 
--- Designate workspaces 1-9 for my main monitor
-for i = 1, 9 do
-  hl.workspace_rule({ workspace = tostring(i),
-                      monitor = hey.hypr.primaryMonitor,
-                      default = i == 1,
-                      persistent = i == 1 })
-end
--- A workspace exclusively for games
-hl.workspace_rule({ workspace = "10",
-                    layout = "monocle",
+-- The overview grows workspaces off either end of the tape, but nothing
+-- numbered can live below 1, so my main monitor starts halfway up the number
+-- line instead, with room to grow north.
+hl.workspace_rule({ workspace = "100",
                     monitor = hey.hypr.primaryMonitor,
+                    default = true,
+                    persistent = true })
+-- Steam and its games, out of the way until summoned.
+hl.workspace_rule({ workspace = "special:game",
+                    layout = "scrolling",
                     gaps_in = 0,
                     gaps_out = 0,
                     no_border = true,
                     no_shadow = true,
                     no_rounding = true })
-
-hl.window_rule({ name  = "games-workspace",
-                 match = { workspace = "10" },
-                 no_blur      = true,
-                 no_anim      = true,
-                 immediate    = true })
 -- Every scratchpad scrolls; the rules below only differ in their gaps.
 hl.workspace_rule({ workspace = "special:pad",
                     on_created_empty = "hey .scratch term",
@@ -156,7 +153,7 @@ hl.window_rule({ match = { class = "^foot$" },
 
 hl.window_rule({ name = "steam-all-windows",
                  match = { class = "steam" },
-                 workspace = "5 silent",
+                 workspace = "special:game silent",
                  immediate = true,
                  no_blur = true,
                  no_anim = true,
@@ -173,7 +170,10 @@ hl.window_rule({ name = "steam-popups",
                  float = true })
 hl.window_rule({ name = "steam-games",
                  match = { initial_class = "(gamescope|steam_app_\\d+)" },
-                 workspace = "10 silent",
+                 workspace = "special:game silent",
+                 immediate = true,
+                 no_blur = true,
+                 no_anim = true,
                  suppress_event = "maximize",
                  content = "game",
                  fullscreen = true,
@@ -237,17 +237,16 @@ hl.bind("SUPER + SHIFT + o", hl.dsp.layout("consume_or_expel prev"))
 hl.bind("SUPER + TAB", hey.dsp.on(
   { layout = "scrolling", action = hl.dsp.layout("swapcol r") },
   { layout = "monocle",   action = hl.dsp.layout("cyclenext") },
-  { layout = "master",    action = hl.dsp.layout("swapwithmaster") }),
-  { submap_universal = true })
+  { layout = "master",    action = hl.dsp.layout("swapwithmaster") }))
 hl.bind("SUPER + SHIFT + TAB", hey.dsp.on(
   { layout = "scrolling", action = hl.dsp.layout("swapcol l") },
   { layout = "monocle",   action = hl.dsp.layout("cycleprev") },
-  { layout = "master", action = hl.dsp.exec_cmd("hey @rofi windowmenu") }),
-  { submap_universal = true })
+  { layout = "master",    action = hl.dsp.exec_cmd("hey @rofi windowmenu") }))
 
 -- ** Scratchpads
 hl.bind("SUPER + grave",     hey.dsp.scratchpad("pad"))
 hl.bind("SUPER + SHIFT + grave", hl.dsp.window.move({ workspace = "special:pad" }))
+hl.bind("SUPER + 0",         hey.dsp.scratchpad("game"))
 hl.bind("SUPER + e",         hl.dsp.exec_cmd([[emacsclient --eval "(emacs-everywhere)"]]))
 
 -- ** Windows
@@ -257,13 +256,6 @@ for key, dir in pairs({ h = "left", j = "down", k = "up", l = "right" }) do
   hl.bind("SUPER + SHIFT + " .. key,        hl.dsp.window.move({ direction = dir }), { submap_universal = true })
   hl.bind("SUPER + CTRL + " .. key,         hl.dsp.focus({ monitor = dir }), { submap_universal = true })
   hl.bind("SUPER + SHIFT + CTRL + " .. key, hl.dsp.window.move({ monitor = dir }), { submap_universal = true })
-end
-
--- ** Workspaces
-for i = 1, 10 do
-  local key = i % 10
-  hl.bind("SUPER + " .. key, hl.dsp.focus({ workspace = i }), { submap_universal = true })
-  hl.bind("SUPER + SHIFT + " .. key, hl.dsp.window.move({ workspace = i }), { submap_universal = true })
 end
 
 -- ** Quick-resize windows
@@ -304,7 +296,7 @@ if hl.plugin.scrolloverview then
   hl.config({
     plugin = {
       scrolloverview = {
-        scale = 0.6,
+        scale = 0.75,
         layout = "auto",       -- follows each monitor's orientation
         workspace_gap = 75,
         gesture_distance = 300,
@@ -343,6 +335,15 @@ if hl.plugin.scrolloverview then
     for i, spec in ipairs({ 700, 0.4, 0.5, 0.6, 0.8, 1.0 }) do
       hl.bind(tostring(i), hey.dsp.resize_width_to(spec))
     end
+
+    hl.bind("TAB", hey.dsp.on(
+      { layout = "scrolling", action = hl.dsp.layout("swapcol r") },
+      { layout = "monocle",   action = hl.dsp.layout("cyclenext") },
+      { layout = "master",    action = hl.dsp.layout("swapwithmaster") }))
+    hl.bind("SHIFT + TAB", hey.dsp.on(
+      { layout = "scrolling", action = hl.dsp.layout("swapcol l") },
+      { layout = "monocle",   action = hl.dsp.layout("cycleprev") },
+      { layout = "master", action = hl.dsp.exec_cmd("hey @rofi windowmenu") }))
 
     hl.bind("Return", function() so.overview("select"); so.overview("off") end)
     hl.bind("Space", so.overview("select"))

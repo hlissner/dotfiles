@@ -49,17 +49,20 @@ with builtins;
           disabled = true; }
       ];
       extraConfig = ''
-        -- Bind fixed workspaces to external monitors
-        hl.workspace_rule({ workspace = "name:right",
+        -- Anchor side monitors indecies far enough apart that dynamic
+        -- workspaces have a low chance to overlap (and numeric so they can have
+        -- dynamic workspaces at all). See
+        -- $DOTFILES_HOME/config/hypr/hyprland.lua.
+        hl.workspace_rule({ workspace = "300",
                             monitor = "DP-3",
                             default = true,
                             persistent = true })
-        hl.workspace_rule({ workspace = "name:left",
+        hl.workspace_rule({ workspace = "200",
                             monitor = "DP-2",
                             default = true,
                             persistent = true })
         -- Staged for when the tv is switched on
-        hl.workspace_rule({ workspace = "name:tv",
+        hl.workspace_rule({ workspace = "400",
                             monitor = "HDMI-A-1",
                             default = true,
                             gaps_out = 4 })

@@ -120,25 +120,37 @@ end
 -- workspace on this monitor, counting the ids nothing has claimed yet", and
 -- it's the only thing in reach that knows which of those ids a workspace rule
 -- has already promised to a different monitor (Lua can't enumerate the rules).
--- It clamps instead of wrapping at the ends -- nothing lives below id 1, so
--- there is no growing north off a monitor that starts at 1 -- which is why
--- this asks afterwards whether the window actually went anywhere.
+-- It clamps instead of wrapping at the ends -- nothing lives below id 1, which
+-- is why the main monitor starts at 100 -- so ask afterwards whether the
+-- window actually went anywhere.
+local function slot(dir)
+  return FORWARD[dir] and "r+1" or "r-1"
+end
+
 local function grow(w, dir)
   local before = w.workspace and w.workspace.name
-  hl.dispatch(hl.dsp.window.move({ workspace = FORWARD[dir] and "r+1" or "r-1", window = w }))
+  hl.dispatch(hl.dsp.window.move({ workspace = slot(dir), window = w }))
   return w.workspace ~= nil and w.workspace.name ~= before
 end
 
 -- hjkl: let the plugin have the key first, and if the selection didn't budge
--- we were against an edge -- go looking for a monitor that way instead.
+-- we were against an edge -- go looking for a monitor that way, else step off
+-- the end of the tape into a fresh workspace. Only one: an empty workspace is
+-- already the void, and it'll die on its own once we look away from it.
 function M.navigate(dir)
   return function()
     local before = selection()
     -- so.navigate() hands back a closure unless something is already inside a
     -- bind, where it runs instead. _dispatch is the half that always means now.
     so._dispatch("navigate", dir)
-    if selection() == before and hl.get_monitor(dir) then
+    if selection() ~= before then return end
+    local mon, ws = hl.get_active_monitor(), hl.get_active_workspace()
+    if hl.get_monitor(dir) then
       hl.dispatch(hl.dsp.focus({ monitor = dir }))
+    elseif mon and ws and ws.windows > 0
+        and AXIS[dir] == workspace_axis(mon)
+        and not neighbour(mon, dir) then
+      hl.dispatch(hl.dsp.focus({ workspace = slot(dir) }))
     end
   end
 end
