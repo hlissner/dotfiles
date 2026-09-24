@@ -22,12 +22,12 @@ dotfiles over there.
 
 ------
 
-| **Shell:**    | zsh + zpm                      |
-| **WM:**       | hyprland + noctalia            |
-| **Editor:**   | [Doom Emacs][doomemacs]        |
-| **Terminal:** | foot                           |
-| **Launcher:** | rofi                           |
-| **Browser:**  | librewolf                      |
+- **Shell:**    zsh + zpm
+- **WM:**       hyprland + noctalia
+- **Editor:**   [Doom Emacs][doomemacs]
+- **Terminal:** foot
+- **Launcher:** rofi
+- **Browser:**  librewolf
 
 -----
 
