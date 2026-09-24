@@ -1,0 +1,21 @@
+#:schema https://yazi-rs.github.io/schemas/yazi.json
+
+[mgr]
+ratio          = [ 1, 1, 5 ]
+show_hidden    = true
+scrolloff      = 8
+sort_by        = "natural"
+sort_dir_first = true
+linemode       = "size"
+
+[preview]
+image_delay = 100
+wrap        = "yes"
+
+[open]
+prepend_rules = [
+  {
+    url = "*.{janet,kdl,lock,nix,el,norg,org,patch,rules,service,toml}",
+    use = [ "edit", "reveal" ]
+  },
+]

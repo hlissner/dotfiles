@@ -1,0 +1,31 @@
+#:schema https://yazi-rs.github.io/schemas/keymap.json
+
+[mgr]
+
+prepend_keymap = [
+  # `s`/`S` hand fd and ripgrep their defaults, which means .gitignore and
+  # dotfiles are invisible. Usually right, occasionally the exact opposite.
+  # Alt chords survive tmux because of `extended-keys on` + the kitty keyboard
+  # protocol yazi pushes on startup; without those this is just <Esc>s.
+  { on = "<A-s>", run = "search --via=fd --args='--hidden --no-ignore'", desc = "Search by name, unfiltered (fd)" },
+  { on = "<A-S>", run = "search --via=rg --args='--hidden --no-ignore'", desc = "Search by content, unfiltered (rg)" },
+
+  # tmux, from the inside. `$PWD` is *yazi's*, inherited through sh -c, not the
+  # tab's -- only the child's working directory follows the tab, so anything
+  # that needs the current directory has to ask `pwd` for it.
+  { on = [ "t", "w" ], run = 'shell -- tmux new-window -c "$(pwd)"',        desc = "New tmux window here" },
+  { on = [ "t", "v" ], run = 'shell -- tmux split-window -h -c "$(pwd)"',   desc = "Split tmux pane right, here" },
+  { on = [ "t", "s" ], run = 'shell -- tmux split-window -v -c "$(pwd)"',   desc = "Split tmux pane down, here" },
+
+  # `cc` and friends copy the *path*; this copies what's in the file. %h is
+  # shell-escaped by yazi, so no quotes.
+  { on = [ "c", "y" ], run = "shell -- wl-copy < %h", desc = "Copy hovered file's contents" },
+
+  # Goto
+  { on = [ "g", "p" ], run = "cd ~/projects",  desc = "Go to ~/projects" },
+  { on = [ "g", "n" ], run = "cd /nix/store",  desc = "Go to /nix/store" },
+  { on = [ "g", "e" ], run = "cd /etc",        desc = "Go to /etc" },
+  # `cd` can't take a substitution, so the long way round: ya emits the jump
+  # back into this instance.
+  { on = [ "g", "r" ], run = 'shell -- ya emit cd "$(git rev-parse --show-toplevel)"', desc = "Go to the git root" },
+]

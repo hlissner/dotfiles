@@ -8,3 +8,5 @@
 
 # Rendered by Noctalia (modules/hyprland/theme.nix)
 /config/zellij/themes/colors.kdl
+/config/yazi/theme.toml
+/config/yazi/flavors/

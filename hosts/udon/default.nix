@@ -97,7 +97,6 @@ with builtins;
       ## Extra
       flatpak.enable = true;
       rofi.enable = true;
-      thunar.enable = true;
       libreoffice.enable = true;
       steam = {
         enable = true;
@@ -129,6 +128,7 @@ with builtins;
       git.enable = true;
       gnupg.enable = true;
       tmux.enable = true;
+      yazi.enable = true;
       zsh.enable = true;
     };
     services = {
