@@ -26,10 +26,6 @@ let cfg = config.modules.xdg;
     # Takes paths relative to DIR, and returns them under it.
     inDir = dir: mapAttrs (_: path: "${underHome dir}/${path}");
 in {
-  imports = [
-    hey.modules.home-manager.default
-  ];
-
   options.modules.xdg = {
     enable = mkBoolOpt true;
     ssh.enable = mkBoolOpt false;
@@ -45,7 +41,6 @@ in {
 
 
       ### A tidy $HOME is a tidy mind
-      # home-manager.users.${config.user.name}.xdg.enable = true;
 
       environment = {
         # Some GUI programs consult this, ignoring XDG conventions if it isn't

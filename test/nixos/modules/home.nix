@@ -1,47 +1,83 @@
 # test/nixos/modules/home.nix --- tests for modules/home.nix
 #
-# modules/home.nix exists to hide home-manager behind four aliases, so that no
-# module outside it ever writes home-manager.users.<name>.*. The aliases are
-# mkAliasDefinitions plumbing, which fails silently when a rename upstream
-# breaks it: files simply stop being deployed.
+# modules/home.nix funnels every *File and *Link option into home.link, by
+# absolute path, and a user activation script hands that to tmpfiles. A path
+# that lands in the wrong dir here lands there in $HOME, and a file that goes
+# missing here simply stops being deployed, silently.
 
-{ evalConfig, lib, ... }:
+{ evalConfig, lib, pkgs, ... }:
 
 with lib;
-{
-  # fakeFile is the odd one out: not an alias but a rewrite, prefixing every
-  # path with home.fakeDir. It is the jail for programs that ignore XDG, so
-  # the prefix is the entire point of the option.
-  testFileOptionsLandInHomeManager =
+let probes = c: filterAttrs (p: _: hasInfix "probe/" p) c.home.link;
+    stored = t: hasPrefix "${builtins.storeDir}/" t;
+in {
+  # Files become store paths; links are left exactly as given. fakeFile is the
+  # jail for programs that ignore XDG, so its prefix is the whole point.
+  testEveryOptionLandsUnderItsDir =
     let c = evalConfig [{
-          home.configFile."probe/c".text = "c";
-          home.dataFile."probe/d".text = "d";
           home.file."probe/f".text = "f";
           home.fakeFile."probe/x".text = "x";
+          home.configFile."probe/c".text = "c";
+          home.dataFile."probe/d".source = pkgs.writeText "d" "d";
+          home.link."probe/l" = "/l";
+          home.link."/abs/probe/a" = "/a";
+          home.configLink."probe/cl" = "/cl";
+          home.dataLink."probe/dl" = "/dl";
+          home.cacheLink."probe/kl" = "/kl";
+          home.stateLink."probe/sl" = "/sl";
         }];
-        hm = c.home-manager.users.test;
+        h = c.home;
     in {
-      expr = {
-        config = hm.xdg.configFile."probe/c".text;
-        data   = hm.xdg.dataFile."probe/d".text;
-        file   = hm.home.file."probe/f".text;
-        fake   = hm.home.file."${c.home.fakeDir}/probe/x".text;
+      expr = mapAttrs (_: t: if stored t then "store" else t) (probes c);
+      expected = {
+        "${h.dir}/probe/f"       = "store";
+        "${h.fakeDir}/probe/x"   = "store";
+        "${h.configDir}/probe/c" = "store";
+        "${h.dataDir}/probe/d"   = "store";
+        # Resolved against $HOME only on its way to tmpfiles
+        "probe/l"                 = "/l";
+        "/abs/probe/a"            = "/a";
+        "${h.configDir}/probe/cl" = "/cl";
+        "${h.dataDir}/probe/dl"   = "/dl";
+        "${h.cacheDir}/probe/kl"  = "/kl";
+        "${h.stateDir}/probe/sl"  = "/sl";
       };
-      expected = { config = "c"; data = "d"; file = "f"; fake = "x"; };
     };
 
-  # home-manager's own xdg homes are mkForce'd to ours, so that nothing
-  # downstream can disagree about where $XDG_CONFIG_HOME points.
-  testHomeManagerXdgHomesAreOurs =
-    let c = evalConfig [];
-        x = c.home-manager.users.test.xdg;
+  # A recursive source becomes one link per file, so rofi can drop a generated
+  # fonts.rasi into a directory it otherwise takes wholesale from config/.
+  testRecursiveExplodesAndExplicitWins =
+    let c = evalConfig [{
+          home.configFile."probe" = { source = ./home.d/tree; recursive = true; };
+          home.configFile."probe/a".text = "mine";
+        }];
+        l = probes c;
+        dir = c.home.configDir;
     in {
-      expr = { inherit (x) cacheHome configHome dataHome stateHome; };
+      expr = {
+        paths = attrNames l;
+        a = hasSuffix "-a" l."${dir}/probe/a";
+        b = hasSuffix "/sub/b" l."${dir}/probe/sub/b";
+      };
       expected = {
-        cacheHome  = c.home.cacheDir;
-        configHome = c.home.configDir;
-        dataHome   = c.home.dataDir;
-        stateHome  = c.home.stateDir;
+        paths = [ "${dir}/probe/a" "${dir}/probe/sub/b" ];
+        a = true;
+        b = true;
       };
     };
+
+  # home-manager resolved mkIf inside an entry for me (librewolf's user.js
+  # leans on it); a bare `attrs` type wouldn't.
+  testMkIfFalseEntriesVanish = {
+    expr = probes (evalConfig [{
+      home.configFile."probe/gone" = mkIf false { text = "x"; };
+    }]);
+    expected = {};
+  };
+
+  testEntryWithNothingToLinkThrows = {
+    expr = (builtins.tryEval (builtins.deepSeq
+      (probes (evalConfig [{ home.configFile."probe/empty" = {}; }])) null)).success;
+    expected = false;
+  };
 }

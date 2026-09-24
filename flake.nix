@@ -19,8 +19,6 @@
       # hyprland.cachix.org's hashes matching ours.
       hyprland.url = "github:hyprwm/Hyprland";
       nixpkgs.follows = "hyprland/nixpkgs";
-      home-manager.url = "github:nix-community/home-manager";
-      home-manager.inputs.nixpkgs.follows = "nixpkgs";
       agenix.url = "github:ryantm/agenix";
       agenix.inputs.nixpkgs.follows = "nixpkgs";
       scroll-overview.url = "github:yayuuu/hyprland-scroll-overview/new-release";
