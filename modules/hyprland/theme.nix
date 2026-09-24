@@ -49,6 +49,12 @@ in {
       };
     }))) {} "Seed colors to harmonize into the generated scheme";
 
+    builtinTemplates = mkOpt' (listOf str) []
+      "Noctalia built-in template ids, for apps I'd rather not template myself.";
+
+    communityTemplates = mkOpt' (listOf str) []
+      "Noctalia community template ids, for apps I'd rather not template myself.";
+
     templates = mkOpt' (attrsOf (submodule {
       options = {
         input_path  = mkOpt' str   "" "The template to render";
@@ -137,14 +143,18 @@ in {
             fixed=${font cfg.fonts.mono}
             general=${font cfg.fonts.sans}
            '';
-    in mkIf (cfg.templates != {} || cfg.colors != {}) {
+    in mkIf (cfg.templates != {}
+             || cfg.colors != {}
+             || cfg.communityTemplates != []
+             || cfg.builtinTemplates != []) {
       modules.hyprland.noctalia.settings.theme.templates = {
         enable_builtin_templates = true;
         # gtk3/gtk4 write noctalia.css and point gtk-theme at adw-gtk3; qt drops
         # a colour scheme in qt{5,6}ct's colors/ and nothing else -- no hook, no
         # envvar -- so selecting it is the job below.
-        builtin_ids = [ "gtk3" "gtk4" "qt" ];
-        enable_community_templates = false;
+        builtin_ids = [ "gtk3" "gtk4" "qt" ] ++ cfg.builtinTemplates;
+        enable_community_templates = cfg.communityTemplates != [];
+        community_ids = cfg.communityTemplates;
         custom_colors = mapAttrs (_: mkColor) cfg.colors;
         user = mapAttrs (_: mkTemplate) cfg.templates;
       };

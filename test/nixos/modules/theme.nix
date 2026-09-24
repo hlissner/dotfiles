@@ -6,7 +6,7 @@
 # and writes an empty output_path into its own config dir, both without a
 # word, so the tests read that table back and check it against the disk.
 
-{ evalConfig, lib, ... }:
+{ evalConfig, flake, lib, ... }:
 
 with lib;
 let
@@ -88,6 +88,22 @@ in {
     };
   };
 
+  # Upstream defaults enable_community_templates to true and community_ids to
+  # empty, which renders nothing while looking enabled. The list drives the flag
+  # so the two can't drift, and both are emitted even when empty -- a key this
+  # config doesn't decide is a key `hey @noctalia reset` won't prune out of the
+  # state file, where a tick in Settings beats anything here.
+  testCommunityTemplatesDriveTheirFlag = {
+    expr = map (ids:
+      let t = theme [{ modules.hyprland.theme.communityTemplates = ids; }];
+      in { inherit (t) enable_community_templates community_ids; })
+      [ [] [ "tmux" ] ];
+    expected = [
+      { enable_community_templates = false; community_ids = []; }
+      { enable_community_templates = true;  community_ids = [ "tmux" ]; }
+    ];
+  };
+
   ## Registration by the application modules.
 
   # Each module owns its own template, so what matters is that enabling the
@@ -116,6 +132,35 @@ in {
         fonts   = filter (n: hasInfix "theme.fonts" (readFile (input n))) (attrNames templates);
       };
       expected = { missing = []; fonts = []; };
+    };
+
+  # A token Noctalia doesn't have renders to "{{UNKNOWN:...}}", which counts as
+  # an error, and one error means the whole file goes unwritten -- at runtime,
+  # in a journal line nobody is tailing. Everything else in the batch still
+  # renders and the engine skips files whose content didn't move, so the only
+  # symptom is that one app stops following the theme. The canonical list is a
+  # header in noctalia's source, read the way noctalia.nix reads its hooks.
+  testEveryTemplateTokenExists =
+    let
+      header = "${flake.inputs.noctalia}/src/theme/tokens.h";
+      tokens = map head (filter isList (split ''"([a-z_0-9]+)"'' (readFile header)));
+      # Sugar the engine resolves before it looks anything up.
+      aliases = [ "hover" "on_hover" ];
+      # Seeded colors are never in the header; the engine grows these out of
+      # each one at render time.
+      derived = concatMap
+        (n: [ n "on_${n}" "${n}_container" "on_${n}_container" "${n}_source" "${n}_value" ])
+        (attrNames everything.modules.hyprland.theme.colors);
+      templates = everything.modules.hyprland.theme.templates;
+      used = name: map head (filter isList
+        (split ''\{\{ *colors\.([a-z_0-9]+)\.'' (readFile templates.${name}.input_path)));
+    in {
+      expr =
+        if length tokens < 40
+        then throw "No color tokens in ${header}; Noctalia moved them."
+        else unique (concatMap (n: subtractLists (tokens ++ aliases ++ derived) (used n))
+                               (attrNames templates));
+      expected = [];
     };
 
   # hyprland.nix used to hardcode librewolf's profile directory, and drifted
