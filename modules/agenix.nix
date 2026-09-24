@@ -5,7 +5,7 @@
 with builtins;
 with lib;
 with hey.lib;
-let hostKey = "/etc/ssh/host_ed25519";
+let hostKey = config.modules.agenix.hostKey;
 in {
   imports = [ hey.modules.agenix.age ];
 
@@ -14,6 +14,7 @@ in {
       "${hey.hostDir}/secrets"
       "${hey.configDir}/secrets"
     ];
+    hostKey = mkOpt str "/etc/ssh/host_ed25519";
   };
 
   config = {

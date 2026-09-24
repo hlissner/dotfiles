@@ -107,15 +107,19 @@ in {
   ## Registration by the application modules.
 
   # Each module owns its own template, so what matters is that enabling the
-  # application is what puts it in the table, and nothing else does.
+  # application is what puts it in the table, and nothing else does. Some
+  # borrow one of Noctalia's built-ins instead of templating themselves.
   testAppsRegisterTheirTemplates =
-    let user = everything.modules.hyprland.noctalia.settings.theme.templates.user;
-        apps = [ "tmux" "zellij" "rofi" "foot"
+    let t = everything.modules.hyprland.noctalia.settings.theme.templates;
+        apps = [ "tmux" "zellij" "rofi"
                  "librewolf-chrome-default" "librewolf-content-alt" ];
+        borrowed = [ "foot" ];
     in {
       expr = {
-        missing = filter (a: !(user ? ${a})) apps;
-        leaked  = filter (a: bare.user ? ${a}) apps;
+        missing = filter (a: !(t.user ? ${a})) apps
+                  ++ filter (b: !(elem b t.builtin_ids)) borrowed;
+        leaked  = filter (a: bare.user ? ${a}) apps
+                  ++ filter (b: elem b bare.builtin_ids) borrowed;
       };
       expected = { missing = []; leaked = []; };
     };

@@ -102,15 +102,15 @@ in {
   # installs are dropped rather than left on the bar as dead entries; built-in
   # widgets have no plugin and must survive the filter regardless.
   #
-  # `fixture` is the canary: phone and workspaces live in a baseline I edit
+  # `fixture` is the canary: phone and clock live in a baseline I edit
   # through the GUI, and taking either off the bar would leave the rest of this
   # quietly proving nothing.
   testBarDropsWidgetsWhosePluginIsNotInstalled = {
     expr = {
       off     = onBar base "phone";
       on      = onBar (settings three [{ programs.kdeconnect.enable = true; }]) "phone";
-      builtIn = onBar base "workspaces";
-      fixture = all (w: elem w (placedIn baselineBar)) [ "phone" "workspaces" ];
+      builtIn = onBar base "clock";
+      fixture = all (w: elem w (placedIn baselineBar)) [ "phone" "clock" ];
     };
     expected = { off = false; on = true; builtIn = true; fixture = true; };
   };
