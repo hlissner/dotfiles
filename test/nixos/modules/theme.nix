@@ -27,7 +27,6 @@ let
     modules.shell.zellij.enable = true;
     modules.apps.rofi.enable = true;
     modules.apps.term.foot.enable = true;
-    modules.apps.term.ghostty.enable = true;
     modules.apps.browsers.librewolf.enable = true;
   }];
 in {
@@ -95,7 +94,7 @@ in {
   # application is what puts it in the table, and nothing else does.
   testAppsRegisterTheirTemplates =
     let user = everything.modules.hyprland.noctalia.settings.theme.templates.user;
-        apps = [ "tmux" "zellij" "rofi" "foot" "ghostty"
+        apps = [ "tmux" "zellij" "rofi" "foot"
                  "librewolf-chrome-default" "librewolf-content-alt" ];
     in {
       expr = {
