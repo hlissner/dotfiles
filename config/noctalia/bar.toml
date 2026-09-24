@@ -15,9 +15,9 @@ reserve_space      = true
 capsule            = false
 widget_spacing     = 8
 
-start = [ "submap", "workspaces" ]
-center = [ "clock" ]
-end = [ "screencast", "timer", "tray", "weather", "group:devices", "group:system", "notifications", "privacy" ]
+start = [ "submap", "screencast", "timer", "launcher", "group:devices", "tray" ]
+center = [ "active_window" ]
+end = [ "weather", "group:system", "clock", "notifications", "privacy" ]
 
     [[bar.main.capsule_group]]
     accordion = false
@@ -26,7 +26,7 @@ end = [ "screencast", "timer", "tray", "weather", "group:devices", "group:system
     fill = "surface_variant"
     foreground = "primary"
     id = "devices"
-    members = [ "phone", "earphones-battery", "trackpad-battery" ]
+    members = [ "earphones-battery", "trackpad-battery", "phone" ]
     opacity = 1.0
     padding = 8.0
 
@@ -79,7 +79,11 @@ capsule_foreground = "shadow"
 [widget.timer]
 type = "hey/timer:bar"
 show_idle_on_horizontal = false
+capsule = true
 capsule_padding = 8
+capsule_fill = "tertiary"
+notify_color = "shadow"
+running_color = "surface"
 
 [widget.lid-guard]
 type = "8bury/lid-guard:lid-guard"
@@ -157,3 +161,15 @@ capsule_opacity = 0.0
 capsule_padding = 18
 hide_when_no_media = true
 show_progress = true
+
+[widget.launcher]
+glyph = "search"
+type = "custom_button"
+
+    [widget.launcher.actions]
+    left = "exec hey @rofi appmenu"
+
+[widget.active_window]
+capsule = false
+icon_size = 16
+max_length = 800
