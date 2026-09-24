@@ -7,8 +7,8 @@
 #
 # DESCRIPTION:
 #   For quick, sandboxed searches that I don't want to bother claude with. The
-#   codex/grok backends require oauth pre-authentication, but will use your free
-#   tier limits.
+#   codex/grok/gemini backends require oauth pre-authentication, but will use
+#   your free tier limits.
 #
 #   Any input piped to this command is appended to PROMPT (after two newlines).
 #   Or use -f/--file to pass it a file through their sandbox.
@@ -23,6 +23,7 @@
 #   1 PROVIDER
 #     chatgpt     -- codex, on a ChatGPT login. The default.
 #     grok        -- Grok Build, on a `grok login` session.
+#     gemini      -- Gemini CLI, on a Google login.
 #     deepseek    -- No CLI exists; goes to OpenRouter.
 #     gemma       -- google/gemma-4-31b-it:free
 #     qwen        -- qwen/qwen3.8-27b:free
@@ -43,8 +44,8 @@
 #   ask -f screenshot.png -f app.log grok "Why is this dialog lying to me?"
 #
 # DEPENDENCIES:
-#   codex, grok (modules/ai/default.nix), aichat (modules/ai/aichat.nix),
-#   file, jq
+#   codex, grok, gemini (modules/ai/default.nix), aichat
+#   (modules/ai/aichat.nix), file, jq
 
 emulate -L zsh
 setopt err_exit pipe_fail
@@ -55,6 +56,7 @@ setopt err_exit pipe_fail
 typeset -A fallback=(
   chatgpt   openai/gpt-5
   grok      x-ai/grok-4
+  gemini    google/gemini-3.1-pro-preview
   deepseek  deepseek/deepseek-chat
 )
 
@@ -80,6 +82,7 @@ local provider model
 case ${1-} in
   chatgpt|gpt|openai) provider=chatgpt; shift ;;
   grok|xai)           provider=grok;    shift ;;
+  gemini|google)      provider=gemini;  shift ;;
   deepseek|ds)        provider=deepseek; shift ;;
 
   # Free OpenRouter models. They come and go without notice; when one 404s,
@@ -169,6 +172,37 @@ case $provider in
       done
     } | jq -s . >$blocks
     $grok --prompt-file $blocks </dev/null
+    ;;
+
+  gemini)
+    # Only way to send it files is to make it look up the file itself (with
+    # @path). It runs in an empty tempdir, where attachments are copied. It also
+    # won't run headless in an untrusted dir without some hackery, hence the
+    # policy.
+    local tmp=$(mktemp -d)
+    trap "rm -rf ${(q)tmp}" EXIT
+    cat >$tmp/policy.toml <<-'EOF'
+	[[rule]]
+	toolName = "google_web_search"
+	decision = "allow"
+	priority = 100
+
+	[[rule]]
+	toolName = "*"
+	decision = "deny"
+	priority = 1
+	EOF
+    local name
+    mkdir $tmp/ws
+    for (( i = 1; i <= $#files; i++ )); do
+      # Its @path parser stops at commas, parens, and the like.
+      name=${${files[i]:t}//[^[:alnum:]._-]/_}
+      mkdir $tmp/ws/$i
+      cp -- $files[i] $tmp/ws/$i/$name
+      prompt+=$'\n'"@$i/$name"
+    done
+    cd $tmp/ws
+    gemini --skip-trust --policy $tmp/policy.toml -p "$prompt" </dev/null
     ;;
 
   openrouter)
