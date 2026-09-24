@@ -45,7 +45,7 @@ in {
       for bfile in startup userpref; do
         src="${hey.configDir}/blender/$bfile.blend.tar.gz"
         if [ ! -e "$destdir/$bfile.blend" ]; then
-          ${pkgs.gnutar}/bin/tar xzvf "$src" -C "$destdir"
+          ${pkgs.gnutar}/bin/tar -I ${pkgs.gzip}/bin/gzip -xvf "$src" -C "$destdir"
         fi
       done
     '';
