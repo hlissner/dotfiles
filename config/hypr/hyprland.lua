@@ -143,7 +143,9 @@ hl.window_rule({ name = "dialog-windows",
                  match = { float = true, class = "^(xdg-desktop-portal-gtk|librewolf)" },
                  center = true,
                  max_size = { "monitor_w*0.9", "monitor_h*0.9" } })
-hl.window_rule({ match = { class = "^(emacs|feishin|librewolf)$" },
+hl.window_rule({ match = { class = "^(steam|feishin)$" },
+                 scrolling_width = 1.0 })
+hl.window_rule({ match = { class = "^(emacs|librewolf)$" },
                  scrolling_width = 0.8 })
 hl.window_rule({ match = { class = "^foot$" },
                  scrolling_width = 0.35 })
