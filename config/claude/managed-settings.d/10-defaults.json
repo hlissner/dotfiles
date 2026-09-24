@@ -147,9 +147,7 @@
       ]
     },
     "network": {
-      "allowUnixSockets": [
-        "/nix/var/nix/daemon-socket/socket"
-      ],
+      "allowAllUnixSockets": true,
       "allowedDomains": [
         "cache.nixos.org",
         "channels.nixos.org",
