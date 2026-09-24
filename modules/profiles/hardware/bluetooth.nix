@@ -10,7 +10,7 @@ mkIf (elem "bluetooth" config.modules.profiles.hardware) {
   hardware.bluetooth.enable = true;
 
   hardware.bluetooth.settings = {
-    General.ControllerMode = "bredr";
+    # General.ControllerMode = mkDefault "bredr";
     Policy.ReconnectAttempts = 0;
   };
 
