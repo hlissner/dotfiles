@@ -57,8 +57,8 @@
       "Read(**/*.age)",
       "Edit(**/*.age)",
 
-      "Read(//run/agenix/**)",
-      "Edit(//run/agenix/**)",
+      "Read(//run/agenix.d/**)",
+      "Edit(//run/agenix.d/**)",
 
       "Read(~/.config/ssh/*_ed25519)",
       "Edit(~/.config/ssh/*_ed25519)",
