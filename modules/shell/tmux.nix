@@ -11,10 +11,13 @@ in {
   };
 
   config = mkIf cfg.enable {
-    environment.variables.TMUX_HOME = "${hey.configDir}/tmux";
+    environment.variables = {
+      TMUX_HOME = "${hey.configDir}/tmux";
+      TMUXINATOR_CONFIG = "${hey.configDir}/tmux/tmuxinator/";
+    };
 
     # I avoid programs.tmux because it comes with extra magic I don't need.
-    user.packages = [ pkgs.tmux ];
+    user.packages = with pkgs; [ tmux tmuxinator ];
 
     environment.etc."tmux.conf".text = with pkgs.tmuxPlugins; ''
       set -s default-terminal "${cfg.term}"
@@ -23,12 +26,24 @@ in {
       ${concatMapStrings (path: "source-file '${path}'\n") cfg.rcFiles}
 
       # Run plugins
-      run-shell ${yank.rtp}
+      run-shell ${extrakto.rtp}
+      run-shell ${fuzzback.rtp}
+      run-shell ${prefix-highlight.rtp}
     '';
 
-    modules.hyprland.theme.templates.tmux = {
+    modules.hyprland.theme.templates.tmux = let
+      theme = "${config.home.configDir}/tmux/themes/noctalia.conf";
+    in {
       input_path = "${hey.configDir}/tmux/colors.template.conf";
-      output_path = "${config.home.configDir}/tmux/colors.conf";
+      output_path = theme;
+      # noctalia-community-templates ships an apply.sh that does this, but is
+      # hardcoded to look for ~/.config/tmux/tmux.conf and writes to it.
+      post_hook = ''
+        for sock in "''${TMUX_TMPDIR:-/tmp}"/tmux-$(id -u)/*; do
+          [ -S "$sock" ] || continue
+          ${getExe pkgs.tmux} -S "$sock" source-file ${theme} >/dev/null 2>&1 || true
+        done
+      '';
     };
 
     modules.shell.zsh.rcFiles = [ "${hey.configDir}/tmux/aliases.zsh" ];

@@ -2,8 +2,11 @@
 
 alias ta='tmux attach'
 alias tl='tmux ls'
+alias tm='tmuxinator'
 
 if [[ -n $TMUX ]]; then # From inside tmux
+  alias tr="tmux rename-window"
+  alias trs="tmux rename-session"
   alias tf='tmux find-window'
   # Detach all other clients to this session
   alias mine='tmux detach -a'
