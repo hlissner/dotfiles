@@ -329,6 +329,10 @@ in {
           { tab = "screen-time";   label = "screen time";    icon = "preferences-system-time-symbolic"; }
           { tab = "power";         label = "power";          icon = "battery-good-symbolic"; }
         ] ++ [
+          (mkLauncherEntry "System Settings" {
+            icon = "preferences-system";
+            exec = "noctalia msg settings-open";
+          })
           (mkLauncherEntry "Set timer ->" {
             icon = "alarm-symbolic";
             exec = "hey @noctalia timer -p";
