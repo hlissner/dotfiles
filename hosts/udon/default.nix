@@ -161,7 +161,41 @@ with builtins;
     modules.ai.aichat.openrouterKeyFile = config.age.secrets.openrouterKey.path;
   };
 
-  hardware = { ... }: {
+  hardware = { config, pkgs, ... }:
+    let smi = "${config.hardware.nvidia.package.bin}/bin/nvidia-smi";
+        floor = pkgs.writeShellScript "nvidia-clock-floor" ''
+          case $1 in
+            up)   exec ${smi} --lock-memory-clocks=5001,9501 ;;
+            down) exec ${smi} --reset-memory-clocks ;;
+          esac
+        '';
+        sudo = "/run/wrappers/bin/sudo -n ${floor}";
+  in {
+    # My 3080TI's VRAM idles at 405-810MHz and takes a beat too long to climb
+    # out of it when hyprland (or scroll-overview) gets busy, which makes it
+    # feel stuttery and slow, so up its speed floor while I'm on the system.
+    systemd.user.services.nvidia-clock-floor = {
+      wantedBy = [ "graphical-session.target" ];
+      partOf = [ "graphical-session.target" ];
+      after = [ "graphical-session.target" ];
+      serviceConfig = {
+        ExecStartPre = "${sudo} up";
+        ExecStart = ''
+          ${getExe pkgs.swayidle} -w \
+            timeout 60 '${sudo} down' \
+            resume '${sudo} up' \
+            after-resume '${sudo} up'
+        '';
+        ExecStopPost = "${sudo} down";
+        Restart = "on-failure";
+      };
+    };
+    # The script ignores anything but up/down, so there's no need to pin args
+    security.sudo.extraRules = [{
+      users = [ config.user.name ];
+      commands = [{ command = "${floor}"; options = [ "NOPASSWD" ]; }];
+    }];
+
     # Disable all USB wakeup events to ensure restful sleep. This system has
     # many peripherals attached to it (shared between Windows and Linux) that
     # can unpredictably wake it otherwise. Ensures *only* the power button can
