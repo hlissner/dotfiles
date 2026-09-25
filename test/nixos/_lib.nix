@@ -7,7 +7,7 @@
 #
 #   { evalConfig, ... }: {
 #     testHyprlandEnablesQt = {
-#       expr = (evalConfig [{ modules.hyprland.enable = true; }]).qt.enable;
+#       expr = (evalConfig [{ modules.wm.desktop = "hyprland"; }]).qt.enable;
 #       expected = true;
 #     };
 #   }

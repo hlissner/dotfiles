@@ -1,4 +1,4 @@
-# test/nixos/modules/noctalia.nix --- tests for modules/hyprland/noctalia.nix
+# test/nixos/modules/wm/noctalia.nix --- tests for modules/wm/noctalia.nix
 #
 # config/noctalia/*.toml is included live; the module only generates what needs
 # a host fact. These tests read the merged settings attrset back -- the very
@@ -11,12 +11,12 @@
 with lib;
 let
   noctalia = monitors: extra: evalConfig ([{
-    modules.hyprland.enable = true;
-    modules.hyprland.monitors = monitors;
+    modules.wm.desktop = "hyprland";
+    modules.wm.hyprland.monitors = monitors;
   }] ++ extra);
 
   settings = monitors: extra:
-    (noctalia monitors extra).modules.hyprland.noctalia.settings;
+    (noctalia monitors extra).modules.wm.noctalia.settings;
 
   # The shape of a real host: one primary, one spare, one disabled.
   three = [
@@ -169,7 +169,7 @@ in {
   # can call it anything. Mine don't disagree, and that's the point of naming
   # them here.
   testLocalPluginsAreServedFromTheConfigDir =
-    let plugins = (noctalia three []).modules.hyprland.noctalia.plugins;
+    let plugins = (noctalia three []).modules.wm.noctalia.plugins;
         mine = filter (hasPrefix "hey/") (attrNames plugins);
         placed = placedIn base.bar.main;
     in {
@@ -210,7 +210,7 @@ in {
   # take the battery hooks down with the theme one here.
   testHostOverridesOneLeafWithoutDroppingItsSiblings =
     let s = settings three [{
-          modules.hyprland.noctalia.settings.hooks.colors_changed = "true";
+          modules.wm.noctalia.settings.hooks.colors_changed = "true";
         }];
     in {
       expr = {

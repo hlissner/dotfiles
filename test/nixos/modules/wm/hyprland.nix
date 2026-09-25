@@ -1,4 +1,4 @@
-# test/nixos/modules/hyprland.nix --- tests for modules/hyprland/default.nix
+# test/nixos/modules/wm/hyprland.nix --- tests for modules/wm/hyprland/default.nix
 #
 # The module splices hey.info into config/hypr/hyprland.lua as a Lua table and
 # wires the session's edges (greeter, sleep, shutdown) to hey's hooks. None of
@@ -11,8 +11,8 @@
 with lib;
 let
   hyprland = monitors: evalConfig [{
-    modules.hyprland.enable = true;
-    modules.hyprland.monitors = monitors;
+    modules.wm.desktop = "hyprland";
+    modules.wm.hyprland.monitors = monitors;
   }];
 
   one = hyprland [{ output = "DP-1"; }];

@@ -29,7 +29,7 @@ in {
 
     # Noctalia tries to write to foot.ini! See
     # https://github.com/noctalia-dev/noctalia/blob/main/assets/templates/foot/apply.sh
-    modules.hyprland.theme.builtinTemplates = [ "foot" ];
+    modules.wm.theme.builtinTemplates = [ "foot" ];
     home.configLink."foot/foot.ini" = "${hey.configDir}/foot/foot.ini";
     home.configFile."foot/foot.extra.ini".text = ''
       # .config/foot/foot.extra.ini

@@ -1,8 +1,8 @@
-# test/nixos/modules/theme.nix --- tests for modules/hyprland/theme.nix
+# test/nixos/modules/wm/theme.nix --- tests for modules/wm/theme.nix
 #
 # The module turns every application's registered template into Noctalia's
 # [theme.templates] table, which lands in config.toml through
-# modules.hyprland.noctalia.settings. Noctalia skips a template it can't read
+# modules.wm.noctalia.settings. Noctalia skips a template it can't read
 # and writes an empty output_path into its own config dir, both without a
 # word, so the tests read that table back and check it against the disk.
 
@@ -10,15 +10,15 @@
 
 with lib;
 let
-  # The module rides modules.hyprland.enable, so every read goes through it.
-  desktop = modules: evalConfig ([{ modules.hyprland.enable = true; }] ++ modules);
+  # The module rides modules.wm.desktop, so every read goes through it.
+  desktop = modules: evalConfig ([{ modules.wm.desktop = "hyprland"; }] ++ modules);
   theme = modules:
-    (desktop modules).modules.hyprland.noctalia.settings.theme.templates;
+    (desktop modules).modules.wm.noctalia.settings.theme.templates;
 
   # The baseline every "is it absent?" test reads: a desktop with one
   # unrelated template in it (hyprland registers its own regardless).
   bare = theme [{
-    modules.hyprland.theme.templates.example.input_path = "/in";
+    modules.wm.theme.files.example.input_path = "/in";
   }];
 
   # Everything that registers a template, switched on at once.
@@ -32,14 +32,14 @@ let
 in {
   ## The table.
 
-  # The module has no enable option of its own (see modules/hyprland/theme.nix);
+  # The module has no enable option of its own (see modules/wm/theme.nix);
   # it rides the desktop's, and that is what keeps it from emitting a theme
   # table -- and the qt5ct/qt6ct files that select Noctalia's palette -- on a
   # headless host.
   testNothingIsWrittenWithoutTheDesktop =
     let c = evalConfig []; in {
       expr = {
-        table = c.modules.hyprland.noctalia.settings ? theme;
+        table = c.modules.wm.noctalia.settings ? theme;
         qt    = c.home.configFile ? "qt6ct/qt6ct.conf";
       };
       expected = { table = false; qt = false; };
@@ -60,8 +60,8 @@ in {
 
   testColorsNormalise = {
     expr = (theme [{
-      modules.hyprland.theme.colors.brand = "#ff0000";
-      modules.hyprland.theme.colors.accent = { color = "#00ff00"; blend = false; };
+      modules.wm.theme.colors.brand = "#ff0000";
+      modules.wm.theme.colors.accent = { color = "#00ff00"; blend = false; };
     }]).custom_colors;
     expected = {
       brand = { color = "#ff0000"; blend = true; };
@@ -77,7 +77,7 @@ in {
     expr = {
       unset = attrNames bare.user.example;
       set = (theme [{
-        modules.hyprland.theme.templates.example = {
+        modules.wm.theme.files.example = {
           input_path = "/in"; output_path = "/out"; pre_hook = "true";
         };
       }]).user.example;
@@ -95,7 +95,7 @@ in {
   # state file, where a tick in Settings beats anything here.
   testCommunityTemplatesDriveTheirFlag = {
     expr = map (ids:
-      let t = theme [{ modules.hyprland.theme.communityTemplates = ids; }];
+      let t = theme [{ modules.wm.theme.communityTemplates = ids; }];
       in { inherit (t) enable_community_templates community_ids; })
       [ [] [ "tmux" ] ];
     expected = [
@@ -110,7 +110,7 @@ in {
   # application is what puts it in the table, and nothing else does. Some
   # borrow one of Noctalia's built-ins instead of templating themselves.
   testAppsRegisterTheirTemplates =
-    let t = everything.modules.hyprland.noctalia.settings.theme.templates;
+    let t = everything.modules.wm.noctalia.settings.theme.templates;
         apps = [ "tmux" "zellij" "rofi"
                  "librewolf-chrome-default" "librewolf-content-alt" ];
         borrowed = [ "foot" ];
@@ -128,7 +128,7 @@ in {
   # engine can't be handed a font, so no template may ask for one -- fonts
   # come from nix, next to the rendered file. Both checked against the disk.
   testEveryTemplateInputExistsAndAsksForNoFont =
-    let templates = everything.modules.hyprland.theme.templates;
+    let templates = everything.modules.wm.theme.files;
         input = name: templates.${name}.input_path;
     in {
       expr = {
@@ -154,8 +154,8 @@ in {
       # each one at render time.
       derived = concatMap
         (n: [ n "on_${n}" "${n}_container" "on_${n}_container" "${n}_source" "${n}_value" ])
-        (attrNames everything.modules.hyprland.theme.colors);
-      templates = everything.modules.hyprland.theme.templates;
+        (attrNames everything.modules.wm.theme.colors);
+      templates = everything.modules.wm.theme.files;
       used = name: map head (filter isList
         (split ''\{\{ *colors\.([a-z_0-9]+)\.'' (readFile templates.${name}.input_path)));
     in {

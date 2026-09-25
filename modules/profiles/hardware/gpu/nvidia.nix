@@ -82,7 +82,7 @@ in mkIf (any (s: hasPrefix "gpu/nvidia" s) hardware) (mkMerge [
     };
   })
 
-  (mkIf config.modules.hyprland.enable {
+  (mkIf (config.modules.wm.desktop == "hyprland") {
     # see NixOS/nixos-hardware#348
     # TODO: Try these!
     environment.systemPackages = with pkgs; [

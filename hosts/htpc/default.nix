@@ -26,13 +26,15 @@ with builtins;
       ];
     };
 
-    hyprland = rec {
-      enable = true;
-      monitors = [
-        { output = "HDMI-A-2";
-          mode = "3840x2160@120";
-          primary = true; }
-      ];
+    wm = {
+      desktop = "hyprland";
+      hyprland = rec {
+        monitors = [
+          { output = "HDMI-A-2";
+            mode = "3840x2160@120";
+            primary = true; }
+        ];
+      };
     };
 
     apps = {

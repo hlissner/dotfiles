@@ -21,7 +21,7 @@ in {
 
     # Leave to Noctalia template, but it requires things be in the right place!
     # See https://github.com/noctalia-dev/noctalia/blob/main/assets/templates/foot/apply.sh
-    modules.hyprland.theme.communityTemplates = [ "yazi" ];
+    modules.wm.theme.communityTemplates = [ "yazi" ];
     home.configLink."yazi" = "${hey.configDir}/yazi";
     modules.shell.zsh.rcFiles = [ "${hey.configDir}/yazi/aliases.zsh" ];
   };

@@ -25,17 +25,19 @@ with builtins;
       ];
     };
 
-    hyprland = {
-      enable = true;
-      monitors = [
-        { output = "DP-1";
-          mode = "1920x1080@60";
-          position = "0x0";
-          primary = true; }
-        { output = "HDMI-A-1";
-          mode = "1920x1080@75";
-          position = "1920x0"; }
-      ];
+    wm = {
+      desktop = "hyprland";
+      hyprland = {
+        monitors = [
+          { output = "DP-1";
+            mode = "1920x1080@60";
+            position = "0x0";
+            primary = true; }
+          { output = "HDMI-A-1";
+            mode = "1920x1080@75";
+            position = "1920x0"; }
+        ];
+      };
     };
 
     apps = {

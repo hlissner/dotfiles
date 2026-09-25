@@ -1,14 +1,14 @@
-# modules/hyprland/noctalia.nix
+# modules/wm/noctalia.nix
 #
 # Noctalia: the shell itself, its plugins, and the login screen it puts in
-# front of them. Follows modules.hyprland.enable.
+# front of them. Follows modules.wm.desktop = "hyprland".
 
 { hey, heyBin, lib, config, pkgs, ... }:
 
 with lib;
 with hey.lib;
-let cfg = config.modules.hyprland;
-    primaryMonitor = findFirst (x: x.primary) {} cfg.monitors;
+let cfg = config.modules.wm;
+    primaryMonitor = findFirst (x: x.primary) {} cfg.hyprland.monitors;
     hasPrimary = primaryMonitor ? output;
     package = hey.inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
     format = pkgs.formats.toml {};
@@ -22,7 +22,7 @@ let cfg = config.modules.hyprland;
     # siblings (a mkDefault over the whole tree would).
     defaults = mapAttrsRecursive (_: mkDefault);
 in {
-  options.modules.hyprland.noctalia = with types; {
+  options.modules.wm.noctalia = with types; {
     settings = mkOpt' format.type {} ''
       Defaults for Noctalia. Higher precedence than config/noctalia/, but lower
       than $XDG_STATE_HOME/noctalia/.
@@ -36,7 +36,7 @@ in {
     })) {} ''Plugins, by id ("author/plugin").'';
   };
 
-  config = mkIf cfg.enable (mkMerge [
+  config = mkIf (cfg.desktop == "hyprland") (mkMerge [
     ## Noctalia itself
     {
       programs.noctalia = {
@@ -89,7 +89,7 @@ in {
           cp ${toml} $out
         '';
 
-      modules.hyprland.noctalia.settings = defaults {
+      modules.wm.noctalia.settings = defaults {
         include.files = [ "${hey.configDir}/noctalia/" ];
         shell.font_family = config.hey.info.theme.fonts.sans;
       };
@@ -97,7 +97,7 @@ in {
 
     ## For location services, like weather reports
     (mkIf (config.time.timeZone != null) {
-      modules.hyprland.noctalia.settings = defaults {
+      modules.wm.noctalia.settings = defaults {
         location.address = config.time.timeZone;
       };
     })
@@ -116,7 +116,7 @@ in {
         (mapAttrsToList (id: p: { name = baseNameOf id; path = p.src; })
           enabledPlugins);
     in {
-      modules.hyprland.noctalia.plugins = {
+      modules.wm.noctalia.plugins = {
         ## My plugins (see config/noctalia/plugins/)
         "hey/peripheral-battery".src =
           "${hey.configDir}/noctalia/plugins/peripheral-battery";
@@ -166,13 +166,13 @@ in {
       assertions = mapAttrsToList (id: p: {
         assertion = p.src != null;
         message = ''
-          modules.hyprland.noctalia.plugins."${id}" is enabled but has no src.
+          modules.wm.noctalia.plugins."${id}" is enabled but has no src.
           It's declared behind an `mkIf` this host doesn't satisfy, so turning
           it on means giving it a src too.
         '';
       }) (filterAttrs (_: p: p.enable) cfg.noctalia.plugins);
 
-      modules.hyprland.noctalia.settings = defaults {
+      modules.wm.noctalia.settings = defaults {
         plugins = {
           enabled = attrNames enabledPlugins;
           auto_update = "none";
@@ -216,10 +216,10 @@ in {
            (_: filter (w: if hasPrefix "group:" w then elem w groupIds else keep w))
            (filterAttrs (k: _: elem k [ "start" "center" "end" ]) baseline.bar.main);
          otherMonitors = optionalAttrs hasPrimary (genAttrs
-           (filter (o: o != "" && o != primaryMonitor.output) (catAttrs "output" cfg.monitors))
+           (filter (o: o != "" && o != primaryMonitor.output) (catAttrs "output" cfg.hyprland.monitors))
            (o: { match = o; enabled = false; }));
     in {
-      modules.hyprland.noctalia.settings = defaults {
+      modules.wm.noctalia.settings = defaults {
         bar.main = lanes
           // optionalAttrs (baseline.bar.main ? capsule_group) { capsule_group = groups; }
           // optionalAttrs (otherMonitors != {}) { monitor = otherMonitors; };
@@ -235,7 +235,7 @@ in {
         (filter isList
           (split ''HookKind::[A-Za-z]+, "([a-z_]+)"'' (readFile header)));
     in {
-      modules.hyprland.noctalia.settings = defaults {
+      modules.wm.noctalia.settings = defaults {
         hooks =
           if names == []
           then throw "No hooks found in ${header}; Noctalia moved them."
@@ -246,7 +246,7 @@ in {
 
     ## The lock screen.
     (mkIf hasPrimary {
-      modules.hyprland.noctalia.settings = defaults {
+      modules.wm.noctalia.settings = defaults {
         lockscreen.monitors = [ primaryMonitor.output ];
         notification.monitors = [ primaryMonitor.output ];
         osd.monitors = [ primaryMonitor.output ];

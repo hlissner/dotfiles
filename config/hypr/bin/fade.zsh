@@ -12,17 +12,14 @@
 #   post-startup scripts (like hey's on-started and on-suspend hooks). Also
 #   temporarily binds Escape to kill the fade overlay.
 #
-#   Its defaults come from modules.hyprland.fade. Turning that module off makes
-#   this script do nothing without -d and -c.
-#
-#   REQUIRES: quickshell, hyprctl, jq
+#   REQUIRES: quickshell, hyprctl
 #
 # OPTIONS:
 #   -d MS
-#     Fade for MS milliseconds instead of the module default.
+#     Fade for MS milliseconds (default: 500).
 #   -c COLOR
-#     Fade to COLOR instead of the module default. Accepts anything QML takes:
-#     #rrggbb, a named colour, etc.
+#     Fade to COLOR (default: #000000). Accepts anything QML takes: #rrggbb, a
+#     named colour, etc.
 #
 # ARGUMENTS:
 #   1 DIRECTION
@@ -40,19 +37,8 @@ if [[ $dir != (in|out|kill) ]]; then
 fi
 (( $+commands[quickshell] )) || exit 0
 
-local ms color secs
+local ms=${o_duration[2]:-500} color=${o_color[2]:-"#000000"} secs
 if [[ $dir != kill ]]; then
-  local info=$(hey info hypr fade 2>/dev/null)
-  [[ $info == null ]] && info=
-  if [[ -z $info ]]; then
-    [[ -n $o_duration || -n $o_color ]] \
-      || hey.abort "modules.hyprland.fade is disabled; pass -d and/or -c to fade anyway"
-    info='{}'
-  fi
-
-  # For when neither the module nor the caller have opinions
-  ms=${o_duration[2]:-$(jq -r '.duration // 500' <<<$info)}
-  color=${o_color[2]:-$(jq -r '.color // "#000000"' <<<$info)}
   [[ $ms == <-> ]] || hey.abort "-d wants milliseconds, got: $ms"
   secs=$(( ms / 1000.0 ))
 fi

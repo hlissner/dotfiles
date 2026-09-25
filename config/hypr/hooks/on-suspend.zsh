@@ -5,7 +5,7 @@
 #   hey hook on-suspend
 #
 # DESCRIPTION:
-#   Triggered by `hey-sleep-hook` (modules/hyprland/noctalia.nix) when the
+#   Triggered by `hey-sleep-hook` (modules/wm/hyprland/default.nix) when the
 #   system goes to sleep.
 
 hey.toast info "Going to sleep.."

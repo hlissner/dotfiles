@@ -1,4 +1,4 @@
-# test/nixos/modules/plymouth.nix --- tests for modules/hyprland/plymouth.nix
+# test/nixos/modules/wm/plymouth.nix --- tests for modules/wm/plymouth.nix
 #
 # Almost everything here is a boot-time setting, which means a regression shows
 # up as a black screen or a wall of kernel log on the next reboot rather than as
@@ -10,11 +10,11 @@
 
 with lib;
 let
-  on = evalConfig [{ modules.hyprland.plymouth.enable = true; }];
+  on = evalConfig [{ modules.wm.plymouth.enable = true; }];
 
   # Driven through the hardware profile, the way a real host turns this on.
   nvidia = evalConfig [{
-    modules.hyprland.plymouth.enable = true;
+    modules.wm.plymouth.enable = true;
     modules.profiles.hardware = [ "gpu/nvidia" ];
   }];
 
@@ -30,9 +30,9 @@ let
   warns = config: length config.warnings > length on.warnings;
 
   seamless = evalConfig [{
-    modules.hyprland.enable = true;
-    modules.hyprland.plymouth.enable = true;
-    modules.hyprland.plymouth.seamless = true;
+    modules.wm.desktop = "hyprland";
+    modules.wm.plymouth.enable = true;
+    modules.wm.plymouth.seamless = true;
   }];
 in {
   ## The nvidia branch.
@@ -54,8 +54,8 @@ in {
   # the params drop out and a warning takes their place.
   testNvidiaWithoutModesettingWarnsInsteadOfLying =
     let c = evalConfig [{
-          modules.hyprland.plymouth.enable = true;
-          modules.hyprland.plymouth.nvidia = true;
+          modules.wm.plymouth.enable = true;
+          modules.wm.plymouth.nvidia = true;
           hardware.nvidia.modesetting.enable = false;
         }];
     in {
@@ -72,7 +72,7 @@ in {
   # there it can only warn.
   testNvidiaRewritesTheInitrdConf =
     let scripted = evalConfig [{
-          modules.hyprland.plymouth.enable = true;
+          modules.wm.plymouth.enable = true;
           modules.profiles.hardware = [ "gpu/nvidia" ];
           boot.initrd.systemd.enable = false;
         }];

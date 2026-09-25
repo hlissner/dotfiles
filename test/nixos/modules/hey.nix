@@ -66,7 +66,7 @@ in {
   # tells you which option to set.
   testDesktopIsPublishedToInfo = {
     expr = {
-      hyprland = (evalConfig [{ modules.hyprland.enable = true; }]).hey.info.desktop;
+      hyprland = (evalConfig [{ modules.wm.desktop = "hyprland"; }]).hey.info.desktop;
       headless = bare.hey.info.desktop;
     };
     expected = { hyprland = "hyprland"; headless = null; };

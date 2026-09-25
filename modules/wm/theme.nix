@@ -1,12 +1,12 @@
-## modules/hyprland/theme.nix
+## modules/wm/theme.nix
 
 { hey, lib, config, pkgs, ... }:
 
 with lib;
 with hey.lib;
-let cfg = config.modules.hyprland.theme;
+let cfg = config.modules.wm.theme;
 in {
-  options.modules.hyprland.theme = with types; {
+  options.modules.wm.theme = with types; {
     fonts = {
       mono = mkOpt' str "JetBrainsMono Nerd Font" "Font for terminals and editors";
       sans = mkOpt' str "Fira Sans" "Font for everything else";
@@ -55,17 +55,17 @@ in {
     communityTemplates = mkOpt' (listOf str) []
       "Noctalia community template ids, for apps I'd rather not template myself.";
 
-    templates = mkOpt' (attrsOf (submodule {
+    files = mkOpt' (attrsOf (submodule {
       options = {
         input_path  = mkOpt' str   "" "The template to render";
         output_path = mkOpt' str   "" "Where to write the rendered template";
         pre_hook    = mkOpt' lines "" "Shell run before the template is written";
         post_hook   = mkOpt' lines "" "Shell run after the template is written";
       };
-    })) {} "Templates for Noctalia to render when the theme changes";
+    })) {} "Files Noctalia renders from templates when the theme changes";
   };
 
-  config = mkIf config.modules.hyprland.enable (mkMerge [
+  config = mkIf (config.modules.wm.desktop == "hyprland") (mkMerge [
     {
       hey.info.theme = {
         # Names only
@@ -143,11 +143,11 @@ in {
             fixed=${font cfg.fonts.mono}
             general=${font cfg.fonts.sans}
            '';
-    in mkIf (cfg.templates != {}
+    in mkIf (cfg.files != {}
              || cfg.colors != {}
              || cfg.communityTemplates != []
              || cfg.builtinTemplates != []) {
-      modules.hyprland.noctalia.settings.theme.templates = {
+      modules.wm.noctalia.settings.theme.templates = {
         enable_builtin_templates = true;
         # gtk3/gtk4 write noctalia.css and point gtk-theme at adw-gtk3; qt drops
         # a colour scheme in qt{5,6}ct's colors/ and nothing else -- no hook, no
@@ -156,7 +156,7 @@ in {
         enable_community_templates = cfg.communityTemplates != [];
         community_ids = cfg.communityTemplates;
         custom_colors = mapAttrs (_: mkColor) cfg.colors;
-        user = mapAttrs (_: mkTemplate) cfg.templates;
+        user = mapAttrs (_: mkTemplate) cfg.files;
       };
 
       # Picking the scheme in qt6ct used to be a once-per-machine chore, and

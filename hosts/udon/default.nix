@@ -26,67 +26,69 @@ with builtins;
       ];
     };
 
-    hyprland = {
-      enable = true;
+    wm = {
+      desktop = "hyprland";
       plymouth = {
         enable = true;
         seamless = true;
       };
-      monitors = [
-        { output = "HDMI-A-2";
-          mode = "2560x1440@120";
-          position = "1920x2160";
-          vrr = 2;
-          primary = true; }
-        { output = "DP-2";
-          position = "0x2191"; }
-        { output = "DP-3";
-          position = "4480x2191"; }
-        { output = "HDMI-A-1";
-          mode = "3840x2160@120";
-          position = "1280x0";
-          vrr = 2;
-          disabled = true; }
-      ];
-      extraConfig = ''
-        -- Anchor side monitors indecies far enough apart that dynamic
-        -- workspaces have a low chance to overlap (and numeric so they can have
-        -- dynamic workspaces at all). See
-        -- $DOTFILES_HOME/config/hypr/hyprland.lua.
-        hl.workspace_rule({ workspace = "300",
-                            monitor = "DP-3",
-                            default = true,
-                            persistent = true })
-        hl.workspace_rule({ workspace = "200",
-                            monitor = "DP-2",
-                            default = true,
-                            persistent = true })
-        -- Staged for when the tv is switched on
-        hl.workspace_rule({ workspace = "400",
-                            monitor = "HDMI-A-1",
-                            default = true,
-                            gaps_out = 4 })
+      hyprland = {
+        monitors = [
+          { output = "HDMI-A-2";
+            mode = "2560x1440@120";
+            position = "1920x2160";
+            vrr = 2;
+            primary = true; }
+          { output = "DP-2";
+            position = "0x2191"; }
+          { output = "DP-3";
+            position = "4480x2191"; }
+          { output = "HDMI-A-1";
+            mode = "3840x2160@120";
+            position = "1280x0";
+            vrr = 2;
+            disabled = true; }
+        ];
+        extraConfig = ''
+          -- Anchor side monitors indecies far enough apart that dynamic
+          -- workspaces have a low chance to overlap (and numeric so they can have
+          -- dynamic workspaces at all). See
+          -- $DOTFILES_HOME/config/hypr/hyprland.lua.
+          hl.workspace_rule({ workspace = "300",
+                              monitor = "DP-3",
+                              default = true,
+                              persistent = true })
+          hl.workspace_rule({ workspace = "200",
+                              monitor = "DP-2",
+                              default = true,
+                              persistent = true })
+          -- Staged for when the tv is switched on
+          hl.workspace_rule({ workspace = "400",
+                              monitor = "HDMI-A-1",
+                              default = true,
+                              gaps_out = 4 })
 
-        hl.device({ name = "apple-inc.-magic-trackpad",
-                    natural_scroll = false,
-                    scroll_method = "2fg",
-                    scroll_factor = 0.75,
-                    accel_profile = "adaptive",
-                    sensitivity = 0.35,
-                    clickfinger_behavior = true, -- 1fg = LMB, 2fg = RMB, 3fg = MMB
-                    tap_to_click = true,
-                    tap_and_drag = false,
-                    tap_button_map = "lrm",
-                    drag_lock = 2,
-                    disable_while_typing = false })
+          hl.device({ name = "apple-inc.-magic-trackpad",
+                      natural_scroll = false,
+                      scroll_method = "2fg",
+                      scroll_factor = 0.75,
+                      accel_profile = "adaptive",
+                      sensitivity = 0.35,
+                      clickfinger_behavior = true, -- 1fg = LMB, 2fg = RMB, 3fg = MMB
+                      tap_to_click = true,
+                      tap_and_drag = false,
+                      tap_button_map = "lrm",
+                      drag_lock = 2,
+                      disable_while_typing = false })
 
-        hl.config({
-          -- To address 1px overscan on my U2724D's
-          general = {
-            gaps_out = { top = 0, left = 0, right = 1, bottom = 0 }
-          }
-        })
-      '';
+          hl.config({
+            -- To address 1px overscan on my U2724D's
+            general = {
+              gaps_out = { top = 0, left = 0, right = 1, bottom = 0 }
+            }
+          })
+        '';
+      };
     };
 
     ai = {

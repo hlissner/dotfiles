@@ -6,7 +6,7 @@
 # Symlinked in by nixos modules
 *.meta.lua
 
-# Rendered by Noctalia (modules/hyprland/theme.nix)
+# Rendered by Noctalia (modules/wm/theme.nix)
 /config/zellij/themes/colors.kdl
 /config/yazi/theme.toml
 /config/yazi/flavors/

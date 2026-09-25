@@ -1,4 +1,4 @@
-# modules/hyprland/plymouth.nix
+# modules/wm/plymouth.nix
 #
 # Make booting up pretty.
 
@@ -6,10 +6,10 @@
 
 with lib;
 with hey.lib;
-let cfg = config.modules.hyprland.plymouth;
+let cfg = config.modules.wm.plymouth;
     nvidia = config.hardware.nvidia;
 in {
-  options.modules.hyprland.plymouth = with types; {
+  options.modules.wm.plymouth = with types; {
     enable = mkBoolOpt false;
 
     theme = mkOpt' str "nixos-bgrt"
@@ -56,7 +56,7 @@ in {
 
       # Make sure plymouth doesn't kick in on shut-down before the user session
       # is over. Giving us time to create a nice "fade out" transition (see
-      # hey-shutdown-hook in ./default.nix).
+      # hey-shutdown-hook in ./hyprland/default.nix).
       systemd.services = genAttrs
         [ "plymouth-poweroff" "plymouth-reboot" "plymouth-halt" "plymouth-kexec" ]
         (_: { after = [ "user.slice" ]; });
@@ -80,7 +80,7 @@ in {
           '');
 
       warnings = optional (!config.boot.initrd.systemd.enable) ''
-        modules.hyprland.plymouth.nvidia can't override the DeviceTimeout
+        modules.wm.plymouth.nvidia can't override the DeviceTimeout
         without config.boot.initrd.systemd.enable, which is off.
       '';
     })
@@ -136,7 +136,7 @@ in {
            ++ optional (versionAtLeast nvidia.package.version "545") "nvidia_drm.fbdev=1");
 
       warnings = optional (!nvidia.modesetting.enable) ''
-        modules.hyprland.plymouth.nvidia is on, but hardware.nvidia.modesetting.enable
+        modules.wm.plymouth.nvidia is on, but hardware.nvidia.modesetting.enable
         is off. The nvidia driver publishes no KMS device without it, so Plymouth will
         fall back to the firmware framebuffer and the splash will change resolution
         mid-boot.

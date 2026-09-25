@@ -129,7 +129,7 @@ in {
     };
 
     # These are imported from userChrome.css & userContent.css (further below)
-    modules.hyprland.theme.templates = listToAttrs (concatMap
+    modules.wm.theme.files = listToAttrs (concatMap
       (profile: let chromeDir = "${config.home.configDir}/librewolf/librewolf/${cfg.profileName}.${profile}/chrome";
       in [
         (nameValuePair "librewolf-chrome-${profile}" {

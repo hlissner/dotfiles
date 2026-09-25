@@ -15,7 +15,7 @@ in {
 
   config = mkIf cfg.enable (mkMerge [
     {
-      modules.hyprland.theme.templates.rofi = {
+      modules.wm.theme.files.rofi = {
         input_path = "${hey.configDir}/rofi/colors.template.rasi";
         output_path = "${config.home.configDir}/rofi/themes/colors.rasi";
       };

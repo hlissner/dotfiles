@@ -100,8 +100,8 @@ mkIf (config.modules.profiles.role == "workstation") (mkMerge [
     services.openssh.startWhenNeeded = true;
   })
 
-  # modules/hyprland/noctalia.nix turns on power-profiles-daemon. This reverts
-  # to the balanced profile on each startup, in case a bar widget changed it.
+  # modules/wm/noctalia.nix turns on power-profiles-daemon. This reverts to the
+  # balanced profile on each startup, in case a bar widget changed it.
   (mkIf config.services.power-profiles-daemon.enable {
     # `balanced` defers to amd-pstate's firmware (full boost under load, actual
     # clock down at idle), which is superior to `performance`, which parks EPP

@@ -28,13 +28,15 @@ with builtins;
       ];
     };
 
-    hyprland = {
-      enable = true;
+    wm = {
+      desktop = "hyprland";
       plymouth = {
         enable = true;
         seamless = true;
       };
-      monitors = [ { output = "eDP-1"; primary = true; } ];
+      hyprland = {
+        monitors = [ { output = "eDP-1"; primary = true; } ];
+      };
     };
 
     ai.claude.enable = true;

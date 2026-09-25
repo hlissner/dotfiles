@@ -19,7 +19,7 @@ in {
   # rebuild -- and themes/ is only searched beneath it, so the rendered theme
   # has to land there too rather than where tmux's colors.conf goes.
   testConfigDirIsTheDotfilesAndTheThemeLandsInIt =
-    let t = zellij.modules.hyprland.theme.templates.zellij; in {
+    let t = zellij.modules.wm.theme.files.zellij; in {
       expr = {
         dotfiles = hasSuffix "/config/zellij" configDir;
         theme = hasPrefix configDir t.output_path && hasSuffix "/themes/colors.kdl" t.output_path;

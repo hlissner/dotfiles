@@ -31,7 +31,7 @@ in {
       run-shell ${prefix-highlight.rtp}
     '';
 
-    modules.hyprland.theme.templates.tmux = let
+    modules.wm.theme.files.tmux = let
       theme = "${config.home.configDir}/tmux/themes/noctalia.conf";
     in {
       input_path = "${hey.configDir}/tmux/colors.template.conf";
