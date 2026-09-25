@@ -1,4 +1,4 @@
-# packages/_janet.nix -- the machinery behind hey and heyops
+# packages/_janet.nix -- the machinery behind hey
 #
 # hey, judge and the dev shell all build against the same janet tree, so the
 # pins and the builder live here rather than three times over. The '_' prefix

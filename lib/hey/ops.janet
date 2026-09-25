@@ -1,6 +1,6 @@
 # lib/hey/ops.janet
 #
-# What every heyops subcommand needs before it touches another machine: a way
+# What every `hey ops` subcommand needs before it touches another machine: a way
 # in, and some idea of what it is on the other end.
 
 (use ./.)

@@ -1,6 +1,6 @@
 #!/usr/bin/env janet
 # Regression tests for lib/zsh/completions/_hey, and for the hey.comp.*
-# functions in lib/zsh it shares with _heyops.
+# functions in lib/zsh it's built from.
 #
 # Everything here fails silently in real life: a broken completion offers
 # nothing, and TAB just doesn't do anything.
@@ -38,6 +38,20 @@
   # Only the first colon belongs to the host.
   (test (hey "call" "__hey_ssh_target" "nas0.lan:/mnt/a:b/")
         @["REMOTE[nas0.lan] -- ssh /mnt/a:b/"]))
+
+(deftest completion/ops
+  # ops is a nested table, completed as the script directory it's also laid out
+  # as: the menu off the scripts in it, each one's arguments off its header.
+  (test (offers? (hey "dispatch" "ops" "") "push-keys:Give SYSTEM") true)
+  (test (dumped "ops" "push" "") "DUMP ops push")
+  # hey ops edit takes SYSTEM:FILE rather than a bare SYSTEM, so it's the one
+  # command in there with a completer of its own. The @ref in its header and the
+  # function in _hey have to agree on a name, and nothing else notices when
+  # they stop agreeing.
+  (test (last (hey "dispatch" "ops" "edit" "")) "ARG *:target:__hey_edit_target")
+  (test (hey "call" "__hey_edit_target" "") @["WANT[hosts] -S : -a hosts"])
+  # Past the colon there's a whole other machine, so nothing.
+  (test (hey "call" "__hey_edit_target" "box:") @[]))
 
 (deftest completion/hook-areas
   # The menu carries the sigil, so areas and hooks can share it; past the

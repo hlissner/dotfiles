@@ -58,8 +58,8 @@
 # Hey suites (Janet)
 
 # Can't list tests with judge, so a filesystem crawl it is. One directory per
-# binary under test (test/hey, test/heyops, ...); test/nixos is the other kind
-# of suite entirely, and _-prefixed names are shared plumbing.
+# binary under test (test/hey, ...); test/nixos is the other kind of suite
+# entirely, and _-prefixed names are shared plumbing.
 (defn- hey-dirs []
   (sorted (seq [dir :in (os/dir (path :test))
                 :when (not= dir "nixos")

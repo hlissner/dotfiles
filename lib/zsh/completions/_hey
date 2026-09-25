@@ -6,10 +6,10 @@
 # DIRS` describes the scripts in a directory. Both live in lib/hey/docs.janet.
 #
 # The generic half of all that -- dumping, scanning, walking script directories,
-# the subcommand menu -- is shared with _heyops, and lives in lib/zsh as one
-# autoloaded hey.comp.* function apiece (see modules/hey.nix). The prefix is how
-# to tell the two apart: hey.comp.* is public and anyone's to call, __hey_* is
-# defined in this file and nobody else's business.
+# the subcommand menu -- lives in lib/zsh as one autoloaded hey.comp.* function
+# apiece (see modules/hey.nix), for any other zsh script to reach. The prefix is
+# how to tell the two apart: hey.comp.* is public and anyone's to call, __hey_*
+# is defined in this file and nobody else's business.
 #
 # The second name up there is bin/lab, which is `exec hey .lab "$@"` and nothing
 # else. Any such wrapper gets hey's completion by being named on that line (or
@@ -20,6 +20,7 @@
 # $DOTFILES_HOME:
 #
 #   hey wm|host CMD        -- scripts in {config/$WM,hosts/$HOST}/bin
+#   hey ops CMD            -- scripts in bin/hey.d/ops.d
 #   hey @FOO CMD           -- scripts in config/FOO/bin
 #   hey .FOO               -- scripts in hosts/$HOST/bin, config/$WM/bin, or bin/
 #   hey hook [@AREA] HOOK  -- hooks in {$XDG_CONFIG_HOME/$AREA,config/$AREA}/hooks,
@@ -120,6 +121,14 @@ __hey_ssh_target() {
 __hey_ssh_host() {
   compset -P '*@'
   _hosts
+}
+
+# hey ops edit takes SYSTEM:FILE. I know the systems. The files are on a
+# machine I am not about to hang a TAB on an ssh round trip to, so past the
+# colon I have nothing to say and say it.
+__hey_edit_target() {
+  compset -P '*:' && return 1
+  hey.comp.hosts ':'
 }
 
 __hey_generations() {
@@ -229,6 +238,7 @@ __hey_rules() {
     (host)  hey.comp.subdir $_hey_root/hosts/$_hey_host/bin ;;
     (wm)    hey.comp.subdir $_hey_root/config/$_hey_wm/bin ;;
     (@*)    hey.comp.subdir $_hey_root/config/${words[1]#@}/bin ;;
+    (ops)   hey.comp.subdir $_hey_root/bin/hey.d/ops.d ;;
     (.*)
       local _hey_sigil=.
       words[1]=${words[1]#.}

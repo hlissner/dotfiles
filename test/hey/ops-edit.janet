@@ -1,9 +1,9 @@
 #!/usr/bin/env janet
-# Regression tests for bin/heyops.d/edit.janet.
+# Regression tests for bin/hey.d/ops.d/edit.janet.
 #
-# The far end is a directory and ssh is a shell script (edit.d/bin/ssh), because
-# what's worth pinning here is which files heyops decides to send back, and that
-# decision has no business needing another machine to check. This is the one
+# The far end is a directory and ssh is a shell script (ops-edit.d/bin/ssh),
+# because what's worth pinning here is which files hey ops decides to send back,
+# and that decision has no business needing another machine to check. This is the one
 # command in here that writes to a machine I'm not looking at, so it gets the
 # coverage the read-only ones don't. What it *says* while doing so isn't
 # pinned; what lands on the far end and what exit code comes back are.
@@ -12,9 +12,9 @@
 (use sh)
 (import hey)
 
-(def- bin (hey/path :home "bin/heyops"))
-(def- stubs (hey/path :test "heyops/edit.d/bin"))
-(def- workstation (hey/path :test "heyops/heyops.d/workstation"))
+(def- bin (hey/path :home "bin/hey"))
+(def- stubs (hey/path :test "hey/ops-edit.d/bin"))
+(def- workstation (hey/path :test "hey/ops.d/workstation"))
 
 # The far end lives in hey's runtime dir: per-user tmpfs, gone at logout. The
 # pid is in the name because judge runs the suites side by side.
@@ -41,9 +41,9 @@
   (hey/ignore-errors (string (slurp (hey/path/join remote name)))))
 
 (defn- edit
-  ``Run `heyops edit ARGS` against that far end, and return its exit code.
+  ``Run `hey ops edit ARGS` against that far end, and return its exit code.
   EDIT is the line the editor appends (nil to leave every file alone), CODE
-  what the editor exits with. DRY? puts heyops in dry-run mode, which is a
+  what the editor exits with. DRY? puts hey in dry-run mode, which is a
   global flag and so goes first.``
   [args &named edit code editor dry?]
   ($? rm -rf ,(hey/path :runtime "edit.d"))
@@ -54,11 +54,12 @@
                      # merely on $PATH would lose to the real ssh.
                      "XDG_BIN_HOME" stubs
                      "EDITOR" (or editor "editor")
-                     "HEYOPS_TEST_REMOTE" remote
-                     "HEYOPS_TEST_LOG" log
-                     "HEYOPS_TEST_EDIT" edit
-                     "HEYOPS_TEST_EDITOR_EXIT" (if code (string code))]
-    (first (run ,bin ,;(if dry? ["-!"] []) edit ,;args > ,(buffer) > [stderr :null]))))
+                     "HEY_OPS_TEST_REMOTE" remote
+                     "HEY_OPS_TEST_LOG" log
+                     "HEY_OPS_TEST_EDIT" edit
+                     "HEY_OPS_TEST_EDITOR_EXIT" (if code (string code))]
+    (first (run ,bin ,;(if dry? ["-!"] []) ops edit ,;args
+                > ,(buffer) > [stderr :null]))))
 
 (defn- sent? [name]
   "True if the far end was asked to write NAME, rather than merely read it."

@@ -1,7 +1,7 @@
 # modules/hey.nix -- powering my binscripts
 #
 # ZSH and Janet are the powerhouses of my dotfiles. This module configures both
-# for my scripting needs. Builds bin/hey (and bin/heyops on workstations).
+# for my scripting needs. Builds bin/hey.
 
 { hey, lib, options, config, pkgs, ... }:
 
@@ -12,7 +12,6 @@ let cfg = config.hey;
     janet = pkgs.janet;
 
     heyPkg = hey.packages.hey;
-    heyopsPkg = hey.packages.heyops;
 
     # My own janet tree, deliberately outside the store, so `jpm install` has
     # somewhere to put things.
@@ -66,9 +65,7 @@ in {
       git
       wget
       zsh
-    ]
-    # Workstations are the control centers
-    ++ optional (config.modules.profiles.role == "workstation") heyopsPkg;
+    ];
 
     # For the global Janet ecosystem (separate from Hey's).
     #
@@ -114,6 +111,8 @@ in {
       export fpath=( "${hey.libDir}/zsh" "${hey.libDir}/zsh/completions" "''${fpath[@]}" )
       autoload -Uz "''${fpath[1]}"/hey.*(.:t)
     '';
+
+    environment.shellAliases.heyops = "hey ops";  # lazy fingers
 
     systemd.user.tmpfiles.rules = [
       "d ${janetTreeDir} 755 - - - -"

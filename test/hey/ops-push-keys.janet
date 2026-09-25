@@ -1,11 +1,11 @@
 #!/usr/bin/env janet
-# Regression tests for bin/heyops.d/push-keys.janet.
+# Regression tests for bin/hey.d/ops.d/push-keys.janet.
 #
 # The far end is a directory and ssh, scp and ssh-copy-id are shell scripts
-# (push-keys.d/bin/*), the way test/heyops/edit.janet does it. The stubbed ssh
-# runs what it's handed against that directory rather than faking a reply, so
-# the tidy script's chmods and symlinks -- which are most of what this command
-# is for -- are really executed and really checked.
+# (ops-push-keys.d/bin/*), the way test/hey/ops-edit.janet does it. The stubbed
+# ssh runs what it's handed against that directory rather than faking a reply,
+# so the tidy script's chmods and symlinks -- which are most of what this
+# command is for -- are really executed and really checked.
 #
 # The scp stub refuses a directory, and refuses a destination that isn't there
 # yet, because real scp does both and push-keys has to not walk into either.
@@ -14,9 +14,9 @@
 (use sh)
 (import hey)
 
-(def- bin (hey/path :home "bin/heyops"))
-(def- stubs (hey/path :test "heyops/push-keys.d/bin"))
-(def- workstation (hey/path :test "heyops/heyops.d/workstation"))
+(def- bin (hey/path :home "bin/hey"))
+(def- stubs (hey/path :test "hey/ops-push-keys.d/bin"))
+(def- workstation (hey/path :test "hey/ops.d/workstation"))
 
 # The far end lives in hey's runtime dir: per-user tmpfs, gone at logout. The
 # pid is in the name because judge runs the suites side by side.
@@ -46,7 +46,7 @@
         (spit dest contents)))))
 
 (defn- push-keys
-  ``Run `heyops push-keys SYSTEM` against that far end, and return its exit
+  ``Run `hey ops push-keys SYSTEM` against that far end, and return its exit
   code. ROLE is what the far end claims to be, which is not this machine's --
   the local role gate wants a workstation either way.``
   [system &named role copyid-exit]
@@ -58,12 +58,12 @@
                      # hey rebuilds $PATH from before running anything.
                      "XDG_BIN_HOME" stubs
                      "XDG_CONFIG_HOME" config
-                     "HEYOPS_TEST_REMOTE" remote
-                     "HEYOPS_TEST_LOG" log
-                     "HEYOPS_TEST_ROLE" (or role "workstation")
-                     "HEYOPS_TEST_COPYID_EXIT" (if copyid-exit
+                     "HEY_OPS_TEST_REMOTE" remote
+                     "HEY_OPS_TEST_LOG" log
+                     "HEY_OPS_TEST_ROLE" (or role "workstation")
+                     "HEY_OPS_TEST_COPYID_EXIT" (if copyid-exit
                                                  (string copyid-exit))]
-    (first (run ,bin push-keys ,system > ,(buffer) > [stderr :null]))))
+    (first (run ,bin ops push-keys ,system > ,(buffer) > [stderr :null]))))
 
 (defn- landed [& parts] (hey/path/join remote ".config/secrets" ;parts))
 (defn- sent [] (sorted (or (hey/ignore-errors (os/dir (landed))) [])))

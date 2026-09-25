@@ -2,13 +2,13 @@
 # Edit files on other machines with the editor on this one.
 #
 # SYNOPSIS:
-#   heyops edit [-e EDITOR] SYSTEM:FILE...
+#   hey ops edit [-e EDITOR] SYSTEM:FILE...
 #
 # DESCRIPTION:
 #   Fetches every FILE, opens the lot in one editor, and sends back the ones
 #   that came out different. Several files on several machines in one sitting:
 #
-#     heyops edit ramen:.zshrc soba:.config/foo.toml
+#     hey ops edit ramen:.zshrc soba:.config/foo.toml
 #
 #   FILE is whatever SYSTEM's login shell makes of it, which means relative to
 #   $HOME unless it starts with a /.
@@ -128,7 +128,7 @@
   # Through a shell, so an $EDITOR with arguments in it ("emacsclient -nw")
   # works here the way it does everywhere else. $0 is named rather than blank so
   # that a complaint from the shell says who asked.
-  (def code (first (run sh -c ,(string editor ` "$@"`) heyops-edit
+  (def code (first (run sh -c ,(string editor ` "$@"`) hey-ops-edit
                         ,;(map |($0 :local) jobs))))
   (unless (zero? code)
     (echof :warn "Your edits are in %s" (stage))

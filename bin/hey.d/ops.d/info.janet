@@ -2,11 +2,11 @@
 # Ask SYSTEM about itself.
 #
 # SYNOPSIS:
-#   heyops info SYSTEM [ARGS...]
+#   hey ops info SYSTEM [ARGS...]
 #
 # DESCRIPTION:
 #   `hey info`, run over there. ARGS go to it verbatim, so every flag and key
-#   hey info takes works here: `heyops info soba profiles role -r`.
+#   hey info takes works here: `hey ops info soba profiles role -r`.
 #
 # ARGUMENTS:
 #   1 SYSTEM @hosts

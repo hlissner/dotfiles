@@ -2,7 +2,7 @@
 # Push my working copy of this flake at SYSTEM.
 #
 # SYNOPSIS:
-#   heyops sync SYSTEM [RSYNC-ARGS...]
+#   hey ops sync SYSTEM [RSYNC-ARGS...]
 #
 # DESCRIPTION:
 #   rsyncs $DOTFILES_HOME over whatever SYSTEM keeps its own in -- which it gets

@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+# Stand-in for nixos-rebuild, for test/hey/ops-push.janet. Says what it was
+# asked to build, and for which host HEYENV thinks it's building.
+print -r -- "$*"
+print -r -- "HEYENV.host=$(jq -r .host <<<$HEYENV)"

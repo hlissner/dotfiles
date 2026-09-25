@@ -61,13 +61,6 @@ local _hey_host _hey_wm _hey_datadir
 # The name the completion was invoked for. Only a wrapper makes it interesting.
 local service=$completion
 
-# heyops refuses to run anywhere but a workstation, and asks info.json which it
-# is. Without a stand-in, whether this suite can complete anything would depend
-# on the role of whatever machine is running it -- green here, red on a server
-# and red in CI, where info.json is `{}`.
-[[ $completion == heyops ]] &&
-  local -x XDG_DATA_HOME=$root/test/heyops/heyops.d/workstation
-
 # hey is the only one that walks $DOTFILES_HOME, so it's the only one with
 # anything to stand in for.
 if [[ $completion == hey ]]; then

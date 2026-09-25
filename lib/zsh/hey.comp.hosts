@@ -4,7 +4,7 @@
 # The machines with a config in this flake. What docs.janet turns @hosts into.
 #
 # SUFFIX, if given, is inserted after the host instead of the usual space --
-# for the SYSTEM:FILE shape `heyops edit` takes, where the host is only half a
+# for the SYSTEM:FILE shape `hey ops edit` takes, where the host is only half a
 # word.
 
 local expl

@@ -64,8 +64,8 @@ jobs:
       - name: Run the Hey suites
         run: nix shell --inputs-from . $TOOLCHAIN --command ./bin/hey test hey
 
-      - name: Build hey and heyops
-        run: nix build --no-link --print-build-logs .#hey .#heyops
+      - name: Build hey
+        run: nix build --no-link --print-build-logs .#hey
 
   nixos:
     runs-on: ubuntu-latest

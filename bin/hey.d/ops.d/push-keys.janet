@@ -2,7 +2,7 @@
 # Give SYSTEM the secrets it is supposed to have.
 #
 # SYNOPSIS:
-#   heyops push-keys SYSTEM
+#   hey ops push-keys SYSTEM
 #
 # DESCRIPTION:
 #   My public key goes over first, so nothing after it asks for a password.
@@ -23,12 +23,6 @@
 (use sh)
 (import hey/ops)
 
-# Run on the far end, once, after the files land. Private keys are whatever
-# isn't a .pub -- ssh refuses to read a private key anyone else can.
-#
-# find rather than a glob and a loop, because ssh runs this in the login shell
-# and mine is zsh, which makes an unmatched glob a fatal error instead of
-# leaving it alone. A machine with no host keys took the whole command down.
 (defn- tidy [role]
   (string `
     set -eu

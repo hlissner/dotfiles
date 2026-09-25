@@ -1,15 +1,15 @@
 #!/usr/bin/env zsh
-# Stand-in for ssh, for test/heyops/edit.janet.
+# Stand-in for ssh, for test/hey/ops-edit.janet.
 #
 # $1 is the host, which I ignore: there is one machine here and it's a directory
-# ($HEYOPS_TEST_REMOTE, playing its $HOME). $2 is the command, which I log so a
+# ($HEY_OPS_TEST_REMOTE, playing its $HOME). $2 is the command, which I log so a
 # test can tell "sent nothing" from "sent the same bytes back".
-[[ -n $HEYOPS_TEST_LOG ]] && print -r -- "$2" >>$HEYOPS_TEST_LOG
+[[ -n $HEY_OPS_TEST_LOG ]] && print -r -- "$2" >>$HEY_OPS_TEST_LOG
 
 case $2 in
   # The two things edit.janet asks for. ssh drops you in $HOME, hence the cd.
   (cat\ --*|tmp=*)
-    cd $HEYOPS_TEST_REMOTE || exit 1
+    cd $HEY_OPS_TEST_REMOTE || exit 1
     eval "$2"
     ;;
   # Anything else is lib/hey/ops.janet's probe, and a directory has no opinion
@@ -18,6 +18,6 @@ case $2 in
     print -r -- "variant="
     print -r -- "hey=1"
     print -r -- "role=workstation"
-    print -r -- "path=$HEYOPS_TEST_REMOTE"
+    print -r -- "path=$HEY_OPS_TEST_REMOTE"
     ;;
 esac

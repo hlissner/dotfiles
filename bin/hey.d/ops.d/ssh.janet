@@ -2,7 +2,7 @@
 # Open a shell on SYSTEM, or run one thing there.
 #
 # SYNOPSIS:
-#   heyops ssh SYSTEM [ARGS...]
+#   hey ops ssh SYSTEM [ARGS...]
 #
 # DESCRIPTION:
 #   Plain ssh with the sanity checks in front of it, so a typo'd hostname says
