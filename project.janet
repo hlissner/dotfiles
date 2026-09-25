@@ -1,8 +1,4 @@
 
-# packages/hey.nix builds hey, so there is no declare-executable or deploy task
-# here. Use `jpm install` to produce a development build of hey that will shadow
-# the real one. Don't forget to `jpm clean` after `hey sync`ing.
-
 (declare-project
  :name "hey"
  :author "Henrik Lissner <contact@henrik.io>"
@@ -18,6 +14,29 @@
    {:url "https://github.com/janet-lang/sqlite3.git"}
    {:url "https://github.com/ianthehenry/judge.git"}
  ])
+
+(defn- janet-sources [& dirs]
+  (def out @[])
+  (defn walk [dir]
+    (each f (os/dir dir)
+      (def p (string dir "/" f))
+      (case (os/stat p :mode)
+        :directory (walk p)
+        :file (when (string/has-suffix? ".janet" p) (array/push out p)))))
+  (each d dirs (walk d))
+  out)
+
+(declare-executable
+ :name "hey"
+ :entry "bin/hey"
+ :install true
+ :deps (janet-sources "lib/hey" "bin/hey.d"))
+
+# `jpm clean` rm -rf's ./build, but jpm build cries if the build dir doesn't
+# exist, so...
+(task "clean" []
+  (os/mkdir (dyn :buildpath))
+  (os/mkdir (dyn :tree)))
 
 (put-in (getrules) ["test" :recipe] @[]) # Disable build-in tests
 (task "test" []

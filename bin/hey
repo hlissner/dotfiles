@@ -38,6 +38,22 @@
 (import ./hey.d/vars)
 (import ./hey.d/sup)
 
+# Evaluated at compile-time
+(def- *built* {:t (os/time)
+               :v "v0.1.0"
+               :f (path/abbrev (path/abspath (dyn :current-file)))
+               :jv janet/version})
+
+(defn- version [& args]
+  [:eval
+   (fn [& _]
+     (let [{:year yr :month mo :month-day day :hours hr :minutes min :seconds s}
+           (os/date (*built* :t) true)]
+       (echof "hey %s (built %04d-%02d-%02d %02d:%02d:%02d) @ %s"
+              (*built* :v) yr (inc mo) (inc day) hr min s (*built* :f))
+       (echof "janet %s (%s)" janet/version janet/build)))
+   ;args])
+
 (defn main [_ & args]
   (dispatch [[:get :set]    (with-doc "Alias for hey vars {get,set} ..."
                               |[:eval (cmd 'vars) ;$&])
@@ -55,6 +71,7 @@
              [:sync :s]     (cmd 'sync)
              :test          (cmd 'test)
              :vars          (cmd 'vars)
+             [:v :version]  version
              :sup           (cmd 'sup)
              :wm            (with-doc "Dispatch to config/$WM/bin."
                               # Asking for the desktop's scripts on a machine

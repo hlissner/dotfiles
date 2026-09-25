@@ -80,23 +80,23 @@
   # A suite name becomes its file; anything else is judge's business
   (def args [;(if (some file-of args) [] (map |(path :test $0) (hey-dirs)))
              ;(map |(or (file-of $0) $0) args)])
-  (unless (path/find "judge")
-    (echo :g "> Test dependencies are missing; installing them...")
-    (os/cd (path :home))  # jpm wants a project.janet to read
-    (do? $ jpm deps))
+  # Always the flake's, never whatever is lying around on PATH. The eval is
+  # cached, so this costs ~0.1s until the tree changes.
+  (def judge
+    (string ($<_ nix build --no-link --print-out-paths --no-warn-dirty
+                 ,(string (path :home) "#judge"))
+            "/bin/judge"))
   (echo :g "> Running the Hey suite...")
   (flush)
 
-  # This ordering is important and unintuitive! janet reads the last entry in
-  # JANET_PATH as :syspath and searches it ahead of all other entries.
+  # judge pins its own :syspath, so this is for the suites' `(import hey)` and
+  # the bin/hey they spawn: lib/ for hey, judge's tree for the pinned deps, and
+  # nothing inherited.
   (with-envvars
     ["JANET_PATH" (string/join [(path :lib)
-                                ;(opts (os/getenv "JANET_PATH"))
-                                ;(opts (if-let [tree (os/getenv "JANET_TREE")]
-                                         (string tree "/lib")))]
-                               # shadows lib if :syspath is set
+                                (path/join (os/realpath judge) "../../lib")]
                                ":")]
-    (do? $? judge ,;args)))
+    (do? $? ,judge ,;args)))
 
 (defcmd test [_ suite & args &opts list? [-l --list]]
   (case* suite

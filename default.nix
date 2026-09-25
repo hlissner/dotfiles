@@ -58,7 +58,6 @@ with hey.lib;
           experimental-features = nix-command flakes
         '';
         nixPath = nixPathInputs ++ [
-          "nixpkgs-overlays=${hey.dir}/overlays"
           "dotfiles=${hey.dir}"
         ];
         registry = mapAttrs (_: v: { flake = v; }) filteredInputs;
