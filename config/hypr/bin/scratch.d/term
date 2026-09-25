@@ -1,8 +1,0 @@
-#!/usr/bin/env zsh
-#
-# TODO
-
-hey .open-term -t scratch-term -o colors.alpha=0.8 -o main.pad=12x12 &
-sleep 0.1
-
-hyprctl dispatch cyclenext

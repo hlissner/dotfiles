@@ -43,6 +43,6 @@ fi
 fontname="${font[2]%%:*}"
 fontsize="${${font[2]//*:*size=}%%:*}"
 fontsize="${fontsize:-9}"
-footopts+=( -o "main.font=${fontname:-JetBrainsMono Nerd Font}:size=$fontsize" ${opts[@]} )
+footopts+=( -o "main.font=${fontname:-JetBrainsMono Nerd Font}:size=$(( fontsize + offset ))" ${opts[@]} )
 
 hey.do foot "${footopts[@]}" -- tmux ${tmuxopts[@]}
