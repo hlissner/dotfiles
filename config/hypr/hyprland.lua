@@ -262,7 +262,7 @@ end
 
 -- ** Quick-resize windows
 for i, spec in ipairs({ 700, 0.4, 0.5, 0.6, 0.8, 1.0 }) do
-  hl.bind("SUPER + CTRL + " .. i, hey.dsp.resize_width_to(spec))
+  hl.bind("SUPER + " .. i, hey.dsp.resize_width_to(spec))
 end
 
 -- ** Move/resize windows with mouse LMB/RMB

@@ -44,56 +44,57 @@
                :f (path/abbrev (path/abspath (dyn :current-file)))
                :jv janet/version})
 
-(defn- version [& args]
-  [:eval
-   (fn [& _]
-     (let [{:year yr :month mo :month-day day :hours hr :minutes min :seconds s}
-           (os/date (*built* :t) true)]
-       (echof "hey %s (built %04d-%02d-%02d %02d:%02d:%02d) @ %s"
-              (*built* :v) yr (inc mo) (inc day) hr min s (*built* :f))
-       (echof "janet %s (%s)" janet/version janet/build)))
-   ;args])
+(defn- version [& _]
+  (let [{:year yr :month mo :month-day day :hours hr :minutes min :seconds s}
+        (os/date (*built* :t) true)]
+    (echof "hey %s (built %04d-%02d-%02d %02d:%02d:%02d) @ %s"
+           (*built* :v) yr (inc mo) (inc day) hr min s (*built* :f))
+    (echof "janet %s (%s)" janet/version janet/build)))
 
 (defn main [_ & args]
-  (dispatch [[:get :set]    (with-doc "Alias for hey vars {get,set} ..."
-                              |[:eval (cmd 'vars) ;$&])
-             :gc            (cmd 'gc)
-             :hook          (cmd 'hook)
-             :host          (with-doc "Dispatch to hosts/$HOST/bin."
-                              |[:exec (path (keyword $0) "bin") ;$&])
-             :info          (cmd 'info)
-             :path          (cmd 'path)
-             [:profile :pr] (cmd 'profile)
-             :pull          (cmd 'pull)
-             [:reload :re]  (cmd 'reload)
-             :repl          (cmd 'repl)
-             [:swap :sw]    (cmd 'swap)
-             [:sync :s]     (cmd 'sync)
-             :test          (cmd 'test)
-             :vars          (cmd 'vars)
-             [:v :version]  version
-             :sup           (cmd 'sup)
-             :wm            (with-doc "Dispatch to config/$WM/bin."
-                              # Asking for the desktop's scripts on a machine
-                              # with no desktop is a sentence, not a backtrace.
-                              |[:exec (try (path (keyword $0) "bin")
-                                           ([e] (abort "%s" e)))
-                                      ;$&])
-             :exec          (with-doc "Execute a program on $PATH through hey."
-                              (fn [_ &opt arg & args]
-                                [:exec (if arg
-                                         (or (path/find arg)
-                                             (abort "%s: command not found" arg))
-                                         (abort "exec: which program?"))
-                                       ;args]))
-             '(+ "./" "/")  (with-doc "Execute a script by path." "./"
-                              |[:exec ;$&])
-             '(* ".")       (with-doc "Execute the first script found under host, wm, or bin/." ".*"
-                              |[:exec ;(or (resolve [(path :host "bin")
-                                                     (ignore-errors (path :wm "bin"))
-                                                     (path :bin)]
-                                                    (slice $0 1) ;$&)
-                                           (abort "%s: command not found" $0))])
-             '(* "@")       (with-doc "Dispatch to config/DIR/bin." "@*"
-                              |[:exec (path :config (slice $0 1) :bin) ;$&])]
+  (dispatch [[:get :set]    {:doc "Alias for hey vars {get,set} ..."
+                             :eval |[vars/vars ;$&]}
+             :gc            gc/gc
+             :hook          hook/hook
+             :host          {:doc "Dispatch to hosts/$HOST/bin."
+                             :exec |[(path (keyword $0) "bin") ;$&]}
+             :info          info/info
+             :path          path/path
+             [:profile :pr] profile/profile
+             :pull          pull/pull
+             [:reload :re]  reload/reload
+             :repl          repl/repl
+             [:swap :sw]    swap/swap
+             [:sync :s]     sync/sync
+             :test          test/test
+             :vars          vars/vars
+             [:v :version]  {:doc "Print hey's version."
+                             :eval |[version ;$&]}
+             :sup           sup/sup
+             :wm            {:doc "Dispatch to config/$WM/bin."
+                             # Asking for the desktop's scripts on a machine
+                             # with no desktop is a sentence, not a backtrace.
+                             :exec |[(try (path (keyword $0) "bin")
+                                       ([e] (abort "%s" e)))
+                                     ;$&]}
+             :exec          {:doc "Execute a program on $PATH through hey."
+                             :exec (fn [_ &opt arg & args]
+                                     [(if arg
+                                        (or (path/find arg)
+                                            (abort "%s: command not found" arg))
+                                        (abort "exec: which program?"))
+                                      ;args])}
+             '(+ "./" "/")  {:doc "Execute a script by path."
+                             :name "./"
+                             :exec |[;$&]}
+             '(* ".")       {:doc "Execute the first script found under host, wm, or bin/."
+                             :name ".*"
+                             :exec |(or (resolve [(path :host "bin")
+                                                  (ignore-errors (path :wm "bin"))
+                                                  (path :bin)]
+                                                 (slice $0 1) ;$&)
+                                        (abort "%s: command not found" $0))}
+             '(* "@")       {:doc "Dispatch to config/DIR/bin."
+                             :name "@*"
+                             :exec |[(path :config (slice $0 1) :bin) ;$&]}]
             ;args))

@@ -110,33 +110,38 @@
   A bare string fallback becomes an exec of that command plus the arguments.``
   [rules]
   (when (odd? (length rules))
-    (if (string? (last rules))
-      |[:exec (last rules) ;$&]
-      (last rules))))
+    (let [fallback (last rules)]
+      (if (string? fallback)
+        {:exec |[fallback ;$&]}
+        fallback))))
+
+(defn- menu-abort
+  "Complain that a subcommand was expected, then list RULES and exit 1."
+  [file rules &opt builtins]
+  (echo :error "Subcommand required.\n")
+  (if file (help [file] *err*))
+  (echo "\nCOMMANDS:")
+  (echo (format-commands rules builtins))
+  (exit 1))
 
 (defn- eval-dispatcher
-  "Build the op handler for a rule that resolves to Janet code."
-  [command spec]
-  (unless (> (length spec) 1)
-    (errorf "Invalid eval dispatcher for: %s" command))
-  (let [f (in spec 1)
-        cargs (slice spec 2)]
+  "Build the op handler for a rule that resolves to Janet function F."
+  [command f cargs]
+  (unless (function? f)
+    (abort "Invalid :eval destination for %s: %q" command f))
+  (let [own (fn-file f)
+        file (or own (dyn :script))]
     (fn [op]
-      (let [{:cmd cmd :file file}
-            (if (struct? f)
-              {:cmd (f :cmd) :file (script-path (f :file))}
-              {:cmd f :file (dyn :script)})]
-        (case op
-          :which (echo (string/join [file ;cargs] " "))
-          :help  (help [file ;cargs])
-          :dump  (print-specs (if (struct? f) file))
-          :call  (cmd command ;cargs))))))
+      (case op
+        :which (echo (string/join [file ;cargs] " "))
+        :help  (help [file ;cargs])
+        :dump  (print-specs own)
+        :call  (f command ;cargs)))))
 
 (defn- exec-dispatcher
   "Build the op handler for a rule that resolves to a script on disk."
-  [command spec]
-  (let [sargs (slice spec 1)
-        pargs (unless (empty? sargs) (resolve ;sargs))
+  [command sargs]
+  (let [pargs (unless (empty? sargs) (resolve ;sargs))
         base (first sargs)]
     (unless pargs
       (cond
@@ -162,24 +167,55 @@
                  (unless (zero? code) (exit code))
                  code)))))
 
-(defn- dispatcher-for [rules &opt command & args]
+(defn- rules-dispatcher
+  ``Build the op handler for nested rulesets with no subcommand.``
+  [file rules]
+  (fn [op]
+    # help and which are dispatch-1's, and don't work down here.
+    (case op
+      :which (echo (or file (dyn :script)))
+      :help  (if file (help [file]) (echo (format-commands rules [])))
+      :dump  (print-commands rules [])
+      :call  (menu-abort file rules []))))
+
+(defn- dispatcher-for
+  ``Return an op handler for COMMAND per RULES, which can be:
+
+    FN                  a command, called (FN COMMAND ;ARGS)
+    STRING              a script, run with ARGS
+    {:eval FN}          FN returns [COMMAND-FN ;ARGS] to call
+    {:exec FN|STRING}   FN returns [SCRIPT ;ARGS] to run
+    {:rules FN|RULES}   a nested ruleset, or a FN that returns one
+
+  Every FN in a struct is called with (COMMAND ;ARGS). A struct may also carry
+  :doc and, for a PEG pattern with no keyword to name it, :name.``
+  [rules &opt command & args]
   (unless command (break))
   (let [pair (find-rule rules command args)
-        rule (if pair (in pair 1) (rule-fallback rules))
-        # with-doc wraps non-struct destinations in {:fn ... :doc ...}. A cmd
-        # struct has no :fn, so it falls through to :struct untouched.
-        dest (if (and (dictionary? rule) (get rule :fn)) (rule :fn) rule)
-        spec (case* (type dest)
-               :function (dest command ;args)
-               :struct [:eval dest ;args]
-               :string [:exec dest ;args]
-               :nil nil
-               (abort "Invalid rule destination: %q" dest))]
-    (log 2 "dispatcher-for=%q" spec)
-    (case (first spec)
-      :eval (eval-dispatcher command spec)
-      :exec (exec-dispatcher command spec)
-      (abort "Unknown command: %q" command))))
+        dest (if pair (in pair 1) (rule-fallback rules))]
+    (log 2 "dispatcher-for=%q" dest)
+    (cond
+      (function? dest) (eval-dispatcher command dest args)
+      (string? dest)   (exec-dispatcher command [dest ;args])
+      (nil? dest)      (abort "Unknown command: %q" command)
+      (not (dictionary? dest)) (abort "Invalid rule destination: %q" dest)
+
+      (dest :eval)
+      (let [[f & cargs] ((dest :eval) command ;args)]
+        (eval-dispatcher command f cargs))
+
+      (dest :exec)
+      (let [x (dest :exec)]
+        (exec-dispatcher command (if (string? x) [x ;args] (x command ;args))))
+
+      (dest :rules)
+      (let [r (dest :rules)
+            rules (if (function? r) (r command ;args) r)]
+        (if (empty? args)
+          (rules-dispatcher (fn-file r) rules)
+          (dispatcher-for rules ;args)))
+
+      (abort "Invalid rule destination: %q" dest))))
 
 # Set once by dispatch-1, read everywhere. Also exported as HEYSCRIPT,
 # HEYDRYRUN and HEYDEBUG, for the shell scripts downstream of me.
@@ -251,11 +287,7 @@
 
             (if-let [cmd (dispatcher-for rules ;(slice args (if (= op :call) 0 1)))]
               (cmd (if help? :help op))
-              (do (echo :error "Subcommand required.\n")
-                  (help [(dyn :script) ;args] *err*)
-                  (echo "\nCOMMANDS:")
-                  (echo (format-commands rules))
-                  (exit 1)))))))))
+              (menu-abort (dyn :script) rules))))))))
 
 (defmacro dispatch [rules & args]
   ~(,dispatch-1 ,(dyn :current-file) [,;rules] ;args))

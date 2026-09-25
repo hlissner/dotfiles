@@ -7,7 +7,6 @@
 (import spork/path)
 (use ./lib)
 
-(def- *commands* @{})
 (def- *argtypes* '[&opts &args &])
 
 (defn- make-arg [arg]
@@ -84,11 +83,11 @@
                             bind (get opt :name)]
                      (put ,$argmap bind
                            (if (get opt :multiple)
-                             [;(get ,$argmap bind []) ;(if (atom? val) [val] val)]
+                             [;(get ,$argmap bind []) ;(if (,atom? val) [val] val)]
                              val))
                      ,(if (> (length restbinds) 0)
                         ~(array/push ,$rest arg)
-                        ~(abort "Unrecognized option: %s" arg)))
+                        ~(,abort "Unrecognized option: %s" arg)))
 
                    (array/push ,$rest arg)))
            (let [[,;(map |($0 :name) argbinds) & ,(get restbinds 0 '_)] ,$rest
@@ -103,25 +102,25 @@
                                         vals (first vals))))))))
              ,;body))))))
 
-(defn cmd [name]
-  (or (get *commands* name)
-      (errorf "Unrecognized command: %s" name)))
+(defmacro defcmd-1 [kind name & rest]
+  (def [name type] (if (tuple? name) name [name nil]))
+  (def docs (if (string? (first rest)) (first rest)))
+  (def rest (if docs (slice rest 1) rest))
+  # Otherwise a typo in a struct dispatch and won't be noticed until runtime
+  (unless (index-of type [nil :eval :exec :rules])
+    (errorf "Unknown command kind for %s: %q" name type))
+  ~(,(case kind :public 'def :private 'def- (errorf "Unknown type: %s" kind))
+     ,name
+     ,;(if docs [docs] [])
+     ,(if type
+        ~{:doc ,docs ,type (cmdfn ,;rest)}
+        ~(cmdfn ,;rest))))
 
-(defn- defcmd* [name cmd file]
-  (put *commands* name {:cmd cmd :file file}))
+(defmacro defcmd- [name & rest]
+  ~(defcmd-1 :private ,name ,;rest))
 
-(defmacro defcmd-1 [type name argspec & body]
-  ~(upscope
-    (,(case type :public 'def :private 'def- (errorf "Unknown type: %s" type))
-      ,name (cmdfn [,;argspec] ,;body))
-    ,(unless (= name 'main)
-       ~(,defcmd* ',name ,name ,(dyn :current-file "")))))
+(defmacro defcmd [name & rest]
+  ~(defcmd-1 :public ,name ,;rest))
 
-(defmacro defcmd- [name argspec & body]
-  ~(defcmd-1 :private ,name [,;argspec] ,;body))
-
-(defmacro defcmd [name argspec & body]
-  ~(defcmd-1 :public ,name [,;argspec] ,;body))
-
-(defmacro defmain [argspec & body]
-  ~(defcmd-1 :public main [,;argspec] ,;body))
+(defmacro defmain [& rest]
+  ~(defcmd-1 :public main ,;rest))

@@ -1,6 +1,7 @@
 #!/usr/bin/env janet
 
 (use judge)
+(use sh)
 (import hey)
 (import spork/path)
 
@@ -57,11 +58,43 @@
   # forwards without translation.
   (test (status "sig.zsh") 143))
 
+(deftest hey/nested-rules
+  # A :rules fn is how a ruleset refuses to exist somewhere (hey ops, off a
+  # workstation), and its file is how it has a header without a :file key.
+  (def nested (path/abspath (path/join dir "dispatch.d/nested.janet")))
+  (defn nested! [& args]
+    (def out @"")
+    (def code (first (run janet ,nested ,;args > ,out > [stderr out])))
+    [code (string/trim out)])
+  (defn says? [[_ out] text] (truthy? (string/find text out)))
+
+  (test (nested! "gated" "one" "a") [0 "one\none\na"])
+  # An :eval builder gets the command word too, and hands it on as an argument.
+  (test (nested! "gated" "two") [0 "one\ntwo\ntwo"])
+  (test (nested! "static" "one") [0 "one\none"])
+  # Bare, it's a complaint, its header, and its menu -- without hey's builtins.
+  (def bare (nested! "gated"))
+  (test (first bare) 1)
+  (test (says? bare "nested gated COMMAND") true)
+  (test (says? bare "- two  -- Two.") true)
+  (test (says? bare "- help") false)
+  (test (nested! "help" "gated") [0 "A ruleset only some machines may use.\n\nSYNOPSIS:\n  nested gated COMMAND"])
+  # A static ruleset has no file, so its menu is all the help it has.
+  (test (nested! "help" "static") [0 "- one  --"])
+  (test (nested! "help" "--dump" "gated") [0 "one:A ruleset only some machines may use.\ntwo:Two."])
+  (test (first (nested! "static" "nope")) 127)
+  # The gate runs whenever the rules are needed, help included.
+  (hey/with-envvars ["GATED" "1"]
+    (test (nested! "gated" "one") [127 "\e[31m𐄂 gated\e[0m"])
+    (test (first (nested! "help" "gated" "one")) 127)))
+
 (deftest hey/synopsis
   (defn doc-of [file]
     (hey/synopsis (path/join dir "hey.d" file)))
 
   (test (doc-of "described.janet") "A described script.")
+  # nix-shell's `#!` lines sit between the shebang and the header.
+  (test (doc-of "nix-shell.zsh") "A script provisioned by nix-shell.")
   # A bare TODO is a placeholder, not a description.
   (test (nil? (doc-of "todo.janet")) true)
   (test (nil? (doc-of "does-not-exist.janet")) true)
@@ -74,11 +107,25 @@
   # keyword nor :name cannot be listed, and a trailing fallback isn't an entry.
   (test (map |[($0 :name) ($0 :aliases) ($0 :kind)]
              (hey/rules->entries
-               ['(* "@")     (hey/with-doc "Sigil." "@*" |[:exec ;$&])
+               ['(* "@")     {:doc "Sigil." :name "@*" :exec |[;$&]}
                 [:many :m :n] "echo"
-                '(* "%")     |[:exec ;$&]
+                '(* "%")     {:exec |[;$&]}
                 "fallback"]))
-        @[["@*" [] :pattern] ["many" ["m" "n"] :command]]))
+        @[["@*" [] :pattern] ["many" ["m" "n"] :command]])
+
+  # A bare fn is a command, described by the header of the script it was
+  # compiled in, and so is a :rules fn; a :doc beats both. Except the
+  # dispatching script's own header, which describes the dispatcher.
+  (defn doc-of [dest]
+    ((first (hey/rules->entries [:x dest])) :doc))
+  (def described (path/abspath (path/join dir "hey.d/described.janet")))
+  (def f (get-in (dofile described) ['main :value]))
+  (test (doc-of f) "A described script.")
+  (test (doc-of {:rules f}) "A described script.")
+  (test (doc-of {:doc "Mine." :rules f}) "Mine.")
+  (test (with-dyns [:script described] (doc-of f)) "")
+  # Builders would have to be run to say what they build; only :doc counts.
+  (test (doc-of {:eval |[f ;$&]}) ""))
 
 (deftest hey/header->specs
   # The whole grammar at once, since judge diffs the array. A bracket and a
@@ -132,11 +179,15 @@
     "Every option spelling FILE declares, including in nested cmdfn forms."
     [file]
     (def out @[])
+    (defn argspec-of [form]
+      # defmain has no NAME, and a docstring may sit before the argspec.
+      (def tail (slice form (if (= (first form) 'defmain) 1 2)))
+      (get tail (if (string? (first tail)) 1 0) []))
     (defn walk [form]
       (when (indexed? form)
         (cond
           (index-of (first form) ['defcmd 'defcmd- 'defmain])
-          (array/push out ;(flags-in (get form 2 [])))
+          (array/push out ;(flags-in (argspec-of form)))
 
           (= (first form) 'cmdfn)
           (array/push out ;(flags-in (get form 1 []))))

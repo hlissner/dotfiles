@@ -36,22 +36,6 @@
   (with-dyns [*out* (or output stdout)]
     (echo (string/join lines "\n"))))
 
-(defn with-doc
-  ``Annotate a dispatch destination with a one-line description.
-
-    (with-doc DOC DEST)
-    (with-doc DOC NAME DEST)
-
-  DEST may be a function, a string, or a command struct (see hey/cmd's cmd).
-  NAME is a display name for rules whose pattern is a PEG, and so has no keyword
-  to derive one from.``
-  [docstring & rest]
-  (def [name dest] (if (= 2 (length rest)) rest [nil (first rest)]))
-  (assert dest "with-doc: no destination given")
-  (if (dictionary? dest)
-    (table/to-struct (merge dest {:doc docstring :name name}))
-    {:fn dest :doc docstring :name name}))
-
 (defn synopsis
   ``Return the one-line description on the second line of script FILE, or nil.
   This is the same convention lib/zsh/completions/_hey's hey.comp.scan uses.``
@@ -81,6 +65,16 @@
   in record it verbatim; this is the only place that knows which it got.``
   [file]
   (if (path/abspath? file) file (path :home file)))
+
+(defn fn-file
+  ``The script function F was defined in. Returns nil if F isn't a function or
+  lives in the dispatching script.``
+  [f]
+  # NOTE: A fn built by `partial`, `comp`, or any helper that returns one
+  #   reports their file not the caller's!
+  (when (function? f)
+    (def file (script-path (disasm f :source)))
+    (unless (= file (dyn :script)) file)))
 
 (defn usage-lines
   "The lines of FILE's SYNOPSIS: section, trimmed, or nil if it has none."
@@ -322,13 +316,15 @@
 
     {:kind :command|:pattern :name STR :aliases (STR...) :doc STR}
 
-  An entry's description is its :doc (see `with-doc`) or the second line of its
-  script file. Rules with neither a keyword nor an explicit :name are omitted.``
+  An entry's description is its :doc or the second line of its containing
+  script. Rules with neither a keyword nor an explicit :name are omitted.``
   [rules]
   (def out @[])
   (each [pat dest] (rule-pairs rules)
+    # :eval and :exec builders aren't consulted
     (let [info (if (dictionary? dest) dest {})
-          docstring (or (get info :doc) (synopsis (get info :file)) "")
+          file (fn-file (if (dictionary? dest) (dest :rules) dest))
+          docstring (or (get info :doc) (if file (synopsis file)) "")
           names (cond (keyword? pat) [(string pat)]
                       (string? pat)  [pat]
                       (and (tuple? pat) (keyword? (first pat))) (map string pat))]
@@ -349,18 +345,20 @@
   [[:help :h] {:doc "Display documentation for a command."}
    :which     {:doc "Print a command's path (with arguments) without running it."}])
 
-(defn- all-entries [rules]
+(defn- all-entries [rules builtins]
   # Commands first, then the sigil patterns; each alphabetically.
   (sorted-by |(string (if (= ($0 :kind) :pattern) "1" "0") ($0 :name))
-             [;(rules->entries *builtin-rules*) ;(rules->entries rules)]))
+             [;(rules->entries (or builtins *builtin-rules*))
+              ;(rules->entries rules)]))
 
 (defn print-commands
   ``Print commands as NAME:DESCRIPTION lines in three groups: commands, aliases,
   then sigils. Intended to be passed directly to zsh's _describe (see
-  lib/zsh/completions/_hey).``
-  [rules]
+  lib/zsh/completions/_hey). BUILTINS stands in for help and which, which only
+  exist at the top level.``
+  [rules &opt builtins]
   (def groups @[@[] @[] @[]])
-  (each entry (all-entries rules)
+  (each entry (all-entries rules builtins)
     (array/push
       (groups (if (= (entry :kind) :pattern) 2 0))
       (string (entry :name) ":" (entry :doc)))
@@ -370,8 +368,8 @@
 
 (defn format-commands
   "Render RULES as an aligned `- NAME|ALIAS -- DESCRIPTION` list."
-  [rules]
-  (def entries (all-entries rules))
+  [rules &opt builtins]
+  (def entries (all-entries rules builtins))
   (def labels  (map |(string/join [($0 :name) ;($0 :aliases)] "|") entries))
   (def width   (max 4 ;(map length labels)))
   (string/join
