@@ -113,14 +113,14 @@
      ,name
      ,;(if docs [docs] [])
      ,(if type
-        ~{:doc ,docs ,type (cmdfn ,;rest)}
-        ~(cmdfn ,;rest))))
+        ~{:doc ,docs ,type (as-macro ,cmdfn ,;rest)}
+        ~(as-macro ,cmdfn ,;rest))))
 
 (defmacro defcmd- [name & rest]
-  ~(defcmd-1 :private ,name ,;rest))
+  ~(as-macro ,defcmd-1 :private ,name ,;rest))
 
 (defmacro defcmd [name & rest]
-  ~(defcmd-1 :public ,name ,;rest))
+  ~(as-macro ,defcmd-1 :public ,name ,;rest))
 
 (defmacro defmain [& rest]
-  ~(defcmd-1 :public main ,;rest))
+  ~(as-macro ,defcmd-1 :public main ,;rest))

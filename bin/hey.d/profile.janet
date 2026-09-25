@@ -27,7 +27,6 @@
 #     Remove the last generation (before the current one).
 
 (use hey)
-(use hey/cmd)
 (use sh)
 (import hey/vars)
 

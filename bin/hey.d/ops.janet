@@ -10,7 +10,6 @@
 #   help is still there to read.
 
 (use hey)
-(use hey/cmd)
 
 (import ./ops.d/edit)
 (import ./ops.d/info)

@@ -13,7 +13,6 @@
 #   1 AREA @hook-areas
 
 (use hey)
-(use hey/cmd)
 (import hey/sys)
 
 (defcmd reload [_ area]

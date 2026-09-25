@@ -16,7 +16,6 @@
 #     Every package and its version, not only the ones that have moved.
 
 (use hey)
-(use hey/cmd)
 (use sh)
 
 (def- *unstable* "github:NixOS/nixpkgs/nixos-unstable")

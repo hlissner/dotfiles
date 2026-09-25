@@ -7,7 +7,6 @@
 #   mountmenu
 
 (use hey)
-(use hey/cmd)
 (use sh)
 (import hey/sys)
 (import hey/rofi)

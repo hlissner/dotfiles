@@ -13,7 +13,6 @@
 #   ** ARGS
 
 (use hey)
-(use hey/cmd)
 (import hey/ops)
 
 # Raw arguments, so hey info's own -r and -w survive the trip.

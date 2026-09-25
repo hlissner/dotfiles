@@ -16,7 +16,6 @@
 #     Rescan the themes rather than trust the cache.
 
 (use hey)
-(use hey/cmd)
 (use sh)
 (import hey/sys)
 (import hey/rofi)

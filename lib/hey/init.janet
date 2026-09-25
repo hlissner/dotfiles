@@ -3,6 +3,7 @@
 (import sh :export true)
 (import ./lib :export true :prefix "")
 (import ./docs :export true :prefix "")
+(import ./cmd :export true :prefix "")
 
 # Janet lacks an analogue for 'trap X EXIT'; I emulate this with handle-exit,
 # defer, and os/sigaction. However, this causes os/sleep to be uninterruptable.

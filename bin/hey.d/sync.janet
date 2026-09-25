@@ -34,7 +34,6 @@
 #   * ARGS @sync-arg
 
 (use hey)
-(use hey/cmd)
 (use sh)
 
 (defn- yes?

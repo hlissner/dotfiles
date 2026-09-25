@@ -13,7 +13,6 @@
 #   * FLAKE @files
 
 (use hey)
-(use hey/cmd)
 (use sh)
 
 (defcmd repl [_ & args &opts
@@ -24,7 +23,6 @@
         (do (echo :g "Starting Janet REPL (w/ HeyLib preloaded)...")
             (do? $ janet
                  -l hey
-                 -l hey/cmd
                  -e "(import hey/vars)"
                  -e "(import hey/glob)"
                  -e "(import hey/sys)"

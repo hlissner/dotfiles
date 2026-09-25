@@ -23,7 +23,6 @@
 #     A more concise command for repinning inputs.
 
 (use hey)
-(use hey/cmd)
 (use sh)
 (import hey/glob)
 

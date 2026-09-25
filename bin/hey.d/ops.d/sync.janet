@@ -21,7 +21,6 @@
 #   ** ARGS @default
 
 (use hey)
-(use hey/cmd)
 (use sh)
 (import hey/ops)
 

@@ -22,7 +22,6 @@
 #     Display the documentation embedded in a target script's header.
 
 (use hey)
-(use hey/cmd)
 
 (import ./hey.d/gc)
 (import ./hey.d/hook)

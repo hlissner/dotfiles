@@ -31,7 +31,6 @@
 #   * TARGET @edit-target
 
 (use hey)
-(use hey/cmd)
 (use sh)
 # Aliased because `sh` is already janet-sh here, and spork's is the one with
 # mkdir -p in it.

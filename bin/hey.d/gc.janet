@@ -15,7 +15,6 @@
 #     Delete *all* old profiles. Overrules -d.
 
 (use hey)
-(use hey/cmd)
 (use sh)
 
 (defcmd gc [_ &opts

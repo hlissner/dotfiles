@@ -41,7 +41,6 @@
 #   ** ARGS @hook-arg
 
 (use hey)
-(use hey/cmd)
 (use sh)
 (import hey/vars)
 

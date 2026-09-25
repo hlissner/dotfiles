@@ -11,7 +11,6 @@
 #     Read bookmarks from PROFILE instead of the default one.
 
 (use hey)
-(use hey/cmd)
 (use sh)
 (import hey/rofi)
 (import hey/vars)

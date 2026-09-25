@@ -17,7 +17,6 @@
 #   * ARGS @test-arg
 
 (use hey)
-(use hey/cmd)
 (use sh)
 
 

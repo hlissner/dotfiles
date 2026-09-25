@@ -16,7 +16,6 @@
 #   * KEY @info-keys
 
 (use hey)
-(use hey/cmd)
 (use sh)
 
 (defn- ip [wan? & args]

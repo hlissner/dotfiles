@@ -19,7 +19,6 @@
 #   1 SYSTEM @hosts
 
 (use hey)
-(use hey/cmd)
 (use sh)
 (import hey/ops)
 

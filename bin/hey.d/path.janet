@@ -34,7 +34,6 @@
 #   * SEGMENT @path-segment
 
 (use hey)
-(use hey/cmd)
 
 (defn- path-1 [&opt area & args]
   (try (cond (not= area "xdg")

@@ -88,6 +88,15 @@
     (test (nested! "gated" "one") [127 "\e[31m𐄂 gated\e[0m"])
     (test (first (nested! "help" "gated" "one")) 127)))
 
+(deftest hey/defcmd
+  # Through import, not use: every script uses hey, so nothing else notices a
+  # macro expanding to a bare symbol that only use would've brought into scope.
+  (hey/defcmd x "Doc." [_ a &opts v? -v] [a v?])
+  (test (x "x" "A" "-v") ["A" "-v"])
+  (hey/defcmd [y :rules] "Rules." [& _] [:z 1])
+  (test (y :doc) "Rules.")
+  (test ((y :rules) "y") [:z 1]))
+
 (deftest hey/synopsis
   (defn doc-of [file]
     (hey/synopsis (path/join dir "hey.d" file)))

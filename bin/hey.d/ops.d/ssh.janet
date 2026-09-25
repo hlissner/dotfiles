@@ -14,7 +14,6 @@
 #   ** ARGS @default
 
 (use hey)
-(use hey/cmd)
 (import hey/ops)
 
 # The raw arguments, not the parsed ones: cmdfn splits -tt into -t -t, and

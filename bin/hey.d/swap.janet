@@ -28,7 +28,6 @@
 #   * FILE @files
 
 (use hey)
-(use hey/cmd)
 (use sh)
 
 (def- *store* (delay (path :data "swap")))

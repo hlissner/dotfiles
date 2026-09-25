@@ -31,7 +31,6 @@
 #   3 VALUE
 
 (use hey)
-(use hey/cmd)
 (import hey/vars)
 
 (defn- var-name [args]
