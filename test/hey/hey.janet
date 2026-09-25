@@ -33,7 +33,10 @@
   # A flag stops the walk; whatever follows it is the script's.
   (deftest "Forwarding options"
     (resolve= :f [hey.d sub deeper --foo deep]    ["hey.d/sub.d/deeper.zsh" "--foo" "deep"])
-    (resolve= :f [hey.d sub deeper deep --foo -b] ["hey.d/sub.d/deeper.d/deep.zsh" "--foo" "-b"])))
+    (resolve= :f [hey.d sub deeper deep --foo -b] ["hey.d/sub.d/deeper.d/deep.zsh" "--foo" "-b"])
+    # `--` used to un-walk the last step too, handing the script its own name.
+    (resolve= :f [hey.d sub deeper -- deep]       ["hey.d/sub.d/deeper.zsh" "--" "deep"])
+    (resolve= :d [hey.d sub deeper -- deep]       ["hey.d/sub.d/deeper.d" "--" "deep"])))
 
 (deftest hey/exec-exit-status
   # os/execute hands back the status of the script hey dispatched to, but

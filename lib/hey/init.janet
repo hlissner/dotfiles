@@ -65,7 +65,6 @@
             (var crumbs @[])
             (each arg args
               (cond
-                (= arg "--") (do (-- depth) (break))
                 (flag? arg) (break)
                 (let [crumb (path/join (or target base) arg)
                       dir (path/sibling :directory crumb "" ".d")]
