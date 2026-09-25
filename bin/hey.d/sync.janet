@@ -139,6 +139,6 @@
            ,;(if fast?
                []
                (cache-options-of (string (path :home) "#nixosConfigurations." host)))
-           ,;(opts fast?)
+           ,;(opts (if fast? "--no-reexec"))
            ,;(opts (or cmd "switch"))
            ,;args))))
