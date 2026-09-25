@@ -3,6 +3,11 @@
 *.zwc
 *.janet.tested
 
+# Built on demand by config/claude/scripts/ensure-reference-*.zsh
+/config/claude/data/refs/*
+!/config/claude/data/refs/README.md
+/config/claude/data/repo/
+
 # Symlinked in by nixos modules
 *.meta.lua
 

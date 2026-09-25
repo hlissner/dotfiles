@@ -154,7 +154,9 @@
         "registry.npmjs.org",
         "code.claude.com",
         "docs.claude.com",
-        "docs.anthropic.com"
+        "docs.anthropic.com",
+        "github.com",
+        "wiki.hypr.land"
       ],
       "deniedDomains": [
         "home.lissner.net",
