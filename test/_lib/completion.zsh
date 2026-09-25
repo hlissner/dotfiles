@@ -114,6 +114,22 @@ case $case in
   # One completer by name, for the @refs nothing else in here reaches: $1 names
   # it, $2 is the word so far.
   (call) PREFIX=${2-}; $1 ;;
+  # What hey.comp.scriptdir leaves in $_hey_leaf for a leaf's @refs to find.
+  (leaf)
+    hey.comp.dump() { _hey_reply=( '*:: :__hey_cobra' ) }
+    _arguments() { print -r -- "LEAF ${(j: :)_hey_leaf}" }
+    hey.comp.dispatch
+    ;;
+  # __hey_cobra against a fixture that answers __complete. $1 is the directive
+  # it should end on (suffixed "empty" for no candidates); the rest are the
+  # words after the script's name.
+  (cobra)
+    local -x COBRA_DIRECTIVE=$1; shift
+    local -a _hey_leaf=( $root/test/hey/completion.d/cobra )
+    _describe() { print -r -- "DESC ${(j:|:)@} = ${(j:|:)${(P)4}}" }
+    words=( "$@" ); CURRENT=$#words; PREFIX=$words[-1]
+    __hey_cobra
+    ;;
   # Every path must degrade rather than error if the binary is unavailable
   (nohey) __driver_nohey; hey.comp.dispatch ;;
   (*) print -r -- "unknown case: $case"; return 2 ;;

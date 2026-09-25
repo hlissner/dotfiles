@@ -5,6 +5,9 @@
 # $words[1] to be the first argument to hey's resolver. Once a leaf script is
 # reached, its own arguments are completed from its comment header, the same way
 # hey.comp.dispatch does for a command's subcommands.
+#
+# The leaf's own command line is left in $_hey_leaf for its @refs, since *::
+# reslices $words out from under them.
 
 local -a dirs=( "$@" ) next _hey_reply
 local dir word
@@ -37,5 +40,6 @@ if (( CURRENT == 1 )); then
 fi
 
 # $cmd stays unquoted: it is an array, one word per element.
+local -a _hey_leaf=( $cmd "$sigil$words[1]" )
 [[ $words[1] == -* ]] || hey.comp.dump $cmd "$sigil$words[1]" || { _default; return }
 _arguments -C $_hey_reply

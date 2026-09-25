@@ -1,4 +1,8 @@
 #!/usr/bin/env zsh
 # Scripts for managing servers/services in my homelab..
 
-exec hey .lab $@
+case $1 in
+  # otherwise hey eats -h (and -!, -?) before it reaches docker
+  (docker|dk) shift; exec ${0:A:h}/lab.d/docker.zsh "$@" ;;
+esac
+exec hey .lab "$@"

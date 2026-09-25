@@ -1,0 +1,10 @@
+#!/usr/bin/env zsh
+# Stands in for a script forwarding to a cobra CLI, for completion/cobra.
+
+[[ $1 == __complete ]] || exit 1
+shift
+if [[ $COBRA_DIRECTIVE != *empty ]]; then
+  print -r -- $'image:tag\tAn image'
+  print -r -- "argv:${(j:,:)@}"
+fi
+print -r -- ":${COBRA_DIRECTIVE%empty}"

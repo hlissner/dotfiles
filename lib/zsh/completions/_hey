@@ -11,7 +11,7 @@
 # how to tell the two apart: hey.comp.* is public and anyone's to call, __hey_*
 # is defined in this file and nobody else's business.
 #
-# The second name up there is bin/lab, which is `exec hey .lab "$@"` and nothing
+# The second name up there is bin/lab, which is `exec hey .lab "$@"` and little
 # else. Any such wrapper gets hey's completion by being named on that line (or
 # with `compdef NAME _hey`); there is no per-wrapper file to write, because
 # there is nothing to complete but what hey resolves .NAME to.
@@ -222,6 +222,40 @@ __hey_test_arg() {
     (hey) __hey_hey_suites; _files ;;
     (*) return 1 ;;
   esac
+}
+
+# For scripts that forward to a cobra CLI (docker, kubectl, gh, ...), which
+# answer their own completion through a hidden `__complete ARGS... PREFIX`:
+# `value<TAB>desc` lines, then a `:BITS` directive. Asking the script rather
+# than the program means it gets asked wherever the script sends it, e.g. over
+# ssh. By path, not through hey, which would eat any -h on the line.
+__hey_cobra() {
+  local script=${$(command $_hey_bin which $_hey_leaf 2>/dev/null)%%[[:space:]]#}
+  [[ -x $script ]] || return 1
+  local -a out opts
+  out=( ${(f)"$($script __complete "${(@)words[1,CURRENT-1]}" "$PREFIX" 2>/dev/null)"} )
+  [[ $out[-1] == :<-> ]] || return 1
+  local -i bits=${out[-1]#:}
+  out[-1]=()
+  (( bits & 1 )) && return 1
+  (( bits & 2 )) && opts=( -S '' )
+  # Cobra's [ActiveHelp] lines aren't candidates.
+  out=( ${out:#_activeHelp_*} )
+  if (( $#out )); then
+    local -a _hey_reply
+    local l v
+    # _describe splits on the first colon, and docker has plenty (image:tag).
+    for l in $out; do
+      v=${${l%%$'\t'*}//:/\\:}
+      [[ $l == *$'\t'* ]] && v+=:${l#*$'\t'}
+      _hey_reply+=( $v )
+    done
+    _describe -t cobra 'argument' _hey_reply "${(@)opts}"
+  elif (( ! (bits & 4) )); then
+    _default
+  else
+    return 1
+  fi
 }
 
 # hey's dispatch rules that aren't "read the subcommand's header". Exit 2 hands

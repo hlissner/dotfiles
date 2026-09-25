@@ -6,7 +6,11 @@
 # nothing, and TAB just doesn't do anything.
 
 (use judge)
+(use sh)
+(import hey :as h)
 (import ./../_lib/completion :prefix "")
+
+(def- shim (h/path :home "test/_lib/path/hey"))
 
 (defn- hey [case & words] (complete "hey" case ;words))
 (defn- dumped [& words]
@@ -103,3 +107,27 @@
   (test (hey "wrapper" "nest" "") @["DESC[scripts] deep:A nested fixture script."])
   (test (find |(string/has-prefix? "DUMP " $0) (hey "wrapper-dump" "nest" "deep" ""))
         "DUMP .nest deep"))
+
+(deftest completion/cobra
+  # @cobra asks the script itself for `__complete WORDS... PREFIX`, by path
+  # rather than through hey, which would have eaten the -h. The colon in a
+  # value has to be escaped for _describe; the one before a description not.
+  (test (hey "cobra" "0" "run" "-h" "")
+        @["DESC -t|cobra|argument|_hey_reply = image\\:tag:An image|argv\\:run,-h,"])
+  # NoSpace
+  (test (hey "cobra" "2" "run" "-h" "")
+        @["DESC -t|cobra|argument|_hey_reply|-S| = image\\:tag:An image|argv\\:run,-h,"])
+  # Error, and NoFileComp with nothing to offer, are both nothing; without
+  # NoFileComp, nothing is zsh's to fill in.
+  (test (hey "cobra" "1" "run" "") @[])
+  (test (hey "cobra" "4empty" "run" "") @[])
+  (test (hey "cobra" "0empty" "run" "") @["DEFAULT"])
+  # It finds the script by the command line that reached it, which *:: has
+  # sliced off $words by the time it runs.
+  (test (hey "leaf" ".nest" "deep" "x" "") @["LEAF .nest deep"])
+  (test (hey "leaf" "wm" "solo" "") @["LEAF wm solo"])
+  # The wrapper tests can't reach bin/lab.d (they walk a fixture tree), so pin
+  # the other end of the @ref here: lab docker, and its dk alias, ask for it.
+  (each name [".lab docker" ".lab dk"]
+    (def out ($<_ ,shim help --dump ,;(string/split " " name)))
+    (test (last (string/split "\n" out)) "*::args:__hey_cobra")))
