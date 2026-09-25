@@ -1,40 +1,36 @@
 #!/usr/bin/env janet
-# Open a nix or janet repl with this flake preloaded.
+# Open a Janet REPL with hey's library loaded, or inside a script.
 #
 # SYNOPSIS:
-#   repl [-j|-d] [FLAKES...]
+#   repl [FILE]
 #
-# OPTIONS:
-#   -j | -d
-#     Start a Janet REPL with HeyLib preloaded, or a nix-develop REPL, instead
-#     of a Nix REPL.
+# DESCRIPTION:
+#   Without FILE, the REPL starts with hey, hey/vars, hey/glob and hey/sys
+#   loaded. With it, FILE is evaluated and the REPL starts inside its
+#   environment, private bindings and all. Its main isn't called, but the rest
+#   of its top level runs, so a script that does its work there does it now.
+#
+#   For a Nix repl in this flake, use `nix develop`.
 #
 # ARGUMENTS:
-#   * FLAKE @files
+#   1 FILE @files
 
 (use hey)
 (use sh)
 
-(defcmd repl [_ & args &opts
-              janet? -j
-              nixdev? -d]
+(defcmd repl [_ file]
+  # Whatever I poke at in there may shell out to nix against this flake.
   (os/setenv "HEYENV" (flake/json))
-  (cond janet?
-        (do (echo :g "Starting Janet REPL (w/ HeyLib preloaded)...")
-            (do? $ janet
-                 -l hey
-                 -e "(import hey/vars)"
-                 -e "(import hey/glob)"
-                 -e "(import hey/sys)"
-                 -p -r ,;args))
-
-        nixdev?
-        (do (echo :g "Starting nix-develop REPL (w/ flake preloaded)...")
-            (do? $ nix develop ,(path :home) ,;args))
-
-        (do (echo :g "Starting nix REPL (w/ flake preloaded)...")
-            (do? $ nix repl
-                 --extra-experimental-features "flakes repl-flake"
-                 --impure
-                 ,(path :home)
-                 ,;args))))
+  (if file
+    (do (unless (path/file? file)
+          (abort "No such file: %s" file))
+        (echof :g "Starting Janet REPL (inside %s)..." (path/abbrev file))
+        # Avoiding -l b/c import only hands over public bindings
+        (do? $ janet -e ,(string/format "(repl nil nil (dofile %j))" file)))
+    (do (echo :g "Starting Janet REPL (w/ HeyLib preloaded)...")
+        (do? $ janet
+             -l hey
+             -e "(import hey/vars)"
+             -e "(import hey/glob)"
+             -e "(import hey/sys)"
+             -p -r))))
