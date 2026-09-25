@@ -10,7 +10,7 @@ with hey.lib;
 let cfg = config.modules.wm;
     primaryMonitor = findFirst (x: x.primary) {} cfg.hyprland.monitors;
     hasPrimary = primaryMonitor ? output;
-    package = hey.inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
+    package = hey.inputs.noctalia.packages.default;
     format = pkgs.formats.toml {};
     enabledPlugins =
       filterAttrs (_: p: p.enable && p.src != null) cfg.noctalia.plugins;

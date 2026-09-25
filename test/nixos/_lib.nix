@@ -45,9 +45,8 @@ in rec {
     , user ? "test"
     }:
     heyLib.mkHey {
-      inherit flake dir hostDir;
+      inherit flake system dir hostDir;
       args = { inherit host user; path = dir; };
-      packages = flake.packages.${system} or {};
     } // {
       # mkHey derives this from the flake, and flake.lib is the impure copy;
       # every module reads its helpers off hey.lib, so point it at ours.

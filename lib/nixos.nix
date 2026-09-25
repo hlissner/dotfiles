@@ -25,19 +25,24 @@ rec {
     type = "app";
   };
 
+  # A flake as one system sees it: packages.${system}.foo -> packages.foo.
+  forSystem = system: flake:
+    flake // mapAttrs (_: v: v.${system} or {})
+      (filterAttrs (n: _: elem n [ "packages" "legacyPackages" "devShells"
+                                   "apps" "checks" "formatter" ]) flake);
+
   mkHey = {
     flake
+  , system
   , dir
   , hostDir ? dir
   , args ? {}
-  , packages ? {}
-  , devShells ? {}
-  , apps ? {}
   }:
     let dir' = if dir != "" then dir
                else throw "mkHey: dir is empty";
-    in flake // {
-      inherit args hostDir packages devShells apps;
+    in forSystem system flake // {
+      inherit args hostDir;
+      inputs = mapAttrs (_: forSystem system) flake.inputs;
       modules = nixosModulesOf flake.inputs;
       dir         = dir';
       binDir      = "${dir'}/bin";
@@ -119,21 +124,17 @@ rec {
         let
           self' = mkHey {
             inherit args;
+            inherit (host) system;
             flake = self;
             dir = toString self;
             hostDir = path;
-            packages = self.packages.${host.system};
-            devShells = self.devShells.${host.system};
-            apps = self.apps.${host.system};
           };
           hey' = mkHey {
             inherit args;
+            inherit (host) system;
             flake = hey;
             dir = args.path;
             hostDir = path;
-            packages = hey.packages.${host.system};
-            devShells = hey.devShells.${host.system};
-            apps = hey.apps.${host.system};
           };
           host = config {
             inherit args lib;

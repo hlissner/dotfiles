@@ -47,7 +47,7 @@ in {
         GEMINI_CLI_HOME = "${config.home.stateDir}/gemini";
       };
       user.packages =
-        let llm-agents = hey.inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
+        let llm-agents = hey.inputs.llm-agents.packages;
         in with pkgs; [
           bubblewrap  # for grok's sandbox
           llm-agents.grok

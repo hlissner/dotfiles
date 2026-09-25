@@ -10,10 +10,9 @@
 with lib;
 with hey.lib;
 let cfg = config.modules.ai.claude;
-    system = pkgs.stdenv.hostPlatform.system;
     settingsFormat = pkgs.formats.json {};
 
-    llmAgents = hey.inputs.llm-agents.packages.${system};
+    llmAgents = hey.inputs.llm-agents.packages;
 in {
   options.modules.ai.claude = with types; {
     enable = mkBoolOpt false;

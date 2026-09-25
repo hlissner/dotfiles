@@ -49,7 +49,7 @@ in {
             done
           fi
         ''}
-        exec ${hey.inputs.agenix.packages.${stdenv.hostPlatform.system}.default}/bin/agenix "''${ARGS[@]}"
+        exec ${hey.inputs.agenix.packages.default}/bin/agenix "''${ARGS[@]}"
       '')
     ];
 

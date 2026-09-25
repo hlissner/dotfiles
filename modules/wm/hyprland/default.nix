@@ -26,7 +26,7 @@ in {
 
   config = mkIf (config.modules.wm.desktop == "hyprland") (mkMerge [
     ## The compositor.
-    (let flake = hey.inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system};
+    (let flake = hey.inputs.hyprland.packages;
      in {
       programs.hyprland = {
         enable = true;
@@ -39,7 +39,7 @@ in {
       # Niri-style overview. Nothing caches this one, so every hyprland bump
       # buys a two-minute compile.
       modules.wm.hyprland.plugins = [
-        hey.inputs.scroll-overview.packages.${pkgs.stdenv.hostPlatform.system}.scrolloverview
+        hey.inputs.scroll-overview.packages.scrolloverview
       ];
 
       nix.settings = {
