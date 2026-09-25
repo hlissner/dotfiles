@@ -21,7 +21,10 @@
         (while (set line (file/read f :line))
           (unless (string/has-prefix? "#" (string line))
             (break))
-          (array/push out (string/trimr (string (peg/replace peg "" line)))))
+          # nix-shell reads its arguments from extra `#!` lines, which are no
+          # more documentation than the shebang is.
+          (unless (string/has-prefix? "#!" (string line))
+            (array/push out (string/trimr (string (peg/replace peg "" line))))))
         out))))
 
 (defn help [[file & _args] &opt output]
