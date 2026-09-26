@@ -46,11 +46,6 @@ in {
         # Avoid `recommendedServices` b/c I don't want NetworkManager
       };
 
-      nix.settings = {
-        substituters = [ "https://noctalia.cachix.org" ];
-        trusted-public-keys = [ "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4=" ];
-      };
-
       # Used by noctalia's battery widgets
       services.upower.enable = true;
       services.power-profiles-daemon.enable = true;

@@ -36,6 +36,23 @@
       llm-agents.url = "github:numtide/llm-agents.nix";
     };
 
+  nixConfig = {
+    extra-substituters = [
+      "https://hyprland.cachix.org"        # hyprland
+      "https://noctalia.cachix.org"        # noctalia
+      "https://nix-community.cachix.org"   # emacs-overlay
+      "https://emacs-ci.cachix.org"        # emacs-overlay
+      "https://cache.numtide.com"          # llm-agents
+    ];
+    extra-trusted-public-keys = [
+      "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+      "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+      "emacs-ci.cachix.org-1:B5FVOrxhXXrOL0S+tQ7USrhjMT5iOPH+QN9q0NItom4="
+      "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
+    ];
+  };
+
   outputs = inputs @ { self, nixpkgs, nixos-hardware, ... }:
     let
       args = {

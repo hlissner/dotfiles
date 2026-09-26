@@ -32,7 +32,7 @@
 
 (defn- nixos-suites []
   (json/decode
-   ($<_ nix eval --json --no-warn-dirty ,(nixos-checks)
+   ($<_ nix eval --json --no-warn-dirty --accept-flake-config ,(nixos-checks)
         --apply "d: builtins.attrNames d.passthru")))
 
 (defn- run-nixos [args]
@@ -45,7 +45,7 @@
   (flush)
   # No --impure and no HEYENV: test/nixos fabricates `specialArgs.hey` itself to
   # keep the test build pure (see test/nixos/_lib.nix)
-  (unless (do? $? nix build --no-link --no-warn-dirty ,(nixos-checks suite))
+  (unless (do? $? nix build --no-link --no-warn-dirty --accept-flake-config ,(nixos-checks suite))
     (abort "NixOS suite failed"))
   # A passing nix build says nothing at all
   (echo :check (if suite
@@ -82,7 +82,7 @@
   # Always the flake's, never whatever is lying around on PATH. The eval is
   # cached, so this costs ~0.1s until the tree changes.
   (def judge
-    (string ($<_ nix build --no-link --print-out-paths --no-warn-dirty
+    (string ($<_ nix build --no-link --print-out-paths --no-warn-dirty --accept-flake-config
                  ,(string (path :home) "#judge"))
             "/bin/judge"))
   (echo :g "> Running the Hey suite...")

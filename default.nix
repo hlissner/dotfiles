@@ -61,11 +61,15 @@ with hey.lib;
           "dotfiles=${hey.dir}"
         ];
         registry = mapAttrs (_: v: { flake = v; }) filteredInputs;
-        settings = {
-          trusted-users = [ "root" config.user.name ];
-          allowed-users = [ "root" config.user.name ];
-          auto-optimise-store = true;
-        };
+        settings =
+          let caches = (import ./flake.nix).nixConfig;
+          in {
+            trusted-users = [ "root" config.user.name ];
+            allowed-users = [ "root" config.user.name ];
+            auto-optimise-store = true;
+            substituters = caches.extra-substituters;
+            trusted-public-keys = caches.extra-trusted-public-keys;
+          };
       };
 
     system = {

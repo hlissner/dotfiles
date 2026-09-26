@@ -27,33 +27,20 @@ in {
     enable = mkBoolOpt false;
   };
 
-  config = mkMerge [
-    {
-      # llm-agents builds against its own nixpkgs, so without numtide's cache
-      # every one of these is a from-scratch build of bun and friends.
-      nix.settings = {
-        extra-substituters = [ "https://cache.numtide.com" ];
-        extra-trusted-public-keys = [
-          "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
-        ];
-      };
-    }
-
-    (mkIf cfg.enable {
-      environment.sessionVariables = {
-        # Respect XDG, damn it!
-        GROK_HOME = "${config.home.stateDir}/grok";
-        CODEX_HOME = "${config.home.stateDir}/codex";
-        GEMINI_CLI_HOME = "${config.home.stateDir}/gemini";
-      };
-      user.packages =
-        let llm-agents = hey.inputs.llm-agents.packages;
-        in with pkgs; [
-          bubblewrap  # for grok's sandbox
-          llm-agents.grok
-          llm-agents.codex
-          llm-agents.gemini-cli
-        ];
-    })
-  ];
+  config = mkIf cfg.enable {
+    environment.sessionVariables = {
+      # Respect XDG, damn it!
+      GROK_HOME = "${config.home.stateDir}/grok";
+      CODEX_HOME = "${config.home.stateDir}/codex";
+      GEMINI_CLI_HOME = "${config.home.stateDir}/gemini";
+    };
+    user.packages =
+      let llm-agents = hey.inputs.llm-agents.packages;
+      in with pkgs; [
+        bubblewrap  # for grok's sandbox
+        llm-agents.grok
+        llm-agents.codex
+        llm-agents.gemini-cli
+      ];
+  };
 }

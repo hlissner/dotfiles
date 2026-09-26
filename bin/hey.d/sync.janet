@@ -7,14 +7,11 @@
 #   sync build-image [VARIANT]
 #
 # DESCRIPTION:
-#   Dynamically constructs --option {substituters,trusted-public-keys} from the
-#   nix config, ensurign that there is no binary cache miss on the first
-#   invocation of `hey sync` (use --fast to skip that).
+#   Passes --accept-flake-config so flake.nix's nixConfig is respected.
 #
 # OPTIONS:
 #   --fast
-#     Skip nix's evaluation checks and building the substitutors options from
-#     nix.settings.
+#     Skip nixos-rebuild's re-exec before the new build.
 #   --host HOST @hosts
 #     Build the config of another host.
 #
@@ -77,26 +74,6 @@
     args
     ["--image-variant" variant ;(drop 1 args)]))
 
-# nix.settings reaches /etc/nix/nix.conf only when a generation activates, so
-# without these the first sync after adding a cache builds everything, like
-# Hyprland's or Noctalia's flakes.
-(defn- cache-options-of
-  ``The --option flags for the caches a host's nix.settings declares.``
-  [flake-ref]
-  (def text
-    (ignore-errors
-      ($<_ nix eval --impure --raw --no-warn-dirty
-           ,(string flake-ref ".config.nix.settings")
-           --apply `s: builtins.concatStringsSep "\n" (builtins.filter (l: l != "") (map (n: let v = s.${n} or []; in if v == [] then "" else "extra-${n} " + builtins.concatStringsSep " " v) [ "substituters" "trusted-public-keys" ]))`)))
-  (unless text
-    (echof :warn "Couldn't read nix.settings off the flake; rebuilding without its caches"))
-  (def out @[])
-  (each line (string/split "\n" (or text ""))
-    (def at (string/find " " line))
-    (when (and at (< (inc at) (length line)))
-      (array/push out "--option" (string/slice line 0 at) (string/slice line (inc at)))))
-  out)
-
 (defcmd sync [_ cmd & args &opts fast? --fast host [--host name]]
   (when (= (flake :host) "nixos")
     (abort "HOST is 'nixos'. Did you forget to change it?"))
@@ -122,6 +99,7 @@
            --profile ,(path :profile)))
     ["check" "ch"]
     (do? $? nix flake check --impure
+         --accept-flake-config
          --no-warn-dirty
          --no-use-registries
          --no-write-lock-file
@@ -135,10 +113,7 @@
            --show-trace
            --impure
            --flake ,(string (path :home) "#" host)
-           # An extra eval of the whole host config is the last thing --fast wants.
-           ,;(if fast?
-               []
-               (cache-options-of (string (path :home) "#nixosConfigurations." host)))
+           --accept-flake-config
            ,;(opts (if fast? "--no-reexec"))
            ,;(opts (or cmd "switch"))
            ,;args))))

@@ -57,6 +57,7 @@
            --flake ,(string (path :home) "#" host)
            --target-host ,system
            ,;(opts "--build-host" (if local? system builder))
+           --accept-flake-config
            --impure
            --show-trace)
       (exit 1)))

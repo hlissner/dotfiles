@@ -56,23 +56,6 @@ _hosts() {
   print -r -- "${(j: :)${(f)"$(ls "$1/hosts")"}}"
 }
 
-_cache_options() {  # FLAKE HOST
-  # Catch 22: nix.settings only reaches /etc/nix/nix.conf after the first build,
-  # so nixos-install builds the world, so we read the nix config AOT and
-  # proactively inform nixos-install of those substitutors.
-  local line
-  nix eval --impure --raw --no-warn-dirty "$1#nixosConfigurations.$2.config.nix.settings" \
-      --apply 's: builtins.concatStringsSep "\n" (builtins.filter (l: l != "") (map (n: let v = s.${n} or []; in if v == [] then "" else "extra-${n} " + builtins.concatStringsSep " " v) [ "substituters" "trusted-public-keys" ]))' \
-    | while IFS= read -r line; do
-        [[ $line == *' '?* ]] || continue
-        print -r -- --option
-        print -r -- "${line%% *}"
-        print -r -- "${line#* }"
-      done
-  (( pipestatus[1] == 0 )) \
-    || >&2 print -r -- "Warning: couldn't read nix.settings off the flake; installing without its caches"
-}
-
 _ask() {  # VAR PROMPT [DEFAULT]
   local var=$1 prompt=$2 default=$3 answer
   [[ -c /dev/tty ]] || _die 2 "nothing to ask on; pass --$var"
@@ -135,9 +118,9 @@ main() {
   ln -sfn "$flake" "$DEST"
 
   export HEYENV="{\"user\":\"$(_escape "$user")\",\"host\":\"$(_escape "$host")\",\"path\":\"$DEST\"}"
-  local -a cache_opts
-  cache_opts=(${(f)"$(_cache_options "$flake" "$host")"})
-  nixos-install --impure --show-trace --root "$root" --flake "$flake#$host" "${cache_opts[@]}"
+  # nixos-install doesn't have a --accept-flake-config!
+  nixos-install --impure --show-trace --option accept-flake-config true \
+    --root "$root" --flake "$flake#$host"
 }
 
 set -e
