@@ -31,12 +31,17 @@
 (use sh)
 
 (def- *store* (delay (path :data "swap")))
-(def- *ext* ".swapped")
-(def- *swapped* ".swapped")
+
+(defn- swap-file [path]
+  (string path ".swapped"))
+
+(defn- swapped? [path]
+  (path/exists? (swap-file path)))
 
 (defn- list []
   (if (path/file? (*store*))
-    (filter |(path/file? (string $0 *ext*)) (unmarshal (string/chomp (slurp (*store*)))))
+    (filter |(path/file? (swap-file $0))
+            (unmarshal (string/chomp (slurp (*store*)))))
     @[]))
 
 (defn- save [swapped]
@@ -54,19 +59,19 @@
     (abort "Nothing to swap"))
   (let [swapped (list)
         new-swapped @[;swapped]
-        force (if force? ["-f"] [])]
+        force (if force? ["-f"] ["-i"])]
     (each path (coro (each-file ;paths))
       (log 2 "Trying to swap %s" path)
-      (let [spath (string path *ext*)]
-        (cond (path/exists? spath)
-              (echof :warn "Already swapped: %s" path)
-              (not (path/symlink? path))
-              (echof :err "Skipping %s (not a nix-store symlink)" path)
-              (do (echof :pass "Swapping %s" path)
-                  (do? $ mv ,;force ,path ,spath)
-                  (do? $ cp ,;force ,spath ,path)
-                  (do? $ chmod u+rw ,path)
-                  (array/push new-swapped (os/realpath path))))))
+      (cond (swapped? path)
+            (echof :warn "Already swapped: %s" path)
+            (not (path/symlink? path))
+            (echof :err "Skipping %s (not a nix-store symlink)" path)
+            (let [spath (swap-file path)]
+              (echof :pass "Swapping %s" path)
+              (and (do? $ mv ,;force ,path ,spath)
+                   (do? $ cp ,;force ,spath ,path)
+                   (do? $ chmod u+rw ,path)
+                   (array/push new-swapped (os/realpath path))))))
     (if (or (dryrun?)
             (deep= swapped new-swapped))
       (exit 1)
@@ -76,15 +81,14 @@
   (when (empty? paths)
     (abort "Nothing to unswap"))
   (let [removed @[]
-        force (if force? ["-f"] [])]
+        force (if force? ["-f"] ["-i"])]
     (each path (coro (each-file ;paths))
       (log 2 "Trying to unswap %s" path)
-      (let [swapfile (string path *ext*)]
-        (if (not (path/exists? swapfile))
-          (echof :warn "File not swapped: %s" path)
-          (do (echof :pass "Unswapping %s" path)
-              (do? $ mv ,;force ,swapfile ,path)
-              (array/push removed path)))))
+      (if (not (swapped? path))
+        (echof :warn "File not swapped: %s" path)
+        (do (echof :pass "Unswapping %s" path)
+          (when (do? $ mv ,;force ,(swap-file path) ,path)
+            (array/push removed path)))))
     (if (or (dryrun?)
             (empty? removed))
       (exit 1)
