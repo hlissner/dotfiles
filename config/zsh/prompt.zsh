@@ -29,6 +29,7 @@
   )
 
   typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(
+    netmount                # remote host, if $PWD is on NFS/SSHFS/SMB
     status                  # exit code of the last command
     command_execution_time  # duration of the last command
     background_jobs         # presence of background jobs
@@ -1386,6 +1387,47 @@
   # User-defined prompt segments can be customized the same way as built-in segments.
   # typeset -g POWERLEVEL9K_EXAMPLE_FOREGROUND=208
   # typeset -g POWERLEVEL9K_EXAMPLE_VISUAL_IDENTIFIER_EXPANSION='⭐'
+
+  ####################[ netmount: indicate when $PWD is in a network mount ]#######################
+  zmodload zsh/system zsh/zselect
+  typeset -gi _netmount_fd=${_netmount_fd:--1}  # survive `p10k reload`
+  typeset -gA _netmounts
+  typeset -g _netmount_pwd _netmount_host
+
+  function _netmount_scan() {
+    local src dir type opts freq pass host
+    _netmounts=()
+    for src dir type opts freq pass in ${=$(</proc/self/mounts)}; do
+      host=
+      if [[ $type == (nfs|nfs4|fuse.sshfs|cifs|smb3) ]]; then
+        case $src in
+          //*)       host=${${src#//}%%/*} ;;    # //host/share
+          \[*|*@\[*) host=${${src#*\[}%%\]*} ;;  # [user@][v6]:/path
+          *)         host=${${src%%:*}##*@} ;;   # [user@]host:/path
+        esac
+        [[ $host == *[a-zA-Z]* && $host != *:* ]] && host=${host%%.*}
+      fi
+      _netmounts[${(g:o:)dir}]=$host
+    done
+    _netmount_pwd=
+  }
+
+  function prompt_netmount() {
+    if (( _netmount_fd < 0 )); then
+      sysopen -r -o cloexec -u _netmount_fd /proc/self/mounts || return
+      _netmount_scan
+    elif zselect -t 0 -e $_netmount_fd; then
+      _netmount_scan
+    fi
+    if [[ $PWD != $_netmount_pwd ]]; then
+      _netmount_pwd=$PWD
+      # A local mount nested in a remote one is local
+      local dir=${PWD:A}
+      until (( ${+_netmounts[$dir]} )) || [[ $dir == / ]]; do dir=${dir:h}; done
+      _netmount_host=$_netmounts[$dir]
+    fi
+    [[ -n $_netmount_host ]] && p10k segment -f 208 -i '⇄' -t ${_netmount_host//\%/%%}
+  }
 
   # Transient prompt works similarly to the builtin transient_rprompt option. It trims down prompt
   # when accepting a command line. Supported values:
