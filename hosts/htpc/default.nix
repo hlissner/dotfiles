@@ -8,7 +8,9 @@ with builtins;
   system = "x86_64-linux";
 
   imports = [
-    hey.modules.nixos-hardware.common-cpu-intel
+    # Not exported by the flake, but it knows gen9 needs the legacy compute
+    # runtime and the old VA-API driver (the new one can't do VP9 on Skylake).
+    "${hey.inputs.nixos-hardware}/common/cpu/intel/skylake"
   ];
 
   modules = {
@@ -20,7 +22,6 @@ with builtins;
         "cpu/intel"
         "gpu/nvidia"
         "audio"
-        "audio/realtime"
         "ssd"
         "bluetooth"
       ];
@@ -31,7 +32,7 @@ with builtins;
       hyprland = rec {
         monitors = [
           { output = "HDMI-A-2";
-            mode = "3840x2160@120";
+            mode = "3840x2160@60";  # HDMI 2.0 sucks
             primary = true; }
         ];
       };
@@ -80,6 +81,9 @@ with builtins;
       user = config.user.name;
     };
 
+    # No AV1 decoder on this card
+    programs.firefox.preferences."media.av1.enabled" = false;
+
     hey.hooks."on-started"."10-flex-launcher" = ''
       hey.do flex-launcher
     '';
@@ -91,9 +95,6 @@ with builtins;
       open = false;  # Turing and later only
       package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
     };
-
-    # Skylake = gen9, the generic compute module requires gen12+
-    hardware.intelgpu.computeRuntime = "legacy";
 
     services.logind.settings.Login = {
       HandlePowerKey = "ignore";
