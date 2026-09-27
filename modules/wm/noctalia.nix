@@ -12,8 +12,9 @@ let cfg = config.modules.wm;
     hasPrimary = primaryMonitor ? output;
     package = hey.inputs.noctalia.packages.default;
     format = pkgs.formats.toml {};
-    enabledPlugins =
-      filterAttrs (_: p: p.enable && p.src != null) cfg.noctalia.plugins;
+    # Disabled plugins are still installed, or Settings can't list them.
+    installedPlugins = filterAttrs (_: p: p.src != null) cfg.noctalia.plugins;
+    enabledPlugins = filterAttrs (_: p: p.enable) installedPlugins;
 
     # Two python3 derivations in systemPackages collide on bin/python3.
     python = pkgs.python3.withPackages (ps: [ ps.tomlkit ]);
@@ -109,7 +110,7 @@ in {
 
       pluginDir = pkgs.linkFarm "noctalia-plugins"
         (mapAttrsToList (id: p: { name = baseNameOf id; path = p.src; })
-          enabledPlugins);
+          installedPlugins);
     in {
       modules.wm.noctalia.plugins = {
         ## My plugins (see config/noctalia/plugins/)
