@@ -1,7 +1,7 @@
 #:schema https://yazi-rs.github.io/schemas/yazi.json
 
 [mgr]
-ratio          = [ 1, 1, 5 ]
+ratio          = [ 1, 2, 5 ]
 show_hidden    = true
 scrolloff      = 8
 sort_by        = "natural"
