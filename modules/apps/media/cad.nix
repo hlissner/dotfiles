@@ -11,11 +11,14 @@ let cfg = config.modules.apps.media.cad;
 in {
   options.modules.apps.media.cad = with types; {
     enable = mkBoolOpt false;
+    cudaSupport = mkBoolOpt (pkgs.config.cudaSupport or false);
   };
 
-  config = mkIf cfg.enable {
-    user.packages = with pkgs; [
-      blender
+  config = mkIf cfg.enable (mkMerge [{
+    user.packages = [
+      (if cfg.cudaSupport
+       then pkgs.blender.override { cudaSupport = true; }
+       else pkgs.blender)
     ];
 
     home.configFile = {
@@ -49,5 +52,12 @@ in {
         fi
       done
     '';
-  };
+  }
+
+  (mkIf cfg.cudaSupport {
+    environment.systemPackages = [ pkgs.cudaPackages.cudatoolkit ];
+    # $EXTRA_LDFLAGS and $EXTRA_CCFLAGS are sometimes necessary too, but I set
+    # those in nix-shells instead.
+    environment.variables.CUDA_PATH = "${pkgs.cudaPackages.cudatoolkit}";
+  })]);
 }

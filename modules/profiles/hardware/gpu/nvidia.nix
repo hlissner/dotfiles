@@ -1,9 +1,8 @@
 # profiles/hardware/common/gpu/nvidia/default.nix --- lipstick on a pig
 #
-# I use NVIDIA cards on all my machines, largely because I'm locked into CUDA
-# for work reasons. Fortunately, mine aren't too old and are relatively beefy
-# (680gtx, 960gtx, 1080, 1660S, 3080ti) so only a little cludge is needed to get
-# them to work well on NixOS.
+# I have NVIDIA cards on all my machines. Fortunately, mine aren't too old and
+# are relatively beefy (680gtx, 960gtx, 1080, 1660S, 3080ti) so only a little
+# cludge is needed to get them to work well on NixOS.
 
 { hey, lib, config, pkgs, ... }:
 
@@ -48,22 +47,12 @@ in mkIf (any (s: hasPrefix "gpu/nvidia" s) hardware) (mkMerge [
         '')
 
         vulkan-tools
-        cudaPackages.cudatoolkit  # required for CUDA support
       ];
-      variables = {
-        CUDA_PATH = "${pkgs.cudaPackages.cudatoolkit}";
-        CUDA_CACHE_PATH = "$XDG_CACHE_HOME/nv";
-
-        # $EXTRA_LDFLAGS and $EXTRA_CCFLAGS are sometimes necessary too, but I
-        # set those in nix-shells instead.
-      };
     };
 
-    # Cajole Firefox into video-acceleration (or try).
-    programs.firefox.preferences = {
-      "media.ffmpeg.vaapi.enabled" = true;
-      "gfx.webrender.enabled" = true;
-    };
+    programs.firefox.preferences."media.hardware-video-decoding.force-enabled" = true;
+    # nvidia-vaapi-driver can't run inside the RDD sandbox
+    environment.sessionVariables.MOZ_DISABLE_RDD_SANDBOX = "1";
   }
 
   (mkIf (elem "gpu/nvidia/kepler" hardware) {

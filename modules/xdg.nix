@@ -54,6 +54,9 @@ in {
         sessionVariables = {
           __GL_SHADER_DISK_CACHE_PATH = "/tmp/nv";
 
+          # ~/.nv (some create it whether or not the toolkit is installed)
+          CUDA_CACHE_PATH = "$XDG_CACHE_HOME/nv";
+
           # X11 systems only: prevents creation of ~/.compose-cache, and must be
           # set especially early to intercept this silliness:
           # https://github.com/NixOS/nixpkgs/blob/25865a40d14b3f9cf19f19b924e2ab4069b09588/nixos/modules/services/x11/display-managers/default.nix#L98-L105,
