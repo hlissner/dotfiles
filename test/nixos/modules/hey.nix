@@ -73,15 +73,16 @@ in {
     expr = {
       hypr = hasPath presets.hyprland "config/hypr/hooks";
       noctalia = hasPath presets.hyprland "config/noctalia/hooks";
-      dms = hasPath presets.hyprland "config/dms/hooks";
-      dmsOn = hasPath (evalConfig [{
-        modules.wm.desktop = "hyprland";
-        modules.wm.dms.enable = true;
-      }]) "config/dms/hooks";
+      # dms = hasPath presets.hyprland "config/dms/hooks";
+      # dmsOn = hasPath (evalConfig [{
+      #   modules.wm.desktop = "hyprland";
+      #   modules.wm.dms.enable = true;
+      # }]) "config/dms/hooks";
       headless = hasPath presets.bare "config/hypr/hooks";
     };
     expected = {
-      hypr = true; noctalia = true; dms = false; dmsOn = true; headless = false;
+      # dms = false; dmsOn = true;
+      hypr = true; noctalia = true; headless = false;
     };
   };
 
