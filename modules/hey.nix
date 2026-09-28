@@ -141,5 +141,8 @@ in {
     home.dataFile = hookFiles // {
       "hey/info.json".text = toJSON cfg.info;
     };
+
+    # For `hey wm play-sound`, and anything else that speaks sound themes.
+    home.dataLink."sounds/hey" = "${hey.dir}/assets/sounds";
   };
 }

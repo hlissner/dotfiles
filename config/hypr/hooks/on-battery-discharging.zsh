@@ -6,5 +6,3 @@
 #
 # DESCRIPTION:
 #   The other half of on-battery-charging.
-
-hey .play-sound power-off &

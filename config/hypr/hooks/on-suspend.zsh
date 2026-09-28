@@ -12,4 +12,4 @@ hey.toast info "Going to sleep.."
 playerctl -a pause
 
 # No point fading here. Something else will trigger it before we get here.
-hey .play-sound -w sleep
+hey wm play-sound -w sleep

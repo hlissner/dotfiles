@@ -57,6 +57,14 @@
   # Past the colon there's a whole other machine, so nothing.
   (test (hey "call" "__hey_edit_target" "box:") @[]))
 
+(deftest completion/wm
+  # hey wm's compiled commands live in bin/hey.d/wm.d, not config/$WM/bin, so
+  # _hey has to scan both or they drop off the menu. (The fixture has no
+  # config/testwm, so the compiled half is all there is.)
+  (test (hey "dispatch" "wm" "") @["DESC[scripts] play-sound:Plays a notification sound."])
+  (test (last (hey "dispatch" "wm" "play-sound" ""))
+        ``ARG 1:name:((ls:"List the available sounds instead of playing one."))``))
+
 (deftest completion/hook-areas
   # The menu carries the sigil, so areas and hooks can share it; past the
   # sigil, the areas are bare.

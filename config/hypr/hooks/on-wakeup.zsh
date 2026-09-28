@@ -10,4 +10,4 @@
 
 hey.toast info "Waking up..."
 
-hey .play-sound wakeup
+hey wm play-sound wakeup

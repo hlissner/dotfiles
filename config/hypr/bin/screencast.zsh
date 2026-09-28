@@ -201,7 +201,7 @@ main() {
   local delay="$3"
   if [[ -n "$delay" ]] && (( delay > 0 )); then
     for i in {$delay..1}; do
-      hey .play-sound blip &
+      hey wm play-sound blip &
       hey.toast -c countdown warn "Recording starting in... $i"
       sleep 1
     done
@@ -218,7 +218,7 @@ main() {
       hey.do -! gifsicle --optimize=3 "$file"
     fi
     echo "file://$file" | wl-copy -t text/uri-list
-    hey .play-sound success &
+    hey wm play-sound success &
     hey.toast info "Recording complete. Copied to clipboard!"
   fi
 }

@@ -37,6 +37,7 @@
 (import ./hey.d/test)
 (import ./hey.d/vars)
 (import ./hey.d/sup)
+(import ./hey.d/wm)
 
 # Evaluated at compile-time
 (def- *built* {:t (os/time)
@@ -72,12 +73,7 @@
              [:v :version]  {:doc "Print hey's version."
                              :eval |[version ;$&]}
              :sup           sup/sup
-             :wm            {:doc "Dispatch to config/$WM/bin."
-                             # Asking for the desktop's scripts on a machine
-                             # with no desktop is a sentence, not a backtrace.
-                             :exec |[(try (path (keyword $0) "bin")
-                                       ([e] (abort "%s" e)))
-                                     ;$&]}
+             :wm            wm/wm
              :exec          {:doc "Execute a program on $PATH through hey."
                              :exec (fn [_ &opt arg & args]
                                      [(if arg

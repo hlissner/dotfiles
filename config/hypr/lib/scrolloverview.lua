@@ -10,7 +10,7 @@ local AXIS    = { left = "x", right = "x", up = "y", down = "y" }
 -- The overview is a modal thing with no status line; a keypress that did
 -- nothing looks exactly like one that worked.
 local function fail()
-  hl.dispatch(hl.dsp.exec_cmd("hey .play-sound error"))
+  hl.dispatch(hl.dsp.exec_cmd("hey wm play-sound error"))
 end
 
 -- Whether the overview's selection moved. It publishes nothing -- its

@@ -220,7 +220,8 @@
   # offender at once: [command documented-flags declared-flags]
   (def cmds (path/join dir "../../bin/hey.d"))
   (def names [;(os/dir cmds)
-              ;(map |(path/join "ops.d" $0) (os/dir (path/join cmds "ops.d")))])
+              ;(mapcat (fn [sub] (map |(path/join sub $0) (os/dir (path/join cmds sub))))
+                       ["ops.d" "wm.d"])])
   (test (seq [name :in (sort (filter |(string/has-suffix? ".janet" $0) names))
               :let [file (path/join cmds name)
                     documented (sorted (header-flags file))

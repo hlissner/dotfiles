@@ -7,4 +7,4 @@
 # DESCRIPTION:
 #   Fired by noctalia's `started` hook.
 
-hey .play-sound startup
+hey wm play-sound startup

@@ -30,6 +30,7 @@ show_events_card = false
 
 [audio]
 enable_sounds = true
+sound_theme = "hey"  # assets/sounds, linked in by modules/hey.nix
 
 [theme]
 mode   = "dark"

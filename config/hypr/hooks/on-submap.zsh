@@ -8,7 +8,7 @@
 #   Triggered from a `keybinds.submap` event in config/hypr/hyprland.lua.
 
 if [[ -n "${1:-}" ]]; then
-  hey .play-sound on
+  hey wm play-sound on
 else
-  hey .play-sound off
+  hey wm play-sound off
 fi

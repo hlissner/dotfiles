@@ -1,0 +1,8 @@
+[Sound Theme]
+Name=hey
+Comment=My sounds, falling back to freedesktop's for any event they don't cover
+Inherits=freedesktop
+Directories=stereo
+
+[stereo]
+OutputProfile=stereo

@@ -18,5 +18,5 @@ hey.toast warn "Shutting down..."
 
 # Fade while the sound plays. Plus the ~130ms quickshell takes to cold-start.
 hey .fade -d 1250 out &
-hey .play-sound -w shutdown
+hey wm play-sound -w shutdown
 wait

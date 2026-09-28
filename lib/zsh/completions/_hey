@@ -11,15 +11,17 @@
 # how to tell the two apart: hey.comp.* is public and anyone's to call, __hey_*
 # is defined in this file and nobody else's business.
 #
-# The second name up there is bin/lab, which is `exec hey .lab "$@"` and little
-# else. Any such wrapper gets hey's completion by being named on that line (or
-# with `compdef NAME _hey`); there is no per-wrapper file to write, because
-# there is nothing to complete but what hey resolves .NAME to.
+# The other names up there are bin/lab and bin/beval, which are
+# `exec hey .NAME "$@"` and little else. Any such wrapper gets hey's completion
+# by being named on that line (or with `compdef NAME _hey`); there is no
+# per-wrapper file to write, because there is nothing to complete but what hey
+# resolves .NAME to.
 #
 # What's left here is the dynamic half of hey's dispatcher, which has to walk
 # $DOTFILES_HOME:
 #
-#   hey wm|host CMD        -- scripts in {config/$WM,hosts/$HOST}/bin
+#   hey wm|host CMD        -- scripts in {config/$WM,hosts/$HOST}/bin (and
+#                             bin/hey.d/wm.d, for wm)
 #   hey ops CMD            -- scripts in bin/hey.d/ops.d
 #   hey @FOO CMD           -- scripts in config/FOO/bin
 #   hey .FOO               -- scripts in hosts/$HOST/bin, config/$WM/bin, or bin/
@@ -265,7 +267,9 @@ __hey_rules() {
     # These dispatch into a directory of scripts instead of taking arguments of
     # their own, so there is no header of their own to read.
     (host)  hey.comp.subdir $_hey_root/hosts/$_hey_host/bin ;;
-    (wm)    hey.comp.subdir $_hey_root/config/$_hey_wm/bin ;;
+    # hey wm's compiled commands come first, and shadow a script of the same
+    # name, the way bin/hey.d/wm.janet's table does.
+    (wm)    hey.comp.subdir $_hey_root/bin/hey.d/wm.d ${_hey_wm:+$_hey_root/config/$_hey_wm/bin} ;;
     (@*)    hey.comp.subdir $_hey_root/config/${words[1]#@}/bin ;;
     (ops)   hey.comp.subdir $_hey_root/bin/hey.d/ops.d ;;
     (.*)
