@@ -17,6 +17,12 @@
 (use hey)
 (use sh)
 
+(defn- free-bytes []
+  (scan-number ($<_ df -B1 --output=avail /nix/store | tail -n1)))
+
+(defn- numfmt [bytes]
+  ($<_ numfmt --to=iec-i --suffix=B ,(string bytes)))
+
 (defcmd gc [_ &opts
             all? -a
             system? -s
@@ -26,6 +32,9 @@
     (cond delete-all-old? ["-d"]
           delete-old?     ["--delete-older-than" "14d"]
           []))
+
+  (def before (free-bytes))
+  (echof :g "> %s free on /nix/store" (numfmt before))
 
   (when (or all? system?)
     (echo :g "> Cleaning your system profile...")
@@ -46,4 +55,6 @@
   (echo :g "> Optimizing the nix store...")
   (do? $ nix-store --optimise)
 
-  (echo :check "Done!"))
+  (def after (free-bytes))
+  (echof :check "Done! %s free (%s reclaimed)"
+         (numfmt after) (numfmt (- after before))))
