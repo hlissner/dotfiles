@@ -282,8 +282,11 @@ do
   local widths = { 700, 0.5, 0.6, 0.8, 1.0 }  -- on 2-6; px if > 1
   local dirs   = { h = "left", j = "down", k = "up", l = "right" }
   local defbinds = function(prefix, nav)
-  -- A "return to home workspace" button
-    hl.bind(prefix .. "1", hl.dsp.focus({ workspace = tostring(PRIMARY_WORKSPACE) }))
+  -- A "return to home workspace" button (and return back)
+    hl.bind(prefix .. "1", hey.dsp.on(
+      { workspace = PRIMARY_WORKSPACE, action = hl.dsp.focus({ workspace = "previous_per_monitor" }) },
+      hl.dsp.focus({ workspace = tostring(PRIMARY_WORKSPACE) })))
+
     -- hjkl focuses, SHIFT moves, CTRL goes to the far end first before crossing
     -- into adjacent monitors. h/l run off the tape onto the next monitor, j/k
     -- onto the next workspace (see lib/nav.lua).
