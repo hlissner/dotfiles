@@ -55,7 +55,7 @@ fpath=( $root/lib/zsh $fpath )
 autoload -Uz $root/lib/zsh/hey.*(.:t)
 source $root/lib/zsh/completions/_$completion >/dev/null 2>&1
 
-local -a _hey_reply _hey_cmd _hey_bindirs _hey_cfgdirs _hey_hookareas
+local -a _hey_reply _hey_cmd _hey_bindirs _hey_cfgdirs _hey_hookdirs _hey_hookareas
 local _hey_root=$root _hey_bin=$completion
 local _hey_host _hey_wm _hey_datadir
 # The name the completion was invoked for. Only a wrapper makes it interesting.
@@ -69,6 +69,11 @@ if [[ $completion == hey ]]; then
   _hey_datadir=$root/test/_lib/data
   _hey_bindirs=( $root/test/_lib/bin )
   _hey_cfgdirs=( alpha beta )
+  _hey_hookdirs=(
+    $root/config/alpha/hooks
+    $root/hosts/testhost/hooks
+    $root/test/_lib/data/hooks.d/beta.d
+  )
   _hey_hookareas=( alpha beta host )
 fi
 
@@ -89,6 +94,16 @@ case $case in
     __hey_hooks() { print -r -- "HOOKS ${(j: :)@}" }
     line=( ${1-} ); CURRENT=${2:-1}
     __hey_hook_arg
+    ;;
+  # Which of $_hey_hookdirs a scoped hook menu scans, and what becomes of the
+  # NN- prefixes and duplicates the scan hands back. $1 is the area, if any.
+  (hooks)
+    hey.comp.scan() {
+      print -r -- "SCAN ${(j: :)${@#$root/}}"
+      _hey_reply=( 10-on-x:first on-x:second 20-on-y:third )
+    }
+    __hey_hook_areas() { print -r -- "AREAS" }
+    __hey_hooks ${1-}
     ;;
   # __hey_sync_arg branches on the command _arguments already matched and counts
   # how far into the rest arguments it is, both of which it reads out of $line:

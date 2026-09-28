@@ -38,6 +38,8 @@ in {
 
     users.defaultUserShell = pkgs.zsh;
 
+    hey.hookPaths = [ "${hey.configDir}/zsh/hooks" ];
+
     # Some interactive shell utilies I find universally indispensible.
     user.packages = with pkgs; [
       at

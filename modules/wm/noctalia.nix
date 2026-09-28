@@ -73,6 +73,7 @@ in {
         '';
 
       modules.shell.zsh.rcFiles = [ "${hey.configDir}/noctalia/aliases.zsh" ];
+      hey.hookPaths = [ "${hey.configDir}/noctalia/hooks" ];
     }
 
     ## Declarative noctalia config.toml

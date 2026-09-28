@@ -23,8 +23,7 @@
 #   hey ops CMD            -- scripts in bin/hey.d/ops.d
 #   hey @FOO CMD           -- scripts in config/FOO/bin
 #   hey .FOO               -- scripts in hosts/$HOST/bin, config/$WM/bin, or bin/
-#   hey hook [@AREA] HOOK  -- hooks in {$XDG_CONFIG_HOME/$AREA,config/$AREA}/hooks,
-#                             hosts/$HOST/hooks and $XDG_DATA_HOME/hey/hooks.d
+#   hey hook [@AREA] HOOK  -- hooks in the dirs info.json lists (hey.hookPaths)
 #
 # Script directories nest: a NAME.d (or NAME/) directory beside NAME is
 # descended into, exactly like lib/hey/init.janet's resolve-1.
@@ -35,9 +34,18 @@
 # $_hey_reply: zstyle -e assigns into the caller's $reply, so handing that name
 # to _describe risks it being clobbered out from under us.
 
-# The areas a hook can be scoped to, as bin/hey.d/hook.janet's areas sees them.
-# Bare after an @, sigil-prefixed otherwise, so they can share a menu with the
-# hook names.
+# The area DIR belongs to, left in $REPLY. Mirrors bin/hey.d/hook.janet's
+# area-of, which is what decides whether @AREA means anything.
+__hey_hook_area() {
+  local dir=${1%/}
+  if   [[ ${dir:t} != hooks ]];     then REPLY=${${dir:t}%.d}
+  elif [[ ${dir:h:h:t} == hosts ]]; then REPLY=host
+  else                                   REPLY=${dir:h:t}
+  fi
+}
+
+# The areas a hook can be scoped to. Bare after an @, sigil-prefixed otherwise,
+# so they can share a menu with the hook names.
 __hey_hook_areas() {
   local -a areas=( $_hey_hookareas )
   (( $#areas )) || return 1
@@ -45,40 +53,27 @@ __hey_hook_areas() {
   _describe -t areas 'hook area' areas
 }
 
-# With no AREA, offers every area's hooks plus the areas themselves. AREA "host"
-# has no live counterpart under $XDG_CONFIG_HOME, matching area-dirs.
+# With no AREA, offers every area's hooks plus the areas themselves. A handler's
+# NN- is its place in line, not its name, and several dirs can handle one hook.
 __hey_hooks() {
-  local area=${1-} name ret=1
-  local -a dirs extra known found _hey_reply
+  local area=${1-} dir name REPLY ret=1
+  local -a dirs _hey_reply
+  local -A seen
 
   [[ -z $area && $PREFIX == @* ]] && { __hey_hook_areas; return }
 
-  for name in ${area:-$_hey_hookareas}; do
-    if [[ $name == host ]]; then
-      dirs+=( $_hey_root/hosts/$_hey_host/hooks )
-    else
-      dirs+=(
-        ${XDG_CONFIG_HOME:-$HOME/.config}/$name/hooks
-        $_hey_root/config/$name/hooks
-      )
-    fi
+  for dir in $_hey_hookdirs; do
+    __hey_hook_area $dir
+    [[ -z $area || $REPLY == $area ]] && dirs+=( $dir )
   done
-  hey.comp.scan $dirs
-  # all runs for every hook, taking --HOOK; it is not a hook of its own
-  _hey_reply=( ${_hey_reply:#all:*} )
-
-  # Third parties (like nixos modules) can drop extra handlers in
-  # $XDG_DATA_HOME/hey/hooks.d/HOOK.d/. They belong to no area, so they drop out
-  # of a scoped menu, exactly as hook.janet drops them from a scoped run.
-  if [[ -z $area ]]; then
-    found=( $_hey_datadir/hooks.d/*.d(N/:t) )
-    extra=( ${found%.d} )
-    known=( ${(@)_hey_reply%%:*} )
-    extra=( ${extra:|known} )
+  if hey.comp.scan $dirs; then
+    for name in ${_hey_reply/#<->-/}; do
+      (( $+seen[${name%%:*}] )) || seen[${name%%:*}]=$name
+    done
+    _hey_reply=( ${(v)seen} )
   fi
 
-  (( $#_hey_reply || $#extra )) &&
-    { _describe -t hooks 'hook' _hey_reply -- extra && ret=0 }
+  (( $#_hey_reply )) && { _describe -t hooks 'hook' _hey_reply && ret=0 }
   [[ -n $area ]] || { __hey_hook_areas && ret=0 }
   return ret
 }
@@ -315,8 +310,16 @@ _hey() {
     $_hey_root/bin
   )
   local -a _hey_cfgdirs=( $_hey_root/config/*/bin(N-/:h:t) )
-  # host is always an area; it names hosts/$HOST/hooks, which needn't exist.
-  local -a _hey_hookareas=( $_hey_root/config/*/hooks(N-/:h:t) host )
+  # Only what this host enables, courtesy of hey.hookPaths (see modules/hey.nix).
+  local -a _hey_hookdirs _hey_hookareas
+  (( $+commands[jq] )) &&
+    _hey_hookdirs=( ${(f)"$(jq -r '.hooks[]?' $_hey_datadir/info.json 2>/dev/null)"} )
+  local REPLY dir
+  for dir in $_hey_hookdirs; do
+    __hey_hook_area $dir
+    _hey_hookareas+=( $REPLY )
+  done
+  _hey_hookareas=( ${(u)_hey_hookareas} )
 
   # Anything else this is compdef'd onto is a `hey .NAME "$@"` wrapper, so hand
   # the line to the .* rule and let it walk. $service rather than $words[1],

@@ -17,16 +17,21 @@ let cfg = config.hey;
     # somewhere to put things.
     janetTreeDir = "${config.home.dataDir}/janet";
 
-    hookName = name:
-      if match "[0-9]{2}-.+" name == null then "50-${name}" else name;
+    # "10-foo" -> [ "10" "foo" ]; "foo" -> [ "50" "foo" ]
+    splitHookName = name:
+      let m = match "([0-9]{2})-(.+)" name; in
+      if m == null then [ "50" name ] else m;
+    hookNames = unique (map (n: elemAt (splitHookName n) 1)
+                            (concatMap attrNames (attrValues cfg.hooks)));
 
-    # { onFoo = { bar = "..."; }; } -> { "hey/hooks.d/onFoo.d/50-bar" = {...}; }
+    # { onFoo = { bar = "..."; }; } -> { "hey/hooks.d/bar.d/50-onFoo" = {...}; }
     hookFiles =
       concatMapAttrs
         (hook: scripts:
           mapAttrs'
             (name: script:
-              nameValuePair "hey/hooks.d/${hook}.d/${hookName name}" {
+              let parts = splitHookName name; in
+              nameValuePair "hey/hooks.d/${elemAt parts 1}.d/${head parts}-${hook}" {
                 text = ''
                   #!/usr/bin/env zsh
                   ${script}
@@ -36,6 +41,9 @@ let cfg = config.hey;
               })
             scripts)
         cfg.hooks;
+
+    # Mirrors `wm` in lib/hey/lib.janet.
+    wmDir = { hyprland = "hypr"; niri = "niri"; }.${cfg.desktop};
 in {
   options.hey = with types; {
     desktop = mkOpt' (nullOr str) null
@@ -44,6 +52,8 @@ in {
       "Facts about this system, for scripts to sniff at runtime.";
     hooks = mkOpt' (attrsOf (attrsOf lines)) {}
       "Zsh script fragments, as { HOOK = { NAME = script; } }, run by `hey hook`.";
+    hookPaths = mkOpt' (listOf (coercedTo path toString str)) []
+      "Directories `hey hook` searches for [NN-]HOOK scripts, in tie-break order.";
   };
 
   config = {
@@ -121,6 +131,13 @@ in {
     hey.info.host = config.networking.hostName;
     hey.info.desktop = cfg.desktop;
     hey.info.profiles = config.modules.profiles;
+    hey.info.hooks = cfg.hookPaths;
+
+    hey.hookPaths = mkBefore (
+      [ "${hey.dir}/hosts/${baseNameOf (toString hey.hostDir)}/hooks" ]
+      ++ optional (cfg.desktop != null) "${hey.configDir}/${wmDir}/hooks"
+      ++ map (n: "${config.home.dataDir}/hey/hooks.d/${n}.d") hookNames);
+
     home.dataFile = hookFiles // {
       "hey/info.json".text = toJSON cfg.info;
     };

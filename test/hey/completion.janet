@@ -66,6 +66,18 @@
   (test (hey "hookarg" "@alpha") @["HOOKS alpha"])
   (test (hey "hookarg" "on-reload") @["DEFAULT"]))
 
+(deftest completion/hooks
+  # @AREA picks its dirs the way hook.janet's area-of does: the owner of a
+  # hooks/ dir, host for hosts/*/hooks, NAME for a fragment's hooks.d/NAME.d.
+  (test (hey "hooks" "alpha") @["SCAN config/alpha/hooks" "DESC[hooks] on-x:first on-y:third"])
+  (test (first (hey "hooks" "host")) "SCAN hosts/testhost/hooks")
+  (test (first (hey "hooks" "beta")) "SCAN test/_lib/data/hooks.d/beta.d")
+  # Unscoped, every dir, and the areas share the menu.
+  (test (hey "hooks")
+        @["SCAN config/alpha/hooks hosts/testhost/hooks test/_lib/data/hooks.d/beta.d"
+          "DESC[hooks] on-x:first on-y:third"
+          "AREAS"]))
+
 (deftest completion/paths-are-not-dot-commands
   (test (hey "dispatch" "./foo" "") @["DEFAULT"]))
 
