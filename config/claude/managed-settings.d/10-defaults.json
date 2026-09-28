@@ -208,7 +208,8 @@
         "~/.cache/npm",
         "~/projects/config/dotfiles",
         "~/projects/ai",
-        "/tmp"
+        "/tmp",
+        "/etc/claude-code/resources"
       ]
     }
   }
