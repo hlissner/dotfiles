@@ -114,15 +114,12 @@ in {
           installedPlugins);
     in {
       modules.wm.noctalia.plugins = {
-        ## My plugins (see config/noctalia/plugins/)
+        ## My plugins (see config/noctalia/plugins/*/plugin.toml for why)
         "hey/peripheral-battery".src =
           "${hey.configDir}/noctalia/plugins/peripheral-battery";
-        # A fork of k4n4t4/hypr-submap (see its plugin.toml for why)
         "hey/hypr-submap".src =
           "${hey.configDir}/noctalia/plugins/hypr-submap";
-        # A fork of noctalia/timer (see its plugin.toml for why)
         "hey/timer".src = "${hey.configDir}/noctalia/plugins/timer";
-        # An indicator for `hey wm screencast`
         "hey/screencast".src = "${hey.configDir}/noctalia/plugins/screencast";
 
         ## 3rd-party plugins

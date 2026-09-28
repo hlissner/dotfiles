@@ -15,9 +15,13 @@ reserve_space      = true
 capsule            = false
 widget_spacing     = 8
 
-start = [ "submap", "screencast", "timer", "launcher", "group:devices", "tray" ]
-center = [ "active_window" ]
-end = [ "weather", "group:system", "clock", "notifications", "privacy" ]
+start = [ "submap", "screencast", "scroll_overview", "timer", "group:activity" ]
+center = [ "date", "clock", "weather" ]
+end = [ "tray", "group:devices", "group:system", "notifications", "privacy" ]
+show_on_workspace_switch = false
+
+    [bar.main.dead_zone.actions]
+    middle = "settings-toggle"
 
     [[bar.main.capsule_group]]
     accordion = false
@@ -41,12 +45,27 @@ end = [ "weather", "group:system", "clock", "notifications", "privacy" ]
     opacity = 1.0
     padding = 8.0
 
+    [[bar.main.capsule_group]]
+    accordion = false
+    accordion_direction = "end"
+    enabled = true
+    fill = "surface_variant"
+    foreground = "tertiary"
+    id = "activity"
+    members = [ "cpu", "sysmon", "ram", "network_rx", "network_tx" ]
+    opacity = 1.0
+    padding = 8.0
+
 [widget.clock]
-anchor = true
-capsule = true
-capsule_opacity = 0.0
-format = "{:%H:%M}  {:%a, %b %d}"
-tooltip_format = "{:%A %B, %D, %H:%M}"
+capsule = false
+font_weight = 500
+format = "·  {:%H:%M}  ·"
+interactive = false
+tooltip_format = "{:%I:%M %p}"
+
+[widget.date]
+format = "{:%a, %d %b}"
+tooltip_format = "{:%A, %B %d %Y}"
 
 [widget.privacy]
 hide_inactive = true
@@ -134,10 +153,20 @@ length = 18
 show_condition = false
 
 [widget.workspaces]
-occupied_color = "on_secondary"
+focused_output_only = true
+show_labels = false
 
 [widget.network]
 show_label = false
+
+[widget.network_rx]
+show_value = false
+visualization = "graph"
+
+[widget.network_tx]
+show_glyph = false
+show_value = false
+visualization = "graph"
 
 [widget.input_volume]
 hide_when_inactive = true
@@ -152,8 +181,9 @@ show_value = false
 show_value = false
 
 [widget.sysmon]
-show_value = false
-stat = "cpu_temp"
+show_glyph = false
+show_value = true
+visualization = "none"
 
 [widget.media]
 capsule = true
@@ -161,6 +191,8 @@ capsule_opacity = 0.0
 capsule_padding = 18
 hide_when_no_media = true
 show_progress = true
+max_length = 400
+title_scroll = "on_hover"
 
 [widget.launcher]
 glyph = "search"
@@ -173,3 +205,12 @@ type = "custom_button"
 capsule = false
 icon_size = 16
 max_length = 800
+
+[widget.scroll_overview]
+glyph = "apps"
+type = "custom_button"
+tooltip = "Overview"
+
+  [widget.scroll_overview.actions]
+  left  = '''exec hyprctl eval 'hey.plugins.so.overview("toggle")()' '''
+  right = '''exec hyprctl eval 'hey.plugins.so.overview("toggle all", 0.4)()' '''

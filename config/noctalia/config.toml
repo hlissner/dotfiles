@@ -11,11 +11,26 @@ settings_window_translucent = true
 [shell.greeter_sync]
 auto_sync = true
 
+[shell.launcher]
+categories = false
+show_app_actions = true
+
 [shell.panel]
+launcher_placement = "attached"
+launcher_position = "top_left"
+open_near_click_launcher = true
 session_position = "center"
 control_center_placement = "floating"
 open_near_click_control_center = true
 transparency_mode = "glass"
+
+[shell.screenshot]
+confirm_region = true
+pipe_command = "pngquant --strip -s 10 -"
+pipe_to_command = true
+remember_last_region = true
+save_to_file = false
+show_cursor = true
 
 [shell.shadow]
 alpha = 0.45
@@ -134,7 +149,8 @@ show_shortcuts = false
 
 [lockscreen]
 enabled = true
-blur_intensity = 0.59999998658895493
+blurred_desktop = true
+blur_intensity = 0.6
 
 [lockscreen_widgets]
 enabled = true
@@ -180,3 +196,13 @@ manager_open_near_click = true
 [plugin_settings."hey/peripheral-battery"]
 on_connect = "hey hook -f on-peripheral -f \"$model\" \"$percent\""
 on_disconnect = "hey hook -f on-peripheral --off \"$model\" \"$percent\""
+
+[plugin_settings."h-jangra/keyviz"]
+badge_style = "accent"
+font_size = "large"
+margin = 4
+max_keys = 5
+overlay_layer = "overlay"
+overlay_placement = "attached"
+overlay_position = "top_center"
+timeout_ms = 1200
