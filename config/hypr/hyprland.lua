@@ -1,14 +1,16 @@
 -- config/hypr/hyprland.lua
+--
+-- My scrolling-layout-centric Hyprland config.
 
-hey.dsp = require("lib/dsp")          -- bind and gesture actions
+hey.ws    = require("lib/workspace")
+hey.dsp   = require("lib/dsp")
+hey.media = require("lib/media")
+hey.nav   = require("lib/nav")
 
-
--- * Events
-
-hl.on("keybinds.submap", function(submap)
-  local quoted = submap:gsub("'", [['\'']])
-  hl.exec_cmd("hey hook -f on-submap '" .. quoted .. "'")
-end)
+hey.plugins = {}
+if hl.plugin.scrolloverview then
+  hey.plugins.so = require("lib/scrolloverview")
+end
 
 
 -- * Options
@@ -21,40 +23,42 @@ hl.config({
     no_focus_fallback = true,
     layout = "scrolling"
   },
-
   input = {
     kb_options = "compose:ralt",
     follow_mouse = 2,
     focus_on_close = 2,
-    float_switch_override_focus = 0
+    float_switch_override_focus = 0,
+    touchpad = {
+      natural_scroll = false,
+      tap_and_drag = false,
+      drag_lock = 2,
+      drag_3fg = 1,
+    }
   },
-
   decoration = {
-    dim_strength = 0.2,
+    dim_strength = 0.35,
     dim_inactive = true,
     dim_special = 0.4,
     dim_around = 0.4,
     blur = { size = 4 }
   },
-
   render = {
     direct_scanout = 2,
   },
-
-  -- Obnoxious.
   ecosystem = {
     no_update_news = true,
     no_donation_nag = true
   },
-
   master = {
     new_status = "master",
     mfact = 0.65
   },
-
+  scrolling = {
+    fullscreen_on_one_column = true
+  },
   misc = {
     background_color = "0xff000000",
-    force_default_wallpaper = 0,  -- I'm not *that* much of a weeb
+    force_default_wallpaper = 0,
     disable_watchdog_warning = true,
     disable_hyprland_logo = true,
     disable_autoreload = true,
@@ -62,14 +66,9 @@ hl.config({
     key_press_enables_dpms = true,
     initial_workspace_token_timeout = 20
   },
-
   cursor = {
     default_monitor = hey.hypr.primaryMonitor,
     zoom_rigid = true
-  },
-
-  scrolling = {
-    fullscreen_on_one_column = false
   },
 })
 
@@ -87,7 +86,7 @@ hl.animation({ leaf = "specialWorkspace", enabled = true, speed = 5.0, bezier = 
 
 -- * Layer rules
 
--- Invisible margins/padding will get blurred too; ignorezero fixes this.
+-- Invisible margins/padding will get blurred too without this
 hl.layer_rule({ match = { namespace = "notifications" },
                 blur = true,
                 ignore_alpha = 0.3 })
@@ -99,24 +98,41 @@ hl.layer_rule({ match = { namespace = "rofi" },
 
 -- * Workspace rules
 
--- The overview grows workspaces off either end of the tape, but nothing
--- numbered can live below 1, so my main monitor starts halfway up the number
--- line instead, with room to grow north.
-hl.workspace_rule({ workspace = "100",
-                    monitor = hey.hypr.primaryMonitor,
-                    default = true,
-                    persistent = true })
+local PRIMARY_WORKSPACE = 100
+
+-- Workspaces need room to grow "infinitely" in either direction (north or
+-- south), so I generate fixed workspaces for all monitors as multiples of 100.
+do
+  local ws = 200
+  for _, m in ipairs(hey.hypr.monitors) do
+    local name = tostring(m.output == hey.hypr.primaryMonitor and PRIMARY_WORKSPACE or ws)
+    hl.workspace_rule({ workspace = name,
+                        monitor = m.output,
+                        default = true,
+                        persistent = true })
+    ws = ws + PRIMARY_WORKSPACE
+  end
+
+  -- Over time, gaps between workspaces form (I'm approximating Niri's "infinite
+  -- workspaces" feature), but really, each monitor is given a primary workspace
+  -- at #100, #200, #300, etc. (the "roots") and create workspaces up and down.
+  -- Gaps can form in between and, in *very* long sessions, neighboring
+  -- workspaces may eventually converge, causing the heat death of the universe.
+  -- This prevents that silently reordering workspaces relative to their roots.
+  hl.on("config.reloaded", hey.ws.compact)
+  -- And if a monitor's been tricked into showing its neighbour's workspace, a
+  -- reload is the "have you tried turning it off and on again" for it.
+  hl.on("config.reloaded", hey.ws.rehome)
+end
 -- Steam and its games, out of the way until summoned.
 hl.workspace_rule({ workspace = "special:game",
-                    layout = "scrolling",
                     gaps_in = 0,
                     gaps_out = 0,
                     no_border = true,
                     no_shadow = true,
                     no_rounding = true })
--- Every scratchpad scrolls; the rules below only differ in their gaps.
-hl.workspace_rule({ workspace = "special:pad",
-                    on_created_empty = "hey .scratch term",
+-- One scratchpad per monitor, as special:pad:OUTPUT (see hey.dsp.local_scratchpad).
+hl.workspace_rule({ workspace = "n[s:special:pad:]",
                     gaps_in = 10,
                     gaps_out = 85 })
 
@@ -143,12 +159,12 @@ hl.window_rule({ name = "dialog-windows",
                  match = { float = true, class = "^(xdg-desktop-portal-gtk|librewolf)" },
                  center = true,
                  max_size = { "monitor_w*0.9", "monitor_h*0.9" } })
-hl.window_rule({ match = { class = "^(steam|feishin)$" },
-                 scrolling_width = 1.0 })
-hl.window_rule({ match = { class = "^(emacs|librewolf)$" },
+hl.window_rule({ match = { class = "^(steam|feishin|emacs|librewolf)$" },
                  scrolling_width = 0.8 })
 hl.window_rule({ match = { class = "^foot$" },
                  scrolling_width = 0.35 })
+hl.window_rule({ match = { class = "^foot$", workspace = "n[s:special:pad:]" },
+                 scrolling_width = 0.40 })
 
 
 -- ** Steam
@@ -157,6 +173,7 @@ hl.window_rule({ name = "steam-all-windows",
                  match = { class = "steam" },
                  workspace = "special:game silent",
                  immediate = true,
+                 no_dim = true,
                  no_blur = true,
                  no_anim = true,
                  no_shadow = true,
@@ -173,9 +190,11 @@ hl.window_rule({ name = "steam-popups",
 hl.window_rule({ name = "steam-games",
                  match = { initial_class = "(gamescope|steam_app_\\d+)" },
                  workspace = "special:game silent",
+                 no_dim = true,
                  immediate = true,
                  no_blur = true,
                  no_anim = true,
+                 no_initial_focus = true,
                  suppress_event = "maximize",
                  content = "game",
                  fullscreen = true,
@@ -185,18 +204,19 @@ hl.window_rule({ name = "steam-games",
 
 -- * Gestures
 
--- 3-finger up/down = the app under the cursor gets first refusal, then Noctalia
+-- 3-finger swipe up/down
 hl.gesture({ fingers = 3, direction = "up", action = hey.dsp.over(
-  { class = "^librewolf$", action = hey.dsp.send_key("CTRL SHIFT", "Tab") },
-  hl.plugin.scrolloverview
-    and hl.plugin.scrolloverview.overview("toggle all")
+  { class = "^librewolf$", action = hey.dsp.send_key("CTRL SHIFT", "Tab") },     -- previous tab
+  { workspace = "n[s:special:]", action = hey.dsp.local_scratchpad("pad") },
+  hey.plugins.so
+    and hey.plugins.so.overview("toggle all")
     or hl.dsp.exec_cmd("noctalia msg window-switcher")) })
 hl.gesture({ fingers = 3, direction = "down", action = hey.dsp.over(
-  { class = "^librewolf$", action = hey.dsp.send_key("CTRL", "Tab") },
+  { workspace = "n[s:special:pad:]", action = hey.dsp.local_scratchpad("pad") }, -- exit workspace
+  { class = "^librewolf$", action = hey.dsp.send_key("CTRL", "Tab") },           -- next tab
   hl.dsp.exec_cmd("noctalia msg panel-toggle control-center")) })
-
--- 3-finger swipe left/right = roll the scrolling layout tape
-hl.gesture({ fingers = 3,
+-- 4-finger swipe left/right = roll the scrolling layout tape
+hl.gesture({ fingers = 4,
              direction = "horizontal",
              action = "scroll_move",
              scale = -1 })
@@ -204,81 +224,111 @@ hl.gesture({ fingers = 3,
 
 -- * Keybinds
 
-hl.bind("SUPER + Space",          hl.dsp.exec_cmd("hey @rofi appmenu"))
-hl.bind("SUPER + Return",         hl.dsp.exec_cmd("hey .open-term"))
-hl.bind("SUPER + SHIFT + Return", hl.dsp.exec_cmd("foot"))
-hl.bind("SUPER + c",              hl.dsp.exec_cmd("hey @rofi calcmenu"))
-hl.bind("SUPER + Escape",         hl.dsp.exec_cmd("noctalia msg notification-clear-active"))
-hl.bind("SUPER + r",              hl.dsp.exec_cmd("hey reload @hypr"), { description = "Reload hyprland's config" })
+-- ** Most common OS operations
+hl.bind("SUPER + Space", hl.dsp.exec_cmd("hey @rofi appmenu"))
+hl.bind("SUPER + SHIFT + r", hl.dsp.exec_cmd("hey reload @hypr"))
+hl.bind("SUPER + Return", hl.dsp.exec_cmd("hey .open-term"))
+hl.bind("SUPER + SHIFT + Return", hl.dsp.exec_cmd("foot || xterm")) -- failsafe
+hl.bind("SUPER + Escape", function () -- reset
+  hl.dispatch(hey.dsp.zoom(0))
+  hl.exec_cmd("noctalia msg notification-clear-active")
+end)
+
+-- ** External tools
+hl.bind("SUPER + c", hl.dsp.exec_cmd("hey @rofi calcmenu"))
+hl.bind("SUPER + e", hl.dsp.exec_cmd([[emacsclient --eval "(emacs-everywhere)"]]))
+hl.bind("SUPER + d", hl.dsp.exec_cmd("noctalia msg annotate"))
+hl.bind("SUPER + w", hl.dsp.exec_cmd("noctalia msg window-switcher"))
+hl.bind("SUPER + x", hl.dsp.exec_cmd("hey .ocr region"))
+hl.bind("Print", hl.dsp.exec_cmd("noctalia msg screenshot-region"))
+hl.bind("SUPER + Print", hl.dsp.exec_cmd("hey .screencast webm region 3"))
+hl.bind("SUPER + SHIFT + Print", hl.dsp.exec_cmd("hey .screencast mp4 region 3"))
 
 -- ** Zoom
-hl.bind("SUPER + Minus",         hey.dsp.zoom(-0.3), { repeating = true, submap_universal = true })
-hl.bind("SUPER + Equal",         hey.dsp.zoom(0.3),  { repeating = true, submap_universal = true })
-hl.bind("SUPER + SHIFT + Equal", hey.dsp.zoom(0),    { submap_universal = true })
+hl.bind("SUPER + Minus", hey.dsp.zoom(-0.3), { repeating = true, submap_universal = true })
+hl.bind("SUPER + Equal", hey.dsp.zoom(0.3),  { repeating = true, submap_universal = true })
 
 -- ** Quit/Session control
 hl.bind("SUPER + q", hl.dsp.window.close())
 hl.bind("SUPER + SHIFT + q", hl.dsp.window.kill())
 hl.bind("SUPER + SHIFT + CTRL + q", hl.dsp.exec_cmd("hey @rofi powermenu"))
 
--- ** Screenshot/recording/drawing
-hl.bind("SUPER + x", hl.dsp.exec_cmd("hey .ocr region"))
-hl.bind("SUPER + d", hl.dsp.exec_cmd("noctalia msg annotate"))
-hl.bind("Print", hl.dsp.exec_cmd("noctalia msg screenshot-region"))
-hl.bind("SUPER + Print", hl.dsp.exec_cmd("hey .screencast webm region 3"))
-hl.bind("SUPER + SHIFT + Print", hl.dsp.exec_cmd("hey .screencast mp4 region 3"))
-
--- ** Layout controls
+-- ** Window layout controls
 hl.bind("SUPER + f", hl.dsp.window.float({ action = "toggle" }))
 hl.bind("SUPER + SHIFT + f", hl.dsp.window.fullscreen({ action = "toggle" }))
-hl.bind("SUPER + o", function()
+hl.bind("SUPER + p", function()  -- float + pin window
+  hl.dispatch(hl.dsp.window.float({ action = "set" }))
+  hl.dispatch(hl.dsp.window.pin())
+end)
+hl.bind("SUPER + o", function()  -- cycle focus between floating/tiling
   local w = hl.get_active_window()
   hl.dispatch(hl.dsp.window.cycle_next({ floating = w and not w.floating }))
 end)
 hl.bind("SUPER + SHIFT + o", hl.dsp.layout("consume_or_expel prev"))
-hl.bind("SUPER + TAB", hey.dsp.on(
-  { layout = "scrolling", action = hl.dsp.layout("swapcol r") },
-  { layout = "monocle",   action = hl.dsp.layout("cyclenext") },
-  { layout = "master",    action = hl.dsp.layout("swapwithmaster") }))
-hl.bind("SUPER + SHIFT + TAB", hey.dsp.on(
-  { layout = "scrolling", action = hl.dsp.layout("swapcol l") },
-  { layout = "monocle",   action = hl.dsp.layout("cycleprev") },
-  { layout = "master",    action = hl.dsp.exec_cmd("hey @rofi windowmenu") }))
 
--- ** Scratchpads
-hl.bind("SUPER + grave",     hey.dsp.scratchpad("pad"))
-hl.bind("SUPER + SHIFT + grave", hl.dsp.window.move({ workspace = "special:pad" }))
-hl.bind("SUPER + 0",         hey.dsp.scratchpad("game"))
-hl.bind("SUPER + e",         hl.dsp.exec_cmd([[emacsclient --eval "(emacs-everywhere)"]]))
+-- ** Workspaces / special workspaces
+do
+  -- A per-monitor scratch pad
+  hl.bind("SUPER + grave", hey.dsp.local_scratchpad("pad"))
+  hl.bind("SUPER + SHIFT + grave", hey.dsp.move_to_workspace_or_back("pad", hey.dsp.move_to_local_scratchpad("pad")))
 
--- ** Windows
--- hjkl focuses, SHIFT moves, CTRL does the same across monitors.
-for key, dir in pairs({ h = "left", j = "down", k = "up", l = "right" }) do
-  hl.bind("SUPER + " .. key,                hl.dsp.focus({ direction = dir }), { submap_universal = true })
-  hl.bind("SUPER + SHIFT + " .. key,        hl.dsp.window.move({ direction = dir }), { submap_universal = true })
-  hl.bind("SUPER + CTRL + " .. key,         hl.dsp.focus({ monitor = dir }), { submap_universal = true })
-  hl.bind("SUPER + SHIFT + CTRL + " .. key, hl.dsp.window.move({ monitor = dir }), { submap_universal = true })
+  -- A global workspace for games/movies/media
+  hl.bind("SUPER + 0", hey.dsp.scratchpad("game"))
+  hl.bind("SUPER + SHIFT + 0", hey.dsp.move_to_workspace_or_back("game"))
 end
 
--- ** Quick-resize windows
-for i, spec in ipairs({ 700, 0.4, 0.5, 0.6, 0.8, 1.0 }) do
-  hl.bind("SUPER + " .. i, hey.dsp.resize_width_to(spec))
+-- ** Window management, movements, and resizing
+do
+  local widths = { 700, 0.5, 0.6, 0.8, 1.0 }  -- on 2-6; px if > 1
+  local dirs   = { h = "left", j = "down", k = "up", l = "right" }
+  local defbinds = function(prefix, nav)
+  -- A "return to home workspace" button
+    hl.bind(prefix .. "1", hl.dsp.focus({ workspace = tostring(PRIMARY_WORKSPACE) }))
+    -- hjkl focuses, SHIFT moves, CTRL goes to the far end first before crossing
+    -- into adjacent monitors. h/l run off the tape onto the next monitor, j/k
+    -- onto the next workspace (see lib/nav.lua).
+    for key, dir in pairs(dirs) do
+      hl.bind(prefix .. key,                      nav.focus(dir))
+      hl.bind(prefix .. "SHIFT + " .. key,        nav.move(dir))
+      hl.bind(prefix .. "CTRL + " .. key,         nav.focus_end(dir))
+      hl.bind(prefix .. "SHIFT + CTRL + " .. key, nav.move_end(dir))
+    end
+    hl.bind(prefix .. "TAB", hey.dsp.on(
+      { layout = "scrolling", action = nav.shuffle("right") },
+      { layout = "monocle",   action = hl.dsp.layout("cyclenext") },
+      { layout = "master",    action = hl.dsp.layout("swapwithmaster") }))
+    hl.bind(prefix .. "SHIFT + TAB", hey.dsp.on(
+      { layout = "scrolling", action = nav.shuffle("left") },
+      { layout = "monocle",   action = hl.dsp.layout("cycleprev") },
+      { layout = "master",    action = hl.dsp.exec_cmd("hey @rofi windowmenu") }))
+  end
+
+  defbinds("SUPER + ", hey.nav)
+  -- Same logic in scroll-overview, just without the SUPER prefix, and dragging
+  -- the overview along whenever focus crosses monitors.
+  if hey.plugins.so then
+    hl.define_submap("scrolloverview", function() defbinds("", hey.plugins.so) end)
+  end
+
+  -- Quick one-handed resizing on SUPER + {2-6}
+  for i, spec in ipairs(widths) do
+    hl.bind("SUPER + " .. (i + 1), hey.dsp.resize_width_to(spec), { submap_universal = true })
+  end
+  -- Move/resize with mouse LMB/RMB (SO already defines its own)
+  hl.bind("SUPER + mouse:272", hl.dsp.window.drag(),   { mouse = true, submap_universal = true })
+  hl.bind("SUPER + mouse:273", hl.dsp.window.resize(), { mouse = true, submap_universal = true })
 end
 
--- ** Move/resize windows with mouse LMB/RMB
-hl.bind("SUPER + mouse:272",      hl.dsp.window.drag(),   { mouse = true }, { submap_universal = true })
-hl.bind("SUPER + mouse:273",      hl.dsp.window.resize(), { mouse = true }, { submap_universal = true })
-
--- ** Monitor brightness control
+-- ** Monitor brightness controls
 hl.bind("XF86MonBrightnessUp",    hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 10%+"), { locked = true, repeating = true })
 hl.bind("XF86MonBrightnessDown",  hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 10%-"), { locked = true, repeating = true })
 hl.bind("XF86PowerOff",           hey.dsp.dpms(false), { locked = true })
 
 -- ** Audio and player controls
-hl.bind("XF86AudioRaiseVolume",        hey.dsp.volume("up"),          { locked = true, repeating = true })
-hl.bind("XF86AudioLowerVolume",        hey.dsp.volume("down"),        { locked = true, repeating = true })
-hl.bind("CTRL + XF86AudioRaiseVolume", hey.dsp.player_volume("up"),   { locked = true, repeating = true })
-hl.bind("CTRL + XF86AudioLowerVolume", hey.dsp.player_volume("down"), { locked = true, repeating = true })
+hl.bind("XF86AudioRaiseVolume",        hey.media.volume("up"),          { locked = true, repeating = true })
+hl.bind("XF86AudioLowerVolume",        hey.media.volume("down"),        { locked = true, repeating = true })
+hl.bind("CTRL + XF86AudioRaiseVolume", hey.media.player_volume("up"),   { locked = true, repeating = true })
+hl.bind("CTRL + XF86AudioLowerVolume", hey.media.player_volume("down"), { locked = true, repeating = true })
 hl.bind("XF86AudioMute",               hl.dsp.exec_cmd("noctalia msg volume-mute"), { locked = true })
 hl.bind("SHIFT + XF86AudioMute",       hl.dsp.exec_cmd("noctalia msg mic-mute"),    { locked = true })
 
@@ -288,76 +338,56 @@ hl.bind("XF86AudioNext",  hl.dsp.exec_cmd("noctalia msg media next"))
 hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd("noctalia msg media previous"))
 
 
--- * Plugins
+-- * We have Niri at home
 
--- We have niri at home
-if hl.plugin.scrolloverview then
+if hey.plugins.so then
   local so = hl.plugin.scrolloverview
-  hey.plugins = hey.plugins or {}
-  hey.plugins.so = require("lib/scrolloverview")
   hl.config({
     plugin = {
       scrolloverview = {
-        scale = 0.75,
+        scale = 0.8,
         layout = "auto",       -- follows each monitor's orientation
-        workspace_gap = 75,
-        gesture_distance = 300,
-        wallpaper = 2,
-        blur = true,
+        workspace_gap = 50,
+        wallpaper = 1,
+        blur = false,
         cross_monitor_drag = true,
         shadow = {
           enabled = true,
-          range = 50,
-          color = 0x1196cdf8
+          range = 10
         },
         input = {
-          touchpad_scroll_factor = 2.5
+          touchpad_scroll_factor = 3.0
         }
       }
     }
   })
 
-  so.gesture({ fingers = 4, direction = "pinch" })
+  so.gesture({ fingers = 3, direction = "pinch" })
 
-  hl.bind("SUPER + w", function()
-    so.overview("toggle all")
+  -- Make it more obvious what window is focused by dimming everything else.
+  local dim_strength = hl.get_config("decoration:dim_strength")
+  hl.on("keybinds.submap", function(submap)
+    local active = submap == "scrolloverview"
+    hl.config({ decoration = { dim_strength = active and 0.8 or dim_strength } })
   end)
 
+  hl.bind("SUPER + SUPER_L",         hey.plugins.so.overview("toggle"),          { release = true })
+  hl.bind("SUPER + SHIFT + SUPER_L", hey.plugins.so.overview("toggle all", 0.4), { release = true })
+
   hl.define_submap("scrolloverview", function()
-    -- Same shape as the hjkl binds outside the overview: SHIFT moves, CTRL
-    -- crosses monitors. The difference is that plain hjkl crosses them too,
-    -- once the selection has nowhere left to go on this one.
-    for key, dir in pairs({ h = "left", j = "down", k = "up", l = "right" }) do
-      hl.bind(key,                       hey.plugins.so.navigate(dir))
-      hl.bind("SHIFT + " .. key,         hey.plugins.so.move(dir))
-      hl.bind("CTRL + " .. key,          hl.dsp.focus({ monitor = dir }))
-      hl.bind("CTRL + SHIFT + " .. key,  hey.plugins.so.move_to_edge(dir))
-    end
-
-    for i, spec in ipairs({ 700, 0.4, 0.5, 0.6, 0.8, 1.0 }) do
-      hl.bind(tostring(i), hey.dsp.resize_width_to(spec))
-    end
-
-    hl.bind("TAB", hey.dsp.on(
-      { layout = "scrolling", action = hl.dsp.layout("swapcol r") },
-      { layout = "monocle",   action = hl.dsp.layout("cyclenext") },
-      { layout = "master",    action = hl.dsp.layout("swapwithmaster") }))
-    hl.bind("SHIFT + TAB", hey.dsp.on(
-      { layout = "scrolling", action = hl.dsp.layout("swapcol l") },
-      { layout = "monocle",   action = hl.dsp.layout("cycleprev") },
-      { layout = "master", action = hl.dsp.exec_cmd("hey @rofi windowmenu") }))
+    hl.bind("SUPER + SUPER_L", so.overview("off"), { release = true })
+    hl.bind("SUPER + SHIFT + SUPER_L", so.overview("off"), { release = true })
+    hl.bind("SUPER + q", so.window("close"))
 
     hl.bind("Return", function() so.overview("select"); so.overview("off") end)
     hl.bind("Space", so.overview("select"))
     hl.bind("Escape", so.overview("off"))
-    hl.bind("SUPER + w", so.overview("off"))
-    hl.bind("SUPER + q", so.window("close"))
-    hl.bind("mouse:272", function()
-      so.overview("select")
-      so.window("select")
-      so.overview("off")
-    end, { mouse = true })
+
+    -- LMB = Select window and close overview
+    hl.bind("mouse:272", function() so.overview("select") so.window("select") so.overview("off") end, { mouse = true })
+    -- MMB = Close window
     hl.bind("mouse:274", so.window("close"), { mouse = true })
+
     -- Don't forward keys to the underlying application!
     hl.bind("catchall", hl.dsp.no_op(), { ignore_mods = true })
   end)

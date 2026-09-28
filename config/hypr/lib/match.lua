@@ -54,9 +54,19 @@ end
 -- Hyprland's workspace selectors are a grammar (r[1-5], w[t1-3], m[+1]...) and
 -- not worth reimplementing, so the unambiguous spellings work and anything else
 -- is a declaration error -- better than a rule that silently never fires.
+-- n[s:]/n[e:] are the exception: a per-monitor scratchpad has no other name.
 local function workspace(want)
+  local op, affix
+  if type(want) == "string" then op, affix = want:match("^n%[([se]):(.*)%]$") end
+  if op then
+    return function(ws)
+      local name = ws and ws.name or ""
+      if op == "s" then return name:sub(1, #affix) == affix end
+      return name:sub(#name - #affix + 1) == affix
+    end
+  end
   if type(want) == "string" and want:find("[%[%]]") then
-    error(("workspace selector %q isn't reimplemented here; use an id, a name, or \"special\""):format(want), 0)
+    error(("workspace selector %q isn't reimplemented here; use an id, a name, \"special\", n[s:...] or n[e:...]"):format(want), 0)
   end
   return function(ws)
     if not ws then return false end
@@ -91,13 +101,17 @@ local PROPS = {
   group          = { boolean, function(w) return w.group ~= nil end },
   fullscreen     = { boolean, function(w) return w.fullscreen ~= 0 end },
   tag            = { tag,     function(w) return w.tags end },
-  workspace      = { workspace, function(w) return w.workspace end },
   fullscreen_state_internal = { integer, function(w) return w.fullscreen end },
   fullscreen_state_client   = { integer, function(w) return w.fullscreen_client end },
 }
 
+-- Asked of what the monitor shows rather than of the window, which may not
+-- exist. A window on a hidden workspace can't have focus anyway.
+local CONTEXT = { layout = layout, workspace = workspace }
+
 local function known()
-  local names = { "layout" }
+  local names = {}
+  for k in pairs(CONTEXT) do names[#names + 1] = k end
   for k in pairs(PROPS) do names[#names + 1] = k end
   table.sort(names)
   return table.concat(names, ", ")
@@ -109,9 +123,9 @@ end
 function M.compile(spec)
   local tests = {}
   for key, want in pairs(spec or {}) do
-    if key == "layout" then
-      local test = layout(want)
-      tests[#tests + 1] = function(_, l) return test(l) end
+    if CONTEXT[key] then
+      local test = CONTEXT[key](want)
+      tests[#tests + 1] = function(_, ctx) return test(ctx[key]) end
     elseif key ~= "action" then
       local prop = PROPS[key] or
         error(("unknown match property %q (have: %s)"):format(key, known()), 0)
@@ -124,9 +138,10 @@ function M.compile(spec)
   return tests
 end
 
-function M.ok(tests, win, layout)
+-- CTX is { workspace = HL.Workspace, layout = string }.
+function M.ok(tests, win, ctx)
   for _, test in ipairs(tests) do
-    if not test(win, layout) then return false end
+    if not test(win, ctx) then return false end
   end
   return true
 end

@@ -1,7 +1,7 @@
 -- config/hypr/lib/dsp.lua
 
-local util  = require("lib/util")
-local match = require("lib/match")
+local util      = require("lib/util")
+local match     = require("lib/match")
 
 local M = {}
 
@@ -22,34 +22,6 @@ function M.dpms(state)
       hl.dispatch(hl.dsp.dpms({ action = state and "enable" or "disable" }))
     end, { timeout = 500, type = "oneshot" })
   end
-end
-
--- Clamp audio increment/decrement to the nearest multiple of STEP in the
--- direction it's being adjusted. OCD-maxxing. Do the arithmetic in the shell to
--- spare us IPC overhead (hurts especially bad if you hold the key down).
-local function snap_volume(dir, step, read, set)
-  local n = dir == "up" and "$((v - v % s + s))"
-                         or "$((v - (v % s == 0 ? s : v % s)))"
-  return hl.dsp.exec_cmd((
-    [[v=$(%s); [ -n "$v" ] || exit 0; s=%d; n=%s; ]] ..
-    [[[ "$n" -lt 0 ] && n=0; [ "$n" -gt 100 ] && n=100; %s]]
-  ):format(read, step or 10, n, set:format("$n")))
-end
-
-function M.volume(dir, step)
-  return snap_volume(dir, step,
-    -- Noctalia has no volume getter, but its OSD tracks PipeWire, so it still
-    -- shows for a change made behind its back.
-    [[wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{printf "%d", $2 * 100}']],
-    "noctalia msg volume-set %s")
-end
-
--- Requires playerctl
-function M.player_volume(dir, step)
-  return snap_volume(dir, step,
-    [[playerctl volume | awk '{printf "%d", $1 * 100}']],
-    -- playerctl wants 0..1; snap_volume hands over 0..100.
-    [[playerctl volume $(awk "BEGIN { print %s / 100 }")]])
 end
 
 -- A case statement for dispatcher, basically. Go down MATCHERS and run the
@@ -80,9 +52,13 @@ local function selector(name)
       local win
       if over then win = util.window_at() else win = hl.get_active_window() end
       -- The cursor can be parked over a monitor running a different layout.
-      local layout = util.active_layout(over and win and win.monitor)
+      -- Not the window's monitor, either: a column parked off the edge of the
+      -- tape belongs to the one next door. Nor the window's own workspace: an
+      -- empty scratchpad has no window to ask.
+      local ws = util.active_workspace(over and hl.get_monitor_at_cursor() or nil)
+      local ctx = { workspace = ws, layout = ws and ws.tiled_layout }
       for _, r in ipairs(rules) do
-        if not r.tests or match.ok(r.tests, win, layout) then
+        if not r.tests or match.ok(r.tests, win, ctx) then
           -- If it doesn't quack like a function...
           if type(r.action) == "function" then r.action(win) else hl.dispatch(r.action) end
           return
@@ -121,6 +97,42 @@ function M.scratchpad(name)
   end
 end
 
+-- One NAME scratchpad per monitor, as special:NAME:OUTPUT. Keyed on the output
+-- name, not the id; ids get reshuffled every time a monitor is replugged.
+local function local_pad(name, mon)
+  return name .. ":" .. mon.name
+end
+
+function M.local_scratchpad(name)
+  return function()
+    local m = hl.get_active_monitor()
+    if m then hl.dispatch(hl.dsp.workspace.toggle_special(local_pad(name, m))) end
+  end
+end
+
+-- To the pad of the monitor the window's on, which isn't necessarily the
+-- focused one.
+function M.move_to_local_scratchpad(name)
+  return function()
+    local w = hl.get_active_window()
+    local m = w and w.monitor
+    if m then hl.dispatch(hl.dsp.window.move({ workspace = "special:" .. local_pad(name, m) })) end
+  end
+end
+
+-- Into THERE (special:NAME by default), or back out to the workspace under it
+-- if it's already in a special:NAME*. Not "m+0": that resolves against the
+-- focused monitor, which follow_mouse = 2 makes the cursor's, not the window's.
+function M.move_to_workspace_or_back(name, there)
+  return M.on(
+    { workspace = "n[s:special:" .. name .. "]",
+      action = function(w)
+        local ws = w.monitor and w.monitor.active_workspace
+        if ws then hl.dispatch(hl.dsp.window.move({ workspace = ws })) end
+      end },
+    there or hl.dsp.window.move({ workspace = "special:" .. name }))
+end
+
 -- Resize the active window to SPEC: a fraction of the monitor's usable width,
 -- or pixels if > 1. Each layout has its own idea of width.
 function M.resize_width_to(spec)
@@ -131,7 +143,7 @@ function M.resize_width_to(spec)
     local usable = m.width / m.scale - m.reserved.left - m.reserved.right
     local px = spec > 1 and spec or usable * spec
     local frac = util.clamp(px / usable, 0.1, 1)
-    local layout = not w.floating and util.active_layout()
+    local layout = not w.floating and w.workspace and w.workspace.tiled_layout
     if layout == "scrolling" then
       hl.dispatch(hl.dsp.layout("colresize " .. frac))
     elseif layout == "master" then

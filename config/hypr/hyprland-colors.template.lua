@@ -35,7 +35,13 @@ if hl.plugin.scrolloverview then
     plugin = {
       scrolloverview = {
         shadow = {
-          color = primary
+          color = {
+            colors = {
+              0x44{{ colors.primary.default.hex_stripped }},
+              0x99{{ colors.background.default.hex_stripped }}
+            },
+            angle = 315
+          }
         }
       }
     }

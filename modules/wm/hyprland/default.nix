@@ -36,9 +36,8 @@ in {
         portalPackage = flake.xdg-desktop-portal-hyprland;
       };
 
-      # Niri-style overview. Nothing caches this one, so every hyprland bump
-      # buys a two-minute compile.
       modules.wm.hyprland.plugins = [
+        # We have Niri at home
         hey.inputs.scroll-overview.packages.scrolloverview
       ];
 
@@ -87,6 +86,10 @@ in {
             vrr = m.vrr
           })
         end
+
+        hl.on("keybinds.submap", function(submap)
+          hl.exec_cmd("hey hook -f on-submap '" .. submap:gsub("'", [['\''']]) .. "'")
+        end)
 
         if hey.hypr.primaryMonitor then
           hl.on("hyprland.start", function ()

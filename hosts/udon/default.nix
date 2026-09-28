@@ -69,17 +69,10 @@ with builtins;
                               gaps_out = 4 })
 
           hl.device({ name = "apple-inc.-magic-trackpad",
-                      natural_scroll = false,
                       scroll_method = "2fg",
-                      scroll_factor = 0.75,
+                      scroll_factor = 0.8,
                       accel_profile = "adaptive",
-                      sensitivity = 0.35,
-                      clickfinger_behavior = true, -- 1fg = LMB, 2fg = RMB, 3fg = MMB
-                      tap_to_click = true,
-                      tap_and_drag = false,
-                      tap_button_map = "lrm",
-                      drag_lock = 2,
-                      disable_while_typing = false })
+                      sensitivity = 0.45 })
 
           hl.config({
             -- To address 1px overscan on my U2724D's

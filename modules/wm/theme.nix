@@ -103,6 +103,8 @@ in {
         GSETTINGS_SCHEMA_DIR = pkgs.glib.getSchemaPath pkgs.gsettings-desktop-schemas;
         XCURSOR_THEME = cfg.cursor.name;
         XCURSOR_SIZE = toString cfg.cursor.size;
+        HYPRCURSOR_THEME = cfg.cursor.name;
+        HYPRCURSOR_SIZE = toString cfg.cursor.size;
       };
     }
 

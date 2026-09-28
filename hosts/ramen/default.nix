@@ -36,6 +36,15 @@ with builtins;
       };
       hyprland = {
         monitors = [ { output = "eDP-1"; primary = true; } ];
+        extraConfig = ''
+          hl.workspace_rule({ workspace = "n[s:special:pad:]",
+                              gaps_in = 5,
+                              gaps_out = 20 })
+          hl.window_rule({ match = { class = "^foot$" },
+                           scrolling_width = 0.45 })
+          hl.window_rule({ match = { class = "^foot$", workspace = "n[s:special:pad:]" },
+                           scrolling_width = 0.50 })
+        '';
       };
     };
 
