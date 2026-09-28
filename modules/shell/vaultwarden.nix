@@ -1,30 +1,35 @@
+# modules/shell/vaultwarden.nix
 { hey, lib, config, options, pkgs, ... }:
 
 with lib;
 with hey.lib;
 let cfg = config.modules.shell.vaultwarden;
-    package = pkgs.bitwarden-cli;
+    gpgPinentry = config.programs.gnupg.agent.pinentryPackage;
+    rbw = getExe pkgs.rbw;
+    jq = getExe pkgs.jq;
 in {
   options.modules.shell.vaultwarden = with types; {
     enable = mkBoolOpt false;
-    settings = mkOpt attrs {};
+    settings = mkOpt (attrsOf (either str int)) {};
   };
 
   config = mkIf cfg.enable {
-    user.packages = [ package ];
+    user.packages = [ pkgs.rbw ];
 
-    modules.shell.zsh.rcInit = ''
-      hey.cache ${package}/bin/bw completion --shell zsh && compdef _bw bw;
-    '';
+    modules.shell.vaultwarden.settings.pinentry = mkDefault
+      (if gpgPinentry != null
+       then getExe gpgPinentry
+       else getExe pkgs.pinentry-curses);
 
-    system.userActivationScripts = mkIf (cfg.settings != {}) {
-      initVaultwarden = ''
-        if command -v bw >/dev/null; then
-          echo "Configuring bitwarden-cli..."
-          ${concatStringsSep "\n"
-            (mapAttrsToList (n: v: "bw config ${n} ${v}") cfg.settings)}
+    # `rbw config set` stops the agent (and locks the vault) every time, so
+    # only touch what's actually drifted, or every rebuild would lock me out.
+    system.userActivationScripts.initRbw = ''
+      current=$(${rbw} config show 2>/dev/null || echo '{}')
+      ${concatStrings (mapAttrsToList (n: v: let v' = escapeShellArg (toString v); in ''
+        if [ "$(echo "$current" | ${jq} -r '.${n} // empty')" != ${v'} ]; then
+          ${rbw} config set ${n} ${v'} || echo "rbw: couldn't set ${n}" >&2
         fi
-      '';
-    };
+      '') cfg.settings)}
+    '';
   };
 }

@@ -128,6 +128,7 @@ with builtins;
       git.enable = true;
       gnupg.enable = true;
       tmux.enable = true;
+      vaultwarden.enable = true;
       yazi.enable = true;
       zsh.enable = true;
     };
