@@ -23,6 +23,10 @@ in {
 
     userChrome  = mkOpt' lines "" "CSS Styles for Librewolf's interface";
     userContent = mkOpt' lines "" "Global CSS Styles for websites";
+
+    extensions = mkOpt' (attrsOf attrs) {} ''
+      ExtensionSettings policies, by extension ID.
+    '';
   };
 
   config = mkIf cfg.enable (mkMerge [
@@ -51,7 +55,11 @@ in {
 
       programs.firefox = {
         enable = true;
-        package = mkDefault pkgs.librewolf;
+        # One override, fed by the extensions option, because two modules
+        # overriding the package just means one of them loses.
+        package = mkDefault (pkgs.librewolf.override {
+          extraPolicies.ExtensionSettings = cfg.extensions;
+        });
         autoConfig =
           let prefs = {
             # The xdg-desktop-portal doesn't propagate the correct clipboard to
@@ -190,16 +198,15 @@ in {
     # writes to ~/.mozilla (which LibreWolf ignores) and pins a store path that
     # rots on the next bump. So I ship the manifest myself.
     (mkIf config.programs.noctalia.enable {
-      modules.wm.theme.communityTemplates = [ "pywalfox-beta4" ];
+      modules.wm.theme.communityTemplates = [ "pywalfox" ];
+
+      modules.apps.browsers.librewolf.extensions."pywalfox@frewacom.org" = {
+        installation_mode = "normal_installed";
+        install_url = "https://addons.mozilla.org/firefox/downloads/latest/pywalfox/latest.xpi";
+      };
 
       programs.firefox = {
         enable = true;
-        package = pkgs.librewolf.override {
-          extraPolicies.ExtensionSettings."pywalfox@frewacom.org" = {
-            installation_mode = "normal_installed";
-            install_url = "https://addons.mozilla.org/firefox/downloads/latest/pywalfox/latest.xpi";
-          };
-        };
         nativeMessagingHosts.packages = [
           (pkgs.writeTextDir "lib/mozilla/native-messaging-hosts/pywalfox.json"
             (builtins.toJSON {
