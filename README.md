@@ -24,7 +24,7 @@ dotfiles over there.
 
 - **Shell:**    zsh + zpm
 - **WM:**       hyprland + noctalia
-- **Editor:**   [Doom Emacs][doomemacs]
+- **Editor:**   [Doom Emacs][doomemacs] + Neovim
 - **Terminal:** foot
 - **Launcher:** rofi
 - **Browser:**  librewolf
@@ -50,25 +50,29 @@ dotfiles over there.
 4. Do your partitions and mount your root to `/mnt` ([for
    example](hosts/udon/README.org)).
 
-5. Clone these dotfiles somewhere:
-   ```sh
-   $ git clone --recursive https://github.com/hlissner/dotfiles
-   ```
-   
-6. Create a host config in `hosts/` (see [existing ones](hosts/) for examples).
+5. If you've already created a host config, then simply run the installer:
 
-7. Run the installer as root (the installer's `nixos` user has passwordless
-   sudo):
-   ```sh
-   # The options are optional, but these are their default values:
-   $ dotfiles/install.zsh \
-         --root /mnt \
-         --flake /mnt/etc/dotfiles \
-         --host "$HOST" \
-         --user hlissner
+   ```zsh
+   zsh <(curl -s https://raw.githubusercontent.com/hlissner/dotfiles/refs/heads/master/install.zsh)
    ```
 
-8. Then reboot and you're good to go!
+   Otherwise:
+
+   1. Clone these dotfiles to `/mnt/etc/dotfiles` (required):
+      ```sh
+      $ git clone --recursive https://github.com/hlissner/dotfiles /mnt/etc/dotfiles
+      ```
+
+   2. Create a host config in `/mnt/etc/dotfiles/hosts/` (see [existing
+      ones](hosts/) for examples).
+
+   3. Run the installer as root (the installer's `nixos` user has passwordless
+      sudo):
+      ```sh
+      $ sudo /mnt/etc/dotfiles/install.zsh
+      ```
+
+6. Reboot!
 
 > [!WARNING]
 > Don't forget to change your `root` and `$USER` passwords! They are set to
