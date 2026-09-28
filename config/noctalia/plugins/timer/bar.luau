@@ -10,8 +10,11 @@
 --   noctalia.getConfig(key)            per-placement widget settings
 --   noctalia.togglePanel(id)           open/close the timer panel
 
-local STATE = "IDLE"
-local formattedTime = "00:00"
+-- HEY: Bar was rebuilt on any settings edit and state.watch only fires on the
+-- *next* change, so a running timer hid itself until something else started
+-- one.
+local STATE = noctalia.state.get("timer.state") or "IDLE"
+local formattedTime = noctalia.state.get("timer.formattedTime") or "00:00"
 local isVertical = false
 
 local Tooltip = {

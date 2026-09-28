@@ -22,12 +22,16 @@ local function formatTime(seconds)
 end
 
 ---- Initialize state
-noctalia.state.set("timer.state", "IDLE") -- IDLE, NOTIFY, RUNNING, PAUSED
-noctalia.state.set("timer.remaining", 0)
-noctalia.state.set("timer.formattedTime", "0")
--- The countdown total captured when the timer starts, so UI entries can render
--- a progress bar (remaining / duration). Reset to 0 when the timer is cleared.
-noctalia.state.set("timer.duration", 0)
+-- HEY: a settings edit restarts this runtime and re-runs this chunk, but
+-- noctalia.state outlives it -- so upstream reset whatever timer was running.
+if noctalia.state.get("timer.state") == nil then
+  noctalia.state.set("timer.state", "IDLE") -- IDLE, NOTIFY, RUNNING, PAUSED
+  noctalia.state.set("timer.remaining", 0)
+  noctalia.state.set("timer.formattedTime", "0")
+  -- The countdown total captured when the timer starts, so UI entries can render
+  -- a progress bar (remaining / duration). Reset to 0 when the timer is cleared.
+  noctalia.state.set("timer.duration", 0)
+end
 
 noctalia.state.watch("timer.remaining", function (value)
   noctalia.state.set("timer.formattedTime", formatTime(value))

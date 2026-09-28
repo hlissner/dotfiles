@@ -2,11 +2,13 @@
 #
 # Forked from noctalia/timer 1.2.1 (MIT), whose four entries all talk to each
 # other over noctalia.state -- which is per-plugin and in-memory, so nothing
-# outside the shell can hand it a duration. Two additions, both marked HEY:
+# outside the shell can hand it a duration. My changes, all marked HEY:
 #
 #   service.luau -> an onIpc handler, so `hey @noctalia timer 25m` works
+#   service.luau -> a settings-driven restart doesn't reset a running timer
 #   bar.luau     -> setVisible, so an idle timer isn't a dead hourglass
 #   bar.luau     -> state colors inherit the widget's own color settings
+#   bar.luau     -> a rebuilt widget picks up the timer already in progress
 #
 # Everything else is upstream's, verbatim, including the translations for
 # languages I don't read. Forked from noctalia-dev/official-plugins at
