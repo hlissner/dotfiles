@@ -8,6 +8,10 @@
       "description": "Countdown length in seconds",
       "label": "Duration (seconds)"
     },
+    "on_expire": {
+      "description": "Shell command run when the timer reaches zero (the only alert there is), e.g. `hey hook -f on-timer-expire \"$duration\"`. Available: $duration (the countdown's length, in seconds).",
+      "label": "On expire"
+    },
     "notify_color": {
       "description": "Color while the timer is up; empty inherits the widget's own colors",
       "label": "Expired color"
@@ -27,8 +31,6 @@
   "ui": {
     "duration_label": "Timer Duration",
     "duration_placeholder": "e.g. 400 → 4:00",
-    "notify_body": "Time is up!",
-    "notify_title": "Timer",
     "pause": "Pause",
     "reset": "Reset",
     "start": "Start"

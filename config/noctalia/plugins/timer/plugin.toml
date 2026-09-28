@@ -9,6 +9,7 @@
 #   bar.luau     -> setVisible, so an idle timer isn't a dead hourglass
 #   bar.luau     -> state colors inherit the widget's own color settings
 #   bar.luau     -> a rebuilt widget picks up the timer already in progress
+#   service.luau -> an on_expire shell command replaces the notification at zero
 #
 # Everything else is upstream's, verbatim, including the translations for
 # languages I don't read. Forked from noctalia-dev/official-plugins at
@@ -31,14 +32,22 @@
 
 id = "hey/timer"
 name = "Timer"
-version = "1.2.3"
-plugin_api = 3
+version = "1.2.4"
+plugin_api = 24  # HEY: runAsync's argv form, for on_expire
 author = "noctalia, hlissner"
 license = "MIT"
 dependencies = []
 tags = ["countdown", "utility"]
 icon = "clock"
 description = "A countdown timer with bar widget, panel, and desktop widget."
+
+# HEY: plugin-level, because widget settings never reach the service.
+[[setting]]
+key = "on_expire"
+type = "string"
+label_key = "settings.on_expire.label"
+description_key = "settings.on_expire.description"
+default = ""
 
 [[widget]]
 id = "bar"

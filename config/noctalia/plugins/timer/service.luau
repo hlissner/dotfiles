@@ -8,7 +8,6 @@
 --   noctalia.setUpdateInterval(ms)     set tick rate for countdown
 --   noctalia.state.set(key, value)     publish state to other entries
 --   noctalia.state.watch(key, fn)      react to commands from UI entries
---   noctalia.notify(title, body)       alert user when timer completes
 
 noctalia.setUpdateInterval(1000)
 
@@ -73,9 +72,22 @@ noctalia.state.watch("timer.cmd", function(cmd)
 
 end)
 
--- send notification and sound when implemented
-local function notifyUser()
-  noctalia.notify(noctalia.tr("ui.notify_title"), noctalia.tr("ui.notify_body"))
+-- HEY: upstream's notification is gone; announcing the end is on_expire's job
+-- now, or nobody's. argv, not concatenation, so the user gets $duration without
+-- me inventing quoting rules for it.
+local function runOnExpire()
+  local cmd = noctalia.getConfig("on_expire")
+  if cmd == nil or cmd == "" then
+    return
+  end
+  noctalia.runAsync({
+    "/bin/sh", "-c", "duration=$1; " .. cmd, "timer",
+    tostring(noctalia.state.get("timer.duration")),
+  }, function(result)
+    if result.exitCode ~= 0 then
+      noctalia.log(`on_expire exited {result.exitCode}: {noctalia.string.trim(result.stderr)}`)
+    end
+  end)
 end
 
 function update()
@@ -87,7 +99,7 @@ function update()
       noctalia.state.set("timer.remaining", remaining - 1)
     else
       noctalia.state.set("timer.state", "NOTIFY")
-      notifyUser()
+      runOnExpire()
     end
 
   end
