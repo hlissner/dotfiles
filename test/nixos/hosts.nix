@@ -11,7 +11,7 @@
 # visible the moment it boots or a deliberate choice this file shouldn't be
 # re-litigating.
 
-{ evalHost', hosts, lib, ... }:
+{ presets, lib, ... }:
 
 with lib;
 let
@@ -19,14 +19,7 @@ let
   # at when the fix needs a hardware decision the test suite cannot make.
   broken = [ ];
 
-  # modules/agenix.nix asserts that its host key exists whenever a host
-  # declares any secrets, using builtins.pathExists on an absolute path outside
-  # the store, which pure evaluation cannot see. Emptying age.secrets instead
-  # would dodge the assertion, but hosts reference their secrets by name
-  # (config.age.secrets.foo.path), so a dummy key it is.
-  buildable =
-    mapAttrs (evalHost' [{ modules.agenix.hostKey = builtins.toFile "host_ed25519" ""; }])
-             (removeAttrs hosts broken);
+  buildable = removeAttrs presets.hosts broken;
 in {
   testEveryHostEvaluates = {
     expr = mapAttrs (_: c: isString c.system.build.toplevel.drvPath) buildable;

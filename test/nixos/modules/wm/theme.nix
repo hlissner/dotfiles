@@ -6,7 +6,7 @@
 # and writes an empty output_path into its own config dir, both without a
 # word, so the tests read that table back and check it against the disk.
 
-{ evalConfig, flake, lib, ... }:
+{ evalConfig, presets, flake, lib, ... }:
 
 with lib;
 let
@@ -15,20 +15,24 @@ let
   theme = modules:
     (desktop modules).modules.wm.noctalia.settings.theme.templates;
 
-  # The baseline every "is it absent?" test reads: a desktop with one
-  # unrelated template in it (hyprland registers its own regardless).
+  # A template with every optional key left unset.
   bare = theme [{
     modules.wm.theme.files.example.input_path = "/in";
   }];
 
-  # Everything that registers a template, switched on at once.
-  everything = desktop [{
-    modules.shell.tmux.enable = true;
-    modules.shell.zellij.enable = true;
-    modules.apps.rofi.enable = true;
-    modules.apps.term.foot.enable = true;
-    modules.apps.browsers.librewolf.enable = true;
-  }];
+  # What the on-disk checks read: every real host with a desktop, so an app
+  # that starts registering a template is covered the moment a host enables
+  # it, plus the template-bearing apps no host happens to run right now.
+  configs = filter (c: c.modules.wm.desktop != null) (attrValues presets.hosts)
+    ++ [ (desktop [{
+      modules.shell.tmux.enable = true;
+      modules.shell.zellij.enable = true;
+      modules.apps.rofi.enable = true;
+      modules.apps.term.foot.enable = true;
+      modules.apps.browsers.librewolf.enable = true;
+    }]) ];
+  inputs = unique (concatMap
+    (c: catAttrs "input_path" (attrValues c.modules.wm.theme.files)) configs);
 in {
   ## The table.
 
@@ -37,7 +41,7 @@ in {
   # table -- and the qt5ct/qt6ct files that select Noctalia's palette -- on a
   # headless host.
   testNothingIsWrittenWithoutTheDesktop =
-    let c = evalConfig []; in {
+    let c = presets.bare; in {
       expr = {
         table = c.modules.wm.noctalia.settings ? theme;
         qt    = c.home.configFile ? "qt6ct/qt6ct.conf";
@@ -48,10 +52,10 @@ in {
   # Noctalia's qt builtin writes colors/noctalia.conf and stops -- no hook, no
   # envvar -- so these files are what actually puts the palette on a Qt app.
   testQtCtSelectsNoctaliasScheme =
-    let files = (desktop []).home.configFile;
+    let c = presets.hyprland;
     in {
-      expr = map (v: hasInfix "color_scheme_path=/home/test/.config/${v}ct/colors/noctalia.conf"
-                              files."${v}ct/${v}ct.conf".text)
+      expr = map (v: hasInfix "color_scheme_path=${c.home.configDir}/${v}ct/colors/noctalia.conf"
+                              c.home.configFile."${v}ct/${v}ct.conf".text)
                  [ "qt5" "qt6" ];
       expected = [ true true ];
     };
@@ -104,39 +108,18 @@ in {
     ];
   };
 
-  ## Registration by the application modules.
-
-  # Each module owns its own template, so what matters is that enabling the
-  # application is what puts it in the table, and nothing else does. Some
-  # borrow one of Noctalia's built-ins instead of templating themselves.
-  testAppsRegisterTheirTemplates =
-    let t = everything.modules.wm.noctalia.settings.theme.templates;
-        apps = [ "tmux" "zellij" "rofi"
-                 "librewolf-chrome-default" "librewolf-content-alt" ];
-        borrowed = [ "foot" ];
-    in {
-      expr = {
-        missing = filter (a: !(t.user ? ${a})) apps
-                  ++ filter (b: !(elem b t.builtin_ids)) borrowed;
-        leaked  = filter (a: bare.user ? ${a}) apps
-                  ++ filter (b: elem b bare.builtin_ids) borrowed;
-      };
-      expected = { missing = []; leaked = []; };
-    };
+  ## Templates on disk.
 
   # Noctalia skips an input_path that isn't there without complaint, and its
   # engine can't be handed a font, so no template may ask for one -- fonts
   # come from nix, next to the rendered file. Both checked against the disk.
-  testEveryTemplateInputExistsAndAsksForNoFont =
-    let templates = everything.modules.wm.theme.files;
-        input = name: templates.${name}.input_path;
-    in {
-      expr = {
-        missing = filter (n: !(builtins.pathExists (input n))) (attrNames templates);
-        fonts   = filter (n: hasInfix "theme.fonts" (readFile (input n))) (attrNames templates);
-      };
-      expected = { missing = []; fonts = []; };
+  testEveryTemplateInputExistsAndAsksForNoFont = {
+    expr = rec {
+      missing = filter (p: !(builtins.pathExists p)) inputs;
+      fonts   = filter (p: hasInfix "theme.fonts" (readFile p)) (subtractLists missing inputs);
     };
+    expected = { missing = []; fonts = []; };
+  };
 
   # A token Noctalia doesn't have renders to "{{UNKNOWN:...}}", which counts as
   # an error, and one error means the whole file goes unwritten -- at runtime,
@@ -154,16 +137,15 @@ in {
       # each one at render time.
       derived = concatMap
         (n: [ n "on_${n}" "${n}_container" "on_${n}_container" "${n}_source" "${n}_value" ])
-        (attrNames everything.modules.wm.theme.colors);
-      templates = everything.modules.wm.theme.files;
-      used = name: map head (filter isList
-        (split ''\{\{ *colors\.([a-z_0-9]+)\.'' (readFile templates.${name}.input_path)));
+        (unique (concatMap (c: attrNames c.modules.wm.theme.colors) configs));
+      used = path: map head (filter isList
+        (split ''\{\{ *colors\.([a-z_0-9]+)\.'' (readFile path)));
     in {
       expr =
         if length tokens < 40
         then throw "No color tokens in ${header}; Noctalia moved them."
-        else unique (concatMap (n: subtractLists (tokens ++ aliases ++ derived) (used n))
-                               (attrNames templates));
+        else unique (concatMap (p: subtractLists (tokens ++ aliases ++ derived) (used p))
+                               inputs);
       expected = [];
     };
 

@@ -3,6 +3,7 @@
 # directories as an argument, so these feed it scratch ones.
 
 (use judge)
+(use sh)
 (import hey)
 
 # import drops private bindings; require doesn't. Going through it for all of
@@ -17,34 +18,33 @@
 (def- area-of (fn-of 'area-of))
 (def- handlers (fn-of 'handlers))
 
+# Wiped first: the sandbox recycles pids, and a file left over from another run
+# keeps its old mode however many times it's reopened.
 (def- scratch
   (let [dir (hey/path :runtime "test.d" (string "hook-" (os/getpid)))]
-    (os/mkdir (hey/path :runtime))
-    (os/mkdir (hey/path :runtime "test.d"))
+    ($ rm -rf ,dir)
+    ($ mkdir -p ,dir)
+    dir))
+
+(defn- mkdir [name]
+  (let [dir (hey/path/join scratch name)]
     (os/mkdir dir)
     dir))
 
-(defn- touch-all [dir & names]
+(defn- touch [dir mode & names]
   (each name names
-    (with [f (file/open (hey/path/join dir name) :w)] (:write f ""))))
-
-# Beside scratch, not in it, or hook/ls would see these too.
-(defn- subdir [name]
-  (let [dir (string scratch "-" name)]
-    (os/mkdir dir)
-    dir))
-
-(defn- touch-x [dir & names]
-  (touch-all dir ;names)
-  (each name names (os/chmod (hey/path/join dir name) 8r755)))
+    (let [file (hey/path/join dir name)]
+      (spit file "")
+      (os/chmod file mode))))
 
 
 (deftest hook/ls
   # Deliberately out of order, and enough of them that no filesystem is going
-  # to hand them back sorted by accident. The NN- prefixes in modules/hey.nix's
-  # generated hooks mean nothing without this.
-  (touch-all scratch "90-z" "10-a" "50-m" "20-b" "05-q")
-  (test (ls scratch) @["05-q" "10-a" "20-b" "50-m" "90-z"])
+  # to hand them back sorted by accident. The NN- prefixes mean nothing without
+  # this.
+  (let [dir (mkdir "ls")]
+    (touch dir 8r644 "90-z" "10-a" "50-m" "20-b" "05-q")
+    (test (ls dir) @["05-q" "10-a" "20-b" "50-m" "90-z"]))
   # A directory that isn't there is no handlers, not an error.
   (test (ls (hey/path/join scratch "nope")) @[]))
 
@@ -54,16 +54,16 @@
   (test (parse-area "@zsh" ["on-reload" "--now"]) ["zsh" "on-reload" ["--now"]])
   (test (parse-area "on-reload" ["--now"]) [nil "on-reload" ["--now"]]))
 
-(deftest hook/hook-name
+(deftest hook/hook-name+order
   # NN- and the extension are both optional, and neither is part of the name.
-  (test (map hook-name ["20-on-x.janet" "on-x.zsh" "on-x" "05-on-x"])
-        @["on-x" "on-x" "on-x" "on-x"])
-  # A hook whose name merely has digits in it keeps them.
-  (test (hook-name "on-f2-pressed.sh") "on-f2-pressed"))
-
-(deftest hook/order
   # Unnumbered sits at 50, the same default modules/hey.nix gives fragments.
-  (test (map order ["20-on-x.janet" "on-x.zsh" "05-on-x"]) @[20 50 5]))
+  (test (map |[(hook-name $0) (order $0)]
+             ["20-on-x.janet" "05-on-x" "on-x.zsh" "on-f2-pressed.sh" "on-x.bak"])
+        @[["on-x" 20]
+          ["on-x" 5]
+          ["on-x" 50]
+          ["on-f2-pressed" 50]
+          ["on-x.bak" 50]]))
 
 (deftest hook/area-of
   (test (area-of "/home/me/dotfiles/config/zsh/hooks") "zsh")
@@ -71,13 +71,14 @@
   (test (area-of "/home/me/.local/share/hey/hooks.d/power-profile.d") "power-profile"))
 
 (deftest hook/handlers
-  # One flat list across every directory, by NN-; a tie goes to whichever
-  # directory came first. Non-executables and other hooks aren't handlers.
-  (let [a (subdir "a") b (subdir "b")]
-    (touch-x a "20-on-x.zsh" "on-x.zsh" "on-y.zsh")
-    (touch-all a "10-on-x.zsh")
-    (touch-x b "10-on-x.janet" "on-x")
-    (test (map |(string/replace (string scratch "-") "" $0) (handlers [a b] "on-x"))
-          @["b/10-on-x.janet" "a/20-on-x.zsh" "a/on-x.zsh" "b/on-x"])
+  # One flat list across every directory, by NN-. A tie goes to whichever
+  # directory was listed first, which is why z comes before a: alphabetical
+  # would pass by accident.
+  (let [z (mkdir "z") a (mkdir "a")]
+    (touch z 8r755 "20-on-x.zsh" "on-x.zsh" "on-y.zsh")
+    (touch z 8r644 "10-on-x.zsh")  # not executable, so not a handler
+    (touch a 8r755 "10-on-x.janet" "on-x")
+    (test (map |(string/slice $0 (inc (length scratch))) (handlers [z a] "on-x"))
+          @["a/10-on-x.janet" "z/20-on-x.zsh" "z/on-x.zsh" "a/on-x"])
     # An absent directory (an area with no hooks/ yet) is just empty.
     (test (handlers [(hey/path/join scratch "nope")] "on-x") @[])))

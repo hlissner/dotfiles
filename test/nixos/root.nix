@@ -7,13 +7,13 @@
 # default.nix is taken here: this directory's default.nix is the check entry
 # point.
 
-{ evalConfig, lib, ... }:
+{ evalConfig, presets, lib, ... }:
 
 with lib;
 {
   testUserIsAliasedToUsersUsers = {
     expr =
-      let u = (evalConfig []).users.users.test;
+      let u = presets.bare.users.users.test;
       in { inherit (u) home isNormalUser; };
     expected = { home = "/home/test"; isNormalUser = true; };
   };

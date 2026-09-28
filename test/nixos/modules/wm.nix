@@ -4,47 +4,43 @@
 # host boots to a tty, or runs a WM that hey.desktop (and so `hey wm`) doesn't
 # know about.
 
-{ evalConfig, lib, ... }:
+{ evalConfig, presets, lib, ... }:
 
 with lib;
 let
-  bare = evalConfig [];
+  inherit (presets) bare;
+
+  # Read off the option's own enum, so a WM joins these tests the moment it
+  # joins the option -- there's no list here to forget.
+  desktops = presets.nixos.options.modules.wm.desktop.type.nestedTypes.elemType.functor.payload.values;
+
   desktop = d: evalConfig [{ modules.wm.desktop = d; }];
 
+  # Assumes programs.<desktop> is the WM's own nixpkgs module, which holds for
+  # every desktop I've considered.
   running = c: {
     inherit (c.hey) desktop;
-    hyprland = c.programs.hyprland.enable;
-    # niri = c.programs.niri.enable;
+    wms = filter (w: c.programs.${w}.enable or false) desktops;
   };
 
   # Asserted by count against the bare case, never by message.
   failing = c: length (filter (a: !a.assertion) c.assertions);
 in {
   testDesktopPicksExactlyOneWM = {
-    expr = {
-      none     = running bare;
-      hyprland = running (desktop "hyprland");
-      # niri     = running (desktop "niri");
-    };
-    expected = {
-      none     = { desktop = null;       hyprland = false; niri = false; };
-      hyprland = { desktop = "hyprland"; hyprland = true;  niri = false; };
-      # niri     = { desktop = "niri";     hyprland = false; niri = true;  };
-    };
+    expr = map running ([ bare ] ++ map desktop desktops);
+    expected = [{ desktop = null; wms = []; }]
+               ++ map (d: { desktop = d; wms = [ d ]; }) desktops;
   };
 
   # A splash with nothing to hand off to is a host config mistake, not a
-  # feature. niri, because it's the cheapest desktop to evaluate.
+  # feature.
   testWMModulesNeedADesktop =
     let plymouth = extra: evalConfig ([{ modules.wm.plymouth.enable = true; }] ++ extra);
     in {
       expr = {
         orphaned = failing (plymouth []) > failing bare;
-        # seated   = failing (plymouth [{ modules.wm.desktop = "niri"; }]) == failing bare;
+        seated   = failing (plymouth [{ modules.wm.desktop = head desktops; }]) == failing bare;
       };
-      expected = {
-        orphaned = true;
-        # seated = true;
-      };
+      expected = { orphaned = true; seated = true; };
     };
 }

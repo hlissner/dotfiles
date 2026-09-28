@@ -1,0 +1,7 @@
+#!/usr/bin/env zsh
+# Stand-in for ssh, for test/hey/lab-docker.janet. Echoes what the NAS would've
+# been asked to run, and answers __complete like cobra would.
+print -r -- "${argv[${argv[(i)docker]},-1]}"
+if [[ $argv[(r)__complete] ]]; then
+  print -rl -- $'foo\tA container' :4
+fi

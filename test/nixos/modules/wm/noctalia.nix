@@ -6,7 +6,7 @@
 # is the plumbing that fails silently: a widget dropped from a lane, a plugin
 # gate that never opens, a monitor key that pins the shell to nothing.
 
-{ evalConfig, lib, flake, system, dir, ... }:
+{ evalConfig, evalConfig', mkHey, lib, flake, system, dir, ... }:
 
 with lib;
 let
@@ -26,6 +26,12 @@ let
   ];
   base = settings three [];
 
+  # Every plugin gate open at once.
+  gatesOpen = [{
+    programs.kdeconnect.enable = true;
+    modules.profiles.hardware = [ "printer/wireless" "pc/laptop" ];
+  }];
+
   # A host with no primary at all.
   noPrimary = settings [{ output = "DP-1"; }] [];
 
@@ -33,34 +39,31 @@ let
   # members of each capsule group. `group:<id>` is plumbing, not a widget.
   # Which lane a widget sits in -- or whether it's in a group at all -- is the
   # GUI's business and changes every time I reorganize, so nothing below may
-  # name a lane.
+  # name a lane of the real bar.
   placedIn = main:
     filter (w: !hasPrefix "group:" w)
       (concatLists ([ (main.start or []) (main.center or []) (main.end or []) ]
                     ++ map (g: g.members) (main.capsule_group or [])));
 
-  onBar = s: w: elem w (placedIn s.bar.main);
-
-  # The unfiltered bar, so a test can tell "the filter dropped it" from "I took
-  # it off the bar myself".
-  baselineBar = (fromTOML (readFile "${dir}/config/noctalia/bar.toml")).bar.main;
+  # The lane filter, run over noctalia.d's bar instead of mine. What's on the
+  # real bar is the GUI's business, and a test that leans on it breaks every
+  # time I rearrange -- or passes vacuously once I take the widget it probed
+  # off the bar.
+  fixture = extra: (evalConfig' (mkHey { dir = toString ./noctalia.d; }) ([{
+    modules.wm.desktop = "hyprland";
+  }] ++ extra)).modules.wm.noctalia.settings.bar.main;
+  groupsOf = main: listToAttrs (map (g: nameValuePair g.id g.members) (main.capsule_group or []));
 in {
   ## The shell.
 
-  # Pinned as identity with the input, so a fallback to nixpkgs' noctalia
-  # shows up here rather than as a version skew against the plugins.
-  testShellComesFromTheFlakeWithItsCache =
-    let cfg = noctalia [{}] [];
-        s = cfg.nix.settings;
-    in {
-      expr = {
-        package = cfg.programs.noctalia.package.outPath
-                  == flake.inputs.noctalia.packages.${system}.default.outPath;
-        cachix = elem "https://noctalia.cachix.org" s.substituters
-                 && any (hasPrefix "noctalia.cachix.org-1:") s.trusted-public-keys;
-      };
-      expected = { package = true; cachix = true; };
-    };
+  # The module reads its hook list out of flake.inputs.noctalia's source, and
+  # theme.nix its color tokens, so the shell that runs has to be that one. A
+  # fallback to nixpkgs' noctalia would be parsed against the wrong headers.
+  testShellIsTheOneWhoseSourceIsParsed = {
+    expr = (noctalia [{}] []).programs.noctalia.package.outPath
+           == flake.inputs.noctalia.packages.${system}.default.outPath;
+    expected = true;
+  };
 
   # The baseline is config/noctalia/ off hey.configDir, which on a real host is
   # the live checkout, so edits need no rebuild. (The harness evaluates a store
@@ -101,32 +104,43 @@ in {
   # A widget's type names its plugin. Widgets whose plugin this host never
   # installs are dropped rather than left on the bar as dead entries; built-in
   # widgets have no plugin and must survive the filter regardless.
-  #
-  # `fixture` is the canary: phone and clock live in a baseline I edit
-  # through the GUI, and taking either off the bar would leave the rest of this
-  # quietly proving nothing.
-  testBarDropsWidgetsWhosePluginIsNotInstalled = {
-    expr = {
-      off     = onBar base "phone";
-      on      = onBar (settings three [{ programs.kdeconnect.enable = true; }]) "phone";
-      builtIn = onBar base "clock";
-      fixture = all (w: elem w (placedIn baselineBar)) [ "phone" "clock" ];
+  testBarDropsWidgetsWhosePluginIsNotInstalled =
+    let off = fixture [];
+        on = fixture [{ programs.kdeconnect.enable = true; }];
+    in {
+      expr = {
+        off     = elem "phone" (placedIn off);
+        on      = elem "phone" (placedIn on);
+        builtIn = elem "clock" (placedIn off);
+      };
+      expected = { off = false; on = true; builtIn = true; };
     };
-    expected = { off = false; on = true; builtIn = true; fixture = true; };
-  };
+
+  # A group emptied by the filter has to leave its lane too, or the lane names
+  # a group:<id> that no longer exists.
+  testBarGroupsLoseMembersNotTheirPlace =
+    let main = fixture []; in {
+      expr = {
+        groups = groupsOf main;
+        start = main.start;
+      };
+      expected = {
+        groups = { mixed = [ "clock" ]; };
+        start = [];
+      };
+    };
 
   # The one built-in widget that needs the same treatment for the opposite
   # reason: it has no plugin to gate it and no setting to hide itself, so a
   # host with no radio would carry a disconnected glyph forever.
   testBarDropsNetworkWidgetWithoutWifi = {
     expr = {
-      withoutWifi = onBar base "network";
-      withWifi    = onBar (settings three [{
+      withoutWifi = elem "network" (placedIn (fixture []));
+      withWifi    = elem "network" (placedIn (fixture [{
         modules.profiles.hardware = [ "wifi" ];
-      }]) "network";
-      fixture     = elem "network" (placedIn baselineBar);
+      }]));
     };
-    expected = { withoutWifi = false; withWifi = true; fixture = true; };
+    expected = { withoutWifi = false; withWifi = true; };
   };
 
   ## Plugins.
@@ -138,10 +152,7 @@ in {
   # modules/system/fs.nix turns on, so it's the one gate open by default.
   testPluginsFollowTheirGates =
     let enabled = extra: (settings three extra).plugins.enabled;
-        on = enabled [{
-          programs.kdeconnect.enable = true;
-          modules.profiles.hardware = [ "printer/wireless" "pc/laptop" ];
-        }];
+        on = enabled gatesOpen;
         noFs = enabled [{ modules.system.fs.enable = false; }];
     in {
       expr = {
@@ -157,31 +168,36 @@ in {
 
   # My own plugins are the ones that aren't fetched: they sit under the same
   # live config dir the baseline is included from, so a Luau edit is a hot
-  # reload rather than a rebuild. An id has to survive the trip onto the bar
-  # too -- a typo on either side drops the widgets silently, which is exactly
-  # how you don't find out.
+  # reload rather than a rebuild.
   #
-  # `count` is the canary: written as a filter over `hey/*`, every assertion
+  # `none` is the canary: written as a filter over `hey/*`, every assertion
   # here would pass just as loudly with no local plugins left to check.
-  #
-  # These are bar ids, which are free to disagree with the plugin's own widget
-  # name -- `[widget.<id>].type` is where the plugin gets named, so the lane
-  # can call it anything. Mine don't disagree, and that's the point of naming
-  # them here.
   testLocalPluginsAreServedFromTheConfigDir =
     let plugins = (noctalia three []).modules.wm.noctalia.plugins;
         mine = filter (hasPrefix "hey/") (attrNames plugins);
-        placed = placedIn base.bar.main;
     in {
       expr = {
-        count   = length mine;
-        offBar  = filter (p: !elem p base.plugins.enabled) mine;
+        none    = mine == [];
+        disabled = filter (p: !elem p base.plugins.enabled) mine;
         inStore = filter
           (p: !hasPrefix (head base.include.files) (toString plugins.${p}.src)) mine;
-        widgets = filter (w: !elem w placed)
-          [ "submap" "trackpad-battery" "timer" "screencast" ];
       };
-      expected = { count = 4; offBar = []; inStore = []; widgets = []; };
+      expected = { none = false; disabled = []; inStore = []; };
+    };
+
+  # `[widget.<id>].type` is where a bar entry names its plugin, and a typo
+  # there (or a plugin renamed out from under it) drops the widget without a
+  # word -- the filter above can't tell it from a plugin this host skips on
+  # purpose. So every plugin my real bar names has to be one the module
+  # declares, whatever I've put on the bar and wherever. (With every gate open,
+  # since the hardware-gated ones are declared behind an mkIf.)
+  testBarNamesOnlyDeclaredPlugins =
+    let bar = fromTOML (readFile "${dir}/config/noctalia/bar.toml");
+        declared = (noctalia three gatesOpen).modules.wm.noctalia.plugins;
+        named = filter (hasInfix "/") (catAttrs "type" (attrValues (bar.widget or {})));
+    in {
+      expr = filter (t: !(declared ? ${head (splitString ":" t)})) named;
+      expected = [];
     };
 
   ## Hooks.

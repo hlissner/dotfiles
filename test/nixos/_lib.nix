@@ -39,8 +39,12 @@ in rec {
 
   # A pure stand-in for the 'hey' specialArg that mkFlake assembles from
   # $HEYENV.
+  #
+  # DIR stands in for the checkout. Point it at a fixture tree to feed a module
+  # config/ files the live ones would otherwise decide for it.
   mkHey =
-    { hostDir ? dir
+    { dir ? toString ../..
+    , hostDir ? dir
     , host ? "test"
     , user ? "test"
     }:
@@ -53,20 +57,24 @@ in rec {
       lib = heyLib;
     };
 
-  # Evaluates a resolved host attrset
-  evalSystem =
+  # Evaluates a resolved host attrset. The primed variant keeps the whole
+  # nixosSystem, for the tests that read an option's declaration (its type,
+  # say) instead of hardcoding what it allows.
+  evalSystem' =
     { host
     , hostName ? "test"
     , hey ? mkHey {}
     , extraModules ? []
     }:
-    (flake.inputs.nixpkgs.lib.nixosSystem {
+    flake.inputs.nixpkgs.lib.nixosSystem {
       system = host.system;
       specialArgs = { inherit hey; self = hey; };
       modules = heyLib.mkHostModules {
         inherit host hostName pkgs extraModules;
       };
-    }).config;
+    };
+
+  evalSystem = args: (evalSystem' args).config;
 
   # Applies a host out of `hosts` above without evaluating it into a NixOS
   # system. Use it to assert on what a host declares, as opposed to what its
@@ -85,7 +93,7 @@ in rec {
   # Applies and evaluates one host out of `hosts` above.
   #
   # Takes extra modules for the cases where a host cannot be evaluated purely as
-  # written (see test/nixos/hosts.nix).
+  # written (see presets.hosts below).
   evalHost' = extraModules: hostName: hostAttrs:
     let applied = applyHost hostName hostAttrs;
     in evalSystem {
@@ -115,13 +123,41 @@ in rec {
 
   # Evaluates the root module tree (../../default.nix) against MODULES and
   # returns the resulting `config`. The workhorse of the modules/ suites.
-  evalConfig = modules:
-    evalSystem {
+  # evalModules' returns the whole nixosSystem instead, options and all.
+  evalModules' = hey: modules:
+    evalSystem' {
+      inherit hey;
       host = {
         inherit system;
         config = { ... }: { imports = baseModules ++ modules; };
       };
     };
+
+  evalConfig' = hey: modules: (evalModules' hey modules).config;
+
+  evalConfig = evalConfig' (mkHey {});
+
+  # The evaluations more than one suite reads. Every suite is joined into one
+  # derivation, so one nix process evaluates them all and these are paid for
+  # once rather than once per suite. They are the whole reason for sharing:
+  # a full system eval is most of any suite's runtime.
+  presets = {
+    # The bare system whole, for the options a suite reads declarations off.
+    nixos = evalModules' (mkHey {}) [];
+    bare = presets.nixos.config;
+    hyprland = evalConfig [{ modules.wm.desktop = "hyprland"; }];
+
+    # Every host in hosts/, evaluated.
+    #
+    # modules/agenix.nix asserts that its host key exists whenever a host
+    # declares any secrets, using builtins.pathExists on an absolute path
+    # outside the store, which pure evaluation cannot see. Emptying age.secrets
+    # instead would dodge the assertion, but hosts reference their secrets by
+    # name (config.age.secrets.foo.path), so a dummy key it is.
+    hosts = mapAttrs
+      (evalHost' [{ modules.agenix.hostKey = toFile "host_ed25519" ""; }])
+      hosts;
+  };
 
   # Walks DIR for suites: every *.nix file, recursively, minus '_'-prefixed
   # names, '*.d' fixture directories, and default.nix.

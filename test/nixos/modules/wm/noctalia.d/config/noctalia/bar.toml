@@ -1,0 +1,25 @@
+# Fixture for the modules-wm-noctalia suite: a bar that holds still while the
+# real one (config/noctalia/bar.toml) gets rearranged through the GUI. Only
+# what the module's lane filter branches on is here.
+#
+#   phone     a widget whose plugin is gated (on kdeconnect)
+#   clock     a built-in; no plugin, must always survive
+#   network   the built-in dropped without a wifi profile
+#   gated     a group of nothing but gated widgets; must vanish whole
+#   mixed     a group that loses a member but keeps the rest
+
+[bar.main]
+start  = [ "phone", "group:gated" ]
+center = [ "clock" ]
+end    = [ "network", "group:mixed" ]
+
+    [[bar.main.capsule_group]]
+    id = "gated"
+    members = [ "phone" ]
+
+    [[bar.main.capsule_group]]
+    id = "mixed"
+    members = [ "phone", "clock" ]
+
+[widget.phone]
+type = "icefish/phone-connect:bar"

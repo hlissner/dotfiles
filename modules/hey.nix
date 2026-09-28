@@ -84,9 +84,14 @@ in {
     # fallback behind it, there for the scripts hey dispatches to but doesn't
     # compile in (config/rofi/bin/*.janet). hey itself reads none of this; it's
     # a quickbin and carries its libraries inside.
+    #
+    # Via /etc, not the store path: session vars are frozen at login, so a store
+    # path here keeps the rofi scripts on the old libs across every `hey sync`
+    # until I log out, while the hey they're called from moves on without them.
+    environment.etc."hey/janet".source = heyPkg.janetLibs;
     environment.sessionVariables = {
       JANET_TREE = janetTreeDir;
-      JANET_PATH = "${heyPkg.janetLibs}:${janetTreeDir}/lib";
+      JANET_PATH = "/etc/hey/janet:${janetTreeDir}/lib";
       JANET_BINPATH = "${janetTreeDir}/bin";
       JANET_LIBPATH = "${janet}/lib";
       JANET_HEADERPATH = "${janet}/include";

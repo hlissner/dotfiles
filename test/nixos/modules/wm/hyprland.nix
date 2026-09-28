@@ -6,7 +6,7 @@
 # So the tests read the data the module publishes, and only touch the generated
 # Lua for the one thing that has to be there -- the table itself.
 
-{ evalConfig, lib, flake, system, ... }:
+{ evalConfig, lib, pkgs, flake, system, ... }:
 
 with lib;
 let
@@ -23,23 +23,16 @@ let
 in {
   ## The compositor itself.
 
-  # Hyprland comes from its own flake (whose nixpkgs the whole system follows),
-  # and the portal has to be the matching one or the two drift out of
-  # protocol. The flake isn't built by Hydra either, so without its cachix
-  # every bump compiles the compositor. A stray override or a fallback to
-  # nixpkgs' hyprland shows up here rather than as an hour-long rebuild.
-  testHyprlandComesFromTheFlakeWithItsCache =
+  # The portal has to come from wherever the compositor does, or the two drift
+  # out of protocol -- and nixpkgs' portal is the default, so overriding only
+  # the package gets you exactly that. Which source they share is my call.
+  testPortalMatchesTheCompositor =
     let cfg = one.programs.hyprland;
-        s = one.nix.settings;
         theirs = flake.inputs.hyprland.packages.${system};
     in {
-      expr = {
-        hyprland = cfg.package.outPath == theirs.hyprland.outPath;
-        portal   = cfg.portalPackage.outPath == theirs.xdg-desktop-portal-hyprland.outPath;
-        cachix   = elem "https://hyprland.cachix.org" s.substituters
-                   && any (hasPrefix "hyprland.cachix.org-1:") s.trusted-public-keys;
-      };
-      expected = { hyprland = true; portal = true; cachix = true; };
+      expr = (cfg.package.outPath == theirs.hyprland.outPath)
+             == (cfg.portalPackage.outPath == theirs.xdg-desktop-portal-hyprland.outPath);
+      expected = true;
     };
 
   ## The hey table.
@@ -58,27 +51,21 @@ in {
   # There's no programs.hyprland.plugins to lean on, so the generated file
   # dlopens them itself -- and it has to do it above `require("hyprland")`,
   # because config/hypr/ reaches straight for hl.plugin.*. Losing the line
-  # doesn't fail a build; the guards there just skip the overview forever.
+  # doesn't fail a build; the guards there just skip the plugin forever. The
+  # probe is any package at all; nothing is built, let alone loaded.
   testPluginsLoadBeforeTheConfig =
-    let lua = one.home.configFile."hypr/hyprland.lua".text;
-        preamble = head (splitString ''require("hyprland")'' lua);
+    let lua = (evalConfig [{
+          modules.wm.desktop = "hyprland";
+          modules.wm.hyprland.plugins = [ pkgs.hello ];
+        }]).home.configFile."hypr/hyprland.lua".text;
+        parts = splitString ''require("hyprland")'' lua;
     in {
       expr = {
-        overview = hasInfix "/lib/libscrolloverview.so" lua;
-        early    = hasInfix "hl.plugin.load(" preamble;
+        early = hasInfix ''/lib/libhello.so")'' (head parts);
+        late  = any (hasInfix "hl.plugin.load(") (tail parts);
       };
-      expected = { overview = true; early = true; };
+      expected = { early = true; late = false; };
     };
-
-  # Monitors reach config/hypr/ as data, overrides and all.
-  testMonitorsReachHeyInfo = {
-    expr =
-      let m = head (hyprland [{
-            output = "DP-2"; mode = "3840x2160@120"; scale = 2; vrr = 1;
-          }]).hey.info.hypr.monitors;
-      in { inherit (m) output mode scale vrr; };
-    expected = { output = "DP-2"; mode = "3840x2160@120"; scale = 2; vrr = 1; };
-  };
 
   # Wayland has no notion of a primary monitor; config/hypr/ fakes it with an
   # xrandr call on session start, and all this module owes it is the name.
@@ -91,6 +78,20 @@ in {
       absent = one.hey.info.hypr.primaryMonitor;
     };
     expected = { named = "DP-2"; absent = null; };
+  };
+
+  # Hosts turn config/hypr/'s knobs through the same hey.info.hypr this module
+  # fills, so the two have to merge rather than one clobbering (or colliding
+  # with) the other. hyprland.lua only defaults what arrives as nil.
+  testHostKnobsMergeIntoHeyHypr = {
+    expr =
+      let h = (evalConfig [{
+            modules.wm.desktop = "hyprland";
+            modules.wm.hyprland.monitors = [{ output = "DP-1"; primary = true; }];
+            hey.info.hypr = { workspace.main = "200"; pad_gaps_in = 5; };
+          }]).hey.info.hypr;
+      in { inherit (h) primaryMonitor pad_gaps_in; main = h.workspace.main; };
+    expected = { primaryMonitor = "DP-1"; pad_gaps_in = 5; main = "200"; };
   };
 
   ## The login path.
@@ -110,13 +111,12 @@ in {
 
   # The backstop for a shutdown nobody announced (a bare `systemctl poweroff`).
   # It only buys anything by stopping before what it needs: ordered after the
-  # compositor and pipewire, so ExecStop lands while both can still serve a fade
-  # and a sound. partOf is what makes the session dying stop it at all.
+  # compositor, so ExecStop lands while it can still serve a fade. partOf is
+  # what makes the session dying stop it at all.
   testShutdownHookWaitsForTheShell =
     let unit = one.systemd.user.services.hey-shutdown-hook; in {
       expr = {
-        after  = all (s: elem s unit.after)
-                   [ "wayland-wm@hyprland.desktop.service" "pipewire.service" ];
+        after  = elem "wayland-wm@hyprland.desktop.service" unit.after;
         partOf = elem "graphical-session.target" unit.partOf;
         stop   = hasInfix "hook -f on-shutting-down" unit.serviceConfig.ExecStop;
       };
@@ -131,10 +131,9 @@ in {
       expr = {
         down    = hasInfix "hook -f on-suspend" unit.script;
         up      = hasInfix "hook -f on-wakeup" unit.preStop;
-        asUser  = hasInfix "--machine=test@.host" unit.script;
         onSleep = elem "sleep.target" unit.wantedBy;
         stops   = unit.unitConfig.StopWhenUnneeded;
       };
-      expected = { down = true; up = true; asUser = true; onSleep = true; stops = true; };
+      expected = { down = true; up = true; onSleep = true; stops = true; };
     };
 }

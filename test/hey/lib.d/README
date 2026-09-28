@@ -1,3 +1,7 @@
 Fixture $XDG_DATA_HOME trees for test/hey/lib.janet's wm tests. One info.json
 per answer, because flake/info caches the first one it reads for the life of a
 process, so each case needs a subprocess of its own.
+
+sounds/ is a theme tree for wm's play-sound: hey links to assets/sounds, and
+hyprland's freedesktop is a stand-in, so inheritance doesn't hinge on what the
+machine running the tests has installed.

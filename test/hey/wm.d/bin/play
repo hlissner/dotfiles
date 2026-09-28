@@ -1,0 +1,4 @@
+#!/usr/bin/env zsh
+# Stand-in for sox's play, for test/hey/wm.janet. Logs its argv to
+# $HEY_TEST_PLAY_LOG, one line per call, and plays nothing.
+print -r -- "$*" >>$HEY_TEST_PLAY_LOG
