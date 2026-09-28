@@ -60,8 +60,10 @@ show_on_workspace_switch = false
 capsule = false
 font_weight = 500
 format = "·  {:%H:%M}  ·"
-interactive = false
 tooltip_format = "{:%I:%M %p}"
+
+    [widget.clock.actions]
+    left = "panel-toggle control-center"
 
 [widget.date]
 format = "{:%a, %d %b}"

@@ -35,6 +35,10 @@ show_cursor = true
 [shell.shadow]
 alpha = 0.45
 
+[shell.window_switcher]
+mru = true
+show_all_outputs = false
+
 [control_center]
 sidebar = "full"
 sidebar_section = "none"
@@ -206,3 +210,6 @@ overlay_layer = "overlay"
 overlay_placement = "attached"
 overlay_position = "top_center"
 timeout_ms = 1200
+
+[plugin_settings."hey/timer"]
+on_expire = "hey wm play-sound alarm"
