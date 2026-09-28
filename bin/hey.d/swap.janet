@@ -30,7 +30,7 @@
 (use hey)
 (use sh)
 
-(def- *store* (delay (path :data "swap")))
+(def- *store* (delay (path :state "swap")))
 
 (defn- swap-file [path]
   (string path ".swapped"))

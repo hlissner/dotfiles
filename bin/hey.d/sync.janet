@@ -43,10 +43,10 @@
   (string/has-prefix? "y" answer))
 
 (defn- link-dotfiles
-  ``Point /etc/dotfiles at wherever I actually keep them. install.zsh clones
-  over https and leaves the repo under /etc, but I move it afterwards, and
-  shell/zsh.nix and agenix.nix pathExists their way into hey.dir while nix is
-  evaluating -- they find nothing, quietly, if the two disagree.
+  ``Point /etc/dotfiles at the checkout I'm syncing from, when that isn't
+  /etc/dotfiles itself (DOTFILES_HOME, i.e. the dev shell). The flake bakes
+  /etc/dotfiles into everything it builds, so a link aimed elsewhere means the
+  system I just switched to runs someone else's config/.
 
   A real directory there gets asked about first. Whatever it is, it isn't mine
   to rm on a hunch.``
@@ -54,7 +54,7 @@
   (default link "/etc/dotfiles")
   (def home (path :home))
   (def real (ignore-errors (os/realpath link)))
-  (unless (= real home)
+  (unless (or (= home link) (= real home))
     (when (= real link)
       (unless (or (dryrun?) (yes? "%s is a directory, not a link. Delete it?" link))
         (echof :warn "Left %s alone; it and hey.dir will keep disagreeing" link)
@@ -81,9 +81,6 @@
   (unless (empty? (hey swap --list))
     (abort "There are swapped files among your dotfiles!"))
 
-  (os/setenv "HEYENV" (flake/json))
-  (log "HEYENV=%s" (os/getenv "HEYENV"))
-
   (def args (if (= cmd "build-image") (image-args args) args))
 
   (link-dotfiles)
@@ -98,7 +95,7 @@
            --switch-generation ,(in args 0)
            --profile ,(path :profile)))
     ["check" "ch"]
-    (do? $? nix flake check --impure
+    (do? $? nix flake check
          --accept-flake-config
          --no-warn-dirty
          --no-use-registries
@@ -109,9 +106,8 @@
       (unless (do? $? sudo --validate)
         # Prompt for sudo password sooner than later
         (abort "Never got root; stopping before the long part"))
-      (do? $? sudo --preserve-env=HEYENV nixos-rebuild
+      (do? $? sudo nixos-rebuild
            --show-trace
-           --impure
            --flake ,(string (path :home) "#" host)
            --accept-flake-config
            ,;(opts (if fast? "--no-reexec"))

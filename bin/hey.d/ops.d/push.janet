@@ -49,15 +49,11 @@
     (abort "No hosts/%s to build; name one: hey ops push %s HOST" host system))
   (ops/check system)
 
-  (os/setenv "HEYENV" (ops/heyenv host))
-  (log "HEYENV=%s" (os/getenv "HEYENV"))
-
   (or (do? $? nixos-rebuild
            ,;(if (empty? args) ["switch"] args)
            --flake ,(string (path :home) "#" host)
            --target-host ,system
            ,;(opts "--build-host" (if local? system builder))
            --accept-flake-config
-           --impure
            --show-trace)
       (exit 1)))

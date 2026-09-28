@@ -10,7 +10,7 @@
 #   $XDG_STATE_HOME/noctalia/settings.toml, but that would delete more than just
 #   my settings. So!
 #
-#   This script looks through $DOTFILES_HOME/config/noctalia/{bar,config}.toml
+#   This script looks through /etc/dotfiles/config/noctalia/{bar,config}.toml
 #   and unsets them in $XDG_STATE_HOME/noctalia/settings.json. It'll print out
 #   all settings that were unset.
 #

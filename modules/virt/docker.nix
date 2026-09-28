@@ -25,7 +25,7 @@ in {
 
       user.extraGroups = [ "docker" ];
 
-      modules.shell.zsh.rcFiles = [ "${hey.configDir}/docker/aliases.zsh" ];
+      modules.shell.zsh.rcFiles = [ "${config.hey.configDir}/docker/aliases.zsh" ];
 
       virtualisation = {
         docker = {

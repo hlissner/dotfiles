@@ -74,7 +74,7 @@ in {
 
     environment.variables.PATH = [ "$XDG_CONFIG_HOME/emacs/bin" ];
 
-    modules.shell.zsh.rcFiles = [ "${hey.configDir}/emacs/aliases.zsh" ];
+    modules.shell.zsh.rcFiles = [ "${config.hey.configDir}/emacs/aliases.zsh" ];
 
     fonts.packages = [ pkgs.nerd-fonts.symbols-only ];
   };

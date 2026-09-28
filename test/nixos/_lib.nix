@@ -12,9 +12,9 @@
 #     };
 #   }
 #
-# Nothing here needs $HEYENV or --impure. mkFlake reads HEYENV and aborts
-# without it, so this harness fabricates the 'hey' argument itself (with the
-# real mkHey, so it can't drift) instead of building flake.nixosConfigurations.
+# This harness fabricates the 'hey' argument itself (with the real mkHey, so
+# it can't drift) instead of building flake.nixosConfigurations, so a suite
+# can point a module at a fixture tree rather than at /etc/dotfiles.
 
 { lib, pkgs, flake }:
 
@@ -26,36 +26,29 @@ let
 in rec {
   inherit lib pkgs flake dir system;
 
-  # Built here rather than taken from flake.lib on purpose. flake.nix seeds the
-  # library with `import nixpkgs {}`, which falls back to builtins.currentSystem
-  # and would drag --impure into every suite the moment a module touched a
-  # pkgs-dependent helper like mkWrapper. Handing it the check's own pkgs keeps
-  # the suites pure, and gives the library under test the same package set the
-  # modules get.
+  # Built here rather than taken from flake.lib on purpose: that one has no
+  # package set, so mkWrapper and friends throw off it. Handing this one the
+  # check's own pkgs gives the library under test the same package set the
+  # modules get, just as mkFlake does per host.
   heyLib = import ../../lib { self = flake; inherit lib pkgs; };
 
   # Every host in hosts/, unevaluated: { <name> = { path, config }; }
   hosts = heyLib.mapHosts ../../hosts;
 
-  # A pure stand-in for the 'hey' specialArg that mkFlake assembles from
-  # $HEYENV.
+  # A stand-in for the 'hey' specialArg mkFlake assembles, and for 'self' too.
   #
-  # DIR stands in for the checkout. Point it at a fixture tree to feed a module
-  # config/ files the live ones would otherwise decide for it.
+  # DIR stands in for the store snapshot. Point it at a fixture tree to feed a
+  # module config/ files the live ones would otherwise decide for it. What a
+  # module *links* to is hey.dir, an option, and stays /etc/dotfiles here as on
+  # any host; a suite that wants links to follow the fixture sets it (and gets
+  # the store-path assertion it deserves, should it force one).
   mkHey =
     { dir ? toString ../..
     , hostDir ? dir
-    , host ? "test"
-    , user ? "test"
     }:
     heyLib.mkHey {
-      inherit flake system dir hostDir;
-      args = { inherit host user; path = dir; };
-    } // {
-      # mkHey derives this from the flake, and flake.lib is the impure copy;
-      # every module reads its helpers off hey.lib, so point it at ours.
-      lib = heyLib;
-    };
+      inherit flake system hostDir heyLib;
+    } // heyLib.dirsOf dir;
 
   # Evaluates a resolved host attrset. The primed variant keeps the whole
   # nixosSystem, for the tests that read an option's declaration (its type,
@@ -68,7 +61,12 @@ in rec {
     }:
     flake.inputs.nixpkgs.lib.nixosSystem {
       system = host.system;
-      specialArgs = { inherit hey; self = hey; };
+      specialArgs = {
+        self = hey;
+        # Minus the dirs, so a module reaching for hey.configDir fails here the
+        # way it would on a host.
+        hey = removeAttrs hey (attrNames (heyLib.dirsOf ""));
+      };
       modules = heyLib.mkHostModules {
         inherit host hostName pkgs extraModules;
       };
@@ -80,12 +78,11 @@ in rec {
   # system. Use it to assert on what a host declares, as opposed to what its
   # evaluated configuration comes out as.
   applyHost = hostName: { path, config }:
-    let hey = mkHey { hostDir = toString path; host = hostName; };
+    let hey = mkHey { hostDir = toString path; };
     in {
       inherit hey;
       host = config {
         inherit lib hey;
-        args = hey.args;
         nixosModules = hey.modules;
       };
     };
@@ -148,15 +145,7 @@ in rec {
     hyprland = evalConfig [{ modules.wm.desktop = "hyprland"; }];
 
     # Every host in hosts/, evaluated.
-    #
-    # modules/agenix.nix asserts that its host key exists whenever a host
-    # declares any secrets, using builtins.pathExists on an absolute path
-    # outside the store, which pure evaluation cannot see. Emptying age.secrets
-    # instead would dodge the assertion, but hosts reference their secrets by
-    # name (config.age.secrets.foo.path), so a dummy key it is.
-    hosts = mapAttrs
-      (evalHost' [{ modules.agenix.hostKey = toFile "host_ed25519" ""; }])
-      hosts;
+    hosts = mapAttrs evalHost hosts;
   };
 
   # Walks DIR for suites: every *.nix file, recursively, minus '_'-prefixed

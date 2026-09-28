@@ -237,18 +237,18 @@
 (defn flake/info [& args]
   (get-in (*flake-info*) args))
 
+# /etc/dotfiles is what the flake bakes into the system (lib/nixos.nix), so it's
+# what I mean by default. DOTFILES_HOME is the dev shell's override, so a
+# ./bin/hey out of a worktree acts on that worktree and not on whatever the link
+# points at.
 (def- *flake*
-  (delay {:path  (os/realpath
-                  (or (os/getenv "DOTFILES_HOME")
-                      (error "DOTFILES_HOME not set")))
-          :user  (os/getenv "USER")
+  (delay {:path  (if-let [home (os/getenv "DOTFILES_HOME")]
+                   (os/realpath home)
+                   "/etc/dotfiles")
           :host  (or (os/getenv "HOST") (string/chomp (slurp "/etc/hostname")))}))
 
 (defn flake [&opt key]
   (if key (get (*flake*) key) (*flake*)))
-
-(defn flake/json []
-  (string (json/encode (flake))))
 
 # Deferred like *xdg* and *flake* above. It reads $PATH and the environment's
 # XDG directories, and hey is compiled ahead of time (see modules/hey.nix), so
@@ -265,11 +265,11 @@
      # during development); the compiled binary's syspath is janet's own.
      @[(ignore-errors (os/realpath (path/join (dyn :syspath) "../bin")))
        (path/xdg :bin)
-       ;(let [pfile (path/xdg :data "hey/path")]
+       ;(let [pfile (path/xdg :state "hey/path")]
           (if (path/file? pfile)
             (string/split ":" (string/trimr (slurp pfile)))
             ["/run/wrappers/bin"
-             (string/format "/etc/profiles/per-user/%s/bin" (flake :user))
+             (string/format "/etc/profiles/per-user/%s/bin" (os/getenv "USER"))
              "/run/current-system/sw/bin"]))
        ;(string/split ":" (os/getenv "PATH"))]))))
 

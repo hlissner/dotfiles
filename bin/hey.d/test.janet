@@ -43,8 +43,8 @@
     (abort "Unknown NixOS suite: %s (see hey test -l)" suite))
   (echo :g "> Running the NixOS suite...")
   (flush)
-  # No --impure and no HEYENV: test/nixos fabricates `specialArgs.hey` itself to
-  # keep the test build pure (see test/nixos/_lib.nix)
+  # test/nixos fabricates `specialArgs.hey` itself, off the store (see
+  # test/nixos/_lib.nix), so the suites don't care where /etc/dotfiles points.
   (unless (do? $? nix build --no-link --no-warn-dirty --accept-flake-config ,(nixos-checks suite))
     (abort "NixOS suite failed"))
   # A passing nix build says nothing at all

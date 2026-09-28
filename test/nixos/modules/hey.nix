@@ -22,7 +22,8 @@ let
   }];
 
   dataDir = hooked.home.dataDir;
-  hasPath = cfg: p: elem "${dir}/${p}" cfg.hey.hookPaths;
+  hasPath = cfg: p: elem "${cfg.hey.dir}/${p}" cfg.hey.hookPaths;
+  failing = c: map (a: a.message) (filter (a: !a.assertion) c.assertions);
 in {
   ## Hooks.
 
@@ -58,7 +59,7 @@ in {
       published = hooked.hey.info.hooks == hooked.hey.hookPaths;
     };
     expected = {
-      head = [ "${dir}/hosts/udon/hooks"
+      head = [ "${hooked.hey.dir}/hosts/udon/hooks"
                "${dataDir}/hey/hooks.d/bar.d"
                "${dataDir}/hey/hooks.d/baz.d" ];
       mine = true;
@@ -122,5 +123,37 @@ in {
       headless = bare.hey.info.desktop;
     };
     expected = { hyprland = "hyprland"; headless = null; };
+  };
+
+  ## The checkout.
+
+  # hey.dir is the one knob. The rest of the family, and everything the built
+  # system links or sources off it, follow, so a host whose checkout lives
+  # elsewhere is one line, not a hunt through modules/.
+  testDirsFollowDir =
+    let moved = evalConfig [{ hey.dir = "/elsewhere"; }]; in {
+      expr = {
+        inherit (moved.hey) binDir libDir configDir modulesDir;
+        sounds = moved.home.dataLink."sounds/hey";
+        hooks = hasPrefix "/elsewhere/hosts/" (head moved.hey.hookPaths);
+      };
+      expected = {
+        binDir = "/elsewhere/bin"; libDir = "/elsewhere/lib";
+        configDir = "/elsewhere/config"; modulesDir = "/elsewhere/modules";
+        sounds = "/elsewhere/assets/sounds";
+        hooks = true;
+      };
+    };
+
+  # A store path is the one value it must never take: everything off it would
+  # be pinned to a snapshot, and under pure eval pathExists wouldn't even say
+  # so. This file is in the store whenever this suite runs, so it's the fixture.
+  # The default gets the same check, since that's what every host runs on.
+  testDirRefusesTheStore = {
+    expr = {
+      stored = any (hasInfix "hey.dir") (failing (evalConfig [{ hey.dir = toString ./.; }]));
+      live = any (hasInfix "hey.dir") (failing bare);
+    };
+    expected = { stored = true; live = false; };
   };
 }

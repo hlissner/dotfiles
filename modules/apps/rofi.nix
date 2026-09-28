@@ -1,4 +1,4 @@
-{ hey, lib, config, options, pkgs, ... }:
+{ self, hey, lib, config, options, pkgs, ... }:
 
 with builtins;
 with lib;
@@ -16,14 +16,11 @@ in {
   config = mkIf cfg.enable (mkMerge [
     {
       modules.wm.theme.files.rofi = {
-        input_path = "${hey.configDir}/rofi/colors.template.rasi";
+        input_path = "${config.hey.configDir}/rofi/colors.template.rasi";
         output_path = "${config.home.configDir}/rofi/themes/colors.rasi";
       };
 
-      home.configFile."rofi" = {
-        source = "${hey.configDir}/rofi";
-        recursive = true;
-      };
+      home.configLink."rofi" = "${config.hey.configDir}/rofi";
 
       home.configFile."rofi/themes/fonts.rasi".text =
         let fonts = config.hey.info.theme.fonts or {};

@@ -1,4 +1,4 @@
-{ hey, lib, config, options, pkgs, ... }:
+{ self, hey, lib, config, options, pkgs, ... }:
 
 with lib;
 with hey.lib;
@@ -22,11 +22,6 @@ in {
       spek           # spectrum analysis
     ];
 
-    home.configFile = {
-      "beets" = {
-        source = "${hey.configDir}/beets";
-        recursive = true;
-      };
-    };
+    home.configLink."beets/config.yaml" = "${config.hey.configDir}/beets/config.yaml";
   };
 }

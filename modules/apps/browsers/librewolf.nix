@@ -142,11 +142,11 @@ in {
         (profile: let chromeDir = "${config.home.configDir}/librewolf/librewolf/${cfg.profileName}.${profile}/chrome";
         in [
           (nameValuePair "librewolf-chrome-${profile}" {
-            input_path = "${hey.configDir}/librewolf/userChrome.template.css";
+            input_path = "${config.hey.configDir}/librewolf/userChrome.template.css";
             output_path = "${chromeDir}/userChrome.colors.css";
           })
           (nameValuePair "librewolf-content-${profile}" {
-            input_path = "${hey.configDir}/librewolf/userContent.template.css";
+            input_path = "${config.hey.configDir}/librewolf/userContent.template.css";
             output_path = "${chromeDir}/userContent.colors.css";
           })
         ]) [ "default" "alt" ]);

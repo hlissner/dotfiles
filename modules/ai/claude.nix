@@ -5,7 +5,7 @@
 # force that does more bad than good, and when its bubble pops 2008 and 2001
 # will look like vacations. Give me back affordable ram.
 
-{ hey, lib, config, pkgs, ... }:
+{ self, hey, lib, config, pkgs, ... }:
 
 with lib;
 with hey.lib;
@@ -56,18 +56,20 @@ in {
       systemd.user.tmpfiles.rules = [ "d %h/.local/share/claude 700 - - - -" ];
 
       environment.etc =
-        let claudeDir = "${hey.configDir}/claude";
+        let claudeDir = "${config.hey.configDir}/claude";
             dropinDir = "${claudeDir}/managed-settings.d";
+            snapshot = "${self.configDir}/claude";
             install = sub: dir: entries: mapAttrs'
               (name: _: nameValuePair "claude-code/${sub}${name}" {
                 source = "${dir}/${name}";
               })
               entries;
         in install "" claudeDir
-            (removeAttrs (builtins.readDir claudeDir) [ "managed-settings.d" ])
+            (removeAttrs (builtins.readDir snapshot) [ "managed-settings.d" ])
           # Claude Code ignores hidden files in the drop-in directory; so do we.
           // install "managed-settings.d/" dropinDir
-            (filterAttrs (n: _: !hasPrefix "." n) (builtins.readDir dropinDir));
+            (filterAttrs (n: _: !hasPrefix "." n)
+              (builtins.readDir "${snapshot}/managed-settings.d"));
     }
 
     (mkIf (cfg.settings != {}) {

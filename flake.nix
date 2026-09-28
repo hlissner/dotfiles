@@ -55,12 +55,11 @@
 
   outputs = inputs @ { self, nixpkgs, nixos-hardware, ... }:
     let
-      args = {
+      lib = import ./lib {
         inherit self;
         inherit (nixpkgs) lib;
-        pkgs = import nixpkgs {};
+        pkgs = throw "flake.lib has no package set; use hey.lib from a host";
       };
-      lib = import ./lib args;
     in
       with builtins; with lib; mkFlake inputs {
         systems = [ "x86_64-linux" "aarch64-linux" ];

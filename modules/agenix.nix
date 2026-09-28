@@ -1,6 +1,6 @@
 # modules/agenix.nix -- encrypt secrets in nix store
 
-{ hey, lib, options, config, pkgs, ... }:
+{ self, hey, lib, options, config, pkgs, ... }:
 
 with builtins;
 with lib;
@@ -12,19 +12,18 @@ in {
   options.modules.agenix = with types; {
     dirs = mkOpt (listOf (either str path)) [
       "${hey.hostDir}/secrets"
-      "${hey.configDir}/secrets"
+      "${self.configDir}/secrets"
     ];
     hostKey = mkOpt str "/etc/ssh/host_ed25519";
   };
 
   config = {
-    assertions = [
-      {
-        assertion =
-          config.age.secrets == {} || (pathExists hostKey);
-        message = "Secrets provided, but no host key was found";
-      }
-    ];
+    system.activationScripts.agenixHostKey = mkIf (config.age.secrets != {}) ''
+      if [[ ! -e ${escapeShellArg hostKey} ]]; then
+        echo "Secrets provided, but no host key was found at ${hostKey}" >&2
+        exit 1
+      fi
+    '';
 
     # Each system gets a host key, used for decrypting Agenix secrets and as a
     # deployment key via Git. It's expected to be provisioned before the system

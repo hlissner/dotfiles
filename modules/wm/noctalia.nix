@@ -3,7 +3,7 @@
 # Noctalia: the shell itself, its plugins, and the login screen it puts in
 # front of them. Follows modules.wm.desktop = "hyprland".
 
-{ hey, heyBin, lib, config, pkgs, ... }:
+{ self, hey, heyBin, lib, config, pkgs, ... }:
 
 with lib;
 with hey.lib;
@@ -72,8 +72,8 @@ in {
           done
         '';
 
-      modules.shell.zsh.rcFiles = [ "${hey.configDir}/noctalia/aliases.zsh" ];
-      hey.hookPaths = [ "${hey.configDir}/noctalia/hooks" ];
+      modules.shell.zsh.rcFiles = [ "${config.hey.configDir}/noctalia/aliases.zsh" ];
+      hey.hookPaths = [ "${config.hey.configDir}/noctalia/hooks" ];
     }
 
     ## Declarative noctalia config.toml
@@ -87,7 +87,7 @@ in {
         '';
 
       modules.wm.noctalia.settings = defaults {
-        include.files = [ "${hey.configDir}/noctalia/" ];
+        include.files = [ "${config.hey.configDir}/noctalia/" ];
         shell.font_family = config.hey.info.theme.fonts.sans;
       };
     }
@@ -116,11 +116,11 @@ in {
       modules.wm.noctalia.plugins = {
         ## My plugins (see config/noctalia/plugins/*/plugin.toml for why)
         "hey/peripheral-battery".src =
-          "${hey.configDir}/noctalia/plugins/peripheral-battery";
+          "${config.hey.configDir}/noctalia/plugins/peripheral-battery";
         "hey/hypr-submap".src =
-          "${hey.configDir}/noctalia/plugins/hypr-submap";
-        "hey/timer".src = "${hey.configDir}/noctalia/plugins/timer";
-        "hey/screencast".src = "${hey.configDir}/noctalia/plugins/screencast";
+          "${config.hey.configDir}/noctalia/plugins/hypr-submap";
+        "hey/timer".src = "${config.hey.configDir}/noctalia/plugins/timer";
+        "hey/screencast".src = "${config.hey.configDir}/noctalia/plugins/screencast";
 
         ## 3rd-party plugins
         "h-jangra/keyviz" = {
@@ -189,7 +189,7 @@ in {
     })
 
     ## The bar
-    (let baseline = fromTOML (readFile "${hey.configDir}/noctalia/bar.toml");
+    (let baseline = fromTOML (readFile "${self.configDir}/noctalia/bar.toml");
          typeOf = w: baseline.widget.${w}.type or w;
          pluginOf = w:
            let type = typeOf w;

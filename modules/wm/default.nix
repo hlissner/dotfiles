@@ -20,15 +20,15 @@ in {
   config = {
     hey.desktop = cfg.desktop;
 
-    assertions = [{
-      assertion =
-        # wm modules shouldn't be enabled if no desktop is enabled!
-        let enabled = attrNames (filterAttrs (_: m: isAttrs m && m.enable or false) cfg);
-        in cfg.desktop != null || enabled == [];
-      message = ''
-        modules.wm.{${concatStringsSep "," enabled}} can't be enabled without a
-        desktop; set modules.wm.desktop.
-      '';
-    }];
+    # wm modules shouldn't be enabled if no desktop is enabled!
+    assertions =
+      let enabled = attrNames (filterAttrs (_: m: isAttrs m && m.enable or false) cfg);
+      in [{
+        assertion = cfg.desktop != null || enabled == [];
+        message = ''
+          modules.wm.{${concatStringsSep "," enabled}} can't be enabled without a
+          desktop; set modules.wm.desktop.
+        '';
+      }];
   };
 }

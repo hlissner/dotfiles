@@ -53,7 +53,7 @@ with builtins;
           -- Anchor side monitors indecies far enough apart that dynamic
           -- workspaces have a low chance to overlap (and numeric so they can have
           -- dynamic workspaces at all). See
-          -- $DOTFILES_HOME/config/hypr/hyprland.lua.
+          -- /etc/dotfiles/config/hypr/hyprland.lua.
           hl.workspace_rule({ workspace = "300",
                               monitor = "DP-3",
                               default = true,
@@ -106,6 +106,7 @@ with builtins;
 
       browsers.default = "librewolf";
       browsers.librewolf.enable = true;
+      browsers.librewolf.beval.enable = true;
       media.cad.enable = true;
       media.daw.enable = true;
       media.graphics.enable = true;

@@ -5,7 +5,7 @@
 #   hey ops sync SYSTEM [RSYNC-ARGS...]
 #
 # DESCRIPTION:
-#   rsyncs $DOTFILES_HOME over whatever SYSTEM keeps its own in -- which it gets
+#   rsyncs my checkout over whatever SYSTEM keeps its own in -- which it gets
 #   asked for rather than assumed, since the two don't have to agree.
 #
 #   Everything git ignores stays behind, both the repo's .gitignore and my

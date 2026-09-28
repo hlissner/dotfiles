@@ -13,8 +13,8 @@ in {
     modules = [{ system.stateVersion = lib.trivial.release; }];
   }).config.system.build.manual.optionsJSON;
 
-  # This repo's own modules.*, through the test harness, since that needs
-  # neither $HEYENV nor a host. Not a git+file: flake, because git can't open
+  # This repo's own modules.*, through the test harness, since that needs no
+  # host. Not a git+file: flake, because git can't open
   # the dotfiles the sandbox masks, and not path: on the repo directly, which
   # would drag data/ into the store with it.
   local =

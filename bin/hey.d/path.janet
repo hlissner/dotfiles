@@ -13,7 +13,7 @@
 #
 # ARGUMENTS:
 #   1 AREA
-#     home           $DOTFILES_HOME
+#     home           /etc/dotfiles, or $DOTFILES_HOME if set
 #     assets         {home}/assets
 #     bin            {home}/bin
 #     cache          $XDG_CACHE_HOME/hey

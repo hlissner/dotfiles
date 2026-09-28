@@ -12,8 +12,8 @@ in {
 
   config = mkIf cfg.enable {
     environment.variables = {
-      TMUX_HOME = "${hey.configDir}/tmux";
-      TMUXINATOR_CONFIG = "${hey.configDir}/tmux/tmuxinator/";
+      TMUX_HOME = "${config.hey.configDir}/tmux";
+      TMUXINATOR_CONFIG = "${config.hey.configDir}/tmux/tmuxinator/";
     };
 
     # I avoid programs.tmux because it comes with extra magic I don't need.
@@ -34,7 +34,7 @@ in {
     modules.wm.theme.files.tmux = let
       theme = "${config.home.configDir}/tmux/themes/noctalia.conf";
     in {
-      input_path = "${hey.configDir}/tmux/colors.template.conf";
+      input_path = "${config.hey.configDir}/tmux/colors.template.conf";
       output_path = theme;
       # noctalia-community-templates ships an apply.sh that does this, but is
       # hardcoded to look for ~/.config/tmux/tmux.conf and writes to it.
@@ -46,6 +46,6 @@ in {
       '';
     };
 
-    modules.shell.zsh.rcFiles = [ "${hey.configDir}/tmux/aliases.zsh" ];
+    modules.shell.zsh.rcFiles = [ "${config.hey.configDir}/tmux/aliases.zsh" ];
   };
 }

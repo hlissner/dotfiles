@@ -31,24 +31,28 @@ rec {
       (filterAttrs (n: _: elem n [ "packages" "legacyPackages" "devShells"
                                    "apps" "checks" "formatter" ]) flake);
 
+  # The checkout's layout, rooted at DIR. `self` carries these over the store
+  # snapshot; the live checkout's are the hey.{dir,*Dir} options in
+  # modules/hey.nix, since that's the one a host may want somewhere else.
+  dirsOf = dir: {
+    inherit dir;
+    binDir      = "${dir}/bin";
+    libDir      = "${dir}/lib";
+    configDir   = "${dir}/config";
+    modulesDir  = "${dir}/modules";
+  };
+
   mkHey = {
     flake
   , system
-  , dir
-  , hostDir ? dir
-  , args ? {}
+  , hostDir
+  , heyLib ? flake.lib
   }:
-    let dir' = if dir != "" then dir
-               else throw "mkHey: dir is empty";
-    in forSystem system flake // {
-      inherit args hostDir;
+    forSystem system flake // {
+      inherit hostDir;
+      lib = heyLib;
       inputs = mapAttrs (_: forSystem system) flake.inputs;
       modules = nixosModulesOf flake.inputs;
-      dir         = dir';
-      binDir      = "${dir'}/bin";
-      libDir      = "${dir'}/lib";
-      configDir   = "${dir'}/config";
-      modulesDir  = "${dir'}/modules";
     };
 
   mkHostModules = {
@@ -90,20 +94,6 @@ rec {
     , ...
   } @ flake:
     let
-      # Processes external arguments that bin/hey will feed to this flake (using
-      # a json payload in an envvar). The internal var is kept in lib to stop
-      # 'nix flake check' from complaining more than it has to.
-      #
-      # This is the only impurity we allow into this flake, because there are
-      # many times where it is convenient to generate or seed dotfiles or
-      # envvars with local (non-nix-store) paths instead, so I don't have to
-      # rebuild each time I change/swap them out.
-      args =
-        let hargs = getEnv "HEYENV"; in
-        if hargs == ""
-        then throw "HEYENV envvar is missing"
-        else fromJSON hargs;
-
       mkPkgs = system: import nixpkgs {
         inherit system;
         overlays = attrValues overlays;
@@ -119,25 +109,34 @@ rec {
       pkgsBySystem = genAttrs systems mkPkgs;
       pkgsFor = system: pkgsBySystem.${system} or (mkPkgs system);
 
+      # hey.lib's package helpers (mkWrapper, mkLauncherEntry) want nixpkgs and
+      # the flake-level lib has none it can use purely. Each host gets a lib
+      # over its own, the same way test/nixos/_lib.nix does.
+      libFor = system: import ./. { inherit lib; pkgs = pkgsFor system; };
+
+      # `self.{dir,*Dir}` is the store snapshot nix is evaluating; read files
+      # through it (readFile, pathExists, import). `config.hey.{dir,*Dir}` is
+      # the live checkout, outside the store, for paths that end up in the built
+      # system (links, PATH, sourced rc files) so an edit there doesn't wait for
+      # a rebuild.
       nixosConfigurations = mapAttrs (hostName: { path, config }:
         # TODO: Replace with a submodule
         let
+          heyLib = libFor host.system;
           self' = mkHey {
-            inherit args;
             inherit (host) system;
+            inherit heyLib;
             flake = self;
-            dir = toString self;
             hostDir = path;
-          };
+          } // dirsOf (toString self);
           hey' = mkHey {
-            inherit args;
+            inherit heyLib;
             inherit (host) system;
             flake = hey;
-            dir = args.path;
             hostDir = path;
           };
           host = config {
-            inherit args lib;
+            inherit lib;
             nixosModules = hey'.modules;
             hey = hey';
           };
@@ -147,9 +146,8 @@ rec {
             specialArgs.self = self';
             specialArgs.hey = hey';
             modules = mkHostModules {
-              inherit host;
+              inherit host hostName;
               pkgs = pkgsFor host.system;
-              hostName = args.host or hostName;
             };
           }) hosts;
 
@@ -182,17 +180,5 @@ rec {
       ]) // {
           inherit nixosConfigurations;
           nixosModules = modules;
-
-          # To parameterize this flake (more so for flakes derived from this
-          # one) I rely on bin/hey (my nix{,os} CLI/wrapper) to emulate
-          # --arg/--argstr options. 'dir' and 'host' are special though, and
-          # communicated using hey's -f/--flake and --host options:
-          #
-          #   hey sync -f /etc/nixos#soba
-          #   hey sync -f /etc/nixos --host soba
-          #
-          # The magic that allows this lives in mkFlake, but requires --impure
-          # mode. Sorry hermetic purists!
-          _heyArgs = args;
       } // perSystem;
 }

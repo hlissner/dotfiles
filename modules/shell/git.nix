@@ -19,12 +19,12 @@ in {
       act
     ];
 
-    home.configFile = {
-      "git/config".source = "${hey.configDir}/git/config";
-      "git/ignore".source = "${hey.configDir}/git/ignore";
-      "git/attributes".source = "${hey.configDir}/git/attributes";
+    home.configLink = {
+      "git/config" = "${config.hey.configDir}/git/config";
+      "git/ignore" = "${config.hey.configDir}/git/ignore";
+      "git/attributes" = "${config.hey.configDir}/git/attributes";
     };
 
-    modules.shell.zsh.rcFiles = [ "${hey.configDir}/git/aliases.zsh" ];
+    modules.shell.zsh.rcFiles = [ "${config.hey.configDir}/git/aliases.zsh" ];
   };
 }

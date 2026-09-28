@@ -28,7 +28,6 @@ with hey.lib;
     }];
 
     environment.sessionVariables = mkOrder 10 {
-      DOTFILES_HOME = hey.dir;
       NIXPKGS_ALLOW_UNFREE = "1";   # Forgive me Stallman-senpai.
     };
 
@@ -58,7 +57,7 @@ with hey.lib;
           experimental-features = nix-command flakes
         '';
         nixPath = nixPathInputs ++ [
-          "dotfiles=${hey.dir}"
+          "dotfiles=${config.hey.dir}"
         ];
         registry = mapAttrs (_: v: { flake = v; }) filteredInputs;
         settings =

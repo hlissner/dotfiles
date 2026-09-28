@@ -6,7 +6,7 @@
 # and writes an empty output_path into its own config dir, both without a
 # word, so the tests read that table back and check it against the disk.
 
-{ evalConfig, presets, flake, lib, ... }:
+{ evalConfig, presets, flake, lib, dir, ... }:
 
 with lib;
 let
@@ -31,8 +31,13 @@ let
       modules.apps.term.foot.enable = true;
       modules.apps.browsers.librewolf.enable = true;
     }]) ];
+  # Apps register templates by live path (config.hey.configDir), which pure
+  # eval can't open, so the on-disk checks read them off the snapshot DIR
+  # stands in for instead.
   inputs = unique (concatMap
-    (c: catAttrs "input_path" (attrValues c.modules.wm.theme.files)) configs);
+    (c: map (p: dir + removePrefix c.hey.dir p)
+            (catAttrs "input_path" (attrValues c.modules.wm.theme.files)))
+    configs);
 in {
   ## The table.
 

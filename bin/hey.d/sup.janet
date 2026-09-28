@@ -40,7 +40,7 @@ in lib.listToAttrs
   ``The {NAME VERSION} HOST asks for. ARGS go to nix eval.``
   [host & args]
   (json/decode
-   ($<_ nix eval --impure --json --no-warn-dirty
+   ($<_ nix eval --json --no-warn-dirty
         --no-write-lock-file  # no side effects pls
         ,;args
         ,(string (path :home) "#nixosConfigurations." host)
@@ -58,7 +58,6 @@ in lib.listToAttrs
                         (string have " -> " upstream))))))
 
 (defcmd sup [_ &opts host [-H --host name] all? [-a --all]]
-  (os/setenv "HEYENV" (flake/json))
   (def host (or host (flake :host)))
 
   (echof :g "> What %s asks for..." host)

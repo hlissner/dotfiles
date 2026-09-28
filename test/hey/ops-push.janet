@@ -14,7 +14,7 @@
 (def- workstation (hey/path :test "hey/ops.d/workstation"))
 
 (defn- push
-  "Run `hey ops push ARGS`, and return [exit-code flake target action host]."
+  "Run `hey ops push ARGS`, and return [exit-code flake target action]."
   [& args]
   (def out @"")
   (def code
@@ -27,23 +27,22 @@
   [code
    (when-let [f (after "--flake")] (last (string/split "#" f)))
    (after "--target-host")
-   (first argv)
-   (get lines 1)])
+   (first argv)])
 
 
 (deftest push/system-is-the-host
-  (test (push "ramen") [0 "ramen" "ramen" "switch" "HEYENV.host=ramen"]))
+  (test (push "ramen") [0 "ramen" "ramen" "switch"]))
 
 (deftest push/system-is-not-the-host
   # The reason HOST exists: ssh goes to ramen.lan, but it's ramen that gets built.
   (test (push "ramen.lan" "ramen")
-        [0 "ramen" "ramen.lan" "switch" "HEYENV.host=ramen"])
+        [0 "ramen" "ramen.lan" "switch"])
   (test (push "10.0.0.2" "ramen" "boot")
-        [0 "ramen" "10.0.0.2" "boot" "HEYENV.host=ramen"]))
+        [0 "ramen" "10.0.0.2" "boot"]))
 
 (deftest push/action-is-not-a-host
   # No hosts/boot, so boot is nixos-rebuild's, not a HOST.
-  (test (push "soba" "boot") [0 "soba" "soba" "boot" "HEYENV.host=soba"]))
+  (test (push "soba" "boot") [0 "soba" "soba" "boot"]))
 
 (deftest push/no-such-host
   # Rather than build a config that doesn't exist, or worse, one that does and

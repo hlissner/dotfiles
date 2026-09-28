@@ -15,3 +15,6 @@
 /config/zellij/themes/colors.kdl
 /config/yazi/theme.toml
 /config/yazi/flavors/
+# modules/apps/rofi.nix
+/config/rofi/themes/fonts.rasi
+/config/rofi/themes/colors.rasi

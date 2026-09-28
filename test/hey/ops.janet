@@ -9,7 +9,6 @@
 
 (use judge)
 (use sh)
-(import spork/json)
 (import hey)
 (import hey/ops)
 
@@ -93,12 +92,3 @@
   # turn it on. Expanded by the remote shell, so these stay literal.
   (test (map ops/ssh-dir ["workstation" "server" nil])
         @["$HOME/.config/ssh" "$HOME/.ssh" "$HOME/.ssh"]))
-
-(deftest ops/heyenv
-  # What lib/nixos.nix reads back. hey.dir comes out of `path`, so pointing it
-  # at the store would be a bad day; the only thing changing is the host.
-  (def env (json/decode (ops/heyenv "somehost")))
-  (test (get env "host") "somehost")
-  # Compared rather than pinned: this is this machine's, and judge only wants
-  # literals on the right.
-  (test (= (get env "path") (hey/path :home)) true))

@@ -35,15 +35,16 @@ let cfg = config.home;
           pkgs.runCommandLocal name {} "install -m755 ${src} $out"
         else src);
 
+    # A store source (self.configDir) carries string context, and a path can't
+    # be built from one of those; the listing drops it, the targets keep it.
     targetsOf = files:
       let explode = rel: f:
-            let src = storeOf rel f; in
-            if builtins.hasContext (toString f.source)
-            then throw "home: ${rel} is recursive, but its source is in the store"
-            else listToAttrs (map
-              (file: let r = removePrefix "${toString f.source}/" (toString file);
+            let src = storeOf rel f;
+                root = builtins.unsafeDiscardStringContext (toString f.source);
+            in listToAttrs (map
+              (file: let r = removePrefix "${root}/" (toString file);
                      in nameValuePair "${rel}/${r}" "${src}/${r}")
-              (filesystem.listFilesRecursive (/. + toString f.source)));
+              (filesystem.listFilesRecursive (/. + root)));
       in concatMapAttrs explode (filterAttrs (_: f: f.recursive) files)
          // mapAttrs storeOf (filterAttrs (_: f: !f.recursive) files);
 
@@ -107,36 +108,34 @@ in {
 
     home.link = links;
 
-    # tmpfiles has no memory of what it made, so I keep a running list of
-    # symlinked files so I can prune what's no longer needed. Runs at login and
-    # on every switch.
+
+    # I keep a running list of the links I made, so what's dropped from the
+    # config gets pruned. Runs at login and on every switch.
     system.userActivationScripts.homeLinks =
       let conf = pkgs.writeText "home-links.conf" (concatLines
-            (mapAttrsToList (path: target: "L ${path} - - - - ${target}")
+            (mapAttrsToList (path: target: "${path}\t${target}")
               (under cfg.dir cfg.link)));
           last = "${cfg.stateDir}/hey/links.conf";
       in {
-        # Or install -D beats initXDG to ~/.local/state and it ends up 755
         deps = [ "initXDG" ];
         text = ''
           if [ "$(id -un)" = ${escapeShellArg config.user.name} ]; then
             if [ -f ${last} ]; then
-              while IFS= read -r line; do
-                grep -qxF "$line" ${conf} && continue
-                read -r _ path _ _ _ _ target <<<"$line"
+              while IFS=$'\t' read -r path target; do
+                grep -qxF "$path"$'\t'"$target" ${conf} && continue
                 [ "$(readlink "$path")" = "$target" ] && rm -f "$path"
               done < ${last}
             fi
-            while read -r _ path _ _ _ _ target; do
+            while IFS=$'\t' read -r path target; do
               link=$(readlink "$path") && [ "$link" = "$target" ] && continue
               if [[ $link == /nix/store/* ]]; then
                 rm -f "$path"
               elif [ -e "$path" ] || [ -L "$path" ]; then
                 echo "homeLinks: $path is in the way; leaving it be" >&2
+                continue
               fi
+              mkdir -p "''${path%/*}" && ln -sv "$target" "$path"
             done < ${conf}
-            # Not on the PATH user activation scripts get
-            ${config.systemd.package}/bin/systemd-tmpfiles --user --create ${conf}
             install -Dm644 ${conf} ${last}
           fi
         '';

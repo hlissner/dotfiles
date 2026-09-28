@@ -2,7 +2,7 @@
 #
 # For game art assets, interior design, and product demos for clients.
 
-{ hey, lib, config, pkgs, ... }:
+{ self, hey, lib, config, pkgs, ... }:
 
 with lib;
 with hey.lib;
@@ -23,11 +23,11 @@ in {
 
     home.configFile = {
       "blender/${version}/config" = {
-        source = "${hey.configDir}/blender/config";
+        source = "${self.configDir}/blender/config";
         recursive = true;
       };
       # "blender/${version}/scripts" = {
-      #   source = "${hey.configDir}/blender/scripts";
+      #   source = "${self.configDir}/blender/scripts";
       #   recursive = true;
       # };
     };
@@ -38,7 +38,7 @@ in {
     system.userActivationScripts.setupBlenderConfig = ''
       destdir="$XDG_CONFIG_HOME/blender/${version}/config"
       mkdir -p "$destdir"
-      for cfile in ${hey.configDir}/blender/config/*; do
+      for cfile in ${config.hey.configDir}/blender/config/*; do
         basename="$(basename $cfile)"
         dest="$destdir/$basename"
         if [ ! -e "$dest" ]; then
@@ -46,7 +46,7 @@ in {
         fi
       done
       for bfile in startup userpref; do
-        src="${hey.configDir}/blender/$bfile.blend.tar.gz"
+        src="${config.hey.configDir}/blender/$bfile.blend.tar.gz"
         if [ ! -e "$destdir/$bfile.blend" ]; then
           ${pkgs.gnutar}/bin/tar -I ${pkgs.gzip}/bin/gzip -xvf "$src" -C "$destdir"
         fi

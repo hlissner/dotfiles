@@ -44,16 +44,12 @@ in mkShell {
     export JANET_BINPATH="$JANET_TREE/bin"
     export JANET_PATH="$root/lib:${janetTree}/lib:$JANET_TREE/lib"
     export PATH="$JANET_BINPATH:$root/bin:$PATH"
-    # What hey would hand nix, so nixosConfigurations evaluates without it.
     host=''${HOST:-$(cat /etc/hostname)}
-    export HEYENV=$(printf '{"path":"%s","user":"%s","host":"%s"}' "$root" "$USER" "$host")
 
     if [[ $- == *i* ]]; then
-      # No NIX_CONFIG for this: flake commands force pure-eval unless told
-      # --impure on the command line, pure-eval = false or not.
-      alias nrepl='nix repl --impure'
-      alias neval='nix eval --impure'
-      alias nbuild='nix build --impure'
+      alias nrepl='nix repl'
+      alias neval='nix eval'
+      alias nbuild='nix build'
       alias install='jpm install'
       alias clean='jpm clean'
       rebuild() { jpm clean; jpm install; }
@@ -64,7 +60,7 @@ in mkShell {
       neval .#nixosConfigurations.$host.config.OPTION
       nbuild .#nixosConfigurations.$host.config.system.build.toplevel
       nvd diff /run/current-system result    what that build would change
-      nix build .#hey               packages, checks: no --impure needed
+      nix build .#hey               any package or check
       nix-inspect -p .              browse all of it as a tree
       nix-tree /run/current-system  who pulls in what and how big
       nix flake show                everything the flake exports

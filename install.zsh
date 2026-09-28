@@ -43,11 +43,6 @@ _usage() {
   fi
 }
 
-_escape() {
-  local str=${1//\\/\\\\}
-  print -rn -- "${str//\"/\\\"}"
-}
-
 _variant() {
   ( . /etc/os-release 2>/dev/null; print -r -- "${VARIANT_ID-}" )
 }
@@ -114,12 +109,8 @@ main() {
   chown -R "${user}:users" "$flake" 2>/dev/null \
     || >&2 print -r -- "Warning: couldn't chown $flake to $user; fix it after first boot"
 
-  [[ -e $DEST && ! -L $DEST ]] && _die 1 "$DEST already exists and isn't a symlink"
-  ln -sfn "$flake" "$DEST"
-
-  export HEYENV="{\"user\":\"$(_escape "$user")\",\"host\":\"$(_escape "$host")\",\"path\":\"$DEST\"}"
-  # nixos-install doesn't have a --accept-flake-config!
-  nixos-install --impure --show-trace --option accept-flake-config true \
+  # nixos-install doesn't have --accept-flake-config!
+  nixos-install --show-trace --option accept-flake-config true \
     --root "$root" --flake "$flake#$host"
 }
 

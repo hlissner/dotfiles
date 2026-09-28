@@ -79,8 +79,8 @@ jobs:
             experimental-features = nix-command flakes
             warn-dirty = false
 
-      # What `hey test nixos` runs, minus the janet. Needs neither $HEYENV nor
-      # --impure (test/nixos/_lib.nix fabricates its own `hey` argument), and
-      # the suite is x86_64-only by meta.platforms.
+      # What `hey test nixos` runs, minus janet. test/nixos/_lib.nix fabricates
+      # its own `hey` argument, so no /etc/dotfiles is needed, and the suite is
+      # x86_64-only by meta.platforms.
       - name: Run the NixOS suites
         run: nix build --no-link --print-build-logs .#checks.x86_64-linux.nixos

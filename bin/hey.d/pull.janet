@@ -40,7 +40,7 @@
     (empty? args)
     (do
       (echo :g "> Updating all inputs...")
-      (do? $ nix flake update --flake ,(path :home) --impure))
+      (do? $ nix flake update --flake ,(path :home)))
 
     override?
     (let [flake-args @[]]
@@ -76,4 +76,4 @@
         (abort "No matching inputs"))
       (echo :g "> Updating matching inputs:")
       (eachk t targets (echof "  - %s" t))
-      (do? $ nix flake update --flake ,(path :home) --impure ,;(keys targets)))))
+      (do? $ nix flake update --flake ,(path :home) ,;(keys targets)))))

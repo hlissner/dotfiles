@@ -14,11 +14,11 @@ in {
     user.packages = with pkgs; [ zellij zmate ];
 
     # Respect XDG, damn it!
-    environment.variables.ZELLIJ_CONFIG_DIR = "${hey.configDir}/zellij";
+    environment.variables.ZELLIJ_CONFIG_DIR = "${config.hey.configDir}/zellij";
 
     modules.wm.theme.files.zellij = {
-      input_path = "${hey.configDir}/zellij/colors.template.kdl";
-      output_path = "${hey.configDir}/zellij/themes/colors.kdl";
+      input_path = "${config.hey.configDir}/zellij/colors.template.kdl";
+      output_path = "${config.hey.configDir}/zellij/themes/colors.kdl";
     };
   };
 }

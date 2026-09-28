@@ -53,7 +53,7 @@ $ ntfslabel /dev/sdb backup
 #+end_src
 
 ** Mount filesystems
-The final step in the install process, before running ~$DOTFILES_HOME/bin/hey
+The final step in the install process, before running ~/etc/dotfiles/bin/hey
 install~:
 #+BEGIN_SRC sh
 mount /dev/disk/by-label/nixos /mnt

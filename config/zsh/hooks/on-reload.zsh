@@ -13,7 +13,7 @@ rm -fr "$XDG_CACHE_HOME"/zsh/*(DN)
 
 echo "zsh: deleting compiled zsh files..."
 rm -f "$ZDOTDIR"/**/*.zwc(D.N)
-rm -f "${DOTFILES_HOME:-$HOME/.config/dotfiles}"/config/zsh/**/*.zwc(D.N)
+rm -f "${DOTFILES_HOME:-/etc/dotfiles}"/config/zsh/**/*.zwc(D.N)
 
 # Can't use `zpm clean` because these hooks can run outside an interactive shell
 # where zpm's functions aren't loaded.

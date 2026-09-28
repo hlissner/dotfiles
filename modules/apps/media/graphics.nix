@@ -58,7 +58,7 @@ in {
 
     # home.configFile = mkIf cfg.raster.enable {
     #   "GIMP/3.0" = {
-    #     source = "${hey.configDir}/gimp";
+    #     source = "${self.configDir}/gimp";
     #     recursive = true;
     #   };
     #   # TODO Inkscape dotfiles

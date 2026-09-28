@@ -30,7 +30,7 @@ in {
     # Keep it out of the store: aichat writes sessions and RAGs back into this
     # directory, and config.yaml itself is the only sane place to add a client.
     environment.variables = {
-      AICHAT_CONFIG_DIR = "${hey.configDir}/aichat";
+      AICHAT_CONFIG_DIR = "${config.hey.configDir}/aichat";
       OPENROUTER_API_KEY_FILE = cfg.openrouterKeyFile;
     };
   };

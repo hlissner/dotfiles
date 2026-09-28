@@ -18,7 +18,7 @@
 # resolves .NAME to.
 #
 # What's left here is the dynamic half of hey's dispatcher, which has to walk
-# $DOTFILES_HOME:
+# /etc/dotfiles (or $DOTFILES_HOME, if set):
 #
 #   hey wm|host CMD        -- scripts in {config/$WM,hosts/$HOST}/bin (and
 #                             bin/hey.d/wm.d, for wm)
@@ -302,7 +302,7 @@ _hey() {
   local _hey_bin=hey
 
   # `hey` resolves these internally (see lib/hey/lib.janet)
-  local _hey_root=${DOTFILES_HOME:-${${(%):-%x}:A:h:h:h:h}}
+  local _hey_root=${DOTFILES_HOME:-/etc/dotfiles}
   local _hey_host=$HOST
   local _hey_wm=${${(M)${(L)XDG_CURRENT_DESKTOP}:#*hyprland*}:+hypr}
   local _hey_datadir=${XDG_DATA_HOME:-$HOME/.local/share}/hey

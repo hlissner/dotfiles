@@ -54,8 +54,3 @@
   expand, since it's the one that knows its own $HOME.``
   [role]
   (if (= "workstation" role) "$HOME/.config/ssh" "$HOME/.ssh"))
-
-(defn heyenv
-  "The HEYENV this flake wants, aimed at HOST instead of at me."
-  [host]
-  (string (json/encode (merge (flake) {:host host}))))

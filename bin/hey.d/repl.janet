@@ -19,8 +19,6 @@
 (use sh)
 
 (defcmd repl [_ file]
-  # Whatever I poke at in there may shell out to nix against this flake.
-  (os/setenv "HEYENV" (flake/json))
   (if file
     (do (unless (path/file? file)
           (abort "No such file: %s" file))

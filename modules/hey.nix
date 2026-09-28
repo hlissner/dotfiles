@@ -46,6 +46,16 @@ let cfg = config.hey;
     wmDir = { hyprland = "hypr"; niri = "niri"; }.${cfg.desktop};
 in {
   options.hey = with types; {
+    # The live checkout, as opposed to `self.dir`. Everything the built system
+    # links to or sources goes through these so an edit doesn't wait for a
+    # rebuild.
+    dir = mkOpt' str "/etc/dotfiles"
+      "Where the dotfiles checkout lives on the running system. Never a store path.";
+    binDir = mkOpt' str "${cfg.dir}/bin" "bin/ of the live checkout.";
+    libDir = mkOpt' str "${cfg.dir}/lib" "lib/ of the live checkout.";
+    configDir = mkOpt' str "${cfg.dir}/config" "config/ of the live checkout.";
+    modulesDir = mkOpt' str "${cfg.dir}/modules" "modules/ of the live checkout.";
+
     desktop = mkOpt' (nullOr str) null
       "The desktop this system runs, naming the config/NAME hey looks in.";
     info = mkOpt' (attrsOf (pkgs.formats.json {}).type) {}
@@ -57,6 +67,11 @@ in {
   };
 
   config = {
+    assertions = [{
+      assertion = hasPrefix "/" cfg.dir && !(hasPrefix storeDir cfg.dir);
+      message = "hey.dir must be an absolute path outside the nix store (got ${toString cfg.dir})";
+    }];
+
     # So systemd services in downstream modules/profiles can call hey without
     # dealing with PATH shenanigans.
     _module.args.heyBin = getExe heyPkg;
@@ -88,6 +103,8 @@ in {
     # Via /etc, not the store path: session vars are frozen at login, so a store
     # path here keeps the rofi scripts on the old libs across every `hey sync`
     # until I log out, while the hey they're called from moves on without them.
+    # Not under /etc/dotfiles either: that's the checkout, and setup-etc would
+    # follow the link and drop this into my working tree.
     environment.etc."hey/janet".source = heyPkg.janetLibs;
     environment.sessionVariables = {
       JANET_TREE = janetTreeDir;
@@ -99,10 +116,13 @@ in {
 
     # Where lib/hey/lib.janet gets a usable PATH from, for hey invocations
     # in systemd units with no/incomplete $PATH.
-    system.userActivationScripts.initHeyPath = ''
-      mkdir -p "$XDG_DATA_HOME/hey"
-      ${pkgs.zsh}/bin/zsh -c 'echo $PATH' >"$XDG_DATA_HOME/hey/path"
-    '';
+    system.userActivationScripts.initHeyPath = {
+      deps = [ "initXDG" ];
+      text = ''
+        mkdir -p "$XDG_STATE_HOME/hey"
+        ${pkgs.zsh}/bin/zsh -c 'echo $PATH' >"$XDG_STATE_HOME/hey/path"
+      '';
+    };
 
     # Let me know when Hey is rebuilt.
     system.activationScripts.heyVersion =
@@ -118,12 +138,11 @@ in {
     # Setting PATH in both environment.{variables,sessionVariables} causes
     # merge-conflict errors, so do these separately.
     environment.extraInit = mkAfter ''
-      export PATH="${janetTreeDir}/bin:$PATH:${hey.binDir}"
+      export PATH="${janetTreeDir}/bin:$PATH:${cfg.binDir}"
     '';
 
     programs.zsh.shellInit = mkBefore ''
-      export DOTFILES_HOME="${hey.dir}"
-      export fpath=( "${hey.libDir}/zsh" "${hey.libDir}/zsh/completions" "''${fpath[@]}" )
+      export fpath=( "${cfg.libDir}/zsh" "${cfg.libDir}/zsh/completions" "''${fpath[@]}" )
       autoload -Uz "''${fpath[1]}"/hey.*(.:t)
     '';
 
@@ -139,8 +158,8 @@ in {
     hey.info.hooks = cfg.hookPaths;
 
     hey.hookPaths = mkBefore (
-      [ "${hey.dir}/hosts/${baseNameOf (toString hey.hostDir)}/hooks" ]
-      ++ optional (cfg.desktop != null) "${hey.configDir}/${wmDir}/hooks"
+      [ "${cfg.dir}/hosts/${baseNameOf (toString hey.hostDir)}/hooks" ]
+      ++ optional (cfg.desktop != null) "${cfg.configDir}/${wmDir}/hooks"
       ++ map (n: "${config.home.dataDir}/hey/hooks.d/${n}.d") hookNames);
 
     home.dataFile = hookFiles // {
@@ -148,6 +167,6 @@ in {
     };
 
     # For `hey wm play-sound`, and anything else that speaks sound themes.
-    home.dataLink."sounds/hey" = "${hey.dir}/assets/sounds";
+    home.dataLink."sounds/hey" = "${cfg.dir}/assets/sounds";
   };
 }

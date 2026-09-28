@@ -65,9 +65,9 @@ in {
     expected = true;
   };
 
-  # The baseline is config/noctalia/ off hey.configDir, which on a real host is
-  # the live checkout, so edits need no rebuild. (The harness evaluates a store
-  # copy of the flake, so only the shape can be pinned here, not the prefix.)
+  # The baseline is config/noctalia/ off config.hey.configDir, the live
+  # checkout, so edits need no rebuild. Only the shape is pinned; where the
+  # checkout is belongs to modules/hey.nix's suite.
   testBaselineIsIncludedFromTheConfigDir = {
     expr = any (hasSuffix "/config/noctalia/") base.include.files;
     expected = true;

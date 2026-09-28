@@ -41,11 +41,7 @@
 #      vim /mnt/etc/nixos/hardware-configuration.nix   # change uuids to labels
 #
 # 7. Install dotfiles:
-#      nix-env -iA nixos.git nixos.nixFlakes
-#      mkdir -p /mnt/home/hlissner/.config
-#      cd /mnt/home/hlissner/.config
-#      git clone https://github.com/hlissner/dotfiles
-#      nixos-install --root /mnt --flake .#linode --impure
+#      zsh <(curl -s https://raw.githubusercontent.com/hlissner/dotfiles/refs/heads/master/install.zsh)
 #
 # 8. Reboot into "Boot" profile.
 
