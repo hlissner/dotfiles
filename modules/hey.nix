@@ -72,10 +72,6 @@ in {
       message = "hey.dir must be an absolute path outside the nix store (got ${toString cfg.dir})";
     }];
 
-    # So systemd services in downstream modules/profiles can call hey without
-    # dealing with PATH shenanigans.
-    _module.args.heyBin = getExe heyPkg;
-
     environment.systemPackages = with pkgs; [
       heyPkg
       gcc

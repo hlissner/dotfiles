@@ -2,7 +2,7 @@
 #
 # Sets up a hyprland-based desktop environment.
 
-{ hey, heyBin, lib, config, pkgs, ... }:
+{ hey, lib, config, pkgs, ... }:
 
 with lib;
 with hey.lib;
@@ -227,7 +227,7 @@ in {
           ExecStart = "${getExe' pkgs.coreutils "true"}";
           # -f because the stamp is the guard now; hook.janet's would only make
           # a no-op exit 127 and log a unit failure on the way down.
-          ExecStop = "${heyBin} hook -f on-shutting-down";
+          ExecStop = "${hey} hook -f on-shutting-down";
           # A wedged hook must not hold the shutdown open indefinitely.
           TimeoutStopSec = 15;
         };
@@ -246,7 +246,7 @@ in {
         let run = hook: ''
               ${pkgs.systemd}/bin/systemd-run --machine=${config.user.name}@.host \
                 --user --pipe --wait --collect --quiet \
-                ${heyBin} hook -f ${hook} || true
+                ${hey} hook -f ${hook} || true
             '';
         in {
           description = "Run hey's sleep hooks around suspend";

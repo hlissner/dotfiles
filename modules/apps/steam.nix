@@ -1,6 +1,6 @@
 # modules/apps/steam.nix
 
-{ hey, heyBin, lib, config, options, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with lib;
 with hey.lib;
@@ -38,8 +38,8 @@ in {
             renice = 10;
           };
           custom = {
-            start = "${heyBin} hook on-gamemode on";
-            end = "${heyBin} hook on-gamemode off";
+            start = "${hey} hook on-gamemode on";
+            end = "${hey} hook on-gamemode off";
           };
         };
       };

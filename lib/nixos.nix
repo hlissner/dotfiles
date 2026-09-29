@@ -53,6 +53,12 @@ rec {
       lib = heyLib;
       inputs = mapAttrs (_: forSystem system) flake.inputs;
       modules = nixosModulesOf flake.inputs;
+      # So a unit can say `"${hey} hook …"` and skip the PATH shenanigans.
+      # Without this, `"${hey}"` still coerces -- to the flake's outPath, which
+      # is never what anyone meant. Lazy, so a flake with no hey package only
+      # trips on use.
+      bin = getExe flake.packages.${system}.hey;
+      __toString = self: self.bin;
     };
 
   mkHostModules = {

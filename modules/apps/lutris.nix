@@ -1,6 +1,6 @@
 # modules/apps/lutris.nix
 
-{ hey, heyBin, lib, config, options, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with lib;
 with hey.lib;

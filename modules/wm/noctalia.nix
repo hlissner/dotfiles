@@ -3,7 +3,7 @@
 # Noctalia: the shell itself, its plugins, and the login screen it puts in
 # front of them. Follows modules.wm.desktop = "hyprland".
 
-{ self, hey, heyBin, lib, config, pkgs, ... }:
+{ self, hey, lib, config, pkgs, ... }:
 
 with lib;
 with hey.lib;
@@ -234,7 +234,7 @@ in {
           if names == []
           then throw "No hooks found in ${header}; Noctalia moved them."
           else genAttrs names (name: escapeShellArgs
-            [ heyBin "hook" "-f" "on-${replaceStrings [ "_" ] [ "-" ] name}" ]);
+            [ hey.bin "hook" "-f" "on-${replaceStrings [ "_" ] [ "-" ] name}" ]);
       };
     })
 

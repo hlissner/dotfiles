@@ -156,4 +156,19 @@ in {
     };
     expected = { stored = true; live = false; };
   };
+
+  ## The binary.
+
+  # `"${hey} hook …"` is how units call hey by store path. It has to be the
+  # package's exe and not the flake's outPath, which is what an attrset with
+  # no __toString of its own would quietly coerce to.
+  testHeyCoercesToItsBinary =
+    let hey = mkHey {}; in {
+      expr = {
+        same = "${hey}" == hey.bin;
+        exe = hasSuffix "/bin/hey" hey.bin;
+        notSource = !(hasPrefix hey.outPath hey.bin);
+      };
+      expected = { same = true; exe = true; notSource = true; };
+    };
 }
