@@ -23,7 +23,7 @@ jobs:
       # second one would be talking to a daemon it doesn't match.
       TOOLCHAIN: nixpkgs#janet nixpkgs#jpm nixpkgs#gcc nixpkgs#zsh nixpkgs#git
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: cachix/install-nix-action@v31
         with:
@@ -71,7 +71,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: cachix/install-nix-action@v31
         with:
