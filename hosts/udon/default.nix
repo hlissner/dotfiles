@@ -106,7 +106,6 @@ with builtins;
 
       browsers.default = "librewolf";
       browsers.librewolf.enable = true;
-      browsers.librewolf.beval.enable = true;
       media.cad.enable = true;
       media.daw.enable = true;
       media.graphics.enable = true;
