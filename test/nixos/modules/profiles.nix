@@ -46,6 +46,19 @@ in {
     expected = { realtime = true; plain = true; };
   };
 
+  # The 128-frame buffer belongs to JACK clients only. A global default in
+  # client.conf once made every notification sound crackle (a non-RT process
+  # with 2.7ms of slack), so this pins where it lives, not just that it exists.
+  testRealtimeLatencyIsJackOnly =
+    let rt = (pipewire [ "audio/realtime" ]).extraConfig;
+    in {
+      expr = {
+        jack   = rt.jack."99-lowlatency"."jack.properties"."node.latency";
+        client = rt.client or {} ? "99-lowlatency";
+      };
+      expected = { jack = "128/48000"; client = false; };
+    };
+
   # The profiles set is republished for shell feature-detection via hey.info.
   # Unset reads as null, not "": it reaches Lua through generators.toLua,
   # where a null drops the key entirely, so hey.profiles.platform is absent

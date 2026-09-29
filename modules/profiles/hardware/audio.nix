@@ -57,10 +57,8 @@ mkMerge [
           "pulse.min.quantum" = "128/48000";
           "pulse.min.frag" = "128/48000";
         };
-        client."99-lowlatency"."stream.properties" = {
-          "node.latency" = "128/48000";
-          "resample.quality" = 1;
-        };
+        # Only give JACK clients (e.g. my DAWs) the 128-frame buffer
+        jack."99-lowlatency"."jack.properties"."node.latency" = "128/48000";
       };
 
       wireplumber = {
