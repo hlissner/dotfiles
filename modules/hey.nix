@@ -116,8 +116,8 @@ in {
 
     # Where lib/hey/lib.janet gets a usable PATH from, for hey invocations
     # in systemd units with no/incomplete $PATH.
-    system.userActivationScripts.initHeyPath = {
-      deps = [ "initXDG" ];
+    system.userActivationScripts.hey-init-path = {
+      deps = [ "hey-init-xdg" ];
       text = ''
         mkdir -p "$XDG_STATE_HOME/hey"
         ${pkgs.zsh}/bin/zsh -c 'echo $PATH' >"$XDG_STATE_HOME/hey/path"
@@ -125,7 +125,7 @@ in {
     };
 
     # Let me know when Hey is rebuilt.
-    system.activationScripts.heyVersion =
+    system.activationScripts.hey-version =
       let stamp = "/var/lib/hey/installed"; in ''
         if [ "$(cat ${stamp} 2>/dev/null)" != "${heyPkg}" ]; then
           printf '\033[32m✓ hey rebuilt:\033[0m %s\n' "${heyPkg}"

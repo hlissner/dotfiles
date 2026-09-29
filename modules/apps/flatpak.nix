@@ -24,7 +24,7 @@ in {
         '');
     };
 
-    systemd.services.flatpak-repo = {
+    systemd.services.hey-flatpak-repo = {
       wantedBy = [ "multi-user.target" ];
       path = [ config.services.flatpak.package ];
       script = ''

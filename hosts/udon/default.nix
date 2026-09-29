@@ -170,7 +170,7 @@ with builtins;
     # My 3080TI's VRAM idles at 405-810MHz and takes a beat too long to climb
     # out of it when hyprland (or scroll-overview) gets busy, which makes it
     # feel stuttery and slow, so up its speed floor while I'm on the system.
-    systemd.user.services.nvidia-clock-floor = {
+    systemd.user.services.hey-nvidia-clock-floor = {
       wantedBy = [ "graphical-session.target" ];
       partOf = [ "graphical-session.target" ];
       after = [ "graphical-session.target" ];
@@ -196,7 +196,7 @@ with builtins;
     # many peripherals attached to it (shared between Windows and Linux) that
     # can unpredictably wake it otherwise. Ensures *only* the power button can
     # wake it up.
-    systemd.services.fixSuspend = {
+    systemd.services.hey-fix-suspend = {
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;

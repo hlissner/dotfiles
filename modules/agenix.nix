@@ -18,7 +18,7 @@ in {
   };
 
   config = {
-    system.activationScripts.agenixHostKey = mkIf (config.age.secrets != {}) ''
+    system.activationScripts.hey-agenix-host-key = mkIf (config.age.secrets != {}) ''
       if [[ ! -e ${escapeShellArg hostKey} ]]; then
         echo "Secrets provided, but no host key was found at ${hostKey}" >&2
         exit 1

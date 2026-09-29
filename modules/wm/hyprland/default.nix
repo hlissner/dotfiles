@@ -163,7 +163,7 @@ in {
         ${concatStringsSep "\n" (luaMeta "hey" config.hey.info "hey")}
       '';
     in {
-      system.userActivationScripts.hyprlandLuaStub = ''
+      system.userActivationScripts.hey-hyprland-lua-stub = ''
         ln -sfn ${config.programs.hyprland.package}/share/hypr/stubs/hl.meta.lua \
                 ${config.hey.configDir}/hypr/lib/hl.meta.lua
         ln -sfn ${heyMeta} ${config.hey.configDir}/hypr/lib/hey.meta.lua

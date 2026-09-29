@@ -1,9 +1,9 @@
 # test/nixos/modules/home.nix --- tests for modules/home.nix
 #
 # modules/home.nix funnels every *File and *Link option into home.link, by
-# absolute path, and a user activation script hands that to tmpfiles. A path
-# that lands in the wrong dir here lands there in $HOME, and a file that goes
-# missing here simply stops being deployed, silently.
+# absolute path, and hey-home-links.service makes them at boot and after each
+# switch. A path that lands in the wrong dir here lands there in $HOME, and a
+# file that goes missing here simply stops being deployed, silently.
 
 { evalConfig, lib, pkgs, ... }:
 

@@ -23,7 +23,7 @@ in {
 
     # `rbw config set` stops the agent (and locks the vault) every time, so
     # only touch what's actually drifted, or every rebuild would lock me out.
-    system.userActivationScripts.initRbw = ''
+    system.userActivationScripts.hey-init-rbw = ''
       current=$(${rbw} config show 2>/dev/null || echo '{}')
       ${concatStrings (mapAttrsToList (n: v: let v' = escapeShellArg (toString v); in ''
         if [ "$(echo "$current" | ${jq} -r '.${n} // empty')" != ${v'} ]; then

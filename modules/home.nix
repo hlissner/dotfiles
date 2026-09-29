@@ -111,7 +111,7 @@ in {
 
     # I keep a running list of the links I made, so what's dropped from the
     # config gets pruned. Runs at login and on every switch.
-    system.userActivationScripts.homeLinks =
+    system.userActivationScripts.hey-home-links =
       let conf = pkgs.writeText "home-links.conf" (concatLines
             (mapAttrsToList (path: target: "${path}\t${target}")
               (under cfg.dir cfg.link)));

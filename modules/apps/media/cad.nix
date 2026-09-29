@@ -35,7 +35,7 @@ in {
     # I copy these files manually because they should be mutable, as Blender is
     # very stateful. Having a consistent starting point for new systems is good
     # enough for me.
-    system.userActivationScripts.setupBlenderConfig = ''
+    system.userActivationScripts.hey-setup-blender-config = ''
       destdir="$XDG_CONFIG_HOME/blender/${version}/config"
       mkdir -p "$destdir"
       for cfile in ${config.hey.configDir}/blender/config/*; do

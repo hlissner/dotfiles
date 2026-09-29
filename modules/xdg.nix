@@ -122,7 +122,7 @@ in {
       # auto-create them with overly permissive defaults OR may not create them
       # at all when trying to write them, causing errors. Best to do it right
       # from the start.
-      system.userActivationScripts.initXDG = ''
+      system.userActivationScripts.hey-init-xdg = ''
         for dir in "$XDG_DESKTOP_DIR" "$XDG_STATE_HOME" "$XDG_DATA_HOME" "$XDG_CACHE_HOME" "$XDG_BIN_HOME" "$XDG_CONFIG_HOME"; do
           mkdir -p "$dir" -m 700
         done

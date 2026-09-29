@@ -25,11 +25,11 @@ in {
   testHostKeyIsCheckedAtActivationNotEval = {
     expr = {
       script = hasInfix withSecrets.modules.agenix.hostKey
-                 (scriptOf withSecrets.system.activationScripts.agenixHostKey);
+                 (scriptOf withSecrets.system.activationScripts.hey-agenix-host-key);
       # The old assertion pathExists'd the key, and a check build is exactly
       # where that's false; nothing may fail now that secrets are declared.
       failed = map (a: a.message) (filter (a: !a.assertion) withSecrets.assertions);
-      idle = withoutSecrets.system.activationScripts ? agenixHostKey;
+      idle = withoutSecrets.system.activationScripts ? hey-agenix-host-key;
     };
     expected = { script = true; failed = []; idle = false; };
   };
