@@ -68,12 +68,13 @@ end
 
 -- For my Noctalia compass plugin. Emits:
 --
---   NAME HOPS NORTH SOUTH WEST EAST SPECIAL
+--   NAME HOPS NORTH SOUTH WEST EAST SPECIAL FOCUSED
 --
 -- HOPS is how far the active workspace sits from home, in *tape* steps rather
 -- than ids (positive = home is north). NORTH/SOUTH (bool): does an occupied
 -- workspace exist that way? WEST/EAST (bool): are there tiled windows beyond
 -- the edge of the screen?  SPECIAL (bool): Is the special workspace active?
+-- FOCUSED (bool): is this the focused monitor?
 --
 -- Read via `hyprctl repl` (by config/noctalia/plugins/compass/service.luau), so
 -- everything is treated as a string.
@@ -112,9 +113,9 @@ function M.compass()
         end
       end
 
-      out[#out + 1] = string.format("%s %d %d %d %d %d %d", mon.name, hops,
+      out[#out + 1] = string.format("%s %d %d %d %d %d %d %d", mon.name, hops,
         north and 1 or 0, south and 1 or 0, west and 1 or 0, east and 1 or 0,
-        special and 1 or 0)
+        special and 1 or 0, mon.focused and 1 or 0)
     end
   end
   return table.concat(out, "\n")

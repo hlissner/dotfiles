@@ -29,10 +29,10 @@ local function socketPath()
   return `{runtimeDir}/hypr/{sig}/.socket2.sock`
 end
 
--- "NAME HOPS NORTH SOUTH WEST EAST SPECIAL", one monitor per line.
+-- "NAME HOPS NORTH SOUTH WEST EAST SPECIAL FOCUSED", one monitor per line.
 local function parse(text)
   local out = {}
-  for name, hops, n, s, w, e, sp in string.gmatch(text, "(%S+) (%-?%d+) (%d) (%d) (%d) (%d) (%d)") do
+  for name, hops, n, s, w, e, sp, f in string.gmatch(text, "(%S+) (%-?%d+) (%d) (%d) (%d) (%d) (%d) (%d)") do
     out[name] = {
       hops = tonumber(hops),
       north = n == "1",
@@ -40,6 +40,7 @@ local function parse(text)
       west = w == "1",
       east = e == "1",
       special = sp == "1",
+      focused = f == "1",
     }
   end
   return out

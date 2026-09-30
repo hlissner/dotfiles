@@ -5,7 +5,8 @@
 -- north/south light up for occupied workspaces that way (the one facing home
 -- in its own colour), west/east for windows off-screen that way, and a badge
 -- in the middle counts the SUPER+j/k presses home. Draws the service's line
--- for the monitor this bar is on, and nothing else.
+-- for the monitor this bar is on (or the focused one, if asked), and nothing
+-- else.
 --
 -- It's an SVG, not a ui.* tree. The reconciler has one radius for all four
 -- corners, no overlay and no clipping, so anything wedge-shaped or two-tone
@@ -178,8 +179,23 @@ local function svg(c)
   return table.concat(out, "\n")
 end
 
+-- The line this widget draws. `focused` is in the service's state, not asked
+-- of Noctalia here, so that a focus change is a state change (see the FOCUSED
+-- column in config/hypr/lib/workspace.lua).
+local function pick()
+  if setting("monitor", "bar") == "focused" then
+    for _, c in pairs(compass) do
+      if c.focused then
+        return c
+      end
+    end
+    return {}
+  end
+  return (output ~= nil and compass[output]) or {}
+end
+
 local function render()
-  local c = (output ~= nil and compass[output]) or {}
+  local c = pick()
   local body = svg(c)
   local file = `{cacheDir}/{hash(body)}.svg`
   if not noctalia.fileExists(file) then

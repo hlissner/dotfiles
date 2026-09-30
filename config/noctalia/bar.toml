@@ -239,6 +239,7 @@ capsule = false
 badge_size = 12
 font_size = 10
 home_color = "tertiary"
+monitor = "focused"
 radius = 1
 size = 22
 special_home_color = "error"

@@ -1,6 +1,10 @@
 {
   "settings.poll_ms.label": "Poll interval",
   "settings.poll_ms.description": "Milliseconds between asking Hyprland, on top of reacting to its events. Rolling the tape by gesture announces nothing, so this is what catches it. 0 disables the poll.",
+  "settings.monitor.label": "Monitor",
+  "settings.monitor.description": "Whose workspaces the dial describes: the monitor this bar is on, or whichever one has focus.",
+  "settings.monitor.options.bar": "This bar's",
+  "settings.monitor.options.focused": "The focused one",
   "settings.shape.label": "Shape",
   "settings.shape.description": "The dial's outline. Either way it's cut on the diagonals into four quadrants, one per compass point.",
   "settings.shape.options.circle": "Circle",

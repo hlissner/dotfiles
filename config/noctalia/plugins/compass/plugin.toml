@@ -11,11 +11,12 @@
 # Two entries. The service asks Hyprland -- once, whatever the number of
 # bars -- through `hyprctl repl 'return hey.ws.compass()'`, a function in my
 # Hyprland config (config/hypr/lib/workspace.lua) that already knows the tape
-# order and each monitor's home. Widgets only draw their own monitor's line.
+# order and each monitor's home. A widget draws its own monitor's line, or
+# the focused monitor's if told to.
 
 id           = "hey/compass"
 name         = "Workspace Compass"
-version      = "1.0.0"
+version      = "1.1.0"
 plugin_api   = 31  # noctalia.getColor; the SVG needs real hex
 author       = "hlissner"
 license      = "MIT"
@@ -41,6 +42,17 @@ entry = "service.luau"
 [[widget]]
 id    = "compass"
 entry = "widget.luau"
+
+  [[widget.setting]]
+  key             = "monitor"
+  type            = "select"
+  label_key       = "settings.monitor.label"
+  description_key = "settings.monitor.description"
+  default         = "bar"
+  options = [
+    { value = "bar",     label_key = "settings.monitor.options.bar" },
+    { value = "focused", label_key = "settings.monitor.options.focused" },
+  ]
 
   [[widget.setting]]
   key             = "shape"
