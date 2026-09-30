@@ -67,16 +67,15 @@ end
 
 function M.overview(arg, scale)
   return function()
-    -- Only toggle the overview if not in a scratchpad
-    if hl.get_active_special_workspace() then
-      hl.dispatch(hl.dsp.exec_cmd("hey wm play-sound blip"))
-    else
-      if scale then
-        default_scale = default_scale or hl.get_config("plugin:scrolloverview:scale")
-        hl.config({ plugin = { scrolloverview = { scale = scale } } })
-      end
-      dispatch(arg)
+    local ws = hl.get_active_special_workspace()
+    if ws then
+      hl.dispatch(hl.dsp.workspace.toggle_special((ws.name:gsub("^special:", ""))))
     end
+    if scale then
+      default_scale = default_scale or hl.get_config("plugin:scrolloverview:scale")
+      hl.config({ plugin = { scrolloverview = { scale = scale } } })
+    end
+    dispatch(arg)
   end
 end
 
