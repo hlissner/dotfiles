@@ -2,17 +2,12 @@
 
 g() { [[ $# = 0 ]] && git status --short . || git $*; }
 
-alias cdd='cd `git rev-parse --show-toplevel`'
+alias gcd='cd `git rev-parse --show-toplevel`'
 alias git='noglob git'
 alias ga='git add'
 alias gap='git add --patch'
-alias gb='git branch -av'
 alias gop='git open'
 alias gbl='git blame'
-alias gc='git commit'
-alias gcm='git commit -m'
-alias gca='git commit --amend'
-alias gcf='git commit --fixup'
 alias gcl='git clone'
 alias gco='git checkout'
 alias gcoo='git checkout --'
@@ -28,6 +23,10 @@ alias gss='git status'
 alias gst='git stash'
 alias gr='git reset HEAD'
 alias gv='git rev-parse'
+alias gw='git worktree'
+alias gwl='git worktree list'
+alias gwa='git worktree add'
+alias gwr='git worktree remove'
 
 # fzf
 if (( $+commands[fzf] )); then
