@@ -15,7 +15,7 @@ reserve_space      = true
 capsule            = false
 widget_spacing     = 8
 
-start = [ "submap", "screencast", "compass", "timer", "group:activity" ]
+start = [ "submap", "screencast", "compass", "timer", "group:activity", "media" ]
 center = [ "date", "clock", "weather" ]
 end = [ "tray", "group:devices", "group:system", "notifications", "privacy" ]
 show_on_workspace_switch = false
@@ -207,10 +207,14 @@ visualization = "gauge"
 capsule = true
 capsule_opacity = 0.0
 capsule_padding = 18
+album_art_only = true
 hide_when_no_media = true
 show_progress = true
 max_length = 400
 title_scroll = "on_hover"
+
+    [widget.media.actions]
+    right = "exec hyprctl dispatch 'hl.dsp.focus({ window = \"class:feishin\" })'"
 
 [widget.launcher]
 glyph = "search"
