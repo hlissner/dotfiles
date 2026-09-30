@@ -15,6 +15,12 @@ in {
       # unconditionally), interfering with my $DUMB/$EMACS terminal guard and
       # p10k's instant prompt feature. I'll just load it myself.
       enableZshIntegration = false;
+
+      # Workaround for nix-community/nix-direnv#786
+      # REVIEW: Remove when pkgs.direnv gets beyond 3.2.0
+      direnvrcExtra = ''
+        _nix_refresh_gcroots() { :; }
+      '';
     };
 
     modules.shell.zsh.rcInit = ''
