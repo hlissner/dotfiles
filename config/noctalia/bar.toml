@@ -15,7 +15,7 @@ reserve_space      = true
 capsule            = false
 widget_spacing     = 8
 
-start = [ "submap", "screencast", "scroll_overview", "timer", "group:activity" ]
+start = [ "submap", "screencast", "compass", "timer", "group:activity" ]
 center = [ "date", "clock", "weather" ]
 end = [ "tray", "group:devices", "group:system", "notifications", "privacy" ]
 show_on_workspace_switch = false
@@ -89,13 +89,14 @@ type = "hey/hypr-submap:hypr-submap"
 hide_when_default = true
 show_label = false
 capsule = true
-capsule_fill = "primary"
 capsule_foreground = "shadow"
+capsule_fill = "tertiary"
 
     [widget.submap.glyphs]
     screencap = "video"
     screenshot = "screenshot"
     session = "power"
+    scrolloverview = "apps"
 
 [widget.timer]
 type = "hey/timer:bar"
@@ -216,3 +217,21 @@ tooltip = "Overview"
   [widget.scroll_overview.actions]
   left  = '''exec hyprctl eval 'hey.plugins.so.overview("toggle")()' '''
   right = '''exec hyprctl eval 'hey.plugins.so.overview("toggle all", 0.4)()' '''
+
+[widget.compass]
+type = "hey/compass:compass"
+capsule = false
+badge_size = 12
+font_size = 10
+home_color = "tertiary"
+radius = 1
+size = 22
+special_home_color = "error"
+special_window_color = "secondary"
+special_workspace_color = "secondary"
+window_color = "primary"
+workspace_color = "primary"
+
+    [widget.compass.actions]
+    left = "exec hyprctl eval 'hey.plugins.so.overview(\"toggle\")()'"
+    right = "exec noctalia msg window-switcher"

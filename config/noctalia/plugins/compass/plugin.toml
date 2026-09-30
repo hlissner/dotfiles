@@ -1,0 +1,211 @@
+# config/noctalia/plugins/compass/plugin.toml
+#
+# Mine. Under the scrolling layout and "infinite" workspaces, nothing in the
+# bar says whether there's anything above or below this workspace, whether
+# the tape has windows hanging off either side of the screen, or how far from
+# home (the monitor's default workspace) I've wandered. This is a small dial
+# that answers all three: four quadrants (a pizza cut on the diagonals, so
+# each faces a compass point) light up per direction, and a badge in the
+# middle counts the SUPER+j/k presses back home.
+#
+# Two entries. The service asks Hyprland -- once, whatever the number of
+# bars -- through `hyprctl repl 'return hey.ws.compass()'`, a function in my
+# Hyprland config (config/hypr/lib/workspace.lua) that already knows the tape
+# order and each monitor's home. Widgets only draw their own monitor's line.
+
+id           = "hey/compass"
+name         = "Workspace Compass"
+version      = "1.0.0"
+plugin_api   = 31  # noctalia.getColor; the SVG needs real hex
+author       = "hlissner"
+license      = "MIT"
+dependencies = ["socat", "stdbuf", "hyprctl"]
+tags         = ["hyprland", "workspaces", "bar"]
+icon         = "compass"
+description  = "Where the occupied workspaces and off-screen windows are, and how far home is."
+
+# Plugin-level, so the service sees it (widget settings don't reach it).
+[[setting]]
+key             = "poll_ms"
+type            = "int"
+label_key       = "settings.poll_ms.label"
+description_key = "settings.poll_ms.description"
+default         = 1000
+min             = 0
+max             = 60000
+
+[[service]]
+id    = "poll"
+entry = "service.luau"
+
+[[widget]]
+id    = "compass"
+entry = "widget.luau"
+
+  [[widget.setting]]
+  key             = "shape"
+  type            = "select"
+  label_key       = "settings.shape.label"
+  description_key = "settings.shape.description"
+  default         = "circle"
+  options = [
+    { value = "circle", label_key = "settings.shape.options.circle" },
+    { value = "square", label_key = "settings.shape.options.square" },
+  ]
+
+  [[widget.setting]]
+  key             = "size"
+  type            = "int"
+  label_key       = "settings.size.label"
+  description_key = "settings.size.description"
+  default         = 20
+  min             = 10
+  max             = 64
+
+  [[widget.setting]]
+  key             = "radius"
+  type            = "int"
+  label_key       = "settings.radius.label"
+  default         = 5
+  min             = 0
+  max             = 32
+  visible_when    = { key = "shape", values = ["square"] }
+
+  [[widget.setting]]
+  key             = "divider"
+  type            = "int"
+  label_key       = "settings.divider.label"
+  description_key = "settings.divider.description"
+  default         = 1
+  min             = 0
+  max             = 8
+
+  # 0 = derived from the size (half of it, and 0.8 of the badge), which is
+  # what the defaults used to be hard-wired to.
+  [[widget.setting]]
+  key             = "badge_size"
+  type            = "int"
+  label_key       = "settings.badge_size.label"
+  description_key = "settings.badge_size.description"
+  default         = 0
+  min             = 0
+  max             = 64
+
+  [[widget.setting]]
+  key             = "font_size"
+  type            = "int"
+  label_key       = "settings.font_size.label"
+  description_key = "settings.font_size.description"
+  default         = 0
+  min             = 0
+  max             = 64
+
+  [[widget.setting]]
+  key             = "font_family"
+  type            = "string"
+  label_key       = "settings.font_family.label"
+  description_key = "settings.font_family.description"
+  default         = ""
+  advanced        = true
+
+  # `color` is the same roles/Custom dropdown the bar's own Color and Icon
+  # Color settings get -- but a plugin's only grows the "Default" entry when the
+  # setting is `advanced` (settings_content_plugins.cpp: allowNone =
+  # spec.advanced). Default is "", and what it means is up to widget.luau: a
+  # faint dial, primary/secondary/tertiary quadrants, on_surface text -- and
+  # for the special set, the same rotated, so a scratchpad reads as one unasked.
+  [[widget.setting]]
+  key             = "fill"
+  type            = "color"
+  label_key       = "settings.fill.label"
+  description_key = "settings.fill.description"
+  default         = ""
+  advanced        = true
+
+  [[widget.setting]]
+  key             = "workspace_color"
+  type            = "color"
+  label_key       = "settings.workspace_color.label"
+  description_key = "settings.workspace_color.description"
+  default         = ""
+  advanced        = true
+
+  [[widget.setting]]
+  key             = "home_color"
+  type            = "color"
+  label_key       = "settings.home_color.label"
+  description_key = "settings.home_color.description"
+  default         = ""
+  advanced        = true
+
+  [[widget.setting]]
+  key             = "window_color"
+  type            = "color"
+  label_key       = "settings.window_color.label"
+  description_key = "settings.window_color.description"
+  default         = ""
+  advanced        = true
+
+  [[widget.setting]]
+  key             = "divider_color"
+  type            = "color"
+  label_key       = "settings.divider_color.label"
+  description_key = "settings.divider_color.description"
+  default         = ""
+  advanced        = true
+
+  [[widget.setting]]
+  key             = "badge_color"
+  type            = "color"
+  label_key       = "settings.badge_color.label"
+  description_key = "settings.badge_color.description"
+  default         = ""
+  advanced        = true
+
+  [[widget.setting]]
+  key             = "text_color"
+  type            = "color"
+  label_key       = "settings.text_color.label"
+  description_key = "settings.text_color.description"
+  default         = ""
+  advanced        = true
+
+  [[widget.setting]]
+  key             = "special_fill"
+  type            = "color"
+  label_key       = "settings.special_fill.label"
+  description_key = "settings.special_fill.description"
+  default         = ""
+  advanced        = true
+
+  [[widget.setting]]
+  key             = "special_workspace_color"
+  type            = "color"
+  label_key       = "settings.special_workspace_color.label"
+  description_key = "settings.special_workspace_color.description"
+  default         = ""
+  advanced        = true
+
+  [[widget.setting]]
+  key             = "special_home_color"
+  type            = "color"
+  label_key       = "settings.special_home_color.label"
+  description_key = "settings.special_home_color.description"
+  default         = ""
+  advanced        = true
+
+  [[widget.setting]]
+  key             = "special_window_color"
+  type            = "color"
+  label_key       = "settings.special_window_color.label"
+  description_key = "settings.special_window_color.description"
+  default         = ""
+  advanced        = true
+
+  [[widget.setting]]
+  key             = "special_divider_color"
+  type            = "color"
+  label_key       = "settings.special_divider_color.label"
+  description_key = "settings.special_divider_color.description"
+  default         = ""
+  advanced        = true

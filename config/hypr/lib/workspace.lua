@@ -66,6 +66,60 @@ function M.grow(w, dir)
   return w.workspace ~= nil and w.workspace.name ~= before
 end
 
+-- For my Noctalia compass plugin. Emits:
+--
+--   NAME HOPS NORTH SOUTH WEST EAST SPECIAL
+--
+-- HOPS is how far the active workspace sits from home, in *tape* steps rather
+-- than ids (positive = home is north). NORTH/SOUTH (bool): does an occupied
+-- workspace exist that way? WEST/EAST (bool): are there tiled windows beyond
+-- the edge of the screen?  SPECIAL (bool): Is the special workspace active?
+--
+-- Read via `hyprctl repl` (by config/noctalia/plugins/compass/service.luau), so
+-- everything is treated as a string.
+function M.compass()
+  local out = {}
+  for _, mon in ipairs(hl.get_monitors() or {}) do
+    local cur = mon.enabled ~= false and hl.get_active_workspace(mon)
+    if cur then
+      local t, at, home = M.tape(mon), nil, nil
+      for i, ws in ipairs(t) do
+        if ws.name == cur.name then at = i end
+        if ws.id and ws.id == M.homes[mon.name] then home = i end
+      end
+      local hops, north, south = 0, false, false
+      if at then
+        if home then hops = at - home end
+        for i, ws in ipairs(t) do
+          if ws.windows > 0 then
+            if i < at then north = true elseif i > at then south = true end
+          end
+        end
+      end
+
+      local special = hl.get_active_special_workspace(mon)
+      local shown = special or cur
+      local west, east = false, false
+      if not shown.has_fullscreen then
+        -- x/width are logical; `at` sits a border's width inside the monitor.
+        local left = mon.x
+        local right = left + (mon.transform % 2 == 1 and mon.height or mon.width) / mon.scale
+        for _, w in ipairs(hl.get_workspace_windows(shown) or {}) do
+          if w.mapped and not w.floating then
+            if w.at.x < left - 4 then west = true end
+            if w.at.x + w.size.x > right + 4 then east = true end
+          end
+        end
+      end
+
+      out[#out + 1] = string.format("%s %d %d %d %d %d %d", mon.name, hops,
+        north and 1 or 0, south and 1 or 0, west and 1 or 0, east and 1 or 0,
+        special and 1 or 0)
+    end
+  end
+  return table.concat(out, "\n")
+end
+
 -- Recover Hyprland in the case a monitor has ended up showing a workspace it
 -- doesn't own.
 function M.rehome()

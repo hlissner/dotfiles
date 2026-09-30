@@ -121,6 +121,7 @@ in {
           "${config.hey.configDir}/noctalia/plugins/hypr-submap";
         "hey/timer".src = "${config.hey.configDir}/noctalia/plugins/timer";
         "hey/screencast".src = "${config.hey.configDir}/noctalia/plugins/screencast";
+        "hey/compass".src = "${config.hey.configDir}/noctalia/plugins/compass";
 
         ## 3rd-party plugins
         "h-jangra/keyviz" = {

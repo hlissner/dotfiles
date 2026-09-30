@@ -213,3 +213,6 @@ timeout_ms = 1200
 
 [plugin_settings."hey/timer"]
 on_expire = "hey wm play-sound alarm"
+
+[plugin_settings."hey/compass"]
+poll_ms = 0

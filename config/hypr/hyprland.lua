@@ -105,12 +105,14 @@ local PRIMARY_WORKSPACE = 100
 do
   local ws = 200
   for _, m in ipairs(hey.hypr.monitors) do
-    local name = tostring(m.output == hey.hypr.primaryMonitor and PRIMARY_WORKSPACE or ws)
-    hl.workspace_rule({ workspace = name,
+    local primary = m.output == hey.hypr.primaryMonitor
+    hl.workspace_rule({ workspace = tostring(primary and PRIMARY_WORKSPACE or ws),
                         monitor = m.output,
                         default = true,
                         persistent = true })
-    ws = ws + PRIMARY_WORKSPACE
+    -- Only the others count up, or the first of them starts at 300 and 200
+    -- is never anyone's.
+    if not primary then ws = ws + PRIMARY_WORKSPACE end
   end
 
   -- Over time, gaps between workspaces form (I'm approximating Niri's "infinite
