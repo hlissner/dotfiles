@@ -153,6 +153,8 @@ hl.window_rule({ match = { class = "^(imv|swayimg)$" },  -- image previewers
                  dim_around = true,
                  border_size = 1,
                  max_size = { "monitor_w*0.96", "monitor_h*0.96" } })
+hl.window_rule({ match = { initial_title = "emacs-everywhere" },
+                 float = true })
 
 -- In multi-monitor setups where some displays are smaller than others, file
 -- dialogs can "remember" their last size in larger monitors and be maximized
