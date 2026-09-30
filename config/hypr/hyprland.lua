@@ -253,7 +253,7 @@ hl.bind("SUPER + Minus", hey.dsp.zoom(-0.3), { repeating = true, submap_universa
 hl.bind("SUPER + Equal", hey.dsp.zoom(0.3),  { repeating = true, submap_universal = true })
 
 -- ** Quit/Session control
-hl.bind("SUPER + q", hl.dsp.window.close())
+hl.bind("SUPER + q", hl.dsp.window.close(), { submap_universal = true })
 hl.bind("SUPER + SHIFT + q", hl.dsp.window.kill())
 hl.bind("SUPER + SHIFT + CTRL + q", hl.dsp.exec_cmd("hey @rofi powermenu"))
 
@@ -384,7 +384,6 @@ if hey.plugins.so then
   hl.define_submap("scrolloverview", function()
     hl.bind("SUPER + SUPER_L", so.overview("off"), { release = true })
     hl.bind("SUPER + SHIFT + SUPER_L", so.overview("off"), { release = true })
-    hl.bind("SUPER + q", so.window("close"))
 
     hl.bind("Return", function() so.overview("select"); so.overview("off") end)
     hl.bind("Space", so.overview("select"))
