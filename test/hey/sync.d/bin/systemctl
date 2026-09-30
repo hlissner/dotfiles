@@ -1,0 +1,11 @@
+#!/usr/bin/env zsh
+# Stand-in for systemctl, for test/hey/sync.janet.
+#
+# Logs its arguments; `start` exits $HEY_TEST_UNIT_EXIT, so the suite can tell
+# a unit that failed from one that ran; `show` answers with a fixed
+# InvocationID, so the suite can check journalctl was asked for that run.
+print -r -- "systemctl $*" >>$HEY_TEST_SYNC_LOG
+case $1 in
+  (start) exit ${HEY_TEST_UNIT_EXIT:-0} ;;
+  (show) print 0123456789abcdef0123456789abcdef ;;
+esac

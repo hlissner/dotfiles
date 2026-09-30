@@ -34,7 +34,7 @@ in {
         "${h.fakeDir}/probe/x"   = "store";
         "${h.configDir}/probe/c" = "store";
         "${h.dataDir}/probe/d"   = "store";
-        # Resolved against $HOME only on its way to tmpfiles
+        # Resolved against $HOME only on its way to the unit
         "probe/l"                 = "/l";
         "/abs/probe/a"            = "/a";
         "${h.configDir}/probe/cl" = "/cl";
@@ -74,6 +74,35 @@ in {
     }]);
     expected = {};
   };
+
+  # What runs the unit on every switch is switch-to-configuration restarting
+  # the active targets, which starts what they want that isn't running: a
+  # system oneshot wanted by multi-user.target, inactive since its last run.
+  # RemainAfterExit would leave it "active", and then only a changed unit file
+  # would restart it, which never happens -- silently. Boot covers `sync boot`
+  # and a fresh install; a user unit would run at login instead.
+  testLinkUnitRunsAtBootAndEverySwitch =
+    let bare = evalConfig [];
+        more = evalConfig [{ home.link."probe/x" = "/x"; }];
+        svc = bare.systemd.services.hey-home-links;
+    in {
+      expr = {
+        inherit (svc) wantedBy;
+        type = svc.serviceConfig.Type;
+        user = svc.serviceConfig.User;
+        remains = svc.serviceConfig.RemainAfterExit or false;
+        home = svc.unitConfig.RequiresMountsFor;
+        listed = hasInfix "/x\n" more.environment.etc."hey/links.conf".text;
+      };
+      expected = {
+        wantedBy = [ "multi-user.target" ];
+        type = "oneshot";
+        user = bare.user.name;
+        remains = false;
+        home = bare.home.dir;
+        listed = true;
+      };
+    };
 
   testEntryWithNothingToLinkThrows = {
     expr = (builtins.tryEval (builtins.deepSeq

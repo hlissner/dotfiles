@@ -108,35 +108,54 @@ in {
 
     home.link = links;
 
-
     # I keep a running list of the links I made, so what's dropped from the
-    # config gets pruned. Runs at login and on every switch.
-    system.userActivationScripts.hey-home-links =
-      let conf = pkgs.writeText "home-links.conf" (concatLines
-            (mapAttrsToList (path: target: "${path}\t${target}")
-              (under cfg.dir cfg.link)));
+    # config can be pruned now and later
+    environment.etc."hey/links.conf".text = concatLines
+      (mapAttrsToList (path: target: "${path}\t${target}")
+        (under cfg.dir cfg.link));
+
+    systemd.services.hey-home-links =
+      let conf = "/etc/hey/links.conf";
           last = "${cfg.stateDir}/hey/links.conf";
       in {
-        deps = [ "initXDG" ];
-        text = ''
-          if [ "$(id -un)" = ${escapeShellArg config.user.name} ]; then
-            if [ -f ${last} ]; then
-              while IFS=$'\t' read -r path target; do
-                grep -qxF "$path"$'\t'"$target" ${conf} && continue
-                [ "$(readlink "$path")" = "$target" ] && rm -f "$path"
-              done < ${last}
-            fi
+        description = "Link home.* files into $HOME";
+        wantedBy = [ "multi-user.target" ];
+        unitConfig.RequiresMountsFor = cfg.dir;
+        serviceConfig = { Type = "oneshot"; User = config.user.name; };
+        path = [ pkgs.coreutils pkgs.gnugrep ];
+        script = ''
+          # On a fresh install's first boot this runs before anyone has logged
+          # in, so before hey-init-xdg (xdg.nix), and mkdir -p won't fix a mode
+          # after the fact. Same roots, same mode as it makes them.
+          mkdir -pm700 ${toString (with cfg; [ binDir cacheDir configDir dataDir stateDir ])}
+          bad=0
+          if [ -f ${last} ]; then
             while IFS=$'\t' read -r path target; do
-              link=$(readlink "$path") && [ "$link" = "$target" ] && continue
+              grep -qxF "$path"$'\t'"$target" ${conf} && continue
+              [ "$(readlink "$path")" = "$target" ] || continue
+              rm -f "$path" && printf '\033[33m[hey] - %s\033[0m\n' "$path"
+            done < ${last}
+          fi
+          while IFS=$'\t' read -r path target; do
+            link=$(readlink "$path") || link=
+            if [ "$link" != "$target" ]; then
               if [[ $link == /nix/store/* ]]; then
                 rm -f "$path"
               elif [ -e "$path" ] || [ -L "$path" ]; then
-                echo "homeLinks: $path is in the way; leaving it be" >&2
-                continue
+                printf '\033[31m[hey] 𐄂 %s is in the way, skipping...\033[0m\n' "$path" >&2
+                bad=$((bad + 1)); continue
               fi
-              mkdir -p "''${path%/*}" && ln -sv "$target" "$path"
-            done < ${conf}
-            install -Dm644 ${conf} ${last}
+              mkdir -p "''${path%/*}" && ln -s "$target" "$path" || {
+                printf '\033[31m[hey] 𐄂 %s could not be linked\033[0m\n' "$path" >&2
+                bad=$((bad + 1)); continue
+              }
+            fi
+            printf '\033[32m[hey] ✓ %s\033[0m\n' "$path"
+          done < ${conf}
+          install -Dm644 ${conf} ${last}
+          if [ "$bad" != 0 ]; then
+            printf '\033[33m[hey] ⚠ %d link(s) failed. Fix and rerun `hey sync links`\033[0m\n' "$bad" >&2
+            exit 1
           fi
         '';
       };

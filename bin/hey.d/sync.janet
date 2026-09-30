@@ -5,6 +5,7 @@
 #   sync [--fast] [--host HOST] [COMMAND] [ARGS...]
 #   sync rollback [GENERATION]
 #   sync build-image [VARIANT]
+#   sync links
 #
 # DESCRIPTION:
 #   Passes --accept-flake-config so flake.nix's nixConfig is respected.
@@ -28,6 +29,7 @@
 #     build-vm-with-bootloader  -- Build a VM with a bootloader.
 #     rollback                  -- Switch back to an older generation.
 #     check                     -- Run nix flake check.
+#     links                     -- Rerun hey-home-links.service and show its output.
 #   * ARGS @sync-arg
 
 (use hey)
@@ -63,6 +65,29 @@
     (unless (do? $? sudo ln -sfn ,home ,link)
       (echof :warn "Couldn't point %s at %s" link (path/abbrev home)))))
 
+(def- *links-unit* "hey-home-links.service")
+
+(defn- links-run []
+  (def id (ignore-errors ($<_ systemctl show -p InvocationID --value ,*links-unit*)))
+  (if (or (nil? id) (empty? id)) nil id))
+
+(defn- links-replay [id]
+  ($? journalctl -q -a -o cat ,(string "_SYSTEMD_INVOCATION_ID=" id)))
+
+(defn- links []
+  (def ok? (do? $? sudo systemctl start ,*links-unit*))
+  (unless (dryrun?)
+    (when-let [id (links-run)] (links-replay id)))
+  ok?)
+
+(defn- links-after
+  ``If switch-to-configuration has started hey-home-links.service, wait for it
+  before displaying its logs.``
+  [before]
+  (when-let [id (links-run)]
+    (unless (= id before)
+      (links-replay id))))
+
 (defn- image-args
   ``nixos-rebuild spells the image variant as a flag; I'd rather type it as the
   argument it reads like. A leading flag is left alone, so --image-variant still
@@ -77,6 +102,9 @@
 (defcmd sync [_ cmd & args &opts fast? --fast host [--host name]]
   (when (= (flake :host) "nixos")
     (abort "HOST is 'nixos'. Did you forget to change it?"))
+
+  (when (= cmd "links")
+    (exit (if (links) 0 1)))
 
   (unless (empty? (hey swap --list))
     (abort "There are swapped files among your dotfiles!"))
@@ -106,10 +134,14 @@
       (unless (do? $? sudo --validate)
         # Prompt for sudo password sooner than later
         (abort "Never got root; stopping before the long part"))
-      (do? $? sudo nixos-rebuild
-           --show-trace
-           --flake ,(string (path :home) "#" host)
-           --accept-flake-config
-           ,;(opts (if fast? "--no-reexec"))
-           ,;(opts (or cmd "switch"))
-           ,;args))))
+      (def mine? (and (not (dryrun?)) (= host (flake :host))))
+      (def before (if mine? (links-run)))
+      (def ok? (do? $? sudo nixos-rebuild
+                    --show-trace
+                    --flake ,(string (path :home) "#" host)
+                    --accept-flake-config
+                    ,;(opts (if fast? "--no-reexec"))
+                    ,;(opts (or cmd "switch"))
+                    ,;args))
+      (if mine? (links-after before))
+      (unless ok? (exit 1)))))

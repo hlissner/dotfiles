@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+# Stand-in for journalctl, for test/hey/sync.janet. Logs its arguments and
+# says something, standing in for the unit's output.
+print -r -- "journalctl $*" >>$HEY_TEST_SYNC_LOG
+print "replayed"

@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+# Stand-in for sudo, for test/hey/sync.janet. Logs that it was asked, then
+# runs the command as it is; the command's own stub logs the rest.
+print -r -- "sudo $*" >>$HEY_TEST_SYNC_LOG
+exec "$@"
