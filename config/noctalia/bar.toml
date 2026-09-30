@@ -130,6 +130,13 @@ meter_width = 3
 gap = 1
 show_label = false
 scale = 0.90
+charged_glyph_color = "tertiary"
+charged_label_color = "tertiary"
+charged_meter_color = "tertiary"
+discharging_glyph_color = "on_surface"
+discharging_label_color = "on_surface"
+discharging_meter_color = "on_surface"
+show_charge_glyph = false
 
 [widget.earphones-battery]
 type = "hey/peripheral-battery:battery"
@@ -139,6 +146,13 @@ meter_height = 10
 meter_width = 3
 show_label = false
 gap = 1
+charged_glyph_color = "tertiary"
+charged_label_color = "tertiary"
+charged_meter_color = "tertiary"
+discharging_glyph_color = "on_surface"
+discharging_label_color = "on_surface"
+discharging_meter_color = "on_surface"
+show_charge_glyph = false
 
 [widget.battery]
 type = "battery"

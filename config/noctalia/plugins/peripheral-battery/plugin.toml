@@ -8,10 +8,15 @@
 #
 # Two entries. The service does the polling -- once, for however many widgets
 # ask -- and the widget only draws.
+#
+# The look is per state (charging, charged, discharging, low): a color dropdown
+# each for glyph, meter and percentage, plus the two plugged-in glyphs. "Default"
+# in a color dropdown is the empty string; PALETTE in widget.luau says what that
+# resolves to.
 
 id           = "hey/peripheral-battery"
 name         = "Peripheral Battery"
-version      = "1.1.0"
+version      = "1.2.0"
 plugin_api   = 24  # runAsync's argv form, for on_connect/on_disconnect
 author       = "hlissner"
 license      = "MIT"
@@ -93,6 +98,139 @@ entry = "widget.luau"
   default         = 20
   min             = 0
   max             = 100
+
+  [[widget.setting]]
+  key             = "full_at"
+  type            = "int"
+  label_key       = "settings.full_at.label"
+  description_key = "settings.full_at.description"
+  default         = 95
+  min             = 50
+  max             = 100
+
+  [[widget.setting]]
+  key             = "show_charge_glyph"
+  type            = "bool"
+  label_key       = "settings.show_charge_glyph.label"
+  description_key = "settings.show_charge_glyph.description"
+  default         = true
+
+  [[widget.setting]]
+  key             = "charging_glyph"
+  type            = "glyph"
+  label_key       = "settings.charging_glyph.label"
+  default         = "bolt-filled"
+  visible_when    = { key = "show_charge_glyph", values = ["true"] }
+
+  [[widget.setting]]
+  key             = "charged_glyph"
+  type            = "glyph"
+  label_key       = "settings.charged_glyph.label"
+  default         = "plug-filled"
+  visible_when    = { key = "show_charge_glyph", values = ["true"] }
+
+  # Plugged in, below full_at.
+  [[widget.setting]]
+  key             = "charging_glyph_color"
+  type            = "color"
+  label_key       = "settings.charging_glyph_color.label"
+  description_key = "settings.charging_glyph_color.description"
+  default         = ""
+  advanced        = true
+
+  [[widget.setting]]
+  key             = "charging_meter_color"
+  type            = "color"
+  label_key       = "settings.charging_meter_color.label"
+  description_key = "settings.charging_meter_color.description"
+  default         = ""
+  advanced        = true
+
+  [[widget.setting]]
+  key             = "charging_label_color"
+  type            = "color"
+  label_key       = "settings.charging_label_color.label"
+  description_key = "settings.charging_label_color.description"
+  default         = ""
+  advanced        = true
+
+
+  # Plugged in, at or above full_at (or upower says fully-charged).
+  [[widget.setting]]
+  key             = "charged_glyph_color"
+  type            = "color"
+  label_key       = "settings.charged_glyph_color.label"
+  description_key = "settings.charged_glyph_color.description"
+  default         = ""
+  advanced        = true
+
+  [[widget.setting]]
+  key             = "charged_meter_color"
+  type            = "color"
+  label_key       = "settings.charged_meter_color.label"
+  description_key = "settings.charged_meter_color.description"
+  default         = ""
+  advanced        = true
+
+  [[widget.setting]]
+  key             = "charged_label_color"
+  type            = "color"
+  label_key       = "settings.charged_label_color.label"
+  description_key = "settings.charged_label_color.description"
+  default         = ""
+  advanced        = true
+
+
+  # Unplugged, above warn_below.
+  [[widget.setting]]
+  key             = "discharging_glyph_color"
+  type            = "color"
+  label_key       = "settings.discharging_glyph_color.label"
+  description_key = "settings.discharging_glyph_color.description"
+  default         = ""
+  advanced        = true
+
+  [[widget.setting]]
+  key             = "discharging_meter_color"
+  type            = "color"
+  label_key       = "settings.discharging_meter_color.label"
+  description_key = "settings.discharging_meter_color.description"
+  default         = ""
+  advanced        = true
+
+  [[widget.setting]]
+  key             = "discharging_label_color"
+  type            = "color"
+  label_key       = "settings.discharging_label_color.label"
+  description_key = "settings.discharging_label_color.description"
+  default         = ""
+  advanced        = true
+
+
+  # Unplugged, at or below warn_below.
+  [[widget.setting]]
+  key             = "low_glyph_color"
+  type            = "color"
+  label_key       = "settings.low_glyph_color.label"
+  description_key = "settings.low_glyph_color.description"
+  default         = ""
+  advanced        = true
+
+  [[widget.setting]]
+  key             = "low_meter_color"
+  type            = "color"
+  label_key       = "settings.low_meter_color.label"
+  description_key = "settings.low_meter_color.description"
+  default         = ""
+  advanced        = true
+
+  [[widget.setting]]
+  key             = "low_label_color"
+  type            = "color"
+  label_key       = "settings.low_label_color.label"
+  description_key = "settings.low_label_color.description"
+  default         = ""
+  advanced        = true
 
   [[widget.setting]]
   key             = "meter_width"
