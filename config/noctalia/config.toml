@@ -213,7 +213,7 @@ overlay_position = "top_center"
 timeout_ms = 1200
 
 [plugin_settings."hey/timer"]
-on_expire = "hey wm play-sound alarm"
+on_expire = "hey wm play-sound alarm-clock-elapsed"
 
 [plugin_settings."hey/compass"]
 poll_ms = 0
