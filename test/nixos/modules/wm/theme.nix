@@ -136,8 +136,6 @@ in {
     let
       header = "${flake.inputs.noctalia}/src/theme/tokens.h";
       tokens = map head (filter isList (split ''"([a-z_0-9]+)"'' (readFile header)));
-      # Sugar the engine resolves before it looks anything up.
-      aliases = [ "hover" "on_hover" ];
       # Seeded colors are never in the header; the engine grows these out of
       # each one at render time.
       derived = concatMap
@@ -149,7 +147,7 @@ in {
       expr =
         if length tokens < 40
         then throw "No color tokens in ${header}; Noctalia moved them."
-        else unique (concatMap (p: subtractLists (tokens ++ aliases ++ derived) (used p))
+        else unique (concatMap (p: subtractLists (tokens ++ derived) (used p))
                                inputs);
       expected = [];
     };

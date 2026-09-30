@@ -48,6 +48,11 @@ in {
             done
           fi
         ''}
+        # agenix (>= 2026-09) nags about finding secrets.nix on its own but not
+        # about being told where it is. I'm not renaming every rules file.
+        if [[ -z "''${AGENIX_RULES:-}" && -z "''${RULES:-}" && -f ./secrets.nix ]]; then
+          export AGENIX_RULES="$PWD/secrets.nix"
+        fi
         exec ${self.inputs.agenix.packages.default}/bin/agenix "''${ARGS[@]}"
       '')
     ];
