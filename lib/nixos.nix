@@ -95,9 +95,6 @@ rec {
         inherit system;
         overlays = attrValues overlays;
         config.allowUnfree = true;
-        # A number of packages depend on python 2.7, but nixpkgs errors out when
-        # it is pulled, so...
-        config.permittedInsecurePackages = [ "python-2.7.18.6" ];
       };
 
       # One package set per system, not one per host. Instantiating nixpkgs is
