@@ -52,7 +52,7 @@ show_on_workspace_switch = false
     fill = "surface_variant"
     foreground = "tertiary"
     id = "activity"
-    members = [ "cpu", "sysmon", "ram", "network_rx", "network_tx" ]
+    members = [ "cpu", "ram", "sysmon", "network_rx", "network_tx" ]
     opacity = 1.0
     padding = 8.0
 
@@ -198,9 +198,10 @@ show_value = false
 show_value = false
 
 [widget.sysmon]
-show_glyph = false
-show_value = true
-visualization = "none"
+show_glyph = true
+show_value = false
+stat = "gpu_usage"
+visualization = "gauge"
 
 [widget.media]
 capsule = true
