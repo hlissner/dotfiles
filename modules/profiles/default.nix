@@ -1,9 +1,9 @@
 # modules/profiles/default.nix
 
-{ hey, lib, options, config, ... }:
+{ self, lib, options, config, ... }:
 
 with lib;
-with hey.lib;
+with self.lib;
 {
   options.modules.profiles = with types; {
     # Null, not "": these name a thing or they don't, and an empty string is a

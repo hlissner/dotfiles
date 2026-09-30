@@ -1,9 +1,9 @@
 # modules/virt/docker.nix
 
-{ hey, lib, options, config, pkgs, ... }:
+{ self, lib, options, config, pkgs, ... }:
 
 with lib;
-with hey.lib;
+with self.lib;
 let cfg = config.modules.virt.docker;
 in {
   options.modules.virt.docker = {

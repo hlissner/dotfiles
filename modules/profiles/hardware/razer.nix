@@ -1,9 +1,9 @@
 # profiles/hardware/razer.nix --- support for razer devices
 
-{ hey, lib, options, config, pkgs, ... }:
+{ self, lib, options, config, pkgs, ... }:
 
 with lib;
-with hey.lib;
+with self.lib;
 mkIf (elem "razer" config.modules.profiles.hardware) {
   hardware.openrazer.enable = true;
 

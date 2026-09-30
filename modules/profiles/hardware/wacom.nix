@@ -1,7 +1,7 @@
-{ hey, lib, options, config, ... }:
+{ self, lib, options, config, ... }:
 
 with lib;
-with hey.lib;
+with self.lib;
 mkIf (elem "wacom" config.modules.profiles.hardware) {
   # REVIEW: Maybe cyber-sushi/makima?
   hardware.opentabletdriver.enable = true;

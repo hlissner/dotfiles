@@ -3,10 +3,10 @@
 # JS is one of those "when it's good, it's alright, when it's bad, it's a
 # disaster" languages.
 
-{ hey, lib, config, options, pkgs, ... }:
+{ self, lib, config, options, pkgs, ... }:
 
 with lib;
-with hey.lib;
+with self.lib;
 let devCfg = config.modules.dev;
     cfg = devCfg.node;
     nodePkg = pkgs.nodejs_latest;

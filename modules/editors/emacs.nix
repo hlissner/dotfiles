@@ -2,10 +2,10 @@
 # https://github.com/doomemacs. This module sets it up to meet my particular
 # Doomy needs.
 
-{ hey, lib, config, pkgs, ... }:
+{ self, lib, config, pkgs, ... }:
 
 with lib;
-with hey.lib;
+with self.lib;
 let cfg = config.modules.editors.emacs;
     emacs = with pkgs; (emacsPackagesFor emacs-git-pgtk).emacsWithPackages
       (epkgs: with epkgs; [
@@ -18,7 +18,7 @@ in {
 
   config = mkIf cfg.enable {
     nixpkgs.overlays = [
-      hey.inputs.emacs-overlay.overlays.default
+      self.inputs.emacs-overlay.overlays.default
     ];
 
     user.packages = with pkgs; [

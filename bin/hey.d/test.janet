@@ -43,7 +43,7 @@
     (abort "Unknown NixOS suite: %s (see hey test -l)" suite))
   (echo :g "> Running the NixOS suite...")
   (flush)
-  # test/nixos fabricates `specialArgs.hey` itself, off the store (see
+  # test/nixos fabricates `specialArgs.self` itself, off the store (see
   # test/nixos/_lib.nix), so the suites don't care where /etc/dotfiles points.
   (unless (do? $? nix build --no-link --no-warn-dirty --accept-flake-config ,(nixos-checks suite))
     (abort "NixOS suite failed"))

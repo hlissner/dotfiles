@@ -5,11 +5,11 @@
 # move. Enterprise (802.1X) networks are NetworkManager-only in its UI, which
 # I'm fine managing by hand.
 
-{ hey, lib, options, config, pkgs, ... }:
+{ self, lib, options, config, pkgs, ... }:
 
 with builtins;
 with lib;
-with hey.lib;
+with self.lib;
 mkIf (elem "wifi" config.modules.profiles.hardware) {
   networking.wireless.iwd = {
     enable = true;

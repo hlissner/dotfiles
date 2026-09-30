@@ -1,6 +1,6 @@
 # Harusame -- my workstation abroad
 
-{ hey, lib, ... }:
+{ self, lib, ... }:
 
 with lib;
 with builtins;

@@ -2,10 +2,10 @@
 #
 # The superior package manager inside NixOS.
 
-{ hey, lib, config, options, ... }:
+{ self, lib, config, options, ... }:
 
 with lib;
-with hey.lib;
+with self.lib;
 let cfg = config.modules.services.guix;
 in {
   options.modules.services.guix = {

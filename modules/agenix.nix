@@ -1,17 +1,17 @@
 # modules/agenix.nix -- encrypt secrets in nix store
 
-{ self, hey, lib, options, config, pkgs, ... }:
+{ self, lib, options, config, pkgs, ... }:
 
 with builtins;
 with lib;
-with hey.lib;
+with self.lib;
 let hostKey = config.modules.agenix.hostKey;
 in {
-  imports = [ hey.modules.agenix.age ];
+  imports = [ self.modules.agenix.age ];
 
   options.modules.agenix = with types; {
     dirs = mkOpt (listOf (either str path)) [
-      "${hey.hostDir}/secrets"
+      "${self.hostDir}/secrets"
       "${self.configDir}/secrets"
     ];
     hostKey = mkOpt str "/etc/ssh/host_ed25519";
@@ -48,7 +48,7 @@ in {
             done
           fi
         ''}
-        exec ${hey.inputs.agenix.packages.default}/bin/agenix "''${ARGS[@]}"
+        exec ${self.inputs.agenix.packages.default}/bin/agenix "''${ARGS[@]}"
       '')
     ];
 

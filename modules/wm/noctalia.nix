@@ -3,14 +3,14 @@
 # Noctalia: the shell itself, its plugins, and the login screen it puts in
 # front of them. Follows modules.wm.desktop = "hyprland".
 
-{ self, hey, lib, config, pkgs, ... }:
+{ self, lib, config, pkgs, ... }:
 
 with lib;
-with hey.lib;
+with self.lib;
 let cfg = config.modules.wm;
     primaryMonitor = findFirst (x: x.primary) {} cfg.hyprland.monitors;
     hasPrimary = primaryMonitor ? output;
-    package = hey.inputs.noctalia.packages.default;
+    package = self.inputs.noctalia.packages.default;
     format = pkgs.formats.toml {};
     # Disabled plugins are still installed, or Settings can't list them.
     installedPlugins = filterAttrs (_: p: p.src != null) cfg.noctalia.plugins;
@@ -225,7 +225,7 @@ in {
     (let
       # I build the hook list direcly from noctalia's source, so its list and
       # mine never drift. Probably too brittle.
-      header = "${hey.inputs.noctalia}/src/config/config_types.h";
+      header = "${self.inputs.noctalia}/src/config/config_types.h";
       names = map head
         (filter isList
           (split ''HookKind::[A-Za-z]+, "([a-z_]+)"'' (readFile header)));
@@ -235,7 +235,7 @@ in {
           if names == []
           then throw "No hooks found in ${header}; Noctalia moved them."
           else genAttrs names (name: escapeShellArgs
-            [ hey.bin "hook" "-f" "on-${replaceStrings [ "_" ] [ "-" ] name}" ]);
+            [ config.hey.bin "hook" "-f" "on-${replaceStrings [ "_" ] [ "-" ] name}" ]);
       };
     })
 

@@ -2,10 +2,10 @@
 #
 # For game art assets, interior design, and product demos for clients.
 
-{ self, hey, lib, config, pkgs, ... }:
+{ self, lib, config, pkgs, ... }:
 
 with lib;
-with hey.lib;
+with self.lib;
 let cfg = config.modules.apps.media.cad;
     version = "5.2";
 in {

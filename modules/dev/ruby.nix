@@ -2,10 +2,10 @@
 #
 # TODO
 
-{ hey, lib, config, options, pkgs, ... }:
+{ self, lib, config, options, pkgs, ... }:
 
 with lib;
-with hey.lib;
+with self.lib;
 let devCfg = config.modules.dev;
     cfg = devCfg.ruby;
 in {

@@ -1,8 +1,7 @@
 # lib/pkgs.nix --- helpers that need a package set
 #
-# Decorates nixpkgs with extra functions, providing the two builders my modules
-# reach for often enough to be worth a name. Modules get at them through hey.lib
-# (flattened) or hey.lib.pkgs (namespaced).
+# Provides two builders my modules reach for often enough to name. Modules get
+# at them through self.lib (flattened) or self.lib.pkgs (namespaced).
 
 { lib, pkgs, ... }:
 

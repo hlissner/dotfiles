@@ -1,6 +1,6 @@
 # htpc -- my HTPC (shocker)
 
-{ hey, lib, ... }:
+{ self, lib, ... }:
 
 with lib;
 with builtins;
@@ -10,7 +10,7 @@ with builtins;
   imports = [
     # Not exported by the flake, but it knows gen9 needs the legacy compute
     # runtime and the old VA-API driver (the new one can't do VP9 on Skylake).
-    "${hey.inputs.nixos-hardware}/common/cpu/intel/skylake"
+    "${self.inputs.nixos-hardware}/common/cpu/intel/skylake"
   ];
 
   modules = {

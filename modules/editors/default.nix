@@ -1,7 +1,7 @@
-{ hey, lib, config, ... }:
+{ self, lib, config, ... }:
 
 with lib;
-with hey.lib;
+with self.lib;
 let cfg = config.modules.editors;
 in {
   options.modules.editors = {

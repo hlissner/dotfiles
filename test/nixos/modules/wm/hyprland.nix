@@ -119,8 +119,10 @@ in {
         after  = elem "wayland-wm@hyprland.desktop.service" unit.after;
         partOf = elem "graphical-session.target" unit.partOf;
         stop   = hasInfix "hook -f on-shutting-down" unit.serviceConfig.ExecStop;
+        # A rebuild restarting it would be a fake shutdown.
+        quiet  = !unit.restartIfChanged;
       };
-      expected = { after = true; partOf = true; stop = true; };
+      expected = { after = true; partOf = true; stop = true; quiet = true; };
     };
 
   # Noctalia has no suspend/resume events, so these are systemd's, run as the

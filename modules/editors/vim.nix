@@ -3,10 +3,10 @@
 # When I'm stuck in the terminal or don't have access to Emacs, (neo)vim is my
 # go-to. I am a vimmer at heart, after all.
 
-{ hey, lib, config, options, pkgs, ... }:
+{ self, lib, config, options, pkgs, ... }:
 
 with lib;
-with hey.lib;
+with self.lib;
 let cfg = config.modules.editors.vim;
 in {
   options.modules.editors.vim = {

@@ -32,7 +32,7 @@ rec {
                                    "apps" "checks" "formatter" ]) flake);
 
   # The checkout's layout, rooted at DIR. `self` carries these over the store
-  # snapshot; the live checkout's are the hey.{dir,*Dir} options in
+  # snapshot; the live checkout's are the config.hey.{dir,*Dir} options in
   # modules/hey.nix, since that's the one a host may want somewhere else.
   dirsOf = dir: {
     inherit dir;
@@ -42,23 +42,17 @@ rec {
     modulesDir  = "${dir}/modules";
   };
 
+  # The `self` every module gets
   mkHey = {
     flake
   , system
   , hostDir
-  , heyLib ? flake.lib
+  , lib
   }:
     forSystem system flake // {
-      inherit hostDir;
-      lib = heyLib;
+      inherit hostDir lib;
       inputs = mapAttrs (_: forSystem system) flake.inputs;
       modules = nixosModulesOf flake.inputs;
-      # So a unit can say `"${hey} hook …"` and skip the PATH shenanigans.
-      # Without this, `"${hey}"` still coerces -- to the flake's outPath, which
-      # is never what anyone meant. Lazy, so a flake with no hey package only
-      # trips on use.
-      bin = getExe flake.packages.${system}.hey;
-      __toString = self: self.bin;
     };
 
   mkHostModules = {
@@ -81,11 +75,9 @@ rec {
   ]
   ++ extraModules;
 
-  # FIXME: Refactor me! (Use submodules?)
   mkFlake = {
     self
-    , hey ? self
-    , nixpkgs ? hey.inputs.nixpkgs
+    , nixpkgs ? self.inputs.nixpkgs
     , ...
   } @ inputs: {
     apps ? {}
@@ -96,7 +88,6 @@ rec {
     , overlays ? {}
     , packages ? {}
     , systems
-    , templates ? {}
     , ...
   } @ flake:
     let
@@ -115,42 +106,24 @@ rec {
       pkgsBySystem = genAttrs systems mkPkgs;
       pkgsFor = system: pkgsBySystem.${system} or (mkPkgs system);
 
-      # hey.lib's package helpers (mkWrapper, mkLauncherEntry) want nixpkgs and
-      # the flake-level lib has none it can use purely. Each host gets a lib
-      # over its own, the same way test/nixos/_lib.nix does.
-      libFor = system: import ./. { inherit lib; pkgs = pkgsFor system; };
-
       # `self.{dir,*Dir}` is the store snapshot nix is evaluating; read files
       # through it (readFile, pathExists, import). `config.hey.{dir,*Dir}` is
       # the live checkout, outside the store, for paths that end up in the built
       # system (links, PATH, sourced rc files) so an edit there doesn't wait for
       # a rebuild.
       nixosConfigurations = mapAttrs (hostName: { path, config }:
-        # TODO: Replace with a submodule
         let
-          heyLib = libFor host.system;
           self' = mkHey {
             inherit (host) system;
-            inherit heyLib;
+            lib = import ./. { inherit lib; pkgs = pkgsFor host.system; };
             flake = self;
             hostDir = path;
           } // dirsOf (toString self);
-          hey' = mkHey {
-            inherit heyLib;
-            inherit (host) system;
-            flake = hey;
-            hostDir = path;
-          };
-          host = config {
-            inherit lib;
-            nixosModules = hey'.modules;
-            hey = hey';
-          };
+          host = config { inherit lib; self = self'; };
         in
           nixpkgs.lib.nixosSystem {
             system = host.system;
             specialArgs.self = self';
-            specialArgs.hey = hey';
             modules = mkHostModules {
               inherit host hostName;
               pkgs = pkgsFor host.system;
@@ -168,14 +141,12 @@ rec {
                      ({ self = self.packages.${system}; } // extraArgs))
             packageAttrs);
 
-      # Drops any system that came out empty, so 'nix flake show' stays free of
-      # dead keys. The outer filter drops an output empty for every system.
+      # Drops empty systems so 'nix flake show' won't show them
       bySystem = fn: filterAttrs (_: v: v != {}) (genAttrs systems fn);
 
-      perSystem = filterAttrs (_: v: v != {}) {
+      perSystem = {
         apps = bySystem (_: apps);
-        # test/nixos needs this flake's own inputs and 'self' is already taken
-        # by the package set.
+        # tests need this flake's inputs
         checks = bySystem (system: withPkgs system { flake = self; } checks);
         devShells = bySystem (system: withPkgs system {} devShells);
         packages = bySystem (system: withPkgs system {} packages);

@@ -3,10 +3,10 @@
 # For the software that won't be packaged for nix, and the software I'd rather
 # keep at arm's length from the rest of the system.
 
-{ hey, lib, config, options, pkgs, ... }:
+{ self, lib, config, options, pkgs, ... }:
 
 with lib;
-with hey.lib;
+with self.lib;
 let cfg = config.modules.apps.flatpak;
 in {
   options.modules.apps.flatpak = {

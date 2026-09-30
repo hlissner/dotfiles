@@ -1,9 +1,5 @@
 # flake.nix --- the heart of my dotfiles
 #
-# Author:  Henrik Lissner <contact@henrik.io>
-# URL:     https://github.com/hlissner/dotfiles
-# License: MIT
-#
 # Welcome to ground zero. Where the whole flake gets set up and all its modules
 # are loaded.
 
@@ -53,26 +49,18 @@
     ];
   };
 
-  outputs = inputs @ { self, nixpkgs, nixos-hardware, ... }:
-    let
-      lib = import ./lib {
-        inherit self;
-        inherit (nixpkgs) lib;
-        pkgs = throw "flake.lib has no package set; use hey.lib from a host";
-      };
-    in
-      with builtins; with lib; mkFlake inputs {
-        systems = [ "x86_64-linux" "aarch64-linux" ];
-        inherit lib;
+  outputs = inputs:
+    with import ./lib { inherit (inputs.nixpkgs) lib; };
+    mkFlake inputs {
+      systems = [ "x86_64-linux" "aarch64-linux" ];
 
-        hosts = mapHosts ./hosts;
-        modules.default = import ./.;
+      hosts = mapHosts ./hosts;
+      modules.default = import ./.;
 
-        apps.install = mkApp ./install.zsh;
-        devShells.default = import ./shell.nix;
-        checks = mapModules ./test import;
-        overlays = mapModules ./overlays import;
-        packages = mapModules ./packages import;
-        # templates = import ./templates args;
-      };
+      apps.install = mkApp ./install.zsh;
+      devShells.default = import ./shell.nix;
+      checks = mapModules ./test import;
+      overlays = mapModules ./overlays import;
+      packages = mapModules ./packages import;
+    };
 }

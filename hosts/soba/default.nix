@@ -1,6 +1,6 @@
 # soba -- my secondary workstation
 
-{ hey, lib, ... }:
+{ self, lib, ... }:
 
 with lib;
 with builtins;
@@ -8,7 +8,7 @@ with builtins;
   system = "x86_64-linux";
 
   imports = [
-    hey.modules.nixos-hardware.common-cpu-intel-cpu-only
+    self.modules.nixos-hardware.common-cpu-intel-cpu-only
   ];
 
   modules = {

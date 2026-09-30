@@ -2,10 +2,10 @@
 #
 # TODO
 
-{ hey, lib, config, pkgs, ... }:
+{ self, lib, config, pkgs, ... }:
 
 with lib;
-with hey.lib;
+with self.lib;
 let hardware = config.modules.profiles.hardware;
 in mkMerge [
   (mkIf (any (s: hasPrefix "pc/laptop" s) hardware) {

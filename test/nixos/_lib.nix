@@ -12,7 +12,7 @@
 #     };
 #   }
 #
-# This harness fabricates the 'hey' argument itself (with the real mkHey, so
+# This harness fabricates the 'self' specialArg itself (with the real mkHey, so
 # it can't drift) instead of building flake.nixosConfigurations, so a suite
 # can point a module at a fixture tree rather than at /etc/dotfiles.
 
@@ -26,28 +26,28 @@ let
 in rec {
   inherit lib pkgs flake dir system;
 
-  # Built here rather than taken from flake.lib on purpose: that one has no
-  # package set, so mkWrapper and friends throw off it. Handing this one the
-  # check's own pkgs gives the library under test the same package set the
-  # modules get, just as mkFlake does per host.
-  heyLib = import ../../lib { self = flake; inherit lib pkgs; };
+  # Built with the check's own pkgs so the library under test has the same
+  # package set the modules get (mkWrapper and friends throw without one),
+  # just as mkFlake does per host.
+  heyLib = import ../../lib { inherit lib pkgs; };
 
   # Every host in hosts/, unevaluated: { <name> = { path, config }; }
   hosts = heyLib.mapHosts ../../hosts;
 
-  # A stand-in for the 'hey' specialArg mkFlake assembles, and for 'self' too.
+  # A stand-in for the 'self' specialArg mkFlake assembles.
   #
   # DIR stands in for the store snapshot. Point it at a fixture tree to feed a
   # module config/ files the live ones would otherwise decide for it. What a
-  # module *links* to is hey.dir, an option, and stays /etc/dotfiles here as on
-  # any host; a suite that wants links to follow the fixture sets it (and gets
-  # the store-path assertion it deserves, should it force one).
+  # module *links* to is config.hey.dir, an option, and stays /etc/dotfiles
+  # here as on any host; a suite that wants links to follow the fixture sets it
+  # (and gets the store-path assertion it deserves, should it force one).
   mkHey =
     { dir ? toString ../..
     , hostDir ? dir
     }:
     heyLib.mkHey {
-      inherit flake system hostDir heyLib;
+      inherit flake system hostDir;
+      lib = heyLib;
     } // heyLib.dirsOf dir;
 
   # Evaluates a resolved host attrset. The primed variant keeps the whole
@@ -56,17 +56,12 @@ in rec {
   evalSystem' =
     { host
     , hostName ? "test"
-    , hey ? mkHey {}
+    , self ? mkHey {}
     , extraModules ? []
     }:
     flake.inputs.nixpkgs.lib.nixosSystem {
       system = host.system;
-      specialArgs = {
-        self = hey;
-        # Minus the dirs, so a module reaching for hey.configDir fails here the
-        # way it would on a host.
-        hey = removeAttrs hey (attrNames (heyLib.dirsOf ""));
-      };
+      specialArgs = { inherit self; };
       modules = heyLib.mkHostModules {
         inherit host hostName pkgs extraModules;
       };
@@ -78,13 +73,10 @@ in rec {
   # system. Use it to assert on what a host declares, as opposed to what its
   # evaluated configuration comes out as.
   applyHost = hostName: { path, config }:
-    let hey = mkHey { hostDir = toString path; };
+    let self = mkHey { hostDir = toString path; };
     in {
-      inherit hey;
-      host = config {
-        inherit lib hey;
-        nixosModules = hey.modules;
-      };
+      inherit self;
+      host = config { inherit lib self; };
     };
 
   # Applies and evaluates one host out of `hosts` above.
@@ -95,7 +87,7 @@ in rec {
     let applied = applyHost hostName hostAttrs;
     in evalSystem {
       inherit hostName extraModules;
-      inherit (applied) hey host;
+      inherit (applied) self host;
     };
 
   evalHost = evalHost' [];
@@ -121,16 +113,16 @@ in rec {
   # Evaluates the root module tree (../../default.nix) against MODULES and
   # returns the resulting `config`. The workhorse of the modules/ suites.
   # evalModules' returns the whole nixosSystem instead, options and all.
-  evalModules' = hey: modules:
+  evalModules' = self: modules:
     evalSystem' {
-      inherit hey;
+      inherit self;
       host = {
         inherit system;
         config = { ... }: { imports = baseModules ++ modules; };
       };
     };
 
-  evalConfig' = hey: modules: (evalModules' hey modules).config;
+  evalConfig' = self: modules: (evalModules' self modules).config;
 
   evalConfig = evalConfig' (mkHey {});
 

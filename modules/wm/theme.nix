@@ -1,9 +1,9 @@
 ## modules/wm/theme.nix
 
-{ hey, lib, config, pkgs, ... }:
+{ self, lib, config, pkgs, ... }:
 
 with lib;
-with hey.lib;
+with self.lib;
 let cfg = config.modules.wm.theme;
 in {
   options.modules.wm.theme = with types; {

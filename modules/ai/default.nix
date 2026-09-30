@@ -17,10 +17,10 @@
 # release a day and nixpkgs is a week behind on a good week. aichat is the
 # exception; llm-agents doesn't carry it.
 
-{ hey, lib, config, options, pkgs, ... }:
+{ self, lib, config, options, pkgs, ... }:
 
 with lib;
-with hey.lib;
+with self.lib;
 let cfg = config.modules.ai;
 in {
   options.modules.ai = with types; {
@@ -35,7 +35,7 @@ in {
       GEMINI_CLI_HOME = "${config.home.stateDir}/gemini";
     };
     user.packages =
-      let llm-agents = hey.inputs.llm-agents.packages;
+      let llm-agents = self.inputs.llm-agents.packages;
       in with pkgs; [
         bubblewrap  # for grok's sandbox
         llm-agents.grok

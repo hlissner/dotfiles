@@ -3,15 +3,15 @@
 # ZSH and Janet are the powerhouses of my dotfiles. This module configures both
 # for my scripting needs. Builds bin/hey.
 
-{ hey, lib, options, config, pkgs, ... }:
+{ self, lib, options, config, pkgs, ... }:
 
 with builtins;
 with lib;
-with hey.lib;
+with self.lib;
 let cfg = config.hey;
     janet = pkgs.janet;
 
-    heyPkg = hey.packages.hey;
+    heyPkg = self.packages.hey;
 
     # My own janet tree, deliberately outside the store, so `jpm install` has
     # somewhere to put things.
@@ -46,6 +46,8 @@ let cfg = config.hey;
     wmDir = { hyprland = "hypr"; niri = "niri"; }.${cfg.desktop};
 in {
   options.hey = with types; {
+    bin = mkOpt' str (getExe heyPkg) "The built hey binary.";
+
     # The live checkout, as opposed to `self.dir`. Everything the built system
     # links to or sources goes through these so an edit doesn't wait for a
     # rebuild.
@@ -55,6 +57,7 @@ in {
     libDir = mkOpt' str "${cfg.dir}/lib" "lib/ of the live checkout.";
     configDir = mkOpt' str "${cfg.dir}/config" "config/ of the live checkout.";
     modulesDir = mkOpt' str "${cfg.dir}/modules" "modules/ of the live checkout.";
+    hostDir = mkOpt' str "${cfg.dir}/hosts/${config.networking.hostName}" "hosts/$HOST/ of the live checkout";
 
     desktop = mkOpt' (nullOr str) null
       "The desktop this system runs, naming the config/NAME hey looks in.";
@@ -154,7 +157,7 @@ in {
     hey.info.hooks = cfg.hookPaths;
 
     hey.hookPaths = mkBefore (
-      [ "${cfg.dir}/hosts/${baseNameOf (toString hey.hostDir)}/hooks" ]
+      [ "${cfg.hostDir}/hooks" ]
       ++ optional (cfg.desktop != null) "${cfg.configDir}/${wmDir}/hooks"
       ++ map (n: "${config.home.dataDir}/hey/hooks.d/${n}.d") hookNames);
 

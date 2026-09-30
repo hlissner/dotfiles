@@ -1,15 +1,15 @@
-{ self, hey, lib, config, options, pkgs, ... }:
+{ self, lib, config, options, pkgs, ... }:
 
 with builtins;
 with lib;
-let inherit (hey.lib.pkgs) mkWrapper mkLauncherEntry;
+let inherit (self.lib.pkgs) mkWrapper mkLauncherEntry;
     cfg = config.modules.apps.rofi;
 
     rofiPkg = pkgs.rofi-unwrapped;
     rofiFBPkg = pkgs.rofi-file-browser.override { rofi = rofiPkg; };
     rofiCalcPkg = pkgs.rofi-calc.override { rofi-unwrapped = rofiPkg; };
 in {
-  options.modules.apps.rofi = with hey.lib.options; {
+  options.modules.apps.rofi = with self.lib.options; {
     enable = mkBoolOpt false;
   };
 

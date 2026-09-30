@@ -5,14 +5,14 @@
 # force that does more bad than good, and when its bubble pops 2008 and 2001
 # will look like vacations. Give me back affordable ram.
 
-{ self, hey, lib, config, pkgs, ... }:
+{ self, lib, config, pkgs, ... }:
 
 with lib;
-with hey.lib;
+with self.lib;
 let cfg = config.modules.ai.claude;
     settingsFormat = pkgs.formats.json {};
 
-    llmAgents = hey.inputs.llm-agents.packages;
+    llmAgents = self.inputs.llm-agents.packages;
 in {
   options.modules.ai.claude = with types; {
     enable = mkBoolOpt false;

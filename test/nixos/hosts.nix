@@ -1,7 +1,7 @@
 # test/nixos/hosts.nix --- tests for hosts/
 #
 # Every live host in hosts/ is applied and evaluated here: evalHost fabricates
-# the `hey` argument and routes the host through the same mkHostModules that
+# the `self` argument and routes the host through the same mkHostModules that
 # mkFlake uses.
 #
 # One test, on purpose. Forcing system.build.toplevel down to its derivation

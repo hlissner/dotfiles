@@ -3,10 +3,10 @@
 # Common settings shared across all supported window managers (just Hyprland for
 # now, but Niri will be next).
 
-{ hey, lib, config, ... }:
+{ self, lib, config, ... }:
 
 with lib;
-with hey.lib;
+with self.lib;
 let cfg = config.modules.wm;
 in {
   options.modules.wm = with types; {

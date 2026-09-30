@@ -1,9 +1,9 @@
 # modules/apps/lutris.nix
 
-{ hey, lib, config, options, pkgs, ... }:
+{ self, lib, config, options, pkgs, ... }:
 
 with lib;
-with hey.lib;
+with self.lib;
 let cfg = config.modules.apps.lutris;
 in {
   options.modules.apps.lutris = with types; {

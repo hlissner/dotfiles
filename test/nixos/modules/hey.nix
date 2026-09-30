@@ -5,13 +5,13 @@
 # had no coverage at all, which is how bin/hey.d/hook.janet came to ignore the
 # NN- prefixes this module spends a function generating.
 
-{ evalConfig, evalConfig', mkHey, presets, dir, lib, ... }:
+{ evalConfig, mkHey, presets, lib, ... }:
 
 with lib;
 let
   inherit (presets) bare;
 
-  hooked = evalConfig' (mkHey { hostDir = "${dir}/hosts/udon"; }) [{
+  hooked = evalConfig [{
     hey.hooks.onFoo = {
       bar = "echo bar";
       # Already numbered: the number is the order, the rest is the name.
@@ -59,7 +59,9 @@ in {
       published = hooked.hey.info.hooks == hooked.hey.hookPaths;
     };
     expected = {
-      head = [ "${hooked.hey.dir}/hosts/udon/hooks"
+      # The host's hooks come off the live checkout, keyed by hostName, not
+      # off the snapshot's hostDir.
+      head = [ "${hooked.hey.dir}/hosts/${hooked.networking.hostName}/hooks"
                "${dataDir}/hey/hooks.d/bar.d"
                "${dataDir}/hey/hooks.d/baz.d" ];
       mine = true;
@@ -159,16 +161,16 @@ in {
 
   ## The binary.
 
-  # `"${hey} hook …"` is how units call hey by store path. It has to be the
-  # package's exe and not the flake's outPath, which is what an attrset with
-  # no __toString of its own would quietly coerce to.
-  testHeyCoercesToItsBinary =
-    let hey = mkHey {}; in {
+  # config.hey.bin is how units call hey by store path. It has to be the
+  # package's exe and not the flake's outPath; and `"${self}"` has to stay the
+  # outPath, since that's what reads through the snapshot expect it to be.
+  testHeyBinIsTheExeNotTheSnapshot =
+    let self = mkHey {}; in {
       expr = {
-        same = "${hey}" == hey.bin;
-        exe = hasSuffix "/bin/hey" hey.bin;
-        notSource = !(hasPrefix hey.outPath hey.bin);
+        exe = hasSuffix "/bin/hey" bare.hey.bin;
+        notSource = !(hasPrefix self.outPath bare.hey.bin);
+        snapshot = "${self}" == self.dir;
       };
-      expected = { same = true; exe = true; notSource = true; };
+      expected = { exe = true; notSource = true; snapshot = true; };
     };
 }

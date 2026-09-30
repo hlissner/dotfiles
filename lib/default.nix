@@ -1,4 +1,7 @@
-{ lib, pkgs, ... }:
+{ lib
+, pkgs ? throw "this lib has no package set; use self.lib from a host"
+, ...
+}:
 
 let
   inherit (builtins) intersectAttrs functionArgs foldl';

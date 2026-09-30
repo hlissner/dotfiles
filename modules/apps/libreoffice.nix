@@ -2,10 +2,10 @@
 #
 # TODO
 
-{ hey, lib, config, options, pkgs, ... }:
+{ self, lib, config, options, pkgs, ... }:
 
 with lib;
-with hey.lib;
+with self.lib;
 let cfg = config.modules.apps.libreoffice;
 in {
   options.modules.apps.libreoffice = {

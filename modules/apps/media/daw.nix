@@ -6,10 +6,10 @@
 # Blender of DAWs (scriptable, versatile, Linux-friendly, and no subscription
 # pricing) and audacity for quick edits. I sometimes dip into Renoise too.
 
-{ hey, lib, config, pkgs, ... }:
+{ self, lib, config, pkgs, ... }:
 
 with lib;
-with hey.lib;
+with self.lib;
 let cfg = config.modules.apps.media.daw;
     # Every plugin format I care to support
     formats = [ "dssi" "ladspa" "lv2" "lxvst" "vst" "vst3" ];

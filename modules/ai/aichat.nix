@@ -7,10 +7,10 @@
 # carry aichat, and it's a plain rust CLI rather than one of the npm-shaped
 # things that flake exists to keep current.
 
-{ hey, lib, config, pkgs, ... }:
+{ self, lib, config, pkgs, ... }:
 
 with lib;
-with hey.lib;
+with self.lib;
 let cfg = config.modules.ai.aichat;
 in {
   options.modules.ai.aichat = with types; {

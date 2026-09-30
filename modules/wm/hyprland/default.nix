@@ -2,10 +2,10 @@
 #
 # Sets up a hyprland-based desktop environment.
 
-{ hey, lib, config, pkgs, ... }:
+{ self, lib, config, pkgs, ... }:
 
 with lib;
-with hey.lib;
+with self.lib;
 let cfg = config.modules.wm.hyprland;
 in {
   options.modules.wm.hyprland = with types; {
@@ -26,7 +26,7 @@ in {
 
   config = mkIf (config.modules.wm.desktop == "hyprland") (mkMerge [
     ## The compositor.
-    (let flake = hey.inputs.hyprland.packages;
+    (let flake = self.inputs.hyprland.packages;
      in {
       programs.hyprland = {
         enable = true;
@@ -38,7 +38,7 @@ in {
 
       modules.wm.hyprland.plugins = [
         # We have Niri at home
-        hey.inputs.scroll-overview.packages.scrolloverview
+        self.inputs.scroll-overview.packages.scrolloverview
       ];
 
       environment.sessionVariables = {
@@ -214,6 +214,7 @@ in {
         description = "Run hey's shutdown hooks before the session dies";
         wantedBy = [ "graphical-session.target" ];
         partOf = [ "graphical-session.target" ];
+        restartIfChanged = false;   # don't trigger on `hey sync`
         after = [
           "graphical-session.target"
           "wayland-wm@hyprland.desktop.service"  # the compositor, for the fade
@@ -227,7 +228,7 @@ in {
           ExecStart = "${getExe' pkgs.coreutils "true"}";
           # -f because the stamp is the guard now; hook.janet's would only make
           # a no-op exit 127 and log a unit failure on the way down.
-          ExecStop = "${hey} hook -f on-shutting-down";
+          ExecStop = "${config.hey.bin} hook -f on-shutting-down";
           # A wedged hook must not hold the shutdown open indefinitely.
           TimeoutStopSec = 15;
         };
@@ -246,7 +247,7 @@ in {
         let run = hook: ''
               ${pkgs.systemd}/bin/systemd-run --machine=${config.user.name}@.host \
                 --user --pipe --wait --collect --quiet \
-                ${hey} hook -f ${hook} || true
+                ${config.hey.bin} hook -f ${hook} || true
             '';
         in {
           description = "Run hey's sleep hooks around suspend";

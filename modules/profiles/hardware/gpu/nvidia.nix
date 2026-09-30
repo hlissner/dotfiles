@@ -4,10 +4,10 @@
 # are relatively beefy (680gtx, 960gtx, 1080, 1660S, 3080ti) so only a little
 # cludge is needed to get them to work well on NixOS.
 
-{ hey, lib, config, pkgs, ... }:
+{ self, lib, config, pkgs, ... }:
 
 with lib;
-with hey.lib;
+with self.lib;
 let hardware = config.modules.profiles.hardware;
 in mkIf (any (s: hasPrefix "gpu/nvidia" s) hardware) (mkMerge [
   {

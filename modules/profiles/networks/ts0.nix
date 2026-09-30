@@ -1,9 +1,9 @@
 # modules/profiles/networks/ts0 -- tailscale network
 
-{ hey, lib, config, pkgs, ... }:
+{ self, lib, config, pkgs, ... }:
 
 with lib;
-with hey.lib;
+with self.lib;
 let secrets = config.age.secrets;
 in mkIf (elem "ts0" config.modules.profiles.networks) {
   services.tailscale = {

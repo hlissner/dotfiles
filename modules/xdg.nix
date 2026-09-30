@@ -9,11 +9,11 @@
 #
 # PS. ValveSoftware/steam-for-linux#1890 is a gold mine.
 
-{ hey, lib, config, options, pkgs, ... }:
+{ self, lib, config, options, pkgs, ... }:
 
 with builtins;
 with lib;
-with hey.lib;
+with self.lib;
 let cfg = config.modules.xdg;
     home = config.home;
     # Kept $HOME-relative, like modules/home.nix, so a value isn't hard-coded to
@@ -193,7 +193,7 @@ in {
        #   to contain `Include /etc/ssh/ssh_config` to ensure system-wide
        #   settings are respected (ssh ignores the system config if -F is given,
        #   and it doesn't accept multiple).
-       environment.systemPackages = with pkgs; with hey.lib.pkgs; [
+       environment.systemPackages = with pkgs; with self.lib.pkgs; [
          # Note to self: openssh's ssh-copy-id != pkgs.ssh-copy-id
          (mkWrapper openssh ''
            ${concatMapStrings wrapSshLike [ "ssh" "scp" "sftp" ]}

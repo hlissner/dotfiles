@@ -4,11 +4,11 @@
 # attr resembles home-manager's. The rest is a $HOME-management API for my nixos
 # config.
 
-{ hey, lib, config, pkgs, ... }:
+{ self, lib, config, pkgs, ... }:
 
 with builtins;
 with lib;
-with hey.lib;
+with self.lib;
 let cfg = config.home;
 
     fileType = with types; attrsOf (submodule {

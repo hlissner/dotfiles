@@ -2,10 +2,10 @@
 #
 # TODO
 
-{ hey, lib, options, config, pkgs, ... }:
+{ self, lib, options, config, pkgs, ... }:
 
 with lib;
-with hey.lib;
+with self.lib;
 let hardware = config.modules.profiles.hardware;
 in mkMerge [
   (mkIf (any (s: hasPrefix "scanner" s) hardware) {

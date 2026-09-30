@@ -2,10 +2,10 @@
 #
 # TODO
 
-{ hey, lib, config, pkgs, ... }:
+{ self, lib, config, pkgs, ... }:
 
 with lib;
-with hey.lib;
+with self.lib;
 let cfg = config.modules.apps.media.pdf;
 in {
   options.modules.apps.media.pdf = with types; {

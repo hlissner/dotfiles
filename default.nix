@@ -1,9 +1,9 @@
 # default.nix
 
-{ hey, lib, options, config, pkgs, ... }:
+{ self, lib, options, config, pkgs, ... }:
 
 with lib;
-with hey.lib;
+with self.lib;
 {
   imports = mapModulesRec' ./modules import;
 
@@ -48,7 +48,7 @@ with hey.lib;
     fileSystems."/".device = mkDefault "/dev/disk/by-label/nixos";
 
     nix =
-      let filteredInputs = filterAttrs (_: v: v ? outputs) hey.inputs;
+      let filteredInputs = filterAttrs (_: v: v ? outputs) self.inputs;
           nixPathInputs  = mapAttrsToList (n: v: "${n}=${v}") filteredInputs;
       in {
         extraOptions = ''
@@ -72,7 +72,7 @@ with hey.lib;
       };
 
     system = {
-      configurationRevision = with hey.inputs; mkIf (hey ? rev) hey.rev;
+      configurationRevision = mkIf (self ? rev) self.rev;
       stateVersion = "23.11";
     };
 

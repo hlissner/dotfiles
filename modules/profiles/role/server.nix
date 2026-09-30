@@ -3,7 +3,7 @@
 # Used for headless servers, at home or abroad, with more
 # security/automation-minded configuration.
 
-{ hey, lib, config, pkgs, ... }:
+{ lib, config, pkgs, ... }:
 
 with lib;
 mkIf (config.modules.profiles.role == "server") {

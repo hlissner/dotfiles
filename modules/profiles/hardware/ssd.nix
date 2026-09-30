@@ -2,10 +2,10 @@
 #
 # TODO
 
-{ hey, lib, config, pkgs, ... }:
+{ self, lib, config, pkgs, ... }:
 
 with lib;
-with hey.lib;
+with self.lib;
 mkIf (elem "ssd" config.modules.profiles.hardware) {
   services =
     let hasZfs = any (x: x ? fsType && x.fsType == "zfs") (attrValues config.fileSystems);

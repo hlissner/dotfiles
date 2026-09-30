@@ -10,16 +10,20 @@
 with lib;
 let
   dir = toString ./agenix.d;
-  withSecrets = evalConfig' (mkHey { inherit dir; }) [];
+  withSecrets = evalConfig' (mkHey { inherit dir; hostDir = "${dir}/hosts/foo"; }) [];
   withoutSecrets = evalConfig [];
   scriptOf = s: if isString s then s else s.text;
 in {
   # secrets.nix is imported while nix evaluates, so it has to come off the
-  # snapshot DIR stands in for. Through a live path it would be a quiet
-  # pathExists = false under pure evaluation, and no secrets at all.
-  testSharedSecretsComeOffTheSnapshot = {
+  # snapshot DIR stands in for, the host's dir included. Through a live path
+  # (config.hey.hostDir, once) it would be a quiet pathExists = false under
+  # pure evaluation, and no secrets at all.
+  testSecretsComeOffTheSnapshot = {
     expr = mapAttrs (_: s: { inherit (s) file owner; }) withSecrets.age.secrets;
-    expected.foo = { file = "${dir}/config/secrets/foo.age"; owner = "nobody"; };
+    expected = {
+      foo = { file = "${dir}/config/secrets/foo.age"; owner = "nobody"; };
+      bar = { file = "${dir}/hosts/foo/secrets/bar.age"; owner = "nobody"; };
+    };
   };
 
   testHostKeyIsCheckedAtActivationNotEval = {

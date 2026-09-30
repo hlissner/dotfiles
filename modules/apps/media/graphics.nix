@@ -7,10 +7,10 @@
 # alternatives have finally (in my opinion) become viable enough for me to drop
 # the second PC.
 
-{ hey, lib, config, options, pkgs, ... }:
+{ self, lib, config, options, pkgs, ... }:
 
 with lib;
-with hey.lib;
+with self.lib;
 let cfg = config.modules.apps.media.graphics;
 in {
   options.modules.apps.media.graphics = {

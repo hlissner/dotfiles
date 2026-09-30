@@ -45,10 +45,10 @@
 #
 # 8. Reboot into "Boot" profile.
 
-{ hey, lib, config, pkgs, modulesPath, ... }:
+{ self, lib, config, pkgs, modulesPath, ... }:
 
 with lib;
-with hey.lib;
+with self.lib;
 {
   # imports =
   #   if config.modules.profiles.platform == "linode"
