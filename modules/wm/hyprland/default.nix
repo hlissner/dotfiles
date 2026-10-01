@@ -106,7 +106,13 @@ in {
 
         require("hyprland")
         pcall(require, "hyprland-post")
-        pcall(require, "${colorsModule}")  -- rendered by Noctalia (see theme.nix)
+
+        -- rendered by Noctalia (see theme.nix)
+        local status, theme = pcall(require, "${colorsModule}")
+        if status then
+          hey.theme = theme
+          theme.apply()
+        end
       '';
 
       home.configFile."hypr/hyprland-post.lua" = mkIf (cfg.extraConfig != "") {
@@ -116,6 +122,7 @@ in {
       modules.wm.theme.files.hyprland = {
         input_path = "${config.hey.configDir}/hypr/hyprland-colors.template.lua";
         output_path = "${config.home.configDir}/hypr/${colorsModule}.lua";
+        post_hook = "hyprctl eval 'require(\"hyprland-colors\").apply()'";
       };
 
       modules.shell.zsh.rcFiles = [ "${config.hey.configDir}/hypr/aliases.zsh" ];
