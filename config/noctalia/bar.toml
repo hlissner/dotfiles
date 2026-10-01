@@ -15,9 +15,9 @@ reserve_space      = true
 capsule            = false
 widget_spacing     = 8
 
-start = [ "submap", "screencast", "compass", "timer", "group:activity", "media" ]
+start = [ "compass", "submap", "group:activity" ]
 center = [ "date", "clock", "weather" ]
-end = [ "tray", "group:devices", "group:system", "notifications", "privacy" ]
+end = [ "media", "timer", "tray", "group:devices", "group:system", "notifications", "privacy", "screencast" ]
 show_on_workspace_switch = false
 
     [bar.main.dead_zone.actions]
@@ -206,7 +206,7 @@ visualization = "gauge"
 [widget.media]
 capsule = true
 capsule_opacity = 0.0
-capsule_padding = 18
+capsule_padding = 4
 album_art_only = true
 hide_when_no_media = true
 show_progress = true
@@ -255,3 +255,5 @@ workspace_color = "primary"
     [widget.compass.actions]
     left = "exec hyprctl eval 'hey.plugins.so.overview(\"toggle\")()'"
     right = "exec noctalia msg window-switcher"
+    scroll_down = "exec hyprctl dispatch 'hey.nav.focus(\"down\")'"
+    scroll_up = "exec hyprctl dispatch 'hey.nav.focus(\"up\")'"

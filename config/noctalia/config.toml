@@ -199,6 +199,7 @@ battery_display = "hidden"
 manager_open_near_click = true
 
 [plugin_settings."hey/peripheral-battery"]
+notify = "both"
 on_connect = "hey hook -f on-peripheral -f \"$model\" \"$percent\""
 on_disconnect = "hey hook -f on-peripheral --off \"$model\" \"$percent\""
 
@@ -213,7 +214,7 @@ overlay_position = "top_center"
 timeout_ms = 1200
 
 [plugin_settings."hey/timer"]
-on_expire = "hey wm play-sound alarm-clock-elapsed"
+on_expire = "hey hook -f on-timer-elapsed"
 
 [plugin_settings."hey/compass"]
 poll_ms = 0
