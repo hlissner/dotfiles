@@ -123,7 +123,7 @@ do
   hl.on("config.reloaded", hey.ws.rehome)
 end
 -- Steam and its games, out of the way until summoned.
-hl.workspace_rule({ workspace = "special:game",
+hl.workspace_rule({ workspace = "special:media",
                     no_border = true,
                     no_shadow = true,
                     no_rounding = true })
@@ -164,14 +164,14 @@ hl.window_rule({ match = { class = "^foot$" },
 hl.window_rule({ match = { class = "^foot$", workspace = "n[s:special:pad:]" },
                  scrolling_width = 0.40 })
 hl.window_rule({ match = { class = "^feishin$" },
-                 workspace = "special:game" })
+                 workspace = "special:media" })
 
 
 -- ** Steam
 
 hl.window_rule({ name = "steam-all-windows",
                  match = { class = "steam" },
-                 workspace = "special:game silent",
+                 workspace = "special:media silent",
                  immediate = true,
                  no_dim = true,
                  no_blur = true,
@@ -189,12 +189,13 @@ hl.window_rule({ name = "steam-popups",
                  float = true })
 hl.window_rule({ name = "steam-games",
                  match = { initial_class = "(gamescope|steam_app_\\d+)" },
-                 workspace = "special:game silent",
+                 workspace = "special:media silent",
                  no_dim = true,
                  immediate = true,
                  no_blur = true,
                  no_anim = true,
                  no_initial_focus = true,
+                 scrolling_width = 1.0,
                  suppress_event = "maximize",
                  content = "game",
                  fullscreen = true,
@@ -273,8 +274,8 @@ do
   hl.bind("SUPER + SHIFT + grave", hey.dsp.move_to_workspace_or_back("pad", hey.dsp.move_to_local_scratchpad("pad")))
 
   -- A global workspace for games/movies/media
-  hl.bind("SUPER + 0", hey.dsp.scratchpad("game"))
-  hl.bind("SUPER + SHIFT + 0", hey.dsp.move_to_workspace_or_back("game"))
+  hl.bind("SUPER + 0", hey.dsp.scratchpad("media"))
+  hl.bind("SUPER + SHIFT + 0", hey.dsp.move_to_workspace_or_back("media"))
 end
 
 -- ** Window management, movements, and resizing
