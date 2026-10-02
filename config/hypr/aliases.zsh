@@ -20,9 +20,10 @@ function swayimg {
   command swayimg "${size[@]}" "$@"
 }
 
-alias dr='ripdrag'
-alias y='wl-copy'
-alias p='wl-paste'
+alias dr=ripdrag
+alias y=wl-copy
+alias p=wl-paste
+alias h=hyprctl
 
 (( $+commands[mpv] )) && alias -s {mp4,avi,mkv,mov}='mpv --loop'
 (( $+commands[xdg-open] )) && alias open=xdg-open
