@@ -325,6 +325,10 @@ in {
           { tab = "screen-time";   label = "screen time";    icon = "preferences-system-time-symbolic"; }
           { tab = "power";         label = "power";          icon = "battery-good-symbolic"; }
         ] ++ [
+          (mkLauncherEntry "Noctalia: change wallpaper" {
+            icon = "preferences-desktop-wallpaper";
+            exec = "noctalia msg panel-open wallpaper";
+          })
           (mkLauncherEntry "System Settings" {
             icon = "preferences-system";
             exec = "noctalia msg settings-open";
