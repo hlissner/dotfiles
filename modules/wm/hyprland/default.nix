@@ -122,7 +122,7 @@ in {
       modules.wm.theme.files.hyprland = {
         input_path = "${config.hey.configDir}/hypr/hyprland-colors.template.lua";
         output_path = "${config.home.configDir}/hypr/${colorsModule}.lua";
-        post_hook = "hyprctl eval 'require(\"hyprland-colors\").apply()'";
+        post_hook = ''hyprctl eval 'package.loaded["${colorsModule}"] = nil; hey.theme = require("${colorsModule}"); hey.theme.apply()' '';
       };
 
       modules.shell.zsh.rcFiles = [ "${config.hey.configDir}/hypr/aliases.zsh" ];

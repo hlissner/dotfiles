@@ -73,13 +73,6 @@ with builtins;
                       scroll_factor = 0.8,
                       accel_profile = "adaptive",
                       sensitivity = 0.45 })
-
-          hl.config({
-            -- To address 1px overscan on my U2724D's
-            general = {
-              gaps_out = { top = 0, left = 0, right = 1, bottom = 0 }
-            }
-          })
         '';
       };
     };

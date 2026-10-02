@@ -234,16 +234,6 @@ local function shuffle(w, dir)
   hl.dispatch(hl.dsp.layout("consume_or_expel " .. (FORWARD[dir] and "next" or "prev")))
 end
 
--- The window at the DIR end of W's tape; nil if W's already in that column.
-local function far_end(w, ws, dir)
-  local col = column(w)
-  if not col then return nil end
-  local cols = columns(ws)
-  local last = FORWARD[dir] and #cols or 1
-  if col.index + 1 == last then return nil end
-  return facing(cols[last] or {}, w, dir)
-end
-
 -- The window to act on and where it is. Without one, the focused monitor,
 -- which is where the next one would go anyway.
 local function here()
@@ -322,42 +312,26 @@ function M.move(dir, crossing)
   end
 end
 
--- CTRL+h/l: the far end of the tape, and once there, the next monitor. j/k:
+-- CTRL+h/l: straight onto the next monitor, wherever on the tape we are. j/k:
 -- the last workspace that way with anything on it.
 function M.focus_end(dir)
   return function()
     local w, mon, ws = here()
-    if ALONG[dir] == "y" then
-      local to = mon and ws and not ws.special and furthest(mon, ws, dir)
-      return to and hop(w, to, dir) or false
-    end
-    local target = far_end(w, ws, dir)
-    if target then return focus(target) end
-    return focus_monitor(w, mon, dir)
+    if ALONG[dir] == "x" then return focus_monitor(w, mon, dir) end
+    local to = mon and ws and not ws.special and furthest(mon, ws, dir)
+    return to and hop(w, to, dir) or false
   end
 end
 
--- CTRL+SHIFT+hjkl: the same, with the window in tow. Anything stacked is
--- promoted out first, so what lands at the edge is the window and not the pile
--- it was sitting in.
+-- CTRL+SHIFT+hjkl: the same, with the window in tow. Only the window: a stack
+-- it was part of stays behind.
 function M.move_end(dir, crossing)
   return function()
     local w, mon, ws = here()
     if not w then return false end
-    if ALONG[dir] == "y" then
-      local to = not ws.special and furthest(mon, ws, dir)
-      return to and send(w, to) or false
-    end
-    local col = column(w)
-    if col then
-      local promoted = #col.windows > 1
-      if promoted then
-        claim(w)
-        hl.dispatch(hl.dsp.layout("promote"))
-      end
-      if slide(w, FORWARD[dir] and math.huge or 0) or promoted then return true end
-    end
-    return move_monitor(w, mon, dir, crossing)
+    if ALONG[dir] == "x" then return move_monitor(w, mon, dir, crossing) end
+    local to = not ws.special and furthest(mon, ws, dir)
+    return to and send(w, to) or false
   end
 end
 

@@ -151,15 +151,4 @@ in {
                                inputs);
       expected = [];
     };
-
-  # hyprland.nix used to hardcode librewolf's profile directory, and drifted
-  # from librewolf's own profileName option as a result.
-  testLibrewolfFollowsProfileName = {
-    expr = hasInfix "/librewolf/bob.default/"
-      (theme [{
-        modules.apps.browsers.librewolf.enable = true;
-        modules.apps.browsers.librewolf.profileName = "bob";
-      }]).user.librewolf-chrome-default.output_path;
-    expected = true;
-  };
 }

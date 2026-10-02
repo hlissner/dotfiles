@@ -18,8 +18,8 @@ end
 -- https://wiki.hypr.land/Configuring/Start/
 hl.config({
   general = {
-    gaps_in = 0,
-    gaps_out = 0,
+    gaps_in = 5,
+    gaps_out = 10,
     no_focus_fallback = true,
     layout = "scrolling"
   },
@@ -128,8 +128,6 @@ do
 end
 -- Steam and its games, out of the way until summoned.
 hl.workspace_rule({ workspace = "special:game",
-                    gaps_in = 0,
-                    gaps_out = 0,
                     no_border = true,
                     no_shadow = true,
                     no_rounding = true })
@@ -357,7 +355,7 @@ if hey.plugins.so then
         scale = 0.8,
         layout = "auto",       -- follows each monitor's orientation
         workspace_gap = 50,
-        wallpaper = 1,
+        wallpaper = 0,
         blur = false,
         cross_monitor_drag = true,
         shadow = {

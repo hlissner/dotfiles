@@ -7,8 +7,8 @@ local error = "rgb({{colors.error.default.hex_stripped}})"
 local on_error = "rgb({{colors.on_error.default.hex_stripped}})"
 local border = {
   colors = {
-    0x88{{ colors.outline.default.hex_stripped }},
-    0xff{{ colors.background.default.hex_stripped }}
+    0xff{{ colors.background.default.hex_stripped }},
+    0x99{{ colors.primary.default.hex_stripped }}
   },
   angle = 45
 }
@@ -20,6 +20,9 @@ local function apply_theme()
         active_border = border,
         inactive_border = surface,
       },
+    },
+    decoration = {
+      rounding = 2,
     },
     group = {
       col = {
