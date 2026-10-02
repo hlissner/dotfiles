@@ -14,6 +14,8 @@ shadow             = false
 reserve_space      = true
 capsule            = false
 widget_spacing     = 8
+compositor_blur    = false
+contact_shadow     = true
 
 start = [ "compass", "submap", "group:activity" ]
 center = [ "date", "clock", "weather" ]
@@ -24,36 +26,30 @@ show_on_workspace_switch = false
     middle = "settings-toggle"
 
     [[bar.main.capsule_group]]
-    accordion = false
-    accordion_direction = "end"
     enabled = true
     fill = "surface_variant"
     foreground = "primary"
     id = "devices"
     members = [ "earphones-battery", "trackpad-battery", "phone" ]
-    opacity = 1.0
+    opacity = 0.0
     padding = 8.0
 
     [[bar.main.capsule_group]]
-    accordion = false
-    accordion_direction = "end"
     enabled = true
     fill = "surface_variant"
     foreground = "primary"
     id = "system"
     members = [ "battery", "caffeine", "disks", "network", "bluetooth", "input_volume", "output_volume" ]
-    opacity = 1.0
+    opacity = 0.0
     padding = 8.0
 
     [[bar.main.capsule_group]]
-    accordion = false
-    accordion_direction = "end"
     enabled = true
     fill = "surface_variant"
     foreground = "tertiary"
     id = "activity"
     members = [ "cpu", "ram", "sysmon", "network_rx", "network_tx" ]
-    opacity = 1.0
+    opacity = 0.0
     padding = 8.0
 
 [widget.clock]
@@ -204,9 +200,6 @@ stat = "gpu_usage"
 visualization = "gauge"
 
 [widget.media]
-capsule = true
-capsule_opacity = 0.0
-capsule_padding = 4
 album_art_only = true
 hide_when_no_media = true
 show_progress = true
@@ -215,13 +208,6 @@ title_scroll = "on_hover"
 
     [widget.media.actions]
     right = "exec hyprctl dispatch 'hl.dsp.focus({ window = \"class:feishin\" })'"
-
-[widget.launcher]
-glyph = "search"
-type = "custom_button"
-
-    [widget.launcher.actions]
-    left = "exec hey @rofi appmenu"
 
 [widget.active_window]
 capsule = false
@@ -239,7 +225,6 @@ tooltip = "Overview"
 
 [widget.compass]
 type = "hey/compass:compass"
-capsule = false
 badge_size = 12
 font_size = 10
 home_color = "tertiary"
@@ -251,6 +236,9 @@ special_window_color = "secondary"
 special_workspace_color = "secondary"
 window_color = "primary"
 workspace_color = "primary"
+capsule = true
+capsule_border = "primary"
+capsule_padding = 1
 
     [widget.compass.actions]
     left = "exec hyprctl eval 'hey.plugins.so.overview(\"toggle\")()'"

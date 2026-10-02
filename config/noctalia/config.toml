@@ -8,6 +8,10 @@ telemetry_enabled    = false
 show_location        = false
 settings_window_translucent = true
 readline_shortcuts   = true  # noctalia turned these off by default; my fingers did not
+corner_radius_scale  = 0.50
+
+[shell.animation]
+speed = 0.80
 
 [shell.greeter_sync]
 auto_sync = true
@@ -55,7 +59,6 @@ sound_theme = "hey"  # assets/sounds, linked in by modules/hey.nix
 [theme]
 mode   = "dark"
 source = "wallpaper"
-wallpaper_scheme = "m3-tonal-spot"
 
 [wallpaper]
 transition_on_startup = true
