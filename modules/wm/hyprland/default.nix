@@ -38,7 +38,7 @@ in {
 
       modules.wm.hyprland.plugins = [
         # We have Niri at home
-        self.inputs.scroll-overview.packages.scrolloverview
+        self.inputs.hyprland-scroll-overview.packages.scrolloverview
       ];
 
       environment.sessionVariables = {

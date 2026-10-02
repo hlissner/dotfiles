@@ -19,9 +19,9 @@
 
       # Desktop dependencies
       hyprland.url = "github:hyprwm/Hyprland";
-      scroll-overview.url = "github:yayuuu/hyprland-scroll-overview/new-release";
-      scroll-overview.inputs.hyprland.follows = "hyprland";
-      scroll-overview.inputs.nixpkgs.follows = "nixpkgs";
+      hyprland-scroll-overview.url = "github:yayuuu/hyprland-scroll-overview/new-release";
+      hyprland-scroll-overview.inputs.hyprland.follows = "hyprland";
+      hyprland-scroll-overview.inputs.nixpkgs.follows = "nixpkgs";
       noctalia.url = "github:noctalia-dev/noctalia";
       noctalia.inputs.nixpkgs.follows = "nixpkgs";
 
