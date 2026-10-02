@@ -25,7 +25,7 @@ alias y=wl-copy
 alias p=wl-paste
 alias h=hyprctl
 
-(( $+commands[mpv] )) && alias -s {mp4,avi,mkv,mov}='mpv --loop'
+(( $+commands[mpv] )) && alias -s {mp4,avi,mkv,mov,webm}='mpv --loop'
 (( $+commands[xdg-open] )) && alias open=xdg-open
 (( $+commands[img2sixel] )) && alias six=img2sixel
 
