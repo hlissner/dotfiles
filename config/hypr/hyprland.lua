@@ -101,7 +101,8 @@ hl.layer_rule({ match = { namespace = "rofi" },
 local PRIMARY_WORKSPACE = 100
 
 -- Workspaces need room to grow "infinitely" in either direction (north or
--- south), so I generate fixed workspaces for all monitors as multiples of 100.
+-- south), to approximate Niri's infinite workspaces, so each monitor need
+-- distant root workspaces so there's enough room between them all to expand.
 do
   local ws = 200
   for _, m in ipairs(hey.hypr.monitors) do
@@ -110,20 +111,15 @@ do
                         monitor = m.output,
                         default = true,
                         persistent = true })
-    -- Only the others count up, or the first of them starts at 300 and 200
-    -- is never anyone's.
     if not primary then ws = ws + PRIMARY_WORKSPACE end
   end
 
-  -- Over time, gaps between workspaces form (I'm approximating Niri's "infinite
-  -- workspaces" feature), but really, each monitor is given a primary workspace
-  -- at #100, #200, #300, etc. (the "roots") and create workspaces up and down.
-  -- Gaps can form in between and, in *very* long sessions, neighboring
-  -- workspaces may eventually converge, causing the heat death of the universe.
-  -- This prevents that silently reordering workspaces relative to their roots.
+  -- Over time, gaps between workspaces form or neighboring workspaces
+  -- eventually converge, leading to the heat death of the universe. This
+  -- silently reorders workspaces to prevent that.
   hl.on("config.reloaded", hey.ws.compact)
-  -- And if a monitor's been tricked into showing its neighbour's workspace, a
-  -- reload is the "have you tried turning it off and on again" for it.
+  -- And if a monitor's been tricked into showing a workspace it shouldn't, a
+  -- reload becomes our nuclear reset.
   hl.on("config.reloaded", hey.ws.rehome)
 end
 -- Steam and its games, out of the way until summoned.
