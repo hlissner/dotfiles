@@ -168,7 +168,7 @@ hl.window_rule({ match = { class = "^foot$" },
 hl.window_rule({ match = { class = "^foot$", workspace = "n[s:special:pad:]" },
                  scrolling_width = 0.40 })
 hl.window_rule({ match = { class = "^feishin$" },
-                 workspace = "special:game silent" })
+                 workspace = "special:game" })
 
 
 -- ** Steam
