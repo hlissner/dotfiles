@@ -1,0 +1,14 @@
+/* So I can see underneath the corner url popup a little */
+#statuspanel-label { opacity: 0.7 !important; }
+
+/* Hide minimize, maximize, and close window buttons; I use shortcut keys instead. */
+.titlebar-buttonbox-container { display: none !important; }
+
+/* Hide extra space left over on either side of the tabbar */
+#TabsToolbar .titlebar-spacer[type="pre-tabs"], #TabsToolbar .titlebar-spacer[type="post-tabs"] { display: none !important; }
+
+/* Hide useless header in the sidebar */
+#sidebar-panel-header, .sidebar-panel-heading { display: none !important; }
+
+/* Hide the close tab buttons. it's too easy to fat finger these on vertical tabs. */
+.tab-close-button { display: none !important; }

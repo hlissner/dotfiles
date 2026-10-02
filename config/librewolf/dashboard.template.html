@@ -1,0 +1,204 @@
+<!doctype html>
+<!--
+  dashboard.html --- rendered by Noctalia; do not edit the output.
+
+  A newtab/newwindow page for Librewolf, because all the dashboard browser
+  extensions are awful or dodgy. Obeys pywalfox and wallpaper changes (with a
+  fade-transition)
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Dashboard</title>
+  <style>
+    :root {
+      color-scheme: {{mode}};
+      /* pywalfox's own picks, so this matches the chrome around it */
+      --bg:      {{colors.surface.dark.hex}};
+      --fg:      {{colors.on_background.default.hex}};
+      --fg-dim:  {{colors.on_surface_variant.default.hex}};
+      --tile:    {{colors.surface_container.default.hex}};
+      --tile-hi: {{colors.surface_container_high.default.hex}};
+      --accent:  {{colors.primary.default.hex}};
+      --fade: 1s;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { height: 100%; margin: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: system-ui, sans-serif;
+      display: grid;
+      place-items: center;
+      transition: background-color var(--fade);
+    }
+
+    .wallpaper {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background: center / cover no-repeat;
+      opacity: 0.2;
+      transition: opacity var(--fade);
+    }
+    .wallpaper.out { opacity: 0; }
+
+    .links {
+      position: absolute;
+      left: 50%;
+      bottom: 30%;
+      transform: translate(-50%, 50%);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem;
+      width: max-content;
+      max-width: calc(10 * 5.5rem + 5 * 0.5rem);
+    }
+    .links a {
+      width: 5rem;
+      padding: 0.75rem 0.25rem 0.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      border-radius: 0.5rem;
+        /* background: var(--tile); */
+      color: var(--fg-dim);
+      font-size: 0.75rem;
+      text-decoration: none;
+      overflow: hidden;
+      transition: background-color var(--fade), color var(--fade);
+    }
+    .links a:hover, .links a:focus-visible {
+      background: var(--tile-hi);
+      color: var(--fg);
+      outline: none;
+      transition-duration: 0.1s;
+    }
+    .links img {
+      width: 48px;
+      height: 48px;
+      opacity: 0.4;
+      object-fit: contain;
+      filter: grayscale(1);
+      transition: filter var(--fade);
+    }
+    .links a:hover img, .links a:focus-visible img {
+      filter: none;
+      opacity: 1.0;
+      transition-duration: 0.1s;
+    }
+    /* Labels keep their room so nothing reflows; they just slide out from
+       under the icon on hover. */
+    .links span {
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      opacity: 0;
+      transform: translateY(-0.5rem);
+      transition: opacity var(--fade), transform var(--fade);
+    }
+    .links a:hover span, .links a:focus-visible span {
+      opacity: 1;
+      transform: none;
+      transition-duration: 0.15s;
+    }
+  </style>
+</head>
+<body>
+  <div class="wallpaper" style='background-image: url("file://{{image}}")'></div>
+
+  <nav class="links">
+    <a href="https://root.home.lissner.net"><img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/opnsense.png" alt=""><span>root</span></a>
+    <a href="https://nas0.home.lissner.net"><img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/truenas.png" alt=""><span>nas0</span></a>
+    <a href="https://nas1.home.lissner.net"><img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/synology.png" alt=""><span>nas1</span></a>
+    <a href="https://ap0.home.lissner.net"><img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/tp-link.png" alt=""><span>ap0</span></a>
+    <a href="https://ap1.home.lissner.net"><img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/asus-router.png" alt=""><span>ap1</span></a>
+    <a href="https://home.lissner.net"><img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/nextcloud.png" alt=""><span>nextcloud</span></a>
+    <a href="https://vault.home.lissner.net"><img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/bitwarden.png" alt=""><span>vaultwarden</span></a>
+    <a href="https://music.home.lissner.net"><img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/navidrome.png" alt=""><span>navidrome</span></a>
+    <a href="https://books.home.lissner.net"><img src="https://cdn.jsdelivr.net/gh/selfhst/icons/png/grimmory.png" alt=""><span>grimmory</span></a>
+    <a href="https://track.home.lissner.net"><img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/yamtrack.png" alt=""><span>yamtrack</span></a>
+    <a href="https://inventory.home.lissner.net"><img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/homebox.png" alt=""><span>homebox</span></a>
+    <a href="https://rss.home.lissner.net"><img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/freshrss.png" alt=""><span>freshrss</span></a>
+    <a href="https://code.henrik.io"><img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/forgejo.png" alt=""><span>forgejo</span></a>
+    <a href="https://dl.home.lissner.net"><img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/qbittorrent.png" alt=""><span>qbittorrent</span></a>
+    <a href="https://p2p.home.lissner.net"><img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/slskd.png" alt=""><span>soulseek</span></a>
+    <a href="https://bambu.home.lissner.net"><img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/bambu-lab.png" alt=""><span>bambuddy</span></a>
+    <a href="https://db.home.lissner.net"><img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/adminer.png" alt=""><span>adminer</span></a>
+    <a href="https://ntfy.home.lissner.net"><img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/ntfy.png" alt=""><span>ntfy.sh</span></a>
+    <a href="https://n8n.home.lissner.net"><img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/n8n.png" alt=""><span>n8n</span></a>
+    <a href="https://windmill.home.lissner.net"><img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/windmill.png" alt=""><span>windmill</span></a>
+  </nav>
+
+  <script>
+    const root = document.documentElement;
+    const fade = () => parseFloat(getComputedStyle(root).getPropertyValue("--fade")) * 1000 || 0;
+
+    const readTheme = (html) => ({
+      vars: Object.fromEntries(
+        [...html.matchAll(/--([\w-]+):\s*([^;]+);/g)].map(m => [m[1], m[2].trim()])),
+      image: html.match(/background-image: url\("([^"]+)"\)/)?.[1],
+    });
+
+    const swapWallpaper = async (image) => {
+      const old = document.querySelector(".wallpaper:not(.out)");
+      if (!image || old?.style.backgroundImage.includes(image)) return;
+      // Decode first, so the fade is between two pictures, not into a blank.
+      const probe = new Image(); probe.src = image;
+      await probe.decode().catch(() => {});
+      const next = document.createElement("div");
+      next.className = "wallpaper out";
+      next.style.backgroundImage = `url("${image}")`;
+      old ? old.after(next) : document.body.prepend(next);
+      next.getBoundingClientRect();   // commit the start state
+      next.classList.remove("out");
+      old?.classList.add("out");
+      setTimeout(() => old?.remove(), fade());
+    };
+
+    const apply = async ({ vars, image }) => {
+      root.classList.add("theming");
+      for (const [name, value] of Object.entries(vars)) root.style.setProperty(`--${name}`, value);
+      await swapWallpaper(image);
+      setTimeout(() => root.classList.remove("theming"), fade());
+    };
+
+    let current = {
+      vars: readTheme(document.querySelector("style").textContent).vars,
+      image: document.querySelector(".wallpaper").style.backgroundImage.match(/url\("([^"]+)"\)/)?.[1],
+    };
+
+    // Nothing outside can reach into a file:// page (not even an extension:
+    // "Missing host permission for the tab"), so watch the file ourselves
+    // while on screen. A local read every couple of seconds costs nothing.
+    const poll = async () => {
+      try {
+        const html = await (await fetch(location.href, { cache: "no-store" })).text();
+        const theme = readTheme(html);
+        // Half-written files parse short; wait for the next tick.
+        if (!theme.image || Object.keys(theme.vars).length < Object.keys(current.vars).length) return;
+        if (JSON.stringify(theme) === JSON.stringify(current)) return;
+        current = theme;
+        await apply(theme);
+      } catch (e) {}
+    };
+    // The timer only runs while the tab is on screen; coming back checks at once.
+    let timer = null;
+    const watch = () => {
+      clearInterval(timer);
+      timer = null;
+      if (document.visibilityState !== "visible") return;
+      poll();
+      timer = setInterval(poll, 2500);
+    };
+    document.addEventListener("visibilitychange", watch);
+    watch();
+  </script>
+</body>
+</html>

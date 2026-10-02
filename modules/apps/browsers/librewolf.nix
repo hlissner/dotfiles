@@ -77,6 +77,8 @@ in {
             "browser.translations.automaticallyPopup" = false;
             # Enable userContent.css and userChrome.css for our theme modules
             "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+            # Allow my local dashboard to live and be loaded
+            "security.sandbox.content.read_path_whitelist" = "${config.hey.configDir}/librewolf/";
             # Do not check if Firefox is the default browser
             "browser.shell.checkDefaultBrowser" = false;
             # Disable the "new tab page" feature and show a blank tab instead
@@ -137,20 +139,6 @@ in {
           '') prefs);
       };
 
-      # These are imported from userChrome.css & userContent.css (further below)
-      modules.wm.theme.files = listToAttrs (concatMap
-        (profile: let chromeDir = "${config.home.configDir}/librewolf/librewolf/${cfg.profileName}.${profile}/chrome";
-        in [
-          (nameValuePair "librewolf-chrome-${profile}" {
-            input_path = "${config.hey.configDir}/librewolf/userChrome.template.css";
-            output_path = "${chromeDir}/userChrome.colors.css";
-          })
-          (nameValuePair "librewolf-content-${profile}" {
-            input_path = "${config.hey.configDir}/librewolf/userContent.template.css";
-            output_path = "${chromeDir}/userContent.colors.css";
-          })
-        ]) [ "default" "alt" ]);
-
       home.configFile =
         let localDir = "librewolf/librewolf";
             userjs = mkIf (cfg.settings != {} || cfg.extraConfig != "") {
@@ -182,11 +170,11 @@ in {
 
           "${localDir}/${cfg.profileName}.default/user.js" = userjs;
           "${localDir}/${cfg.profileName}.default/chrome/userChrome.css".text = ''
-            @import "userChrome.colors.css";
+            @import url("file://${config.hey.configDir}/librewolf/userChrome.css");
             ${optionalString (cfg.userChrome != "") cfg.userChrome}
           '';
           "${localDir}/${cfg.profileName}.default/chrome/userContent.css".text = ''
-            @import "userContent.colors.css";
+            @import url("file://${config.hey.configDir}/librewolf/userContent.css");
             ${optionalString (cfg.userContent != "") cfg.userContent}
           '';
 
@@ -199,6 +187,25 @@ in {
     # rots on the next bump. So I ship the manifest myself.
     (mkIf config.programs.noctalia.enable {
       modules.wm.theme.communityTemplates = [ "pywalfox" ];
+
+      modules.wm.theme.files.librewolf-dashboard = {
+        input_path = "${config.hey.configDir}/librewolf/dashboard.template.html";
+        output_path = "${config.home.dataDir}/hey/dashboard.html";
+      };
+      programs.firefox.autoConfig =
+        let page = "file://${config.home.dataDir}/hey/dashboard.html";
+        in mkAfter ''
+          defaultPref("browser.startup.homepage", "${page}");
+          try {
+            ChromeUtils.importESModule("resource:///modules/AboutNewTab.sys.mjs").AboutNewTab.newTabURL = "${page}";
+          } catch (e) {}
+        '';
+
+      # The pywalfox extension's "use included userChrome.css" toggle, done
+      # manually. Its userContent.css counterpart is in
+      # config/librewolf/userContent.css.
+      home.configFile."librewolf/librewolf/${cfg.profileName}.default/chrome/userChrome.css".text =
+        mkBefore ''@import url("file://${config.hey.configDir}/librewolf/userChrome.pywalfox.css");'';
 
       modules.apps.browsers.librewolf.extensions."pywalfox@frewacom.org" = {
         installation_mode = "normal_installed";
