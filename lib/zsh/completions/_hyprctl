@@ -1,0 +1,529 @@
+#compdef hyprctl
+#
+# Completion for hyprctl. Hyprland shipped one until hyprwm/Hyprland@a9aad0cf
+# ("hyprctl: remove shell completions"), and the copy that went was a complgen
+# grammar nobody had touched since hyprlang: `movetoworkspace`, `fakefullscreen`,
+# `descriptions[7]="CONFUSED"`, entity lookups that awk'd the plain-text output.
+# This file sat ahead of it on $fpath (modules/hey.nix) while it lasted, and
+# is simply what's left once the flake input moves past that commit.
+#
+# The point of this one is to ask hyprctl rather than remember for it:
+#
+#   hyprctl --help            the command table and the flags
+#   hyprctl CMD --help        the `requests:` of plugin/hyprpaper/hyprsunset,
+#                             notify's `icon:` table
+#   hyprctl -j descriptions   every config option, with enum maps and ranges
+#   hyprctl repl 'lua'        hl.dsp.* and any other Lua path, by walking the
+#                             table inside the compositor
+#   hyprctl -j monitors|clients|devices|instances
+#
+# so a new command, flag, option or dispatcher completes the day it lands.
+# Each lookup is a ~15ms socket round-trip; none errors if the socket is gone,
+# they just offer nothing.
+#
+# TRANSCRIBED FROM: Hyprland 0.56.0
+#
+#   What hyprctl has no enumeration for is hand-written in section 3 and the
+#   odd per-command tail in section 4, and that is what rots:
+#
+#     window selectors        Configuring/Basics/Dispatchers, "Window"
+#     setprop/getprop props   Configuring/Basics/Window-Rules, "Dynamic effects"
+#     output backends         `hyprctl output --help` (prose, not a table)
+#     hyprpaper fit modes,    Hypr-Ecosystem/hyprpaper
+#       `listactive`
+#     hyprsunset reset/profile  Hypr-Ecosystem/hyprsunset; --help omits them
+#     reload full-reset,      Configuring/Advanced-and-Cool/Using-hyprctl
+#       seterror disable
+#     descriptions, locked,   undocumented but answered; --help omits them
+#       submap
+#
+#   The wiki mirror is /etc/claude-code/data/refs/hyprland. On a bump, diff
+#   those pages and `hyprctl X --help` for the three-dot commands; everything
+#   else here follows hyprctl on its own.
+#
+#   Then a new shell (fpath is live, no hey sync) and `hey reload`, which drops
+#   the compdump compinit -C would otherwise trust.
+#
+# LAYOUT
+#
+#   1. Plumbing        -- the hyprctl wrapper and the --help parser
+#   2. Dynamic lookups -- __hyprctl_* that ask hyprctl, the socket or the disk
+#   3. Transcribed     -- the tables above
+#   4. Command tails   -- one arm per command that takes arguments
+#   5. Main body       -- flags + command, then dispatch; the file body is the
+#                         function (see the note there)
+#
+# CONVENTIONS
+#
+#   Results go in $_hyprctl_reply, not $reply: _comp_setup declares `local -a
+#   reply`, and zstyle -e assigns into the caller's. Nothing here sets options;
+#   compinit already gives every completion extendedglob, NO_globsubst and
+#   NO_shwordsplit. `dispatch`, `keyword` and `setprop` are completed and never
+#   run -- every lookup is a read.
+
+
+# ---------------------------------------------------------------------------
+# 1. Plumbing
+# ---------------------------------------------------------------------------
+
+# Every socket query goes through here so a `-i SIG` on the line is honoured:
+# the user is completing against *that* instance's windows, not this shell's.
+__hyprctl() {
+  local -a inst
+  local i=${opt_args[-i]:-${opt_args[--instance]-}}
+  [[ -n $i ]] && inst=( -i ${(Q)i} )
+  command hyprctl $inst "$@" 2>/dev/null
+}
+
+# One block of hyprctl's usage text -- `commands:`, `flags:`, a three-dot
+# command's `requests:`, notify's `icon:` -- into $_hyprctl_reply as name:desc
+# and $_hyprctl_argv as name -> its placeholder (`<theme> <size>`, `[amount]`).
+# $1 is the block, the rest is what precedes --help on the command line.
+#
+# The shape is `NAME [placeholders] → description`, with wrapped descriptions
+# continuing on arrow-less lines. A line with no arrow and no entry open yet is
+# a sub-heading (notify's `Integer of value:`) and is skipped. `6 or -1 → No
+# icon` is the one line with two names; everything to the left of the arrow is
+# split on ` or ` so both complete. Colons are escaped because _describe splits
+# on the first bare one, and _arguments' [desc] minds them too.
+__hyprctl_help_table() {
+  local block=$1; shift
+  local line left desc alt name in=0
+  _hyprctl_reply=(); _hyprctl_argv=()
+  __hyprctl_help_entry() {
+    [[ -n $left ]] || return
+    for alt in ${(s: or :)left}; do
+      name=${alt%% *}
+      _hyprctl_reply+=( "$name:${desc//:/\\:}" )
+      _hyprctl_argv[$name]=${${alt#$name}## #}
+    done
+    left= desc=
+  }
+  for line in "${(@f)$(command hyprctl "$@" --help 2>/dev/null)}"; do
+    if (( ! in )); then [[ $line == $block: ]] && in=1; continue; fi
+    [[ -z $line ]] && break
+    if [[ $line == *' → '* ]]; then
+      __hyprctl_help_entry
+      left=${${line%% → *}## #} desc=${line#* → }
+    elif [[ -n $left ]]; then
+      desc+=" ${line## #}"
+    fi
+  done
+  __hyprctl_help_entry
+  (( $#_hyprctl_reply ))
+}
+
+
+# ---------------------------------------------------------------------------
+# 2. Dynamic lookups
+# ---------------------------------------------------------------------------
+
+# The three undocumented commands are appended only if --help still omits them,
+# so the day they're listed this stops saying it twice.
+__hyprctl_commands() {
+  __hyprctl_help_table commands
+  local extra
+  for extra in 'descriptions:Lists every config option with its description, default and current value' \
+               'locked:Whether a session lock is active' \
+               'submap:The active bind submap'; do
+    (( $_hyprctl_reply[(I)${extra%%:*}:*] )) || _hyprctl_reply+=( $extra )
+  done
+  _describe -t commands 'hyprctl command' _hyprctl_reply
+}
+
+# The `flags:` block as _arguments specs, left in $_hyprctl_reply. --help
+# spells an alias as `--instance (-i)`, which the parser leaves in argv; the
+# parens come off and every spelling excludes the others. Which flags take a
+# value is the one thing the text can't say, so those two are named here; a
+# flag added later completes as a bare switch, which is right until it isn't.
+__hyprctl_flag_specs() {
+  __hyprctl_help_table flags
+  local entry name desc value
+  local -a names specs
+  for entry in $_hyprctl_reply; do
+    name=${entry%%:*} desc=${entry#*:}
+    names=( $name ${=${_hyprctl_argv[$name]//[()]/}} )
+    case $name in
+      --instance) value=':instance:__hyprctl_instances' ;;
+      --batch)    value=':commands:__hyprctl_batch' ;;
+      *)          value= ;;
+    esac
+    for name in $names; do
+      specs+=( "(${names})${name}[${desc//\]/\\]}]$value" )
+    done
+  done
+  specs+=( '(- *)--help[Print usage, or a three-dot command'"'"'s arguments]' )
+  _hyprctl_reply=( $specs )
+}
+
+# The verbs of a three-dot command (plugin, hyprpaper, hyprsunset), from its
+# own --help, plus whatever the wiki documents that --help doesn't (section 3).
+__hyprctl_requests() {
+  local cmd=$1 extra
+  __hyprctl_help_table requests $cmd
+  for extra in ${(f)_hyprctl_extra_requests[$cmd]-}; do
+    (( $_hyprctl_reply[(I)${extra%%:*}:*] )) || _hyprctl_reply+=( $extra )
+  done
+  _describe -t requests "$cmd request" _hyprctl_reply
+}
+
+# Config options for getoption/keyword. descriptions emits section:key; hyprctl
+# also takes section.key, so a prefix typed with dots gets dots back. The tag
+# can't be `options`: _arguments owns that one for -flags, and under it the
+# whole list quietly matched nothing.
+__hyprctl_options() {
+  local -a opts
+  opts=( ${(f)"$(__hyprctl -j descriptions \
+    | jq -r '.[] | "\(.name | gsub(":"; "\\:")):\(.description | gsub(":"; "\\:"))"' 2>/dev/null)"} )
+  [[ $PREFIX == *.* && $PREFIX != *:* ]] && opts=( ${opts//\\:/.} )
+  _describe -t config-options 'config option' opts
+}
+
+# The value for keyword NAME: the enum's names when descriptions has a `map`,
+# true/false when the default is a boolean, and otherwise just the
+# description and range as a message, since there's no `type` field to go on
+# (getoption -j names the type, but that's a second round-trip for a hint).
+__hyprctl_option_value() {
+  local json=$(__hyprctl -j descriptions \
+    | jq -c --arg n ${1//./:} '.[] | select(.name == $n)' 2>/dev/null)
+  [[ -n $json ]] || { _message 'value'; return }
+  local -a choices
+  choices=( ${(f)"$(jq -r '(.map // [])[] | to_entries[] | "\(.key):\(.value)"' <<<$json)"} )
+  if (( $#choices )); then
+    _describe -t values 'value' choices
+  elif [[ $(jq -r '.default | type' <<<$json) == boolean ]]; then
+    choices=( true false )
+    _describe -t values 'value' choices
+  else
+    _message -r "$(jq -r '"\(.description)  [default: \(.default | tostring)"
+      + (if .min != null then ", \(.min)..\(.max)" else "" end) + "]"' <<<$json)"
+  fi
+}
+
+# A Lua path, completed from inside the compositor: `hl.dsp.win` becomes
+# "what are hl.dsp's keys", answered by pairs() over the real table. Tables
+# get a `.` suffix, functions a `(`, so TAB walks a namespace. Anything up to
+# the last non-identifier character is left alone, which is how
+# `hl.dispatch(hl.dsp.win` works too. $1 is prepended when the word has no
+# dot yet: dispatch's argument always starts hl.dsp., so that's where it opens.
+__hyprctl_lua() {
+  local root=${1-}
+  compset -q
+  compset -P '*[^[:alnum:]_.]'
+  local parent
+  if [[ $PREFIX == *.* ]]; then
+    parent=${PREFIX%.*}
+    compset -P '*.'
+  elif [[ -n $root ]]; then
+    parent=${root%.}
+  fi
+  local -a keys tables funcs others
+  keys=( ${(f)"$(__hyprctl repl 'local ok, r = pcall(function()
+      local t = _G
+      for p in ("'$parent'"):gmatch("[^.]+") do t = t[p] end
+      if type(t) ~= "table" then return "" end
+      local o = {}
+      for k, v in pairs(t) do if type(k) == "string" then o[#o+1] = k .. "\t" .. type(v) end end
+      table.sort(o)
+      return table.concat(o, "\n")
+    end)
+    return ok and r or ""')"} )
+  # A dead socket's "Couldn't connect" comes out on stdout like an answer.
+  keys=( ${(M)keys:#[[:alnum:]_]##$'\t'*} )
+  local k
+  for k in $keys; do
+    case ${k#*$'\t'} in
+      table)    tables+=( ${k%%$'\t'*} ) ;;
+      function) funcs+=( ${k%%$'\t'*} ) ;;
+      *)        others+=( ${k%%$'\t'*} ) ;;
+    esac
+  done
+  local -a pre
+  [[ -n $root && $IPREFIX != *. ]] && pre=( -P $root )
+  _wanted tables    expl 'lua table'    compadd $pre -S . -q -a tables
+  _wanted functions expl 'lua function' compadd $pre -S '(' -q -a funcs
+  _wanted values    expl 'lua value'    compadd $pre -a others
+}
+
+# Monitors by name, described by the EDID string `desc:` selectors want; `all`
+# includes the disabled ones, which `output remove` and `monitor` rules are
+# exactly as likely to be about.
+__hyprctl_monitors() {
+  local -a mons
+  mons=( ${(f)"$(__hyprctl -j monitors all \
+    | jq -r '.[] | "\(.name):\(.description | gsub(":"; "\\:"))\(if .disabled then " (disabled)" else "" end)"' 2>/dev/null)"} )
+  _describe -t monitors 'monitor' mons
+}
+
+# A window, as decorations/getprop/setprop take one: a TYPE:value selector or
+# one of three bare words. After a TYPE: the values come off `clients`, each
+# type from its own field. Titles and classes are regexes to hyprctl, so the
+# live strings are offered as-is and match literally.
+__hyprctl_windows() {
+  local -A field=(
+    class .class  initialclass .initialClass  title .title  initialtitle .initialTitle
+    tag '.tags[]'  pid .pid  stableid .stableId  address .address
+  )
+  local -a vals
+  if compset -P '(class|initialclass|title|initialtitle|tag|pid|stableid|address):'; then
+    local type=${${IPREFIX%:}##*[^[:alnum:]]}
+    if [[ $type == address ]]; then
+      vals=( ${(f)"$(__hyprctl -j clients \
+        | jq -r '.[] | "\(.address):\(.class | gsub(":"; "\\:")) -- \(.title | gsub(":"; "\\:"))"' 2>/dev/null)"} )
+      _describe -t windows 'window' vals
+    else
+      vals=( ${(f)"$(__hyprctl -j clients | jq -r ".[] | $field[$type] | tostring" 2>/dev/null)"} )
+      _wanted windows expl "window $type" compadd -a vals
+    fi
+  else
+    local -a types=( ${(k)field} ) words=( activewindow floating tiled )
+    _describe -t selectors 'window selector' types -S : -q
+    _describe -t windows 'window' words
+  fi
+}
+
+# Keyboards for switchxkblayout, plus the two words it takes instead of one.
+__hyprctl_keyboards() {
+  local -a kbs=( 'current:the active keyboard' 'all:every keyboard' )
+  kbs+=( ${(f)"$(__hyprctl -j devices \
+    | jq -r '.keyboards[] | "\(.name | gsub(":"; "\\:")):\(.active_keymap | gsub(":"; "\\:"))\(if .main then " (main)" else "" end)"' 2>/dev/null)"} )
+  _describe -t keyboards 'keyboard' kbs
+}
+
+# -i takes a signature or an index into this list; both are offered. Empty
+# from inside a PID namespace (the lock-file check can't see Hyprland), which
+# is a sandbox's problem, not this file's.
+__hyprctl_instances() {
+  local -a insts
+  insts=( ${(f)"$(command hyprctl -j instances 2>/dev/null \
+    | jq -r 'to_entries[] | "\(.key):\(.value.instance) (pid \(.value.pid))", "\(.value.instance):\(.value.wl_socket), pid \(.value.pid)"' 2>/dev/null)"} )
+  _describe -t instances 'hyprland instance' insts
+}
+
+# Cursor themes setcursor can load: an XCursor dir with cursors/, or a
+# hyprcursor one with a manifest. Disk only, no socket.
+__hyprctl_cursor_themes() {
+  local d t
+  local -a themes
+  for d in ~/.icons ~/.local/share/icons ${^${(s.:.)XDG_DATA_DIRS}}/icons; do
+    for t in $d/*(N-/); do
+      [[ -d $t/cursors || -n $t/manifest.*(#qN[1]) ]] && themes+=( ${t:t} )
+    done
+  done
+  themes=( ${(u)themes} )
+  _wanted themes expl 'cursor theme' compadd -a themes
+}
+
+# Inside --batch's string: commands separated by `;`, each completed from the
+# same table. One level deep -- a command's arguments in a batch are the
+# user's to spell.
+__hyprctl_batch() {
+  compset -q
+  compset -P '*;[ ]#'
+  __hyprctl_commands
+}
+
+
+# ---------------------------------------------------------------------------
+# 3. Transcribed
+# ---------------------------------------------------------------------------
+
+# The window-rule "dynamic effects", which is what setprop/getprop take. The
+# value after the name is the wiki's argument type, which is all a value
+# completion has to go on.
+local -A _hyprctl_props=(
+  allows_input      boolean   animation         string    border_color      gradient
+  border_size       integer   confine_pointer   boolean   decorate          boolean
+  dim_around        boolean   focus_on_activate boolean   force_rgbx        boolean
+  idle_inhibit      string    immediate         boolean   keep_aspect_ratio boolean
+  max_size          vec2      min_size          vec2      nearest_neighbor  boolean
+  no_anim           boolean   no_auto_hdr       boolean   no_blur           boolean
+  no_dim            boolean   no_focus          boolean   no_follow_mouse   boolean
+  no_max_size       boolean   no_screen_share   boolean   no_shadow         boolean
+  no_shortcuts_inhibit boolean no_vrr           boolean   opacity           string
+  opaque            boolean   persistent_size   boolean   render_unfocused  boolean
+  rounding          integer   rounding_power    number    scroll_mouse      number
+  scroll_touchpad   number    stay_focused      boolean   sync_fullscreen   boolean
+  tag               string    tonemap           string    xray              boolean
+)
+
+__hyprctl_props() {
+  local -a props
+  local p
+  for p in ${(ko)_hyprctl_props}; do props+=( "$p:$_hyprctl_props[$p]" ); done
+  _describe -t properties 'window property' props
+}
+
+__hyprctl_prop_value() {
+  local -a vals
+  case $1 in
+    idle_inhibit) vals=( none always focus fullscreen ) ;;
+    tonemap)      vals=( on off clamp limited ) ;;
+    *) case ${_hyprctl_props[$1]-} in
+         boolean) vals=( true false ) ;;
+         '')      _message 'value'; return ;;
+         *)       _message "${_hyprctl_props[$1]}"; return ;;
+       esac ;;
+  esac
+  _describe -t values 'value' vals
+}
+
+local -a _hyprctl_backends=( wayland x11 headless auto )
+local -a _hyprctl_fit_modes=( contain cover tile fill )
+
+# Requests the wiki documents and `CMD --help` leaves out.
+local -A _hyprctl_extra_requests=(
+  hyprpaper  'listactive:Print the active wallpaper per monitor'
+  hyprsunset $'reset:Reset temperature, gamma or everything to the profile\nprofile:Print the current profile'
+)
+
+
+# ---------------------------------------------------------------------------
+# 4. Command tails
+# ---------------------------------------------------------------------------
+# $words here starts at the command (the `*::` above sliced the rest off), so
+# a positional's value is $words[N+1]. An action that takes arguments is
+# spelled with a leading space: that form is eval'd, so $words expands when
+# TAB is hit; the bare `FUNC ARGS` form is split literally, and _arguments
+# splices its compadd options in after FUNC -- so FUNC's $1 is `-J`.
+
+__hyprctl_tail() {
+  local cmd=$words[1]
+  case $cmd in
+    decorations)
+      _arguments '1:window:__hyprctl_windows' ;;
+    dismissnotify)
+      _arguments '1:amount (-1 for all):' ;;
+    dispatch)
+      _arguments '1:dispatcher: __hyprctl_lua hl.dsp.' ;;
+    eval|repl)
+      _arguments '1:lua: __hyprctl_lua' ;;
+    getoption)
+      _arguments '1:option:__hyprctl_options' ;;
+    getprop)
+      _arguments '1:window:__hyprctl_windows' '2:property:__hyprctl_props' ;;
+    hyprpaper)
+      __hyprctl_hyprpaper ;;
+    hyprsunset)
+      _arguments '1: : __hyprctl_requests hyprsunset' '2: :__hyprctl_hyprsunset_arg' ;;
+    keyword)
+      _arguments '1:option:__hyprctl_options' '2: : __hyprctl_option_value $words[2]' ;;
+    monitors)
+      _arguments '1:scope:(all)' ;;
+    notify)
+      _arguments \
+        '1: :__hyprctl_notify_icons' \
+        '2:time (ms):' \
+        '3:color (0 for the icon'"'"'s default):(0)' \
+        '*:message:' ;;
+    output)
+      _arguments '1: :__hyprctl_output_verbs' '2: :__hyprctl_output_arg' ;;
+    plugin)
+      _arguments \
+        '1: : __hyprctl_requests plugin' \
+        '2:plugin (absolute path):_files -g "*.so"' ;;
+    reload)
+      _arguments '1:scope:((config-only\:"reload the config, not the monitors" full-reset\:"tear everything down first"))' ;;
+    rollinglog)
+      _arguments '(-f --follow)'{-f,--follow}'[Keep printing as the log grows]' ;;
+    setcursor)
+      _arguments '1:theme:__hyprctl_cursor_themes' '2:size (px):' ;;
+    seterror)
+      _arguments '1:color, or disable:(disable)' '*:message:' ;;
+    setprop)
+      _arguments \
+        '1:window:__hyprctl_windows' \
+        '2:property:__hyprctl_props' \
+        '3: : __hyprctl_prop_value $words[3]' \
+        '4:lock:(lock)' ;;
+    switchxkblayout)
+      _arguments \
+        '1:device:__hyprctl_keyboards' \
+        '2:layout:((next\:"the next layout" prev\:"the previous layout"))' ;;
+    *)
+      # Whatever --help says the command takes, as a hint; a command that's
+      # new to this file at least shows its placeholder.
+      __hyprctl_help_table commands
+      if [[ -n ${_hyprctl_argv[$cmd]-} ]]; then _message -r "$_hyprctl_argv[$cmd]"
+      else                                      _message -e args 'no arguments'
+      fi ;;
+  esac
+}
+
+__hyprctl_notify_icons() {
+  __hyprctl_help_table icon notify
+  _describe -t icons 'icon' _hyprctl_reply
+}
+
+# `output --help` is headings and prose, not a table, so this is the one
+# three-dot command written out.
+__hyprctl_output_verbs() {
+  local -a verbs=(
+    'create:Create a virtual output on a backend'
+    'remove:Remove a virtual output by name'
+  )
+  _describe -t requests 'output request' verbs
+}
+
+__hyprctl_output_arg() {
+  case $words[2] in
+    create) _describe -t backends 'backend' _hyprctl_backends ;;
+    remove) __hyprctl_monitors ;;
+  esac
+}
+
+__hyprctl_hyprsunset_arg() {
+  case $words[2] in
+    temperature) _message 'temperature (kelvin)' ;;
+    gamma)       _message 'gamma (percent, or +N/-N)' ;;
+    reset)       _wanted targets expl 'what to reset' compadd temperature gamma identity ;;
+  esac
+}
+
+# `wallpaper` takes one word, `[mon],[path],[fit_mode]`, so the stage is the
+# number of commas typed so far. The monitor may be empty for a fallback.
+__hyprctl_hyprpaper() {
+  _arguments '1: : __hyprctl_requests hyprpaper' '2: :__hyprctl_hyprpaper_arg'
+}
+
+__hyprctl_hyprpaper_arg() {
+  [[ $words[2] == wallpaper ]] || return 1
+  compset -q
+  case ${#${PREFIX//[^,]/}} in
+    0) local -a mons
+       mons=( ${(f)"$(__hyprctl -j monitors | jq -r '.[].name' 2>/dev/null)"} )
+       _wanted monitors expl 'monitor (empty for fallback)' compadd -S , -q -a mons ;;
+    1) compset -P '*,'; _files ;;
+    *) compset -P '*,'; _describe -t modes 'fit mode' _hyprctl_fit_modes ;;
+  esac
+}
+
+
+# ---------------------------------------------------------------------------
+# 5. Main body
+# ---------------------------------------------------------------------------
+# Not wrapped in a `_hyprctl() { ... }`, on purpose: compinit loads this whole
+# file *as* _hyprctl, and a nested definition would replace it after the
+# first TAB, taking the `local` tables above with it. The helpers are
+# (cheaply) redefined on every call for the same reason.
+
+local curcontext="$curcontext" state line
+typeset -A opt_args
+local -a _hyprctl_reply
+typeset -A _hyprctl_argv
+
+__hyprctl_flag_specs
+local -a _hyprctl_flags=( $_hyprctl_reply )
+
+_arguments -C \
+  $_hyprctl_flags \
+  '1: :->command' \
+  '*:: :->args' && return 0
+
+case $state in
+  command) __hyprctl_commands ;;
+  args)
+    curcontext="${curcontext%:*:*}:hyprctl-$words[1]:"
+    __hyprctl_tail
+    ;;
+esac
