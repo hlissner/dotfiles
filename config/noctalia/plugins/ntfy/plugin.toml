@@ -1,0 +1,77 @@
+# config/noctalia/plugins/ntfy/plugin.toml
+#
+# Mine. The house ntfy server hears from everything on the LAN and the phone
+# subscribes to it; the desktop didn't. This is the subscriber: one service
+# holds `GET /topics/json` open (`noctalia.httpStream` was built for exactly
+# this kind of line-per-event stream) and forks `notify-send` per message, so
+# the popup goes through the same daemon everything else on this box uses and
+# gets a real urgency out of ntfy's priority.
+#
+# No widget. If I want a bell in the bar it'd be a second entry reading the
+# plugin state this publishes; the service doesn't care either way.
+#
+# Off by default in modules/wm/noctalia.nix: a host that isn't on the LAN
+# would only ever log reconnects.
+
+id           = "hey/ntfy"
+name         = "ntfy"
+version      = "1.0.0"
+plugin_api   = 21  # direct-argv for notify-send (http-stream is 4)
+author       = "hlissner"
+license      = "MIT"
+dependencies = ["notify-send"]
+tags         = ["notifications", "ntfy"]
+icon         = "bell-ringing"
+description  = "Subscribes to ntfy topics and forwards each message to notify-send."
+
+# All plugin-level, so the service can see them.
+[[setting]]
+key             = "server"
+type            = "string"
+label_key       = "settings.server.label"
+description_key = "settings.server.description"
+default         = "https://ntfy.home.lissner.net"
+
+[[setting]]
+key             = "topics"
+type            = "string_list"
+label_key       = "settings.topics.label"
+description_key = "settings.topics.description"
+default         = []
+
+[[setting]]
+key             = "app_name"
+type            = "string"
+label_key       = "settings.app_name.label"
+description_key = "settings.app_name.description"
+default         = "ntfy"
+advanced        = true
+
+[[setting]]
+key             = "icon"
+type            = "string"
+label_key       = "settings.icon.label"
+description_key = "settings.icon.description"
+default         = ""
+advanced        = true
+
+# Per-topic overrides of the two above, keyed by topic.
+[[setting]]
+key             = "app_names"
+type            = "string_map"
+label_key       = "settings.app_names.label"
+description_key = "settings.app_names.description"
+default         = {}
+advanced        = true
+
+[[setting]]
+key             = "icons"
+type            = "string_map"
+label_key       = "settings.icons.label"
+description_key = "settings.icons.description"
+default         = {}
+advanced        = true
+
+[[service]]
+id    = "stream"
+entry = "service.luau"

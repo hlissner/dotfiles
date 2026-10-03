@@ -27,6 +27,11 @@ in mkIf (username == "hlissner") (mkMerge [
   }
 
   (mkIf (role == "workstation") {
+    modules.wm.noctalia.plugins."hey/ntfy" = {
+      enable = mkDefault true;
+      src = "${config.hey.configDir}/noctalia/plugins/ntfy";
+    };
+
     environment.systemPackages = with pkgs; [
       tailcat               # for giving one-shot access to outsiders
       nixos-firewall-tool   # for toggling ports

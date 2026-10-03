@@ -221,3 +221,15 @@ on_expire = "hey hook -f on-timer-elapsed"
 
 [plugin_settings."hey/compass"]
 poll_ms = 0
+
+[plugin_settings."hey/ntfy"]
+app_name = ""
+topics = [ "soulseek", "yamtrack", "bambuddy", "nas0", "homebox", "qbittorrent" ]
+
+    [plugin_settings."hey/ntfy".icons]
+    bambuddy = "https://cdn.jsdelivr.net/gh/selfhst/icons/webp/bambuddy.webp"
+    homebox = "https://cdn.jsdelivr.net/gh/selfhst/icons/webp/homebox.webp"
+    nas0 = "https://cdn.jsdelivr.net/gh/selfhst/icons/webp/truenas-core.webp"
+    qbittorrent = "https://cdn.jsdelivr.net/gh/selfhst/icons/webp/qbittorrent.webp"
+    soulseek = "https://cdn.jsdelivr.net/gh/selfhst/icons/webp/slskd.webp"
+    yamtrack = "https://cdn.jsdelivr.net/gh/selfhst/icons/webp/yamtrack.webp"

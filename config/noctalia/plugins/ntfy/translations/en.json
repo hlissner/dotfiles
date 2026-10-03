@@ -1,0 +1,14 @@
+{
+  "settings.server.label": "Server",
+  "settings.server.description": "The ntfy server's base URL, no trailing slash.",
+  "settings.topics.label": "Topics",
+  "settings.topics.description": "Topics to subscribe to. Nothing happens until there's at least one.",
+  "settings.app_name.label": "App name",
+  "settings.app_name.description": "What the notification says it came from. Empty for the topic it arrived on.",
+  "settings.icon.label": "Icon",
+  "settings.icon.description": "An icon name or path for every notification. Empty for none.",
+  "settings.app_names.label": "App name per topic",
+  "settings.app_names.description": "Topic → app name. Topics not listed use the app name above.",
+  "settings.icons.label": "Icon per topic",
+  "settings.icons.description": "Topic → icon name or path. Topics not listed use the icon above."
+}
