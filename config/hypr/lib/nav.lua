@@ -154,23 +154,28 @@ local function beside(w, anchor, dir)
   slide(w, FORWARD[dir] and at or at + 1)
 end
 
--- Off the side of MON, onto whatever's nearest on the other one.
-local function focus_monitor(w, mon, dir)
+-- Off the side of MON onto the next one: what was last focused there, if asked
+-- to REMEMBER, else whatever's nearest the edge we come in by.
+local function focus_monitor(w, mon, dir, remember)
   local to = mon and monitor_toward(mon, dir)
   if not to then return false end
-  local target = entry(to, dir, w)
+  local ws = remember and util.active_workspace(to)
+  local target = ws and ws.last_window or entry(to, dir, w)
   if target then return focus(target) end
   hl.dispatch(hl.dsp.focus({ monitor = to.name }))
   return true
 end
 
--- CROSSING, if given, is told just before W leaves MON for good.
+-- CROSSING, if given, is told just before W leaves MON for good. Moving to a
+-- monitor means its regular workspace, under any scratchpad it's showing; name
+-- the workspace instead and a pad pulls W in and stays up.
 local function move_monitor(w, mon, dir, crossing)
   local to = mon and monitor_toward(mon, dir)
   if not (w and to) then return false end
+  local ws = util.active_workspace(to)
   local anchor = entry(to, dir, w)
   if crossing then crossing(mon, to) end
-  hl.dispatch(hl.dsp.window.move({ monitor = to.name }))
+  hl.dispatch(hl.dsp.window.move(ws and { workspace = ws, window = w } or { monitor = to.name }))
   if anchor then beside(w, anchor, dir) end
   return true
 end
@@ -312,12 +317,13 @@ function M.move(dir, crossing)
   end
 end
 
--- CTRL+h/l: straight onto the next monitor, wherever on the tape we are. j/k:
--- the last workspace that way with anything on it.
+-- CTRL+h/l: straight onto the next monitor, wherever on the tape we are, and
+-- back to whatever had focus there. j/k: the last workspace that way with
+-- anything on it.
 function M.focus_end(dir)
   return function()
     local w, mon, ws = here()
-    if ALONG[dir] == "x" then return focus_monitor(w, mon, dir) end
+    if ALONG[dir] == "x" then return focus_monitor(w, mon, dir, true) end
     local to = mon and ws and not ws.special and furthest(mon, ws, dir)
     return to and hop(w, to, dir) or false
   end
