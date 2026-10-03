@@ -209,7 +209,9 @@
         "~/projects/config/dotfiles",
         "~/projects/ai",
         "/tmp",
-        "/etc/claude-code/resources"
+        "/etc/claude-code/resources",
+        "/etc/dotfiles",
+        "/etc/hey"
       ]
     }
   }
