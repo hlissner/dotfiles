@@ -96,6 +96,7 @@ with builtins;
         libraryDir = "/media/windows/Program Files (x86)/Steam";
       };
       godot.enable = true;
+      feishin.enable = true;
 
       browsers.default = "librewolf";
       browsers.librewolf.enable = true;
