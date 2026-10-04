@@ -76,28 +76,36 @@ in {
   ## What the primary monitor pins.
 
   # Bars spawn on every output, so every monitor but the primary is named and
-  # switched off; the lock screen, notifications and login box are named onto
-  # the primary. Noctalia reads an empty monitor list as "every output" and
-  # throws away a login box with no `output`, so a host with no primary must
-  # leave all of these keys off rather than pin them to nothing.
-  testPrimaryMonitorPinsTheShell = {
-    expr = {
-      barOff    = attrNames base.bar.main.monitor;
-      lock      = base.lockscreen.monitors;
-      toasts    = base.notification.monitors;
-      loginBox  = base.lockscreen_widgets.widget."lockscreen-login-box@DP-2".output;
-      # And nothing of the sort without one.
-      unpinned  = filter (k: noPrimary ? ${k}) [ "lockscreen" "notification" "lockscreen_widgets" ]
-                  ++ optional (noPrimary.bar.main ? monitor) "bar";
+  # switched off; notifications are named onto the primary. The lock screen
+  # covers every output (no `lockscreen.monitors`, which Noctalia reads as
+  # "all"), but Noctalia also draws a login box on any locked output that hasn't
+  # declared one, so the other outputs each get one switched off. A host with no
+  # primary must leave all of these keys off rather than pin them to nothing.
+  testPrimaryMonitorPinsTheShell =
+    let loginBoxes = filterAttrs (k: _: hasPrefix "lockscreen-login-box@" k)
+          base.lockscreen_widgets.widget;
+    in {
+      expr = {
+        barOff    = attrNames base.bar.main.monitor;
+        lock      = base ? lockscreen;
+        toasts    = base.notification.monitors;
+        loginBox  = mapAttrs (_: w: { inherit (w) output; enabled = w.enabled or true; }) loginBoxes;
+        # And nothing of the sort without one.
+        unpinned  = filter (k: noPrimary ? ${k}) [ "lockscreen" "notification" "lockscreen_widgets" ]
+                    ++ optional (noPrimary.bar.main ? monitor) "bar";
+      };
+      expected = {
+        barOff = [ "DP-1" "HDMI-A-1" ];
+        lock = false;
+        toasts = [ "DP-2" ];
+        loginBox = {
+          "lockscreen-login-box@DP-2"    = { output = "DP-2";    enabled = true; };
+          "lockscreen-login-box@DP-1"    = { output = "DP-1";    enabled = false; };
+          "lockscreen-login-box@HDMI-A-1" = { output = "HDMI-A-1"; enabled = false; };
+        };
+        unpinned = [];
+      };
     };
-    expected = {
-      barOff = [ "DP-1" "HDMI-A-1" ];
-      lock = [ "DP-2" ];
-      toasts = [ "DP-2" ];
-      loginBox = "DP-2";
-      unpinned = [];
-    };
-  };
 
   ## The bar.
 

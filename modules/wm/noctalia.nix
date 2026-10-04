@@ -10,6 +10,10 @@ with self.lib;
 let cfg = config.modules.wm;
     primaryMonitor = findFirst (x: x.primary) {} cfg.hyprland.monitors;
     hasPrimary = primaryMonitor ? output;
+    otherOutputs = optionals hasPrimary
+      (filter (o: o != "" && o != primaryMonitor.output)
+        (catAttrs "output" cfg.hyprland.monitors));
+
     package = self.inputs.noctalia.packages.default;
     format = pkgs.formats.toml {};
     # Disabled plugins are still installed, or Settings can't list them.
@@ -210,9 +214,7 @@ in {
          lanes = mapAttrs
            (_: filter (w: if hasPrefix "group:" w then elem w groupIds else keep w))
            (filterAttrs (k: _: elem k [ "start" "center" "end" ]) baseline.bar.main);
-         otherMonitors = optionalAttrs hasPrimary (genAttrs
-           (filter (o: o != "" && o != primaryMonitor.output) (catAttrs "output" cfg.hyprland.monitors))
-           (o: { match = o; enabled = false; }));
+         otherMonitors = genAttrs otherOutputs (o: { match = o; enabled = false; });
     in {
       modules.wm.noctalia.settings = defaults {
         bar.main = lanes
@@ -242,10 +244,11 @@ in {
     ## The lock screen.
     (mkIf hasPrimary {
       modules.wm.noctalia.settings = defaults {
-        lockscreen.monitors = [ primaryMonitor.output ];
         notification.monitors = [ primaryMonitor.output ];
         osd.monitors = [ primaryMonitor.output ];
 
+        # Only show the lockscreen widgets on the primary window. Hide all other
+        # widgets.
         lockscreen_widgets.widget = {
           "lockscreen-login-box@${primaryMonitor.output}" = {
             type = "login_box";
@@ -260,7 +263,9 @@ in {
             };
           };
         } // genAttrs [ "lockscreen-date" "lockscreen-clock" ]
-          (_: { type = "clock"; output = primaryMonitor.output; });
+          (_: { type = "clock"; output = primaryMonitor.output; })
+          // genAttrs' otherOutputs (o: nameValuePair "lockscreen-login-box@${o}"
+            { type = "login_box"; output = o; enabled = false; });
       };
     })
 
