@@ -167,7 +167,7 @@ hl.window_rule({ match = { class = "^feishin$" },
                  workspace = "special:media" })
 
 
--- ** Steam
+-- ** Steam/Faugus
 
 hl.window_rule({ name = "steam-all-windows",
                  match = { class = "steam" },
@@ -188,7 +188,7 @@ hl.window_rule({ name = "steam-popups",
                  match = { class = "steam", initial_title = "negative:Steam" },
                  float = true })
 hl.window_rule({ name = "steam-games",
-                 match = { initial_class = "(gamescope|steam_app_\\d+)" },
+                 match = { initial_class = "(gamescope|steam_app_(default|\\d+))" },
                  workspace = "special:media silent",
                  no_dim = true,
                  immediate = true,
@@ -201,6 +201,11 @@ hl.window_rule({ name = "steam-games",
                  fullscreen = true,
                  float = false,
                  tile = false })
+hl.window_rule({ name = "faugus",
+                 match = { initial_class = "io.github.Faugus.faugus-launcher" },
+                 workspace = "special:media silent",
+                 scrolling_width = 0.25,
+                 float = true })
 
 
 -- * Gestures
