@@ -32,7 +32,7 @@ with builtins;
       hyprland = rec {
         monitors = [
           { output = "HDMI-A-2";
-            mode = "3840x2160@60";  # HDMI 2.0 sucks
+            mode = "preferred";
             primary = true; }
         ];
       };
@@ -45,7 +45,6 @@ with builtins;
       ## Extra
       flatpak.enable = true;
       rofi.enable = true;
-      thunar.enable = true;
       steam.enable = true;
 
       browsers.default = "librewolf";
@@ -70,23 +69,64 @@ with builtins;
 
   ## local config
   config = { config, pkgs, ... }: {
-    environment.systemPackages = with pkgs; [
-      flex-launcher
-    ];
-
     services.jellyfin = {
       enable = true;
       openFirewall = true;
-      dataDir = "/home/${config.user.name}/jellyfin";
+      dataDir = "${config.home.dir}/jellyfin";
       user = config.user.name;
     };
 
     # No AV1 decoder on this card
     programs.firefox.preferences."media.av1.enabled" = false;
 
-    hey.hooks."on-started"."10-flex-launcher" = ''
-      hey.do flex-launcher
+    # Targets for shortcuts in Steam Big Picture
+    user.packages = with pkgs; [
+      (writeShellScriptBin "netflix" ''
+        exec ${getExe config.programs.firefox.finalPackage} \
+          --profile "${config.home.dataDir}/netflix" --kiosk "$@" \
+          https://www.netflix.com
+      '')
+      (writeShellScriptBin "jellyfin" ''
+        exec ${getExe jellyfin-desktop} --tv --fullscreen "$@"
+      '')
+    ];
+
+    # Librewolf' turns DRM off and wipes cookies on exit. Undo that for the
+    # kiosk only.
+    home.dataFile."netflix/user.js".text = ''
+      user_pref("media.eme.enabled", true);
+      user_pref("media.eme.require-app-approval", false);
+      user_pref("media.gmp-widevinecdm.enabled", true);
+      user_pref("media.gmp-widevinecdm.visible", true);
+      user_pref("media.gmp-widevinecdm.autoupdate", true);
+      user_pref("media.gmp-manager.updateEnabled", true);
+      user_pref("privacy.sanitize.sanitizeOnShutdown", false);
+      user_pref("privacy.resistFingerprinting", false);
     '';
+
+    # ExtensionSettings is a global policy, so the kiosk profile gets it too.
+    modules.apps.browsers.librewolf.extensions."uBlock0@raymondhill.net" = {
+      installation_mode = "normal_installed";
+      install_url = "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi";
+    };
+
+    # Auto-login. This is an HTPC. Get straight to the point.
+    services.greetd.settings.initial_session = {
+      user = config.user.name;
+      command = "${getExe config.programs.uwsm.package} start -e -D Hyprland hyprland.desktop";
+    };
+    # ...and straight into Steam Big Picture
+    systemd.user.services.steam-bigpicture = {
+      wantedBy = [ "graphical-session.target" ];
+      partOf = [ "graphical-session.target" ];
+      after = [ "graphical-session.target" ];
+      path = [ "/run/wrappers" "/run/current-system/sw" ];
+      serviceConfig = {
+        # The wrapped steam from modules/apps/steam.nix, not pkgs.steam
+        ExecStart = "/run/current-system/sw/bin/steam -bigpicture";
+        Restart = "no";
+      };
+    };
   };
 
   hardware = { config, ... }: {
@@ -115,6 +155,11 @@ with builtins;
         device = "/dev/disk/by-label/home";
         fsType = "ext4";
         options = [ "noatime" ];
+      };
+      "/media/nas" = {
+        device = "nas0.lan:/mnt/nas/users/hlissner/files";
+        fsType = "nfs";
+        options = [ "noauto" "nofail" "noatime" "nfsvers=4.2" "x-systemd.automount" "x-systemd.idle-timeout=600" ];
       };
     };
     swapDevices = [];
