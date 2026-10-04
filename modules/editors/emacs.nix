@@ -46,7 +46,7 @@ in {
 
       ## Module dependencies
       # :checkers spell
-      (aspellWithDicts (ds: with ds; [ en en-computers en-science ]))
+      (aspellWithDicts (ds: with ds; [ en ]))
       # :emacs dired +dirvish
       ffmpegthumbnailer
       mediainfo

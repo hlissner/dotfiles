@@ -15,7 +15,7 @@ in {
   config = mkIf cfg.enable {
     user.packages = with pkgs; [
       libreoffice
-      (aspellWithDicts (ds: with ds; [ en en-computers en-science ]))
+      (aspellWithDicts (ds: with ds; [ en ]))
     ];
   };
 }
