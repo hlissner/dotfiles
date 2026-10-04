@@ -9,6 +9,7 @@ show_location        = false
 settings_window_translucent = true
 readline_shortcuts   = true  # noctalia turned these off by default; my fingers did not
 corner_radius_scale  = 0.50
+clipboard_enabled    = false
 
 [shell.animation]
 speed = 0.80
@@ -55,6 +56,7 @@ show_events_card = false
 [audio]
 enable_sounds = true
 sound_theme = "hey"  # assets/sounds, linked in by modules/hey.nix
+sound_volume = 1.00
 
 [theme]
 mode   = "dark"
@@ -86,6 +88,7 @@ layer = "overlay"
 
 [nightlight]
 enabled = true
+temperature_night = 2800
 
 # Poll less often (default: 30)
 [weather]

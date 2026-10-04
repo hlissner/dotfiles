@@ -10,7 +10,7 @@ radius             = 0
 margin_ends        = 0
 margin_edge        = 0
 font_scale         = 1.0
-shadow             = false
+shadow             = true
 reserve_space      = true
 capsule            = false
 widget_spacing     = 8
@@ -205,9 +205,12 @@ hide_when_no_media = true
 show_progress = true
 max_length = 400
 title_scroll = "on_hover"
+capsule = true
+capsule_border = "primary"
+capsule_padding = 5
 
     [widget.media.actions]
-    right = "exec hyprctl dispatch 'hl.dsp.focus({ window = \"class:feishin\" })'"
+    right = "exec hyprctl dispatch 'hey.dsp.scratchpad(\"media\")'"
 
 [widget.active_window]
 capsule = false
