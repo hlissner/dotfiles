@@ -10,8 +10,8 @@ mkIf (elem "bluetooth" config.modules.profiles.hardware) {
   hardware.bluetooth.enable = true;
 
   hardware.bluetooth.settings = {
-    # General.ControllerMode = mkDefault "bredr";
-    Policy.ReconnectAttempts = 0;
+    General.ControllerMode = mkDefault "bredr";
+    Policy.ReconnectAttempts = 3;
   };
 
   # Brute force a reset after waking up from sleep, as some bluetooth devices
