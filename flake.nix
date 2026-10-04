@@ -18,7 +18,9 @@
       agenix.inputs.nixpkgs.follows = "nixpkgs";
 
       # Desktop dependencies
-      hyprland.url = "github:hyprwm/Hyprland";
+      # REVIEW: yayuuu/hyprland-scroll-overview doesn't build against Hyprland's
+      #   CRenderContext refactor (9dc5398d+)
+      hyprland.url = "github:hyprwm/Hyprland/e82631720b5d585d7ca09f567cb321063b7c7ab2";
       hyprland-scroll-overview.url = "github:yayuuu/hyprland-scroll-overview/new-release";
       hyprland-scroll-overview.inputs.hyprland.follows = "hyprland";
       hyprland-scroll-overview.inputs.nixpkgs.follows = "nixpkgs";
