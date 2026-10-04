@@ -51,6 +51,16 @@ in {
         # Avoid `recommendedServices` b/c I don't want NetworkManager
       };
 
+      # HACK: uwsm scrubs XDG_SESSION_ID out of the user manager, so Noctalia
+      #   can't see the logind session (breaking its brightness controls and
+      #   loginctl/polkit interop).
+      # REVIEW: Report upstream
+      systemd.user.services.noctalia.serviceConfig.ExecStart = mkForce
+        (pkgs.writeShellScript "noctalia-in-session" ''
+          export XDG_SESSION_ID="$(${config.systemd.package}/bin/loginctl show-user "$UID" -p Display --value)"
+          exec ${getExe package}
+        '');
+
       # Used by noctalia's battery widgets
       services.upower.enable = true;
       services.power-profiles-daemon.enable = true;
