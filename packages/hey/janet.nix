@@ -1,9 +1,9 @@
-# packages/_janet.nix -- the machinery behind hey
+# packages/hey/janet.nix -- the machinery behind hey
 #
 # hey, judge and the dev shell all build against the same janet tree, so the
-# pins and the builder live here rather than three times over. The '_' prefix
-# keeps this file out of mapModules' sweep (see lib/modules.nix); it is not a
-# package.
+# pins and the builder live here rather than three times over. It is not a
+# package; mapModules only takes this directory's default.nix (see
+# lib/modules.nix), so nothing else in here needs hiding.
 
 { lib, stdenv, runCommand, fetchFromGitHub, janet, jpm, gcc }:
 
@@ -133,7 +133,7 @@ in rec {
   } ''
     cp -r ${janetTree}/lib $out
     chmod -R u+w $out
-    cp -r ${../lib/hey} $out/hey
+    cp -r ${../../lib/hey} $out/hey
   '';
 
   mkJanetBin = { name, description, passthru ? {} }:
@@ -142,10 +142,10 @@ in rec {
       version = "0";
 
       src = fileset.toSource {
-        root = ../.;
+        root = ../../.;
         # Only what quickbin compiles in: the entry point and its .d/. Anything
         # wider and an unrelated bin/ script rebuilds the CLI.
-        fileset = fileset.unions [ (../bin + "/${name}") (../bin + "/${name}.d") ];
+        fileset = fileset.unions [ (../../bin + "/${name}") (../../bin + "/${name}.d") ];
       };
 
       dontConfigure = true;

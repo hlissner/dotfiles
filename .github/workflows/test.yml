@@ -58,7 +58,7 @@ jobs:
       - name: Install the janet dependencies
         run: nix shell --inputs-from . $TOOLCHAIN --command jpm deps
 
-      # The working copy, not a build of it: packages/hey.nix compiles
+      # The working copy, not a build of it: packages/hey/default.nix compiles
       # bin/hey.d/* into the binary, so an installed hey would be testing the
       # last commit's code. `nix build .#hey` below covers the build itself.
       - name: Run the Hey suites

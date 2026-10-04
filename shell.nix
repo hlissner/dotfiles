@@ -12,7 +12,7 @@
   nix-inspect,
   ... }:
 
-let janetTree = (callPackage ./packages/_janet.nix {}).janetTree;
+let janetTree = (callPackage ./packages/hey/janet.nix {}).janetTree;
 in mkShell {
   buildInputs = [
     git

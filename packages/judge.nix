@@ -2,4 +2,4 @@
 
 { callPackage, ... }:
 
-(callPackage ./_janet.nix {}).judge
+(callPackage ./hey/janet.nix {}).judge

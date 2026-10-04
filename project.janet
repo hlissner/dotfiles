@@ -6,7 +6,7 @@
  :license "MIT"
  :url "https://github.com/hlissner/dotfiles"
  :repo "git+https://github.com/hlissner/dotfiles"
- # Mirrors packages/_janet.nix's janetDeps, plus judge.
+ # Mirrors packages/hey/janet.nix's janetDeps, plus judge.
  :dependencies [
    {:url "https://github.com/andrewchambers/janet-posix-spawn.git"}
    {:url "https://github.com/andrewchambers/janet-sh.git"}

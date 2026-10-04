@@ -1,8 +1,8 @@
-# packages/hey.nix -- the HeyOS CLI
+# packages/hey/default.nix -- the HeyOS CLI
 
 { callPackage, ... }:
 
-let janet = callPackage ./_janet.nix {};
+let janet = callPackage ./janet.nix {};
 in janet.mkJanetBin {
   name = "hey";
   description = "A control center for my dotfiles";
