@@ -283,6 +283,21 @@ in {
     {
       services.greetd.enable = true;
 
+      # greetd stops the greeter before uwsm has brought Hyprland up, causing a
+      # brief flicker of the monitor (more so on nvidia cards). This keeps it
+      # open until the latest possible moment to prevent it.
+      services.udev.extraRules = ''
+        SUBSYSTEM=="drm", KERNEL=="card[0-9]*", TAG+="systemd", ENV{SYSTEMD_WANTS}+="hey-drm-hold@%k.service"
+      '';
+      systemd.services."hey-drm-hold@" = {
+        description = "Hold /dev/dri/%i open between compositors";
+        restartIfChanged = false;   # a restart drops the hold; nothing to gain on `hey sync`
+        serviceConfig = {
+          StandardInput = "file:/dev/dri/%i";
+          ExecStart = "${getExe' pkgs.coreutils "sleep"} infinity";
+        };
+      };
+
       services.displayManager = {
         defaultSession = "hyprland-uwsm";
         noctalia-greeter = {

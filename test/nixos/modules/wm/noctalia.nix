@@ -227,6 +227,19 @@ in {
     expected = { spelled = true; answered = []; };
   };
 
+  ## The handoff.
+
+  # The udev rule and the template it instantiates are two strings that have
+  # to agree. If they drift the hold never starts, and the only symptom is the
+  # login blink quietly coming back.
+  testDrmHoldRuleNamesARealUnit =
+    let c = noctalia three [];
+        m = match ".*SYSTEMD_WANTS[^\n]*\"([a-z-]+@)%k\\.service\".*" c.services.udev.extraRules;
+    in {
+      expr = m != null && c.systemd.services ? ${head m};
+      expected = true;
+    };
+
   ## Overrides.
 
   # Everything generated is mkDefault'd leaf by leaf, so a host overriding one
