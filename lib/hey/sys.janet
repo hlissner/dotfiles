@@ -100,8 +100,45 @@
             :pd)
   (if sound (play-sound sound)))
 
-(defn yank [text &named type once]
-  ($? echo ,text | wl-copy ,;(opts "-t" type) ,;(opts (if once "-o"))))
+(defn- feed [argv text]
+  (with [p (os/spawn argv :p {:in :pipe})]
+    (ev/write (p :in) text)
+    (ev/close (p :in))
+    (zero? (os/proc-wait p))))
+
+(defn- expire
+  ``Clear the clipboard in TTL seconds, if it still holds TEXT.``
+  [text ttl]
+  (def token-file (path :runtime "yank-expire"))
+  (def token (string/join (map |(string/format "%02x" $) (os/cryptorand 8))))
+  (os/mkdir (path :runtime))
+  (with-umask 8r077 (spit token-file token))
+  (def p (os/spawn ["janet" "-e" (string/format `
+    (def seen (hash (string (file/read stdin :all))))
+    (os/sleep %d)
+    (def paste (os/spawn ["wl-paste" "-n"] :p {:out :pipe :err :pipe}))
+    (def now (ev/read (paste :out) :all))
+    (os/proc-wait paste)
+    (when (and now
+               (= seen (hash (string now)))
+               (= %j (string (try (slurp %j) ([_] "")))))
+      (os/execute ["wl-copy" "--clear"] :p))` ttl token token-file)]
+                   :pd {:in :pipe}))
+  (ev/write (p :in) text)
+  (ev/close (p :in)))
+
+(defn yank
+  ``Copy TEXT to clipboard. SENSITIVE marks it for clipboard managers and takes
+  clears it after TTL seconds (default: 60).``
+  [text &named type once sensitive ttl]
+  (when (feed ["wl-copy"
+               ;(opts "-t" type)
+               ;(opts (if once "-o"))
+               ;(opts (if sensitive "--sensitive"))]
+              text)
+    (when (or sensitive ttl)
+      (expire text (or ttl 60)))
+    true))
 
 (defn yank-file [file &named type once]
   ($? wl-copy ,;(opts "-t" type) ,;(opts (if once "-o")) ,file))

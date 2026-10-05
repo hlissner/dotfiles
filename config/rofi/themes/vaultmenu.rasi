@@ -1,0 +1,10 @@
+/* -*- mode: css; -*- */
+@import "../config.rasi"
+
+icon {
+  filename: "bitwarden";
+}
+
+entry {
+  placeholder: "Search vault...";
+}

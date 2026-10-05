@@ -242,6 +242,7 @@ end)
 
 -- ** External tools
 hl.bind("SUPER + c", hl.dsp.exec_cmd("hey @rofi calcmenu"))
+hl.bind("SUPER + SHIFT + p", hl.dsp.exec_cmd("hey @rofi vaultmenu --resume"))
 hl.bind("SUPER + e", hl.dsp.exec_cmd([[emacsclient --eval "(emacs-everywhere)"]]))
 hl.bind("SUPER + d", hl.dsp.exec_cmd("noctalia msg annotate"))
 hl.bind("SUPER + w", hl.dsp.exec_cmd("noctalia msg window-switcher hold"))

@@ -71,6 +71,10 @@ in {
           icon = "face-smile";
           exec = "hey @rofi emojimenu";
         })
+        (mkLauncherEntry "Open Vault ->" {
+          icon = "bitwarden";
+          exec = "hey @rofi vaultmenu";
+        })
         (mkLauncherEntry "Power Menu ->" {
           icon = "system-shutdown";
           exec = "hey @rofi powermenu";

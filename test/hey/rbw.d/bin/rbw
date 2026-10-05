@@ -1,0 +1,10 @@
+#!/usr/bin/env zsh
+# Stand-in for rbw, for test/hey/rbw.janet.
+#
+# Writes down which runtime dir (i.e. which agent) and display it was handed,
+# then prints $HEY_TEST_RBW_OUT (the canned answer) and exits
+# $HEY_TEST_RBW_EXIT, so the suite can tell a private agent that got stopped
+# from one that got stranded, and feed the parsers something to chew on.
+print -r -- "$XDG_RUNTIME_DIR"$'\t'"$WAYLAND_DISPLAY"$'\t'"$*" >>$HEY_TEST_RBW_LOG
+[[ -n $HEY_TEST_RBW_OUT ]] && print -r -- "$HEY_TEST_RBW_OUT"
+[[ $1 == stop-agent ]] || exit ${HEY_TEST_RBW_EXIT:-0}

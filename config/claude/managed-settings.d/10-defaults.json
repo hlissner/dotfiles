@@ -33,6 +33,7 @@
       "Bash(rsync *)",
       "Bash(hey ops *)",
       "Bash(agenix *)",
+      "Bash(rbw *)",
 
       "Bash(hey sync)",
       "Bash(hey sync --*)",
