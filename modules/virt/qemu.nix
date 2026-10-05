@@ -11,6 +11,7 @@ in {
   config = mkIf cfg.enable {
     environment.systemPackages = with pkgs; [
       qemu
+      virtiofsd
     ];
 
     # I will always update the microcode for my CPUs, so this is safe heuristic
