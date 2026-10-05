@@ -96,7 +96,7 @@ mkIf (config.modules.profiles.role == "workstation") (mkMerge [
   }
 
   (mkIf config.modules.services.ssh.enable {
-    programs.ssh.startAgent = true;
+    programs.ssh.startAgent = mkDefault true;
     services.openssh.startWhenNeeded = true;
   })
 

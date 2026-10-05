@@ -161,4 +161,13 @@ function M.send_key(mods, key)
   end
 end
 
+-- Forward the keystroke that fired the bind to W. hl.dsp.pass insists on a
+-- window (the wiki's `window?` lies), so this only makes sense as an action
+-- under M.on/M.over, which hand it the window they matched.
+function M.passthrough()
+  return function(w)
+    if w then hl.dispatch(hl.dsp.pass({ window = w })) end
+  end
+end
+
 return M

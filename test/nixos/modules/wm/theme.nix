@@ -28,6 +28,7 @@ let
       modules.shell.tmux.enable = true;
       modules.shell.zellij.enable = true;
       modules.apps.feishin.enable = true;
+      modules.apps.supersonic.enable = true;
       modules.apps.rofi.enable = true;
       modules.apps.term.foot.enable = true;
       modules.apps.browsers.librewolf.enable = true;

@@ -347,6 +347,19 @@ hl.bind("XF86AudioPause", hl.dsp.exec_cmd("noctalia msg media toggle"))
 hl.bind("XF86AudioNext",  hl.dsp.exec_cmd("noctalia msg media next"))
 hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd("noctalia msg media previous"))
 
+-- Rate the playing track in Supersonic (1-5), or toggle favorite (6)
+do
+  local supersonic = "io%.github%.supersonic%-app%.supersonic"
+  for i = 1, 5 do
+    hl.bind("SUPER + CTRL + " .. i, hey.dsp.on(
+      { class = supersonic, action = hl.dsp.exec_cmd("supersonic -rate-current " .. i) },
+      hey.dsp.passthrough()))
+  end
+  hl.bind("SUPER + CTRL + 6", hey.dsp.on(
+    { class = supersonic, action = hl.dsp.exec_cmd("hey @supersonic favorite") },
+    hey.dsp.passthrough()))
+end
+
 
 -- * We have Niri at home
 
