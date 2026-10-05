@@ -241,7 +241,6 @@ hl.bind("SUPER + Escape", function () -- reset
 end)
 
 -- ** External tools
-hl.bind("SUPER + c", hl.dsp.exec_cmd("hey @rofi calcmenu"))
 hl.bind("SUPER + SHIFT + p", hl.dsp.exec_cmd("hey @rofi vaultmenu --resume"))
 hl.bind("SUPER + e", hl.dsp.exec_cmd([[emacsclient --eval "(emacs-everywhere)"]]))
 hl.bind("SUPER + d", hl.dsp.exec_cmd("noctalia msg annotate"))
@@ -311,7 +310,7 @@ do
     hl.bind(prefix .. "SHIFT + TAB", hey.dsp.on(
       { layout = "scrolling", action = nav.shuffle("left") },
       { layout = "monocle",   action = hl.dsp.layout("cycleprev") },
-      { layout = "master",    action = hl.dsp.exec_cmd("hey @rofi windowmenu") }))
+      { layout = "master",    action = hl.dsp.exec_cmd("noctalia msg window-switcher") }))
   end
 
   defbinds("SUPER + ", hey.nav)
