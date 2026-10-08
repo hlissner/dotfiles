@@ -175,6 +175,10 @@ show_shortcuts = false
 enabled = true
 blurred_desktop = true
 blur_intensity = 0.6
+edge_smoothness = 0.4
+monitors = []
+tint_intensity = 0.4
+transition_duration = 2000
 
 [lockscreen_widgets]
 enabled = true
