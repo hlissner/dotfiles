@@ -85,6 +85,19 @@ pre_action_fade_seconds = 15
 history_retention_hours = 24
 offset_x = 10
 layer = "overlay"
+filter_order = [ "filter" ]
+show_actions = false
+show_app_name = false
+
+    [notification.filter.filter]
+    allow_permanent = true
+    bypass_dnd = false
+    enabled = true
+    match = "supersonic"
+    override_duration = 3000
+    play_sound = false
+    save_history = true
+    show_toast = true
 
 [nightlight]
 enabled = true
