@@ -246,5 +246,3 @@ capsule_padding = 1
     [widget.compass.actions]
     left = "exec hyprctl eval 'hey.plugins.so.overview(\"toggle\")()'"
     right = "exec noctalia msg window-switcher"
-    scroll_down = "exec hyprctl dispatch 'hey.nav.focus(\"down\")'"
-    scroll_up = "exec hyprctl dispatch 'hey.nav.focus(\"up\")'"
