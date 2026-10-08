@@ -39,6 +39,18 @@ label_key       = "settings.topics.label"
 description_key = "settings.topics.description"
 default         = []
 
+# ntfy sends one every N seconds of silence (its keepalive-interval, 45s
+# unless the server was told otherwise); two missed means the socket's dead.
+[[setting]]
+key             = "keepalive_interval"
+type            = "int"
+label_key       = "settings.keepalive_interval.label"
+description_key = "settings.keepalive_interval.description"
+default         = 45
+min             = 5
+max             = 600
+advanced        = true
+
 [[setting]]
 key             = "app_name"
 type            = "string"

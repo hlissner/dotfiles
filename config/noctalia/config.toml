@@ -227,6 +227,7 @@ poll_ms = 0
 
 [plugin_settings."hey/ntfy"]
 app_name = ""
+keepalive_interval = 70
 topics = [ "nas0", "nas1", "soulseek", "yamtrack", "bambuddy", "homebox", "qbittorrent" ]
 
     [plugin_settings."hey/ntfy".icons]

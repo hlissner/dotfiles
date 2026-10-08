@@ -3,6 +3,8 @@
   "settings.server.description": "The ntfy server's base URL, no trailing slash.",
   "settings.topics.label": "Topics",
   "settings.topics.description": "Topics to subscribe to. Nothing happens until there's at least one.",
+  "settings.keepalive_interval.label": "Keepalive interval (s)",
+  "settings.keepalive_interval.description": "The server's keepalive-interval. Nothing heard for twice this means the stream is dead and gets reopened.",
   "settings.app_name.label": "App name",
   "settings.app_name.description": "What the notification says it came from. Empty for the topic it arrived on.",
   "settings.icon.label": "Icon",

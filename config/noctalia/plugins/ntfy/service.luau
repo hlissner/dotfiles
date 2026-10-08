@@ -6,15 +6,26 @@
 -- the messages. The id of the last one delivered rides in plugin state, which
 -- is process-lifetime: a reconnect asks for `?since=<id>` and gets what the
 -- outage missed, a restarted service doesn't replay what it already showed.
+--
+-- The stream can die without saying so. httpStream sets no transfer timeout,
+-- low-speed limit or TCP keepalive on its curl handle, so a socket the other
+-- end dropped while this box slept stays half-open forever and onClose never
+-- fires. The tick is the watchdog: ntfy sends a keepalive every
+-- `keepalive_interval` seconds of silence, so a stream that's said nothing in
+-- two of those is dead and gets dropped. The server won't tell us the
+-- interval (`/v1/config` doesn't carry it), hence the setting.
 
 local MIN_BACKOFF_MS = 1000
 local MAX_BACKOFF_MS = 60000
--- Tick rate while the stream is up. There's no switching the tick off, and a
--- dead handle is what it watches for anyway.
-local IDLE_MS = 60000
+-- Tick rate while the stream is up; each tick runs the staleness check, so it
+-- bounds how late a dead stream is noticed. There's no switching it off.
+local TICK_MS = 30000
+-- Slack on top of two missed keepalives.
+local STALE_SLACK_MS = 15000
 
 local stream = nil      -- the live httpStream handle, nil between attempts
 local subscribed = nil  -- the URL it was opened on, minus ?since
+local lastSeen = 0      -- nowMs() of the last line, or of the connect
 local backoff = MIN_BACKOFF_MS
 local complained = false
 
@@ -67,12 +78,25 @@ local function endpoint()
   return `{server}/{table.concat(topics, ",")}/json`
 end
 
+local function staleMs()
+  local keepalive = tonumber(noctalia.getConfig("keepalive_interval")) or 45
+  return keepalive * 2 * 1000 + STALE_SLACK_MS
+end
+
+local function drop()
+  if stream ~= nil then
+    stream.stop()
+    stream = nil
+  end
+end
+
 local function retryLater()
   noctalia.setUpdateInterval(backoff)
   backoff = math.min(backoff * 2, MAX_BACKOFF_MS)
 end
 
 local function onLine(line)
+  lastSeen = noctalia.nowMs()
   local msg = noctalia.json.decode(line)
   if type(msg) ~= "table" then
     return
@@ -102,6 +126,7 @@ local function onClose(result)
     complained = true
     noctalia.notifyError("ntfy", `{subscribed} answered {result.status}`)
   end
+  noctalia.log(`ntfy: stream closed (ok={result.ok} status={result.status}); retrying in {backoff // 1000}s`)
   retryLater()
 end
 
@@ -112,11 +137,12 @@ local function connect()
       complained = true
       noctalia.log("ntfy: no server or topics configured; idling")
     end
-    noctalia.setUpdateInterval(IDLE_MS)
+    noctalia.setUpdateInterval(TICK_MS)
     return
   end
   local since = noctalia.state.get("ntfy.since")
   subscribed = url
+  lastSeen = noctalia.nowMs()
   stream = noctalia.httpStream({
     url = if since ~= nil then `{url}?since={since}` else url,
   }, onLine, onClose)
@@ -124,37 +150,50 @@ local function connect()
     -- Never left the building: offline mode, or a URL the client won't take.
     retryLater()
   else
-    noctalia.setUpdateInterval(IDLE_MS)
+    noctalia.log(`ntfy: subscribed to {url}`)
+    noctalia.setUpdateInterval(TICK_MS)
   end
 end
 
 function update()
+  -- nowMs is wall-clock, so a suspend shows up as one big gap on the first
+  -- tick after waking rather than after another stale period of waiting.
+  if stream ~= nil and noctalia.nowMs() - lastSeen > staleMs() then
+    noctalia.log(`ntfy: nothing from {subscribed} in {staleMs() // 1000}s; reconnecting`)
+    drop()
+  end
   if stream == nil then
     connect()
   end
 end
 
 -- Without this a settings edit restarts the runtime, stream and all. With it,
--- only the two settings that name the stream reconnect; app_name and icon are
--- read per message.
+-- only the two settings that name the stream reconnect; the rest are read
+-- per message or per tick.
 function onConfigChanged()
   complained = false
   if stream ~= nil and endpoint() == subscribed then
     return
   end
-  if stream ~= nil then
-    stream.stop()
-    stream = nil
-  end
+  drop()
   backoff = MIN_BACKOFF_MS
   connect()
 end
 
-function onExit()
-  if stream ~= nil then
-    stream.stop()
-    stream = nil
+-- `noctalia msg plugin hey/ntfy:stream all reconnect`, from the on-wakeup
+-- hook: the link is presumed back, no point waiting for the watchdog.
+function onIpc(event, payload)
+  if event == "reconnect" then
+    drop()
+    backoff = MIN_BACKOFF_MS
+    connect()
+  else
+    noctalia.log(`ntfy: unknown ipc event: {event}`)
   end
+end
+
+function onExit()
+  drop()
 end
 
 connect()
