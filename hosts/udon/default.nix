@@ -204,6 +204,19 @@ with builtins;
       wantedBy = [ "multi-user.target" ];
     };
 
+    # My realtek BT dongle wakes from system sleep and finds my BT devices (like
+    # my apple trackpad), formerly connected before the system went to sleep,
+    # "gone", so the dongle goes back to sleep. The trackpad responds to the
+    # dongle's ACK but finds it asleep, so it goes back to sleep. The dongle
+    # reacts to *that* response but find it asleep... Rinse and repeat.
+    boot.extraModprobeConfig = "options btusb enable_autosuspend=0";
+    # If the above doesn't work, then...
+    # hey.hooks."on-suspend".cleanup-bluetooth-devices = ''
+    #   bluetoothctl devices Connected | while read -r _ mac _; do
+    #     bluetoothctl disconnect $mac >/dev/null
+    #   done
+    # '';
+
     # ...But sometimes the monitors will fall asleep and I'll forget I haven't
     # suspended the system so I'll press the power button thinking I'm waking it
     # up, only to initiate shutdown, so no-op the power button.
