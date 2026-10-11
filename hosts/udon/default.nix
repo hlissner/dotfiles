@@ -77,11 +77,7 @@ with builtins;
       };
     };
 
-    ai = {
-      enable = true;
-      claude.enable = true;
-      aichat.enable = true;
-    };
+    ai.claude.enable = true;
 
     apps = {
       term.default = "foot";
@@ -148,8 +144,6 @@ with builtins;
       enable = true;
       package = pkgs.kdePackages.kdeconnect-kde;
     };
-
-    modules.ai.aichat.openrouterKeyFile = config.age.secrets.openrouterKey.path;
   };
 
   hardware = { config, pkgs, ... }:
