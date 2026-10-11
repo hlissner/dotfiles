@@ -21,6 +21,7 @@ local function box(mon)
   if mon.transform % 2 == 1 then w, h = h, w end
   return { x = mon.x, y = mon.y, w = w, h = h }
 end
+M.box = box
 
 -- The monitor DIR of MON. hl.get_monitor(dir) would do if it didn't count from
 -- the focused monitor, which under follow_mouse = 2 is wherever the cursor

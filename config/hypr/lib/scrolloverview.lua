@@ -108,10 +108,38 @@ end
 -- crosses, it's closed *before* it goes: closing switches its monitor to the
 -- selected window's workspace, without asking whose that is now, and a
 -- monitor left showing its neighbour's workspace wrecks every ladder after it.
+-- follow_mouse = 2 parks the cursor anywhere, and that's where an empty
+-- keyboard focus ends up: landing on an empty workspace simulates a mouse move
+-- (CMonitor::changeWorkspace), which makes the cursor's monitor the focused
+-- one and hands focus to whatever window it's over, on any monitor,
+-- follow_mouse be damned. Every ladder after that runs over there, and carry()
+-- drags the overview along. So before asking lib/nav where we are, bring
+-- focus *and the cursor* home to an overview. Nothing to do if the plugin
+-- opened one behind my back (the pinch gesture): that only opens under the
+-- cursor anyway.
+local function anchor()
+  if next(open) == nil then return end
+  local mon = current()
+  if not (mon and open[mon.name]) then
+    mon = nil
+    for _, m in ipairs(hl.get_monitors() or {}) do
+      if open[m.name] then mon = m break end
+    end
+    if not mon then return end
+    hl.dispatch(hl.dsp.focus({ monitor = mon.name }))
+  end
+  local at = hl.get_monitor_at_cursor()
+  if not (at and at.id == mon.id) then
+    local b = nav.box(mon)
+    hl.dispatch(hl.dsp.cursor.move({ x = b.x + b.w / 2, y = b.y + b.h / 2 }))
+  end
+end
+
 local function carried(action)
   return function(dir)
     local run = action(dir, carry)
     return function()
+      anchor()
       local from = current()
       if not run() then fail() return end
       carry(from, current())

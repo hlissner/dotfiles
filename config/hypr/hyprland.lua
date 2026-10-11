@@ -399,7 +399,7 @@ if hey.plugins.so then
     hl.bind("SUPER + SUPER_L", so.overview("off"), { release = true })
     hl.bind("SUPER + SHIFT + SUPER_L", so.overview("off"), { release = true })
 
-    hl.bind("Return", function() so.overview("select"); so.overview("off") end)
+    hl.bind("Return", so.overview("off"))
     hl.bind("Space", so.overview("select"))
     hl.bind("Escape", so.overview("off"))
 
