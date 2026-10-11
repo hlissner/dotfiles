@@ -98,7 +98,12 @@
   (test (x "x" "A" "-v") ["A" "-v"])
   (hey/defcmd [y :rules] "Rules." [& _] [:z 1])
   (test (y :doc) "Rules.")
-  (test ((y :rules) "y") [:z 1]))
+  (test ((y :rules) "y") [:z 1])
+  # A repeatable option that wasn't given is nothing, not one nil: scripts
+  # splice these straight into a command line.
+  (hey/defcmd z "Doc." [_ &opts opts [-o opt *]] opts)
+  (test (z "z") [])
+  (test (z "z" "-o" "a" "-o" "b") ["a" "b"]))
 
 (deftest hey/synopsis
   (defn doc-of [file]

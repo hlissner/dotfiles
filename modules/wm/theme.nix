@@ -65,7 +65,7 @@ in {
     })) {} "Files Noctalia renders from templates when the theme changes";
   };
 
-  config = mkIf (config.modules.wm.desktop == "hyprland") (mkMerge [
+  config = mkIf (config.modules.wm.desktop != null) (mkMerge [
     {
       hey.info.theme = {
         # Names only

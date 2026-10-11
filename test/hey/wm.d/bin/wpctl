@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+# Stand-in for wpctl, for test/hey/wm.janet: logs its argv to $HEY_TEST_WM_LOG.
+print -r -- "wpctl $*" >>$HEY_TEST_WM_LOG
+[[ $1 == get-volume ]] && print -r -- "Volume: 0.43"
+true

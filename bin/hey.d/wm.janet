@@ -1,20 +1,49 @@
 #!/usr/bin/env janet
-# Dispatch to config/$WM/bin.
+# Drive the compositor, whichever it is.
 #
 # SYNOPSIS:
 #   hey wm COMMAND [ARGS...]
 #
 # DESCRIPTION:
 #   The commands below are compiled into hey, for things a keybind or hook fires
-#   often enough that a zsh startup would be most of what they cost. Anything
-#   else is a script in config/$WM/bin.
+#   often enough that a zsh startup would be most of what they cost. They speak
+#   to hyprland and niri alike, through lib/hey/wm.janet; anything else is a
+#   script in config/$WM/bin, and knows which desktop it's for.
 
 (use hey)
 
+(import ./wm.d/dpms)
+(import ./wm.d/fade)
+(import ./wm.d/kill)
+(import ./wm.d/ocr)
+(import ./wm.d/open-term)
+(import ./wm.d/outputs)
+(import ./wm.d/overview)
 (import ./wm.d/play-sound)
+(import ./wm.d/rate)
+(import ./wm.d/screencast)
+(import ./wm.d/screenshot)
+(import ./wm.d/set-monitors)
+(import ./wm.d/slurp)
+(import ./wm.d/volume)
+(import ./wm.d/workspace)
 
 (defcmd [wm :rules] [& _]
-  [:play-sound play-sound/play-sound
+  [:dpms dpms/dpms
+   :fade fade/fade
+   :kill kill/kill
+   :ocr ocr/ocr
+   :open-term open-term/open-term
+   :outputs outputs/outputs
+   :overview overview/overview
+   :play-sound play-sound/play-sound
+   :rate rate/rate
+   :screencast screencast/screencast
+   :screenshot screenshot/screenshot
+   :set-monitors set-monitors/set-monitors
+   :slurp slurp/slurp
+   :volume volume/volume
+   :workspace workspace/workspace
    # Asking for the desktop's scripts on a machine with no desktop is a
    # sentence, not a backtrace.
    {:exec |[(try (path :wm "bin") ([e] (abort "%s" e))) ;$&]}])

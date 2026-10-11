@@ -40,24 +40,27 @@ in {
         # We have Niri at home
         self.inputs.hyprland-scroll-overview.packages.scrolloverview
       ];
-
-      environment.sessionVariables = {
-        ELECTRON_OZONE_PLATFORM_HINT = "auto";
-        NIXOS_OZONE_WL = "1";
-        MOZ_ENABLE_WAYLAND = "1";
-      };
     })
 
     ## Its config: config/hypr/, entered through a generated hyprland.lua.
     (let primaryMonitor = findFirst (x: x.primary) {} cfg.monitors;
          colorsModule = "hyprland-colors";
      in {
-      # The name is all config/hypr/ and Noctalia get, and "" is truthy in Lua:
-      # it would name a monitor that doesn't exist rather than read as absent.
-      assertions = [{
-        assertion = !(primaryMonitor ? output && primaryMonitor.output == "");
-        message = "modules.wm.hyprland.monitors: the primary monitor needs an `output`.";
-      }];
+      modules.wm = {
+        primaryMonitor = primaryMonitor.output or null;
+        outputs = filter (o: o != "") (catAttrs "output" cfg.monitors);
+        session = {
+          name = "hyprland-uwsm";
+          desktopName = "Hyprland (uwsm-managed)";
+          unit = "wayland-wm@hyprland.desktop.service";
+          command = "${getExe config.programs.uwsm.package} start -e -D Hyprland hyprland.desktop";
+        };
+        noctalia.plugins."hey/hypr-submap".src =
+          "${config.hey.configDir}/noctalia/plugins/hypr-submap";
+      };
+      environment.systemPackages = [ pkgs.socat ];  # for hypr-submap
+
+      modules.shell.zsh.rcFiles = [ "${config.hey.configDir}/hypr/aliases.zsh" ];
 
       hey.info.hypr = {
         primaryMonitor = primaryMonitor.output or null;
@@ -124,8 +127,6 @@ in {
         output_path = "${config.home.configDir}/hypr/${colorsModule}.lua";
         post_hook = ''hyprctl eval 'package.loaded["${colorsModule}"] = nil; hey.theme = require("${colorsModule}"); hey.theme.apply()' '';
       };
-
-      modules.shell.zsh.rcFiles = [ "${config.hey.configDir}/hypr/aliases.zsh" ];
     })
 
     ## So lua-language-server completion and linting is aware of hyprland's API,
@@ -176,102 +177,5 @@ in {
         ln -sfn ${heyMeta} ${config.hey.configDir}/hypr/lib/hey.meta.lua
       '';
     })
-
-    ## For CLIs
-    {
-      environment.systemPackages = with pkgs; [
-        wlr-randr      # for monitors that hyprctl can't handle
-        wf-recorder    # for screencasting
-        quickshell     # for screencast's region indicator
-        slurp          # slop
-        grim           # screenshot
-        ripdrag        # Replaces xdragon
-        wev            # Replaces xev
-        wl-clipboard   # Replaces xclip
-        wtype          # Replaces xdotool (sorta)
-        swayimg        # Replaces feh (as an image previewer)
-        imv
-        libnotify      # notify-send
-        xdg-utils
-        sox            # for `play` utility
-        hyprpicker     # replaces `dms color pick`
-      ];
-
-      # To give Rofi targets
-      user.packages = map (fmt:
-        mkLauncherEntry "Color picker: grab ${fmt} at point" {
-          icon = "com.github.finefindus.eyedropper";
-          exec = "hyprpicker -a -f ${toLower fmt}";
-        }) [ "RGB" "HSL" "hex" ];
-
-      home.configLink."swayimg" = "${config.hey.configDir}/swayimg";
-    }
-
-    ## The session's edges.
-    {
-      # Whoever asks for the shutdown fires on-shutting-down itself and waits on
-      # it -- Noctalia's power menu through its hooks table (../noctalia.nix),
-      # config/rofi/bin/powermenu.zsh by hand -- so the fade and the sound
-      # finish before systemd is told anything. This is for everything else: a
-      # bare `systemctl poweroff`, an ssh `reboot`, a critical battery. Stopping
-      # last means the compositor and pipewire are still up to serve the fade,
-      # and on-shutting-down.zsh's stamp keeps the second call quiet when an
-      # eager caller got there first.
-      systemd.user.services.hey-shutdown-hook = {
-        description = "Run hey's shutdown hooks before the session dies";
-        wantedBy = [ "graphical-session.target" ];
-        partOf = [ "graphical-session.target" ];
-        restartIfChanged = false;   # don't trigger on `hey sync`
-        after = [
-          "graphical-session.target"
-          "wayland-wm@hyprland.desktop.service"  # the compositor, for the fade
-          "noctalia.service"                     # the toast
-          "pipewire.service"                     # the sound; sox goes out
-          "pipewire-pulse.service"               # through the pulse shim
-        ];
-        serviceConfig = {
-          Type = "oneshot";
-          RemainAfterExit = true;
-          ExecStart = "${getExe' pkgs.coreutils "true"}";
-          # -f because the stamp is the guard now; hook.janet's would only make
-          # a no-op exit 127 and log a unit failure on the way down.
-          ExecStop = "${config.hey.bin} hook -f on-shutting-down";
-          # A wedged hook must not hold the shutdown open indefinitely.
-          TimeoutStopSec = 15;
-        };
-      };
-
-      # Noctalia has no suspend/resume events, so these ride systemd's sleep
-      # target instead. They run as root; --machine=USER@.host --user is how
-      # root reaches into the user's session without sudo, and `|| true` is so a
-      # failing hook can't fail the unit.
-      #
-      # Not powerManagement.{powerDown,resume}Commands, which would be the
-      # obvious home: nixpkgs pastes powerDownCommands into post-boot's preStop
-      # as well as sleep-actions', so everything put there also fires on every
-      # poweroff -- the sleep sound on the way down, over the shutdown one.
-      systemd.services.hey-sleep-hook =
-        let run = hook: ''
-              ${pkgs.systemd}/bin/systemd-run --machine=${config.user.name}@.host \
-                --user --pipe --wait --collect --quiet \
-                ${config.hey.bin} hook -f ${hook} || true
-            '';
-        in {
-          description = "Run hey's sleep hooks around suspend";
-          wantedBy = [ "sleep.target" ];
-          before = [ "sleep.target" ];
-          # So resuming stops the unit, and stopping it is what runs on-wakeup.
-          unitConfig.StopWhenUnneeded = true;
-          script = run "on-suspend";
-          preStop = run "on-wakeup";
-          serviceConfig = {
-            Type = "oneshot";
-            RemainAfterExit = true;
-            # systemd-run --wait blocks; a wedged hook must not hold the lid.
-            TimeoutStartSec = 15;
-            TimeoutStopSec = 15;
-          };
-        };
-    }
   ]);
 }

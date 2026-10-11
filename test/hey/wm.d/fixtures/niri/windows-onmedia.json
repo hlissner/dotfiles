@@ -1,0 +1,6 @@
+[{"id":7,"title":"shell","app_id":"foot","pid":1234,"workspace_id":2,"is_focused":true,"is_floating":false,"is_urgent":false,
+  "layout":{"pos_in_scrolling_layout":[0,0],"tile_size":[302.0,402.0],"window_size":[300,400],"tile_pos_in_workspace_view":[10.0,20.0],"window_offset_in_tile":[1.0,1.0]}},
+ {"id":8,"title":"offscreen","app_id":"x","pid":8,"workspace_id":1,"is_focused":false,"is_floating":false,"is_urgent":false,
+  "layout":{"pos_in_scrolling_layout":[5,0],"tile_size":[302.0,402.0],"window_size":[300,400],"tile_pos_in_workspace_view":null,"window_offset_in_tile":[1.0,1.0]}},
+ {"id":9,"title":"Supersonic","app_id":"io.github.supersonic-app.supersonic","pid":4242,"workspace_id":2,"is_focused":false,"is_floating":false,"is_urgent":false,
+  "layout":{"pos_in_scrolling_layout":[0,0],"tile_size":[302.0,402.0],"window_size":[300,400],"tile_pos_in_workspace_view":[0.0,0.0],"window_offset_in_tile":[0.0,0.0]}}]

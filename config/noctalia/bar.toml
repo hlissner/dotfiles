@@ -210,7 +210,7 @@ capsule_border = "primary"
 capsule_padding = 5
 
     [widget.media.actions]
-    right = "exec hyprctl dispatch 'hey.dsp.scratchpad(\"media\")'"
+    right = "exec hey wm workspace toggle media"
 
 [widget.active_window]
 capsule = false
@@ -223,8 +223,8 @@ type = "custom_button"
 tooltip = "Overview"
 
   [widget.scroll_overview.actions]
-  left  = '''exec hyprctl eval 'hey.plugins.so.overview("toggle")()' '''
-  right = '''exec hyprctl eval 'hey.plugins.so.overview("toggle all", 0.4)()' '''
+  left  = "exec hey wm overview"
+  right = "exec hey wm overview all"
 
 [widget.compass]
 type = "hey/compass:compass"
@@ -244,5 +244,5 @@ capsule_border = "primary"
 capsule_padding = 1
 
     [widget.compass.actions]
-    left = "exec hyprctl eval 'hey.plugins.so.overview(\"toggle\")()'"
+    left = "exec hey wm overview"
     right = "exec noctalia msg window-switcher"

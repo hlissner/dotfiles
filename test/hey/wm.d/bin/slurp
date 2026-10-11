@@ -1,0 +1,8 @@
+#!/usr/bin/env zsh
+# Stand-in for slurp, for test/hey/wm.janet. Logs its argv, and under -r the
+# boxes it was fed, then prints a fixed selection.
+print -r -- "slurp $*" >>$HEY_TEST_WM_LOG
+if (( ${@[(I)-r]} )); then
+  while IFS= read -r line || [[ -n $line ]]; do print -r -- "box $line" >>$HEY_TEST_WM_LOG; done
+fi
+print -r -- "10,20 300x400"

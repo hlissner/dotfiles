@@ -10,12 +10,12 @@
 #   A rudimentary state manager. `get` exits 1 when VAR isn't set, so a missing
 #   var can be distinguished from an empty string.
 #
-#     hey get hypr.slurp.last || echo "nada"
+#     hey get wm.slurp.last || echo "nada"
 #
 #   `set` echoes the var's key. Pass -v when you'd rather have the value back,
 #   to store and print in one go:
 #
-#     region="$(hey set -v hypr.slurp.last "$(slurp)")"
+#     region="$(hey set -v wm.slurp.last "$(slurp)")"
 #
 # OPTIONS:
 #   -g

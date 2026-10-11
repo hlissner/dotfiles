@@ -231,7 +231,7 @@ hl.gesture({ fingers = 4,
 -- ** Most common OS operations
 hl.bind("SUPER + Space", hl.dsp.exec_cmd("hey @rofi appmenu"))
 hl.bind("SUPER + SHIFT + r", hl.dsp.exec_cmd("hey reload @hypr"))
-hl.bind("SUPER + Return", hl.dsp.exec_cmd("hey .open-term"))
+hl.bind("SUPER + Return", hl.dsp.exec_cmd("hey wm open-term"))
 hl.bind("SUPER + SHIFT + Return", hl.dsp.exec_cmd("foot || xterm")) -- failsafe
 hl.bind("SUPER + Escape", function () -- reset
   hl.dispatch(hey.dsp.zoom(0))
@@ -243,10 +243,10 @@ hl.bind("SUPER + SHIFT + p", hl.dsp.exec_cmd("hey @rofi vaultmenu --resume"))
 hl.bind("SUPER + e", hl.dsp.exec_cmd([[emacsclient --eval "(emacs-everywhere)"]]))
 hl.bind("SUPER + d", hl.dsp.exec_cmd("noctalia msg annotate"))
 hl.bind("SUPER + w", hl.dsp.exec_cmd("noctalia msg window-switcher hold"))
-hl.bind("SUPER + x", hl.dsp.exec_cmd("hey .ocr region"))
+hl.bind("SUPER + x", hl.dsp.exec_cmd("hey wm ocr region"))
 hl.bind("Print", hl.dsp.exec_cmd("noctalia msg screenshot-region"))
-hl.bind("SUPER + Print", hl.dsp.exec_cmd("hey .screencast webm region 3"))
-hl.bind("SUPER + SHIFT + Print", hl.dsp.exec_cmd("hey .screencast mp4 region 3"))
+hl.bind("SUPER + Print", hl.dsp.exec_cmd("hey wm screencast webm region 3"))
+hl.bind("SUPER + SHIFT + Print", hl.dsp.exec_cmd("hey wm screencast mp4 region 3"))
 
 -- ** Zoom
 hl.bind("SUPER + Minus", hey.dsp.zoom(-0.3), { repeating = true, submap_universal = true })

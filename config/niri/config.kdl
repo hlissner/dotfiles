@@ -1,0 +1,543 @@
+// config/niri/config.kdl
+//
+// Every knob niri 26.04 has, at its default unless a comment says otherwise.
+// This file is `include`d by the nix-generated ~/.config/niri/config.kdl, which
+// owns outputs, named workspaces, the cursor theme, and the colors include.
+// Being an include has one trap: `border {}` only switches the border on from
+// the main file, so flags in here are spelled out.
+
+input {
+    keyboard {
+        xkb {
+            layout ""
+            variant ""
+            options "compose:ralt"      // was kb_options
+            model ""
+            rules ""
+            // file "~/.config/keymap.xkb"
+        }
+        repeat-delay 600
+        repeat-rate 25
+        track-layout "global"
+        // numlock
+    }
+
+    touchpad {
+        // off
+        tap
+        dwt
+        // dwtp
+        drag false                      // was tap_and_drag = false
+        drag-lock                       // was drag_lock = 2
+        // natural-scroll               // off, as before
+        // accel-speed 0.0
+        // accel-profile "adaptive"
+        // scroll-factor 1.0
+        // scroll-method "two-finger"
+        // scroll-button 273
+        // scroll-button-lock
+        // tap-button-map "left-right-middle"
+        // click-method "button-areas"
+        // left-handed
+        // disabled-on-external-mouse
+        // middle-emulation
+    }
+
+    mouse {
+        // off
+        // natural-scroll
+        // accel-speed 0.0
+        // accel-profile "adaptive"
+        // scroll-factor 1.0
+        // scroll-method "no-scroll"
+        // scroll-button 273
+        // scroll-button-lock
+        // left-handed
+        // middle-emulation
+    }
+
+    trackpoint {
+        // off
+        // natural-scroll
+        // accel-speed 0.0
+        // accel-profile "adaptive"
+        // scroll-method "on-button-down"
+        // scroll-button 273
+        // scroll-button-lock
+        // left-handed
+        // middle-emulation
+    }
+
+    trackball {
+        // off
+        // natural-scroll
+        // accel-speed 0.0
+        // accel-profile "adaptive"
+        // scroll-method "on-button-down"
+        // scroll-button 273
+        // scroll-button-lock
+        // left-handed
+        // middle-emulation
+    }
+
+    tablet {
+        // off
+        // map-to-output "eDP-1"
+        // map-to-focused-output
+        // left-handed
+        // calibration-matrix 1.0 0.0 0.0 0.0 1.0 0.0
+    }
+
+    touch {
+        // off
+        // map-to-output "eDP-1"
+        // calibration-matrix 1.0 0.0 0.0 0.0 1.0 0.0
+    }
+
+    // disable-power-key-handling
+    // warp-mouse-to-focus
+    // Hyprland's follow_mouse = 2 was click-to-focus with a hover-aware
+    // cursor; niri's default (no focus-follows-mouse) is the nearest thing.
+    // focus-follows-mouse max-scroll-amount="0%"
+    // Mod+0 / Mod+grave are toggles only because of this.
+    workspace-auto-back-and-forth
+    // mod-key "Super"
+    // mod-key-nested "Alt"
+}
+
+layout {
+    gaps 10                             // was gaps_in 5 / gaps_out 10
+    center-focused-column "never"
+    // always-center-single-column
+    // empty-workspace-above-first
+    default-column-display "normal"
+    background-color "#000000"          // was misc.background_color
+
+    preset-column-widths {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+    }
+    default-column-width { proportion 0.5; }
+    preset-window-heights {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+    }
+
+    // Borders on every window, like Hyprland; the ring would double up.
+    focus-ring {
+        off
+        width 4
+        active-color "#7fc8ff"
+        inactive-color "#505050"
+        urgent-color "#9b0000"
+    }
+    border {
+        on                              // explicit: see the header
+        width 1                         // was border_size 1
+        active-color "#ffc87f"
+        inactive-color "#505050"
+        urgent-color "#9b0000"
+        // Noctalia's colors.kdl overrides these.
+    }
+    shadow {
+        // on
+        softness 30
+        spread 5
+        offset x=0 y=5
+        draw-behind-window false
+        color "#00000077"
+        // inactive-color
+    }
+    tab-indicator {
+        // off
+        // hide-when-single-tab
+        // place-within-column
+        gap 5
+        width 4
+        length total-proportion=0.5
+        position "left"
+        gaps-between-tabs 0
+        corner-radius 0
+        // active-color / inactive-color / urgent-color: follow the border
+    }
+    insert-hint {
+        // off
+        color "#7fc8ff80"
+    }
+    struts {
+        left 0
+        right 0
+        top 0
+        bottom 0
+    }
+}
+
+// Noctalia and friends come up as systemd units, not from here.
+// spawn-at-startup "prog" "arg"
+// spawn-sh-at-startup "cmd"
+
+// Hyprland never drew titlebars either; this is what asks GTK/Qt to stop.
+prefer-no-csd
+
+// Noctalia takes the screenshots, so niri's own UI needn't write anything.
+screenshot-path null
+
+environment {
+    // NAME "value"
+    // NAME null
+}
+
+// Overridden by the generated config from modules.wm.theme.cursor; niri
+// exports these as XCURSOR_* to everything it spawns, so leaving it to the
+// session env isn't an option.
+cursor {
+    xcursor-theme "default"
+    xcursor-size 24
+    // hide-when-typing
+    // hide-after-inactive-ms 1000
+}
+
+overview {
+    zoom 0.5
+    backdrop-color "#262626"
+    workspace-shadow {
+        // off
+        softness 40
+        spread 10
+        offset x=0 y=10
+        color "#00000050"
+    }
+}
+
+xwayland-satellite {
+    // off
+    path "xwayland-satellite"
+}
+
+clipboard {
+    // disable-primary
+}
+
+hotkey-overlay {
+    skip-at-startup                     // I know where the keys are
+    // hide-not-bound
+}
+
+config-notification {
+    // disable-failed
+}
+
+blur {
+    // off
+    passes 3
+    offset 3
+    noise 0.02
+    saturation 1.5
+}
+
+animations {
+    // off
+    // slowdown 3.0
+    workspace-switch { spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001; }
+    window-open { duration-ms 150; curve "ease-out-expo"; }
+    window-close { duration-ms 150; curve "ease-out-quad"; }
+    horizontal-view-movement { spring damping-ratio=1.0 stiffness=800 epsilon=0.0001; }
+    window-movement { spring damping-ratio=1.0 stiffness=800 epsilon=0.0001; }
+    window-resize { spring damping-ratio=1.0 stiffness=800 epsilon=0.0001; }
+    config-notification-open-close { spring damping-ratio=0.6 stiffness=1000 epsilon=0.001; }
+    exit-confirmation-open-close { spring damping-ratio=0.6 stiffness=500 epsilon=0.01; }
+    screenshot-ui-open { duration-ms 200; curve "ease-out-quad"; }
+    overview-open-close { spring damping-ratio=1.0 stiffness=800 epsilon=0.0001; }
+    recent-windows-close { spring damping-ratio=1.0 stiffness=800 epsilon=0.001; }
+}
+
+gestures {
+    dnd-edge-view-scroll {
+        trigger-width 30
+        delay-ms 100
+        max-speed 1500
+    }
+    dnd-edge-workspace-switch {
+        trigger-height 50
+        delay-ms 100
+        max-speed 1500
+    }
+    hot-corners {
+        // off
+        top-left
+        // top-right
+        // bottom-left
+        // bottom-right
+    }
+}
+
+recent-windows {
+    // off
+    debounce-ms 750
+    open-delay-ms 150
+    highlight {
+        active-color "#999999ff"
+        urgent-color "#ff9999ff"
+        padding 30
+        corner-radius 0
+    }
+    previews {
+        max-height 480
+        max-scale 0.5
+    }
+    // Only the Alt set: Mod+Tab and Mod+grave are mine, and an empty block
+    // would drop the Alt ones too.
+    binds {
+        Alt+Tab         { next-window; }
+        Alt+Shift+Tab   { previous-window; }
+        Alt+grave       { next-window filter="app-id"; }
+        Alt+Shift+grave { previous-window filter="app-id"; }
+    }
+}
+
+switch-events {
+    // lid-close { spawn "..."; }
+    // lid-open { spawn "..."; }
+    // tablet-mode-on { spawn "..."; }
+    // tablet-mode-off { spawn "..."; }
+}
+
+// Not covered by niri's breaking-change policy; here so I remember they exist.
+/-debug {
+    preview-render "screencast"
+    enable-overlay-planes
+    disable-cursor-plane
+    disable-direct-scanout
+    restrict-primary-scanout-to-matching-format
+    force-disable-connectors-on-resume
+    render-drm-device "/dev/dri/renderD129"
+    ignore-drm-device "/dev/dri/renderD128"
+    force-pipewire-invalid-modifier
+    dbus-interfaces-in-non-session-instances
+    wait-for-frame-completion-before-queueing
+    emulate-zero-presentation-time
+    disable-resize-throttling
+    disable-transactions
+    keep-laptop-panel-on-when-lid-is-closed
+    disable-monitor-names
+    strict-new-window-focus-policy
+    honor-xdg-activation-with-invalid-serial
+    skip-cursor-only-updates-during-vrr
+    deactivate-unfocused-windows
+    keep-max-bpc-unchanged
+}
+
+
+// * Layer rules
+
+// Hyprland needed ignore_alpha to keep the blur off the invisible margins;
+// niri blurs within the surface's own shape.
+layer-rule {
+    match namespace="notifications"
+    background-effect { blur true; }
+}
+// rofi: dim_around and the slide animation have no niri equivalent.
+
+
+// * Window rules
+
+// Dropped: idle_inhibit on fullscreen (apps ask via the idle-inhibit
+// protocol; niri has no rule for it) and suppress_event on floats (no
+// equivalent).
+
+// Image previewers. No percentage max-size in niri; the 0.96 column width is
+// the nearest, and dim_around is gone.
+window-rule {
+    match app-id="^(imv|swayimg)$"
+    open-floating true
+    default-column-width { proportion 0.96; }
+    border { on; width 1; }
+}
+
+window-rule {
+    match title="^emacs-everywhere$"
+    open-floating true
+}
+
+// Dialogs (xdg-desktop-portal-gtk, librewolf) float on their own in niri
+// because they have a parent; the 90% max-size cap can't be expressed
+// (max-width/height are px only), so that rule is gone.
+
+window-rule {
+    match app-id="^(steam|feishin|emacs|librewolf)$"
+    default-column-width { proportion 0.8; }
+}
+
+window-rule {
+    match app-id="^foot$"
+    default-column-width { proportion 0.35; }
+}
+// foot at 0.40 on the scratchpad: the generated workspace "scratchpad"
+// block carries that as a layout override; rules can't match a workspace.
+
+window-rule {
+    match app-id="^feishin$"
+    open-on-workspace "media"
+}
+
+// ** Steam/Faugus
+
+// Everything Steam, out of the way until summoned. Hyprland's no_dim /
+// no_anim / no_max_size / min_size have no counterpart.
+window-rule {
+    match app-id="^steam$"
+    open-on-workspace "media"
+    open-focused false
+    shadow { off; }
+    background-effect { blur false; }
+}
+window-rule {
+    match app-id="^steam$" title="^Steam$"
+    open-floating false
+    open-fullscreen false
+}
+window-rule {
+    match app-id="^steam$"
+    exclude title="^Steam$"
+    open-floating true
+}
+// Games. content = "game" (tearing) has no equivalent; VRR on demand is the
+// closest thing niri offers.
+window-rule {
+    match app-id=r#"^(gamescope|steam_app_(default|\d+))$"#
+    open-on-workspace "media"
+    open-focused false
+    open-fullscreen true
+    open-floating false
+    default-column-width { proportion 1.0; }
+    variable-refresh-rate true
+    shadow { off; }
+    background-effect { blur false; }
+}
+window-rule {
+    match app-id=r#"^io\.github\.Faugus\.faugus-launcher$"#
+    open-on-workspace "media"
+    open-focused false
+    open-floating true
+    default-column-width { proportion 0.25; }
+}
+
+
+// * Binds
+//
+// Nothing here is conditional on the focused window; niri binds can't be.
+// Anything that was gets a `hey wm` command that asks niri msg itself.
+
+binds {
+    // ** Most common OS operations
+    Mod+Space        repeat=false hotkey-overlay-title="App menu"    { spawn "hey" "@rofi" "appmenu"; }
+    Mod+Shift+R      repeat=false hotkey-overlay-title="Reload"      { spawn "hey" "reload" "@niri"; }
+    Mod+Return       repeat=false hotkey-overlay-title="Terminal"    { spawn "hey" "wm" "open-term"; }
+    Mod+Shift+Return repeat=false { spawn-sh "foot || xterm"; }   // failsafe
+    Mod+Escape       repeat=false { spawn "noctalia" "msg" "notification-clear-active"; }
+    Mod+Shift+Slash  repeat=false { show-hotkey-overlay; }
+    Mod+Shift+Ctrl+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
+
+    // ** External tools
+    Mod+Shift+P repeat=false { spawn "hey" "@rofi" "vaultmenu" "--resume"; }
+    Mod+E       repeat=false { spawn "emacsclient" "--eval" "(emacs-everywhere)"; }
+    Mod+D       repeat=false { spawn "noctalia" "msg" "annotate"; }
+    Mod+W       repeat=false { spawn "noctalia" "msg" "window-switcher" "hold"; }
+    Mod+X       repeat=false { spawn "hey" "wm" "ocr" "region"; }
+    Print       repeat=false { spawn "noctalia" "msg" "screenshot-region"; }
+    Mod+Print       repeat=false { spawn "hey" "wm" "screencast" "webm" "region" "3"; }
+    Mod+Shift+Print repeat=false { spawn "hey" "wm" "screencast" "mp4" "region" "3"; }
+
+    // ** Zoom: niri has none; wooz is a freeze-frame magnifier (Esc quits).
+    Mod+Equal repeat=false { spawn "wooz"; }
+
+    // ** Quit/Session control
+    Mod+Q            repeat=false { close-window; }
+    Mod+Shift+Q      repeat=false { spawn "hey" "wm" "kill"; }
+    Mod+Shift+Ctrl+Q repeat=false { spawn "hey" "@rofi" "powermenu"; }
+
+    // ** Window layout controls
+    Mod+F       repeat=false { toggle-window-floating; }
+    Mod+Shift+F repeat=false { fullscreen-window; }
+    Mod+Ctrl+F  repeat=false { maximize-column; }
+    // Mod+P (float + pin): niri has no pinned/sticky windows.
+    Mod+O       repeat=false { switch-focus-between-floating-and-tiling; }
+    Mod+Shift+O repeat=false { consume-or-expel-window-left; }
+
+    // ** Overview (also: 4-finger swipe up, top-left hot corner)
+    Mod+Shift+Space repeat=false { toggle-overview; }
+
+    // ** Workspaces / scratchpads
+    // workspace-auto-back-and-forth makes these toggles; the move variants
+    // need to know where the window is, which only a script can ask.
+    Mod+grave       repeat=false { focus-workspace "scratchpad"; }
+    Mod+Shift+grave repeat=false { spawn "hey" "wm" "workspace" "move" "scratchpad"; }
+    Mod+0           repeat=false { focus-workspace "media"; }
+    Mod+Shift+0     repeat=false { spawn "hey" "wm" "workspace" "move" "media"; }
+    Mod+1           repeat=false { focus-workspace 1; }   // home, and back
+
+    // ** Window management, movements, and resizing
+    // hjkl focuses, Shift moves, Ctrl skips to the next monitor (h/l) or
+    // workspace (j/k). h/l run off the tape onto the next monitor, j/k onto
+    // the next workspace. All native now.
+    Mod+H { focus-column-or-monitor-left; }
+    Mod+J { focus-window-or-workspace-down; }
+    Mod+K { focus-window-or-workspace-up; }
+    Mod+L { focus-column-or-monitor-right; }
+
+    Mod+Shift+H { move-column-left-or-to-monitor-left; }
+    Mod+Shift+J { move-window-down-or-to-workspace-down; }
+    Mod+Shift+K { move-window-up-or-to-workspace-up; }
+    Mod+Shift+L { move-column-right-or-to-monitor-right; }
+
+    Mod+Ctrl+H { focus-monitor-left; }
+    Mod+Ctrl+J { focus-workspace-down; }
+    Mod+Ctrl+K { focus-workspace-up; }
+    Mod+Ctrl+L { focus-monitor-right; }
+
+    Mod+Shift+Ctrl+H { move-window-to-monitor-left; }
+    Mod+Shift+Ctrl+J { move-window-to-workspace-down; }
+    Mod+Shift+Ctrl+K { move-window-to-workspace-up; }
+    Mod+Shift+Ctrl+L { move-window-to-monitor-right; }
+
+    Mod+Tab       { consume-or-expel-window-right; }
+    Mod+Shift+Tab { consume-or-expel-window-left; }
+
+    // Quick one-handed resizing on Mod+{2-6}
+    Mod+2 { set-column-width "700"; }
+    Mod+3 { set-column-width "50%"; }
+    Mod+4 { set-column-width "60%"; }
+    Mod+5 { set-column-width "80%"; }
+    Mod+6 { set-column-width "100%"; }
+    // Mod+LMB/RMB drag and resize are built in; binding them would break that.
+
+    // ** Monitor brightness controls
+    XF86MonBrightnessUp   allow-when-locked=true { spawn "brightnessctl" "-e4" "-n2" "set" "10%+"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "-e4" "-n2" "set" "10%-"; }
+    XF86PowerOff          repeat=false { power-off-monitors; }   // allow-when-locked is spawn-only
+
+    // ** Audio and player controls
+    XF86AudioRaiseVolume      allow-when-locked=true { spawn "hey" "wm" "volume" "sink" "up"; }
+    XF86AudioLowerVolume      allow-when-locked=true { spawn "hey" "wm" "volume" "sink" "down"; }
+    Ctrl+XF86AudioRaiseVolume allow-when-locked=true { spawn "hey" "wm" "volume" "player" "up"; }
+    Ctrl+XF86AudioLowerVolume allow-when-locked=true { spawn "hey" "wm" "volume" "player" "down"; }
+    XF86AudioMute       allow-when-locked=true repeat=false { spawn "noctalia" "msg" "volume-mute"; }
+    Shift+XF86AudioMute allow-when-locked=true repeat=false { spawn "noctalia" "msg" "mic-mute"; }
+
+    XF86AudioPlay  repeat=false { spawn "noctalia" "msg" "media" "toggle"; }
+    XF86AudioPause repeat=false { spawn "noctalia" "msg" "media" "toggle"; }
+    XF86AudioNext  repeat=false { spawn "noctalia" "msg" "media" "next"; }
+    XF86AudioPrev  repeat=false { spawn "noctalia" "msg" "media" "previous"; }
+
+    // Rate the playing track in Supersonic (1-5), or toggle favorite (6).
+    // Hyprland passed the key through to any other app; niri can't, so
+    // these are dead keys elsewhere.
+    Mod+Ctrl+1 repeat=false { spawn "hey" "wm" "rate" "1"; }
+    Mod+Ctrl+2 repeat=false { spawn "hey" "wm" "rate" "2"; }
+    Mod+Ctrl+3 repeat=false { spawn "hey" "wm" "rate" "3"; }
+    Mod+Ctrl+4 repeat=false { spawn "hey" "wm" "rate" "4"; }
+    Mod+Ctrl+5 repeat=false { spawn "hey" "wm" "rate" "5"; }
+    Mod+Ctrl+6 repeat=false { spawn "hey" "wm" "rate" "favorite"; }
+}

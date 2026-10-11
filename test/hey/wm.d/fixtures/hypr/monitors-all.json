@@ -1,0 +1,6 @@
+[{"name":"DP-1","focused":true,"disabled":false,"x":0,"y":0,"width":5120,"height":2880,"scale":2.0,
+  "activeWorkspace":{"id":1,"name":"1"},"specialWorkspace":{"id":-99,"name":"special:media"}},
+ {"name":"HDMI-A-1","focused":false,"disabled":true,"x":0,"y":0,"width":0,"height":0,"scale":1.0,
+  "activeWorkspace":{"id":0,"name":""},"specialWorkspace":{"name":""}},
+ {"name":"Unknown-1","focused":false,"disabled":false,"x":0,"y":0,"width":1024,"height":768,"scale":1.0,
+  "activeWorkspace":{"id":0,"name":""},"specialWorkspace":{"name":""}}]

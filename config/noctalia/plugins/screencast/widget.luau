@@ -153,7 +153,7 @@ function onClick()
   -- Deliberately not optimistic about the result: if the spawn fails, the next
   -- tick still finds the file and the glyph goes on telling the truth.
   if state == RECORDING then
-    noctalia.runAsync({ "hey", ".screencast" })
+    noctalia.runAsync({ "hey", "wm", "screencast" })
   end
 end
 

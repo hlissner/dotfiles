@@ -304,7 +304,11 @@ _hey() {
   # `hey` resolves these internally (see lib/hey/lib.janet)
   local _hey_root=${DOTFILES_HOME:-/etc/dotfiles}
   local _hey_host=$HOST
-  local _hey_wm=${${(M)${(L)XDG_CURRENT_DESKTOP}:#*hyprland*}:+hypr}
+  local _hey_wm
+  case ${(L)XDG_CURRENT_DESKTOP} in
+    *hyprland*) _hey_wm=hypr ;;
+    *niri*)     _hey_wm=niri ;;
+  esac
   local _hey_datadir=${XDG_DATA_HOME:-$HOME/.local/share}/hey
   # An unset $_hey_wm would collapse config/$_hey_wm/bin to config/bin, so it
   # has to drop out of the list entirely.

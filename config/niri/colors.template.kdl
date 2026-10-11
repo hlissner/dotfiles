@@ -1,0 +1,54 @@
+// config/niri/colors.template.kdl
+//
+// Rendered by Noctalia into ~/.config/niri/colors.kdl (see theme.nix and
+// modules/wm/niri/default.nix). Colors only; widths and flags live in
+// config.kdl. `border { on }` is here anyway: an included file can't switch
+// the border on implicitly, and this one is included.
+
+layout {
+    background-color "{{colors.background.default.hex}}"
+
+    focus-ring {
+        active-color "{{colors.primary.default.hex}}"
+        inactive-color "{{colors.surface.default.hex}}"
+        urgent-color "{{colors.error.default.hex}}"
+    }
+
+    border {
+        on
+        // Hyprland's 45° background→primary gradient.
+        active-gradient from="{{colors.background.default.hex}}" to="#{{colors.primary.default.hex_stripped}}99" angle=45
+        inactive-color "{{colors.surface.default.hex}}"
+        urgent-color "{{colors.error.default.hex}}"
+    }
+
+    shadow {
+        color "#{{colors.shadow.default.hex_stripped}}77"
+        inactive-color "#{{colors.shadow.default.hex_stripped}}44"
+    }
+
+    tab-indicator {
+        active-color "{{colors.secondary.default.hex}}"
+        inactive-color "{{colors.surface.default.hex}}"
+        urgent-color "{{colors.error.default.hex}}"
+    }
+
+    insert-hint {
+        color "#{{colors.primary.default.hex_stripped}}80"
+    }
+}
+
+overview {
+    backdrop-color "{{colors.surface_container_lowest.default.hex}}"
+    // scroll-overview's 315° primary→background shadow, flattened.
+    workspace-shadow {
+        color "#{{colors.primary.default.hex_stripped}}44"
+    }
+}
+
+recent-windows {
+    highlight {
+        active-color "#{{colors.primary.default.hex_stripped}}cc"
+        urgent-color "#{{colors.error.default.hex_stripped}}cc"
+    }
+}

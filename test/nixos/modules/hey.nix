@@ -75,6 +75,7 @@ in {
   testHookPathsFollowEnabledAreas = {
     expr = {
       hypr = hasPath presets.hyprland "config/hypr/hooks";
+      niri = hasPath presets.niri "config/niri/hooks";
       noctalia = hasPath presets.hyprland "config/noctalia/hooks";
       # dms = hasPath presets.hyprland "config/dms/hooks";
       # dmsOn = hasPath (evalConfig [{
@@ -85,7 +86,7 @@ in {
     };
     expected = {
       # dms = false; dmsOn = true;
-      hypr = true; noctalia = true; headless = false;
+      hypr = true; niri = true; noctalia = true; headless = false;
     };
   };
 

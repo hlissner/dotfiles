@@ -61,7 +61,14 @@
   # hey wm's compiled commands live in bin/hey.d/wm.d, not config/$WM/bin, so
   # _hey has to scan both or they drop off the menu. (The fixture has no
   # config/testwm, so the compiled half is all there is.)
-  (test (hey "dispatch" "wm" "") @["DESC[scripts] play-sound:Plays a notification sound."])
+  (def [menu] (hey "dispatch" "wm" ""))
+  (test (string/has-prefix? "DESC[scripts] " menu) true)
+  (test (truthy? (string/find " play-sound:Plays a notification sound." menu)) true)
+  # Every compiled command, not a pinned list that goes stale as wm.d grows.
+  (test (filter |(nil? (string/find (string $0 ":") menu))
+                (map |(h/string/no-suffix ".janet" $0)
+                     (os/dir (h/path :home "bin/hey.d/wm.d"))))
+        @[])
   (test (last (hey "dispatch" "wm" "play-sound" ""))
         ``ARG 1:name:((ls:"List the available sounds instead of playing one."))``))
 

@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+# Stand-in for playerctl, for test/hey/wm.janet: logs its argv to $HEY_TEST_WM_LOG.
+print -r -- "playerctl $*" >>$HEY_TEST_WM_LOG
+[[ $1 == volume && -z $2 ]] && print -r -- "0.50"
+true

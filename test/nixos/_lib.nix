@@ -135,6 +135,7 @@ in rec {
     nixos = evalModules' (mkHey {}) [];
     bare = presets.nixos.config;
     hyprland = evalConfig [{ modules.wm.desktop = "hyprland"; }];
+    niri = evalConfig [{ modules.wm.desktop = "niri"; }];
 
     # Every host in hosts/, evaluated.
     hosts = mapAttrs evalHost hosts;

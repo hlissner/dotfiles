@@ -116,7 +116,7 @@ in {
   testShutdownHookWaitsForTheShell =
     let unit = one.systemd.user.services.hey-shutdown-hook; in {
       expr = {
-        after  = elem "wayland-wm@hyprland.desktop.service" unit.after;
+        after  = elem one.modules.wm.session.unit unit.after;
         partOf = elem "graphical-session.target" unit.partOf;
         stop   = hasInfix "hook -f on-shutting-down" unit.serviceConfig.ExecStop;
         # A rebuild restarting it would be a fake shutdown.

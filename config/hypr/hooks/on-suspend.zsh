@@ -5,8 +5,8 @@
 #   hey hook on-suspend
 #
 # DESCRIPTION:
-#   Triggered by `hey-sleep-hook` (modules/wm/hyprland/default.nix) when the
-#   system goes to sleep.
+#   Triggered by `hey-sleep-hook` (modules/wm/default.nix) when the system goes
+#   to sleep.
 
 hey.toast info "Going to sleep.."
 playerctl -a pause

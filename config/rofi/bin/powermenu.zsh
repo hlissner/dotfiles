@@ -24,7 +24,7 @@
 
 rofi.powermenu.dpms() {
   sleep 0.2
-  hey.do hyprctl eval 'hl.dispatch(hl.dsp.dpms({ action = "disable" }))'
+  hey.do hey wm dpms off
 }
 
 rofi.powermenu.lock()     {

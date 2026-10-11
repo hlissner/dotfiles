@@ -1,0 +1,14 @@
+#!/usr/bin/env zsh
+# Stand-in for niri, for test/hey/wm.janet. `msg -j WORDS...` is answered from
+# $HEY_TEST_WM_FIXTURES/niri/WORDS-joined-by-dashes.json, trying a
+# -$HEY_TEST_WM_VARIANT suffix first; anything else is logged to
+# $HEY_TEST_WM_LOG and succeeds.
+if [[ $1 == msg && $2 == -j ]]; then
+  local base=$HEY_TEST_WM_FIXTURES/niri/${(j:-:)@[3,-1]}
+  local f=$base${HEY_TEST_WM_VARIANT:+-$HEY_TEST_WM_VARIANT}.json
+  [[ -f $f ]] || f=$base.json
+  [[ -f $f ]] || { print -u2 "no fixture: $f"; exit 1 }
+  cat $f
+else
+  print -r -- "niri $*" >>$HEY_TEST_WM_LOG
+fi

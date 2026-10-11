@@ -3,14 +3,13 @@
 alias -s pdf='$BROWSER'
 alias -s {jpg,jpeg,gif,png,svg,webp}=swayimg
 
-# swayimg opens at a fixed size and a hyprland window_rule floats/centers it, so
-# resize it to fit the image.
+# swayimg opens at a fixed size and a window rule floats/centers it, so resize
+# it to fit the image.
 function swayimg {
   local -a size
   local w h mw mh s
   if [[ -f $1 ]] && read -r w h < <(identify -ping -format '%w %h\n' "$1" 2>/dev/null); then
-    if read -r mw mh < <(hyprctl -j monitors 2>/dev/null \
-                          | jq -r '.[] | select(.focused) | "\(.width / .scale | floor) \(.height / .scale | floor)"'); then
+    if read -r mw mh < <(hey wm outputs --focused -r width height 2>/dev/null); then
       (( s = 0.96 * mw / w ))
       (( s > 0.96 * mh / h )) && (( s = 0.96 * mh / h ))
       (( s < 1 )) && { w=${$(( w * s ))%%.*}; h=${$(( h * s ))%%.*}; }

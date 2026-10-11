@@ -112,6 +112,22 @@ in {
   # A widget's type names its plugin. Widgets whose plugin this host never
   # installs are dropped rather than left on the bar as dead entries; built-in
   # widgets have no plugin and must survive the filter regardless.
+  # The shell pins itself off modules.wm.{primaryMonitor,outputs}, not off a
+  # compositor's own option, so the other compositor gets the same treatment.
+  testPrimaryMonitorIsReadOffWhateverDesktop =
+    let s = (evalConfig [{
+          modules.wm.desktop = "niri";
+          modules.wm.niri.monitors = [
+            { output = "DP-1"; }
+            { output = "DP-2"; primary = true; }
+            { output = "HDMI-A-1"; off = true; }
+          ];
+        }]).modules.wm.noctalia.settings;
+    in {
+      expr = { barOff = attrNames s.bar.main.monitor; toasts = s.notification.monitors; };
+      expected = { barOff = [ "DP-1" "HDMI-A-1" ]; toasts = [ "DP-2" ]; };
+    };
+
   testBarDropsWidgetsWhosePluginIsNotInstalled =
     let off = fixture [];
         on = fixture [{ programs.kdeconnect.enable = true; }];

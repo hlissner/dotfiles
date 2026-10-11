@@ -238,9 +238,10 @@
   ~(if (,dryrun?)
      (,(first args)
        echo "DRYRUN:"
-       ,;(map |(if (index-of $0 '[| || & && ; > >> < ^])
-                 (string $0) $0)
-              args))
+       ,;(map |(cond (index-of (string $0) ["|" ">" ">>" "<" "^"]) (string $0)
+                     (keyword? $0) (describe $0)
+                     $0)
+              (slice args 1)))
      (,;args)))
 
 (defn- dispatch-1 [file rules & args]

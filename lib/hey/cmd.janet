@@ -97,9 +97,13 @@
                    ~((def ,sym (or (get ,$argmap ',sym)
                                    ,(when-let [args (get o :arguments)
                                                vals (map |($0 :default) args)]
-                                      (if (or (get o :multiple)
-                                              (> (length args) 1))
-                                        vals (first vals))))))))
+                                      (cond
+                                        # Absent means none given, not one nil
+                                        # given: that nil would get spliced
+                                        # into whatever the option feeds.
+                                        (get o :multiple) (tuple/slice (filter |(not (nil? $0)) vals))
+                                        (> (length args) 1) vals
+                                        (first vals))))))))
              ,;body))))))
 
 (defmacro defcmd-1 [kind name & rest]

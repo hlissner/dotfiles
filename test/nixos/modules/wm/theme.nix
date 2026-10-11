@@ -22,9 +22,10 @@ let
 
   # What the on-disk checks read: every real host with a desktop, so an app
   # that starts registering a template is covered the moment a host enables
-  # it, plus the template-bearing apps no host happens to run right now.
+  # it, plus the template-bearing apps no host happens to run right now, plus
+  # the desktop no host runs yet.
   configs = filter (c: c.modules.wm.desktop != null) (attrValues presets.hosts)
-    ++ [ (desktop [{
+    ++ [ presets.niri (desktop [{
       modules.shell.tmux.enable = true;
       modules.shell.zellij.enable = true;
       modules.apps.feishin.enable = true;

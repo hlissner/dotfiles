@@ -285,7 +285,7 @@
              (if (os/stat p :mode) p))
           (or paths (exec-path)))))
 
-(defn- wm []
+(defn wm "The desktop as a keyword: :hypr or :niri. Errors when hey.desktop is unset." []
   # hey.desktop should be set from a NixOS module, and is written to to hey info
   # in modules/hey.nix. Can't rely on $XDG_CURRENT_DESKTOP because there are
   # cases where it isn't set (in TTYs) and may have inconsistent names.

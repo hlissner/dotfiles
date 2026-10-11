@@ -1,18 +1,17 @@
 # modules/wm/noctalia.nix
 #
-# Noctalia: the shell itself, its plugins, and the login screen it puts in
-# front of them. Follows modules.wm.desktop = "hyprland".
+# Noctalia: the shell itself, its plugins, and the login screen it puts in front
+# of them.
 
 { self, lib, config, pkgs, ... }:
 
 with lib;
 with self.lib;
 let cfg = config.modules.wm;
-    primaryMonitor = findFirst (x: x.primary) {} cfg.hyprland.monitors;
-    hasPrimary = primaryMonitor ? output;
-    otherOutputs = optionals hasPrimary
-      (filter (o: o != "" && o != primaryMonitor.output)
-        (catAttrs "output" cfg.hyprland.monitors));
+    # Published by whichever modules/wm/<desktop>/ is on (see ../default.nix).
+    primaryMonitor = cfg.primaryMonitor;
+    hasPrimary = primaryMonitor != null;
+    otherOutputs = optionals hasPrimary (filter (o: o != primaryMonitor) cfg.outputs);
 
     package = self.inputs.noctalia.packages.default;
     format = pkgs.formats.toml {};
@@ -41,7 +40,7 @@ in {
     })) {} ''Plugins, by id ("author/plugin").'';
   };
 
-  config = mkIf (cfg.desktop == "hyprland") (mkMerge [
+  config = mkIf (cfg.desktop != null) (mkMerge [
     ## Noctalia itself
     {
       programs.noctalia = {
@@ -51,9 +50,10 @@ in {
         # Avoid `recommendedServices` b/c I don't want NetworkManager
       };
 
-      # HACK: uwsm scrubs XDG_SESSION_ID out of the user manager, so Noctalia
-      #   can't see the logind session (breaking its brightness controls and
-      #   loginctl/polkit interop).
+      # HACK: uwsm (hyprland's session) scrubs XDG_SESSION_ID out of the user
+      #   manager, so Noctalia can't see the logind session (breaking its
+      #   brightness controls and loginctl/polkit interop). Harmless under a
+      #   session that keeps it (niri-session does): same answer, twice.
       # REVIEW: Report upstream
       systemd.user.services.noctalia.serviceConfig.ExecStart = mkForce
         (pkgs.writeShellScript "noctalia-in-session" ''
@@ -131,8 +131,6 @@ in {
         ## My plugins (see config/noctalia/plugins/*/plugin.toml for why)
         "hey/peripheral-battery".src =
           "${config.hey.configDir}/noctalia/plugins/peripheral-battery";
-        "hey/hypr-submap".src =
-          "${config.hey.configDir}/noctalia/plugins/hypr-submap";
         "hey/timer".src = "${config.hey.configDir}/noctalia/plugins/timer";
         "hey/screencast".src = "${config.hey.configDir}/noctalia/plugins/screencast";
         "hey/compass".src = "${config.hey.configDir}/noctalia/plugins/compass";
@@ -193,7 +191,6 @@ in {
       };
 
       environment.systemPackages = with pkgs; [
-        socat    # for hypr-submap
         python   # for keyviz
       ] ++ optionals config.programs.kdeconnect.enable [
         glib     # gdbus
@@ -254,15 +251,15 @@ in {
     ## The lock screen.
     (mkIf hasPrimary {
       modules.wm.noctalia.settings = defaults {
-        notification.monitors = [ primaryMonitor.output ];
-        osd.monitors = [ primaryMonitor.output ];
+        notification.monitors = [ primaryMonitor ];
+        osd.monitors = [ primaryMonitor ];
 
         # Only show the lockscreen widgets on the primary window. Hide all other
         # widgets.
         lockscreen_widgets.widget = {
-          "lockscreen-login-box@${primaryMonitor.output}" = {
+          "lockscreen-login-box@${primaryMonitor}" = {
             type = "login_box";
-            output = primaryMonitor.output;
+            output = primaryMonitor;
             # Only what I've moved off the default; the GUI restates the rest.
             settings = {
               show_weather = false;
@@ -273,7 +270,7 @@ in {
             };
           };
         } // genAttrs [ "lockscreen-date" "lockscreen-clock" ]
-          (_: { type = "clock"; output = primaryMonitor.output; })
+          (_: { type = "clock"; output = primaryMonitor; })
           // genAttrs' otherOutputs (o: nameValuePair "lockscreen-login-box@${o}"
             { type = "login_box"; output = o; enabled = false; });
       };
@@ -299,12 +296,12 @@ in {
       };
 
       services.displayManager = {
-        defaultSession = "hyprland-uwsm";
+        defaultSession = cfg.session.name;
         noctalia-greeter = {
           enable = true;
           cursorTheme = { inherit (cfg.theme.cursor) package name; };
           settings = {
-            session.default = "Hyprland (uwsm-managed)";
+            session.default = cfg.session.desktopName;
             appearance = {
               hide_logo = true;
               scheme_selector_position = "hidden";
@@ -312,7 +309,7 @@ in {
             };
             cursor.size = cfg.theme.cursor.size;
           } // optionalAttrs hasPrimary {
-            output.name = primaryMonitor.output;
+            output.name = primaryMonitor;
           };
           # passwordlessSyncUsers = [ config.user.name ];
         };

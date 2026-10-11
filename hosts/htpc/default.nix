@@ -113,7 +113,7 @@ with builtins;
     # Auto-login. This is an HTPC. Get straight to the point.
     services.greetd.settings.initial_session = {
       user = config.user.name;
-      command = "${getExe config.programs.uwsm.package} start -e -D Hyprland hyprland.desktop";
+      command = config.modules.wm.session.command;
     };
     # ...and straight into Steam Big Picture
     systemd.user.services.steam-bigpicture = {
