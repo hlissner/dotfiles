@@ -14,7 +14,7 @@
 #   `off` also queues gamemoded's own shutdown, a few seconds out, which is why
 #   there's a third argument I never type myself: kill.
 #
-#   @see modules/apps/steam.nix.
+#   @see modules/games/steam.nix.
 
 case $1 in
   on)

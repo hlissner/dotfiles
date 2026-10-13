@@ -45,10 +45,6 @@ with builtins;
       term.foot.enable = true;
 
       rofi.enable = true;
-      steam = {
-        enable = true;
-        libraryDir = "/media/games/SteamLibrary";
-      };
       libreoffice.enable = true;
       godot.enable = true;
       browsers.default = "librewolf";
@@ -59,6 +55,10 @@ with builtins;
       # media.music.enable = true;
       media.video.enable = true;
       media.video.capture.enable = true;
+    };
+    games.steam = {
+      enable = true;
+      libraryDir = "/media/games/SteamLibrary";
     };
     dev = {
       cc.enable = true;

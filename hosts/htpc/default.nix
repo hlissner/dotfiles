@@ -45,11 +45,10 @@ with builtins;
       ## Extra
       flatpak.enable = true;
       rofi.enable = true;
-      steam.enable = true;
-
       browsers.default = "librewolf";
       browsers.librewolf.enable = true;
     };
+    games.steam.enable = true;
     editors = {
       default = "nvim";
       vim.enable = true;
@@ -122,7 +121,7 @@ with builtins;
       after = [ "graphical-session.target" ];
       path = [ "/run/wrappers" "/run/current-system/sw" ];
       serviceConfig = {
-        # The wrapped steam from modules/apps/steam.nix, not pkgs.steam
+        # The wrapped steam from modules/games/steam.nix, not pkgs.steam
         ExecStart = "/run/current-system/sw/bin/steam -bigpicture";
         Restart = "no";
       };

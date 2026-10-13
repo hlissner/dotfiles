@@ -87,10 +87,6 @@ with builtins;
       flatpak.enable = true;
       rofi.enable = true;
       libreoffice.enable = true;
-      steam = {
-        enable = true;
-        libraryDir = "/media/windows/Program Files (x86)/Steam";
-      };
       godot.enable = true;
       # feishin.enable = true;
       supersonic.enable = true;
@@ -104,6 +100,12 @@ with builtins;
       media.video.enable = true;
       # media.video.capture.enable = true;
       # media.pdf.enable = true;
+    };
+    games = {
+      steam = {
+        enable = true;
+        libraryDir = "/media/windows/Program Files (x86)/Steam";
+      };
     };
     dev = {
       cc.enable = true;

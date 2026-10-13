@@ -1,12 +1,12 @@
-# modules/apps/steam.nix
+# modules/games/steam.nix
 
 { self, lib, config, options, pkgs, ... }:
 
 with lib;
 with self.lib;
-let cfg = config.modules.apps.steam;
+let cfg = config.modules.games.steam;
 in {
-  options.modules.apps.steam = with types; {
+  options.modules.games.steam = with types; {
     enable = mkBoolOpt false;
     libraryDir = mkOpt str "";
   };

@@ -42,10 +42,10 @@ with builtins;
       flatpak.enable = true;
       rofi.enable = true;
       thunar.enable = true;
-      steam.enable = true;
       browsers.default = "librewolf";
       browsers.librewolf.enable = true;
     };
+    games.steam.enable = true;
     editors = {
       default = "nvim";
       vim.enable = true;
