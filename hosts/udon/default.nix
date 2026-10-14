@@ -218,8 +218,8 @@ with builtins;
     # up, only to initiate shutdown, so no-op the power button.
     services.logind.settings.Login.HandlePowerKey = "ignore";
 
-    # For the Steam controller and (later) the Steam Frame.
-    # hardware.steam-hardware.enable = true;
+    # For the Steam controller
+    hardware.steam-hardware.enable = true;
 
     fileSystems = {
       "/" = {
