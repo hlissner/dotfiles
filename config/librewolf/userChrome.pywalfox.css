@@ -3,9 +3,9 @@
   --pywalfox-font-size: 13px;
   --pywalfox-font-size-sm: calc(var(--pywalfox-font-size) * 0.9);
   --pywalfox-background: var(--lwt-accent-color);
-  --pywalfox-background-light: var(--arrowpanel-background);
-  --pywalfox-text: var(--arrowpanel-color);
-  --pywalfox-text-focus: var(--toolbar-color);
+  --pywalfox-background-light: var(--panel-background-color);
+  --pywalfox-text: var(--panel-text-color);
+  --pywalfox-text-focus: var(--toolbar-text-color);
   --pywalfox-unselected-tab-opacity: 0.8;
   --pywalfox-darker-background: rgba(0, 0, 0, 0.4);
   --pywalfox-padding: 4px 8px;
