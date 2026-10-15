@@ -45,20 +45,27 @@ dotfiles over there.
    $ cp nixos.iso /dev/sdX
    ```
    
-3. Restart and boot into the installer.
+3. Restart and boot into the NixOS installer.
 
 4. Do your partitions and mount your root to `/mnt` ([for
    example](hosts/udon/README.org)).
 
-5. If you've already created a host config, then simply run the installer:
+5. Connect to the internet, if you haven't already. Wifi-capable devices can use `nmtui`.
+
+6. Copy any keys/secrets over. If you're on a system with `bin/hey` set up, run
+   `hey ops push-keys [KEYS]` (requires you start `sshd` on the nixos
+   installer). Otherwise, scp them into `/mnt/etc/sshd/`:
+
+7. If you've already created a host config, then simply run the installer:
 
    ```sh
+   sudo -i   # switch to root
    bash <(curl -s https://henrik.io/install.sh)
    ```
 
    Otherwise:
 
-   1. Clone these dotfiles to `/mnt/etc/dotfiles` (required):
+   1. Clone these dotfiles yourself to `/mnt/etc/dotfiles` (that location is required):
       ```sh
       $ git clone --recursive https://github.com/hlissner/dotfiles /mnt/etc/dotfiles
       ```
@@ -72,7 +79,7 @@ dotfiles over there.
       $ sudo /mnt/etc/dotfiles/install.sh
       ```
 
-6. Reboot!
+8. Reboot!
 
 > [!WARNING]
 > Don't forget to change your `root` and `$USER` passwords! They are set to
