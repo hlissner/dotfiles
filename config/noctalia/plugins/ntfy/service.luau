@@ -14,6 +14,11 @@
 -- `keepalive_interval` seconds of silence, so a stream that's said nothing in
 -- two of those is dead and gets dropped. The server won't tell us the
 -- interval (`/v1/config` doesn't carry it), hence the setting.
+--
+-- Dropping it only helps because modules/wm/noctalia.nix patches the shell:
+-- stock, stop() hands an HTTP/2 connection back to curl's pool and the
+-- reconnect gets the same dead socket, every three minutes, until the kernel
+-- gives up retransmitting 15min later.
 
 local MIN_BACKOFF_MS = 1000
 local MAX_BACKOFF_MS = 60000

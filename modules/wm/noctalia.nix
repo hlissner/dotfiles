@@ -13,7 +13,27 @@ let cfg = config.modules.wm;
     hasPrimary = primaryMonitor != null;
     otherOutputs = optionals hasPrimary (filter (o: o != primaryMonitor) cfg.outputs);
 
-    package = self.inputs.noctalia.packages.default;
+    # REVIEW: Report this upstream. A stream stopped mid-body is a "premature"
+    #   done to libcurl, which keeps a multiplexed (HTTP/2) connection in its
+    #   pool after one. Half-open since a suspend, that pooled connection is
+    #   what the next httpStream to the same host is handed, and it waits on it
+    #   forever: hey/ntfy reconnected six times after a wake and heard nothing.
+    #   Forbidding reuse makes the socket die with the stream.
+    package = self.inputs.noctalia.packages.default.overrideAttrs (old: {
+      patches = (old.patches or []) ++ [
+        (pkgs.writeText "noctalia-stream-cancel-closes-connection.patch" ''
+          --- a/src/net/http_client.cpp
+          +++ b/src/net/http_client.cpp
+          @@ -481,5 +481,6 @@
+               m_streamTransfers.erase(it);
+             }
+          +  curl_easy_setopt(easy, CURLOPT_FORBID_REUSE, 1L);
+             curl_multi_remove_handle(m_multi, easy);
+             curl_easy_cleanup(easy);
+           }
+        '')
+      ];
+    });
     format = pkgs.formats.toml {};
     # Disabled plugins are still installed, or Settings can't list them.
     installedPlugins = filterAttrs (_: p: p.src != null) cfg.noctalia.plugins;
