@@ -114,7 +114,7 @@ with builtins;
     boot.initrd = {
       kernelModules = [ "dm-snapshot" ];
       luks.devices.home = {
-        device = "/dev/nvme0n1p8";
+        device = "/dev/disk/by-label/home-crypt";
         allowDiscards = true;
       };
     };

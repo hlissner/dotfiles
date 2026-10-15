@@ -2,7 +2,7 @@
 #+DATE:  December 29, 2018
 
 * Overview
-My mobile workstation. Dual-boots NixOS and Windows.
+My mobile NixOS workstation.
 
 * Specs
 | MAKE | [[https://www.dell.com/support/manuals/en-ca/xps-13-9370-laptop/xps-13-9370-setupandspecs/specifications-for-xps-13-9370?guid=guid-c3a6ce65-b23d-41b2-b9c9-244850da6393&lang=en-us][Dell 13" 9370]]  |
@@ -11,12 +11,35 @@ My mobile workstation. Dual-boots NixOS and Windows.
 | HDD  | 500gb NVMe SSD |
 
 * TODO Filesystems
-The primary partition needs to be shrunk on the Windows side, then:
-
 #+begin_src sh
+parted /dev/nvme0n1 -- mklabel gpt
+parted /dev/nvme0n1 -- mkpart ESP fat32 1MiB 1GiB
+parted /dev/nvme0n1 -- mkpart primary 1GiB 256GiB
+parted /dev/nvme0n1 -- mkpart primary 256GiB -16GB
+parted /dev/nvme0n1 -- mkpart primary linux-swap -16GB 100%
+parted /dev/nvme0n1 -- set 1 boot on
+mkfs.fat -F32 -n BOOT /dev/nvme0n1p1
+mkfs.ext4 -L nixos /dev/nvme0n1p2
+mkswap -L swap /dev/nvme0n1p4
 
+# Encrypt /home in case my laptop is ever stolen.
+cryptsetup luksFormat --label home-crypt /dev/nvme0n1p3
+cryptsetup open /dev/disk/by-label/home-crypt home
+mkfs.ext4 -L home /dev/mapper/home
+#+end_src
+
+** Mount filesystems for installer
+#+begin_src sh
+mount /dev/disk/by-label/nixos /mnt
+mkdir -p /mnt/{home,boot}
+mount /dev/disk/by-label/BOOT /mnt/boot
+mount /dev/disk/by-label/home /mnt/home
+swapon /dev/disk/by-label/swap
 #+end_src
 
 * History
+** October 15, 2026
+Dropped Windows partition.
+
 ** December 29, 2018
 Initial purchase.
