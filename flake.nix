@@ -57,7 +57,7 @@
       hosts = mapHosts ./hosts;
       modules.default = import ./.;
 
-      apps.install = mkApp ./install.zsh;
+      apps.install = mkApp ./install.sh;
       devShells.default = import ./shell.nix;
       checks = mapModules ./test import;
       overlays = mapModules ./overlays import;

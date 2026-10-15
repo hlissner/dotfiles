@@ -42,7 +42,7 @@
   (def facts (or (probe host) (abort "Can't reach %s over ssh" host)))
   (cond
     (= "installer" (facts :variant))
-    (abort "%s is booted into the nixos installer; install.zsh is what you want" host)
+    (abort "%s is booted into the nixos installer; install.sh is what you want" host)
 
     (not= "1" (facts :hey))
     (abort "No hey on %s -- is it one of mine?" host))

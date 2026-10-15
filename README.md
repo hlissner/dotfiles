@@ -52,8 +52,8 @@ dotfiles over there.
 
 5. If you've already created a host config, then simply run the installer:
 
-   ```zsh
-   zsh <(curl -s https://raw.githubusercontent.com/hlissner/dotfiles/refs/heads/master/install.zsh)
+   ```sh
+   bash <(curl -s https://henrik.io/install.sh)
    ```
 
    Otherwise:
@@ -69,7 +69,7 @@ dotfiles over there.
    3. Run the installer as root (the installer's `nixos` user has passwordless
       sudo):
       ```sh
-      $ sudo /mnt/etc/dotfiles/install.zsh
+      $ sudo /mnt/etc/dotfiles/install.sh
       ```
 
 6. Reboot!
