@@ -50,6 +50,15 @@ in mkIf (username == "hlissner") (mkMerge [
         ProxyCommand none
       Host dev.henrik.io
         ProxyCommand cloudflared access ssh --hostname %h
+
+      Host deck.lan machine.lan
+        User deck
+      # Retroid Pocket 6 uses termux sshd, which ignores login name entirely
+      Host rp6.lan
+        Port 8022
+      # NextUI uses dropbear running as root
+      Host brick.lan
+        User root
     '';
   })
 ])
