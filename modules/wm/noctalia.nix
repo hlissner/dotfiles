@@ -24,7 +24,7 @@ let cfg = config.modules.wm;
         (pkgs.writeText "noctalia-stream-cancel-closes-connection.patch" ''
           --- a/src/net/http_client.cpp
           +++ b/src/net/http_client.cpp
-          @@ -481,5 +481,6 @@
+          @@ -511,5 +511,6 @@
                m_streamTransfers.erase(it);
              }
           +  curl_easy_setopt(easy, CURLOPT_FORBID_REUSE, 1L);
@@ -331,23 +331,9 @@ in {
           } // optionalAttrs hasPrimary {
             output.name = primaryMonitor;
           };
-          # passwordlessSyncUsers = [ config.user.name ];
+          passwordlessSyncUsers = [ config.user.name ];
         };
       };
-
-      # REVIEW: Use `passwordlessSyncUsers` when nixpkgs is bumped.
-      security.polkit.enablePkexecWrapper = true;
-      security.polkit.extraConfig = mkAfter ''
-        polkit.addRule(function(action, subject) {
-          if (action.id == "org.noctalia.greeter.sync-appearance" &&
-              action.lookup("program") == "${getExe' config.services.displayManager.noctalia-greeter.package "noctalia-greeter-apply-appearance"}" &&
-              action.lookup("user") == "root" &&
-              subject.local && subject.active &&
-              subject.user == "${config.user.name}") {
-            return polkit.Result.YES;
-          }
-        });
-      '';
     }
 
     # Rofi application targets

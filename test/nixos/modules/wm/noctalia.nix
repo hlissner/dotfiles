@@ -57,11 +57,15 @@ in {
   ## The shell.
 
   # The module reads its hook list out of flake.inputs.noctalia's source, and
-  # theme.nix its color tokens, so the shell that runs has to be that one. A
-  # fallback to nixpkgs' noctalia would be parsed against the wrong headers.
+  # theme.nix its color tokens, so the shell that runs has to be built from
+  # that one. A fallback to nixpkgs' noctalia would be parsed against the
+  # wrong headers. Compared by src, not outPath: the module patches the
+  # package, so the derivation isn't the input's, but its source is. (The
+  # src is a cleanSourceWith set carrying a filter function, and functions
+  # never compare equal, hence the .outPath.)
   testShellIsTheOneWhoseSourceIsParsed = {
-    expr = (noctalia [{}] []).programs.noctalia.package.outPath
-           == flake.inputs.noctalia.packages.${system}.default.outPath;
+    expr = (noctalia [{}] []).programs.noctalia.package.src.outPath
+           == flake.inputs.noctalia.packages.${system}.default.src.outPath;
     expected = true;
   };
 
@@ -253,6 +257,18 @@ in {
         m = match ".*SYSTEMD_WANTS[^\n]*\"([a-z-]+@)%k\\.service\".*" c.services.udev.extraRules;
     in {
       expr = m != null && c.systemd.services ? ${head m};
+      expected = true;
+    };
+
+  # The greeter takes the shell's appearance over pkexec; nixpkgs' module writes
+  # the polkit rule from passwordlessSyncUsers. What's pinned is that the rule
+  # names me, or every wallpaper change at login asks for a password.
+  testGreeterSyncsAppearanceWithoutAPrompt =
+    let c = noctalia three [];
+        rule = c.security.polkit.extraConfig;
+    in {
+      expr = hasInfix "org.noctalia.greeter.sync-appearance" rule
+          && hasInfix "\"${c.user.name}\"" rule;
       expected = true;
     };
 

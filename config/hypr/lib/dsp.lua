@@ -35,9 +35,9 @@ local function selector(name)
     local rules = {}
     for i = 1, select("#", ...) do
       local arg, spec = select(i, ...), nil
-      -- A dispatcher is a table too, but a marked one -- its metatable's
-      -- __call is the "use hl.dispatch(dispatcher)" scold -- so a matcher is
-      -- the bare literal.
+      -- A dispatcher is userdata, so a matcher is the bare literal. The
+      -- metatable check keeps an uncalled hl.dsp.* namespace table (marked,
+      -- on older builds) from passing for one.
       if type(arg) == "table" and getmetatable(arg) == nil then
         spec, arg = arg, arg.action
       end
