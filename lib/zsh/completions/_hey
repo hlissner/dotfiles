@@ -1,4 +1,4 @@
-#compdef hey lab beval
+#compdef hey lab beval romm
 #
 # Almost nothing here is hardcoded. `hey help --dump [CMD]` supplies the
 # subcommand list and each command's flags and arguments, generated from the

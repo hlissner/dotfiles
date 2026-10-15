@@ -1,0 +1,11 @@
+{
+  "items": [
+    {"id": 11, "platform_id": 2, "platform_fs_slug": "snes", "fs_name": "Chrono Trigger (USA).sfc", "fs_path": "snes/roms", "multi": false},
+    {"id": 12, "platform_id": 2, "platform_fs_slug": "snes", "fs_name": "EarthBound (USA) [!].zip", "fs_path": "snes/roms", "multi": false},
+    {"id": 13, "platform_id": 5, "platform_fs_slug": "psx", "fs_name": "Final Fantasy VII (USA)", "fs_path": "psx/roms", "multi": true,
+     "files": [{"file_name": "Final Fantasy VII (USA).m3u"}, {"file_name": "Final Fantasy VII (USA) (Disc 1).chd"}]},
+    {"id": 14, "platform_id": 7, "platform_fs_slug": "ngc", "fs_name": "Metroid Prime (USA).rvz", "fs_path": "ngc/roms", "multi": false},
+    {"id": 15, "platform_id": 9, "platform_fs_slug": "atari2600", "fs_name": "Pitfall.a26", "fs_path": "atari2600/roms", "multi": false}
+  ],
+  "total": 5, "limit": 100, "offset": 0
+}

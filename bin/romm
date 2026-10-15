@@ -1,0 +1,6 @@
+#!/usr/bin/env zsh
+# Keep my emulation devices in step with RomM.
+
+# Bare, hey's script walk lands back on this file and execs it forever.
+(( $# )) || set -- status
+exec hey .romm "$@"
