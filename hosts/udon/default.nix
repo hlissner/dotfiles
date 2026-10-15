@@ -106,6 +106,25 @@ with builtins;
         enable = true;
         libraryDir = "/media/windows/Program Files (x86)/Steam";
       };
+      emulators = let nas = "/media/nas/media/games"; in {
+        enable = true;
+        romsDir = nas;
+        # EmuDeck's bios/ layout, which is what the cores expect of one flat
+        # system dir. The console BIOSes still live in SYS/bios/ on the NAS;
+        # link or copy them in here as a core complains.
+        biosDir = "${nas}/_bios";
+        systems = {
+          nes = {}; snes = {}; genesis = {}; gamegear = {}; gba = {}; nds = {};
+          n64 = {}; saturn = {}; psx = {}; psp = {}; ps2 = {}; ps3 = {}; wii = {};
+          psvita = {}; switch = {};
+          # Romm's slugs, not ES-DE's.
+          mastersystem.path = "${nas}/sms/roms";
+          dreamcast.path    = "${nas}/dc/roms";
+          gc.path           = "${nas}/ngc/roms";
+          n3ds.path         = "${nas}/3ds/roms";
+          pico8.path        = "${nas}/pico/roms";
+        };
+      };
     };
     dev = {
       cc.enable = true;
@@ -136,16 +155,27 @@ with builtins;
 
   ## local config
   config = { pkgs, config, ... }: {
+    programs.kdeconnect = {
+      enable = true;
+      package = pkgs.kdePackages.kdeconnect-kde;
+    };
+
+    home.dataLink =
+      let games = config.modules.games.emulators;
+          media = [ "covers" "backcovers" "screenshots" ];
+      in optionalAttrs games.enable (
+           { "eden/keys" = "${games.romsDir}/switch/bios/keys.22.1.0"; }
+           // listToAttrs (concatMap
+                (sys: map (m: nameValuePair "es-de/downloaded_media/${sys}/${m}"
+                                            "${games.systems.${sys}.path}/${m}")
+                          media)
+                (attrNames games.systems)));
+
     user.packages = with pkgs; [
       guitarix
       gxplugins-lv2
       ladspaPlugins
     ];
-
-    programs.kdeconnect = {
-      enable = true;
-      package = pkgs.kdePackages.kdeconnect-kde;
-    };
   };
 
   hardware = { config, pkgs, ... }:
