@@ -18,11 +18,12 @@ in {
     {
       # Support for more filesystems (for external drives)
       environment.systemPackages = with pkgs; [
-        exfat       # ExFAT drives
-        ntfs3g      # Windows drives
-        hfsprogs    # MacOS drives
-        cryptsetup  # for Luks drives
-        udiskie     # For simple mounting and plugins
+        exfat         # ExFAT drives
+        ntfs3g        # Windows drives
+        hfsprogs      # MacOS drives
+        cryptsetup    # for Luks drives
+        udiskie       # for simple mounting and plugins
+        archivemount  # for mounting iso's and compressed archives
       ];
 
       # A daemon that lets us mount/poll disks in userspace. I'd prefer udevil,
