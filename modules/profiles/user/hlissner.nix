@@ -1,7 +1,8 @@
-{ lib, config, pkgs, ... }:
+{ self, lib, config, pkgs, ... }:
 
 with lib;
-let cfg = config.modules.profiles;
+let inherit (self.lib.pkgs) mkLauncherEntry;
+    cfg = config.modules.profiles;
     username = cfg.user;
     role = cfg.role;
     key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB71rSnjuC06Qq3NLXQJwSz7jazoB+umydddrxL6vg1a";
@@ -60,5 +61,22 @@ in mkIf (username == "hlissner") (mkMerge [
       Host brick.lan
         User root
     '';
+  })
+
+  (mkIf (config.modules.apps.rofi.enable && role == "workstation") {
+    user.packages = with pkgs; [
+      (mkLauncherEntry "Search Romm ->" {
+        icon = "applications-games";
+        exec = "hey @rofi rommmenu";
+      })
+      (mkLauncherEntry "Search Homebox ->" {
+        icon = "package";
+        exec = "hey @rofi homeboxmenu";
+      })
+      (mkLauncherEntry "Search Grimmory ->" {
+        icon = "accessories-ebook-reader";
+        exec = "hey @rofi grimmorymenu";
+      })
+    ];
   })
 ])
