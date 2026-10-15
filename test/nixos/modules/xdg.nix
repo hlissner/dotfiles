@@ -29,6 +29,14 @@ in {
     expected = { unwrapped = []; shadowed = []; };
   };
 
+  # Every one of these stops parsing options at the hostname, so anything the
+  # wrapper adds has to land in front of $@. --append-flags put ssh-copy-id's
+  # -i after it, and it answered every host with "Too many arguments".
+  testNothingIsAppended = {
+    expr = hasInfix "--append-flags" wrapper.buildCommand;
+    expected = false;
+  };
+
   # The wrapper stats each key before offering it, so ssh is never told about
   # one that isn't there. An IdentityFile back in ssh_config is read by the
   # wrapped binaries too (~/.config/ssh/config Includes it), so it would undo

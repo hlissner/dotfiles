@@ -212,8 +212,15 @@ in {
                fi
              ''} \
              --add-flags '"''${args[@]}"'
+           # Its scratch dir (and the ControlMaster socket in it) is hardcoded
+           # to ~/.ssh with no way to move it, so patch a copy of the script.
+           cp --remove-destination "$(readlink -f "$out/bin/ssh-copy-id")" "$out/bin/ssh-copy-id"
+           substituteInPlace "$out/bin/ssh-copy-id" \
+             --replace-fail 'mktemp -d ~/.ssh/' 'mktemp -d "${sshConfigDir}"/'
            # Which key to hand over, which is a different question from which
-           # key to authenticate with, hence -i and not -o.
+           # key to authenticate with, hence -i and not -o. It only takes one
+           # and, like ssh, stops parsing options at the hostname, so this must
+           # come first.
            wrapProgram "$out/bin/ssh-copy-id" \
              --run ${escapeShellArg ''
                dir="${sshConfigDir}"
@@ -222,12 +229,12 @@ in {
                  *" -i "*) ;;
                  *)
                    for f in ${keyFilesStr}; do
-                     [ -f "$dir/$f" ] && opts+=(-i "$dir/$f")
+                     [ -f "$dir/$f" ] && { opts=(-i "$dir/$f"); break; }
                    done
                    ;;
                esac
              ''} \
-             --append-flags '"''${opts[@]}"'
+             --add-flags '"''${opts[@]}"'
            # -R and -F are the two modes that edit known_hosts, and the only
            # part of ssh-keygen I can talk out of ~/.ssh; everything else it
            # writes still wants an explicit -f.
