@@ -16,9 +16,14 @@ in {
 
     # I will always update the microcode for my CPUs, so this is safe heuristic
     # for what CPU to cater to.
-    boot.kernelModules =
-      if config.hardware.cpu.amd.updateMicrocode
-      then [ "kvm-amd" ]
-      else [ "kvm-intel" ];
+    boot = {
+      kernelModules =
+        if config.hardware.cpu.amd.updateMicrocode
+        then [ "kvm-amd" ]
+        else [ "kvm-intel" ];
+
+      # Give memfd-backed guest RAM transparent hugepages
+      kernelParams = [ "transparent_hugepage_shmem=advise" ];
+    };
   };
 }
