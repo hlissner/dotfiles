@@ -1,0 +1,29 @@
+#!/usr/bin/env cached-nix-shell
+#! nix-shell -i zsh -p mame-tools
+# Pack a cue, bin, cdi, or gdi file into a chd file.
+#
+# SYNOPSIS:
+#   to-chd TARGET.{cue,bin,cdi,gdi}
+#
+# DESCRIPTION:
+#   Takes a cue, bin, cdi, or gdi file and packs it (and adjacent track *.bin's)
+#   into a chd file with the same name.
+#
+# ARGUMENTS:
+#   1 TARGET @files
+
+set -e
+declare f="$1"
+
+# GDI (Dreamcast, TOSEC/Redump gdi+track files)
+# CUE/BIN
+
+# CDI: convert to CUE/BIN first (chdman doesn't read .cdi)
+if [[ "$f" == *.cdi ]]; then
+  nix shell nixpkgs#cdirip -c cdirip "$f" -cue
+  f="${f%.*}.cue"
+fi
+
+chdman createcd -i "$f" -o "${f%.*}.chd"
+chdman verify -i "${f%.*}.chd"
+chdman info -i "${f%.*}.chd"

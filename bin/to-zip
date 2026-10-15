@@ -1,0 +1,40 @@
+#!/usr/bin/env zsh
+# Convert 7z, rar, or tar.* archives to zip.
+#
+# SYNOPSIS:
+#   to-zip [-f] [-o DIR] ARCHIVE...
+#
+# DESCRIPTION:
+#   Converts a 7z, tar, or rar into a zip (which has broader compatibility with
+#   things like emulators and Romm). bsdtar reads all three and writes zip, so
+#   each archive is rewritten in one pass with no temp dir.
+#
+#   Can't read encrypted or solid rars that use filters. Those need 7z +
+#   p7zip-rar and an extract step. Not worth it for my needs.
+#
+# OPTIONS:
+#   -f
+#     Overwrite an existing zip.
+#   -o DIR
+#     Write zips to DIR instead of beside each archive.
+#
+# ARGUMENTS:
+#   * ARCHIVE @files
+
+setopt err_exit pipe_fail
+zparseopts -D -F -- f=force o:=outdir || exit 1
+(( $# )) || hey.abort "No archives given"
+[[ -z $outdir || -d $outdir[2] ]] || hey.abort "Not a directory: $outdir[2]"
+
+local src dest
+for src in "$@"; do
+  [[ -f $src ]] || hey.abort "Not a file: $src"
+  if [[ $src == *.tar.* ]]; then dest=${src%.tar.*}.zip; else dest=${src:r}.zip; fi
+  [[ $outdir ]] && dest=$outdir[2]/${dest:t}
+  if [[ -e $dest && -z $force ]]; then
+    hey.error "Exists, skipping (use -f): $dest"
+    continue
+  fi
+  hey.do -! -p libarchive bsdtar -a -cf "$dest" @"$src"
+  hey.echo "$src -> $dest"
+done

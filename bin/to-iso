@@ -1,0 +1,35 @@
+#!/usr/bin/env zsh
+# Pack files and directories into an ISO 9660 image.
+#
+# SYNOPSIS:
+#   to-iso [-f] [-V LABEL] ISO PATH...
+#
+# DESCRIPTION:
+#   Given a directory, its contents are packed into an iso file (at top-level).
+#   Careful with multiple directories -- they're merged into one tree.
+#
+#   To nest something, use the = prefix: `to-iso x.iso roms/=snes/`. '=' can be
+#   escaped if a literal one is needed.
+#
+# OPTIONS:
+#   -f
+#     Overwrite an existing iso.
+#   -V LABEL
+#     Volume label. Defaults to the iso's basename, sans extension.
+#
+# ARGUMENTS:
+#   1 ISO @files
+#   * PATH @files
+
+setopt err_exit pipe_fail
+zparseopts -D -F -- f=force V:=label || exit 1
+(( $# >= 2 )) || hey.abort "Usage: to-iso [-f] [-V LABEL] ISO PATH..."
+
+local iso=$1; shift
+[[ $iso == *.iso ]] || iso+=.iso
+if [[ -e $iso && -z $force ]]; then
+  hey.abort "Exists (use -f): $iso"
+fi
+hey.do -! -p xorriso xorriso -as mkisofs -quiet -graft-points \
+  -J -R -iso-level 3 -V "${label[2]:-${${iso:t}:r}}" -o "$iso" "$@"
+hey.echo "$iso <- $*"
