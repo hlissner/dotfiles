@@ -20,7 +20,7 @@
       --tile:    {{colors.surface_container.default.hex}};
       --tile-hi: {{colors.surface_container_high.default.hex}};
       --accent:  {{colors.primary.default.hex}};
-      --fade: 1s;
+      --fade: 0.75s;
     }
 
     * { box-sizing: border-box; }
@@ -99,14 +99,11 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      opacity: 0;
-      transform: translateY(-0.5rem);
-      transition: opacity var(--fade), transform var(--fade);
+      opacity: 0.1;
+      transition: opacity var(--fade);
     }
     .links a:hover span, .links a:focus-visible span {
       opacity: 1;
-      transform: none;
-      transition-duration: 0.15s;
     }
   </style>
 </head>
@@ -131,9 +128,9 @@
     <a href="https://p2p.home.lissner.net"><img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/slskd.png" alt=""><span>soulseek</span></a>
     <a href="https://bambu.home.lissner.net"><img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/bambu-lab.png" alt=""><span>bambuddy</span></a>
     <a href="https://db.home.lissner.net"><img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/adminer.png" alt=""><span>adminer</span></a>
-    <a href="https://ntfy.home.lissner.net"><img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/ntfy.png" alt=""><span>ntfy.sh</span></a>
     <a href="https://n8n.home.lissner.net"><img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/n8n.png" alt=""><span>n8n</span></a>
     <a href="https://tv.home.lissner.net"><img src="https://cdn.jsdelivr.net/gh/selfhst/icons/webp/jellyfin.webp" alt=""><span>jellyfin</span></a>
+    <a href="https://romm.home.lissner.net"><img src="https://cdn.jsdelivr.net/gh/selfhst/icons/webp/romm.webp" alt=""><span>romm</span></a>
   </nav>
 
   <script>
