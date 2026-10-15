@@ -18,7 +18,10 @@ in {
 
     modules.shell.vaultwarden.settings.pinentry = mkDefault
       (if gpgPinentry != null
-       then getExe gpgPinentry
+       then let exe = gpgPinentry.meta.mainProgram;
+            in "${mkWrapper gpgPinentry ''
+                 wrapProgram "$out/bin/${exe}" --set ROFI_PLACEHOLDER '"Enter master password"'
+               ''}/bin/${exe}"
        else getExe pkgs.pinentry-curses);
 
     # `rbw config set` stops the agent (and locks the vault) every time, so

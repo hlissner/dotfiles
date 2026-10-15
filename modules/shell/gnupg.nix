@@ -19,9 +19,12 @@ in {
     programs.gnupg = {
       agent = {
         enable = true;
-        pinentryPackage = pkgs.pinentry-rofi.override {
-          rofi = pkgs.rofi-unwrapped;
-        };
+        pinentryPackage =
+          let pinentry = pkgs.pinentry-rofi.override { rofi = pkgs.rofi-unwrapped; };
+              exe = pinentry.meta.mainProgram;
+          in mkWrapper pinentry ''
+            wrapProgram "$out/bin/${exe}" --set-default ROFI_PLACEHOLDER '"Enter passphrase..."'
+          '' // { meta.mainProgram = exe; };
       };
     };
 
