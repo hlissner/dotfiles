@@ -179,6 +179,10 @@ in {
           '';
 
           "${localDir}/${cfg.profileName}.alt/user.js" = userjs;
+          "${localDir}/${cfg.profileName}.alt/chrome/userChrome.css".text = ''
+            @import url("file://${config.hey.configDir}/librewolf/userChrome.css");
+            ${optionalString (cfg.userChrome != "") cfg.userChrome}
+          '';
         };
     }
 
