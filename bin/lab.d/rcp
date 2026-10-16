@@ -1,9 +1,56 @@
 #!/usr/bin/env zsh
+# rsync that honours .gitignore correctly.
+#
+# SYNOPSIS:
+#   lab rcp [RSYNC_OPTS...] SRC DST
+#
+# DESCRIPTION:
+#   rsync's filter language doesn't understand negation (`!`-prefixed rules)  in
+#   gitignore files, so use fd to build the exclusion list before running rsync.
+#   If SRC is a remote, fd>=9 must be installed there for this to work. Use
+#   rsync directly otherwise.
+#
+# ARGUMENTS:
+#   * PATH @files
+
+setopt err_exit pipe_fail
+
+(( $# >= 2 )) || hey.abort "usage: lab rcp [RSYNC_OPTS...] SRC DST"
+local src=${@[-2]} dst=${@[-1]}
+local -a opts=( "${@[1,-3]}" )
+
+# Not --files-from: it implies -d, and -d only deletes inside directories whose
+# contents are copied, i.e. nowhere. --delete would silently stop working.
+function ignored {
+  local host= dir=$1
+  if [[ $1 == *:* && $1 != /* ]]; then
+    host=${1%%:*} dir=${1#*:}
+  fi
+  local fd='fd -H -t f -t l -t d'
+  local walk="cd ${(q)${dir:-.}} && { $fd --no-require-git .; $fd --no-ignore .; } | sort | uniq -u"
+  # Excluding a directory excludes its contents, so anything under an entry
+  # already listed is dead weight; rsync matches every file against every rule.
+  # fd already suffixes directories with `/`. (index(s, "") is 1 in some awks,
+  # hence the !p.) Then escape globs so a literal `[1]` in a filename doesn't
+  # cause issues (but it's still a crime against humanity).
+  if [[ -n $host ]]; then ssh $host $walk; else eval $walk; fi \
+    | awk '!p || index($0, p) != 1 { print "/" $0; p = $0 ~ /\/$/ ? $0 : $0 "/" }' \
+    | sed 's/[][*?]/\\&/g'
+}
+
+# The excludes are anchored to the transfer root, so SRC must end in a slash. A
+# bare `host:` means the remote home to rsync, but `host:/` would be its root.
+[[ $src == *: ]] && src+=.
+src=${src%/}/
+
+local excludes
+excludes=$(mktemp)
+trap "rm -f $excludes" EXIT
+ignored $src > $excludes || hey.abort "Couldn't walk $src; nothing synced"
 
 hey.do rsync -rltDzPJ \
     --include=.git/ \
-    --filter=':- .gitignore' \
-    --filter=":- $XDG_CONFIG_HOME/git/ignore" \
+    --exclude-from=$excludes \
     --delete \
     --delete-after \
-    "$@"
+    "${opts[@]}" "$src" "$dst"
