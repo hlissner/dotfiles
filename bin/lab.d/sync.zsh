@@ -91,17 +91,6 @@ case $host in
     fi
     ;;
 
-  htpc)
-    if available-host nas0.lan; then
-      for category in audiobooks books anime documentaries movies tv; do
-        rcp "root@nas0.lan:/mnt/nas/media/$category/" "$HOME/jellyfin/$category/"
-      done
-      ssh root@nas0.lan "rsync -azPJ /mnt/nas/media/music/ /mnt/nas/users/hlissner/files/music/unsorted/"
-    else
-      hey.error "Couldn't connect to nas0.lan"
-    fi
-    ;;
-
   *)
     hey.error "Unknown host: $host"
     exit 1

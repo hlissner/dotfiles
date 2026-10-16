@@ -1,7 +1,0 @@
-#+TITLE: HTPC
-#+DATE:  April 01, 2026
-
-* Overview
-* Specs
-* Filesystems
-* History
