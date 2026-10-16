@@ -234,14 +234,24 @@ with builtins;
     # my apple trackpad), formerly connected before the system went to sleep,
     # "gone", so the dongle goes back to sleep. The trackpad responds to the
     # dongle's ACK but finds it asleep, so it goes back to sleep. The dongle
-    # reacts to *that* response but find it asleep... Rinse and repeat.
-    boot.extraModprobeConfig = "options btusb enable_autosuspend=0";
-    # If the above doesn't work, then...
-    # hey.hooks."on-suspend".cleanup-bluetooth-devices = ''
-    #   bluetoothctl devices Connected | while read -r _ mac _; do
-    #     bluetoothctl disconnect $mac >/dev/null
-    #   done
-    # '';
+    # reacts to *that* response but find it asleep... Rinse and repeat. This
+    # alone wasn't enough; the bluetooth profile's on-suspend hook does the rest.
+    hey.hooks =
+      let bctl = getExe' config.hardware.bluetooth.package "bluetoothctl";
+          dir = "$XDG_RUNTIME_DIR/hey";
+          marker = "${dir}/bt-powered";
+      in {
+        "on-suspend".bluetooth = ''
+          rm -f ${marker}
+          if ${bctl} show | grep -q 'Powered: yes'; then
+            mkdir -p ${dir} && touch ${marker}
+            ${bctl} power off >/dev/null
+          fi
+        '';
+        "on-wakeup".bluetooth = ''
+          [[ -f ${marker} ]] && ${bctl} power on >/dev/null
+        '';
+      };
 
     # ...But sometimes the monitors will fall asleep and I'll forget I haven't
     # suspended the system so I'll press the power button thinking I'm waking it
