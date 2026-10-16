@@ -113,25 +113,32 @@
     out
     (abort "curl failed (%s): %s" (last args) out)))
 
+(defn- url [path & query]
+  (string *url* "/api/v1" path
+          (if (empty? query) "" (string "?" (string/join query "&")))))
+
+(defn- tenant
+  ``The query that points a request at COLLECTION (a group id). Without it the
+  server assumes my default one, which is what the main list shows.``
+  [collection]
+  (if collection [(string "tenant=" collection)] []))
+
 (defn- api [path & query]
-  (json/decode (authed (string *url* "/api/v1" path
-                               (if (empty? query) ""
-                                 (string "?" (string/join query "&")))))
-               true))
+  (json/decode (authed (url path ;query)) true))
 
 (defn- download!
   ``Fetch PATH into FILE. Fatal unless SOFT, which gets nil instead.``
-  [path file &named soft]
+  [path file &named soft query]
   (fs/create-dirs (path/dirname file))
-  (def url (string *url* "/api/v1" path))
+  (def u (url path ;(or query [])))
   (if soft
-    (let [[code out] (request "-o" file url)]
+    (let [[code out] (request "-o" file u)]
       (if (zero? code)
         file
         (do (ignore-errors (os/rm file))
-            (when (debug?) (echof :debug "%s: %s" url out))
+            (when (debug?) (echof :debug "%s: %s" u out))
             nil)))
-    (do (authed "-o" file url)
+    (do (authed "-o" file u)
         file)))
 
 
@@ -150,39 +157,80 @@
   magick: the server's thumbnails are webp, which rofi's gdk-pixbuf has no
   loader for, and the full photo is whatever size my phone felt like. A miss
   means the generic icon; one 404 must not take the whole list down.``
-  [item]
+  [item collection]
   (some (fn [img]
           (def file (:file *icons* (string (item :id) "-" img ".png")))
           (def raw (:file *icons* (string (item :id) "-" img)))
           (or (when (path/file? file) file)
-              (when (download! (attachment-path (item :id) img) raw :soft true)
+              (when (download! (attachment-path (item :id) img) raw
+                               :soft true :query (tenant collection))
                 (defer (ignore-errors (os/rm raw))
                   (when ($? magick ,raw -thumbnail x96 ,file > :null > [stderr :null])
                     file)))))
         (filter truthy? [(val (item :thumbnailId)) (val (item :imageId))])))
 
-(defn- fetch-items []
-  # Paginated; total is the authority on when to stop. The list doesn't hand
-  # back locations today, but they're entities too, so don't trust that.
+# Bump when the cached shape changes, so a stale cache refetches instead of
+# handing nils to whatever reads the new field.
+(def- *inventory-version* 4)
+
+(defn- fetch-entities
+  ``Every page of /entities?QUERY; total is the authority on when to stop.``
+  [& query]
   (def all @[])
   (var page 1)
   (var total nil)
   (while (or (nil? total) (< (length all) total))
-    (def res (api "/entities" "pageSize=500" (string "page=" page)))
+    (def res (api "/entities" "pageSize=500" (string "page=" page) ;query))
     (def items (get res :items []))
     (when (empty? items) (break))
     (set total (res :total))
     (array/concat all items)
     (++ page))
-  (seq [it :in all :unless (get-in it [:entityType :isLocation])]
+  all)
+
+(defn- fetch-items [collection]
+  (seq [it :in (fetch-entities ;(tenant collection))
+        :unless (get-in it [:entityType :isLocation])]
     {:id (it :id)
      :name (or (val (it :name)) "(unnamed)")
      :location (-?> (it :parent) val (get :name) val)
-     :icon (icon-file it)}))
+     :parent (-?> (it :parent) val (get :id))
+     :tags (map |($0 :id) (get it :tags []))
+     :collection collection
+     :icon (icon-file it collection)}))
 
-(defn- items [&opt reload?]
+(defn- fetch-inventory []
+  # The UI calls groups "collections": separate inventories, one of them my
+  # default, which is all the server shows unless a request names another.
+  # Locations and tags are only gathered for the default; the others are
+  # browsed whole.
+  (def me (get (api "/users/self") :item {}))
+  {:version *inventory-version*
+   :default (me :defaultGroupId)
+   :collections (seq [g :in (api "/groups/all")]
+                  {:id (g :id)
+                   :name (or (val (g :name)) "(unnamed)")
+                   :items (fetch-items (unless (= (g :id) (me :defaultGroupId)) (g :id)))})
+   # Locations are entities too, but the list leaves them out unless asked, and
+   # the asking (isLocation=true) is in the handler, not the swagger.
+   :locations (seq [it :in (fetch-entities "isLocation=true")]
+                {:id (it :id)
+                 :name (or (val (it :name)) "(unnamed)")
+                 :parent (-?> (it :parent) val (get :id))})
+   # From /tags rather than the items, so an unused tag still lists.
+   :tags (seq [t :in (api "/tags")]
+           {:id (t :id) :name (or (val (t :name)) "(unnamed)")})})
+
+(defn- inventory [&opt reload?]
   (when reload? (:clear *icons*))
-  (:cache *vars* :items fetch-items reload?))
+  (def inv (:cache *vars* :inventory fetch-inventory reload?))
+  (if (= (inv :version) *inventory-version*) inv (inventory true)))
+
+(defn- items
+  "The default collection's items."
+  []
+  (def inv (inventory))
+  (get (find |(= ($0 :id) (inv :default)) (inv :collections)) :items []))
 
 (defn- label [item]
   (fmt "%s%s"
@@ -190,6 +238,53 @@
        (if-let [loc (item :location)]
          (fmt " <span alpha='50%%' size='x-small'>(%s)</span>" (rofi/escape loc))
          "")))
+
+(defn- lineage
+  ``Every id above ENTITY in PARENTS (id -> parent id), nearest first. Nothing
+  server-side stops a cycle, so give up at a depth no shelf has.``
+  [entity parents]
+  (def ids @[])
+  (var p (entity :parent))
+  (while (and p (< (length ids) 32))
+    (array/push ids p)
+    (set p (parents p)))
+  ids)
+
+(defn- grouped
+  ``The items bucketed under every key F yields for one.``
+  [f]
+  (def t @{})
+  (each it (items)
+    (each k (f it)
+      (update t k |(array/push (or $ @[]) it))))
+  t)
+
+(defn- by-name [xs]
+  (sorted-by |(string/ascii-lower ($0 :name)) xs))
+
+(defn- by-location
+  ``Locations as {:name :items}, named by their full path since "Drawer 1" on
+  its own could be any of them. Items in a box on a shelf in a room belong to
+  the room too; that's what "where is it" asks.``
+  []
+  (def inv (inventory))
+  (def parents (tabseq [e :in [;(inv :locations) ;(inv :items)]] (e :id) (e :parent)))
+  (def names (tabseq [l :in (inv :locations)] (l :id) (l :name)))
+  (def under (grouped |(lineage $0 parents)))
+  (by-name
+   (seq [l :in (inv :locations)]
+     {:name (string/join [;(reverse (keep |(names $0) (lineage l parents))) (l :name)] " / ")
+      :items (by-name (get under (l :id) @[]))})))
+
+(defn- by-tag []
+  (def with (grouped |($0 :tags)))
+  (by-name
+   (seq [t :in ((inventory) :tags)]
+     {:name (t :name) :items (by-name (get with (t :id) @[]))})))
+
+(defn- by-collection []
+  (by-name (seq [c :in ((inventory) :collections)]
+             {:name (c :name) :items (by-name (c :items))})))
 
 
 ## One item
@@ -257,14 +352,14 @@
 (defn- open-attachment!
   ``Attachments sit behind the API token, which the browser hasn't got, so pull
   the file down and hand xdg-open the copy.``
-  [item a]
+  [summary item a]
   (def file (:file *icons* (string (item :id) "-" (a :id) "-" (attachment-name a))))
   (unless (path/file? file)
-    (download! (attachment-path (item :id) (a :id)) file))
+    (download! (attachment-path (item :id) (a :id)) file :query (tenant (summary :collection))))
   (open-url file))
 
 (defn- item-screen [summary]
-  (def item (api (string "/entities/" (summary :id))))
+  (def item (api (string "/entities/" (summary :id)) ;(tenant (summary :collection))))
   (def name (summary :name))
   (def tags (map |($0 :name) (get item :tags [])))
   (rofi/chain [r :theme *theme* :prompt name
@@ -292,10 +387,32 @@
                      (rofi/escape (attachment-name a))
                      (rofi/escape (or (val (a :type)) "attachment")))
               :icon (if (= (a :type) "photo") "image-x-generic-symbolic" "mail-attachment-symbolic")
-              :data (fn [] (open-attachment! item a)))))))
+              :data (fn [] (open-attachment! summary item a)))))))
 
 (defn- enter [screen & args]
   (fn [] (let [r (screen ;args)] (if (= r :back) :restart r))))
+
+(defn- items-screen [prompt items]
+  (rofi/chain [r :theme *theme* :prompt prompt]
+    (:add r "<b>Back</b>" :icon "go-previous-symbolic" :data :back)
+    (:div r)
+    (each item items
+      (:add r (label item)
+            :icon (or (item :icon) *item-icon*)
+            :data (enter item-screen item)))))
+
+(defn- groups-screen
+  ``GROUPS, a function of no arguments yielding {:name :items} entries, each
+  with its count; picking one lists its items.``
+  [prompt icon groups]
+  (rofi/chain [r :theme *theme* :prompt prompt]
+    (:add r "<b>Back</b>" :icon "go-previous-symbolic" :data :back)
+    (:div r)
+    (each g (groups)
+      (:add r (fmt `%s <span alpha="50%%" size="x-small">(%d)</span>`
+                   (rofi/escape (g :name)) (length (g :items)))
+            :icon icon
+            :data (enter items-screen (g :name) (g :items))))))
 
 
 ## Main
@@ -306,12 +423,16 @@
   (unless (or (rbw/unlocked?) (rbw/unlock))
     (abort "Vault is locked"))
   # Fetch (or refetch) up front; the chain re-reads the cache on every restart.
-  (items reload?)
+  (inventory reload?)
   (if list?
     (each item (items)
       (echof "%s\t%s\t%s\t%s" (item :name) (or (item :location) "") (item :id) (or (item :icon) "")))
     (rofi/chain [r :theme *theme* :prompt "Inventory"]
-      (:add r "<b>Reload</b>" :icon "view-refresh-symbolic" :data (fn [] (items true) :restart))
+      (:add r "<b>Reload</b>" :icon "view-refresh-symbolic" :data (fn [] (inventory true) :restart))
+      (:add r "<b>Open in Browser</b> ->" :icon "web-browser-symbolic" :data (fn [] (open-url *url*)))
+      (:add r "<b>By Location</b> ->" :icon "folder-symbolic" :data (enter groups-screen "Locations" "folder-symbolic" by-location))
+      (:add r "<b>By Tag</b> ->" :icon "tag-symbolic" :data (enter groups-screen "Tags" "tag-symbolic" by-tag))
+      (:add r "<b>By Collection</b> ->" :icon "go-home-symbolic" :data (enter groups-screen "Collections" "go-home-symbolic" by-collection))
       (:div r)
       (each item (items)
         (:add r (label item)

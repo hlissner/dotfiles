@@ -1,13 +1,12 @@
 #!/usr/bin/env janet
-# Browse my Grimmory library (books, authors, libraries) via Rofi.
+# Browse my Grimmory library via Rofi.
 #
 # SYNOPSIS:
 #   grimmorymenu [-l|--list] [-r|--reload]
 #
 # DESCRIPTION:
-#   Lists every book on books.home.lissner.net with its cover; picking one opens
-#   its page in the browser. `Authors ->` and `Libraries ->` do the same for
-#   theirs. The catalogue and covers are cached until `Reload`.
+#   Talks to https://books.home.lissner.net. Selecting a book will open its page
+#   in the browser.
 #
 # OPTIONS:
 #   -l, --list
@@ -32,16 +31,19 @@
 (def- *vars*    (vars/new (:dir (vars/global) :rofi :grimmorymenu)))
 (def- *covers*  (:dir *vars* :covers))
 (def- *session* (vars/new (:dir (vars/temp) :rofi :grimmorymenu)))
+(def- *catalogue-version* 2)
+
+(def- *statuses*
+  {"UNREAD" "Unread" "READING" "Reading" "RE_READING" "Re-reading" "READ" "Read"
+   "PARTIALLY_READ" "Partially read" "PAUSED" "Paused" "WONT_READ" "Won't read"
+   "ABANDONED" "Abandoned" "UNSET" "Unset"})
 
 (defn- url [& parts] (string "https://" *host* ;parts))
 
 
 ## HTTP
 
-(defn- quoted
-  ``S as a curl config string: only backslash and the quote itself need
-  escaping, and curl takes \" for the latter.``
-  [s]
+(defn- quoted [s]
   (string `"` (->> s (string/replace-all `\` `\\`) (string/replace-all `"` `\"`)) `"`))
 
 (defn- curl
@@ -88,6 +90,16 @@
                    (abort "Grimmory rejected my token twice; giving up"))
                true))
 
+(defn- api/pages [path]
+  (def out @[])
+  (var page 0)
+  (while true
+    (def r (api/get (fmt "%s?page=%d&size=500" path page)))
+    (array/concat out (r :content))
+    (unless (r :hasNext) (break))
+    (++ page))
+  out)
+
 (defn- download!
   ``Fetch every URL in FILES ({ path url }) in one parallel curl. A cover that
   404s is left absent rather than fatal: the row simply goes without.``
@@ -133,6 +145,11 @@
          :title (or (m :title) (get-in b [:primaryFile :fileName]) "(untitled)")
          :authors (get m :authors [])
          :year (year (m :publishedDate))
+         :series (m :seriesName)
+         :series-no (m :seriesNumber)
+         :genres (get m :categories [])
+         :status (b :readStatus)
+         :shelves (map |($0 :id) (get b :shelves []))
          :library (b :libraryName)
          :library-id (b :libraryId)
          :cover file})))
@@ -141,8 +158,11 @@
     (each f (path/files-in *covers*)
       (unless (wanted f) (os/rm f))))
   (def counts (frequencies (map |($0 :library-id) out)))
+  (defn shelf [s ids &opt magic?]
+    {:id (s :id) :name (s :name) :magic? magic? :count (length ids) :books ids})
   # A cover that didn't arrive is no cover at all, as far as rofi's concerned.
-  {:books (map |(merge $0 {:cover (when (and ($0 :cover) (path/file? ($0 :cover))) ($0 :cover))}) out)
+  {:version *catalogue-version*
+   :books (map |(merge $0 {:cover (when (and ($0 :cover) (path/file? ($0 :cover))) ($0 :cover))}) out)
    :authors (seq [a :in (api/get "/api/v1/authors")
                   # Grimmory keeps a few nameless/garbage authors around from
                   # bad metadata; they'd be blank rows.
@@ -150,10 +170,42 @@
               {:id (a :id) :name (a :name) :count (get a :bookCount 0)})
    :libraries (sorted-by |(string/ascii-lower ($0 :name))
                 (seq [l :in (api/get "/api/v1/libraries")]
-                  {:id (l :id) :name (l :name) :count (get counts (l :id) 0)}))})
+                  {:id (l :id) :name (l :name) :count (get counts (l :id) 0)}))
+   :shelves (sorted-by |(string/ascii-lower ($0 :name))
+              (array/concat
+               (seq [s :in (api/get "/api/v1/app/shelves")]
+                 (shelf s (seq [b :in out :when (index-of (s :id) (b :shelves))] (b :id))))
+               # A magic shelf is a filter, so no book admits to being on one;
+               # only the server can say, one shelf at a time.
+               (seq [s :in (api/get "/api/v1/app/shelves/magic")]
+                 (shelf s (map |($0 :id) (api/pages (string "/api/v1/app/shelves/magic/" (s :id) "/books")))
+                        true))))})
 
 (defn- catalogue [&opt reload?]
-  (:cache *vars* :catalogue fetch-catalogue reload?))
+  (def c (:cache *vars* :catalogue fetch-catalogue reload?))
+  (if (= (c :version) *catalogue-version*) c (catalogue true)))
+
+(defn- books-with [ids]
+  (def want (tabseq [i :in ids] i true))
+  (filter |(want ($0 :id)) ((catalogue) :books)))
+
+(defn- grouped
+  ``The catalogue's books bucketed by every value F yields for one (without
+  nils), as {:name :count :books} entries sorted by name.``
+  [f]
+  (def t @{})
+  (each b ((catalogue) :books)
+    (each k (f b)
+      (when k (update t k |(array/push (or $ @[]) b)))))
+  (sorted-by |(string/ascii-lower ($0 :name))
+    (seq [[k bs] :pairs t] {:name k :count (length bs) :books bs})))
+
+(defn- status-label [s] (get *statuses* (or s "UNSET") s))
+
+(defn- series   [] (grouped |[($0 :series)]))
+(defn- genres   [] (grouped |($0 :genres)))
+(defn- statuses [] (grouped |[(status-label ($0 :status))]))
+(defn- years    [] (reverse (grouped |[($0 :year)])))
 
 
 ## Rofi
@@ -166,7 +218,10 @@
   (fn [] (let [r (screen ;args)] (if (= r :back) :restart r))))
 
 (defn- small [s]
-  (fmt " <span alpha='50%%' size='x-small'>%s</span>" s))
+  (fmt ` <span alpha="50%%" size="x-small">%s</span>` s))
+
+(defn- strip-tags [s]
+  (string (peg/replace-all '(* "<" (to ">") ">") "" s)))
 
 (defn- book-label [b]
   (string "<b>" (rofi/escape (b :title)) "</b>"
@@ -174,30 +229,83 @@
           (if-let [y (b :year)] (fmt " [%s]" y) "")
           (small (rofi/escape (or (b :library) "")))))
 
-(defn- library-label [l]
-  (string (rofi/escape (l :name)) (small (fmt "(%d)" (l :count)))))
+(defn- counted-label [g]
+  (string (rofi/escape (g :name)) (small (fmt "(%d)" (g :count)))))
 
-(defn- authors-screen []
-  (rofi/chain [r :theme *theme* :icon *icon* :prompt "Authors" :placeholder "Search authors..."]
+(defn- series-label [b]
+  (string (if-let [n (b :series-no)] (fmt "<span alpha=\"60%%\">#%g:</span> " n) "") (book-label b)))
+
+(defn- books-screen
+  ``BOOKS under PROMPT, after Back and any ACTIONS ([label icon thunk]),
+  each captioned by LABEL (book-label unless told otherwise).``
+  [prompt books &named message actions label]
+  (rofi/chain [r :theme *theme* :icon *icon* :prompt prompt :placeholder "Search books..." :message message]
+    (:add r "<b>Back</b>" :icon "go-previous-symbolic" :data :back)
+    (each [label icon f] (or actions [])
+      (:add r (fmt "<b>%s</b> ->" label) :icon icon :data f))
+    (:div r)
+    (each b books
+      (:add r ((or label book-label) b)
+            ;(opts :icon (b :cover))
+            :data (fn [] (open-url (url "/book/" (b :id))))))))
+
+(defn- group-screen
+  ``GROUPS ({:name :count ...}) under PROMPT; picking one hands it to OPEN,
+  a screen of its own. ICON may be a function of the group.``
+  [prompt icon groups open]
+  (rofi/chain [r :theme *theme* :icon *icon* :prompt prompt
+               :placeholder (fmt "Search %s..." (string/ascii-lower prompt))]
     (:add r "<b>Back</b>" :icon "go-previous-symbolic" :data :back)
     (:div r)
-    (each a ((catalogue) :authors)
-      (:add r (rofi/escape (a :name)) :icon "avatar-default-symbolic"
-            :data (fn [] (open-url (url "/author/" (a :id))))))))
+    (each g groups
+      (:add r (counted-label g) :icon (if (function? icon) (icon g) icon)
+            :data (enter open g)))))
+
+(defn- library-screen [l]
+  (books-screen (l :name) (filter |(= ($0 :library-id) (l :id)) ((catalogue) :books))
+                :actions [["Open in Browser" "web-browser-symbolic"
+                           (fn [] (open-url (url "/library/" (l :id) "/books")))]]))
+
+(defn- author-screen [a]
+  # The bio only comes from the detail endpoint, one author per request, so it's
+  # asked for here rather than hoarded in the catalogue.
+  (def bio (string/trim (or ((api/get (string "/api/v1/authors/" (a :id))) :description) "")))
+  (books-screen (a :name) (filter |(index-of (a :name) ($0 :authors)) ((catalogue) :books))
+                :message (unless (empty? bio) (rofi/escape (strip-tags bio)))
+                :actions [["Open in Browser" "web-browser-symbolic"
+                           (fn [] (open-url (url "/author/" (a :id))))]]))
 
 (defn- libraries-screen []
-  (rofi/chain [r :theme *theme* :icon *icon* :prompt "Libraries" :placeholder "Search libraries..."]
-    (:add r "<b>Back</b>" :icon "go-previous-symbolic" :data :back)
-    (:div r)
-    (each l ((catalogue) :libraries)
-      (:add r (library-label l) :icon "folder-symbolic"
-            :data (fn [] (open-url (url "/library/" (l :id) "/books")))))))
+  (group-screen "Libraries" "folder-symbolic" ((catalogue) :libraries) library-screen))
+
+(defn- authors-screen []
+  (group-screen "Authors" "avatar-default-symbolic" ((catalogue) :authors) author-screen))
+
+(defn- shelves-screen []
+  (group-screen "Shelves" |(if ($0 :magic?) "starred-symbolic" "bookmark-new-symbolic")
+                ((catalogue) :shelves)
+                (fn [s] (books-screen (s :name) (books-with (s :books))))))
+
+(defn- series-screen []
+  # Unnumbered volumes sink to the end, still alphabetical among themselves.
+  (group-screen "Series" "view-list-symbolic" (series)
+                (fn [g] (books-screen (g :name) (sort-by |(or ($0 :series-no) math/inf) (array ;(g :books)))
+                                      :label series-label))))
+
+(defn- grouped-screen [prompt icon groups]
+  (group-screen prompt icon (groups) (fn [g] (books-screen (g :name) (g :books)))))
 
 (defn- main-screen []
   (rofi/chain [r :theme *theme* :icon *icon* :prompt "Books" :placeholder "Search books..."]
     (:add r "<b>Reload</b>" :icon "view-refresh-symbolic" :data (fn [] (catalogue true) :restart))
-    (:add r "<b>Authors</b> ->" :icon "avatar-default-symbolic" :data (enter authors-screen))
-    (:add r "<b>Libraries</b> ->" :icon "folder-symbolic" :data (enter libraries-screen))
+    (:add r "<b>Open in Browser</b> ->" :icon "web-browser-symbolic" :data (fn [] (open-url (url))))
+    (:add r "<b>By Library</b> ->" :icon "folder-symbolic" :data (enter libraries-screen))
+    (:add r "<b>By Author</b> ->" :icon "avatar-default-symbolic" :data (enter authors-screen))
+    (:add r "<b>By Series</b> ->" :icon "view-list-symbolic" :data (enter series-screen))
+    (:add r "<b>By Shelf</b> ->" :icon "bookmark-new-symbolic" :data (enter shelves-screen))
+    (:add r "<b>By Genre</b> ->" :icon "tag-symbolic" :data (enter grouped-screen "Genres" "tag-symbolic" genres))
+    (:add r "<b>By Read Status</b> ->" :icon "emblem-ok-symbolic" :data (enter grouped-screen "Read Statuses" "emblem-ok-symbolic" statuses))
+    (:add r "<b>By Published Year</b> ->" :icon "x-office-calendar-symbolic" :data (enter grouped-screen "Published Years" "x-office-calendar-symbolic" years))
     (:div r)
     (each b ((catalogue) :books)
       (:add r (book-label b)
@@ -215,5 +323,10 @@
         (each a (cat :authors)
           (echof "author\t%d\t%s\t%d" (a :id) (a :name) (a :count)))
         (each l (cat :libraries)
-          (echof "library\t%d\t%s\t%d" (l :id) (l :name) (l :count))))
+          (echof "library\t%d\t%s\t%d" (l :id) (l :name) (l :count)))
+        (each s (cat :shelves)
+          (echof "%s\t%d\t%s\t%d" (if (s :magic?) "magic-shelf" "shelf") (s :id) (s :name) (s :count)))
+        (each [kind groups] [["series" series] ["genre" genres] ["status" statuses] ["year" years]]
+          (each g (groups)
+            (echof "%s\t%s\t%d" kind (g :name) (g :count)))))
     (main-screen)))

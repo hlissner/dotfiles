@@ -1,15 +1,13 @@
 #!/usr/bin/env janet
-# Find a game in RomM via Rofi, and open its page.
+# Search games on a Romm instance via Rofi.
 #
 # SYNOPSIS:
 #   rommmenu [-l|--list] [-r|--reload]
 #
 # DESCRIPTION:
-#   Every ROM RomM knows about, with its cover for an icon (the platform's logo
-#   when it hasn't got one). Selecting one opens its page in the browser.
-#
-#   The library is cached in $XDG_DATA_HOME, so only the first run (and
-#   Reload) talks to the server, or needs the vault.
+#   Searches https://romm.home.lissner.net. Selecting one opens its page in the
+#   browser. Can be filtered by platform, collection, or playing status.
+#   Consults rbw for secrets.
 #
 # OPTIONS:
 #   -l, --list
@@ -21,6 +19,7 @@
 (use hey)
 (use sh)
 (import hey/rofi)
+(import hey/rbw)
 (import hey/romm)
 (import hey/vars)
 (import spork/sh :as fs)
@@ -29,6 +28,14 @@
 (def- *covers* (:dir *vars* :covers))
 (def- *logos* (:dir *vars* :platforms))
 (def- *fallback-icon* "input-gaming-symbolic")
+(def- *theme* "appmenu.rasi")
+
+(def- *statuses*
+  [["incomplete"    "Incomplete"    "media-playback-start-symbolic"]
+   ["finished"      "Finished"      "emblem-ok-symbolic"]
+   ["completed_100" "Completed"     "starred-symbolic"]
+   ["retired"       "Retired"       "media-playback-stop-symbolic"]
+   ["never_playing" "Never Playing" "window-close-symbolic"]])
 
 (defn- val [v]
   (unless (or (nil? v) (= v :null) (= v "")) v))
@@ -37,11 +44,8 @@
   # RomM dates its cover paths (?ts=YYYY-MM-DD HH:MM:SS), space and all.
   (string (romm/url-base) (string/replace-all " " "%20" path)))
 
-(defn- cover-file
-  ``Where ROM's cover lands. The ts in the path is part of the name, so a
-  rescanned cover is a new file and the old one is garbage, not a stale hit.``
-  [id cover]
-  (path/join *covers* (fmt "%d-%d.png" id (hash cover))))
+(defn- cover-file [key cover]
+  (path/join *covers* (fmt "%s-%d.png" (string key) (hash cover))))
 
 (defn- logo-file [slug]
   (path/join *logos* (string slug ".svg")))
@@ -66,31 +70,44 @@
              (get (os/date (div ms 1000)) :year))
      :platform (or (val (r :platform_display_name)) slug "?")
      :slug slug
+     :status (val (get-in r [:rom_user :status]))
      :cover (when cover (cover-file (r :id) cover))
      :cover-url (when cover (asset-url cover))}))
 
+(defn- fetch-collections []
+  # Excludes smart and virtual collections
+  (def cols (romm/api/get "/api/collections"))
+  (seq [c :in (if (dictionary? cols) (cols :items) cols)
+        :let [cover (or (val (c :path_cover_small))
+                        (first (get c :path_covers_small [])))]]
+    {:id (c :id)
+     :name (c :name)
+     :roms (tabseq [id :in (get c :rom_ids [])] id true)
+     :cover (when cover (cover-file (string "c" (c :id)) cover))
+     :cover-url (when cover (asset-url cover))}))
+
 (defn- sync-icons!
-  ``One parallel curl for every cover and platform logo in ROMS that isn't on
+  ``One parallel curl for every cover and platform logo in ITEMS that isn't on
   disk, then sweep the covers nothing names any more. Everything fetched goes
-  through magick: "small" covers run to 600px and half a meg, and half are
-  webp, which rofi's gdk-pixbuf has no loader for.``
-  [roms]
+  through magick: "small" covers run to 600px and half a meg, and half are webp,
+  which rofi's gdk-pixbuf has no loader for.``
+  [items]
   (fs/create-dirs *covers*)
   (fs/create-dirs *logos*)
   (def wanted @{})
   (def fetch @[])
   (def covers @[])
-  (each r roms
-    (when-let [file (r :cover)]
+  (each i items
+    (when-let [file (i :cover)]
       (put wanted file true)
       (unless (path/file? file)
         # Downloaded under the server's extension, for mogrify's sake.
-        (def tmp (if (string/find ".webp" (r :cover-url))
+        (def tmp (if (string/find ".webp" (i :cover-url))
                    (string (path/no-ext file ".png") ".webp")
                    file))
         (array/push covers tmp)
-        (array/push fetch [(r :cover-url) tmp]))))
-  (each slug (distinct (filter truthy? (map |($0 :slug) roms)))
+        (array/push fetch [(i :cover-url) tmp]))))
+  (each slug (distinct (filter truthy? (map |($0 :slug) items)))
     (unless (path/file? (logo-file slug))
       (array/push fetch [(asset-url (fmt "/assets/platforms/%s.svg" slug)) (logo-file slug)])))
   (each old (path/files-in *covers*)
@@ -110,15 +127,27 @@
       (each f got
         (unless (string/has-suffix? ".png" f) (os/rm f))))))
 
-(defn- roms [&opt reload?]
-  (:cache *vars* :roms
-    (fn [] (let [rs (fetch-roms)] (sync-icons! rs) rs))
+(defn- library [&opt reload?]
+  (:cache *vars* :library
+    (fn []
+      (unless (or (rbw/unlocked?) (rbw/unlock))
+        (abort "Vault is locked"))
+      (let [lib {:roms (fetch-roms) :collections (fetch-collections)}]
+        (sync-icons! [;(lib :roms) ;(lib :collections)])
+        lib))
     reload?))
 
+(defn- roms [] ((library) :roms))
+(defn- collections [] ((library) :collections))
+
+(defn- cover [item]
+  (when-let [c (item :cover)] (when (path/file? c) c)))
+
+(defn- logo [slug]
+  (when slug (when (path/file? (logo-file slug)) (logo-file slug))))
+
 (defn- icon [rom]
-  (or (when-let [c (rom :cover)] (when (path/file? c) c))
-      (when-let [s (rom :slug)] (when (path/file? (logo-file s)) (logo-file s)))
-      *fallback-icon*))
+  (or (cover rom) (logo (rom :slug)) *fallback-icon*))
 
 # The slug is what the NAS dirs are named after, and fits; the display name
 # runs to "Super Nintendo Entertainment System".
@@ -131,17 +160,72 @@
        (if-let [y (rom :year)] (fmt " [%d]" y) "")
        (rofi/escape (platform rom))))
 
-(defn- open-rom [rom]
-  (def url (fmt "%s/rom/%d" (romm/url-base) (rom :id)))
+(defn- open-url [url]
   (echof "Opening: %s" url)
   (os/spawn ["xdg-open" url] :pd))
+
+(defn- open-rom [rom]
+  (open-url (fmt "%s/rom/%d" (romm/url-base) (rom :id))))
+
+
+## Screens
+
+(defn- enter [screen & args]
+  (fn [] (let [r (screen ;args)] (if (= r :back) :restart r))))
+
+(defn- games-screen [prompt roms &opt prompt-icon]
+  (rofi/chain [r :prompt prompt
+                 :icon (or prompt-icon *fallback-icon*)
+                 :placeholder "Search games..."
+                 :theme *theme*]
+    (:add r "<b>Back</b>" :icon "go-previous-symbolic" :data :back)
+    (:div r)
+    (each rom roms
+      (:add r (label rom) :icon (icon rom) :data rom))))
+
+(defn- browse-screen
+  ``A screen of ROWS, [name icon roms &opt label], each a games screen.``
+  [prompt rows]
+  (rofi/chain [r :prompt prompt
+                 :icon *fallback-icon*
+                 :placeholder (fmt "Search %s..." (string/ascii-lower prompt))
+                 :theme *theme*]
+    (:add r "<b>Back</b>" :icon "go-previous-symbolic" :data :back)
+    (:div r)
+    (each [name icon roms label] rows
+      (:add r (or label (rofi/escape name))
+            :icon (or icon *fallback-icon*)
+            :data (enter games-screen name roms icon)))))
+
+(defn- platforms-screen []
+  (def groups (group-by |($0 :platform) (roms)))
+  (browse-screen "Platforms"
+    (seq [name :in (sorted (keys groups)) :let [rs (groups name)]]
+      [name (logo ((first rs) :slug)) rs
+       (fmt "%s <span alpha='50%%' size='x-small'>(%d)</span>"
+            (rofi/escape name) (length rs))])))
+
+(defn- collections-screen []
+  (browse-screen "Collections"
+    (seq [c :in (collections)]
+      [(c :name) (or (cover c) "folder-symbolic")
+       (filter |((c :roms) ($0 :id)) (roms))])))
+
+(defn- statuses-screen []
+  (browse-screen "Statuses"
+    (seq [[status name icon] :in *statuses*]
+      [name icon (filter |(= ($0 :status) status) (roms))])))
 
 (defn- select-rom []
   (rofi/chain [r :prompt "Games"
                  :icon *fallback-icon*
                  :placeholder "Search games..."
-                 :theme "appmenu.rasi"]
-    (:add r "<b>Reload</b>" :icon "view-refresh-symbolic" :data (fn [] (roms true) :restart))
+                 :theme *theme*]
+    (:add r "<b>Reload</b>" :icon "view-refresh-symbolic" :data (fn [] (library true) :restart))
+    (:add r "<b>Open in Browser</b> ->" :icon "web-browser-symbolic" :data (fn [] (open-url (romm/url-base)) :done))
+    (:add r "<b>By platform</b> ->" :icon "view-list-symbolic" :data (enter platforms-screen))
+    (:add r "<b>By collection</b> ->" :icon "folder-symbolic" :data (enter collections-screen))
+    (:add r "<b>By status</b> ->" :icon "emblem-ok-symbolic" :data (enter statuses-screen))
     (:div r)
     (each rom (roms)
       (:add r (label rom) :icon (icon rom) :data rom))))
@@ -149,9 +233,12 @@
 (defmain [_ &opts
           list?   [-l --list]
           reload? [-r --reload]]
-  (when reload? (roms true))
+  # Fetch (or refetch) up front. An error inside rofi's writer fiber is an
+  # empty menu, not a message; out here it's an abort I can read.
+  (library reload?)
   (if list?
     (each rom (roms)
       (echof "%s\t%s\t%s\t%s" (rom :file) (string (or (rom :year) "-")) (platform rom) (icon rom)))
-    (when-let [rom (select-rom)]
-      (open-rom rom))))
+    # Anything that isn't a ROM already did its thing on the way out.
+    (let [pick (select-rom)]
+      (when (dictionary? pick) (open-rom pick)))))
