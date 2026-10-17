@@ -80,6 +80,16 @@ in {
     expected = { named = "DP-2"; absent = null; };
   };
 
+  # An entry with no output is Hyprland's fallback rule for whatever gets
+  # plugged in unannounced. It's a rule, not a monitor: noctalia would disable
+  # a bar on "" and the greeter would pin to it, so it must not leak out as one.
+  testFallbackRuleIsNotAnOutput =
+    let h = hyprland [ { output = "DP-1"; primary = true; } { } ];
+    in {
+      expr = { inherit (h.hey.info.wm) outputs primaryMonitor; };
+      expected = { outputs = [ "DP-1" ]; primaryMonitor = "DP-1"; };
+    };
+
   # Hosts turn config/hypr/'s knobs through the same hey.info.hypr this module
   # fills, so the two have to merge rather than one clobbering (or colliding
   # with) the other. hyprland.lua only defaults what arrives as nil.

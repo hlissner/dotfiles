@@ -1,0 +1,41 @@
+#+TITLE: Soba
+#+DATE:  January 15, 2023
+
+* Overview
+Spare parts from old systems. Serve as a workbench system for testing hardware,
+deal with harddrives/old media en masse (like CDs, zip disks, SD cards, VHS
+tapes, etc) or doing last minute CAD tweaks for 3d prints.
+
+* Specs
+| CASE | Cooler Master HAF XB EVO                       |
+| CPU  | Intel i7-6700                                  |
+| RAM  | 16gb Kingston Hyper-X Fury DDR4-2133           |
+| MOBO | [[https://www.gigabyte.com/Motherboard/GA-H170M-D3H-rev-10#ov][Gigabyte GA-H170M-D3H]] mATX                     |
+| PSU  | [[https://www.corsair.com/us/en/Categories/Products/Power-Supply-Units/rmi-series-config/p/CP-9020082-NA][Corsair RM750I 80+GOLD Modular]]                 |
+| GPU  | EVGA GeForce 1080 GTX                          |
+| HDD  | SDSSDH3-500G-G26 "SanDisk Ultra 3D NAND 500gb" |
+
+* Filesystems
+** =/dev/sda= (SanDisk Ultra 3D NAND 500gb) :linux:
+#+begin_src sh
+parted /dev/sda -- mklabel gpt
+parted /dev/sda -- mkpart ESP fat32 1MiB 512MiB
+parted /dev/sda -- mkpart primary 512MiB 300GiB
+parted /dev/sda -- mkpart primary 300GiB 100%
+parted /dev/sda -- set 1 boot on
+mkfs.fat -F32 -n BOOT /dev/sda1
+mkfs.ext4 -L nixos /dev/sda2
+mkfs.ext4 -L home /dev/sda3
+
+mount /dev/disk/by-label/nixos /mnt
+mkdir -p /mnt/{home,boot}
+mount /dev/disk/by-label/BOOT /mnt/boot
+mount /dev/disk/by-label/home /mnt/home
+#+end_src
+
+* History
+** October 17, 2026
+Switch from Bazzite to NixOS.
+
+** January 15, 2023
+Bought case and built from spare parts.

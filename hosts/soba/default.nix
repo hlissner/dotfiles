@@ -7,10 +7,6 @@ with builtins;
 {
   system = "x86_64-linux";
 
-  imports = [
-    self.modules.nixos-hardware.common-cpu-intel-cpu-only
-  ];
-
   modules = {
     profiles = {
       role = "workstation";
@@ -18,20 +14,20 @@ with builtins;
       networks = [ "ca" ];
       hardware = [
         "cpu/intel"
-        "gpu/nvidia"
+        "gpu/nvidia/pascal"
         "audio"
         "ssd"
         "bluetooth"
+        "wifi"  # Netgear A8000 USB stick (mt7921u)
       ];
     };
 
     wm = {
       desktop = "hyprland";
-      hyprland = rec {
+      hyprland = {
         monitors = [
-          { output = "HDMI-A-2";
-            mode = "3840x2160@120";
-            primary = true; }
+          { output = "HDMI-A-1"; primary = true; }
+          { }  # Adapt to any monitors hooked up to this
         ];
       };
     };
@@ -71,18 +67,9 @@ with builtins;
     environment.systemPackages = with pkgs; [
       freac
     ];
-    services.udisks2.enable = true;
   };
 
-  hardware = { config, ... }: {
-    # networking.interfaces.eno1.useDHCP = true;
-
-    # GTX 1080 (Pascal, GP104) requires v580
-    hardware.nvidia = {
-      open = false;  # Turing and later only
-      package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
-    };
-
+  hardware = { ... }: {
     fileSystems = {
       "/" = {
         device = "/dev/disk/by-label/nixos";

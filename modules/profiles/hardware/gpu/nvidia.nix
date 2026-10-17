@@ -63,6 +63,15 @@ in mkIf (any (s: hasPrefix "gpu/nvidia" s) hardware) (mkMerge [
     };
   })
 
+  (mkIf (elem "gpu/nvidia/pascal" hardware) {
+    # 580 is the end of the line for Maxwell, Pascal and Volta, and the open
+    # module never knew them.
+    hardware.nvidia = {
+      open = mkForce false;
+      package = mkForce config.boot.kernelPackages.nvidiaPackages.legacy_580;
+    };
+  })
+
   (mkIf (elem "gpu/nvidia/turing" hardware) {
     # see NixOS/nixos-hardware#348
     hardware.nvidia = {

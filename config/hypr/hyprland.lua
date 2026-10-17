@@ -106,12 +106,14 @@ local PRIMARY_WORKSPACE = 100
 do
   local ws = 200
   for _, m in ipairs(hey.hypr.monitors) do
-    local primary = m.output == hey.hypr.primaryMonitor
-    hl.workspace_rule({ workspace = tostring(primary and PRIMARY_WORKSPACE or ws),
-                        monitor = m.output,
-                        default = true,
-                        persistent = true })
-    if not primary then ws = ws + PRIMARY_WORKSPACE end
+    if m.output ~= "" then
+      local primary = m.output == hey.hypr.primaryMonitor
+      hl.workspace_rule({ workspace = tostring(primary and PRIMARY_WORKSPACE or ws),
+                          monitor = m.output,
+                          default = true,
+                          persistent = true })
+      if not primary then ws = ws + PRIMARY_WORKSPACE end
+    end
   end
 
   -- Over time, gaps between workspaces form or neighboring workspaces
