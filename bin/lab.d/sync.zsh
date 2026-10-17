@@ -12,7 +12,7 @@
 
 function rcp {
   echo
-  hey.echo -c green "# Pushing $1 to $2"
+  hey.echo -c green "# Pushing $1 to ${@[2,-1]}"
   if [[ $1 == nas0.lan:* ]]; then
     # nas0.lan can never have fd installed, so use rsync directly there, which
     # is safe because only filtered backups make it to nas0 anyway.
@@ -36,16 +36,22 @@ set -e
 local host=$(hostname)
 case $host in
   udon)
-    rcp ~/projects/ /media/backup/nas0/hlissner/projects/
-
+    # One rcp for all of them: the fd walk of ~/projects is the slow part, and
+    # it only depends on the source.
+    local -a dsts=( /media/backup/nas0/hlissner/projects/ )
     if available-host ramen.lan; then
-      rcp ~/projects/ ramen.lan:~/projects/
+      dsts+=( 'ramen.lan:~/projects/' )
     else
       hey.error "Couldn't connect to ramen.lan"
     fi
-
+    local nas0=
     if available-host nas0.lan; then
-      rcp ~/projects/ nas0.lan:~/files/projects/
+      nas0=1
+      dsts+=( 'nas0.lan:~/files/projects/' )
+    fi
+    rcp ~/projects/ "${dsts[@]}"
+
+    if [[ $nas0 ]]; then
       # Update local backups
       rcp nas0.lan:/mnt/nas/backup/files/ /media/backup/nas0/apps/
       rcp nas0.lan:~/files/ /media/backup/nas0/hlissner/
@@ -67,13 +73,13 @@ case $host in
       hey.error "Can't connect to udon.lan"
       exit 1
     fi
-    rcp ~/projects/ udon.lan:~/projects/
-
+    local -a dsts=( 'udon.lan:~/projects/' )
     if available-host nas0.lan; then
-      rcp ~/projects/ nas0.lan:~/files/projects/
+      dsts+=( 'nas0.lan:~/files/projects/' )
     else
       hey.error "Couldn't connect to nas0.lan"
     fi
+    rcp ~/projects/ "${dsts[@]}"
     ;;
 
   soba)
