@@ -18,18 +18,15 @@ pixel art/sketching on my cintiq.
 ** =/dev/sda= :linux:
 #+begin_src sh
 parted /dev/sda -- mklabel gpt
-parted /dev/sda -- mkpart ESP fat32 1MiB 512MiB
-parted /dev/sda -- mkpart primary 512MiB 300GiB
-parted /dev/sda -- mkpart primary 300GiB 100%
+parted /dev/sda -- mkpart ESP fat32 1MiB 1GiB
+parted /dev/sda -- mkpart primary 1GiB 100%
 parted /dev/sda -- set 1 boot on
-mkfs.fat -F32 -n BOOT /dev/nvme0n1p1
-mkfs.ext4 -L nixos /dev/nvme0n1p2
-mkfs.ext4 -L home /dev/nvme0n1p3
+mkfs.fat -F32 -n BOOT /dev/sda1
+mkfs.ext4 -L root /dev/sda2
 
-mount /dev/disk/by-label/nixos /mnt
-mkdir -p /mnt/{home,boot}
+mount /dev/disk/by-label/root /mnt
+mkdir -p /mnt/boot
 mount /dev/disk/by-label/BOOT /mnt/boot
-mount /dev/disk/by-label/home /mnt/home
 #+end_src
 
 * History
