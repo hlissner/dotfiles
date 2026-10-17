@@ -138,6 +138,6 @@ with builtins;
         neededForBoot = true;
       };
     };
-    swapDevices = [ { device = "/dev/disk/by-label/swap"; }];
+    swapDevices = [];
   };
 }
