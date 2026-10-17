@@ -272,6 +272,25 @@ in {
       expected = true;
     };
 
+  # services.displayManager.autoLogin is a no-op to nixpkgs' greetd module; the
+  # wm module is what turns it into an initial_session. What's pinned is that
+  # the session command is the WM's own and that greetd stops restarting --
+  # with initial_session, every restart would be another login.
+  testAutoLoginSkipsTheGreeter =
+    let c = noctalia three [{
+          services.displayManager.autoLogin = { enable = true; user = "me"; };
+        }];
+        off = noctalia three [];
+    in {
+      expr = {
+        user = c.services.greetd.settings.initial_session.user;
+        command = c.services.greetd.settings.initial_session.command == c.modules.wm.session.command;
+        restart = c.services.greetd.restart;
+        otherwise = off.services.greetd.settings ? initial_session;
+      };
+      expected = { user = "me"; command = true; restart = false; otherwise = false; };
+    };
+
   ## Overrides.
 
   # Everything generated is mkDefault'd leaf by leaf, so a host overriding one

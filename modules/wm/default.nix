@@ -59,6 +59,15 @@ in {
 
         hey.info.wm = { inherit (cfg) primaryMonitor outputs; };
 
+        # nixpkgs' greetd doesn't respect services.displayManager.autoLogin
+        # without this.
+        services.greetd.settings.initial_session =
+          let auto = config.services.displayManager.autoLogin;
+          in mkIf (config.services.greetd.enable && auto.enable) {
+            inherit (auto) user;
+            command = cfg.session.command;
+          };
+
         environment.sessionVariables = {
           ELECTRON_OZONE_PLATFORM_HINT = "auto";
           NIXOS_OZONE_WL = "1";
