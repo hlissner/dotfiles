@@ -33,23 +33,25 @@ mkfs.ext4 -L nixos /dev/nvme0n1p2
 mkfs.ext4 -L home /dev/nvme0n1p3
 #+end_src
 
-** /dev/nvme1n1: SN850X NVMe 1TB (windows, games) :windows:
-This is set up on the Windows side, as is my dedicated Windows + game library
-drive. On the Linux side I only need a label to consistently refer to it by:
+** /dev/nvme1n1: SN850X NVMe 1TB (games, vms)
 #+begin_src sh
-ntfslabel /dev/nvme1n1p2 windows
+parted /dev/nvme1n1 -- mklabel gpt
+parted /dev/nvme1n1 -- mkpart primary 0% 100%
+mkfs.ext4 -L data /dev/nvme1n1
 #+end_src
 
 ** /dev/sda: WD6400AAKS 640gb (extra storage and VMs)
 #+begin_src sh
 parted /dev/sda -- mklabel gpt
 parted /dev/sda -- mkpart primary 0% 100%
-mkfs.ext4 -L data /dev/sda1
+mkfs.ext4 -L data1 /dev/sda1
 #+end_src
 
-** /dev/sdb: ST1000DM010 1TB (for local backups) :windows:
+** /dev/sdb: ST1000DM010 1TB (for local backups)
 #+begin_src sh
-$ ntfslabel /dev/sdb backup
+parted /dev/sdb -- mklabel gpt
+parted /dev/sdb -- mkpart primary 0% 100%
+mkfs.ext4 -L backup /dev/sdb1
 #+end_src
 
 ** Mount filesystems
@@ -62,12 +64,17 @@ mkdir -p /mnt/{home,boot}
 mount /dev/disk/by-label/boot /mnt/boot
 mount /dev/disk/by-label/home /mnt/home
 
-mkdir -p /mnt/media/{windows,video}
-mount /dev/disk/by-label/windows /mnt/media/windows
-mount /dev/disk/by-label/video /mnt/media/video
+mkdir -p /mnt/media/{data,data1}
+mount /dev/disk/by-label/data /mnt/media/data
+mount /dev/disk/by-label/data1 /mnt/media/data1
 #+END_SRC
 
 * History
+** October 17, 2026
+Dropped Windows partition. Without Proton and SteamVR running decent enough on
+Linux (and I no longer play games with anti-cheat), happy to finally get rid of
+Windows altogether.
+
 ** January 4, 2023
 Repurposed this system from a dedicated workstation to a dual purpose
 work+gaming workstation.

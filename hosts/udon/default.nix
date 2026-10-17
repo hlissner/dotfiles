@@ -102,10 +102,7 @@ with builtins;
       # media.pdf.enable = true;
     };
     games = {
-      steam = {
-        enable = true;
-        libraryDir = "/media/windows/Program Files (x86)/Steam";
-      };
+      steam.enable = true;
       emulators = let nas = "/media/nas/media/games"; in {
         enable = true;
         romsDir = nas;
@@ -282,17 +279,15 @@ with builtins;
         fsType = "ext4";
         options = [ "noatime" "noauto" "nofail" "x-systemd.automount" ];
       };
+      "/media/data1" = {
+        device = "/dev/disk/by-label/data1";
+        fsType = "ext4";
+        options = [ "noatime" "noauto" "nofail" "x-systemd.automount" ];
+      };
       "/media/backup" = {
         device = "/dev/disk/by-label/backup";
         fsType = "ext4";
         options = [ "noatime" "noauto" "nofail" "x-systemd.automount" ];
-      };
-      # ntfs3 (in-kernel) > ntfs-3g (FUSE). Since my Steam library lives on this
-      # partition, this saves steam the userspace round trip per IO.
-      "/media/windows" = {
-        device = "/dev/disk/by-label/windows";
-        fsType = "ntfs3";
-        options = ["noatime" "nodev" "nosuid" "exec" "umask=000" "uid=1000" "gid=100" "noauto" "nofail" "x-systemd.automount" ];
       };
 
       "/media/nas" = {
