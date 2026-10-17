@@ -39,6 +39,10 @@ mkIf (config.modules.profiles.role == "server") {
     info.enable = mkDefault false;
   };
 
+  # A compressed swap device in RAM, so memory pressure degrades into slower
+  # memory instead of straight into OOM. Servers have less of it to spare.
+  zramSwap.enable = mkDefault true;
+
   ## Security tweaks
   boot = {
     kernel.sysctl = {
