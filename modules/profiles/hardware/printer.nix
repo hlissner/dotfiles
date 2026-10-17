@@ -9,13 +9,12 @@ with self.lib;
 let hardware = config.modules.profiles.hardware;
 in mkMerge [
   (mkIf (any (s: hasPrefix "printer" s) hardware) {
-    environment.systemPackages = with pkgs; [
-      system-config-printer
-    ];
+    environment.systemPackages = with pkgs;
+      optional (config.modules.profiles.role == "workstation") system-config-printer;
 
     services.printing = {
       enable = true;
-      startWhenNeeded = true;
+      startWhenNeeded = mkDefault true;
       # logLevel = "debug";
     };
   })
@@ -33,8 +32,12 @@ in mkMerge [
       listenAddresses = [ "*:631" ];
       allowFrom = [ "all" ];
       defaultShared = true;
+      startWhenNeeded = false;
+      browsing = true;
     };
     services.avahi = {
+      enable = true;
+      openFirewall = true;
       publish = {
         enable = true;
         userServices = true;
