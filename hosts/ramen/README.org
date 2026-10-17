@@ -2,15 +2,16 @@
 #+DATE:  December 29, 2018
 
 * Overview
-My mobile NixOS workstation.
+My laptop and mobile workstation.
 
 * Specs
-| MAKE | [[https://www.dell.com/support/manuals/en-ca/xps-13-9370-laptop/xps-13-9370-setupandspecs/specifications-for-xps-13-9370?guid=guid-c3a6ce65-b23d-41b2-b9c9-244850da6393&lang=en-us][Dell 13" 9370]]  |
-| CPU  | Intel i7-8550U |
-| RAM  | 16gb           |
-| HDD  | 500gb NVMe SSD |
+| MAKE | [[https://www.dell.com/support/manuals/en-ca/xps-13-9370-laptop/xps-13-9370-setupandspecs/specifications-for-xps-13-9370?guid=guid-c3a6ce65-b23d-41b2-b9c9-244850da6393&lang=en-us][Dell 13" 9370]]             |
+| CPU  | Intel i7-8550U            |
+| RAM  | 16gb LPDDR3-2133 SDRAM    |
+| HDD  | PC401 NVMe SK Hynix 512gb |
 
-* TODO Filesystems
+* Filesystems
+** =/dev/nvme0n1= (PC401 NVMe SK Hynix 512gb) :linux:
 #+begin_src sh
 parted /dev/nvme0n1 -- mklabel gpt
 parted /dev/nvme0n1 -- mkpart ESP fat32 1MiB 1GiB
@@ -24,10 +25,7 @@ mkfs.ext4 -L nixos /dev/nvme0n1p2
 cryptsetup luksFormat --label home-crypt /dev/nvme0n1p3
 cryptsetup open /dev/disk/by-label/home-crypt home
 mkfs.ext4 -L home /dev/mapper/home
-#+end_src
 
-** Mount filesystems for installer
-#+begin_src sh
 mount /dev/disk/by-label/nixos /mnt
 mkdir -p /mnt/{home,boot}
 mount /dev/disk/by-label/BOOT /mnt/boot

@@ -2,9 +2,7 @@
 #+date:  February 27, 2022
 
 * Overview
-My mobile workstation. Comes with me when I travel somewhere I expect to stay
-for more than 6 months. Dual boots Windows (for triple-A gaming) and NixOS (for
-everything else), and shares a HDD between them.
+My mobile desktop workstation. Comes with me on extended 1+ month trips.
 
 ** Specs
 | CASE  | Be Quiet Pure Base 500 - Black          |
@@ -15,12 +13,11 @@ everything else), and shares a HDD between them.
 | RAM   | G.SKILL Ripjaws V Series 32GB (2x 16GB) |
 | HDD   | Samsung 970 EVO Plus 1TB NVMe M2        |
 | HDD   | WDC WD10 1TB platter drive              |
-| HDD   | Intel 80GB SSD                          |
-| KBD   | ErgoDox-EZ (shared from Udon)           |
+| KBD   | ErgoDox-EZ                              |
 | MOUSE | Razer Mamba White Edition               |
 
 * Filesystems
-** /dev/nvme0n1: Samsung EVO+ 1TB (nixos, /home) :linux:
+** =/dev/nvme0n1= (Samsung 970 EVO Plus 1TB NVMe M2) :linux:
 #+begin_src sh
 parted /dev/nvme0n1 -- mklabel gpt
 parted /dev/nvme0n1 -- mkpart ESP fat32 1MiB 512MiB
@@ -30,22 +27,18 @@ parted /dev/nvme0n1 -- set 1 boot on
 mkfs.fat -F32 -n BOOT /dev/nvme0n1p1
 mkfs.ext4 -L nixos /dev/nvme0n1p2
 mkfs.ext4 -L home /dev/nvme0n1p3
+
+mount /dev/disk/by-label/nixos /mnt
+mkdir -p /mnt/{home,boot}
+mount /dev/disk/by-label/BOOT /mnt/boot
+mount /dev/disk/by-label/home /mnt/home
 #+END_SRC
 
-** /dev/sda: Intel SSD 80gb (windows) :windows:
-This NTFS drive is set up on the Windows side, and is never used on the Linux
-side. A label isn't required, but makes it easier to mount if needed:
+** =/dev/sda= (WDC WD10 1TB)
+Extra storage for backups, games, and VMs.
+
 #+begin_src sh
-$ ntfslabel /dev/sda windows
+parted /dev/sda -- mklabel gpt
+parted /dev/sda -- mkpart primary 0 100%
+mkfs.ext4 -L data /dev/sda
 #+end_src
-
-** /dev/sdb: WDC WD10 1TB (games) :windows:linux:
-This NTFS drive is set up on the Windows side, and shared with the Linux side
-(mostly to share my Steam library). It's dedicated hot-storage for games and
-video recordings.
-
-On the Linux side, it only needs a label set:
-#+begin_src sh
-$ ntfslabel /dev/sdb games
-#+end_src
-
