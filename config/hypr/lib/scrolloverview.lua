@@ -1,6 +1,7 @@
 -- config/hypr/lib/scrolloverview.lua
 
-local nav = require("lib/nav")
+local nav  = require("lib/nav")
+local util = require("lib/util")
 
 local so = hl.plugin.scrolloverview
 
@@ -119,14 +120,22 @@ end
 -- cursor anyway.
 local function anchor()
   if next(open) == nil then return end
-  local mon = current()
+  local from = current()
+  local mon = from
   if not (mon and open[mon.name]) then
     mon = nil
     for _, m in ipairs(hl.get_monitors() or {}) do
       if open[m.name] then mon = m break end
     end
     if not mon then return end
-    hl.dispatch(hl.dsp.focus({ monitor = mon.name }))
+    local ws = util.active_workspace(mon)
+    local w = ws and ws.last_window
+    if w then
+      hl.dispatch(hl.dsp.focus({ window = w }))
+    else
+      if from then hl.dispatch(hl.dsp.focus({ monitor = from.name })) end
+      hl.dispatch(hl.dsp.focus({ monitor = mon.name }))
+    end
   end
   local at = hl.get_monitor_at_cursor()
   if not (at and at.id == mon.id) then
