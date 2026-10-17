@@ -22,6 +22,10 @@ in {
     programs = {
       steam = {
         enable = true;
+        package = mkIf config.modules.xdg.enable (pkgs.steam.override {
+          # Obey XDG, damn it!
+          extraProfile = ''export HOME="''${XDG_FAKE_HOME:-$HOME}"'';
+        });
         remotePlay.openFirewall = true;
         # gamescopeSession.enable = true;
         extraPackages = with pkgs; [ gamescope mangohud ];
@@ -57,48 +61,6 @@ in {
     };
 
     user.extraGroups = [ "gamemode" ];
-
-    environment.systemPackages = with pkgs; [
-      # Simple way to manage non-Steam exe's
-      faugus-launcher
-
-      (let pkg = config.programs.steam.package;
-           # If the steam library lives on a shared NTFS drive, then we must
-           # symlink steamapps/compatdata to a local directory, because Proton
-           # will fail to produce certain paths that are illegal on an NTFS
-           # filesystem (e.g. contains ":"). WARNING: SOME GAMES WRITE SAVEFILES
-           # TO THE COMPATDATA FOLDER. IF THOSE GAMES DON'T HAVE CLOUD-SAVING,
-           # THIS WILL DESTROY DATA! (Most games do, though)
-           libFix = writeShellScriptBin "libfix" ''
-             if [[ "x${cfg.libraryDir}" != "x" ]]; then
-               _libdir="${cfg.libraryDir}"
-               if [[ -d "$_libdir" ]]; then
-                 _steamdir="$_libdir/steamapps"
-                 if [[ "$(stat -f -c %T "$_steamdir")" == "fuseblk" ]]; then
-                   if [[ ! -L "$_steamdir/compatdata" ]]; then
-                     rm -rf "$_steamdir/compatdata"
-                   fi
-                   if [[ ! -e "$_steamdir/compatdata" ]]; then
-                     ln -s "$HOME/.steam/steam/steamapps/compatdata" "$_steamdir/compatdata"
-                   fi
-                 fi
-               fi
-             fi
-           '';
-           # Falls back rather than exporting an empty HOME, which programs tend
-           # to handle worse than a real one (flatpak asserts and dies).
-           fakeHome = ''--run 'export HOME="''${XDG_FAKE_HOME:-$HOME}"' '';
-           xdg = config.modules.xdg.enable;
-        # Stop Steam from polluting $HOME, and fix symlink/filename issues for a
-        # Steam library that lives on an NTFS drive.
-      in mkWrapper [ pkg pkg.run ] (''
-        wrapProgram "$out/bin/steam" \
-          ${optionalString xdg fakeHome} \
-          --run '${libFix}/bin/libfix'
-      '' + optionalString xdg ''
-        wrapProgram "$out/bin/steam-run" ${fakeHome}
-      ''))
-    ];
 
     # Better for steam proton games
     systemd.user.settings.Manager.DefaultLimitNOFILE = mkDefault 1048576;
