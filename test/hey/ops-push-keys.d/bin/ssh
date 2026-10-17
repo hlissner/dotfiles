@@ -18,8 +18,9 @@ case $2 in
     ;;
   # Everything else -- the mkdir and the tidy script -- is run for real against
   # the fake $HOME, because the chmods and symlinks it makes are the half of
-  # push-keys worth checking.
+  # push-keys worth checking. The installer path writes to a literal /mnt, so
+  # that is bent under the fake machine too (mountpoint is a stub, below).
   (*)
-    ( export HOME=$HEY_OPS_TEST_REMOTE; cd $HOME && eval "$2" )
+    ( export HOME=$HEY_OPS_TEST_REMOTE; cd $HOME && eval "${2//\/mnt/$HEY_OPS_TEST_REMOTE/mnt}" )
     ;;
 esac

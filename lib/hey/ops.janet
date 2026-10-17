@@ -35,14 +35,23 @@
   (when ($? ssh ,host ,*probe* > ,out)
     (keyvals (string out))))
 
+(defn installer?
+  "Whether FACTS (from probe) came from a host booted into the nixos installer."
+  [facts]
+  (= "installer" (get facts :variant)))
+
 (defn check
   ``Reachable, installed, and mine -- in that order, so the complaint names the
-  thing that's actually wrong rather than the first thing I noticed.``
-  [host]
+  thing that's actually wrong rather than the first thing I noticed. With
+  :installer, a host that's only booted into the installer gets through anyway,
+  and the caller takes it from there: there is no hey on an ISO, so no :role or
+  :path either.``
+  [host &named installer]
   (def facts (or (probe host) (abort "Can't reach %s over ssh" host)))
   (cond
-    (= "installer" (facts :variant))
-    (abort "%s is booted into the nixos installer; install.sh is what you want" host)
+    (installer? facts)
+    (unless installer
+      (abort "%s is booted into the nixos installer; install.sh is what you want" host))
 
     (not= "1" (facts :hey))
     (abort "No hey on %s -- is it one of mine?" host))

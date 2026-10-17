@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+# Stand-in for chown, for test/hey/ops-push-keys.janet. Nobody here is root, so
+# the uid:gid push-keys settled on is checked in the log rather than on disk.
+[[ -n $HEY_OPS_TEST_LOG ]] && print -r -- "chown: $*" >>$HEY_OPS_TEST_LOG
+exit 0

@@ -13,6 +13,7 @@
 (use judge)
 (use sh)
 (import hey)
+(import spork/json)
 
 (def- bin (hey/path :home "bin/hey"))
 (def- stubs (hey/path :test "hey/ops-push-keys.d/bin"))
@@ -48,10 +49,16 @@
 (defn- push-keys
   ``Run `hey ops push-keys SYSTEM` against that far end, and return its exit
   code. ROLE is what the far end claims to be, which is not this machine's --
-  the local role gate wants a workstation either way.``
-  [system &named role copyid-exit]
+  the local role gate wants a workstation either way. VARIANT is what its
+  os-release says; "installer" with MOUNTED gives it a /mnt to install onto
+  (a string: that path already exists under it),
+  PROFILE is what `nix eval` answers about the host (a struct, raw JSON when a
+  null matters, or nil for a host the flake doesn't have), and STDIN is my
+  answer to the prompt.``
+  [system &named role copyid-exit variant mounted profile stdin]
   ($? rm -rf ,remote)
   ($? mkdir -p ,remote)
+  (when mounted ($? mkdir -p ,(hey/path/join remote "mnt" (if (string? mounted) mounted ""))))
   (spit log "")
   (hey/with-envvars ["XDG_DATA_HOME" workstation
                      # Ahead of $PATH in lib/hey/lib.janet's exec-path, which
@@ -61,15 +68,29 @@
                      "HEY_OPS_TEST_REMOTE" remote
                      "HEY_OPS_TEST_LOG" log
                      "HEY_OPS_TEST_ROLE" (or role "workstation")
+                     "HEY_OPS_TEST_VARIANT" variant
+                     "HEY_OPS_TEST_PROFILE" (cond (string? profile) profile
+                                                     profile (string (json/encode profile)))
                      "HEY_OPS_TEST_COPYID_EXIT" (if copyid-exit
                                                  (string copyid-exit))]
-    (first (run ,bin ops push-keys ,system > ,(buffer) > [stderr :null]))))
+    (first (run ,bin ops push-keys ,system < ,(or stdin "") > ,(buffer) > [stderr :null]))))
 
 (defn- landed [& parts] (hey/path/join remote ".config/secrets" ;parts))
 (defn- sent [] (sorted (or (hey/ignore-errors (os/dir (landed))) [])))
 (defn- mode [path] (os/stat path :permissions))
 (defn- linked? [path] (= :link (os/lstat path :mode)))
 (defn- asked [] (string/split "\n" (string/trim (string (slurp log)))))
+(defn- asked? [prefix] (truthy? (find |(string/has-prefix? prefix $0) (asked))))
+
+# A host the flake really has: the prompt's answer is checked against hosts/,
+# and "box" (the ssh alias every test uses) is deliberately not one of them.
+(def- a-host (first (sorted (os/dir (hey/path :hosts)))))
+(def- profile {:user "someone" :role "server" :home "/home/someone" :uid 1234 :gid 100})
+# A struct can't hold a nil, so a null goes in as a placeholder and comes out
+# as JSON text.
+(defn- profile-without [key]
+  (string/replace `"null"` "null" (string (json/encode (merge profile {key "null"})))))
+(defn- mnt [& parts] (hey/path/join remote "mnt" ;parts))
 
 
 (deftest push-keys/round-trip
@@ -133,3 +154,77 @@
   (test (push-keys "box" :copyid-exit 1) 127)
   (test (sent) @[])
   (test (asked) @["ssh-copy-id: box"]))
+
+
+(deftest push-keys/installer
+  # Booted into the installer the far end can't say what it is, so I'm asked,
+  # and the flake fills in the rest. The keys land where they'll be after the
+  # install, owned by who'll own them, and the host keys go where agenix looks
+  # for them as root.
+  (secrets {a-host    {"id_ed25519"       "private"
+                       "host_ed25519"     "hostprivate"
+                       "host_ed25519.pub" "hostpublic"}
+            "@server" {"global_ed25519" "shared"}
+            "box"     {"wrong_ed25519" "the alias is not the host"}})
+  (test (push-keys "box" :variant "installer" :mounted true
+                   :profile profile :stdin (string a-host "\n"))
+        0)
+  (def home (mnt "home/someone"))
+  (test (sorted (os/dir (hey/path/join home ".config/secrets")))
+        @["global_ed25519" "host_ed25519" "host_ed25519.pub" "id_ed25519"])
+  (test (mode (hey/path/join home ".config/secrets/id_ed25519")) "rw-------")
+  # A server's ssh dir, since that's what the flake said it was.
+  (test (linked? (hey/path/join home ".ssh/host_ed25519")) true)
+  (test (sorted (os/dir (mnt "etc/ssh"))) @["host_ed25519" "host_ed25519.pub"])
+  (test (mode (mnt "etc/ssh/host_ed25519")) "rw-------")
+  (test (mode (mnt "etc/ssh/host_ed25519.pub")) "rw-r--r--")
+  # Nothing in the installer user's $HOME, staged or otherwise.
+  (test (sent) @[])
+  (test (hey/path/exists? (hey/path/join remote "host_ed25519")) false)
+  (test (asked? (string "nix: eval nixosConfigurations." a-host ".config")) true)
+  (test (asked? "sudo: mkdir") true)
+  (test (asked? "chown: 1234:100 ") true))
+
+(deftest push-keys/installer-default-host
+  # SYSTEM naming a host is the usual case, and an empty answer takes it. A
+  # home that's already there (a /home partition I kept) keeps its owner, too,
+  # whatever the flake thinks.
+  (secrets {a-host {"host_ed25519" "hostprivate"}})
+  (test (push-keys a-host :variant "installer" :mounted "home/someone" :profile profile :stdin "\n") 0)
+  (test (hey/path/exists? (mnt "home/someone/.config/secrets/host_ed25519")) true)
+  # chown is a stub, so the owner is still whoever mkdir'd it: me.
+  (def owner (let [st (os/stat (mnt "home/someone"))]
+               (string (st :uid) ":" (st :gid))))
+  (test (asked? (string "chown: " owner " ")) true)
+  (test (asked? "chown: 1234:100 ") false))
+
+(deftest push-keys/installer-unknown-host
+  # No answer and nothing to default to, an answer that isn't in hosts/, and
+  # one that is but the flake doesn't build: each stops before anything is sent.
+  # The role directory is there so that a made-up host with a stubbed profile
+  # would otherwise have something to send.
+  (secrets {a-host {"host_ed25519" "hostprivate"}
+            "@server" {"global_ed25519" "shared"}})
+  (test (push-keys "box" :variant "installer" :mounted true :profile profile) 127)
+  (test (push-keys "box" :variant "installer" :mounted true :profile profile :stdin "nope\n") 127)
+  (test (push-keys "box" :variant "installer" :mounted true :stdin (string a-host "\n")) 127)
+  (test (asked? "scp:") false))
+
+(deftest push-keys/installer-no-user
+  # A host config without a user or role is nothing to deduce from, and I'd
+  # rather be told than have the keys land under /mnt/home/.
+  (secrets {a-host {"host_ed25519" "hostprivate"}})
+  (test (push-keys "box" :variant "installer" :mounted true :stdin (string a-host "\n")
+                   :profile (profile-without :user))
+        127)
+  (test (push-keys "box" :variant "installer" :mounted true :stdin (string a-host "\n")
+                   :profile (profile-without :role))
+        127)
+  (test (asked? "scp:") false))
+
+(deftest push-keys/installer-nothing-mounted
+  # /mnt with nothing on it is the ISO's tmpfs, and keys put there are gone at
+  # reboot, with nothing to say so until agenix can't decrypt a thing.
+  (secrets {a-host {"host_ed25519" "hostprivate"}})
+  (test (push-keys "box" :variant "installer" :profile profile :stdin (string a-host "\n")) 127)
+  (test (hey/path/exists? (mnt "home")) false))

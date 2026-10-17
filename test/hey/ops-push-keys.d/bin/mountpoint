@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+# Stand-in for mountpoint, for test/hey/ops-push-keys.janet. Nothing is mounted
+# anywhere here, so "mounted" means the directory exists: a test that wants an
+# unmounted /mnt leaves it out of the fake machine.
+[[ -d ${@[-1]} ]]

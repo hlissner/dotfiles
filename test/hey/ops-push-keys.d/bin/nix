@@ -1,0 +1,7 @@
+#!/usr/bin/env zsh
+# Stand-in for nix, for test/hey/ops-push-keys.janet. push-keys asks `nix eval`
+# what a host's config says about its user; the answer here is whatever JSON
+# $HEY_OPS_TEST_PROFILE holds, and unset is a host the flake has never heard of.
+[[ -n $HEY_OPS_TEST_LOG ]] && print -r -- "nix: $1 ${${(M)@:#*#nixosConfigurations.*}#*#}" >>$HEY_OPS_TEST_LOG
+[[ -n $HEY_OPS_TEST_PROFILE ]] || { print -ru2 -- "error: flake 'git+file://...' does not provide attribute"; exit 1 }
+print -r -- $HEY_OPS_TEST_PROFILE

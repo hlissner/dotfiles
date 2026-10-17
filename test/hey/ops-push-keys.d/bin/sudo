@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+# Stand-in for sudo, for test/hey/ops-push-keys.janet. The far end is a
+# directory I already own; what's worth knowing is that push-keys asked.
+[[ -n $HEY_OPS_TEST_LOG ]] && print -r -- "sudo: $1" >>$HEY_OPS_TEST_LOG
+exec "$@"
