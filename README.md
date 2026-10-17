@@ -60,7 +60,7 @@ dotfiles over there.
 
    ```sh
    sudo -i   # switch to root
-   bash <(curl -s https://henrik.io/install.sh)
+   bash <(curl -sL https://henrik.io/install.sh)
    ```
 
    Otherwise:

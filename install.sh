@@ -9,7 +9,7 @@
 #   Run this from the nixos installer once the target is partitioned and mounted
 #   at /mnt.
 #
-#     bash <(curl -s https://henrik.io/install.sh)
+#     bash <(curl -sL https://henrik.io/install.sh)
 #
 #   It clones the flake to $root/etc/dotfiles and installs it, asking for
 #   anything it wasn't told.

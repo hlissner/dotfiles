@@ -41,7 +41,7 @@
 #      vim /mnt/etc/nixos/hardware-configuration.nix   # change uuids to labels
 #
 # 7. Install dotfiles:
-#      bash <(curl -s https://henrik.io/install.sh)
+#      bash <(curl -sL https://henrik.io/install.sh)
 #
 # 8. Reboot into "Boot" profile.
 
