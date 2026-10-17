@@ -78,9 +78,6 @@ with self.lib;
 
     boot = {
       # initrd.systemd.enable = true;
-      # Prefer the latest kernel; this will be overridden on more security
-      # conscious systems, among other settings in modules/security.nix.
-      kernelPackages = mkDefault pkgs.linuxKernel.packages.linux_xanmod_latest;
       loader = {
         efi.canTouchEfiVariables = mkDefault true;
         systemd-boot = {

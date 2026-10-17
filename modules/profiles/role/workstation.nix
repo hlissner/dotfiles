@@ -20,6 +20,9 @@ mkIf (config.modules.profiles.role == "workstation") (mkMerge [
       #   optimizations, these aren't the droids you're looking for!
       # kernelParams = [ "mitigations=off" ];
 
+      # The latest of the most performant kernel (for gaming/multimedia).
+      kernelPackages = mkDefault pkgs.linuxKernel.packages.linux_xanmod_latest;
+
       # Optimizations for desktops/gaming
       kernel.sysctl = {
         "kernel.sched_cfs_bandwidth_slice_us" = 3000;

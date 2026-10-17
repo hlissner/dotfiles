@@ -34,7 +34,6 @@ mkIf (config.modules.profiles.role == "server") {
 
   ## Security tweaks
   boot = {
-    kernelPackages = mkForce pkgs.linuxKernel.packages.linux_6_12_hardened;
     kernel.sysctl = {
       # The Magic SysRq key is a key combo that allows users connected to the
       # system console of a Linux kernel to perform some low-level commands.
