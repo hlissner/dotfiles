@@ -30,7 +30,14 @@ mkIf (config.modules.profiles.role == "server") {
 
   powerManagement.cpuFreqGovernor = mkDefault "ondemand";
   virtualisation.docker.enableOnBoot = mkDefault true;
-  power.ups.mode = mkDefault "netclient";
+
+  # Headless: nobody reads the manual here, and some remotes may lack the space
+  # to build it (like Raspberry Pis).
+  documentation = {
+    nixos.enable = mkDefault false;
+    doc.enable = mkDefault false;
+    info.enable = mkDefault false;
+  };
 
   ## Security tweaks
   boot = {
