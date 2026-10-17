@@ -94,11 +94,7 @@ with builtins;
 
   ## Local config
   config = { ... }: {
-    # The luks passphrase is login enough
-    services.displayManager.autoLogin = {
-      enable = true;
-      user = "hlissner";
-    };
+
   };
 
   ## Hardware config
