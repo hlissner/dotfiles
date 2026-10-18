@@ -26,7 +26,10 @@ with builtins;
       desktop = "hyprland";
       hyprland = {
         monitors = [
-          { output = "HDMI-A-1"; primary = true; }
+          { output = "HDMI-A-1";
+            primary = true;
+            # Is usually hooked up to a small 1024x768 monitor.
+            scale = 1.333333; }
           { }  # Adapt to any monitors hooked up to this
         ];
       };
@@ -34,7 +37,10 @@ with builtins;
 
     apps = {
       term.default = "foot";
-      term.foot.enable = true;
+      term.foot = {
+        enable = true;
+        fontSize = 24;
+      };
       flatpak.enable = true;
       rofi.enable = true;
       thunar.enable = true;

@@ -37,7 +37,10 @@ with builtins;
 
     apps = {
       term.default = "foot";
-      term.foot.enable = true;
+      term.foot = {
+        enable = true;
+        fontSize = 14;
+      };
       flatpak.enable = true;
       rofi.enable = true;
       thunar.enable = true;        # guests expect a file manager

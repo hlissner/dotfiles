@@ -90,6 +90,21 @@ in {
       expected = { outputs = [ "DP-1" ]; primaryMonitor = "DP-1"; };
     };
 
+  # Scale was an int for years because every monitor I owned was 1x. A 5in
+  # panel wants 4/3, and the float has to survive two serialisers: toLua for
+  # the real config, and the greeter's own hl.monitor() line in dms.nix. Both
+  # must spell it 1.6 -- toString would say 1.600000, which Lua reads but I
+  # can't grep for.
+  testFractionalScaleSurvivesToLua =
+    let h = hyprland [{ output = "DP-1"; primary = true; scale = 1.6; }];
+    in {
+      expr = {
+        info = (head h.hey.info.hypr.monitors).scale;
+        lua  = hasInfix ''["scale"] = 1.6'' h.home.configFile."hypr/hyprland.lua".text;
+      };
+      expected = { info = 1.6; lua = true; };
+    };
+
   # Hosts turn config/hypr/'s knobs through the same hey.info.hypr this module
   # fills, so the two have to merge rather than one clobbering (or colliding
   # with) the other. hyprland.lua only defaults what arrives as nil.

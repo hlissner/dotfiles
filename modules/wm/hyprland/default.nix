@@ -16,7 +16,7 @@ in {
         output = mkOpt str "";
         mode = mkOpt str "preferred";
         position = mkOpt str "auto";
-        scale = mkOpt int 1;
+        scale = mkOpt (either int float) 1;
         disabled = mkOpt bool false;
         primary = mkOpt bool false;
         vrr = mkOpt int 0;
