@@ -19,8 +19,8 @@ tapes, etc) or doing last minute CAD tweaks for 3d prints.
 ** =/dev/sda= (SanDisk Ultra 3D NAND 500gb) :linux:
 #+begin_src sh
 parted /dev/sda -- mklabel gpt
-parted /dev/sda -- mkpart ESP fat32 1MiB 512MiB
-parted /dev/sda -- mkpart primary 512MiB 300GiB
+parted /dev/sda -- mkpart ESP fat32 1MiB 1GiB
+parted /dev/sda -- mkpart primary 1GiB 300GiB
 parted /dev/sda -- mkpart primary 300GiB 100%
 parted /dev/sda -- set 1 boot on
 mkfs.fat -F32 -n BOOT /dev/sda1

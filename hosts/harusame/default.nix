@@ -112,8 +112,8 @@ with builtins;
         fsType = "ext4";
         options = [ "noatime" ];
       };
-      "/media/games" = {
-        device = "/dev/disk/by-label/games";
+      "/media/data" = {
+        device = "/dev/disk/by-label/data";
         fsType = "ntfs";
         options = [ "defaults" "noauto" "nofail" "noatime" "nodev" "exec" "umask=000" "uid=1000" "gid=1000" "x-systemd.automount" ];
       };

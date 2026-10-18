@@ -26,8 +26,8 @@ for gaming, when Proton isn't enough).
 ** =/dev/nvme0n1= (Samsung EVO+ 500gb) :linux:
 #+begin_src sh
 parted /dev/nvme0n1 -- mklabel gpt
-parted /dev/nvme0n1 -- mkpart ESP fat32 1MiB 512MiB
-parted /dev/nvme0n1 -- mkpart primary 512MiB 200GiB
+parted /dev/nvme0n1 -- mkpart ESP fat32 1MiB 1GiB
+parted /dev/nvme0n1 -- mkpart primary 1GiB 200GiB
 parted /dev/nvme0n1 -- mkpart primary 200GiB 100%
 parted /dev/nvme0n1 -- set 1 boot on
 mkfs.fat -F32 -n BOOT /dev/nvme0n1p1

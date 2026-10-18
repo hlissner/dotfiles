@@ -20,8 +20,8 @@ My mobile desktop workstation. Comes with me on extended 1+ month trips.
 ** =/dev/nvme0n1= (Samsung 970 EVO Plus 1TB NVMe M2) :linux:
 #+begin_src sh
 parted /dev/nvme0n1 -- mklabel gpt
-parted /dev/nvme0n1 -- mkpart ESP fat32 1MiB 512MiB
-parted /dev/nvme0n1 -- mkpart primary 512MiB 400GiB
+parted /dev/nvme0n1 -- mkpart ESP fat32 1MiB 1GiB
+parted /dev/nvme0n1 -- mkpart primary 1GiB 400GiB
 parted /dev/nvme0n1 -- mkpart primary 400GiB 100%
 parted /dev/nvme0n1 -- set 1 boot on
 mkfs.fat -F32 -n BOOT /dev/nvme0n1p1
