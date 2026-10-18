@@ -1,4 +1,4 @@
-# soba -- my secondary workstation
+# soba -- my workbench pc
 
 { self, lib, ... }:
 
