@@ -100,12 +100,15 @@ main() {
   fi
   [[ -n $user ]] || _ask user Username hlissner
 
-  chown -R "${user}:users" "$flake" 2>/dev/null \
-    || >&2 echo "Warning: couldn't chown $flake to $user; fix it after first boot"
-
   # nixos-install doesn't have --accept-flake-config!
   nixos-install --show-trace --option accept-flake-config true \
     --root "$root" --flake "$flake#$host"
+
+  # The installer has never heard of $user; the system I just installed has.
+  local ids
+  ids=$(awk -F: -v u="$user" '$1 == u { print $3 ":" $4 }' "$root/etc/passwd")
+  [[ -n $ids ]] && chown -R "$ids" "$flake" \
+    || >&2 echo "Warning: couldn't chown $flake to $user; fix it after first boot"
 }
 
 # Everything above only defines things, so a connection that dies halfway
