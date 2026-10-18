@@ -132,9 +132,20 @@ with builtins;
     # Apple's firmware boots \EFI\BOOT\BOOTX64.EFI and ignores efibootmgr
     boot.loader.efi.canTouchEfiVariables = false;
 
-    # Early KMS, so the greeter doesn't come up on a modeset.
-    boot.initrd.kernelModules = [ "nouveau" ];
     hardware.graphics.enable = true;
+
+    boot.initrd.kernelModules = [ "nouveau" ];
+    # nouveau vendors every GSP blob from Pascal to Blackwell as module
+    # firmware, so the initrd writes ~1.3 GB to /boot. Larger than the partition
+    # is (1gb), so cut out all of it sicne the GTX 285 needs none of it.
+    nixpkgs.overlays = [ (final: prev: {
+      linux-firmware = final.runCommand "${prev.linux-firmware.name}-sans-nvidia"
+        { passthru.compressFirmware = false; } ''
+          mkdir -p $out/lib/firmware
+          cd ${final.compressFirmwareZstd prev.linux-firmware}/lib/firmware
+          for d in *; do [ "$d" = nvidia ] || ln -s "$PWD/$d" "$out/lib/firmware/$d"; done
+        '';
+    }) ];
 
     # For the AirPort card (Broadcom BCM4322)
     networking.enableB43Firmware = true;
