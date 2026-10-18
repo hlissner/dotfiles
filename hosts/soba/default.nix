@@ -91,6 +91,12 @@ with builtins;
         fsType = "ext4";
         options = [ "noatime" ];
       };
+
+      "/media/nas" = {
+        device = "nas0.lan:/mnt/nas/users/hlissner/files";
+        fsType = "nfs";
+        options = [ "noauto" "nofail" "noatime" "nfsvers=4.2" "x-systemd.automount" "x-systemd.idle-timeout=600" ];
+      };
     };
     swapDevices = [];
   };
