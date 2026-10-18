@@ -48,4 +48,26 @@ in mkMerge [
       allowedTCPPorts = [ 631 ];
     };
   })
+
+  # Watch for printers
+  (mkIf (any (s: hasPrefix "printer" s) hardware
+         && config.services.ipp-usb.enable
+         && config.hardware.printers.ensurePrinters != []) {
+    systemd.services.cups.serviceConfig.ExecStartPost = mkForce [];
+    systemd.services.ensure-printers = {
+      description = "Provision CUPS queues once ipp-usb has the printer";
+      wantedBy = [ "ipp-usb.service" ];
+      after = [ "cups.service" "ipp-usb.service" ];
+      requires = [ "cups.service" ];
+      path = [ pkgs.cups ];
+      serviceConfig.Type = "oneshot";
+      script = ''
+        for _ in $(seq 60); do
+          (exec 3<>/dev/tcp/localhost/60000) 2>/dev/null && break
+          sleep 1
+        done
+        ${config.systemd.services.cups.postStart}
+      '';
+    };
+  })
 ]

@@ -121,8 +121,6 @@ with builtins;
 
     # For the HP LaserJet M28-30 printer
     services.ipp-usb.enable = true;
-    # `-m everywhere` asks the printer for its capabilities, so this needs it
-    # awake at boot. If it wasn't, `systemctl restart ensure-printers`.
     hardware.printers = {
       ensurePrinters = [{
         name = "LaserJet";

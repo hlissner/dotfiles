@@ -59,6 +59,27 @@ in {
       expected = { jack = "128/48000"; client = false; };
     };
 
+  # nixpkgs provisions ensurePrinters from cups.service's ExecStartPost, and an
+  # `everywhere` queue needs the printer answering to do it. With ipp-usb that
+  # once meant an unplugged printer killed cupsd outright, LAN share and all.
+  # Pinned: provisioning hangs off ipp-usb, and nothing of it is left on cups.
+  testIppUsbProvisioningIsNotCupsPostStart =
+    let c = evalConfig [{
+          modules.profiles.hardware = [ "printer" ];
+          services.ipp-usb.enable = true;
+          hardware.printers.ensurePrinters = [{
+            name = "p"; deviceUri = "ipp://localhost:60000/ipp/print"; model = "everywhere";
+          }];
+        }];
+    in {
+      expr = {
+        cups = c.systemd.services.cups.serviceConfig.ExecStartPost;
+        ensure = lib.elem "ipp-usb.service" c.systemd.services.ensure-printers.wantedBy
+                 && lib.hasInfix "lpadmin -p p" c.systemd.services.ensure-printers.script;
+      };
+      expected = { cups = []; ensure = true; };
+    };
+
   # The profiles set is republished for shell feature-detection via hey.info.
   # Unset reads as null, not "": it reaches Lua through generators.toLua,
   # where a null drops the key entirely, so hey.profiles.platform is absent
