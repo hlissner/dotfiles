@@ -25,6 +25,10 @@ with builtins;
 
     wm = {
       desktop = "hyprland";
+      plymouth = {
+        enable = true;
+        seamless = true;
+      };
       hyprland = {
         monitors = [
           { output = "DVI-I-1";

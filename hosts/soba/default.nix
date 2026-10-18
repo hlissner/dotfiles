@@ -24,6 +24,10 @@ with builtins;
 
     wm = {
       desktop = "hyprland";
+      plymouth = {
+        enable = true;
+        seamless = true;
+      };
       hyprland = {
         monitors = [
           { output = "HDMI-A-1";
