@@ -80,11 +80,8 @@ with self.lib;
       # initrd.systemd.enable = true;
       loader = {
         efi.canTouchEfiVariables = mkDefault true;
-        systemd-boot = {
-          # To not overwhelm the boot screen and save space on /boot
-          configurationLimit = mkDefault 8;
-          memtest86.enable = mkDefault true;
-        };
+        # To not overwhelm the boot screen and save space on /boot
+        systemd-boot.configurationLimit = mkDefault 8;
       };
     };
 

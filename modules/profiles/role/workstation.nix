@@ -32,8 +32,12 @@ mkIf (config.modules.profiles.role == "workstation") (mkMerge [
       };
 
       loader = {
-        # I'm not a big fan of Grub, so if it's not in use...
-        systemd-boot.enable = mkDefault true;
+        systemd-boot = {
+          # I'm not a big fan of Grub, so if it's not in use...
+          enable = mkDefault true;
+          # Easier than remembering where the memtest flash drive is...
+          memtest86.enable = mkDefault true;
+        };
         # For much quicker boot up to NixOS. Hold down a key to bring it up or
         # use `systemctl reboot --boot-loader-entry=X` instead.
         timeout = mkDefault 0;
