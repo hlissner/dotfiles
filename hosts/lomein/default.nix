@@ -32,6 +32,10 @@ with builtins;
             primary = true; }
           { output = "DVI-I-2"; }
         ];
+        extraConfig = ''
+          -- nouveau doesn't like the GT2XX and fails to render hardware cursors
+          hl.config({ cursor = { no_hardware_cursors = true } })
+        '';
       };
     };
 
@@ -79,6 +83,12 @@ with builtins;
     };
     users.groups.guest = {};
     security.pam.services.greetd.allowNullPassword = true;
+
+    # nouveau doesn't display the hardware cursor
+    services.greetd.settings.default_session.command =
+      let greeter = config.services.displayManager.noctalia-greeter;
+      in "${pkgs.coreutils}/bin/env WLR_NO_HARDWARE_CURSORS=1 "
+         + "${getExe' greeter.package "noctalia-greeter-session"} ${escapeShellArgs greeter.extraArgs}";
 
     # So the guest account gets its own copy of the dotfiles
     systemd.services.hey-home-links-guest =
