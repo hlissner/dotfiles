@@ -52,6 +52,19 @@ let
         });
         expected = 1;
       };
+
+      # A udev rule that never fires looks exactly like one that works, so pin
+      # both triggers (link appears, charger plugged/unplugged) to the script.
+      "testPowerSaveFollowsAc_${role}" =
+        let lines = filter (hasInfix "wifi-powersave")
+                           (splitString "\n" on.services.udev.extraRules);
+        in {
+          expr = {
+            link  = any (hasInfix ''SUBSYSTEM=="net", KERNEL=="wl*"'') lines;
+            mains = any (hasInfix ''SUBSYSTEM=="power_supply", ATTR{type}=="Mains"'') lines;
+          };
+          expected = { link = true; mains = true; };
+        };
     };
 in
   forRole "workstation" // forRole "server"

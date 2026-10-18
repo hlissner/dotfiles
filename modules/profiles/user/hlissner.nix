@@ -60,6 +60,12 @@ in mkIf (username == "hlissner") (mkMerge [
       # NextUI uses dropbear running as root
       Host brick.lan
         User root
+
+      # Reuse connections for LAN boxes for faster first load
+      Host *.lan
+        ControlMaster auto
+        ControlPath /run/user/%i/ssh-%C
+        ControlPersist 10m
     '';
   })
 
