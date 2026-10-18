@@ -253,11 +253,22 @@ in {
   # to agree. If they drift the hold never starts, and the only symptom is the
   # login blink quietly coming back.
   testDrmHoldRuleNamesARealUnit =
-    let c = noctalia three [];
+    let c = noctalia three [{ modules.wm.plymouth.enable = true; }];
         m = match ".*SYSTEMD_WANTS[^\n]*\"([a-z-]+@)%k\\.service\".*" c.services.udev.extraRules;
     in {
       expr = m != null && c.systemd.services ? ${head m};
       expected = true;
+    };
+
+  # The first fd to open a card node is handed DRM master. plymouth is what
+  # beats the hold to it; without plymouth the hold is master and the greeter
+  # gets EBUSY on the GPU (lomein, 2026-10-17). So no plymouth, no hold.
+  testDrmHoldNeedsPlymouth =
+    let c = noctalia three [];
+    in {
+      expr = hasInfix "hey-drm-hold" c.services.udev.extraRules
+          || c.systemd.services ? "hey-drm-hold@";
+      expected = false;
     };
 
   # The greeter takes the shell's appearance over pkexec; nixpkgs' module writes

@@ -300,21 +300,6 @@ in {
     {
       services.greetd.enable = true;
 
-      # greetd stops the greeter before uwsm has brought Hyprland up, causing a
-      # brief flicker of the monitor (more so on nvidia cards). This keeps it
-      # open until the latest possible moment to prevent it.
-      services.udev.extraRules = ''
-        SUBSYSTEM=="drm", KERNEL=="card[0-9]*", TAG+="systemd", ENV{SYSTEMD_WANTS}+="hey-drm-hold@%k.service"
-      '';
-      systemd.services."hey-drm-hold@" = {
-        description = "Hold /dev/dri/%i open between compositors";
-        restartIfChanged = false;   # a restart drops the hold; nothing to gain on `hey sync`
-        serviceConfig = {
-          StandardInput = "file:/dev/dri/%i";
-          ExecStart = "${getExe' pkgs.coreutils "sleep"} infinity";
-        };
-      };
-
       services.displayManager = {
         defaultSession = cfg.session.name;
         noctalia-greeter = {
@@ -335,6 +320,24 @@ in {
         };
       };
     }
+
+    # greetd stops the greeter before uwsm has brought Hyprland up, causing a
+    # brief flicker of the monitor (more so on nvidia cards). This keeps it
+    # open until the latest possible moment to prevent it.
+    (mkIf config.modules.wm.plymouth.enable {
+      # Connectors (card1-DP-1) are in the drm subsystem too, but have no node.
+      services.udev.extraRules = ''
+        SUBSYSTEM=="drm", ENV{DEVNAME}=="/dev/dri/card*", TAG+="systemd", ENV{SYSTEMD_WANTS}+="hey-drm-hold@%k.service"
+      '';
+      systemd.services."hey-drm-hold@" = {
+        description = "Hold /dev/dri/%i open between compositors";
+        restartIfChanged = false;   # a restart drops the hold; nothing to gain on `hey sync`
+        serviceConfig = {
+          StandardInput = "file:/dev/dri/%i";
+          ExecStart = "${getExe' pkgs.coreutils "sleep"} infinity";
+        };
+      };
+    })
 
     # Rofi application targets
     {
