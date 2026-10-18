@@ -32,9 +32,12 @@ with builtins;
       hyprland = {
         monitors = [
           { output = "DVI-I-1";
-            mode = "preferred";
+            mode = "1920x1080@60";
+            position = "1920x0";
             primary = true; }
-          { output = "DVI-I-2"; }
+          { output = "DVI-I-2";
+            mode = "1920x1080@60";
+            position = "0x0"; }
         ];
         extraConfig = ''
           -- nouveau doesn't like the GT2XX and fails to render hardware cursors
