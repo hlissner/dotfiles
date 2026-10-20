@@ -8,7 +8,7 @@ let cfg = config.modules.games.steam;
 in {
   options.modules.games.steam = with types; {
     enable = mkBoolOpt false;
-    libraryDir = mkOpt str "";
+    libraryDir = mkOpt str "${config.home.dataDir}/Steam";
   };
 
   config = mkIf cfg.enable {

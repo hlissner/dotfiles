@@ -102,7 +102,14 @@ with builtins;
       # media.pdf.enable = true;
     };
     games = {
-      steam.enable = true;
+      steam = {
+        enable = true;
+        libraryDir = "/media/data/SteamLibrary";
+      };
+      doom = {
+        enable = true;
+        wadsDir = "/media/nas/media/games/win/doom";
+      };
       emulators = let nas = "/media/nas/media/games"; in {
         enable = true;
         romsDir = nas;

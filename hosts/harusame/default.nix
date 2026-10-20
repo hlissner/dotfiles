@@ -58,7 +58,7 @@ with builtins;
     };
     games.steam = {
       enable = true;
-      libraryDir = "/media/games/SteamLibrary";
+      libraryDir = "/media/data/SteamLibrary";
     };
     dev = {
       cc.enable = true;
