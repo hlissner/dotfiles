@@ -7,9 +7,8 @@
 #
 # DESCRIPTION:
 #   Only when Supersonic is the focused window; otherwise this does nothing.
-#   Hyprland's binds could pass the keystroke on to whatever else was focused,
-#   so there SUPER+CTRL+1..6 are still bound in Lua; niri's can't, so there
-#   those keys are dead everywhere but Supersonic.
+#   niri's binds can't pass a keystroke on to whatever else was focused, so
+#   SUPER+CTRL+1..6 are dead everywhere but Supersonic.
 #
 # ARGUMENTS:
 #   1 RATING

@@ -56,15 +56,15 @@ in {
 
       # Make sure plymouth doesn't kick in on shut-down before the user session
       # is over. Giving us time to create a nice "fade out" transition (see
-      # hey-shutdown-hook in ./hyprland/default.nix).
+      # hey-shutdown-hook in ./default.nix).
       systemd.services = genAttrs
         [ "plymouth-poweroff" "plymouth-reboot" "plymouth-halt" "plymouth-kexec" ]
         (_: { after = [ "user.slice" ]; });
     }
 
     # On Nvidia cards, the transitions between initrd, plymouth, the greeter,
-    # and hyprland are *much* more visible (monitors flicker off then on). This
-    # addresses the flicker between initrd and plymouth.
+    # and the compositor are *much* more visible (monitors flicker off then on).
+    # This addresses the flicker between initrd and plymouth.
     (mkIf cfg.nvidia {
       boot.initrd.systemd.contents."/etc/plymouth/plymouthd.conf".source =
         mkForce

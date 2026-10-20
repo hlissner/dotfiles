@@ -23,20 +23,17 @@ with builtins;
     };
 
     wm = {
-      desktop = "hyprland";
+      desktop = "niri";
       plymouth = {
         enable = true;
         seamless = true;
       };
-      hyprland = {
-        monitors = [
-          { output = "HDMI-A-1";
-            primary = true;
-            # Is usually hooked up to a small 1024x768 monitor.
-            scale = 1.333333; }
-          { }  # Adapt to any monitors hooked up to this
-        ];
-      };
+      niri.monitors = [
+        { output = "HDMI-A-1";
+          primary = true;
+          # Is usually hooked up to a small 1024x768 monitor.
+          scale = 1.333333; }
+      ];
     };
 
     apps = {

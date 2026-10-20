@@ -9,9 +9,8 @@
 # DESCRIPTION:
 #   Paints a quickshell overlay across every monitor and animates a fade-in/out
 #   effect. For pre-shutdown and post-startup scripts (the on-shutting-down and
-#   on-suspend hooks). Under hyprland it also hides the cursor, and binds
-#   Escape to `fade kill` as an emergency abort; niri has no runtime bind or
-#   cursor toggle, so there the overlay is all there is.
+#   on-suspend hooks). niri has no runtime bind or cursor toggle, so the overlay
+#   is all there is: no Escape to abort it, and the cursor stays.
 #
 #   REQUIRES: quickshell
 #
@@ -26,7 +25,7 @@
 #   1 DIRECTION
 #     out   -- Fade to black and hold it there.
 #     in    -- Fade back in from black.
-#     kill  -- Take the overlay away at once; what Escape runs.
+#     kill  -- Take the overlay away at once.
 
 (use hey)
 (use sh)
@@ -107,19 +106,10 @@ ShellRoot {
              cmdline (ignore-errors (slurp (fmt "/proc/%d/cmdline" pid)))]
     (when (string/find (qmlfile) cmdline) pid)))
 
-(defn- hide-cursor [hide?]
-  (case (wm)
-    :hypr (do? $? hyprctl eval
-               ,(fmt "hl.config({ cursor = { invisible = %s } })" (if hide? "true" "false"))
-               > :null)
-    # TODO: Niri implementation?
-    true))
-
 (defn- stop []
   (when-let [pid (running-pid)]
     ($? kill ,(string pid)))
-  (ignore-errors (os/rm (pidfile)))
-  (hide-cursor false))
+  (ignore-errors (os/rm (pidfile))))
 
 (defn- start [ms color]
   (os/mkdir (path :runtime))
@@ -160,15 +150,13 @@ ShellRoot {
           (start ms color)
           (unless (wait-mapped) (exit 0)))
         (ipc "out")
-        (os/sleep secs)  # wait for shutdown/suspend to take us to narnia
-        (when (running-pid) (hide-cursor true)))  # loud on black
+        (os/sleep secs))  # wait for shutdown/suspend to take us to narnia
 
     "in"
     (if (running-pid)
       (do (ipc "restore")
           (os/sleep secs)
-          (stop))
-      (hide-cursor false))
+          (stop)))
 
     "kill"
     (stop)))

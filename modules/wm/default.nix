@@ -10,13 +10,12 @@ let cfg = config.modules.wm;
 in {
   options.modules.wm = with types; {
     desktop = mkOpt' (nullOr (enum [
-      "hyprland"
       "niri"
     ])) null
       "The window manager to install. Enables modules.wm.<desktop>.";
 
-    # Each WM fills these from its own `monitors` option; the schemas differ
-    # (hyprland's `disabled` is niri's `off`), so the WM translates, not this.
+    # The WM fills these from its own `monitors` option, whose schema is its
+    # own; the WM translates, not this.
     primaryMonitor = mkOpt' (nullOr str) null
       "The output marked primary in modules.wm.<desktop>.monitors, or null.";
     outputs = mkOpt' (listOf str) []
@@ -24,7 +23,7 @@ in {
 
     session = {
       name = mkOpt' (nullOr str) null
-        "services.displayManager session id, e.g. hyprland-uwsm.";
+        "services.displayManager session id, e.g. niri.";
       desktopName = mkOpt' (nullOr str) null
         "The desktop entry's Name=, which noctalia-greeter selects sessions by.";
       unit = mkOpt' (nullOr str) null

@@ -70,24 +70,14 @@ in {
   };
 
   # The point of the list: an area fires only if this host enables it. The WM's
-  # dir comes from hey.desktop, which a tty hasn't got; dms and noctalia add
-  # their own; config/dms/hooks existing on disk proves nothing.
+  # dir comes from hey.desktop, which a tty hasn't got; noctalia adds its own.
   testHookPathsFollowEnabledAreas = {
     expr = {
-      hypr = hasPath presets.hyprland "config/hypr/hooks";
       niri = hasPath presets.niri "config/niri/hooks";
-      noctalia = hasPath presets.hyprland "config/noctalia/hooks";
-      # dms = hasPath presets.hyprland "config/dms/hooks";
-      # dmsOn = hasPath (evalConfig [{
-      #   modules.wm.desktop = "hyprland";
-      #   modules.wm.dms.enable = true;
-      # }]) "config/dms/hooks";
-      headless = hasPath presets.bare "config/hypr/hooks";
+      noctalia = hasPath presets.niri "config/noctalia/hooks";
+      headless = hasPath presets.bare "config/niri/hooks";
     };
-    expected = {
-      # dms = false; dmsOn = true;
-      hypr = true; niri = true; noctalia = true; headless = false;
-    };
+    expected = { niri = true; noctalia = true; headless = false; };
   };
 
   ## JANET_PATH.
@@ -122,10 +112,10 @@ in {
   # tells you which option to set.
   testDesktopIsPublishedToInfo = {
     expr = {
-      hyprland = presets.hyprland.hey.info.desktop;
+      niri = presets.niri.hey.info.desktop;
       headless = bare.hey.info.desktop;
     };
-    expected = { hyprland = "hyprland"; headless = null; };
+    expected = { niri = "niri"; headless = null; };
   };
 
   ## The checkout.

@@ -26,7 +26,7 @@ with lib;
   testConfigUserAggregatesLists = {
     expr =
       let c = evalConfig [{
-            modules.wm.desktop = "hyprland";   # adds "input"
+            modules.wm.desktop = "niri";   # adds "input"
             modules.profiles.hardware = [ "audio" ];  # adds "audio"
           }];
           groups = sort lessThan c.user.extraGroups;

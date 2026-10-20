@@ -1,0 +1,4 @@
+#!/usr/bin/env zsh
+# Stand-in for foot, for test/hey/wm.janet: logs what it was asked to
+# $HEY_TEST_WM_LOG and exits.
+print -r -- "foot $*" >>$HEY_TEST_WM_LOG

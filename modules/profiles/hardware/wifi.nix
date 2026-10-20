@@ -1,9 +1,9 @@
 # profiles/hardware/wifi.nix --- wifi via iwd
 #
-# I chose iwd back when DMS didn't support wpa_supplicant; Noctalia speaks
-# NetworkManager, wpa_supplicant and iwd natively, so there's no reason to
-# move. Enterprise (802.1X) networks are NetworkManager-only in its UI, which
-# I'm fine managing by hand.
+# I chose iwd back when my shell at the time didn't support wpa_supplicant;
+# Noctalia speaks NetworkManager, wpa_supplicant and iwd natively, so there's no
+# reason to move. Enterprise (802.1X) networks are NetworkManager-only in its
+# UI, which I'm fine managing by hand.
 
 { self, lib, options, config, pkgs, ... }:
 

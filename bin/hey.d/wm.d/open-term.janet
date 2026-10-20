@@ -22,6 +22,25 @@
 (use hey)
 (use sh)
 
+(defn foot-argv [&named title font offset opts footargs tmuxargs]
+  (default footargs [])
+  (default tmuxargs [])
+  (def tmuxargs
+    (cond title ["new" "-A" "-s" title ;tmuxargs]
+          (empty? tmuxargs) []
+          ["-c" ;tmuxargs]))
+  (def font (or font (flake/info :theme :fonts :mono) "JetBrainsMono Nerd Font"))
+  (def [name size] (or (peg/match (peg! '(* (<- (any (if-not ":" 1))) (? (* (thru "size=") (number :d+)))))
+                                  font)
+                       [font nil]))
+  (def size (+ (or size (flake/info :theme :fonts :terminal :size) 9)
+               (if offset (scan-number offset) 0)))
+  ["foot" ;(if title ["-T" title] [])
+   ;footargs
+   "-o" (fmt "main.font=%s:size=%d" name size)
+   ;(mapcat |["-o" $0] (or opts []))
+   "--" "tmux" ;tmuxargs])
+
 (defcmd open-term [_ & rest argv &opts opts [-o opt *]
                    title [-t --title title]
                    font [-f --font font]
@@ -30,17 +49,5 @@
   # follows the -- in the raw argv is the tail of the rest.
   (def after (if-let [i (index-of "--" argv)] (slice argv (inc i)) []))
   (def footargs (slice rest 0 (- (length rest) (length after))))
-  (def tmuxargs
-    (cond title ["new" "-A" "-s" title ;after]
-          (empty? after) []
-          ["-c" ;after]))
-  (def font (or font (flake/info :theme :fonts :mono) "JetBrainsMono Nerd Font"))
-  (def [name size] (or (peg/match (peg! '(* (<- (any (if-not ":" 1))) (? (* (thru "size=") (number :d+)))))
-                                  font)
-                       [font nil]))
-  (def size (+ (or size 9) (if offset (scan-number offset) 0)))
-  (do? $ foot ,;(if title ["-T" title] [])
-              ,;footargs
-              -o ,(fmt "main.font=%s:size=%d" name size)
-              ,;(mapcat |["-o" $0] (or opts []))
-              "--" tmux ,;tmuxargs))
+  (do? $ ,;(foot-argv :title title :font font :offset offset :opts opts
+                      :footargs footargs :tmuxargs after)))

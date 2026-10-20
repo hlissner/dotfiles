@@ -17,8 +17,8 @@
   (setup)
   (test (:get vars :does-not-exist) nil)
   # The key, not the value, whether it wrote or removed -- so that nothing can
-  # come to depend on the value being handed back (config/hypr/bin/slurp.zsh
-  # used to print it as its own output).
+  # come to depend on the value being handed back (the slurp script that
+  # preceded wm.d/slurp.janet used to print it as its own output).
   (test (:set vars :key 123) :key)
   (test (:get vars :key) 123)
   (test (:set vars :key nil) :key))
@@ -42,7 +42,7 @@
     (test (true? (nil? (ignore-errors (:set vars bad 1)))) true))
   (test (:list vars) @[])
   # Dots are only a problem when they're the whole name.
-  (test (:set vars :hypr.slurp.last 1) :hypr.slurp.last))
+  (test (:set vars :wm.slurp.last 1) :wm.slurp.last))
 
 (deftest cache
   (setup)
@@ -62,7 +62,7 @@
     (test calls 1)))
 
 # `hey get` is read in shell scripts as a test, not just for its output --
-# config/hypr/bin/slurp.zsh does `if ! hey get $cache_key`. Printing nothing and
+# a zsh script does `if ! hey get $cache_key`. Printing nothing and
 # exiting 0 made "unset" indistinguishable from "set to an empty string", so the
 # retake path silently produced an empty region instead of erroring.
 (deftest get/exit-status
@@ -79,8 +79,8 @@
   (:set (vars/temp) :exit-status-empty nil))
 
 # `set` echoes the key, so a caller that wants to store and print in one go
-# needs -v. config/hypr/bin/slurp.zsh is that caller: the selection it caches is
-# also its own stdout, which screencast.zsh parses as "X,Y WxH".
+# needs -v. The zsh slurp script was that caller: the selection it cached was
+# also its own stdout, which screencast parsed as "X,Y WxH".
 (deftest set/echoes
   (setup)
   (defn- hey-out [& args] ($<_ ,hey-bin ,;args))

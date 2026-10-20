@@ -11,7 +11,7 @@
 with lib;
 let
   # The module rides modules.wm.desktop, so every read goes through it.
-  desktop = modules: evalConfig ([{ modules.wm.desktop = "hyprland"; }] ++ modules);
+  desktop = modules: evalConfig ([{ modules.wm.desktop = "niri"; }] ++ modules);
   theme = modules:
     (desktop modules).modules.wm.noctalia.settings.theme.templates;
 
@@ -60,7 +60,7 @@ in {
   # Noctalia's qt builtin writes colors/noctalia.conf and stops -- no hook, no
   # envvar -- so these files are what actually puts the palette on a Qt app.
   testQtCtSelectsNoctaliasScheme =
-    let c = presets.hyprland;
+    let c = presets.niri;
     in {
       expr = map (v: hasInfix "color_scheme_path=${c.home.configDir}/${v}ct/colors/noctalia.conf"
                               c.home.configFile."${v}ct/${v}ct.conf".text)

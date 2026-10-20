@@ -23,7 +23,7 @@ dotfiles over there.
 ------
 
 - **Shell:**    zsh + zpm
-- **WM:**       hyprland + noctalia
+- **WM:**       niri + noctalia
 - **Editor:**   [Doom Emacs][doomemacs] + Neovim
 - **Terminal:** foot
 - **Launcher:** rofi

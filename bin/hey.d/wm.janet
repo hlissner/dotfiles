@@ -5,16 +5,17 @@
 #   hey wm COMMAND [ARGS...]
 #
 # DESCRIPTION:
-#   The commands below are compiled into hey, for things a keybind or hook fires
-#   often enough that a zsh startup would be most of what they cost. They speak
-#   to hyprland and niri alike, through lib/hey/wm.janet; anything else is a
-#   script in config/$WM/bin, and knows which desktop it's for.
+#   The commands below are compiled into hey, to speed up niri keybinds or hey
+#   hooks.
 
 (use hey)
 
 (import ./wm.d/dpms)
+(import ./wm.d/dropdown)
 (import ./wm.d/fade)
 (import ./wm.d/kill)
+(import ./wm.d/launch)
+(import ./wm.d/media)
 (import ./wm.d/ocr)
 (import ./wm.d/open-term)
 (import ./wm.d/outputs)
@@ -30,8 +31,11 @@
 
 (defcmd [wm :rules] [& _]
   [:dpms dpms/dpms
+   :dropdown dropdown/dropdown
    :fade fade/fade
    :kill kill/kill
+   :launch launch/launch
+   :media media/media
    :ocr ocr/ocr
    :open-term open-term/open-term
    :outputs outputs/outputs

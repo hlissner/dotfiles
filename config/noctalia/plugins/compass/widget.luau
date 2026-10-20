@@ -44,10 +44,8 @@ local PALETTE = {
     window_color = "tertiary", divider_color = "shadow",
     badge_color = "surface", text_color = "on_surface",
   },
-  special = {
-    fill = "tertiary/0.25", workspace_color = "tertiary", home_color = "primary",
-    window_color = "secondary", divider_color = "shadow",
-  },
+  -- For a north/south quadrant whose next workspace that way is a named one.
+  special = { workspace_color = "tertiary", home_color = "primary" },
 }
 
 -- "role", "role/0.4", "#rrggbb" or "#rrggbbaa" -> hex, opacity.
@@ -97,18 +95,21 @@ local function svg(c)
   local shape = setting("shape", "circle")
   local radius = setting("radius", 5)
   local divider = setting("divider", 1)
-  local state = c.special and "special" or "normal"
-  local prefix = c.special and "special_" or ""
-  local function color(key)
-    return setting(prefix .. key, PALETTE[state][key])
+  -- The special palette is a single north/south quadrant's, when the
+  -- workspace next door that way is a named one (a `hey wm launch -n`).
+  local function color(key, named)
+    local state = named and "special" or "normal"
+    return setting((state == "special" and "special_" or "") .. key, PALETTE[state][key])
   end
   local hops = c.hops or 0
 
   -- Positive is south of home, so home is up. Its quadrant is lit whatever's
   -- up there -- home is a workspace that way, occupied or not.
   local quadrant = {
-    north = hops > 0 and color("home_color") or (c.north and color("workspace_color")) or nil,
-    south = hops < 0 and color("home_color") or (c.south and color("workspace_color")) or nil,
+    north = hops > 0 and color("home_color", c.north_named)
+      or (c.north and color("workspace_color", c.north_named)) or nil,
+    south = hops < 0 and color("home_color", c.south_named)
+      or (c.south and color("workspace_color", c.south_named)) or nil,
     west = c.west and color("window_color") or nil,
     east = c.east and color("window_color") or nil,
   }
@@ -158,9 +159,7 @@ local function svg(c)
     end
   end
   table.insert(out, "</g>")
-  -- A scratchpad isn't on the tape; the count is still there for when it
-  -- drops, but it isn't the question being asked right now.
-  if hops ~= 0 and not c.special then
+  if hops ~= 0 then
     local badge = paint(color("badge_color"))
     if badge then
       table.insert(out, `<circle cx="{mid}" cy="{mid}" r="{string.format("%.1f", circle / 2)}" {badge}/>`)
@@ -181,7 +180,7 @@ end
 
 -- The line this widget draws. `focused` is in the service's state, not asked
 -- of Noctalia here, so that a focus change is a state change (see the FOCUSED
--- column in config/hypr/lib/workspace.lua).
+-- column in service.luau).
 local function pick()
   if setting("monitor", "bar") == "focused" then
     for _, c in pairs(compass) do
@@ -212,14 +211,11 @@ local function render()
   local around = {}
   for _, dir in ipairs({ "north", "south", "west", "east" }) do
     if c[dir] then
-      table.insert(around, dir)
+      table.insert(around, c[dir .. "_named"] and `{dir} (named)` or dir)
     end
   end
   if #around > 0 then
     table.insert(rows, { key = "More", value = table.concat(around, ", ") })
-  end
-  if c.special then
-    table.insert(rows, { key = "Special", value = "Active" })
   end
   barWidget.setTooltip(rows)
 end

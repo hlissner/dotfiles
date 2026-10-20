@@ -17,7 +17,7 @@ widget_spacing     = 8
 compositor_blur    = false
 contact_shadow     = true
 
-start = [ "compass", "submap", "group:activity" ]
+start = [ "compass", "group:activity" ]
 center = [ "date", "clock", "weather" ]
 end = [ "media", "timer", "tray", "group:devices", "group:system", "notifications", "privacy", "screencast" ]
 show_on_workspace_switch = false
@@ -79,20 +79,6 @@ scale = 1.10
 
 [widget.printers]
 type = "andrewdems/printers:printer"
-
-[widget.submap]
-type = "hey/hypr-submap:hypr-submap"
-hide_when_default = true
-show_label = false
-capsule = true
-capsule_foreground = "shadow"
-capsule_fill = "tertiary"
-
-    [widget.submap.glyphs]
-    screencap = "video"
-    screenshot = "screenshot"
-    session = "power"
-    scrolloverview = "apps"
 
 [widget.timer]
 type = "hey/timer:bar"
@@ -210,7 +196,7 @@ capsule_border = "primary"
 capsule_padding = 5
 
     [widget.media.actions]
-    right = "exec hey wm workspace toggle media"
+    right = "exec hey wm media"
 
 [widget.active_window]
 capsule = false
@@ -224,18 +210,17 @@ tooltip = "Overview"
 
   [widget.scroll_overview.actions]
   left  = "exec hey wm overview"
-  right = "exec hey wm overview all"
 
 [widget.compass]
 type = "hey/compass:compass"
 badge_size = 12
 font_size = 10
 home_color = "tertiary"
+fill = "surface"
 monitor = "focused"
 radius = 1
 size = 22
 special_home_color = "error"
-special_window_color = "secondary"
 special_workspace_color = "secondary"
 window_color = "primary"
 workspace_color = "primary"

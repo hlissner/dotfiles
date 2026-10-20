@@ -7,7 +7,7 @@
 with lib;
 with self.lib;
 let cfg = config.modules.editors.emacs;
-    emacs = with pkgs; (emacsPackagesFor emacs-git-pgtk).emacsWithPackages
+    emacs = self.inputs.emacs-overlay.packages.emacs-git-pgtk.pkgs.withPackages
       (epkgs: with epkgs; [
         vterm
       ]);
@@ -17,10 +17,6 @@ in {
   };
 
   config = mkIf cfg.enable {
-    nixpkgs.overlays = [
-      self.inputs.emacs-overlay.overlays.default
-    ];
-
     user.packages = with pkgs; [
       (mkLauncherEntry "Emacs (Debug Mode)" {
         description = "Start Emacs in debug mode";

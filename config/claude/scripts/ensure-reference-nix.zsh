@@ -11,7 +11,7 @@ build() {
   if [[ ${manual:A} != /nix/store/*-nix-manual-$key/* ]]; then
     # ...and otherwise the same manual, if nixpkgs' default nix is the
     # installed one. The version check below says whether it is.
-    manual=$(nix build --no-link --print-out-paths nixpkgs#nix.doc)/share/doc/nix/manual
+    manual=$(nix build --no-link --print-out-paths "nixpkgs#nix.doc")/share/doc/nix/manual
     [[ ${manual:A} == /nix/store/*-$key-doc/* ]] || {
       print -u2 "can't find a manual for nix $key (nixpkgs#nix.doc is ${${manual:A}#/nix/store/})"
       return 1

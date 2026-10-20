@@ -26,16 +26,16 @@ with builtins;
     };
 
     wm = {
-      desktop = "hyprland";
-      hyprland = {
+      desktop = "niri";
+      niri = {
         monitors = [
           { output = "DP-1";
-            mode = "1920x1080@60";
-            position = "0x0";
+            mode = "1920x1080";
+            position = { x = 0; y = 0; };
             primary = true; }
           { output = "HDMI-A-1";
-            mode = "1920x1080@75";
-            position = "1920x0"; }
+            mode = "1920x1080";
+            position = { x = 1920; y = 0; }; }
         ];
       };
     };

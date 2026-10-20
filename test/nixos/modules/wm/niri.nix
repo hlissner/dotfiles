@@ -70,16 +70,13 @@ in {
       expected = { count = 2; primary = true; spare = false; vrr = true; pos = true; mode = true; };
     };
 
-  # The named workspaces are the stand-in for special workspaces, and they
-  # have to open on the primary or niri puts them on whichever output it sorts
-  # first. Without a primary they're left to niri, not pinned to nothing.
-  testNamedWorkspacesOpenOnThePrimary = {
+  # Home has to open on the primary or niri puts it on whichever output it
+  # sorts first. Without a primary it's left to niri, not pinned to nothing.
+  testHomeOpensOnThePrimary = {
     expr = {
-      pinned   = all (w: hasInfix ''open-on-output "DP-2"'' (blockOf ''workspace "${w}" {'' (kdl two)))
-                     [ "media" "scratchpad" ];
-      unpinned = all (w: hasInfix ''workspace "${w}" {'' (kdl presets.niri)
-                         && !hasInfix "open-on-output" (blockOf ''workspace "${w}" {'' (kdl presets.niri)))
-                     [ "media" "scratchpad" ];
+      pinned   = hasInfix ''open-on-output "DP-2"'' (blockOf ''workspace "home" {'' (kdl two));
+      unpinned = hasInfix ''workspace "home" {'' (kdl presets.niri)
+                 && !hasInfix "open-on-output" (blockOf ''workspace "home" {'' (kdl presets.niri));
     };
     expected = { pinned = true; unpinned = true; };
   };
@@ -93,10 +90,27 @@ in {
         parts = splitString "// HOST-MARKER" (kdl c);
     in {
       expr = {
-        before = hasInfix ''output "DP-1"'' (head parts) && hasInfix ''workspace "media"'' (head parts);
+        before = hasInfix ''output "DP-1"'' (head parts) && hasInfix ''workspace "home"'' (head parts);
         after  = any (hasInfix ''output "'') (tail parts);
       };
       expected = { before = true; after = false; };
+    };
+
+  # hey wm launch pins a program to a workspace with an open-on-workspace rule
+  # in launch.kdl. A later rule overrides an earlier one, so that include has
+  # to come after everything else, the host's extraConfig included, and it has
+  # to be optional or niri falls back to its defaults whenever nothing is
+  # launching.
+  testLaunchIncludeIsLast =
+    let c = niri [{ modules.wm.niri.extraConfig = "// HOST-MARKER"; }];
+        text = kdl c;
+        inc = ''include optional=true "${presets.niri.home.configDir}/niri/launch.kdl"'';
+    in {
+      expr = {
+        last      = last (filter (hasPrefix "include") (lines c)) == inc;
+        afterHost = hasInfix inc (last (splitString "// HOST-MARKER" text));
+      };
+      expected = { last = true; afterHost = true; };
     };
 
   ## What the WM-agnostic modules read off it.
@@ -124,9 +138,25 @@ in {
     expected = true;
   };
 
-  # The template rides theme.nix, which used to be hyprland-only.
   testColorsTemplateIsRegistered = {
     expr = presets.niri.modules.wm.noctalia.settings.theme.templates.user ? niri;
     expected = true;
   };
+
+  # The NVIDIA driver caps its free-buffer pool for every compositor it has
+  # heard of except niri (nvidia.nix explains). The drop-in is JSON the driver
+  # parses at libGL load and ignores silently when malformed, so check the
+  # rule resolves to the one setting that matters.
+  testNvidiaLimitsNirisBufferPool =
+    let c = niri [{ modules.profiles.hardware = [ "gpu/nvidia" ]; }];
+        json = fromJSON c.environment.etc."nvidia/nvidia-application-profiles-rc.d/50-niri.json".text;
+        rule = head json.rules;
+        prof = findFirst (p: p.name == rule.profile) {} json.profiles;
+    in {
+      expr = {
+        matches = rule.pattern;
+        ratio   = (findFirst (s: s.key == "GLVidHeapReuseRatio") {} prof.settings).value or null;
+      };
+      expected = { matches = { feature = "procname"; matches = "niri"; }; ratio = 0; };
+    };
 }

@@ -29,21 +29,18 @@ with builtins;
     };
 
     wm = {
-      desktop = "hyprland";
+      desktop = "niri";
       plymouth = {
         enable = true;
         seamless = true;
       };
-      hyprland = {
+      niri = {
         monitors = [ { output = "eDP-1"; primary = true; } ];
         extraConfig = ''
-          hl.workspace_rule({ workspace = "n[s:special:pad:]",
-                              gaps_in = 5,
-                              gaps_out = 20 })
-          hl.window_rule({ match = { class = "^foot$" },
-                           scrolling_width = 0.45 })
-          hl.window_rule({ match = { class = "^foot$", workspace = "n[s:special:pad:]" },
-                           scrolling_width = 0.50 })
+          window-rule {
+              match app-id="^foot$"
+              default-column-width { proportion 0.45; }
+          }
         '';
       };
     };
@@ -105,7 +102,7 @@ with builtins;
     services.logind.settings.Login.HandlePowerKey = "ignore";
 
     # Cap the battery charge for longetivity. My laptop is almost always plugged
-    # in anyway. DMS/Noctalia's "apply to hardware" button does the same over
+    # in anyway. Noctalia's "apply to hardware" button does the same over
     # pkexec, but only for the current boot.
     services.udev.extraRules = ''
       ACTION=="add|change", SUBSYSTEM=="power_supply", KERNEL=="BAT*", ATTR{charge_control_end_threshold}=="?*", ATTR{charge_types}="Custom", ATTR{charge_control_end_threshold}="80"

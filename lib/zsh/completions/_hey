@@ -306,8 +306,7 @@ _hey() {
   local _hey_host=$HOST
   local _hey_wm
   case ${(L)XDG_CURRENT_DESKTOP} in
-    *hyprland*) _hey_wm=hypr ;;
-    *niri*)     _hey_wm=niri ;;
+    *niri*) _hey_wm=niri ;;
   esac
   local _hey_datadir=${XDG_DATA_HOME:-$HOME/.local/share}/hey
   # An unset $_hey_wm would collapse config/$_hey_wm/bin to config/bin, so it

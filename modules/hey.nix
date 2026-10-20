@@ -42,8 +42,7 @@ let cfg = config.hey;
             scripts)
         cfg.hooks;
 
-    # Mirrors `wm` in lib/hey/lib.janet.
-    wmDir = { hyprland = "hypr"; niri = "niri"; }.${cfg.desktop};
+    wmDir = cfg.desktop;
 in {
   options.hey = with types; {
     bin = mkOpt' str (getExe heyPkg) "The built hey binary.";

@@ -30,7 +30,7 @@ let
   warns = config: length config.warnings > length on.warnings;
 
   seamless = evalConfig [{
-    modules.wm.desktop = "hyprland";
+    modules.wm.desktop = "niri";
     modules.wm.plymouth.enable = true;
     modules.wm.plymouth.seamless = true;
   }];

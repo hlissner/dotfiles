@@ -1,6 +1,6 @@
 {
   "settings.poll_ms.label": "Poll interval",
-  "settings.poll_ms.description": "Milliseconds between asking Hyprland, on top of reacting to its events. Rolling the tape by gesture announces nothing, so this is what catches it. 0 disables the poll.",
+  "settings.poll_ms.description": "Milliseconds between re-asking the compositor, on top of reacting to its events. It only re-syncs a dead event stream. 0 disables the poll.",
   "settings.monitor.label": "Monitor",
   "settings.monitor.description": "Whose workspaces the dial describes: the monitor this bar is on, or whichever one has focus.",
   "settings.monitor.options.bar": "This bar's",
@@ -34,14 +34,8 @@
   "settings.badge_color.description": "The filled circle behind the hop count. Default is surface.",
   "settings.text_color.label": "Digit color",
   "settings.text_color.description": "For the hop count. Default is on_surface.",
-  "settings.special_fill.label": "Dial color (special workspace)",
-  "settings.special_fill.description": "While a special workspace is up. Default is a faint tertiary.",
-  "settings.special_workspace_color.label": "Workspace color (special workspace)",
-  "settings.special_workspace_color.description": "As above, while a special workspace is up. Default is tertiary.",
-  "settings.special_home_color.label": "Home color (special workspace)",
-  "settings.special_home_color.description": "As above, while a special workspace is up. Default is primary.",
-  "settings.special_window_color.label": "Window color (special workspace)",
-  "settings.special_window_color.description": "While a special workspace is up, the west/east quadrants judge its windows instead. Default is secondary.",
-  "settings.special_divider_color.label": "Divider color (special workspace)",
-  "settings.special_divider_color.description": "As above, while a special workspace is up. Default is shadow."
+  "settings.special_workspace_color.label": "Workspace color (named workspace)",
+  "settings.special_workspace_color.description": "As above, for a quadrant whose next workspace that way is a named one. Default is tertiary.",
+  "settings.special_home_color.label": "Home color (named workspace)",
+  "settings.special_home_color.description": "As above, when the next workspace towards home is a named one. Default is primary."
 }

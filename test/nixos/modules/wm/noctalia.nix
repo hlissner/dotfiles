@@ -11,8 +11,8 @@
 with lib;
 let
   noctalia = monitors: extra: evalConfig ([{
-    modules.wm.desktop = "hyprland";
-    modules.wm.hyprland.monitors = monitors;
+    modules.wm.desktop = "niri";
+    modules.wm.niri.monitors = monitors;
   }] ++ extra);
 
   settings = monitors: extra:
@@ -22,7 +22,7 @@ let
   three = [
     { output = "DP-1"; }
     { output = "DP-2"; primary = true; }
-    { output = "HDMI-A-1"; disabled = true; }
+    { output = "HDMI-A-1"; off = true; }
   ];
   base = settings three [];
 
@@ -50,7 +50,7 @@ let
   # time I rearrange -- or passes vacuously once I take the widget it probed
   # off the bar.
   fixture = extra: (evalConfig' (mkHey { dir = toString ./noctalia.d; }) ([{
-    modules.wm.desktop = "hyprland";
+    modules.wm.desktop = "niri";
   }] ++ extra)).modules.wm.noctalia.settings.bar.main;
   groupsOf = main: listToAttrs (map (g: nameValuePair g.id g.members) (main.capsule_group or []));
 in {
@@ -59,10 +59,10 @@ in {
   # The module reads its hook list out of flake.inputs.noctalia's source, and
   # theme.nix its color tokens, so the shell that runs has to be built from
   # that one. A fallback to nixpkgs' noctalia would be parsed against the
-  # wrong headers. Compared by src, not outPath: the module patches the
-  # package, so the derivation isn't the input's, but its source is. (The
-  # src is a cleanSourceWith set carrying a filter function, and functions
-  # never compare equal, hence the .outPath.)
+  # wrong headers. Compared by src rather than outPath so a host override that
+  # merely patches the package still passes. (The src is a cleanSourceWith set
+  # carrying a filter function, and functions never compare equal, hence the
+  # .outPath.)
   testShellIsTheOneWhoseSourceIsParsed = {
     expr = (noctalia [{}] []).programs.noctalia.package.src.outPath
            == flake.inputs.noctalia.packages.${system}.default.src.outPath;

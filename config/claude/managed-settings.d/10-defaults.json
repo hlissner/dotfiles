@@ -156,8 +156,7 @@
         "code.claude.com",
         "docs.claude.com",
         "docs.anthropic.com",
-        "github.com",
-        "wiki.hypr.land"
+        "github.com"
       ],
       "deniedDomains": [
         "home.lissner.net",

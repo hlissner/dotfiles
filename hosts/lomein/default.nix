@@ -24,24 +24,26 @@ with builtins;
     };
 
     wm = {
-      desktop = "hyprland";
+      desktop = "niri";
       plymouth = {
         enable = true;
         seamless = true;
       };
-      hyprland = {
+      niri = {
         monitors = [
           { output = "DVI-I-1";
-            mode = "1920x1080@60";
-            position = "1920x0";
+            mode = "1920x1080";
+            position = { x = 1920; y = 0; };
             primary = true; }
           { output = "DVI-I-2";
-            mode = "1920x1080@60";
-            position = "0x0"; }
+            mode = "1920x1080";
+            position = { x = 0; y = 0; }; }
         ];
+        # nouveau doesn't like the GT2XX and fails to render hardware cursors
         extraConfig = ''
-          -- nouveau doesn't like the GT2XX and fails to render hardware cursors
-          hl.config({ cursor = { no_hardware_cursors = true } })
+          debug {
+              disable-cursor-plane
+          }
         '';
       };
     };

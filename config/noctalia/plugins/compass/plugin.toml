@@ -8,20 +8,23 @@
 # each faces a compass point) light up per direction, and a badge in the
 # middle counts the SUPER+j/k presses back home.
 #
-# Two entries. The service asks Hyprland -- once, whatever the number of
-# bars -- through `hyprctl repl 'return hey.ws.compass()'`, a function in my
-# Hyprland config (config/hypr/lib/workspace.lua) that already knows the tape
-# order and each monitor's home. A widget draws its own monitor's line, or
-# the focused monitor's if told to.
+# Two entries. The service keeps `niri msg -j event-stream` open and derives
+# one line per output, whatever the number of bars: the tape is an output's
+# workspaces by idx, home is the one named `home` or the top one, and
+# west/east are a lower bound from column widths, because niri's IPC says
+# nothing about where the view is scrolled to. niri has no special workspaces
+# -- one `hey wm launch -n` made is a plain named one on the tape -- so the
+# special palette is for a north/south quadrant whose next workspace is named.
+# A widget draws its own monitor's line, or the focused monitor's if told to.
 
 id           = "hey/compass"
 name         = "Workspace Compass"
-version      = "1.1.0"
+version      = "1.2.0"
 plugin_api   = 31  # noctalia.getColor; the SVG needs real hex
 author       = "hlissner"
 license      = "MIT"
-dependencies = ["socat", "stdbuf", "hyprctl"]
-tags         = ["hyprland", "workspaces", "bar"]
+dependencies = ["niri"]
+tags         = ["niri", "workspaces", "bar"]
 icon         = "compass"
 description  = "Where the occupied workspaces and off-screen windows are, and how far home is."
 
@@ -125,7 +128,8 @@ entry = "widget.luau"
   # setting is `advanced` (settings_content_plugins.cpp: allowNone =
   # spec.advanced). Default is "", and what it means is up to widget.luau: a
   # faint dial, primary/secondary/tertiary quadrants, on_surface text -- and
-  # for the special set, the same rotated, so a scratchpad reads as one unasked.
+  # for the special pair, the same rotated, so a named neighbour reads as one
+  # unasked.
   [[widget.setting]]
   key             = "fill"
   type            = "color"
@@ -183,14 +187,6 @@ entry = "widget.luau"
   advanced        = true
 
   [[widget.setting]]
-  key             = "special_fill"
-  type            = "color"
-  label_key       = "settings.special_fill.label"
-  description_key = "settings.special_fill.description"
-  default         = ""
-  advanced        = true
-
-  [[widget.setting]]
   key             = "special_workspace_color"
   type            = "color"
   label_key       = "settings.special_workspace_color.label"
@@ -206,18 +202,3 @@ entry = "widget.luau"
   default         = ""
   advanced        = true
 
-  [[widget.setting]]
-  key             = "special_window_color"
-  type            = "color"
-  label_key       = "settings.special_window_color.label"
-  description_key = "settings.special_window_color.description"
-  default         = ""
-  advanced        = true
-
-  [[widget.setting]]
-  key             = "special_divider_color"
-  type            = "color"
-  label_key       = "settings.special_divider_color.label"
-  description_key = "settings.special_divider_color.description"
-  default         = ""
-  advanced        = true

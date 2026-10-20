@@ -6,12 +6,12 @@
 #
 # DESCRIPTION:
 #   Every output as JSON: name, focused, enabled, x, y, width, height, scale,
-#   all in logical pixels. Same shape under hyprland and niri, which is the
-#   point; a shell script that wants the focused monitor's size asks
+#   all in logical pixels. A shell script that wants the focused monitor's size
+#   asks:
 #
 #     hey wm outputs --focused -r width height
 #
-#   and gets "2560 1440" back, whatever is running.
+#   and gets "2560 1440" back.
 #
 # OPTIONS:
 #   --focused

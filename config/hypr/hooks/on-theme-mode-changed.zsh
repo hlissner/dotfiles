@@ -1,1 +1,0 @@
-on-colors-changed.zsh

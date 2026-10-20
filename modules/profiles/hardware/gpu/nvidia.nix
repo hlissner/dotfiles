@@ -102,5 +102,18 @@ in mkIf (any (s: hasPrefix "gpu/nvidia" s) hardware) (mkMerge [
       # sharing not working in Zoom, remove or comment this:
       __GLX_VENDOR_LIBRARY_NAME = "nvidia";
     };
+
+    # See https://niri-wm.github.io/niri/Nvidia.html
+    environment.etc."nvidia/nvidia-application-profiles-rc.d/50-niri.json".text =
+      builtins.toJSON {
+        rules = [{
+          pattern = { feature = "procname"; matches = "niri"; };
+          profile = "Limit Free Buffer Pool On Wayland Compositors";
+        }];
+        profiles = [{
+          name = "Limit Free Buffer Pool On Wayland Compositors";
+          settings = [{ key = "GLVidHeapReuseRatio"; value = 0; }];
+        }];
+      };
   })
 ])

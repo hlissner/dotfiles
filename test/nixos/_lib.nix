@@ -6,8 +6,8 @@
 # an attrset in nixpkgs' lib.runTests shape:
 #
 #   { evalConfig, ... }: {
-#     testHyprlandEnablesQt = {
-#       expr = (evalConfig [{ modules.wm.desktop = "hyprland"; }]).qt.enable;
+#     testNiriEnablesQt = {
+#       expr = (evalConfig [{ modules.wm.desktop = "niri"; }]).qt.enable;
 #       expected = true;
 #     };
 #   }
@@ -50,6 +50,18 @@ in rec {
       lib = heyLib;
     } // heyLib.dirsOf dir;
 
+  # One package set per system, as mkFlake does. A host on another architecture
+  # (hosts/pi is aarch64) can't take the check's own pkgs: nixpkgs refuses a
+  # set built for a different platform. heyLib stays the check's; its package
+  # helpers aren't what a host eval is testing.
+  pkgsFor = sys:
+    if sys == system then pkgs
+    else import flake.inputs.nixpkgs {
+      system = sys;
+      overlays = attrValues flake.overlays;
+      config.allowUnfree = true;
+    };
+
   # Evaluates a resolved host attrset. The primed variant keeps the whole
   # nixosSystem, for the tests that read an option's declaration (its type,
   # say) instead of hardcoding what it allows.
@@ -63,7 +75,8 @@ in rec {
       system = host.system;
       specialArgs = { inherit self; };
       modules = heyLib.mkHostModules {
-        inherit host hostName pkgs extraModules;
+        inherit host hostName extraModules;
+        pkgs = pkgsFor host.system;
       };
     };
 
@@ -134,7 +147,6 @@ in rec {
     # The bare system whole, for the options a suite reads declarations off.
     nixos = evalModules' (mkHey {}) [];
     bare = presets.nixos.config;
-    hyprland = evalConfig [{ modules.wm.desktop = "hyprland"; }];
     niri = evalConfig [{ modules.wm.desktop = "niri"; }];
 
     # Every host in hosts/, evaluated.

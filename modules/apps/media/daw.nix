@@ -30,7 +30,9 @@ in {
 
     user.packages = with pkgs; [
       reaper        # My DAW of choice
-      audacity      # For one-off audio editing
+
+      # REVIEW: audacity 4 fails to build (gcc 16); see NixOS/nixpkgs#572942
+      # audacity      # For one-off audio editing
     ];
   };
 }

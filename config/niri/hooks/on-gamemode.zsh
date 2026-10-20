@@ -8,8 +8,7 @@
 # DESCRIPTION:
 #   Display a notification indicating the status of gamemode. This ought to be
 #   triggered by gamemode's start/end hooks. Also hides Noctalia's desktop
-#   widgets while gamemode is on. Hyprland's copy also zeroes dim_around; niri
-#   has no dimming to give up.
+#   widgets while gamemode is on. niri has no dimming to give up.
 #
 #   `off` also queues gamemoded's own shutdown, a few seconds out, which is why
 #   there's a third argument I never type myself: kill.

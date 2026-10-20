@@ -29,6 +29,6 @@
   # to come from XDG_CURRENT_DESKTOP, which a tty hasn't got -- so `hey .foo`
   # over there was a janet type error rather than "command not found". A
   # desktop nobody taught me, or none at all, is an error rather than a guess.
-  (test (wm-under "hyprland") "hypr")
+  (test (wm-under "niri") "niri")
   (test (wm-under "unknown") "error")
   (test (wm-under "unset") "error"))

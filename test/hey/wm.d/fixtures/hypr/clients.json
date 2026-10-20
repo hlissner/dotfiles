@@ -1,8 +1,0 @@
-[{"address":"0x1","mapped":true,"class":"foot","title":"shell","pid":1234,"focusHistoryID":1,"floating":false,
-  "workspace":{"id":1,"name":"1"},"at":[10,20],"size":[300,400]},
- {"address":"0x2","mapped":true,"class":"io.github.supersonic-app.supersonic","title":"Supersonic","pid":4242,"focusHistoryID":0,"floating":false,
-  "workspace":{"id":-99,"name":"special:media"},"at":[100,100],"size":[50,50]},
- {"address":"0x3","mapped":true,"class":"hidden","title":"elsewhere","pid":5,"focusHistoryID":2,"floating":false,
-  "workspace":{"id":5,"name":"5"},"at":[0,0],"size":[10,10]},
- {"address":"0x4","mapped":false,"class":"ghost","title":"","pid":6,"focusHistoryID":3,"floating":false,
-  "workspace":{"id":1,"name":"1"},"at":[0,0],"size":[10,10]}]

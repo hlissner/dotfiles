@@ -13,27 +13,7 @@ let cfg = config.modules.wm;
     hasPrimary = primaryMonitor != null;
     otherOutputs = optionals hasPrimary (filter (o: o != primaryMonitor) cfg.outputs);
 
-    # REVIEW: Report this upstream. A stream stopped mid-body is a "premature"
-    #   done to libcurl, which keeps a multiplexed (HTTP/2) connection in its
-    #   pool after one. Half-open since a suspend, that pooled connection is
-    #   what the next httpStream to the same host is handed, and it waits on it
-    #   forever: hey/ntfy reconnected six times after a wake and heard nothing.
-    #   Forbidding reuse makes the socket die with the stream.
-    package = self.inputs.noctalia.packages.default.overrideAttrs (old: {
-      patches = (old.patches or []) ++ [
-        (pkgs.writeText "noctalia-stream-cancel-closes-connection.patch" ''
-          --- a/src/net/http_client.cpp
-          +++ b/src/net/http_client.cpp
-          @@ -511,5 +511,6 @@
-               m_streamTransfers.erase(it);
-             }
-          +  curl_easy_setopt(easy, CURLOPT_FORBID_REUSE, 1L);
-             curl_multi_remove_handle(m_multi, easy);
-             curl_easy_cleanup(easy);
-           }
-        '')
-      ];
-    });
+    package = self.inputs.noctalia.packages.default;
     format = pkgs.formats.toml {};
     # Disabled plugins are still installed, or Settings can't list them.
     installedPlugins = filterAttrs (_: p: p.src != null) cfg.noctalia.plugins;
@@ -69,17 +49,6 @@ in {
         inherit package;
         # Avoid `recommendedServices` b/c I don't want NetworkManager
       };
-
-      # HACK: uwsm (hyprland's session) scrubs XDG_SESSION_ID out of the user
-      #   manager, so Noctalia can't see the logind session (breaking its
-      #   brightness controls and loginctl/polkit interop). Harmless under a
-      #   session that keeps it (niri-session does): same answer, twice.
-      # REVIEW: Report upstream
-      systemd.user.services.noctalia.serviceConfig.ExecStart = mkForce
-        (pkgs.writeShellScript "noctalia-in-session" ''
-          export XDG_SESSION_ID="$(${config.systemd.package}/bin/loginctl show-user "$UID" -p Display --value)"
-          exec ${getExe package}
-        '');
 
       # Used by noctalia's battery widgets
       services.upower.enable = true;
@@ -321,9 +290,9 @@ in {
       };
     }
 
-    # greetd stops the greeter before uwsm has brought Hyprland up, causing a
-    # brief flicker of the monitor (more so on nvidia cards). This keeps it
-    # open until the latest possible moment to prevent it.
+    # greetd stops the greeter before the compositor is up, causing a brief
+    # flicker of the monitor (more so on nvidia cards). This keeps it open until
+    # the latest possible moment to prevent it.
     (mkIf config.modules.wm.plymouth.enable {
       # Connectors (card1-DP-1) are in the drm subsystem too, but have no node.
       services.udev.extraRules = ''

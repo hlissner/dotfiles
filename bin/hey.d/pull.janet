@@ -16,7 +16,7 @@
 # EXAMPLES:
 #   hey pull
 #     Update all flakes:
-#   hey pull waybar 'hypr*'
+#   hey pull waybar 'emacs*'
 #     Pull only specific inputs (globs are recognized, and a leading ! excludes):
 #   hey pull -o waybar@0b6476da32d181ee6b2cabdc5205a46a90521a75 ...
 #   hey pull -o waybar=github:aForkOf/Waybar ...

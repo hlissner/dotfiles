@@ -62,6 +62,19 @@ in {
 
     user.extraGroups = [ "gamemode" ];
 
+    # Ensure Steam opens in the workspace that it was launched from. Because of
+    # the 5-10s startup time, I can't go anywhere else or Steam will follow me.
+    home.dataFile."applications/steam.desktop" = mkIf (config.modules.wm.desktop == "niri") {
+      source = let
+        launch = pkgs.writeShellScript "steam-launch" ''
+          exec ${config.hey.bin} wm launch -a '^(steam|gamescope|steam_app_(default|[0-9]+))$' -- steam "$@"
+        '';
+      in pkgs.runCommand "steam.desktop" {} ''
+        sed 's@^Exec=steam@Exec=${launch}@' \
+          ${config.programs.steam.package}/share/applications/steam.desktop > $out
+      '';
+    };
+
     # Better for steam proton games
     systemd.user.settings.Manager.DefaultLimitNOFILE = mkDefault 1048576;
   };

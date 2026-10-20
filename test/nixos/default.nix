@@ -28,7 +28,9 @@ in
     name = "nixos-tests";
     paths = lib.attrValues suites;
     passthru = suites;
-    # Every host in hosts/ is x86_64, and the meta.platforms filter in
-    # lib/nixos.nix means aarch64 simply gets no 'nixos' check.
+    # The check runs where the builders are. An aarch64 host (hosts/pi) is
+    # still evaluated, against its own package set (_lib.nix's pkgsFor); the
+    # meta.platforms filter in lib/nixos.nix just means aarch64 gets no
+    # 'nixos' check of its own.
     meta.platforms = [ "x86_64-linux" ];
   }

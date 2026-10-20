@@ -9,42 +9,32 @@
   inputs = 
     {
       # Core dependecies
-      # Hyprland is the pickiest thing in this stack and I want its fixes as
-      # they land, so it gets to pin nixpkgs: the system follows the flake's
-      # rather than the other way round. That's also what keeps
-      # hyprland.cachix.org's hashes matching ours.
-      nixpkgs.follows = "hyprland/nixpkgs";
+      nixpkgs.follows = "niri/nixpkgs";
       agenix.url = "github:ryantm/agenix";
       agenix.inputs.nixpkgs.follows = "nixpkgs";
 
       # Desktop dependencies
-      hyprland.url = "github:hyprwm/Hyprland";
-      hyprland-scroll-overview.url = "github:yayuuu/hyprland-scroll-overview/new-release";
-      hyprland-scroll-overview.inputs.hyprland.follows = "hyprland";
-      hyprland-scroll-overview.inputs.nixpkgs.follows = "nixpkgs";
-      noctalia.url = "github:noctalia-dev/noctalia";
-      noctalia.inputs.nixpkgs.follows = "nixpkgs";
+      niri.url = "github:epireyn/niri-flake";
+      niri.inputs.nixpkgs-stable.follows = "nixpkgs";
+      noctalia.url = "github:noctalia-dev/noctalia/cachix";
 
       # Extras (imported directly by modules/hosts that need them)
-      emacs-overlay.url = "github:nix-community/emacs-overlay";
-      emacs-overlay.inputs.nixpkgs.follows = "nixpkgs";
+      emacs-overlay.url = "github:nix-community/emacs-overlay"; # own nixpkgs, same reason
       nixos-hardware.url = "github:nixos/nixos-hardware";
       llm-agents.url = "github:numtide/llm-agents.nix";
     };
 
   nixConfig = {
     extra-substituters = [
-      "https://hyprland.cachix.org"        # hyprland
+      "https://niri-epireyn.cachix.org"    # niri
       "https://noctalia.cachix.org"        # noctalia
       "https://nix-community.cachix.org"   # emacs-overlay
-      "https://emacs-ci.cachix.org"        # emacs-overlay
       "https://cache.numtide.com"          # llm-agents
     ];
     extra-trusted-public-keys = [
-      "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+      "niri-epireyn.cachix.org-1:tlVyFN7CtsDT+ZcLPS+ekFWeT1X6X4OqvWqbBMyIzFA="
       "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-      "emacs-ci.cachix.org-1:B5FVOrxhXXrOL0S+tQ7USrhjMT5iOPH+QN9q0NItom4="
       "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
     ];
   };
