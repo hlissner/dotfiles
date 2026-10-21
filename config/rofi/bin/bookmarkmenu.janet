@@ -17,21 +17,18 @@
 (import sqlite3 :as sql)
 
 (defn- profile-dir [&opt profile]
-  (some (fn [dir]
-          (def dir (path/join dir ".mozilla" "librewolf"))
-          (when (path/directory? dir)
-            (def file (path/join dir "profiles.ini"))
-            (when (path/file? file)
-              (var profile profile)
-              (unless profile
-                (with [f (file/open file :r)]
-                  (each l (file/lines f)
-                    (when (string/has-prefix? "Path=" l)
-                      (set profile (get (string/split "=" l 0 2) 1))
-                      (break)))))
-              (when path
-                (path/join dir (string/chomp profile))))))
-        (filter truthy? [(os/getenv "XDG_FAKE_HOME") (os/getenv "HOME")])))
+  (def dir (path/xdg :config "librewolf" "librewolf"))
+  (def file (path/join dir "profiles.ini"))
+  (when (path/file? file)
+    (var profile profile)
+    (unless profile
+      (with [f (file/open file :r)]
+        (each l (file/lines f)
+          (when (string/has-prefix? "Path=" l)
+            (set profile (get (string/split "=" l 0 2) 1))
+            (break)))))
+    (when profile
+      (path/join dir (string/chomp profile)))))
 
 (defn- db [profile file &opt reload?]
   # Copy the sqlite database to get around locks. Fortunately, FF's dbs are
