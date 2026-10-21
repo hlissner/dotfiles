@@ -1,0 +1,32 @@
+#!/usr/bin/env zsh
+# Send a desktop notification.
+#
+# SYNOPSIS:
+#   hey.notify [-a NAME] [-c CATEGORY] [-i ICON] [-t MS]
+#              (info|warn|error) SUMMARY [BODY]
+#
+# DESCRIPTION:
+#   Sends a notification over DBus. Use hey.toast for simpler notifications that
+#   only need to be glanced at.
+#
+# OPTIONS:
+#   -a NAME
+#     The app the notification claims to be from. Defaults to hey.
+#   -c CATEGORY
+#     A notification category, for Noctalia's filters.
+#   -i ICON
+#     An icon name or path to an image.
+#   -t MS
+#     How long it lingers, in milliseconds. 0 pins it until dismissed.
+
+local -a app category icon timeout
+zparseopts -D -- a:=app c:=category i:=icon t:=timeout
+local type=$1 summary=$2 body=$3
+local urgency=normal
+[[ $type == error ]] && urgency=critical
+
+local -a opts=(-a "${app[2]:-hey}" -u $urgency)
+[[ -n ${category[2]:-} ]] && opts+=(-c "${category[2]}")
+[[ -n ${icon[2]:-} ]] && opts+=(-i "${icon[2]}")
+[[ -n ${timeout[2]:-} ]] && opts+=(-t "${timeout[2]}")
+hey.do -o -e notify-send -e noctalia notify-send $opts -- "$summary" "$body"

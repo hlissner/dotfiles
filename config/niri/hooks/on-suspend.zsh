@@ -8,7 +8,7 @@
 #   Triggered by `hey-sleep-hook` (modules/wm/default.nix) when the
 #   system goes to sleep.
 
-hey.toast info "Going to sleep.."
+hey.toast -i moon info "Going to sleep.."
 playerctl -a pause
 
 # No point fading here. Something else will trigger it before we get here.

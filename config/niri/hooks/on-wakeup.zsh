@@ -9,6 +9,6 @@
 #   wakes up from sleep. Nothing to compact here: niri's workspaces are
 #   already infinite.
 
-hey.toast info "Waking up..."
+hey.toast -i sunrise info "Waking up..."
 
 hey wm play-sound wakeup

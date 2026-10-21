@@ -37,4 +37,4 @@
   (log 2 "enable: %q; disable: %q" to-enable to-disable)
   (each name to-enable (wm/set-output name true))
   (each name to-disable (wm/set-output name false))
-  (sys/toast :info (string "Set monitors: " (string/join names " "))))
+  (sys/toast :info (string "Set monitors: " (string/join names " ")) :icon "device-desktop"))

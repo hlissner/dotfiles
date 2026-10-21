@@ -46,7 +46,7 @@
   (os/mkdir (path :runtime))
   (spit img png)
   (defer (os/rm img)
-    (sys/toast :info "Processing capture..." :category "ocr")
+    (sys/toast :info "Processing capture..." :icon "text-scan-2")
     (def text @"")
     (unless ($? cached-nix-shell -p ,pkg -p imagemagick --run
                 ,(fmt `magick png:'%s' -colorspace Gray -resize 300%% -sharpen 0x1 png:- |
@@ -56,10 +56,11 @@
     # tesseract ends every page with a form feed.
     (def text (string/replace-all "\f" "" text))
     (when (empty? (string/trim text))
-      (sys/toast :warn "Nothing to read" :details "OCR found no text there" :category "ocr")
+      (sys/toast :warn "OCR found no text there" :icon "text-scan-2" :inactive true)
       (exit 1))
     (sys/yank text)
     (def preview (string/trim (string/join (string/split " " (string/replace-all "\n" " " text)) " ")))
-    (sys/toast :info (fmt "Copied %d characters" (length text))
-               :details (if (> (length preview) 120) (string (slice preview 0 119) "…") preview)
-               :category "ocr" :icon "text-scan-2")))
+    # A notification, not a toast: the preview is the point, and it's a body.
+    (sys/notify (if (> (length preview) 120) (string (slice preview 0 119) "…") preview)
+                :title (fmt "Copied %d characters" (length text))
+                :icon "text-scan-2")))

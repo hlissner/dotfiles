@@ -227,6 +227,11 @@
   (fresh)
   (test (first (hey-wm "niri" "set-monitors" "DP-1")) 0)
   (test (asked "niri") @["niri msg output DP-1 on" "niri msg output HDMI-A-1 off"])
+  # And says so, on the OSD. Fields, not the whole payload: a table's key
+  # order is json/encode's business.
+  (def osd (string ;(asked-eventually "noctalia msg osd-show")))
+  (test (says? [0 osd] `"icon":"device-desktop"`) true)
+  (test (says? [0 osd] `"value":"Set monitors: DP-1"`) true)
   (fresh)
   (test (first (hey-wm "niri" "set-monitors" "--off" "HDMI-A-1")) 0)
   (test (asked "niri") @["niri msg output HDMI-A-1 off"])

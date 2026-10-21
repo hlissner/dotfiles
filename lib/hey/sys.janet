@@ -78,8 +78,8 @@
           wait (os/execute argv :p)
           (os/spawn argv :pd))))
 
-(defn notify [message &named urgency title icon sound id]
-  (os/spawn ["notify-send"
+(defn notify [message &named urgency title icon sound id app]
+  (os/spawn ["notify-send" "-a" (or app "hey")
              ;(opts "-i" icon)
              ;(opts "-u" urgency)
              ;(opts "-r" id)
@@ -89,15 +89,13 @@
             :pd)
   (if sound (play-sound sound)))
 
-(defn toast [type message &named details category icon sound]
-  (def payload @{:app_name "hey"
-                 :summary message
-                 :urgency (if (= type :error) "critical" "normal")})
-  (when details (put payload :body details))
-  (when category (put payload :category category))
-  (when icon (put payload :icon icon))
-  (os/spawn ["noctalia" "msg" "notification-show" (string (json/encode payload))]
-            :pd)
+(def- toast-glyphs {:info "info-circle" :warn "alert-triangle" :error "circle-x"})
+(defn toast [type message &named icon progress inactive sound]
+  (def payload @{:icon (or icon (toast-glyphs type) (toast-glyphs :info))
+                 :value message})
+  (when progress (put payload :progress progress))
+  (when inactive (put payload :inactive true))
+  (os/spawn ["noctalia" "msg" "osd-show" (string (json/encode payload))] :pd)
   (if sound (play-sound sound)))
 
 (defn- feed [argv text]

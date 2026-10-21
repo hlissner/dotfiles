@@ -17,7 +17,7 @@
 
 case $1 in
   on)
-    hey.toast warn "Gamemode started!"
+    hey.toast -i device-gamepad-2 warn "Gamemode started!"
     # Hiding tears the widgets down, so they stop costing frames, not just
     # pixels. Runtime-only; the saved setting is untouched.
     noctalia msg desktop-widgets-hide &>/dev/null
@@ -35,7 +35,7 @@ case $1 in
     if [[ "$(busctl --user --auto-start=no get-property \
              com.feralinteractive.GameMode /com/feralinteractive/GameMode \
              com.feralinteractive.GameMode ClientCount 2>/dev/null)" == "i 0" ]]; then
-      hey.toast info "Gamemode ended!"
+      hey.toast -i device-gamepad-2 -m info "Gamemode ended!"
       systemctl --user stop gamemoded.service
     fi
     ;;

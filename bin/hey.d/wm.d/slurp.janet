@@ -26,5 +26,5 @@
   (if-let [geom (wm/select target ;args)]
     (print geom)
     (do (when (= target "last")
-          (sys/toast :error "No previous selection to retake"))
+          (sys/toast :error "No previous selection to retake" :icon "lasso-off"))
         (exit 1))))

@@ -25,6 +25,6 @@
          (or area (ignore-errors (flake/info :desktop)) "everything"))
   (when (hey! hook ,;(opts area) on-reload -f -v)
     (sys/toast :info "Finished reloading system"
-               :icon "refresh-alert"
+               :icon "refresh"
                :sound 'notify))
   (echo :check "Done!"))

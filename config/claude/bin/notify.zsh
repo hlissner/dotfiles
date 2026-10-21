@@ -55,5 +55,5 @@ case $event in
     ;;
 esac
 
-hey.toast -a "Claude Code" -c claude-code -i $icon -H \
+hey.notify -a "Claude Code" -c claude-code -i $icon \
   $level "Claude ($project)" "$body"

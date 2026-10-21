@@ -195,7 +195,8 @@ ShellRoot {
   (def delay (if delay (or (scan-number delay) 0) 0))
   (loop [i :down-to [delay 1]]
     (sys/play-sound "blip")
-    (sys/toast :warn (fmt "Recording starting in... %d" i) :category "countdown")
+    (sys/toast :warn (fmt "Recording starting in... %d" i)
+               :icon "player-record" :progress (/ i delay))
     (os/sleep 1))
   # The bar widget counts up from this.
   (spit (livefile) (string (os/time)))
@@ -204,8 +205,8 @@ ShellRoot {
   (when (zero? rc)
     (os/sleep 0.1)
     (when (= format "gif")
-      (sys/toast :warn "Optimizing gif. This may take a while...")
+      (sys/toast :warn "Optimizing gif. This may take a while..." :icon "gif")
       ($ cached-nix-shell -p gifsicle --run ,(fmt "gifsicle --optimize=3 %q" file)))
     (sys/yank (string "file://" file) :type "text/uri-list")
     (sys/play-sound "success")
-    (sys/toast :info "Recording complete. Copied to clipboard!")))
+    (sys/toast :info "Recording complete. Copied to clipboard!" :icon "clipboard-check")))

@@ -1,0 +1,3 @@
+#!/usr/bin/env zsh
+# Stand-in for notify-send, for test/hey/{wm,zsh}.janet: logs its argv to $HEY_TEST_WM_LOG.
+print -r -- "notify-send $*" >>$HEY_TEST_WM_LOG

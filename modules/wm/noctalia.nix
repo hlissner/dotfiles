@@ -242,6 +242,8 @@ in {
       modules.wm.noctalia.settings = defaults {
         notification.monitors = [ primaryMonitor ];
         osd.monitors = [ primaryMonitor ];
+        # The default 1400ms suits a volume blip; hey's toasts are sentences.
+        osd.hide_delay_ms = 2500;
 
         # Only show the lockscreen widgets on the primary window. Hide all other
         # widgets.

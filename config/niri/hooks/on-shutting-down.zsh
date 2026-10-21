@@ -14,7 +14,7 @@ local stamp=$(hey path runtime session-ending)
 [[ -e $stamp ]] && exit 0
 mkdir -p ${stamp:h} && : >|$stamp
 
-hey.toast warn "Shutting down..."
+hey.toast -i power warn "Shutting down..."
 
 # Fade while the sound plays. Plus the ~130ms quickshell takes to cold-start.
 hey wm fade -d 1250 out &

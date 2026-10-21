@@ -51,4 +51,4 @@ fi
 .stars() { print -r -- ${(r:5::☆:)${(l:$1::★:)}} }
 local body="$(.stars $before) → $(.stars $rating)"
 [[ -z $sub ]] || body="$sub"$'\n'"$body"
-hey.toast -a Supersonic ${cover:+-i} $cover info "Rated: $name" "$body"
+hey.notify -a Supersonic ${cover:+-i} $cover info "Rated: $name" "$body"

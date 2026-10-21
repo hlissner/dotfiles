@@ -45,4 +45,4 @@ hey.do subsonic.api $verb[$state] $key[$kind]=$id >/dev/null
 
 local label="♡ Unfavorited"
 [[ $state == on ]] && label="♥ Favorited"
-hey.toast -a Supersonic ${cover:+-i} $cover info "$label: $name" "$sub"
+hey.notify -a Supersonic ${cover:+-i} $cover info "$label: $name" "$sub"

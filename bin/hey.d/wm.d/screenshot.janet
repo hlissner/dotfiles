@@ -55,6 +55,7 @@
         (os/mkdir (path :runtime))
         (spit preview png)
         (sys/yank png :type "image/png")
-        (sys/toast :info "Screenshot captured" :details "Copied to clipboard" :icon preview)))
-    (do (sys/toast :warn "Aborted")
+        # A notification, not a toast: the OSD can't show the preview.
+        (sys/notify "Copied to clipboard" :title "Screenshot captured" :icon preview)))
+    (do (sys/toast :warn "Aborted" :icon "camera-off" :inactive true)
         (exit 1))))
