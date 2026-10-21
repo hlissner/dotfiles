@@ -133,7 +133,7 @@ let cfg = config.modules.games.emulators;
           echo "${libs}" > "$dir/.libs"
         fi
         export PATH=${pkgs.wget}/bin:$PATH
-        exec "$dir/pico8_dyn" "$@"
+        exec "$dir/pico8_dyn" -home ${config.home.dataDir}/lexaloffle "$@"
       '';
 
     # %EMULATOR_X% -> the package whose binary ES-DE's find rules look for.
