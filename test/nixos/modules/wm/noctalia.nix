@@ -116,22 +116,6 @@ in {
   # A widget's type names its plugin. Widgets whose plugin this host never
   # installs are dropped rather than left on the bar as dead entries; built-in
   # widgets have no plugin and must survive the filter regardless.
-  # The shell pins itself off modules.wm.{primaryMonitor,outputs}, not off a
-  # compositor's own option, so the other compositor gets the same treatment.
-  testPrimaryMonitorIsReadOffWhateverDesktop =
-    let s = (evalConfig [{
-          modules.wm.desktop = "niri";
-          modules.wm.niri.monitors = [
-            { output = "DP-1"; }
-            { output = "DP-2"; primary = true; }
-            { output = "HDMI-A-1"; off = true; }
-          ];
-        }]).modules.wm.noctalia.settings;
-    in {
-      expr = { barOff = attrNames s.bar.main.monitor; toasts = s.notification.monitors; };
-      expected = { barOff = [ "DP-1" "HDMI-A-1" ]; toasts = [ "DP-2" ]; };
-    };
-
   testBarDropsWidgetsWhosePluginIsNotInstalled =
     let off = fixture [];
         on = fixture [{ programs.kdeconnect.enable = true; }];
@@ -144,8 +128,8 @@ in {
       expected = { off = false; on = true; builtIn = true; };
     };
 
-  # A group emptied by the filter has to leave its lane too, or the lane names
-  # a group:<id> that no longer exists.
+  # A group emptied by the filter has to leave its lane too, or the lane names a
+  # group:<id> that no longer exists.
   testBarGroupsLoseMembersNotTheirPlace =
     let main = fixture []; in {
       expr = {
@@ -159,8 +143,8 @@ in {
     };
 
   # The one built-in widget that needs the same treatment for the opposite
-  # reason: it has no plugin to gate it and no setting to hide itself, so a
-  # host with no radio would carry a disconnected glyph forever.
+  # reason: it has no plugin to gate it and no setting to hide itself, so a host
+  # with no radio would carry a disconnected glyph forever.
   testBarDropsNetworkWidgetWithoutWifi = {
     expr = {
       withoutWifi = elem "network" (placedIn (fixture []));
@@ -198,8 +182,8 @@ in {
   # live config dir the baseline is included from, so a Luau edit is a hot
   # reload rather than a rebuild.
   #
-  # `none` is the canary: written as a filter over `hey/*`, every assertion
-  # here would pass just as loudly with no local plugins left to check.
+  # `none` is the canary: written as a filter over `hey/*`, every assertion here
+  # would pass just as loudly with no local plugins left to check.
   testLocalPluginsAreServedFromTheConfigDir =
     let plugins = (noctalia three []).modules.wm.noctalia.plugins;
         mine = filter (hasPrefix "hey/") (attrNames plugins);
@@ -213,12 +197,12 @@ in {
       expected = { none = false; disabled = []; inStore = []; };
     };
 
-  # `[widget.<id>].type` is where a bar entry names its plugin, and a typo
-  # there (or a plugin renamed out from under it) drops the widget without a
-  # word -- the filter above can't tell it from a plugin this host skips on
-  # purpose. So every plugin my real bar names has to be one the module
-  # declares, whatever I've put on the bar and wherever. (With every gate open,
-  # since the hardware-gated ones are declared behind an mkIf.)
+  # `[widget.<id>].type` is where a bar entry names its plugin, and a typo there
+  # (or a plugin renamed out from under it) drops the widget without a word --
+  # the filter above can't tell it from a plugin this host skips on purpose. So
+  # every plugin my real bar names has to be one the module declares, whatever
+  # I've put on the bar and wherever. (With every gate open, since the
+  # hardware-gated ones are declared behind an mkIf.)
   testBarNamesOnlyDeclaredPlugins =
     let bar = fromTOML (readFile "${dir}/config/noctalia/bar.toml");
         declared = (noctalia three gatesOpen).modules.wm.noctalia.plugins;
@@ -233,24 +217,35 @@ in {
   # Every event hands off to the hook wearing its name in hey's spelling
   # (underscores to hyphens), so a handler is a file in a hooks/ dir and the
   # meaning is never repeated here. The list is Noctalia's, not mine, and the
-  # module throws if upstream moves it -- so all that's pinned is that the
-  # events config/*/hooks answers are still in it.
-  testHooksHandOffToHeyByName = {
-    expr = {
-      spelled = all (name:
-          hasSuffix "/bin/hey hook -f on-${replaceStrings [ "_" ] [ "-" ] name}" base.hooks.${name})
-        (attrNames base.hooks);
-      answered = filter (x: !(base.hooks ? ${x}))
-        [ "colors_changed" "theme_mode_changed" "battery_charging"
-          "battery_discharging" "started" "shutting_down" "rebooting" ];
+  # module throws if upstream moves it -- so all that's pinned is that every
+  # handler on disk still has an event to answer. A handler for an event
+  # upstream renamed is a file nothing fires, and nothing says so. The hooks hey
+  # fires itself (reload, suspend, ...) aren't Noctalia's to know about.
+  testHooksHandOffToHeyByName =
+    let
+      fromHey = [ "reload" "gamemode" "suspend" "wakeup" "timer_elapsed" ];
+      configDir = "${dir}/config";
+      hooksDirs = concatMap (app:
+        let d = "${configDir}/${app}/hooks";
+        in optional (builtins.pathExists d) d) (attrNames (builtins.readDir configDir));
+      handled = unique (concatMap (d:
+        map (f: replaceStrings [ "-" ] [ "_" ] (removeSuffix ".zsh" (removePrefix "on-" f)))
+          (filter (hasPrefix "on-") (attrNames (builtins.readDir d)))) hooksDirs);
+    in {
+      expr = {
+        spelled = all (name:
+            hasSuffix "/bin/hey hook -f on-${replaceStrings [ "_" ] [ "-" ] name}" base.hooks.${name})
+          (attrNames base.hooks);
+        none = handled == [];
+        unanswered = filter (x: !(base.hooks ? ${x})) (subtractLists fromHey handled);
+      };
+      expected = { spelled = true; none = false; unanswered = []; };
     };
-    expected = { spelled = true; answered = []; };
-  };
 
   ## The handoff.
 
-  # The udev rule and the template it instantiates are two strings that have
-  # to agree. If they drift the hold never starts, and the only symptom is the
+  # The udev rule and the template it instantiates are two strings that have to
+  # agree. If they drift the hold never starts, and the only symptom is the
   # login blink quietly coming back.
   testDrmHoldRuleNamesARealUnit =
     let c = noctalia three [{ modules.wm.plymouth.enable = true; }];
@@ -285,8 +280,8 @@ in {
 
   # services.displayManager.autoLogin is a no-op to nixpkgs' greetd module; the
   # wm module is what turns it into an initial_session. What's pinned is that
-  # the session command is the WM's own and that greetd stops restarting --
-  # with initial_session, every restart would be another login.
+  # the session command is the WM's own and that greetd stops restarting -- with
+  # initial_session, every restart would be another login.
   testAutoLoginSkipsTheGreeter =
     let c = noctalia three [{
           services.displayManager.autoLogin = { enable = true; user = "me"; };

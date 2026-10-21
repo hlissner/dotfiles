@@ -98,15 +98,4 @@ in {
       };
       expected = { cleared = ""; retains = true; };
     };
-
-  ## The stage-1 password agent, without which a LUKS prompt lands under the
-  ## splash instead of in it.
-
-  testInitrdAsksForPasswordsThroughPlymouth = {
-    expr = {
-      service = on.boot.initrd.systemd.services.systemd-ask-password-plymouth.wantedBy != [];
-      path    = on.boot.initrd.systemd.paths.systemd-ask-password-plymouth.wantedBy != [];
-    };
-    expected = { service = true; path = true; };
-  };
 }

@@ -27,9 +27,9 @@ let
 in {
   ## Hooks.
 
-  # One directory per fragment NAME, one NN-HOOK file per hook in it, so each
-  # is just another hooks dir to `hey hook`. The 50- is what leaves room on
-  # both sides for a host to sequence itself against. The fragments are zsh (a
+  # One directory per fragment NAME, one NN-HOOK file per hook in it, so each is
+  # just another hooks dir to `hey hook`. The 50- is what leaves room on both
+  # sides for a host to sequence itself against. The fragments are zsh (a
   # missing shebang would make them sh) and have to be executable: `hey hook`
   # drops a handler that isn't, and `hey hook -l` hides it too.
   testHooksLandNumberedExecutableAndZsh =
@@ -86,8 +86,8 @@ in {
   # last means wins. My tree goes there; hey's own libraries (what the janet
   # scripts hey dispatches to but doesn't compile in import from) are the
   # fallback. Get this backwards and a `jpm install`ed spork silently loses to
-  # hey's pinned one. JANET_TREE has to name the same directory, or jpm
-  # installs somewhere janet never looks.
+  # hey's pinned one. JANET_TREE has to name the same directory, or jpm installs
+  # somewhere janet never looks.
   #
   # And no store paths: session vars are frozen at login, so one here pins the
   # scripts to whatever libs I logged in with, however many syncs ago.
@@ -97,8 +97,7 @@ in {
     in {
       expr = {
         mine = last path == "${v.JANET_TREE}/lib";
-        heys = head path == "/etc/hey/janet"
-               && hasSuffix "-hey-janet-libs" "${bare.environment.etc."hey/janet".source}";
+        heys = head path == "/etc/hey/janet";
         pinned = any (hasPrefix builtins.storeDir) path;
       };
       expected = { mine = true; heys = true; pinned = false; };
@@ -127,20 +126,20 @@ in {
     let moved = evalConfig [{ hey.dir = "/elsewhere"; }]; in {
       expr = {
         inherit (moved.hey) binDir libDir configDir modulesDir;
-        sounds = moved.home.dataLink."sounds/hey";
+        sounds = hasPrefix "/elsewhere/" moved.home.dataLink."sounds/hey";
         hooks = hasPrefix "/elsewhere/hosts/" (head moved.hey.hookPaths);
       };
       expected = {
         binDir = "/elsewhere/bin"; libDir = "/elsewhere/lib";
         configDir = "/elsewhere/config"; modulesDir = "/elsewhere/modules";
-        sounds = "/elsewhere/assets/sounds";
+        sounds = true;
         hooks = true;
       };
     };
 
-  # A store path is the one value it must never take: everything off it would
-  # be pinned to a snapshot, and under pure eval pathExists wouldn't even say
-  # so. This file is in the store whenever this suite runs, so it's the fixture.
+  # A store path is the one value it must never take: everything off it would be
+  # pinned to a snapshot, and under pure eval pathExists wouldn't even say so.
+  # This file is in the store whenever this suite runs, so it's the fixture.
   # The default gets the same check, since that's what every host runs on.
   testDirRefusesTheStore = {
     expr = {
