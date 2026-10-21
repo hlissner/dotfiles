@@ -67,6 +67,8 @@ in {
       programs.firefox = {
         enable = true;
         package = mkDefault (pkgs.librewolf.override {
+          # Stop programs.firefox from writing ~/.mozilla
+          hasMozSystemDirPatch = true;
           extraPolicies = cfg.policies // { ExtensionSettings = cfg.extensions; };
         });
         autoConfig =
