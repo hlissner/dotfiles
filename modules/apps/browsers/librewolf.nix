@@ -128,10 +128,6 @@ in {
             # Disable "beacon" asynchronous HTTP transfers (used for analytics)
             # https://developer.mozilla.org/en-US/docs/Web/API/navigator.sendBeacon
             "beacon.enabled" = false;
-            # Disable gamepad API to prevent USB device enumeration
-            # https://www.w3.org/TR/gamepad/
-            # https://trac.torproject.org/projects/tor/ticket/13023
-            "dom.gamepad.enabled" = false;
             # Don't try to guess domain names when entering an invalid domain name in URL bar
             # http://www-archive.mozilla.org/docs/end-user/domain-guessing.html
             "browser.fixup.alternate.enabled" = false;
@@ -144,6 +140,17 @@ in {
             # https://wiki.mozilla.org/Firefox/Features/Form_Autofill
             "extensions.formautofill.available" = "off";
             "extensions.formautofill.creditCards.available" = false;
+            # RFP pins prefers-color-scheme to light and Mozilla won't let that
+            # one target be carved out (bug 1732114). FPP eats the same target
+            # list, so this is RFP minus the one thing I actually mind.
+            "privacy.resistFingerprinting" = false;
+            "privacy.fingerprintingProtection" = true;
+            "privacy.fingerprintingProtection.overrides" = "+AllTargets,-CSSPrefersColorScheme";
+            # 0 = dark, regardless of what GTK or the browser theme claims.
+            "layout.css.prefers-color-scheme.content-override" = 0;
+            # No need on my own pages. Despite the name, this exempts from FPP
+            # too; the check sits above the RFP/FPP split.
+            "privacy.resistFingerprinting.exemptedDomains" = "*.lissner.net,*.henrik.io";
           };
           in concatStrings (mapAttrsToList (name: value: ''
             defaultPref("${name}", ${builtins.toJSON value});
