@@ -32,7 +32,11 @@
   (merge (tabseq [s :in ["nes" "snes" "genesis" "gamegear" "gba" "nds" "n64" "saturn"
                          "psx" "psp" "ps2" "ps3" "wii" "psvita" "switch"]]
            s s)
-         {"sms" "mastersystem" "dc" "dreamcast" "ngc" "gc" "3ds" "n3ds" "pico" "pico8"}))
+         {"sms"  "mastersystem"
+          "dc"   "dreamcast"
+          "ngc"  "gc"
+          "3ds"  "n3ds"
+          "pico" "pico8"}))
 
 # RetroArch's "sort saves by core" directories are the cores' display names.
 # Used only to place a save pulled down for a ROM the device has never saved
@@ -46,17 +50,17 @@
 # NextUI's Roms/ folders, "Name (TAG)". The tag is what Bios/ and Saves/ key
 # on. Whatever isn't here is reported as unmapped; add it off the card.
 (def- nextui-dirs
-  {"nes" "Nintendo Entertainment System (FC)"
-   "snes" "Super Nintendo Entertainment System (SFC)"
-   "gb" "Game Boy (GB)"
-   "gbc" "Game Boy Color (GBC)"
-   "gba" "Game Boy Advance (GBA)"
-   "genesis" "Sega Genesis (MD)"
-   "sms" "Sega Master System (SMS)"
+  {"nes"      "Nintendo Entertainment System (FC)"
+   "snes"     "Super Nintendo Entertainment System (SFC)"
+   "gb"       "Game Boy (GB)"
+   "gbc"      "Game Boy Color (GBC)"
+   "gba"      "Game Boy Advance (GBA)"
+   "genesis"  "Sega Genesis (MD)"
+   "sms"      "Sega Master System (SMS)"
    "gamegear" "Sega Game Gear (GG)"
-   "psx" "Sony PlayStation (PS)"
-   "pce" "TurboGrafx-16 (PCE)"
-   "pico" "Pico-8 (PICO)"})
+   "psx"      "Sony PlayStation (PS)"
+   "pce"      "TurboGrafx-16 (PCE)"
+   "pico"     "Pico-8 (PICO)"})
 
 # sdcardfs fakes ownership and can't set mtimes, so size is the only thing
 # worth comparing. FAT can't do perms either, and rounds mtimes to 2s.
@@ -243,16 +247,17 @@
 
 (defn parse-sha1sum "sha1sum's output as {file hash}." [text]
   (tabseq [line :in (string/split "\n" (string/trim text))
-           :when (not (empty? line))
-           :let [[hash file] (peg/match '(* (<- (some :h)) (some " ") (<- (any 1))) line)]]
+                :when (not (empty? line))
+                :let [[hash file] (peg/match '(* (<- (some :h)) (some " ") (<- (any 1))) line)]]
     file hash))
 
 # RomM's timestamps are ISO 8601, in UTC, to the microsecond. Only the seconds
 # matter here; a clock that disagrees by less than that isn't my problem.
 (defn iso->time [s]
-  (when-let [[Y M D h m sec] (peg/match '(* (number :d+) "-" (number :d+) "-" (number :d+)
-                                             (set "T ") (number :d+) ":" (number :d+) ":" (number :d+))
-                                        (string s))]
+  (when-let [[Y M D h m sec]
+             (peg/match '(* (number :d+) "-" (number :d+) "-" (number :d+)
+                            (set "T ") (number :d+) ":" (number :d+) ":" (number :d+))
+                        (string s))]
     (os/mktime {:year Y :month (dec M) :month-day (dec D) :hours h :minutes m :seconds sec})))
 
 (defn time->iso [t]
