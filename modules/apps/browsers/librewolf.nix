@@ -27,6 +27,9 @@ in {
     extensions = mkOpt' (attrsOf attrs) {} ''
       ExtensionSettings policies, by extension ID.
     '';
+    policies = mkOpt' attrs {} ''
+      Enterprise policies, merged into <filename>policies.json</filename>.
+    '';
   };
 
   config = mkIf cfg.enable (mkMerge [
@@ -47,6 +50,14 @@ in {
         })
       ];
 
+      # Lock these preferences, no matter the settings (leave it to vaultwarden)
+      modules.apps.browsers.librewolf.policies = {
+        PasswordManagerEnabled = false;   # locks signon.rememberSignons, blocks about:logins
+        AutofillAddressEnabled = false;   # locks extensions.formautofill.addresses.enabled
+        AutofillCreditCardEnabled = false;
+        DisableFormHistory = true;        # locks browser.formfill.enable = false
+      };
+
       # Treat LibreWolf as our default PDF reader
       xdg.mime = {
         defaultApplications."application/pdf" = "librewolf.desktop";
@@ -55,10 +66,8 @@ in {
 
       programs.firefox = {
         enable = true;
-        # One override, fed by the extensions option, because two modules
-        # overriding the package just means one of them loses.
         package = mkDefault (pkgs.librewolf.override {
-          extraPolicies.ExtensionSettings = cfg.extensions;
+          extraPolicies = cfg.policies // { ExtensionSettings = cfg.extensions; };
         });
         autoConfig =
           let prefs = {
