@@ -74,7 +74,6 @@ input {
     // warp-mouse-to-focus
     // Hyprland's follow_mouse = 2 was click-to-focus with a hover-aware
     // cursor; niri's default (no focus-follows-mouse) is the nearest thing.
-    // focus-follows-mouse max-scroll-amount="0%"
     // Mod+0 is a toggle only because of this.
     workspace-auto-back-and-forth
     // mod-key "Super"
@@ -82,12 +81,11 @@ input {
 }
 
 layout {
-    gaps 10                             // was gaps_in 5 / gaps_out 10
+    gaps 10
     center-focused-column "never"
     always-center-single-column
-    empty-workspace-above-first         // Expand north as well as south
+    empty-workspace-above-first    // Expand north as well as south
     default-column-display "normal"
-    background-color "#000000"          // was misc.background_color
 
     preset-column-widths {
         proportion 0.33333
@@ -101,30 +99,20 @@ layout {
         proportion 0.66667
     }
 
-    // Borders on every window, like Hyprland; the ring would double up.
     focus-ring {
-        off
+        // off
         width 4
-        active-color "#7fc8ff"
-        inactive-color "#505050"
-        urgent-color "#9b0000"
     }
     border {
-        on                              // explicit: see the header
-        width 4                         // was border_size 1
-        active-color "#ffc87f"
-        inactive-color "#505050"
-        urgent-color "#9b0000"
-        // Noctalia's colors.kdl overrides these.
+        // on
+        width 0    // was border_size 1
     }
     shadow {
         // on
-        softness 30
+        softness 20
         spread 5
         offset x=0 y=5
         draw-behind-window false
-        color "#00000077"
-        // inactive-color
     }
     tab-indicator {
         // off
@@ -136,11 +124,9 @@ layout {
         position "left"
         gaps-between-tabs 0
         corner-radius 0
-        // active-color / inactive-color / urgent-color: follow the border
     }
     insert-hint {
         // off
-        color "#7fc8ff80"
     }
     struts {
         left 0
@@ -150,11 +136,6 @@ layout {
     }
 }
 
-// Noctalia and friends come up as systemd units, not from here.
-// spawn-at-startup "prog" "arg"
-// spawn-sh-at-startup "cmd"
-
-// Hyprland never drew titlebars either; this is what asks GTK/Qt to stop.
 prefer-no-csd
 
 // Noctalia takes the screenshots, so niri's own UI needn't write anything.
@@ -167,13 +148,11 @@ cursor {
 
 overview {
     zoom 0.6
-    backdrop-color "#262626"
     workspace-shadow {
         // off
         softness 40
         spread 10
         offset x=0 y=10
-        color "#00000050"
     }
 }
 
@@ -235,8 +214,6 @@ recent-windows {
     // debounce-ms 750
     // open-delay-ms 150
     // highlight {
-    //     active-color "#999999ff"
-    //     urgent-color "#ff9999ff"
     //     padding 30
     //     corner-radius 0
     // }
@@ -262,25 +239,17 @@ switch-events {
 
 // * layer rules
 
-// hyprland needed ignore_alpha to keep the blur off the invisible margins;
-// niri blurs within the surface's own shape.
-layer-rule {
-    match namespace="notifications"
-    background-effect { blur true; }
-}
-// rofi: dim_around and the slide animation have no niri equivalent.
+// None yet!
 
 
 // * window rules
 
-// make inactive windows semitransparent.
-// window-rule {
-//     match is-active=false
-//     opacity 0.97
-// }
+window-rule {
+    geometry-corner-radius 8
+    clip-to-geometry true
+}
 
-// image previewers. no percentage max-size in niri; the 0.96 column width is
-// the nearest, and dim_around is gone.
+// Image previewers
 window-rule {
     match app-id="^(imv|swayimg)$"
     open-floating true
@@ -298,6 +267,23 @@ window-rule {
 // (max-width/height are px only), so that rule is gone.
 
 window-rule {
+    match app-id="^librewolf$"
+    // popups {
+    //     // Matches the default libadwaita pop-up corner radius.
+    //     geometry-corner-radius 15
+
+    //     // Note: it'll look better to set background opacity
+    //     // through your GTK theme CSS and not here.
+    //     // This is just an example that makes it look obvious.
+    //     opacity 0.5
+
+    //     background-effect {
+    //         blur true
+    //     }
+    // }
+}
+
+window-rule {
     match app-id="^(steam|feishin|emacs|librewolf)$"
     default-column-width { proportion 0.8; }
 }
@@ -313,9 +299,9 @@ window-rule {
 window-rule {
     match app-id="^dropdown$"
     open-floating true
-    default-column-width { proportion 0.6; }
-    default-window-height { proportion 0.5; }
-    default-floating-position x=0 y=0 relative-to="top"
+    default-column-width { proportion 0.75; }
+    default-window-height { proportion 0.4; }
+    default-floating-position x=0 y=0 relative-to="bottom"
 }
 
 

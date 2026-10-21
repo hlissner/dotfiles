@@ -9,22 +9,22 @@ layout {
     background-color "{{colors.background.default.hex}}"
 
     focus-ring {
-        active-color "{{colors.primary.default.hex}}"
+        active-gradient from="{{colors.background.default.hex}}" to="#{{colors.primary.default.hex_stripped}}99" angle=45
+        // active-color "{{colors.primary.default.hex}}"
         inactive-color "{{colors.surface.default.hex}}"
         urgent-color "{{colors.error.default.hex}}"
     }
 
     border {
         on
-        // Hyprland's 45° background→primary gradient.
         active-gradient from="{{colors.background.default.hex}}" to="#{{colors.primary.default.hex_stripped}}99" angle=45
         inactive-color "{{colors.surface.default.hex}}"
         urgent-color "{{colors.error.default.hex}}"
     }
 
     shadow {
-        color "#{{colors.shadow.default.hex_stripped}}77"
-        inactive-color "#{{colors.shadow.default.hex_stripped}}44"
+        color "#{{colors.shadow.default.hex_stripped}}BB"
+        inactive-color "#{{colors.shadow.default.hex_stripped}}66"
     }
 
     tab-indicator {
@@ -40,9 +40,8 @@ layout {
 
 overview {
     backdrop-color "{{colors.surface_container_lowest.default.hex}}"
-    // scroll-overview's 315° primary→background shadow, flattened.
     workspace-shadow {
-        color "#{{colors.primary.default.hex_stripped}}44"
+        color "#{{colors.primary.default.hex_stripped}}66"
     }
 }
 
