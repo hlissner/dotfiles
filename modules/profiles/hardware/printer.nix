@@ -7,6 +7,11 @@
 with lib;
 with self.lib;
 let hardware = config.modules.profiles.hardware;
+    publishAll = {
+      disable-publishing = false;
+      disable-user-service-publishing = false;
+      publish-addresses = true;
+    };
 in mkMerge [
   (mkIf (any (s: hasPrefix "printer" s) hardware) {
     environment.systemPackages = with pkgs;
@@ -22,7 +27,7 @@ in mkMerge [
   (mkIf (elem "printer/wireless" hardware) {
     services.avahi = {
       enable = true;
-      nssmdns = true;
+      nssmdns4 = true;
       openFirewall = true;
     };
   })
@@ -38,14 +43,21 @@ in mkMerge [
     services.avahi = {
       enable = true;
       openFirewall = true;
-      publish = {
-        enable = true;
-        userServices = true;
-      };
+      settings.publish = publishAll;
     };
     networking.firewall = mkIf config.services.printing.enable {
       allowedUDPPorts = [ 631 ];
       allowedTCPPorts = [ 631 ];
+    };
+  })
+
+  # nixpkgs' ipp-usb module still speaks pre-RFC42 services.avahi.publish.*,
+  # so avahi warns about it on every eval. Null those and say the same thing in
+  # the new dialect, until upstream catches up.
+  (mkIf config.services.ipp-usb.enable {
+    services.avahi = {
+      publish = { enable = mkForce null; userServices = mkForce null; };
+      settings.publish = publishAll;
     };
   })
 
