@@ -28,6 +28,10 @@ discord.com###app-mount div[id^="popout_"] > div > div[class*="popout_"]
 ! Hide super reactions. Super silly!
 discord.com##div[role="button"][aria-label="Add Super Reaction"]
 discord.com##div[id^="message-reactions-"] > div:has(div[aria-label*='super react'])
+! Hide "Badges" and "X Orbs" items in user profile popup. Silly silly silly!
+discord.com##div.user-profile-popout div[class^=overlay_]:first-of-type>ul>li[class^=menuItem]:nth-last-child(3)::after:style(display: none !important)
+discord.com##div.user-profile-popout div[class^=overlay_]:first-of-type>ul>li[class^=menuItem]:nth-last-child(-n+1):style(display: none !important)
+discord.com##div.user-profile-popout div[class^=overlay_]:first-of-type>ul>li[class^=menuItem]:nth-last-child(-n+2):style(display: none !important)
 
 
 ! ## YOUTUBE ANTI-SILLY ##
