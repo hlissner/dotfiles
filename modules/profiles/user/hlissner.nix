@@ -57,8 +57,8 @@ in mkIf (username == "hlissner") (mkMerge [
       # Retroid Pocket 6 uses termux sshd, which ignores login name entirely
       Host rp6.lan
         Port 8022
-      # NextUI uses dropbear running as root
       Host brick.lan
+        WarnWeakCrypto no
         User root
 
       # Reuse connections for LAN boxes for faster first load
