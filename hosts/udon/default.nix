@@ -85,7 +85,7 @@ with builtins;
       };
       doom = {
         enable = true;
-        wadsDir = "/media/nas/media/games/win/doom";
+        wadsDir = "/media/nas/media/games/dos/doom";
       };
       emulators = let nas = "/media/nas/media/games"; in {
         enable = true;

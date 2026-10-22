@@ -48,8 +48,8 @@
   (unless (path/directory? dir)
     (abort "No such directory: %s" dir))
   (seq [f :in (sorted (path/files-in dir))
-        :let [files (if (path/directory? f) (by-kind (walk f)) (if (mod-file? f) [f] []))]
-        :unless (empty? files)]
+          :let [files (if (path/directory? f) (by-kind (walk f)) (if (mod-file? f) [f] []))]
+          :unless (empty? files)]
     {:name (path/basename f) :files files}))
 
 (defn- launch [& files]
