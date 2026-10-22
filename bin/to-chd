@@ -1,29 +1,101 @@
 #!/usr/bin/env cached-nix-shell
 #! nix-shell -i zsh -p mame-tools
-# Pack a cue, bin, cdi, or gdi file into a chd file.
+# Convert cue, bin, img, cdi, gdi, iso, or cso into a chd file.
 #
 # SYNOPSIS:
-#   to-chd TARGET.{cue,bin,cdi,gdi}
+#   to-chd [--dvd] TARGET.{cue,bin,img,cdi,gdi,iso,cso}
 #
 # DESCRIPTION:
-#   Takes a cue, bin, cdi, or gdi file and packs it (and adjacent track *.bin's)
-#   into a chd file with the same name.
+#   Takes a cue, bin, img, cdi, or gdi file and packs it (and any needed
+#   adjacent files) into a chd file with the same name, beside it. Use --dvd for
+#   PSP/PS2+ images.
+#
+# OPTIONS:
+#   --dvd
+#     Use chdman createdvd instead of createcd (for PSP/PS2/etc images like
+#     cso/zso).
 #
 # ARGUMENTS:
 #   1 TARGET @files
 
-set -e
-declare f="$1"
+setopt err_exit pipe_fail
+zparseopts -D -F -- -dvd=dvd || exit 1
+local f="$1"
+[[ -f "$f" ]] || hey.abort "Not a file: $f"
 
-# GDI (Dreamcast, TOSEC/Redump gdi+track files)
-# CUE/BIN
+# Write intermediates to $TMPDIR, because the soruce usually lives in a NFS
+# share to a ZFS filesystem, so it can be incredibly slow (and memory-stressful
+# for ZFS).
+local out="${f:r}.chd"
+# TMPDIR is tainted by nix-shell, so unset it
+[[ -d "${TMPDIR:-/tmp}" ]] || unset TMPDIR
+local tmp; tmp="$(mktemp -d)"
+trap 'rm -rf -- "$tmp"' EXIT
+local magic="$(head -c 4 "$f" | od -An -tx1 | tr -d ' ')"
+
+pack() {
+  chdman $1 -i "$f" -o "$out"
+  chdman verify -i "$out"
+  chdman info -i "$out"
+}
+
+# CSO/ZSO: chdman can't read these, and only PSP ever used them. They're usually
+# a 2048-sector iso underneath, but assume nothing.
+if [[ "$magic" == (4349534f|5a49534f) ]]; then
+  local iso="$tmp/${f:t:r}.iso"
+  hey.echo "CSO-compressed; decoding"
+  nix shell nixpkgs#maxcso -c maxcso --quiet --decompress "$f" -o "$iso"
+  f="$iso"
+  dvd=1
+fi
+
+if [[ -n $dvd ]]; then
+  pack createdvd
+  return
+fi
+
+# ECM: the sync header is in there, but 4 bytes in, behind "ECM\0", and with the
+# ECC/EDC stripped from every sector. People might use the .img and .bin
+# extensions for these anyway, so assume nothing.
+if [[ "$magic" == 45434d00 ]]; then
+  local bin="$tmp/${f:t:r}.bin"
+  hey.echo "ECM-compressed; decoding"
+  nix shell nixpkgs#ecmtools -c ecm2bin "$f" "$bin"
+  f="$bin"
+fi
 
 # CDI: convert to CUE/BIN first (chdman doesn't read .cdi)
 if [[ "$f" == *.cdi ]]; then
-  nix shell nixpkgs#cdirip -c cdirip "$f" -cue
-  f="${f%.*}.cue"
+  nix shell nixpkgs#cdirip -c cdirip "$f" "$tmp" -cue
+  f="$tmp/${f:t:r}.cue"
 fi
 
-chdman createcd -i "$f" -o "${f%.*}.chd"
-chdman verify -i "${f%.*}.chd"
-chdman info -i "${f%.*}.chd"
+# Bare raw image. chdman dispatches on extension and parses anything it doesn't
+# know as a cdrdao .toc, so a cue-less bin/img "fails" into a 124-byte stub chd.
+# Renaming it .iso doesn't work, so try to guess from the sector size and write
+# the cue ourselves.
+if [[ "$f" == *.(bin|img) ]]; then
+  local cue="${f:r}.cue"
+  if [[ ! -e "$cue" ]]; then
+    local type
+    local -a hdr=( $(head -c 16 "$f" | od -An -tx1) )
+    local size=$(stat -c %s "$f")
+    if [[ "${hdr[1,12]}" == "00 ff ff ff ff ff ff ff ff ff ff 00" ]]; then
+      type="MODE${hdr[16]#0}/2352"
+    elif (( size % 2048 == 0 )); then
+      type="MODE1/2048"
+    elif (( size % 2336 == 0 )); then
+      type="MODE2/2336"
+    else
+      hey.abort "Not a raw CD image: $f"
+    fi
+    hey.echo "No cue; treating as a single $type track"
+    # The cue must sit beside the image
+    cue="$tmp/${f:t:r}.cue"
+    [[ "$f" == "$tmp"/* ]] || ln -s "${f:a}" "$tmp/${f:t}"
+    printf 'FILE "%s" BINARY\n  TRACK 01 %s\n    INDEX 01 00:00:00\n' "${f:t}" "$type" > "$cue"
+  fi
+  f="$cue"
+fi
+
+pack createcd
