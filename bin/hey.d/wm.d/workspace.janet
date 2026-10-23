@@ -48,6 +48,6 @@
 
 (defcmd workspace [_ command name]
   (case command
-    nil (echo :json (wm/focused-workspace))
+    nil (echo :json (find |($0 :focused) (wm/workspaces)))
     "move" (if name (move name) (usage))
     (usage)))

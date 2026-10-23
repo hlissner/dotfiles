@@ -1,9 +1,6 @@
 # lib/hey/wm.janet
 #
-# The compositor, flattened. Everything in bin/hey.d/wm.d asks this instead of
-# niri msg, so the tool is named in one place and the commands get back keys
-# rather than niri's JSON. Some fields are approximations -- where, the function
-# says so.
+# A library for interacting with Niri and Noctalia services
 
 (import spork/json)
 (use ./.)
@@ -31,8 +28,6 @@
          :x (get l :x) :y (get l :y) :width (get l :width) :height (get l :height)
          :scale (get l :scale)}))))
 
-(defn focused-output [] (find |($0 :focused) (outputs)))
-
 (defn workspaces
   ``{:id :name :output :active :focused :idx :empty}. active = shown on its
   output; idx is the workspace's position on it.``
@@ -41,8 +36,6 @@
     {:id (w :id) :name (w :name) :output (w :output)
      :active (w :is_active) :focused (w :is_focused)
      :idx (w :idx) :empty (nil? (w :active_window_id))}))
-
-(defn focused-workspace [] (find |($0 :focused) (workspaces)))
 
 (defn windows
   ``{:id :app-id :title :pid :focused :floating :workspace :geometry}. geometry
@@ -69,16 +62,6 @@
 
 (defn focused-window [] (find |($0 :focused) (windows)))
 
-(defn visible-windows
-  "Windows on a shown workspace, each with a geometry."
-  []
-  (let [active (tabseq [w :in (workspaces) :when (w :active)] (w :id) true)]
-    (filter |(and ($0 :geometry) (get active ($0 :workspace))) (windows))))
-
-(defn layers
-  "The namespaces of every mapped layer-shell surface."
-  []
-  (map |($0 :namespace) (niri-json "layers")))
 
 
 ## * Actions
@@ -88,23 +71,8 @@
   [& argv]
   (do? $? niri msg action ,;argv > :null))
 
-(defn toggle-overview [] (action "toggle-overview"))
-
-(defn dpms [on?]
-  (action (if on? "power-on-monitors" "power-off-monitors")))
-
-(defn set-output "Turn NAME on or off." [name on?]
-  (do? $? niri msg output ,name ,(if on? "on" "off") > :null))
-
 
 ## * Selection
-
-(defn parse-geometry
-  ``Parse "X,Y WxH" into [x y w h] or nil.``
-  [geom]
-  (peg/match (peg! '(* (number (* (? "-") :d+)) "," (number (* (? "-") :d+))
-                      " " (number :d+) "x" (number :d+) -1))
-             (string geom)))
 
 (defn select
   ``A slurp selection ("X,Y WxH") for TARGET: region (the default), output,
@@ -118,13 +86,13 @@
           ok (case target
                "output" ($? slurp -o ,;args > ,out)
                "region" ($? slurp ,;args > ,out)
-               # slurp -r picks among boxes fed on stdin, so the windows are
-               # what's on screen, not what's under the cursor.
-               "window" (let [boxes (string/join
-                                     (seq [w :in (visible-windows)
-                                           :let [[x y bw bh] (w :geometry)]]
-                                       (fmt "%d,%d %dx%d\n" x y bw bh))
-                                     "")]
+               "window" (let [active (tabseq [w :in (workspaces) :when (w :active)] (w :id) true)
+                              boxes (string/join
+                                      (seq [w :in (windows)
+                                            :when (and (w :geometry) (get active (w :workspace)))
+                                            :let [[x y bw bh] (w :geometry)]]
+                                        (fmt "%d,%d %dx%d\n" x y bw bh))
+                                      "")]
                           ($? slurp -r ,;args < ,boxes > ,out))
                (abort "Unknown target: %s" target))]
       (when ok

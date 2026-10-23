@@ -1,0 +1,25 @@
+#!/usr/bin/env zsh
+# Toggle a floating terminal over the current workspace.
+#
+# SYNOPSIS:
+#   hey .scratch term
+#
+# DESCRIPTION:
+#   Opens a scratchpad foot terminal (a window-rule in niri/config.kdl floats
+#   and positions it) in the current workspace. Used for quick, one-off use of
+#   the terminal.
+
+local app=scratchterm
+local wid wws hid ref
+read -r wid wws <<<"$(niri msg -j windows | jq -r --arg a $app '.[] | select(.app_id == $a) | "\(.id) \(.workspace_id)"')"
+read -r hid ref <<<"$(niri msg -j workspaces | jq -r '.[] | select(.is_focused) | "\(.id) \(.name // .idx)"')"
+[[ $hid ]] || hey.abort "No focused workspace"
+
+if [[ -z $wid ]]; then
+  hey.do hey wm term -t $app -a $app &!
+elif [[ $wws == $hid ]]; then
+  hey.do niri msg action close-window --id $wid
+else
+  hey.do niri msg action move-window-to-workspace --window-id $wid $ref
+  hey.do niri msg action focus-window --id $wid
+fi

@@ -227,7 +227,7 @@
 (def- *global-flags* ["-?" "-??" "-???" "-!" "-h" "--help"])
 
 (defn dryrun? []
-  (dyn :dryrun false))
+  (dyn :dryrun (not (empty? (or (os/getenv "HEYDRYRUN") "")))))
 
 (defn debug? [&opt n]
   (<= (or n 1) (dyn :debug -1)))
@@ -251,9 +251,7 @@
         help? (or (index-of "-h" largs)
                   (index-of "--help" largs))]
     (setdyn :script (script-path file))
-    (setdyn :dryrun
-       (or (index-of "-!" largs)
-           (dyn :dryrun (not (empty? (or (os/getenv "HEYDRYRUN") ""))))))
+    (setdyn :dryrun (or (index-of "-!" largs) (dryrun?)))
     (setdyn :debug
        (cond (index-of "-???" largs) 3
              (index-of "-??" largs) 2

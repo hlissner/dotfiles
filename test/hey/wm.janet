@@ -1,12 +1,5 @@
 #!/usr/bin/env janet
 # Regression tests for bin/hey.d/wm.janet, bin/hey.d/wm.d/* and lib/hey/wm.janet.
-#
-# hey wm is two things in one table: commands compiled into hey, and a fallback
-# into config/$WM/bin for everything else. Both halves are pinned here, since
-# losing either one is silent -- a keybind that plays nothing, or a script that
-# stops being found. The compiled commands speak to niri through
-# lib/hey/wm.janet, so each one runs against a stubbed niri (wm.d/bin)
-# answering from canned JSON (wm.d/fixtures).
 
 (use judge)
 (use sh)
@@ -34,11 +27,7 @@
 (def- log (string scratch ".play"))
 (def- wm-log (string scratch ".wm"))
 
-(defn- hey-wm
-  ``Run `hey wm ARGS` on DESKTOP's fixture info.json, with every compositor and
-  desktop tool stubbed out, and return [exit-code output]. VARIANT picks an
-  alternate fixture where one exists (workspaces-onscratchpad.json, say).``
-  [desktop & args]
+(defn- hey-run [desktop route & args]
   (def [variant args] (if (keyword? (first args)) [(string (first args)) (slice args 1)] [nil args]))
   (def out @"")
   (def code
@@ -54,8 +43,10 @@
                        "HEY_TEST_WM_FIXTURES" fixtures
                        "HEY_TEST_WM_LOG" wm-log
                        "HEY_TEST_WM_VARIANT" variant]
-      (first (run ,bin wm ,;args > ,out > [stderr out]))))
+      (first (run ,bin ,;route ,;args > ,out > [stderr out]))))
   [code (string/trim out)])
+
+(defn- hey-wm [desktop & args] (hey-run desktop ["wm"] ;args))
 
 (defn- played
   ``What play was asked, with the sounds dir abbreviated to @. A detached play
@@ -149,12 +140,7 @@
   (test (snap 50 "up") 60)
   (test (snap 97 "up") 100)
   (test (snap 3 "down") 0)
-  (test (snap 43 "up" 25) 50)
-  (test (wm/parse-geometry "10,20 300x400") @[10 20 300 400])
-  # A region can start left of the leftmost output.
-  (test (wm/parse-geometry "-10,20 300x400") @[-10 20 300 400])
-  (test (wm/parse-geometry "null,null nullxnull") nil)
-  (test (wm/parse-geometry "") nil))
+  (test (snap 43 "up" 25) 50))
 
 (deftest wm/outputs
   # In logical pixels, off ones included (with nothing where niri has no
@@ -203,23 +189,28 @@
   (test (first (hey-wm "niri" "workspace" "move" "nope")) 127)
   (test (first (hey-wm "niri" "workspace" "move")) 127))
 
-(deftest wm/dropdown
-  # No window yet: foot, named for the rule and the tmux session, and hey
-  # doesn't wait for it.
-  (fresh)
-  (test (first (hey-wm "niri" "dropdown")) 0)
-  (test (asked-eventually "foot") @["foot -T dropdown -a dropdown -o main.font=JetBrainsMono Nerd Font:size=9 -- tmux new -A -s dropdown"])
+(deftest scratch/term
+  (defn term [& args] (hey-run "niri" [".scratch" "term"] ;args))
+  (fresh) # No window yet
+  (test (first (term)) 0)
+  (test (asked-eventually "hey") @["hey wm term -t scratchterm -a scratchterm"])
   (test (asked "niri") @[])
-  # Parked on the scratchpad (id 2): dragged to the focused workspace, which
-  # is unnamed, so by index on the focused output, and focused once there.
+  # Parked on the scratchpad (id 2, not shown): dragged to the focused
+  # workspace, which is unnamed, so by index on the focused output, and focused
+  # once there.
   (fresh)
-  (test (first (hey-wm "niri" :dropdown "dropdown")) 0)
+  (test (first (term :scratchterm)) 0)
   (test (asked "niri") @["niri msg action move-window-to-workspace --window-id 10 1"
                         "niri msg action focus-window --id 10"])
-  (test (asked "foot") @[])
-  # Already here: dismissed, whether or not it has the focus.
+  (test (asked "hey") @[])
+  # Already on a visible workspace, but something else has the focus: focused,
+  # not moved and not dismissed.
   (fresh)
-  (test (first (hey-wm "niri" :dropdownshown "dropdown")) 0)
+  (test (first (term :scratchtermvisible)) 0)
+  (test (asked "niri") @["niri msg action focus-window --id 10"])
+  # Focused: dismissed.
+  (fresh)
+  (test (first (term :scratchtermfocused)) 0)
   (test (asked "niri") @["niri msg action close-window --id 10"]))
 
 (deftest wm/set-monitors
@@ -239,15 +230,6 @@
   (test (first (hey-wm "niri" "set-monitors" "--on" "HDMI-A-1")) 0)
   (test (asked "niri") @["niri msg output HDMI-A-1 on"])
   (test (first (hey-wm "niri" "set-monitors")) 127))
-
-(deftest wm/actions
-  (fresh)
-  (test (first (hey-wm "niri" "dpms" "off")) 0)
-  (test (first (hey-wm "niri" "overview")) 0)
-  (test (asked "niri") @["niri msg action power-off-monitors"
-                        "niri msg action toggle-overview"])
-  (test (first (hey-wm "niri" "overview" "all")) 127)
-  (test (first (hey-wm "niri" "dpms" "sideways")) 127))
 
 (deftest wm/rate
   # Only Supersonic gets rated. With foot focused the key is a no-op rather

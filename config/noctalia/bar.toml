@@ -225,7 +225,7 @@ type = "custom_button"
 tooltip = "Overview"
 
   [widget.scroll_overview.actions]
-  left  = "exec hey wm overview"
+  left  = "exec niri msg action toggle-overview"
 
 [widget.compass]
 type = "hey/compass:compass"
@@ -245,5 +245,5 @@ capsule_border = "primary"
 capsule_padding = 1
 
     [widget.compass.actions]
-    left = "exec hey wm overview"
+    left = "exec niri msg action toggle-overview"
     right = "exec noctalia msg window-switcher"

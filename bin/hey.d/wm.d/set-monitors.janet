@@ -18,6 +18,7 @@
 #     Only deactivate the given displays (i.e. don't enable the rest).
 
 (use hey)
+(use sh)
 (import hey/wm)
 (import hey/sys)
 
@@ -35,6 +36,6 @@
           on? []
           (seq [o :in (known) :unless (index-of (o :name) names)] (o :name))))
   (log 2 "enable: %q; disable: %q" to-enable to-disable)
-  (each name to-enable (wm/set-output name true))
-  (each name to-disable (wm/set-output name false))
+  (each name to-enable (do? $? niri msg output ,name on > :null))
+  (each name to-disable (do? $? niri msg output ,name off > :null))
   (sys/toast :info (string "Set monitors: " (string/join names " ")) :icon "device-desktop"))

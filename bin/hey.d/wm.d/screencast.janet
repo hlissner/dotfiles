@@ -188,7 +188,10 @@ ShellRoot {
   (spit (livefile) "")
   (trap cleanup)
   (def geom (or (wm/select (or target "region")) (exit 1)))
-  (def box (or (wm/parse-geometry geom) (abort "Unrecognized geometry: %s" geom)))
+  (def box (or (peg/match (peg! '(* (number (* (? "-") :d+)) "," (number (* (? "-") :d+))
+                                  " " (number :d+) "x" (number :d+) -1))
+                         geom)
+               (abort "Unrecognized geometry: %s" geom)))
 
   # Up before the countdown, so qt is done warming up by frame one.
   (indicator-start box)

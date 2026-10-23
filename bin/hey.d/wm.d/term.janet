@@ -2,7 +2,7 @@
 # Open a foot terminal.
 #
 # SYNOPSIS:
-#   hey wm open-term [-t TITLE] [-f FONT] [-F N] [-o OPT]... [FOOTARGS...] [-- TMUXARGS...]
+#   hey wm term [-t TITLE] [-f FONT] [-F N] [-o OPT]... [FOOTARGS...] [-- TMUXARGS...]
 #
 # DESCRIPTION:
 #   Arguments before a literal -- are passed to foot; those after it are passed
@@ -22,7 +22,7 @@
 (use hey)
 (use sh)
 
-(defn foot-argv [&named title font offset opts footargs tmuxargs]
+(defn- foot-argv [&named title font offset opts footargs tmuxargs]
   (default footargs [])
   (default tmuxargs [])
   (def tmuxargs
@@ -41,10 +41,10 @@
    ;(mapcat |["-o" $0] (or opts []))
    "--" "tmux" ;tmuxargs])
 
-(defcmd open-term [_ & rest argv &opts opts [-o opt *]
-                   title [-t --title title]
-                   font [-f --font font]
-                   offset [-F --font-adjust offset]]
+(defcmd term [_ & rest argv &opts opts [-o opt *]
+              title [-t --title title]
+              font [-f --font font]
+              offset [-F --font-adjust offset]]
   # defcmd swallows the -- and appends what followed it to the rest, so what
   # follows the -- in the raw argv is the tail of the rest.
   (def after (if-let [i (index-of "--" argv)] (slice argv (inc i)) []))

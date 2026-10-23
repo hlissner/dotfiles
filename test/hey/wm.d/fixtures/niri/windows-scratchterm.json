@@ -4,5 +4,5 @@
   "layout":{"pos_in_scrolling_layout":[5,0],"tile_size":[302.0,402.0],"window_size":[300,400],"tile_pos_in_workspace_view":null,"window_offset_in_tile":[1.0,1.0]}},
  {"id":9,"title":"Supersonic","app_id":"io.github.supersonic-app.supersonic","pid":4242,"workspace_id":2,"is_focused":false,"is_floating":false,"is_urgent":false,
   "layout":{"pos_in_scrolling_layout":[0,0],"tile_size":[302.0,402.0],"window_size":[300,400],"tile_pos_in_workspace_view":[0.0,0.0],"window_offset_in_tile":[0.0,0.0]}},
- {"id":10,"title":"dropdown","app_id":"dropdown","pid":77,"workspace_id":1,"is_focused":false,"is_floating":true,"is_urgent":false,
+ {"id":10,"title":"scratchterm","app_id":"scratchterm","pid":77,"workspace_id":2,"is_focused":false,"is_floating":true,"is_urgent":false,
   "layout":{"pos_in_scrolling_layout":null,"tile_size":[600.0,400.0],"window_size":[600,400],"tile_pos_in_workspace_view":null,"window_offset_in_tile":[0.0,0.0]}}]

@@ -24,7 +24,7 @@
 
 rofi.powermenu.dpms() {
   sleep 0.2
-  hey.do hey wm dpms off
+  hey.do niri msg action power-off-monitors
 }
 
 rofi.powermenu.lock()     {

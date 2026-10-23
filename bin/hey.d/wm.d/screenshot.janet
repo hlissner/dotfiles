@@ -36,7 +36,7 @@
   (def args
     (case target
       "all" []
-      "full" ["-o" (get (wm/focused-output) :name)]
+      "full" ["-o" (get (find |($0 :focused) (wm/outputs)) :name)]
       (when-let [geom (wm/select target)] ["-g" geom])))
   (def png @"")
   (when (and args ($? grim ,;args - | pngquant --strip -s 10 - > ,png))

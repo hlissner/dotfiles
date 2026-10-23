@@ -29,7 +29,6 @@
 
 (use hey)
 (use sh)
-(import hey/wm)
 
 (def- namespace "hey-fade")
 
@@ -128,12 +127,17 @@ ShellRoot {
 (defn- ipc [fn-name]
   ($? quickshell ipc --pid ,(string (running-pid)) call fade ,fn-name > :null))
 
+(defn- layers
+  "The namespaces of every mapped layer-shell surface."
+  []
+  (map |($0 :namespace) (json/decode ($< niri msg -j layers) :keywords true)))
+
 # Block until the overlay's surfaces exist. Cold-starting quickshell costs
 # ~130ms, so animate nothing before then.
 (defn- wait-mapped []
   (var mapped false)
   (loop [_ :range [0 100] :until mapped]
-    (set mapped (truthy? (index-of namespace (or (ignore-errors (wm/layers)) []))))
+    (set mapped (truthy? (index-of namespace (or (ignore-errors (layers)) []))))
     (unless mapped (os/sleep 0.02)))
   mapped)
 

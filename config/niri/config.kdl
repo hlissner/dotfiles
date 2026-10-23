@@ -297,7 +297,7 @@ window-rule {
 // windows, so a rule can only float it and hang it from the top; the command
 // does the following-me-around.
 window-rule {
-    match app-id="^dropdown$"
+    match app-id="^scratchterm$"
     open-floating true
     default-column-width { proportion 0.75; }
     default-window-height { proportion 0.4; }

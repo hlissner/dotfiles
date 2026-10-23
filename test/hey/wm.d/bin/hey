@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+# Stand-in for hey, for test/hey/wm.janet: bin/scratch.d/term re-enters hey
+# for the window, and the real one on PATH is whatever's installed. Logs what
+# it was asked to $HEY_TEST_WM_LOG and exits.
+print -r -- "hey $*" >>$HEY_TEST_WM_LOG

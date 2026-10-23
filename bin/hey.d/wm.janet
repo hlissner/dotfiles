@@ -10,42 +10,36 @@
 
 (use hey)
 
-(import ./wm.d/dpms)
-(import ./wm.d/dropdown)
 (import ./wm.d/fade)
 (import ./wm.d/kill)
 (import ./wm.d/launch)
 (import ./wm.d/media)
 (import ./wm.d/ocr)
-(import ./wm.d/open-term)
 (import ./wm.d/outputs)
-(import ./wm.d/overview)
 (import ./wm.d/play-sound)
 (import ./wm.d/rate)
 (import ./wm.d/screencast)
 (import ./wm.d/screenshot)
 (import ./wm.d/set-monitors)
 (import ./wm.d/slurp)
+(import ./wm.d/term)
 (import ./wm.d/volume)
 (import ./wm.d/workspace)
 
 (defcmd [wm :rules] [& _]
-  [:dpms dpms/dpms
-   :dropdown dropdown/dropdown
-   :fade fade/fade
+  [:fade fade/fade
    :kill kill/kill
    :launch launch/launch
    :media media/media
    :ocr ocr/ocr
-   :open-term open-term/open-term
    :outputs outputs/outputs
-   :overview overview/overview
    :play-sound play-sound/play-sound
    :rate rate/rate
    :screencast screencast/screencast
    :screenshot screenshot/screenshot
    :set-monitors set-monitors/set-monitors
    :slurp slurp/slurp
+   :term term/term
    :volume volume/volume
    :workspace workspace/workspace
    # Asking for the desktop's scripts on a machine with no desktop is a
