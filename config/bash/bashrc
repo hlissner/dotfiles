@@ -159,7 +159,6 @@ if command -v systemctl >/dev/null; then
 fi
 
 if command -v nix >/dev/null; then
-  alias n=nix
   alias nf='nix flake'
   alias nr='nix repl'
   alias ns='nix search'

@@ -68,7 +68,6 @@ else
 fi
 
 if (( $+commands[nix] )); then
-  alias n=nix
   alias ne=nix-env
   alias nf='nix flake'
   alias nfm='nix flake metadata'
