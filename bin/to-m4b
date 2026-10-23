@@ -1,0 +1,206 @@
+#!/usr/bin/env zsh
+# Merge audiobook mp3/m4b/m4a files into one chaptered m4b.
+#
+# SYNOPSIS:
+#   to-m4b [-f] [-e] [--flat] [-o OUT] [-b BITRATE] [-t TITLE] [-a AUTHOR] FILE|DIR...
+#
+# DESCRIPTION:
+#   Respects chapter indices (e.g. m4b files) and title tags, falling back to
+#   the filename. Tags come from the first input (unless -t and -a). The cover
+#   is a {cover,folder,front}.{jpg,png} beside it if there is one, otherwise use
+#   the first embedded image.
+#
+#   The audio isn't re-encoded unless absolutely necessary. Otherwise it's
+#   encoded to AAC at BITRATE, which defaults to the highest input bitrate,
+#   capped at 256k.
+#
+#   Support for Grimmory is prioritized.
+#
+# OPTIONS:
+#   -f
+#     Overwrite an existing output.
+#   -e
+#     Re-encode to AAC even when the inputs could be copied.
+#   --flat
+#     Ignore embedded chapter indexes; one chapter per input file.
+#   -o OUT
+#     Write to OUT instead of beside the first input.
+#   -b BITRATE
+#     AAC bitrate when encoding. Default: the highest input bitrate, at most
+#     256k.
+#   -t TITLE
+#     Book title; overrides the first input's album tag.
+#   -a AUTHOR
+#     Author; overrides the first input's artist tag.
+#
+# ARGUMENTS:
+#   * FILE @files
+
+setopt err_exit pipe_fail extended_glob
+zparseopts -D -F -- f=force e=encode -flat=flat o:=oarg b:=barg t:=targ a:=aarg || exit 1
+hey.requires ffmpeg ffprobe jq
+(( $# )) || hey.abort "No inputs given"
+
+local -a files
+local f
+for f in "$@"; do
+  if [[ -d $f ]]; then
+    files+=( "$f"/*.(#i)(mp3|m4a|m4b|aac|flac|ogg|opus|wav)(Nn.) )
+  elif [[ -f $f ]]; then
+    files+=( "$f" )
+  else
+    hey.abort "Not a file: $f"
+  fi
+done
+(( $#files )) || hey.abort "No audio files in: $*"
+
+local tmp; tmp="$(mktemp -d)"
+trap 'rm -rf -- "$tmp"' EXIT
+
+local -a jsons durs
+local i
+for (( i = 1; i <= $#files; i++ )); do
+  jsons+=( "$tmp/$i.json" )
+  ffprobe -v error -of json -show_format -show_streams -show_chapters -i "${files[i]}" > "$jsons[i]"
+  # format.duration for an mp3 is read off its Xing header or estimated from the
+  # bitrate; a headerless VBR file can offset every chapter after it by a second
+  # or two. Don't decode twice.
+  durs+=( $(jq -r '.format.duration | tonumber * 1000 | round' "$jsons[i]") )
+done
+
+# Tag keys are whatever the tagger felt like: TITLE in ogg, Title from some
+# Windows tool, title everywhere else.
+tag() { jq -r --arg k "$2" '.format.tags // {} | with_entries(.key |= ascii_downcase) | .[$k] // empty' "$1"; }
+# ffmetadata's own grammar, the one thing it's picky about.
+esc() {
+  local s=$1
+  s=${s//\\/\\\\}
+  s=${s//=/\\=}
+  s=${s//;/\\;}
+  s=${s//\#/\\#}
+  print -r -- "${s//$'\n'/\\$'\n'}"
+}
+chapter() {  # START END TITLE, in ms
+  print -rl -- '[CHAPTER]' 'TIMEBASE=1/1000' "START=$1" "END=$2" "title=$(esc "$3")"
+}
+
+local dir="${files[1]:a:h}"
+local book author
+book="${targ[2]:-$(tag $jsons[1] album)}"
+book="${book:-${dir:t}}"
+author="${aarg[2]:-$(tag $jsons[1] artist)}"
+local out="${oarg[2]:-$dir/${book//\//_}.m4b}"
+[[ -e $out && -z $force ]] && hey.abort "Exists (use -f): $out"
+# A DIR argument is where the last run put its output.
+for (( i = $#files; i >= 1; i-- )); do
+  [[ ${files[i]:a} == ${out:a} ]] && { files[i]=(); jsons[i]=(); durs[i]=(); }
+done
+(( $#files )) || hey.abort "Nothing to merge but the output itself"
+
+# One stream signature per input. If they're all the same AAC they'll be
+# concatenatedas they are. Otherwise re-encode everything to a common AAC first.
+local -a sigs=( ${(f)"$(jq -r '[.streams[] | select(.codec_type == "audio")][0] | "\(.codec_name)/\(.sample_rate)/\(.channels)"' $jsons)"} )
+local copy=
+[[ -z $encode && ${#${(u)sigs}} == 1 && ${sigs[1]%%/*} == aac ]] && copy=1
+local br=${barg[2]}
+if [[ -z $copy && -z $br ]]; then
+  br=$(jq -rs '[.[] | (.format.bit_rate // "0") | tonumber] | max / 8000 | round * 8 | [., 256] | min' $jsons)
+  (( br )) || br=256
+  br=${br}k
+fi
+
+local off=0 k v t c
+local -a chaps
+{
+  print ';FFMETADATA1'
+  print -r -- "title=$(esc "$book")"
+  print -r -- "album=$(esc "$book")"
+  [[ $author ]] && print -r -- "artist=$(esc "$author")" && print -r -- "album_artist=$(esc "$author")"
+  for k in date genre comment composer publisher description; do
+    v="$(tag $jsons[1] $k)"
+    [[ $k == genre ]] && : ${v:=Audiobook}
+    [[ $v ]] && print -r -- "$k=$(esc "$v")"
+  done
+  print 'media_type=2'  # iTunes' stik: 2 is "Audiobook"
+  for (( i = 1; i <= $#files; i++ )); do
+    chaps=()
+    [[ -z $flat ]] && chaps=( ${(f)"$(jq -r --argjson o $off '
+      .chapters[] | [
+        ((.start_time | tonumber) * 1000 + $o | round),
+        ((.end_time | tonumber) * 1000 + $o | round),
+        ((.tags // {} | with_entries(.key |= ascii_downcase)).title // "")
+      ] | map(tostring) | join("\u001f")' $jsons[i])"} )
+    if (( $#chaps )); then
+      for c in $chaps; do chapter "${(@ps:\x1f:)c}"; done
+    else
+      # An mp3's title is the track's; an m4b's is the book's, so no help here.
+      t="$(tag $jsons[i] title)"
+      [[ -z $t || $t == "$(tag $jsons[i] album)" ]] && t="${files[i]:t:r}"
+      chapter $off $(( off + durs[i] )) "$t"
+    fi
+    (( off += durs[i] ))
+  done
+} > "$tmp/meta.txt"
+
+local -a cover=( $dir/(#i)(cover|folder|front).(jpg|jpeg|png)(N.[1]) )
+if (( ! $#cover )); then
+  for (( i = 1; i <= $#files; i++ )); do
+    jq -e 'any(.streams[]; .disposition.attached_pic == 1)' $jsons[i] >/dev/null || continue
+    cover=( "$tmp/cover.jpg" )
+    ffmpeg -v error -nostdin -y -i "${files[i]}" -map 0:v:0 -frames:v 1 -c copy "$cover[1]"
+    break
+  done
+fi
+
+local -a parts=( $files )
+if [[ -z $copy ]]; then
+  # Chunk the book for parallelizing. It's *so* slow otherwise.
+  mkdir "$tmp/enc"
+  local jobs=$(nproc)
+  local chunk=$(( off / jobs )); (( chunk < 300000 )) && chunk=300000
+  local rate=$(jq -rs '[.[].streams[] | select(.codec_type == "audio") | .sample_rate | tonumber] | max' $jsons)
+  local chans=$(jq -rs '[.[].streams[] | select(.codec_type == "audio") | .channels] | max' $jsons)
+  cutpoints() {  # FILE DUR, in ms
+    ffmpeg -nostdin -nostats -i "$1" -af silencedetect=n=-35dB:d=0.3 -f null - 2>&1 \
+      | sed -n 's/.*silence_end: \([0-9.]*\) | silence_duration: \([0-9.]*\).*/\1 \2/p' \
+      | awk -v want=$chunk -v chunk=$chunk -v dur=$2 '
+          { s = ($1 - $2 / 2) * 1000 }
+          s >= want && dur - s > chunk / 2 { printf "%d\n", s; want = s + chunk }'
+  }
+  local -a plan cuts
+  local piece
+  parts=()
+  for (( i = 1; i <= $#files; i++ )); do
+    cuts=( 0 )
+    (( durs[i] > 2 * chunk )) && cuts+=( ${(f)"$(cutpoints "${files[i]}" $durs[i])"} )
+    cuts+=( $durs[i] )
+    for (( k = 1; k < $#cuts; k++ )); do
+      piece="$tmp/enc/$i-$k.m4a"
+      plan+=( "${files[i]}" "${cuts[k]}ms" "$(( cuts[k+1] - cuts[k] ))ms" "$piece" )
+      parts+=( "$piece" )
+    done
+  done
+  hey.echo "Encoding $#files file(s) in $#parts piece(s) on $jobs cores at $br"
+  print -rN -- $plan | hey.do env br=$br rate=$rate chans=$chans xargs -0 -n 4 -P $jobs zsh -c \
+    'ffmpeg -v error -nostdin -y -ss $2 -t $3 -i "$1" -vn -map 0:a -c:a aac -b:a $br -ar $rate -ac $chans "$4"' _
+fi
+
+for f in $parts; do
+  print -r -- "file '${${f:a}//\'/\'\\\'\'}'"
+done > "$tmp/list.txt"
+local -a ins=( -f concat -safe 0 -i "$tmp/list.txt" -i "$tmp/meta.txt" )
+local -a outs=( -map 0:a -c:a copy -map_metadata 1 -map_chapters 1 )
+if (( $#cover )); then
+  ins+=( -i "$cover[1]" )
+  outs+=( -map 2:v -c:v copy -disposition:v:0 attached_pic )
+fi
+
+[[ $copy ]] && hey.echo "Copying $#files file(s) -> $out"
+hey.do ffmpeg -hide_banner -loglevel error -stats -y "${ins[@]}" "${outs[@]}" -movflags +faststart "$tmp/out.m4b"
+[[ ${HEYDRYRUN:-} ]] && return
+mv -f -- "$tmp/out.m4b" "$out"
+hey.echo "$(ffprobe -v error -of json -show_chapters -show_format -show_streams -i "$out" | jq -r '
+  "\(.chapters | length) chapters, " +
+  "\(.format.duration | tonumber / 60 | floor) min, " +
+  "\(.streams[] | select(.codec_type == "audio") | .codec_name) " +
+  "\(.format.bit_rate | tonumber / 1000 | round)k"')"
