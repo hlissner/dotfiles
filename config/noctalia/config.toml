@@ -173,6 +173,7 @@ show_shortcuts = false
 
 [lockscreen]
 enabled = true
+lock_before_suspend = false
 blurred_desktop = true
 blur_intensity = 0.6
 edge_smoothness = 0.4

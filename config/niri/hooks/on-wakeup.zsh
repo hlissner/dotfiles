@@ -9,6 +9,5 @@
 #   wakes up from sleep. Nothing to compact here: niri's workspaces are
 #   already infinite.
 
-hey.toast -i sunrise info "Waking up..."
-
 hey wm play-sound wakeup
+hey.do loginctl lock-session

@@ -4,7 +4,7 @@
 
 [bar.main]
 position           = "top"
-background_opacity = 0.8
+background_opacity = 0.95
 padding            = 8
 radius             = 0
 margin_ends        = 0

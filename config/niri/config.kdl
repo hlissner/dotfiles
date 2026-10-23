@@ -1,10 +1,4 @@
 // config/niri/config.kdl
-//
-// Every knob niri 26.04 has, at its default unless a comment says otherwise.
-// This file is `include`d by the nix-generated ~/.config/niri/config.kdl, which
-// owns outputs, named workspaces, the cursor theme, and the colors include.
-// Being an include has one trap: `border {}` only switches the border on from
-// the main file, so flags in here are spelled out.
 
 input {
     keyboard {
@@ -16,8 +10,8 @@ input {
             rules ""
             // file "~/.config/keymap.xkb"
         }
-        repeat-delay 600
-        repeat-rate 25
+        repeat-delay 500
+        repeat-rate 40
         track-layout "global"
         // numlock
     }
@@ -27,9 +21,9 @@ input {
         tap
         dwt
         // dwtp
-        drag false                      // was tap_and_drag = false
-        drag-lock                       // was drag_lock = 2
-        // natural-scroll               // off, as before
+        drag false
+        drag-lock
+        // natural-scroll
         accel-speed 0.45
         accel-profile "adaptive"
         scroll-factor 0.8
@@ -48,7 +42,7 @@ input {
         // natural-scroll
         // accel-speed 0.0
         // accel-profile "adaptive"
-        // scroll-factor 1.0
+        scroll-factor 1.5
         // scroll-method "no-scroll"
         // scroll-button 273
         // scroll-button-lock
@@ -56,28 +50,25 @@ input {
         // middle-emulation
     }
 
-    tablet {
-        // off
-        // map-to-output "eDP-1"
-        // map-to-focused-output
-        // left-handed
-        // calibration-matrix 1.0 0.0 0.0 0.0 1.0 0.0
-    }
+    // tablet {
+    //     off
+    //     map-to-output "eDP-1"
+    //     map-to-focused-output
+    //     left-handed
+    //     calibration-matrix 1.0 0.0 0.0 0.0 1.0 0.0
+    // }
 
-    touch {
-        // off
-        // map-to-output "eDP-1"
-        // calibration-matrix 1.0 0.0 0.0 0.0 1.0 0.0
-    }
+    // touch {
+    //     off
+    //     map-to-output "eDP-1"
+    //     calibration-matrix 1.0 0.0 0.0 0.0 1.0 0.0
+    // }
 
     // disable-power-key-handling
     // warp-mouse-to-focus
-    // Hyprland's follow_mouse = 2 was click-to-focus with a hover-aware
-    // cursor; niri's default (no focus-follows-mouse) is the nearest thing.
-    // Mod+0 is a toggle only because of this.
-    workspace-auto-back-and-forth
     // mod-key "Super"
     // mod-key-nested "Alt"
+    workspace-auto-back-and-forth
 }
 
 layout {
@@ -87,12 +78,12 @@ layout {
     empty-workspace-above-first    // Expand north as well as south
     default-column-display "normal"
 
+    default-column-width { proportion 0.5; }
     preset-column-widths {
         proportion 0.33333
         proportion 0.5
         proportion 0.66667
     }
-    default-column-width { proportion 0.5; }
     preset-window-heights {
         proportion 0.33333
         proportion 0.5
@@ -138,7 +129,7 @@ layout {
 
 prefer-no-csd
 
-// Noctalia takes the screenshots, so niri's own UI needn't write anything.
+// leave screenshots to Noctalia+scripts
 screenshot-path null
 
 cursor {
@@ -156,9 +147,9 @@ overview {
     }
 }
 
-clipboard {
-    // disable-primary
-}
+// clipboard {
+//     disable-primary
+// }
 
 hotkey-overlay {
     skip-at-startup     // I know where the keys are
@@ -191,13 +182,13 @@ animations {
 
 gestures {
     dnd-edge-view-scroll {
-        trigger-width 30
-        delay-ms 100
+        trigger-width 15
+        delay-ms 250
         max-speed 1500
     }
     dnd-edge-workspace-switch {
         trigger-height 50
-        delay-ms 100
+        delay-ms 250
         max-speed 1500
     }
     hot-corners {
@@ -210,23 +201,23 @@ gestures {
 }
 
 recent-windows {
-    off
-    // debounce-ms 750
-    // open-delay-ms 150
-    // highlight {
-    //     padding 30
-    //     corner-radius 0
-    // }
-    // previews {
-    //     max-height 480
-    //     max-scale 0.5
-    // }
-    // binds {
-    //     Mod+Tab            { next-window; }
-    //     Mod+Shift+Tab      { previous-window; }
-    //     Mod+Ctrl+Tab       { next-window filter="app-id"; }
-    //     Mod+Ctrl+Shift+Tab { previous-window filter="app-id"; }
-    // }
+    // off
+    debounce-ms 500
+    open-delay-ms 50
+    highlight {
+        padding 30
+        corner-radius 0
+    }
+    previews {
+        max-height 420
+        max-scale 0.4
+    }
+    binds {
+        Mod+Tab            { next-window; }
+        Mod+Shift+Tab      { previous-window; }
+        Mod+Ctrl+Tab       { next-window filter="app-id"; }
+        Mod+Ctrl+Shift+Tab { previous-window filter="app-id"; }
+    }
 }
 
 switch-events {
@@ -262,29 +253,8 @@ window-rule {
     open-floating true
 }
 
-// dialogs (xdg-desktop-portal-gtk, librewolf) float on their own in niri
-// because they have a parent; the 90% max-size cap can't be expressed
-// (max-width/height are px only), so that rule is gone.
-
 window-rule {
-    match app-id="^librewolf$"
-    // popups {
-    //     // Matches the default libadwaita pop-up corner radius.
-    //     geometry-corner-radius 15
-
-    //     // Note: it'll look better to set background opacity
-    //     // through your GTK theme CSS and not here.
-    //     // This is just an example that makes it look obvious.
-    //     opacity 0.5
-
-    //     background-effect {
-    //         blur true
-    //     }
-    // }
-}
-
-window-rule {
-    match app-id="^(steam|feishin|emacs|librewolf)$"
+    match app-id="^(steam|feishin|io.github.supersonic-app.supersonic|emacs|librewolf)$"
     default-column-width { proportion 0.8; }
 }
 
@@ -293,9 +263,7 @@ window-rule {
     default-column-width { proportion 0.35; }
 }
 
-// the dropdown terminal (hey wm dropdown, mod+grave). niri has no sticky
-// windows, so a rule can only float it and hang it from the top; the command
-// does the following-me-around.
+// For `hey .scratch term`
 window-rule {
     match app-id="^scratchterm$"
     open-floating true
@@ -307,11 +275,6 @@ window-rule {
 
 // ** steam
 
-// everything steam, out of the way until summoned. hyprland's no_dim /
-// no_anim / no_max_size / min_size have no counterpart. where it opens isn't
-// decided here either: niri only places by workspace *name*, and steam takes
-// ten seconds to map a window, so steam.nix's desktop entry runs it through
-// `hey wm launch`, which pins a rule in launch.kdl for the launch workspace.
 window-rule {
     match app-id="^steam$"
     open-focused false
@@ -342,20 +305,17 @@ window-rule {
 
 
 // * binds
-//
-// nothing here is conditional on the focused window; niri binds can't be.
-// anything that was gets a `hey wm` command that asks niri msg itself.
 
 binds {
     // ** most common os operations
     mod+space        repeat=false hotkey-overlay-title="app menu"    { spawn "hey" "@rofi" "appmenu"; }
     mod+shift+r      repeat=false hotkey-overlay-title="reload"      { spawn "hey" "reload" "@niri"; }
-    mod+return       repeat=false hotkey-overlay-title="terminal"    { spawn "hey" "wm" "open-term"; }
-    mod+grave        repeat=false hotkey-overlay-title="dropdown terminal" { spawn "hey" "wm" "dropdown"; }
-    mod+shift+return repeat=false { spawn-sh "foot || xterm"; }   // failsafe
+    mod+grave        repeat=false hotkey-overlay-title="scratch term" { spawn "hey" ".scratch" "term"; }
     mod+escape       repeat=false { spawn "noctalia" "msg" "notification-clear-active"; }
+    mod+return       repeat=false hotkey-overlay-title="terminal"    { spawn "hey" "wm" "term"; }
+    mod+shift+return repeat=false { spawn-sh "foot || xterm"; }   // failsafe
 
-    // ** overview (also: 4-finger swipe up, top-left hot corner)
+    // ** overview (also: 4-finger swipe up)
     mod+tab repeat=false { toggle-overview; }
 
     // ** external tools
@@ -373,9 +333,9 @@ binds {
     mod+shift+ctrl+q repeat=false { spawn "hey" "@rofi" "powermenu"; }
 
     // ** window layout controls
-    mod+f       repeat=false { toggle-window-floating; }
-    mod+shift+f repeat=false { fullscreen-window; }
-    mod+ctrl+f  repeat=false { maximize-column; }
+    mod+f       repeat=false { maximize-column; }
+    mod+shift+f repeat=false { toggle-window-floating; }
+    mod+ctrl+f  repeat=false { fullscreen-window; }
     mod+o       repeat=false { switch-focus-between-floating-and-tiling; }
     mod+shift+o repeat=false { consume-or-expel-window-left; }
 
@@ -388,15 +348,12 @@ binds {
     mod+down        { move-workspace-down; }
 
     // ** window management, movements, and resizing
-    // hjkl focuses, shift moves, ctrl skips to the next monitor (h/l) or
-    // workspace (j/k). h/l run off the tape onto the next monitor, j/k onto
-    // the next workspace. all native now.
     mod+h { focus-column-or-monitor-left; }
     mod+j { focus-window-or-workspace-down; }
     mod+k { focus-window-or-workspace-up; }
     mod+l { focus-column-or-monitor-right; }
-    mod+alt+l { consume-or-expel-window-right; }
-    mod+alt+h { consume-or-expel-window-left; }
+    mod+BracketLeft { consume-or-expel-window-left; }
+    mod+BracketRight { consume-or-expel-window-right; }
 
     mod+shift+h { move-column-left-or-to-monitor-left; }
     mod+shift+j { move-window-down-or-to-workspace-down; }
@@ -416,15 +373,15 @@ binds {
 
     // quick one-handed resizing on mod+{2-6}
     mod+2 { set-column-width "700"; }
-    mod+3 { set-column-width "50%"; }
-    mod+4 { set-column-width "60%"; }
-    mod+5 { set-column-width "80%"; }
-    mod+6 { set-column-width "100%"; }
+    mod+3 { set-column-width "30%"; }
+    mod+4 { set-column-width "50%"; }
+    mod+5 { set-column-width "70%"; }
+    mod+6 { set-column-width "90%"; }
 
     // ** monitor brightness controls
     xf86monbrightnessup   allow-when-locked=true { spawn "brightnessctl" "-e4" "-n2" "set" "10%+"; }
     xf86monbrightnessdown allow-when-locked=true { spawn "brightnessctl" "-e4" "-n2" "set" "10%-"; }
-    xf86poweroff          repeat=false { power-off-monitors; }   // allow-when-locked is spawn-only
+    xf86poweroff          repeat=false { power-off-monitors; }
 
     // ** audio and player controls
     xf86audioraisevolume      allow-when-locked=true { spawn "hey" "wm" "volume" "sink" "up"; }
