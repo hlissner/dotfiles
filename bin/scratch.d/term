@@ -5,21 +5,24 @@
 #   hey .scratch term
 #
 # DESCRIPTION:
-#   Opens a scratchpad foot terminal (a window-rule in niri/config.kdl floats
-#   and positions it) in the current workspace. Used for quick, one-off use of
-#   the terminal.
+#   Used for quick, one-off use of the terminal. Opens a scratchpad terminal (a
+#   window-rule in niri/config.kdl floats and positions it) in the current
+#   workspace. Closes it if it's already focused, focuses it if it's visible on
+#   any output, and pulls it over to the focused workspace otherwise.
 
 local app=scratchterm
-local wid wws hid ref
-read -r wid wws <<<"$(niri msg -j windows | jq -r --arg a $app '.[] | select(.app_id == $a) | "\(.id) \(.workspace_id)"')"
+local wid wws wfoc hid ref vis
+read -r wid wws wfoc <<<"$(niri msg -j windows | jq -r --arg a $app '.[] | select(.app_id == $a) | "\(.id) \(.workspace_id) \(.is_focused)"')"
 read -r hid ref <<<"$(niri msg -j workspaces | jq -r '.[] | select(.is_focused) | "\(.id) \(.name // .idx)"')"
 [[ $hid ]] || hey.abort "No focused workspace"
 
 if [[ -z $wid ]]; then
   hey.do hey wm term -t $app -a $app &!
-elif [[ $wws == $hid ]]; then
+elif [[ $wfoc == true ]]; then
   hey.do niri msg action close-window --id $wid
 else
-  hey.do niri msg action move-window-to-workspace --window-id $wid $ref
+  # is_active = visible on its output
+  vis=$(niri msg -j workspaces | jq -r --argjson w $wws '.[] | select(.id == $w) | .is_active')
+  [[ $vis == true ]] || hey.do niri msg action move-window-to-workspace --window-id $wid $ref
   hey.do niri msg action focus-window --id $wid
 fi
