@@ -50,7 +50,7 @@ let cfg = config.modules.games.emulators;
       };
       n3ds = {
         fullname = "Nintendo 3DS";
-        extensions = ".3ds .3DS .3dsx .3DSX .app .APP .axf .AXF .cci .CCI .cxi .CXI .elf .ELF .7z .7Z .zip .ZIP";
+        extensions = ".3ds .3DS .3dsx .3DSX .app .APP .axf .AXF .cci .CCI .cxi .CXI .zcci .ZCCI .zcxi .ZCXI .z3dsx .Z3DSX .elf .ELF";
         command = "%EMULATOR_AZAHAR% %ROM%";
       };
       n64 = {
