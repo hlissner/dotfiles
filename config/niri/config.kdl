@@ -293,7 +293,18 @@ window-rule {
     open-floating true
 }
 window-rule {
-    match app-id=r#"^(gamescope|steam_app_(default|\d+))$"#
+    match app-id=r#"^gamescope$"#
+    match app-id=r#"^steam_app_(default|\d+)$"#
+    match app-id=r#"^gzdoom$"#
+    match app-id=r#"^es-de$"#
+    match app-id=r#"^com\.libretro\.RetroArch$"#
+    match app-id=r#"^org\.azahar_emu\.Azahar$"#
+    match app-id=r#"^dev\.eden_emu\.eden$"#
+    match app-id=r#"^dolphin-emu$"#
+    match app-id=r#"^Vita3K$"#
+    match app-id=r#"^pico8_dyn$"#
+    // TODO: pcsx2
+    // TODO: rpcs3
     open-focused true
     open-fullscreen true
     open-floating false
