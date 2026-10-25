@@ -207,6 +207,8 @@ with builtins;
 
     # For the Steam controller
     hardware.steam-hardware.enable = true;
+    # For 8BitDo SN30 Pro controller
+    services.udev.packages = [ self.packages.udev-hid-bpf ];
 
     fileSystems = {
       "/" = {
