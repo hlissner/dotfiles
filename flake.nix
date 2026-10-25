@@ -15,11 +15,11 @@
 
       # Desktop dependencies
       niri.url = "github:epireyn/niri-flake";
-      niri.inputs.nixpkgs-stable.follows = "nixpkgs";
+      niri.inputs.nixpkgs-stable.follows = "nixpkgs";  # for features I don't use
       noctalia.url = "github:noctalia-dev/noctalia/cachix";
 
       # Extras (imported directly by modules/hosts that need them)
-      emacs-overlay.url = "github:nix-community/emacs-overlay"; # own nixpkgs, same reason
+      emacs-overlay.url = "github:nix-community/emacs-overlay";
       nixos-hardware.url = "github:nixos/nixos-hardware";
       llm-agents.url = "github:numtide/llm-agents.nix";
     };

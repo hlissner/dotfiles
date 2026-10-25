@@ -58,6 +58,10 @@ enable_sounds = true
 sound_theme = "hey"  # assets/sounds, linked in by modules/hey.nix
 sound_volume = 1.00
 
+[bluetooth]
+# The peripheral-battery plugin already does this + charge level
+connection_notifications = false
+
 [theme]
 mode   = "dark"
 source = "wallpaper"

@@ -78,11 +78,6 @@ in {
              }
              sed 's|^DeviceTimeout=.*|DeviceTimeout=20|' ${original} >$out
           '');
-
-      warnings = optional (!config.boot.initrd.systemd.enable) ''
-        modules.wm.plymouth.nvidia can't override the DeviceTimeout
-        without config.boot.initrd.systemd.enable, which is off.
-      '';
     })
 
     (mkIf cfg.quiet {
@@ -97,7 +92,6 @@ in {
           "udev.log_priority=3"
         ];
         consoleLogLevel = 0;
-        initrd.verbose = false;
       };
 
       environment.sessionVariables.UWSM_SILENT_START = "1";
