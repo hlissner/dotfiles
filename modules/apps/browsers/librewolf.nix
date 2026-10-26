@@ -148,9 +148,12 @@ in {
             "privacy.fingerprintingProtection.overrides" = "+AllTargets,-CSSPrefersColorScheme";
             # 0 = dark, regardless of what GTK or the browser theme claims.
             "layout.css.prefers-color-scheme.content-override" = 0;
-            # No need on my own pages. Despite the name, this exempts from FPP
-            # too; the check sits above the RFP/FPP split.
-            "privacy.resistFingerprinting.exemptedDomains" = "*.lissner.net,*.henrik.io";
+            # No need on pages I trust
+            "privacy.resistFingerprinting.exemptedDomains" = concatStringsSep "," [
+              "*.lissner.net"
+              "*.henrik.io"
+              "app.fastmail.com"
+            ];
           };
           in concatStrings (mapAttrsToList (name: value: ''
             defaultPref("${name}", ${builtins.toJSON value});
