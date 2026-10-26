@@ -156,6 +156,7 @@ with builtins;
       guitarix
       gxplugins-lv2
       ladspaPlugins
+      google-chrome  # for testing
     ];
   };
 
