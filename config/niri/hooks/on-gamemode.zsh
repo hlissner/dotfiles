@@ -7,25 +7,23 @@
 #
 # DESCRIPTION:
 #   Display a notification indicating the status of gamemode. This ought to be
-#   triggered by gamemode's start/end hooks. Also hides Noctalia's desktop
-#   widgets while gamemode is on. niri has no dimming to give up.
-#
-#   `off` also queues gamemoded's own shutdown, a few seconds out, which is why
-#   there's a third argument I never type myself: kill.
+#   triggered by gamemode's start/end hooks. Also switches Noctalia's
+#   performance-plus plugin on for the duration: toggles Noctalia functionality
+#   while games are running, like widgets, wallpaper, DND,
+#   animations/blurs/shadows, power profiles, etc. Also truly kills the gamemode
+#   daemon on shutdown.
 #
 #   @see modules/games/steam.nix.
+#   @see modules/wm/noctalia.nix for the plugin's settings.
 
+local plugin=detluck/performance-plus:service
 case $1 in
   on)
     hey.toast -i device-gamepad-2 warn "Gamemode started!"
-    # Hiding tears the widgets down, so they stop costing frames, not just
-    # pixels. Runtime-only; the saved setting is untouched.
-    noctalia msg desktop-widgets-hide &>/dev/null
+    noctalia msg plugin $plugin all enable &>/dev/null
     ;;
   off)
-    # HACK: -show overrides the saved setting too, so this would resurrect
-    #   widgets I'd disabled in Settings. Fine as long as I haven't.
-    noctalia msg desktop-widgets-show &>/dev/null
+    noctalia msg plugin $plugin all disable &>/dev/null
     # HACK: End gamemoded.service once all its clients have disconnected
     #   (killing it now would just restart it).
     systemd-run --user --quiet --collect --on-active=5s "${0:A}" kill

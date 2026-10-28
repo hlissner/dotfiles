@@ -29,6 +29,7 @@ let
   # Every plugin gate open at once.
   gatesOpen = [{
     programs.kdeconnect.enable = true;
+    programs.gamemode.enable = true;
     modules.profiles.hardware = [ "printer/wireless" "pc/laptop" ];
   }];
 
@@ -162,20 +163,32 @@ in {
   # they shadow do: "printer/wireless" is still a printer, so an exact-match
   # gate would quietly miss it. udiskie rides services.udisks2, which
   # modules/system/fs.nix turns on, so it's the one gate open by default.
+  # performance-plus rides gamemode, which only modules/games/steam.nix turns on.
   testPluginsFollowTheirGates =
     let enabled = extra: (settings three extra).plugins.enabled;
         on = enabled gatesOpen;
         noFs = enabled [{ modules.system.fs.enable = false; }];
+        gated = [ "icefish/phone-connect" "andrewdems/printers" "8bury/lid-guard"
+                  "detluck/performance-plus" ];
     in {
       expr = {
-        gated = filter (p: elem p base.plugins.enabled)
-          [ "icefish/phone-connect" "andrewdems/printers" "8bury/lid-guard" ];
-        opened = filter (p: !elem p on)
-          [ "icefish/phone-connect" "andrewdems/printers" "8bury/lid-guard" ];
+        gated = filter (p: elem p base.plugins.enabled) gated;
+        opened = filter (p: !elem p on) gated;
         udiskie = [ (elem "aristides/udiskie" base.plugins.enabled)
                     (elem "aristides/udiskie" noFs) ];
       };
       expected = { gated = []; opened = []; udiskie = [ true false ]; };
+    };
+
+  # config/niri/hooks/on-gamemode.zsh toasts through the OSD on the way in, and
+  # performance-plus defaults to switching the OSD off and clearing toasts on
+  # the way in. The pins have to hold with the plugin on, which is when they
+  # matter; a host override is the only thing meant to move them.
+  testPerformancePlusKeepsTheOsd =
+    let s = (settings three gatesOpen).plugin_settings."detluck/performance-plus";
+    in {
+      expr = { inherit (s) disable_osd clear_notifications; };
+      expected = { disable_osd = false; clear_notifications = false; };
     };
 
   # My own plugins are the ones that aren't fetched: they sit under the same

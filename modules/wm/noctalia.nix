@@ -157,7 +157,10 @@ in {
           enable = mkDefault config.services.udisks2.enable;
           src = "${communityPlugins}/udiskie";
         };
-
+        # Driven by config/niri/hooks/on-gamemode.zsh, not the bar.
+        "detluck/performance-plus" = mkIf config.programs.gamemode.enable {
+          src = "${communityPlugins}/performance-plus";
+        };
         "andrewdems/printers" = mkIf (any (s: hasPrefix "printer" s) hardware) {
           src = "${communityPlugins}/printers";
         };
@@ -183,6 +186,11 @@ in {
             name = "nixos"; kind = "path"; enabled = true;
             location = "${pluginDir}";
           }];
+        };
+
+        plugin_settings."detluck/performance-plus" = {
+          disable_osd = false;
+          clear_notifications = false;
         };
       };
 
