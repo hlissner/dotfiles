@@ -326,6 +326,9 @@
           [p])))
    ;args))
 
+(defn debug-level []
+  (or (dyn :debug) (scan-number (or (os/getenv "HEYDEBUG") "")) -1))
+
 (defmacro log
   "Print MESSAGE to stderr, but only at debug LEVEL (1 by default) or above."
   [& args]
@@ -333,7 +336,7 @@
   (def level    (if leveled? (first args) 1))
   (def message  (in args (if leveled? 1 0)))
   (def args     (slice args (if leveled? 2 1)))
-  ~(when (>= (dyn :debug -1) ,level)
+  ~(when (>= (,debug-level) ,level)
      (with-dyns [*out* stderr]
        (echof :debug (string "LOG[%s]: " ,message)
               ,(path/no-ext

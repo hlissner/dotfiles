@@ -230,7 +230,7 @@
   (dyn :dryrun (not (empty? (or (os/getenv "HEYDRYRUN") "")))))
 
 (defn debug? [&opt n]
-  (<= (or n 1) (dyn :debug -1)))
+  (<= (or n 1) (debug-level)))
 
 (defmacro do?
   "A wrapper for janet-sh macros to no-op them if DRYRUN is active."
