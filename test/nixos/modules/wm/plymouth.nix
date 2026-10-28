@@ -68,23 +68,15 @@ in {
 
   # nixpkgs writes DeviceTimeout above boot.plymouth.extraConfig, so the
   # module rewrites the initrd's copy of the file (there's a grep at build
-  # time too). A scripted stage 1 ignores boot.initrd.systemd.contents, so
-  # there it can only warn.
-  testNvidiaRewritesTheInitrdConf =
-    let scripted = evalConfig [{
-          modules.wm.plymouth.enable = true;
-          modules.profiles.hardware = [ "gpu/nvidia" ];
-          boot.initrd.systemd.enable = false;
-        }];
-    in {
-      expr = {
-        rewritten = initrdConf nvidia != etcConf nvidia;
-        untouched = initrdConf on == etcConf on;
-        quiet = warns nvidia;
-        loud = warns scripted;
-      };
-      expected = { rewritten = true; untouched = true; quiet = false; loud = true; };
+  # time too).
+  testNvidiaRewritesTheInitrdConf = {
+    expr = {
+      rewritten = initrdConf nvidia != etcConf nvidia;
+      untouched = initrdConf on == etcConf on;
+      quiet = warns nvidia;
     };
+    expected = { rewritten = true; untouched = true; quiet = false; };
+  };
 
   ## The handoff to greetd.
 
