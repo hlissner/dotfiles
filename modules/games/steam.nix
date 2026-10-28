@@ -67,7 +67,10 @@ in {
     home.dataFile."applications/steam.desktop" = mkIf (config.modules.wm.desktop == "niri") {
       source = let
         launch = pkgs.writeShellScript "steam-launch" ''
-          exec ${config.hey.bin} wm launch -a '^(steam|gamescope|steam_app_(default|[0-9]+))$' -- steam "$@"
+          ${config.hey.bin} wm launch -a '^(steam|gamescope|steam_app_(default|[0-9]+))$' -- steam "$@"
+          # A second `steam` only pokes the running one and comes straight back;
+          # the controller stays on until the real one is gone.
+          ${pkgs.procps}/bin/pgrep -u "$UID" -x steam >/dev/null || ${config.hey.bin} .dev steam-controller off
         '';
       in pkgs.runCommand "steam.desktop" {} ''
         sed 's@^Exec=steam@Exec=${launch}@' \
