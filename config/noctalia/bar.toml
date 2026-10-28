@@ -39,7 +39,7 @@ show_on_workspace_switch = false
     fill = "surface_variant"
     foreground = "primary"
     id = "system"
-    members = [ "battery", "caffeine", "disks", "network", "bluetooth", "input_volume", "output_volume" ]
+    members = [ "tailscale", "battery", "caffeine", "disks", "network", "bluetooth", "input_volume", "output_volume" ]
     opacity = 0.0
     padding = 8.0
 
@@ -95,10 +95,6 @@ type = "8bury/lid-guard:lid-guard"
 [widget.disks]
 type = "aristides/udiskie:status"
 hide_when_empty = true
-
-[widget.tailscale]
-type = "davemhammer/tailscale:status"
-show_counts = false
 
 [widget.phone]
 type = "icefish/phone-connect:bar"
@@ -221,3 +217,8 @@ capsule_padding = 1
     [widget.compass.actions]
     left = "exec niri msg action toggle-overview"
     right = "exec noctalia msg window-switcher"
+
+[widget.tailscale]
+type = "davemhammer/tailscale:status"
+scale = 0.80
+show_counts = false
