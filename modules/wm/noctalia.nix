@@ -54,6 +54,13 @@ in {
       services.upower.enable = true;
       services.power-profiles-daemon.enable = true;
 
+      # Let hey/peripheral-battery see my ProtoArc mouse
+      services.udev.packages = [
+        (pkgs.writeTextDir "lib/udev/rules.d/70-hey-hidraw.rules" ''
+          SUBSYSTEM=="hidraw", ATTRS{idVendor}=="260d", TAG+="uaccess"
+        '')
+      ];
+
       environment.systemPackages = with pkgs; [
         adw-gtk3  # the gtk templates point gtk-theme at it, if present
         python    # for hey @noctalia reset & some Noc plugins

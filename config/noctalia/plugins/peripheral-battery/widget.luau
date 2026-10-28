@@ -1,7 +1,8 @@
 --!nonstrict
 -- config/noctalia/plugins/peripheral-battery/widget.luau
 --
--- An icon, vertical power meter, and a percentage.
+-- One meter per device in `devices`, in that order: an icon, a vertical power
+-- meter, and a percentage. A device that isn't there takes up no space.
 
 local PLUGGED = {
   charging = true,
@@ -11,6 +12,8 @@ local PLUGGED = {
   ["not charging"] = true,
 }
 local FULL = { ["fully-charged"] = true, full = true }
+
+local DEFAULT_GLYPH = "battery-vertical"
 
 -- What "Default" in the color dropdowns means, per state. The nil ones are on
 -- purpose: an unset color prop is what inherits the bar's styling. The meter
@@ -32,15 +35,27 @@ local function setting(key, fallback)
   return value
 end
 
--- Find the device by name
-local function find()
-  local wanted = string.lower(setting("device", ""))
-  if wanted == "" then
-    return nil
+-- `devices` entries are `SUBSTRING=GLYPH`; the glyph is optional.
+local function wanted()
+  local out = {}
+  for _, entry in ipairs(setting("devices", {})) do
+    local name, glyph = string.match(entry, "^(.-)=(.*)$")
+    name = noctalia.string.trim(name or entry)
+    glyph = noctalia.string.trim(glyph or "")
+    if name ~= "" then
+      table.insert(out, {
+        name = string.lower(name),
+        glyph = glyph ~= "" and glyph or DEFAULT_GLYPH,
+      })
+    end
   end
+  return out
+end
+
+local function find(name)
   for _, dev in ipairs(batteries) do
     for _, field in ipairs({ dev.model, dev.serial, dev.native, dev.path, dev.vendor }) do
-      if field ~= "" and string.find(string.lower(field), wanted, 1, true) ~= nil then
+      if field ~= "" and string.find(string.lower(field), name, 1, true) ~= nil then
         return dev
       end
     end
@@ -77,14 +92,12 @@ local function meter(pct, color, track)
   })
 end
 
-local function render()
-  local dev = find()
-  if dev == nil then
-    barWidget.setVisible(false)
-    return
-  end
-  barWidget.setVisible(true)
+local function container()
+  return barWidget.isVertical() and ui.column or ui.row
+end
 
+-- One device's node, and its tooltip row.
+local function draw(dev, glyph)
   local pct = math.clamp(math.floor(dev.percent + 0.5), 0, 100)
   local state = stateOf(dev, pct)
   local function color(element)
@@ -92,7 +105,7 @@ local function render()
   end
 
   local children = {
-    ui.glyph({ name = setting("glyph", "battery-vertical"), color = color("glyph") }),
+    ui.glyph({ name = glyph, color = color("glyph") }),
     meter(pct, color("meter"), "on_surface/0.3"),
   }
   if PLUGGED[dev.state] and setting("show_charge_glyph", true) then
@@ -105,13 +118,32 @@ local function render()
     table.insert(children, ui.label({ text = text, color = color("label") }))
   end
 
-  local container = barWidget.isVertical() and ui.column or ui.row
-  barWidget.render(container({ gap = setting("gap", 4), align = "center" }, children))
+  return container()({ gap = setting("gap", 4), align = "center" }, children), {
+    key = dev.model ~= "" and dev.model or dev.native,
+    value = `{pct}%, {(string.gsub(dev.state, "^%l", string.upper))}`,
+  }
+end
 
-  barWidget.setTooltip({
-    { key = dev.model ~= "" and dev.model or dev.native, value = `{pct}%` },
-    { key = "Status", value = (string.gsub(dev.state, "^%l", string.upper)) },
-  })
+local function render()
+  local nodes, rows, drawn = {}, {}, {}
+  for _, want in ipairs(wanted()) do
+    local dev = find(want.name)
+    -- Two entries can match one device; it gets drawn under the first.
+    if dev ~= nil and not drawn[dev] then
+      drawn[dev] = true
+      local node, row = draw(dev, want.glyph)
+      table.insert(nodes, node)
+      table.insert(rows, row)
+    end
+  end
+
+  if #nodes == 0 then
+    barWidget.setVisible(false)
+    return
+  end
+  barWidget.setVisible(true)
+  barWidget.render(container()({ gap = setting("device_gap", 8), align = "center" }, nodes))
+  barWidget.setTooltip(rows)
 end
 
 noctalia.state.watch("batteries", function(value)

@@ -171,10 +171,13 @@ let cfg = config.modules.games.emulators;
       </system>
     '';
 
+    # ES-DE is an XWayland window, so it gets steam input, but emulators open in
+    # native Wayland windows, so Steam doesn't propagate steam input
+    # (controllers) to them.
     esde = mkWrapper self.packages.es-de ''
       wrapProgram $out/bin/es-de \
         --set ESDE_APPDATA_DIR "${cfg.dataDir}" \
-        --run 'ls "${cfg.romsDir}" >/dev/null 2>&1 || true'
+        --run '[ -n "$SteamGameId" ] && unset WAYLAND_DISPLAY'
     '';
 
     retroarch =

@@ -30,7 +30,7 @@ show_on_workspace_switch = false
     fill = "surface_variant"
     foreground = "primary"
     id = "devices"
-    members = [ "earphones-battery", "trackpad-battery", "gamepad-battery", "phone" ]
+    members = [ "peripheral-batteries", "phone" ]
     opacity = 0.0
     padding = 8.0
 
@@ -103,47 +103,21 @@ show_counts = false
 [widget.phone]
 type = "icefish/phone-connect:bar"
 
-[widget.trackpad-battery]
+[widget.peripheral-batteries]
 type = "hey/peripheral-battery:battery"
-device = "Magic Trackpad"
-glyph = "device-ipad"
-meter_height = 10
-meter_width = 3
-gap = 1
-show_label = false
-scale = 0.90
-charged_glyph_color = "tertiary"
-charged_label_color = "tertiary"
-charged_meter_color = "tertiary"
-discharging_glyph_color = "on_surface"
-discharging_label_color = "on_surface"
-discharging_meter_color = "on_surface"
-show_charge_glyph = false
-
-[widget.earphones-battery]
-type = "hey/peripheral-battery:battery"
-device = "TOZO-T6"
-glyph = "bluetooth-device-earbuds"
+devices = [
+  "ProtoArc=mouse",
+  "Magic Trackpad=device-ipad",
+  "TOZO-T6=bluetooth-device-earbuds",
+  "8Bitdo=device-gamepad-3",
+  "Steam Controller=device-gamepad-2",
+]
+warn_below = 30
 meter_height = 10
 meter_width = 3
 show_label = false
 gap = 1
-charged_glyph_color = "tertiary"
-charged_label_color = "tertiary"
-charged_meter_color = "tertiary"
-discharging_glyph_color = "on_surface"
-discharging_label_color = "on_surface"
-discharging_meter_color = "on_surface"
-show_charge_glyph = false
-
-[widget.gamepad-battery]
-type = "hey/peripheral-battery:battery"
-device = "Pro Controller"
-glyph = "bluetooth-device-gamepad"
-meter_height = 10
-meter_width = 3
-show_label = false
-gap = 1
+glyph = "device-gamepad-2"
 charged_glyph_color = "tertiary"
 charged_label_color = "tertiary"
 charged_meter_color = "tertiary"

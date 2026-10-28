@@ -228,6 +228,7 @@ manager_open_near_click = true
 
 [plugin_settings."hey/peripheral-battery"]
 notify = "both"
+quiet = ["ProtoArc"]  # naps every few minutes
 on_connect = "hey hook -f on-peripheral -f \"$model\" \"$percent\""
 on_disconnect = "hey hook -f on-peripheral --off \"$model\" \"$percent\""
 

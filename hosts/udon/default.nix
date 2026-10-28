@@ -210,6 +210,9 @@ with builtins;
     hardware.steam-hardware.enable = true;
     # For 8BitDo SN30 Pro controller
     services.udev.packages = [ self.packages.udev-hid-bpf ];
+    # The usual fix for gamepads that pair over bluetooth and then drop or never
+    # connect, like the 8Bitdo SN30 Pro.
+    boot.extraModprobeConfig = "options bluetooth disable_ertm=1";
 
     fileSystems = {
       "/" = {

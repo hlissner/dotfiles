@@ -1,26 +1,31 @@
 # config/noctalia/plugins/peripheral-battery/plugin.toml
 #
-# The built-in battery widget draws the glyph its charge level says to draw,
-# and picks its graphic meter's orientation off the capsule's aspect ratio
-# (battery_widget.cpp: `m_isVertical = containerHeight > containerWidth`), so
-# on a top bar it is always horizontal. Neither is a setting. Hence this: a
-# vertical meter with a glyph I choose per device.
+# The built-in battery widget draws the glyph its charge level says to draw, and
+# picks its graphic meter's orientation off the capsule's aspect ratio
+# (battery_widget.cpp: `m_isVertical = containerHeight > containerWidth`), so on
+# a top bar it is always horizontal. Neither is a setting. Hence this: a
+# vertical meter with a glyph I choose per device, and every device in the one
+# widget -- four copies of the same forty settings was its own kind of clutter.
 #
 # Two entries. The service does the polling -- once, for however many widgets
-# ask -- and the widget only draws.
+# ask -- and the widget only draws. Three sources: sysfs and upower, polled, and
+# `hey .dev hid-battery -w`, a watcher the service keeps open for what's only on
+# the wire: the Steam Controller (no power_supply of mine will carry it while
+# Steam runs) and Compx 2.4GHz mice. It's only ever started on a machine that
+# has one of those plugged in (see poll.luau).
 #
 # The look is per state (charging, charged, discharging, low): a color dropdown
-# each for glyph, meter and percentage, plus the two plugged-in glyphs. "Default"
-# in a color dropdown is the empty string; PALETTE in widget.luau says what that
-# resolves to.
+# each for glyph, meter and percentage, plus the two plugged-in glyphs.
+# "Default" in a color dropdown is the empty string; PALETTE in widget.luau says
+# what that resolves to.
 
 id           = "hey/peripheral-battery"
 name         = "Peripheral Battery"
-version      = "1.2.0"
+version      = "2.2.0"
 plugin_api   = 24  # runAsync's argv form, for on_connect/on_disconnect
 author       = "hlissner"
 license      = "MIT"
-dependencies = ["upower", "stdbuf", "bluetoothctl"]
+dependencies = ["upower", "stdbuf", "bluetoothctl", "hey"]
 tags         = ["battery", "bar"]
 icon         = "battery-vertical-3"
 description  = "A vertical battery meter with a per-device glyph, for peripherals."
@@ -48,6 +53,16 @@ options = [
   { value = "disconnect", label_key = "settings.notify.options.disconnect" },
 ]
 
+# Same SUBSTRING matching as the widget's `devices`. Only the popup; the
+# on_connect/on_disconnect hooks still fire.
+[[setting]]
+key             = "quiet"
+type            = "string_list"
+label_key       = "settings.quiet.label"
+description_key = "settings.quiet.description"
+default         = []
+visible_when    = { key = "notify", values = ["both", "connect", "disconnect"] }
+
 [[setting]]
 key             = "on_connect"
 type            = "string"
@@ -70,19 +85,14 @@ entry = "poll.luau"
 id    = "battery"
 entry = "widget.luau"
 
+  # `SUBSTRING=GLYPH` each, drawn in this order. One widget for all of them, so
+  # the settings page is one page.
   [[widget.setting]]
-  key             = "device"
-  type            = "string"
-  label_key       = "settings.device.label"
-  description_key = "settings.device.description"
-  default         = ""
-
-  [[widget.setting]]
-  key             = "glyph"
-  type            = "glyph"
-  label_key       = "settings.glyph.label"
-  description_key = "settings.glyph.description"
-  default         = "battery-vertical"
+  key             = "devices"
+  type            = "string_list"
+  label_key       = "settings.devices.label"
+  description_key = "settings.devices.description"
+  default         = []
 
   [[widget.setting]]
   key             = "show_label"
@@ -259,4 +269,14 @@ entry = "widget.luau"
   default         = 4
   min             = 0
   max             = 24
+  advanced        = true
+
+  [[widget.setting]]
+  key             = "device_gap"
+  type            = "int"
+  label_key       = "settings.device_gap.label"
+  description_key = "settings.device_gap.description"
+  default         = 8
+  min             = 0
+  max             = 48
   advanced        = true
