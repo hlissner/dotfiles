@@ -366,6 +366,8 @@ binds {
     mod+l { focus-column-or-monitor-right; }
     mod+BracketLeft { consume-or-expel-window-left; }
     mod+BracketRight { consume-or-expel-window-right; }
+    mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
+    mod+WheelScrollUp   cooldown-ms=150 { focus-workspace-up; }
 
     mod+shift+h { move-column-left-or-to-monitor-left; }
     mod+shift+j { move-window-down-or-to-workspace-down; }
