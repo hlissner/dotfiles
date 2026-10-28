@@ -297,6 +297,7 @@ window-rule {
     match app-id=r#"^steam_app_(default|\d+)$"#
     match app-id=r#"^gzdoom$"#
     match app-id=r#"^es-de$"#
+    match app-id=r#"^retroarch$"#
     match app-id=r#"^com\.libretro\.RetroArch$"#
     match app-id=r#"^org\.azahar_emu\.Azahar$"#
     match app-id=r#"^dev\.eden_emu\.eden$"#
