@@ -6,8 +6,9 @@
 #
 # DESCRIPTION:
 #   This reads the packages I've installed through my NixOS config, compares
-#   them to what's available at the latest commits of nixos-unstable, and tells
-#   what *would* change if I `hey pull`ed.
+#   them to what's at the latest commits of every input -- nixpkgs, but also
+#   niri, emacs-overlay, llm-agents and the rest -- and tells what *would*
+#   change if I `hey pull`ed.
 #
 # OPTIONS:
 #   -H, --host HOST @hosts
@@ -18,22 +19,23 @@
 (use hey)
 (use sh)
 
-(def- *unstable* "github:NixOS/nixpkgs/nixos-unstable")
-
-# Returned as an attrset rather than a list for easy, unsorted comparison
 (def- *extract* `
 sys:
 let
   lib = sys.config.nixpkgs.pkgs.lib;
   nixpkgs = toString sys.config.nixpkgs.pkgs.path;
-  # A definition from outside nixpkgs' own module tree is one of mine.
-  mine = d: !(lib.hasPrefix nixpkgs d.file);
+  outside = path: !(lib.hasPrefix nixpkgs path);
   defs = sys.options.environment.systemPackages.definitionsWithLocations;
-  sysPkgs = lib.concatMap (d: d.value) (lib.filter mine defs);
-  userPkgs = sys.config.users.users.${sys.config.user.name}.packages or [];
-  name = p: p.pname or (lib.getName p);
+  # A definition from outside nixpkgs' own module tree is one of mine...
+  mine = lib.concatMap (d: d.value) (lib.filter (d: outside d.file) defs);
+  # ...but programs.niri.package is nixpkgs' definition of *my* package.
+  foreign = lib.filter (p: outside (p.meta.position or nixpkgs))
+                       sys.config.environment.systemPackages;
+  user = sys.config.users.users.${sys.config.user.name}.packages or [];
+  # for emacsWithPackages, which hides version on its wrapper
+  version = p: p.version or p.emacs.version or "";
 in lib.listToAttrs
-     (map (p: lib.nameValuePair (name p) (p.version or "")) (sysPkgs ++ userPkgs))
+     (map (p: lib.nameValuePair (lib.getName p) (version p)) (mine ++ foreign ++ user))
 `)
 
 (defn- versions
@@ -46,6 +48,21 @@ in lib.listToAttrs
         ,(string (path :home) "#nixosConfigurations." host)
         --apply ,*extract*)))
 
+(defn- upstream-lock []
+  (os/mkdir (path :runtime))
+  (def lock (path :runtime "sup.lock"))
+  # --refresh, or nix hands back whatever it fetched within the last hour
+  ($ nix flake update --refresh --output-lock-file ,lock --flake ,(path :home))
+  lock)
+
+(defn- moved [have upstream all?]
+  (sort (seq [[name version] :pairs have
+              :let [new (get upstream name)]
+              # An empty version is a wrapper or an env
+              :when (or all? (and (not (empty? version))
+                                  (not= new version)))]
+          [name version new])))
+
 (defn- pad [text width]
   (string text (string/repeat " " (max 0 (- width (length text))))))
 
@@ -54,7 +71,7 @@ in lib.listToAttrs
   (each [name have upstream] rows
     (echo (string (pad name width) "  "
                   (cond (= have upstream) have
-                        (nil? upstream) (string have " -> gone from unstable")
+                        (nil? upstream) (string have " -> gone upstream")
                         (string have " -> " upstream))))))
 
 (defcmd sup [_ &opts host [-H --host name] all? [-a --all]]
@@ -62,17 +79,10 @@ in lib.listToAttrs
 
   (echof :g "> What %s asks for..." host)
   (def have (versions host))
-  (echof :g "> What nixos-unstable has...")
-  (def upstream (versions host "--override-input" "nixpkgs" *unstable*))
+  (echof :g "> What every input has now...")
+  (def upstream (versions host "--reference-lock-file" (upstream-lock)))
 
-  (def rows
-    (sort (seq [[name version] :pairs have
-                :let [new (get upstream name)]
-                # An empty version is a wrapper or an env
-                :when (or all? (and (not (empty? version))
-                                    (not= new version)))]
-            [name version new])))
-
+  (def rows (moved have upstream all?))
   (cond (and (empty? rows) all?)
         (echo :warn "No packages found at all, which can't be right")
         (empty? rows) (echo :check "Nothing has moved on without me.")
