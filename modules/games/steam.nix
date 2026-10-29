@@ -78,7 +78,31 @@ in {
       '';
     };
 
-    # Better for steam proton games
-    systemd.user.settings.Manager.DefaultLimitNOFILE = mkDefault 1048576;
+    # Auto-delete the *.desktop files Steam generates. I will never launch my
+    # games through them; Steam is my game launcher (and I don't want Rofi
+    # picking them up).
+    systemd.user = let
+      dir = "${config.home.dataDir}/applications";
+      sweep = pkgs.writeShellScript "steam-sweep-shortcuts" ''
+        ${pkgs.gnugrep}/bin/grep -lZ '^Exec=steam steam://rungameid/' ${dir}/*.desktop 2>/dev/null \
+          | ${pkgs.findutils}/bin/xargs -0 -r ${pkgs.coreutils}/bin/rm -f
+      '';
+    in {
+      services.steam-sweep-shortcuts = {
+        description = "Remove Steam's per-game .desktop shortcuts";
+        wantedBy = [ "default.target" ];   # the path unit won't fire for what's already there
+        serviceConfig = {
+          Type = "oneshot";
+          ExecStart = sweep;
+        };
+      };
+      paths.steam-sweep-shortcuts = {
+        wantedBy = [ "default.target" ];
+        pathConfig.PathChanged = dir;
+      };
+
+      # Better for steam proton games
+      settings.Manager.DefaultLimitNOFILE = mkDefault 1048576;
+    };
   };
 }
