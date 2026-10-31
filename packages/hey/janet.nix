@@ -26,13 +26,13 @@ let
     })
     (fetchFromGitHub {
       owner = "janet-lang"; repo = "spork";
-      rev = "ff672b677b52c995f39b50c5f2114f79bd4e601c";
-      hash = "sha256-DnsEL478BKTviCTP2N9OgrexMvbWrwpXMrIvOiWBGbM=";
+      rev = "328240916032ec3834a1fb56b81ca398df80f084";
+      hash = "sha256-Jg3esmOPHo3lSak+cQvBoIf3CVgGnaXQIE+GCqAmURg=";
     })
     (fetchFromGitHub {
       owner = "janet-lang"; repo = "sqlite3";
-      rev = "c7a6f36affd217182bd9b0228c58d33d04361689";
-      hash = "sha256-UGIDTLdGEbOR2RjfQliH0X7SRKi271ZzrSPzrP1M7mc=";
+      rev = "9126fe46ff1c7e42ca3d7bb9c8aed95a8236a32c";
+      hash = "sha256-bYJ0kuX8Bemn867QEaRyAM+wuTZ0U1p38lITU0l6/tE=";
     })
   ];
 

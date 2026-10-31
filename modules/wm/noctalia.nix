@@ -114,8 +114,8 @@ in {
       # One rev per repo, so nix-pull moves every plugin from it together.
       communityPlugins = pkgs.fetchFromGitHub {
         owner = "noctalia-dev"; repo = "community-plugins";
-        rev = "8ea6ee7bf7faffc32e0a9212dd262e64771d4117";
-        hash = "sha256-GxBexnv/VYGtptvX1ArcrJEct6yA1wCvygwCOxhtZmo=";
+        rev = "3b3f98722139dd395751ed756610da7a5b11fb2d";
+        hash = "sha256-GJLKW2SpPfBjbdkqVHETpgbJAwSQusxt9+d0kEegKo4=";
       };
       hardware = config.modules.profiles.hardware;
 

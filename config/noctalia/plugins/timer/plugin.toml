@@ -33,7 +33,7 @@
 id = "hey/timer"
 name = "Timer"
 version = "1.2.4"
-plugin_api = 24  # HEY: runAsync's argv form, for on_expire
+plugin_api = 43  # HEY: surface_container/outline_variant (5.4 retired the old names); runAsync's argv form is 24
 author = "noctalia, hlissner"
 license = "MIT"
 dependencies = []

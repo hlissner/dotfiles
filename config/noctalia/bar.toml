@@ -27,7 +27,7 @@ show_on_workspace_switch = false
 
     [[bar.main.capsule_group]]
     enabled = true
-    fill = "surface_variant"
+    fill = "surface_container"
     foreground = "primary"
     id = "devices"
     members = [ "peripheral-batteries", "phone" ]
@@ -36,7 +36,7 @@ show_on_workspace_switch = false
 
     [[bar.main.capsule_group]]
     enabled = true
-    fill = "surface_variant"
+    fill = "surface_container"
     foreground = "primary"
     id = "system"
     members = [ "tailscale", "battery", "caffeine", "disks", "network", "bluetooth", "input_volume", "output_volume" ]
@@ -45,7 +45,7 @@ show_on_workspace_switch = false
 
     [[bar.main.capsule_group]]
     enabled = true
-    fill = "surface_variant"
+    fill = "surface_container"
     foreground = "tertiary"
     id = "activity"
     members = [ "cpu", "ram", "sysmon", "network_rx", "network_tx" ]

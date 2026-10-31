@@ -30,7 +30,7 @@ local function timeColor()
   elseif remaining > 0 then
     return color
   end
-  return "outline"
+  return "outline_variant"
 end
 
 local function render()
