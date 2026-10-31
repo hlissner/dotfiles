@@ -11,16 +11,24 @@
 # Two entries. The service keeps `niri msg -j event-stream` open and derives
 # one line per output, whatever the number of bars: the tape is an output's
 # workspaces by idx, home is the one named `home` or the top one, and
-# west/east are a lower bound from column widths, because niri's IPC says
-# nothing about where the view is scrolled to. niri has no special workspaces
+# west/east are tiles past the view's edges (or, without the patched niri's
+# view positions, a lower bound from column widths). niri has no special workspaces
 # -- one `hey wm launch -n` made is a plain named one on the tape -- so the
 # special palette is for a north/south quadrant whose next workspace is named.
 # A widget draws its own monitor's line, or the focused monitor's if told to.
+#
+# Three. Since the dial is easy to miss across three monitors, the same line
+# also puts a soft glow along each edge of the monitor itself: four [[layer]]
+# surfaces per output, click-through, on the top layer so a fullscreen window
+# covers them, and dark while the overview is open (all the workspaces are on
+# show then). West/east are exact under the niri modules/wm/niri builds, whose
+# patch puts the view position into the IPC; under a stock niri they're the
+# service's lower bound.
 
 id           = "hey/compass"
 name         = "Workspace Compass"
-version      = "1.2.0"
-plugin_api   = 31  # noctalia.getColor; the SVG needs real hex
+version      = "1.7.0"
+plugin_api   = 36  # [[layer]] entries (and getColor at 31; the SVG needs real hex)
 author       = "hlissner"
 license      = "MIT"
 dependencies = ["niri"]
@@ -38,9 +46,122 @@ default         = 1000
 min             = 0
 max             = 60000
 
+[[setting]]
+key             = "edge_glow"
+type            = "bool"
+label_key       = "settings.edge_glow.label"
+description_key = "settings.edge_glow.description"
+default         = true
+
+[[setting]]
+key             = "edge_width"
+type            = "int"
+label_key       = "settings.edge_width.label"
+description_key = "settings.edge_width.description"
+default         = 12
+min             = 1
+max             = 64
+
+# exclusive_zone -1 puts a strip at the monitor's true edge, over the bar;
+# 0 keeps it just inside whatever reserves space there.
+[[setting]]
+key             = "edge_over_panels"
+type            = "bool"
+label_key       = "settings.edge_over_panels.label"
+description_key = "settings.edge_over_panels.description"
+default         = false
+
+[[setting]]
+key             = "edge_opacity_north"
+type            = "int"
+label_key       = "settings.edge_opacity_north.label"
+description_key = "settings.edge_opacity.description"
+default         = 70
+min             = 0
+max             = 100
+
+[[setting]]
+key             = "edge_opacity_south"
+type            = "int"
+label_key       = "settings.edge_opacity_south.label"
+description_key = "settings.edge_opacity.description"
+default         = 70
+min             = 0
+max             = 100
+
+[[setting]]
+key             = "edge_opacity_west"
+type            = "int"
+label_key       = "settings.edge_opacity_west.label"
+description_key = "settings.edge_opacity.description"
+default         = 70
+min             = 0
+max             = 100
+
+[[setting]]
+key             = "edge_opacity_east"
+type            = "int"
+label_key       = "settings.edge_opacity_east.label"
+description_key = "settings.edge_opacity.description"
+default         = 70
+min             = 0
+max             = 100
+
+[[setting]]
+key             = "edge_rounding"
+type            = "int"
+label_key       = "settings.edge_rounding.label"
+description_key = "settings.edge_rounding.description"
+default         = 60
+min             = 0
+max             = 100
+
+[[setting]]
+key             = "edge_color"
+type            = "color"
+label_key       = "settings.edge_color.label"
+description_key = "settings.edge_color.description"
+default         = ""
+advanced        = true
+
+[[setting]]
+key             = "edge_named_color"
+type            = "color"
+label_key       = "settings.edge_named_color.label"
+description_key = "settings.edge_named_color.description"
+default         = ""
+advanced        = true
+
 [[service]]
 id    = "poll"
 entry = "service.luau"
+
+# One entry file per edge: a script can't ask which entry it is, so each is a
+# stub that hands its direction to edge.luau. The width/height here is only
+# the default; the service's configure() applies edge_width and, from
+# edge_over_panels, the exclusive zone (0: inside the bar's zone, on the
+# window area's edge; -1: the monitor's own edge, over the bar).
+[[layer]]
+id            = "north"
+entry         = "north.luau"
+layer         = "top"
+anchors       = ["top", "left", "right"]
+height        = 12
+click_through = true
+output        = "all"
+visible       = true
+
+[[layer]]
+id            = "south"
+entry         = "south.luau"
+layer         = "top"
+anchors       = ["bottom", "left", "right"]
+height        = 12
+click_through = true
+output        = "all"
+visible       = true
+
+
 
 [[widget]]
 id    = "compass"
@@ -202,3 +323,22 @@ entry = "widget.luau"
   default         = ""
   advanced        = true
 
+[[layer]]
+id            = "west"
+entry         = "west.luau"
+layer         = "top"
+anchors       = ["left", "top", "bottom"]
+width         = 12
+click_through = true
+output        = "all"
+visible       = true
+
+[[layer]]
+id            = "east"
+entry         = "east.luau"
+layer         = "top"
+anchors       = ["right", "top", "bottom"]
+width         = 12
+click_through = true
+output        = "all"
+visible       = true

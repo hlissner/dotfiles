@@ -37,5 +37,22 @@
   "settings.special_workspace_color.label": "Workspace color (named workspace)",
   "settings.special_workspace_color.description": "As above, for a quadrant whose next workspace that way is a named one. Default is tertiary.",
   "settings.special_home_color.label": "Home color (named workspace)",
-  "settings.special_home_color.description": "As above, when the next workspace towards home is a named one. Default is primary."
+  "settings.special_home_color.description": "As above, when the next workspace towards home is a named one. Default is primary.",
+  "settings.edge_glow.label": "Edge glow",
+  "settings.edge_glow.description": "A soft glow along a monitor's edge when something lives that way: an occupied workspace above or below, a column off-screen left or right.",
+  "settings.edge_width.label": "Glow width",
+  "settings.edge_width.description": "How far the glow reaches in from the edge, in pixels.",
+  "settings.edge_color.label": "Glow color",
+  "settings.edge_color.description": "At the screen edge, fading to nothing. Default is primary.",
+  "settings.edge_named_color.label": "Glow color (named workspace)",
+  "settings.edge_named_color.description": "For a top or bottom glow whose next workspace that way is a named one. Default is tertiary.",
+  "settings.edge_rounding.label": "Glow rounding",
+  "settings.edge_rounding.description": "How much the glow dims from the middle of the edge towards its corners, in percent. 0 is a straight bar; 100 fades to nothing at the corners.",
+  "settings.edge_over_panels.label": "Glow over the bar",
+  "settings.edge_over_panels.description": "Draw the glow at the monitor's true edge, over the bar and anything else that reserves space there, instead of just inside it.",
+  "settings.edge_opacity.description": "How solid this edge's glow is at the screen edge, in percent; it fades to nothing from there. A colour with its own alpha is dimmed further by it.",
+  "settings.edge_opacity_north.label": "Glow opacity (top)",
+  "settings.edge_opacity_south.label": "Glow opacity (bottom)",
+  "settings.edge_opacity_west.label": "Glow opacity (left)",
+  "settings.edge_opacity_east.label": "Glow opacity (right)"
 }

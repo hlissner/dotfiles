@@ -46,13 +46,16 @@ end
 
 -- Returns the poll function and a refresh for onOutputsChanged. The event
 -- stream opens with the full state (workspaces, then windows) and follows with
--- deltas, applied here the way niri-ipc's EventStreamState does. What the IPC
--- doesn't carry: the view's scroll offset (tile_pos_in_workspace_view is null
--- for every tiled window, and scrolling emits nothing), and a fullscreen flag.
--- So west/east are a lower bound -- lit only when the columns up to and
--- including the active one, or from it on, can't all fit the output -- and
--- fullscreen is a tile the size of the output. No special workspaces here:
--- a launched-into workspace is one like any other, just named.
+-- deltas, applied here the way niri-ipc's EventStreamState does. Stock niri
+-- leaves tile_pos_in_workspace_view null for tiled windows and says nothing on
+-- a scroll; the niri built by modules/wm/niri carries a patch that fills it
+-- (view-relative, output-logical) and so emits WindowLayoutsChanged per scroll,
+-- which makes west/east exact: a tile past either edge. Without the position
+-- (another host's niri) they fall back to a lower bound -- lit only when the
+-- columns up to and including the active one, or from it on, can't all fit the
+-- output. There's no fullscreen flag either way; a fullscreen tile is the size
+-- of the output and so is never past an edge. No special workspaces here: a
+-- launched-into workspace is one like any other, just named.
 local function niri()
   local ws, win = {}, {}
   local synced = false
@@ -75,6 +78,9 @@ local function niri()
         table.insert(byOutput[w.output], w)
       end
     end
+    -- Per workspace: column widths for the lower bound, and the view-relative
+    -- tile edges when the patched niri supplies them.
+    local edges = {}
     for _, w in pairs(win) do
       local id = w.workspace_id
       if id then
@@ -83,6 +89,11 @@ local function niri()
         if pos then
           cols[id] = cols[id] or {}
           cols[id][pos[1]] = w.layout.tile_size[1]
+          local view = w.layout.tile_pos_in_workspace_view
+          if view then
+            edges[id] = edges[id] or {}
+            table.insert(edges[id], { view[1], view[1] + w.layout.tile_size[1] })
+          end
         end
       end
     end
@@ -123,25 +134,34 @@ local function niri()
           end
         end
 
-        -- A floating active window says nothing about where the view is.
-        -- Gaps and struts only add width, so ignoring them keeps this certain.
         local west, east = false, false
         local g, c = geo[name], cols[active.id]
-        local aw = active.active_window_id and win[active.active_window_id]
-        local pos = aw and not aw.is_floating and aw.layout.pos_in_scrolling_layout
-        if g and c and pos then
-          local full = aw.layout.tile_size[1] >= g.width and aw.layout.tile_size[2] >= g.height
-          local before, after = 0, 0
-          for i, width in pairs(c) do
-            if i <= pos[1] then
-              before += width
-            end
-            if i >= pos[1] then
-              after += width
-            end
+        if g and edges[active.id] then
+          -- Exact: positions are rounded to physical pixels, hence the slack.
+          for _, e in ipairs(edges[active.id]) do
+            west = west or e[1] < -0.5
+            east = east or e[2] > g.width + 0.5
           end
-          west = not full and before > g.width
-          east = not full and after > g.width
+        else
+          -- The lower bound. A floating active window says nothing about where
+          -- the view is. Gaps and struts only add width, so ignoring them
+          -- keeps this certain.
+          local aw = active.active_window_id and win[active.active_window_id]
+          local pos = aw and not aw.is_floating and aw.layout.pos_in_scrolling_layout
+          if g and c and pos then
+            local full = aw.layout.tile_size[1] >= g.width and aw.layout.tile_size[2] >= g.height
+            local before, after = 0, 0
+            for i, width in pairs(c) do
+              if i <= pos[1] then
+                before += width
+              end
+              if i >= pos[1] then
+                after += width
+              end
+            end
+            west = not full and before > g.width
+            east = not full and after > g.width
+          end
         end
 
         table.insert(out, string.format("%s %d %d %d %d %d %d %d %d", name, at - home,
@@ -192,6 +212,11 @@ local function niri()
           win[c[1]].layout = c[2]
         end
       end
+    elseif name == "OverviewOpenedOrClosed" then
+      -- For the edge strips (edge.luau), not the dial: every workspace is on
+      -- show in the overview, so they go dark. Not part of the compass line.
+      noctalia.state.set("overview", p.is_open == true)
+      return false
     else
       return false
     end
@@ -252,6 +277,28 @@ local function niri()
 end
 
 
+-- * Edge glow
+
+-- A [[layer]] has no settings of its own and its manifest size is fixed, so
+-- the sizes and the on/off switches are pushed from here. Configured values
+-- die with a plugin reload, which is also when this runs again.
+local function strips()
+  local width = noctalia.getConfig("edge_width") or 12
+  local on = noctalia.getConfig("edge_glow") ~= false
+  -- -1 ignores every other surface's reserved zone: the monitor's true edge,
+  -- over the bar. 0 sits just inside them.
+  local zone = noctalia.getConfig("edge_over_panels") == true and -1 or 0
+  for dir, axis in pairs({ north = "height", south = "height", west = "width", east = "width" }) do
+    noctalia.layer.configure(dir, { [axis] = width, exclusiveZone = zone })
+    if on then
+      noctalia.layer.show(dir)
+    else
+      noctalia.layer.hide(dir)
+    end
+  end
+end
+
+
 -- * Entry
 
 local poll, refresh
@@ -260,6 +307,7 @@ if noctalia.getenv("NIRI_SOCKET") ~= nil then
 else
   noctalia.log("compass: not under niri; idling")
 end
+strips()
 
 function update()
   local ms = noctalia.getConfig("poll_ms") or 1000
@@ -278,4 +326,5 @@ end
 -- A service without this gets completely restarted on any settings edit, which
 -- takes the stream down with it.
 function onConfigChanged()
+  strips()
 end

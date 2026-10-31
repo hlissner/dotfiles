@@ -247,6 +247,13 @@ on_expire = "hey hook -f on-timer-elapsed"
 
 [plugin_settings."hey/compass"]
 poll_ms = 0
+edge_opacity = 30
+edge_opacity_east = 50
+edge_opacity_north = 40
+edge_opacity_south = 50
+edge_opacity_west = 50
+edge_rounding = 100
+edge_width = 16
 
 [plugin_settings."hey/ntfy"]
 app_name = ""
