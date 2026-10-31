@@ -159,4 +159,11 @@ in {
       };
       expected = { matches = { feature = "procname"; matches = "niri"; }; ratio = 0; };
     };
+
+  # The compass's west/east are exact only with the view-position patch; a bump
+  # that quietly rebuilt niri without it would be a silent regression.
+  testPackageCarriesTheViewPatch = {
+    expr = any (p: hasSuffix "view-pos.patch" (toString p)) presets.niri.programs.niri.package.patches;
+    expected = true;
+  };
 }

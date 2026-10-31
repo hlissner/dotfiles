@@ -9,13 +9,13 @@
   inputs = 
     {
       # Core dependecies
-      nixpkgs.follows = "niri/nixpkgs";
+      nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
       agenix.url = "github:ryantm/agenix";
       agenix.inputs.nixpkgs.follows = "nixpkgs";
 
       # Desktop dependencies
-      niri.url = "github:epireyn/niri-flake";
-      niri.inputs.nixpkgs-stable.follows = "nixpkgs";  # for features I don't use
+      niri.url = "github:niri-wm/niri";  # built here (modules/wm/niri), so one nixpkgs
+      niri.inputs.nixpkgs.follows = "nixpkgs";
       noctalia.url = "github:noctalia-dev/noctalia/cachix";
 
       # Extras (imported directly by modules/hosts that need them)
@@ -26,13 +26,11 @@
 
   nixConfig = {
     extra-substituters = [
-      "https://niri-epireyn.cachix.org"    # niri
       "https://noctalia.cachix.org"        # noctalia
       "https://nix-community.cachix.org"   # emacs-overlay
       "https://cache.numtide.com"          # llm-agents
     ];
     extra-trusted-public-keys = [
-      "niri-epireyn.cachix.org-1:tlVyFN7CtsDT+ZcLPS+ekFWeT1X6X4OqvWqbBMyIzFA="
       "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="

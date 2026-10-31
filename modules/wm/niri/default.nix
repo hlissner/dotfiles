@@ -43,7 +43,17 @@ in {
      in {
       programs.niri = {
         enable = true;
-        package = self.inputs.niri.packages.niri-unstable;
+        # HACK: Fill tile_pos_in_workspace_view for tiled windows (see
+        #   niri-wm/niri#2381), for hey/compass. A bump that fails in
+        #   scrolling.rs means the hunk needs rebasing, not dropping.
+        package = let niri = self.inputs.niri;
+                      d = niri.lastModifiedDate;
+                  in niri.packages.niri.overrideAttrs (old: {
+          version = "0-unstable-${substring 0 4 d}-${substring 4 2 d}-${substring 6 2 d}-${niri.shortRev}";
+          __intentionallyOverridingVersion = true;  # same src; nixpkgs warns otherwise
+          patches = (old.patches or []) ++ [ ./view-pos.patch ];
+          doCheck = false;  # upstream CI ran them; this is minutes
+        });
       };
 
       environment.systemPackages = [ pkgs.xwayland-satellite ]; # required for xwayland windows
