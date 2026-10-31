@@ -19,7 +19,7 @@ function swayimg {
   command swayimg "${size[@]}" "$@"
 }
 
-alias dr=ripdrag
+alias dr='ripdrag -x -a'
 alias y=wl-copy
 alias p=wl-paste
 alias n='niri msg'
