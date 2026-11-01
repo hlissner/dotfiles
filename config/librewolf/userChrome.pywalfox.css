@@ -13,12 +13,12 @@
 }
 
 /* Disable default appearance of certain elements to be able to override shadow DOM attributes */
-menupopup, menuseparator, button, search-textbox {
+menupopup, menuseparator, button {
   -moz-appearance: none !important;
 }
 
-/* Override the default appearance of buttons and textboxes to match the pywalfox theme */
-button, search-textbox, menuseparator {
+/* Override the default appearance of buttons to match the pywalfox theme */
+button, menuseparator {
   background-color: var(--pywalfox-darker-background) !important;
 }
 
@@ -30,35 +30,30 @@ menu[_moz-menuactive="true"], menuitem[_moz-menuactive="true"] {
   padding: 4px 4px !important;
 }
 
-/* Separators in dropwdown menus */
-menuseparator {
-  height: 1px;
-}
-
 /* Elements where we set appearance to none, we need to set padding manually */
-notification, button, search-textbox {
+button {
   padding: var(--pywalfox-padding) !important;
 }
 
 /* Fix background color of elements that can not be targeted via the Theme API */
-notification, menupopup {
+menupopup {
   background: var(--pywalfox-background-light) !important;
   color: var(--pywalfox-text) !important;
 }
 
 /* Apply bold text to elements */
-textbox, panelview, .tabbrowser-tab, #sidebar-header,
+panelview, .tabbrowser-tab, #sidebar-header,
 .findbar-container, toolbar[overflowable] > .customization-target {
   font-weight: bold !important;
 }
 
 /* Decrease opacity of unselected tabs to match the default Firefox theme */
-.tabbrowser-tab:not([visuallyselected="true"]) {
+.tabbrowser-tab:not([visuallyselected]) {
   opacity: var(--pywalfox-unselected-tab-opacity) !important;
 }
 
 /* Hide unnecessary borders */
-.sidebar-splitter, notification {
+.sidebar-splitter {
   border: 0px !important;
 }
 
