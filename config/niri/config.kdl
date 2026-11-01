@@ -129,7 +129,7 @@ layout {
 
 prefer-no-csd
 
-// leave screenshots to Noctalia+scripts
+// don't save to disk
 screenshot-path null
 
 cursor {
@@ -335,7 +335,7 @@ binds {
     mod+e       repeat=false { spawn "emacsclient" "--eval" "(emacs-everywhere)"; }
     mod+d       repeat=false { spawn "noctalia" "msg" "annotate"; }
     mod+x       repeat=false { spawn "hey" "wm" "ocr" "region"; }
-    print       repeat=false { spawn "noctalia" "msg" "screenshot-region"; }
+    print                        { screenshot; }
     mod+print       repeat=false { spawn "hey" "wm" "screencast" "webm" "region" "3"; }
     mod+shift+print repeat=false { spawn "hey" "wm" "screencast" "mp4" "region" "3"; }
 
