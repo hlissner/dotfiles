@@ -50,5 +50,6 @@
       checks = mapModules ./test import;
       overlays = mapModules ./overlays import;
       packages = mapModules ./packages import;
+      templates = import ./templates;
     };
 }

@@ -27,6 +27,7 @@
 #   2  bad, missing, or unanswerable argument
 
 readonly REPO=https://github.com/hlissner/dotfiles
+readonly FLAKE=github:hlissner/dotfiles
 readonly DEST=/etc/dotfiles
 
 _die() {  # CODE MESSAGE...
@@ -89,6 +90,17 @@ main() {
   else
     rm -rf "$flake"
     git clone --recursive "$REPO" "$flake" || _die 1 "couldn't clone $REPO"
+  fi
+
+  # `nix flake init` loses every executable bit
+  if [[ ! -x $flake/bin/hey ]]; then
+    echo "Restoring executable bits (nix flake init drops them)"
+    local tpl f
+    tpl=$(nix --extra-experimental-features 'nix-command flakes' eval --raw "$FLAKE#templates.default.path") \
+      || _die 1 "couldn't evaluate $FLAKE to restore executable bits"
+    while IFS= read -rd '' f; do
+      [[ -f $flake/$f ]] && chmod +x "$flake/$f"
+    done < <(find "$tpl" -type f -executable -printf '%P\0')
   fi
 
   [[ -n $host ]] || {

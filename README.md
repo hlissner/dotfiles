@@ -50,11 +50,12 @@ dotfiles over there.
 4. Do your partitions and mount your root to `/mnt` ([for
    example](hosts/udon/README.org)).
 
-5. Connect to the internet, if you haven't already. Wifi-capable devices can use `nmtui`.
+5. Connect to the internet, if you haven't already. Wifi-capable devices can use
+   `nmtui`.
 
 6. Copy any keys/secrets over. If you're on a system with `bin/hey` set up, run
-   `hey ops push-keys [KEYS]` (requires you start `sshd` on the nixos
-   installer). Otherwise, scp them into `/mnt/etc/sshd/`:
+   `hey ops push-keys [KEYS]` (start `sshd` on the nixos installer first).
+   Otherwise, scp them into `/mnt/etc/sshd/`:
 
 7. If you've already created a host config, then simply run the installer:
 
@@ -63,20 +64,33 @@ dotfiles over there.
    bash <(curl -sL https://henrik.io/install.sh)
    ```
 
-   Otherwise:
+   If you don't have a host config, use this flake's templates to create one from scratch:
 
-   1. Clone these dotfiles yourself to `/mnt/etc/dotfiles` (that location is required):
+   1. Deploy the flake (sans my hosts) to `/mnt/etc/dotfiles` (that location is
+      required), and `cd` into it:
       ```sh
-      $ git clone --recursive https://github.com/hlissner/dotfiles /mnt/etc/dotfiles
+      sudo -i   # switch to root
+      export NIX_CONFIG='experimental-features = nix-command flakes'
+      nix flake new -t github:hlissner/dotfiles /mnt/etc/dotfiles
+      cd /mnt/etc/dotfiles
       ```
 
-   2. Create a host config in `/mnt/etc/dotfiles/hosts/` (see [existing
-      ones](hosts/) for examples).
-
-   3. Run the installer as root (the installer's `nixos` user has passwordless
-      sudo):
+   2. Deploy a host config to `hosts/<HOST>` and fill it in (see [my
+      hosts](hosts/) for examples):
       ```sh
-      $ sudo /mnt/etc/dotfiles/install.sh
+      HOST="hostname-of-your-system"
+      nix flake new -t github:hlissner/dotfiles#host hosts/$HOST
+      ```
+
+   3. `git add` everything so Nix will see your config:
+      ```sh
+      git init
+      git add -A
+      ```
+
+   4. Finally, run the installer:
+      ```sh
+      $ bash /mnt/etc/dotfiles/install.sh
       ```
 
 8. Reboot!
