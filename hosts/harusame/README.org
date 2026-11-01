@@ -4,7 +4,7 @@
 * Overview
 My mobile desktop workstation. Comes with me on extended 1+ month trips.
 
-** Specs
+* Specs
 | CASE  | Be Quiet Pure Base 500 - Black          |
 | CPU   | AMD Ryzen 5 5800X 6-core 12-thread      |
 | MOBO  | MSI B550 PRO-VDH                        |

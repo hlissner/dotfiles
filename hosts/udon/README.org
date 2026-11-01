@@ -2,8 +2,7 @@
 #+DATE:  September 13, 2020
 
 * Overview
-My daily NixOS driver, for work and play. Dual-boots with Windows (used solely
-for gaming, when Proton isn't enough).
+My daily NixOS driver, for work and play.
 
 * Specs
 | CASE | Fractal Design Define R4 ATX Tower Case Black Pearl |
@@ -41,6 +40,7 @@ mount /dev/disk/by-label/home /mnt/home
 #+end_src
 
 ** =/dev/nvme1n1= (SN850X NVMe 1TB)
+For games and VMs.
 #+begin_src sh
 parted /dev/nvme1n1 -- mklabel gpt
 parted /dev/nvme1n1 -- mkpart primary 0% 100%
@@ -61,6 +61,7 @@ mount /dev/disk/by-label/data1 /mnt/media/data1
 #+end_src
 
 ** =/dev/sdb= (ST1000DM010 1TB)
+For local backups (and staging ground for remote backups).
 #+begin_src sh
 parted /dev/sdb -- mklabel gpt
 parted /dev/sdb -- mkpart primary 0% 100%
@@ -72,9 +73,8 @@ mount /dev/disk/by-label/backup /mnt/media/backup
 
 * History
 ** October 17, 2026
-Dropped Windows partition. Without Proton and SteamVR running decent enough on
-Linux (and I no longer play games with anti-cheat), happy to finally get rid of
-Windows altogether.
+Dropped Windows partition. With Proton and SteamVR running well enough on Linux
+(and I no longer play games with anti-cheat), happy to drop Windows altogether.
 
 ** January 4, 2023
 Repurposed this system from a dedicated workstation to a dual purpose

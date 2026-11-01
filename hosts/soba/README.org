@@ -2,9 +2,9 @@
 #+DATE:  January 15, 2023
 
 * Overview
-Spare parts from old systems. Serve as a workbench system for testing hardware,
+Spare parts from old systems. Serves as a workbench system for testing hardware,
 deal with harddrives/old media en masse (like CDs, zip disks, SD cards, VHS
-tapes, etc) or doing last minute CAD tweaks for 3d prints.
+tapes, etc), or doing last minute CAD tweaks for 3d prints.
 
 * Specs
 | CASE | Cooler Master HAF XB EVO                       |
