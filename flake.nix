@@ -40,8 +40,6 @@
   outputs = inputs:
     with import ./lib { inherit (inputs.nixpkgs) lib; };
     mkFlake inputs {
-      systems = [ "x86_64-linux" "aarch64-linux" ];
-
       hosts = mapHosts ./hosts;
       modules.default = import ./.;
 

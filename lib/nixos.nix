@@ -87,7 +87,6 @@ rec {
     , modules ? {}
     , overlays ? {}
     , packages ? {}
-    , systems
     , ...
   } @ flake:
     let
@@ -98,17 +97,16 @@ rec {
       };
 
       # One package set per system, not one per host. Instantiating nixpkgs is
-      # expensive and every host on a system wants the identical set. The
-      # fallback covers a host whose system isn't in 'systems'.
+      # expensive and every host on a system wants the identical set.
       pkgsBySystem = genAttrs systems mkPkgs;
-      pkgsFor = system: pkgsBySystem.${system} or (mkPkgs system);
+      pkgsFor = system: pkgsBySystem.${system};
 
       # `self.{dir,*Dir}` is the store snapshot nix is evaluating; read files
       # through it (readFile, pathExists, import). `config.hey.{dir,*Dir}` is
       # the live checkout, outside the store, for paths that end up in the built
       # system (links, PATH, sourced rc files) so an edit there doesn't wait for
       # a rebuild.
-      nixosConfigurations = mapAttrs (hostName: { path, config }:
+      hosts' = mapAttrs (hostName: { path, config }:
         let
           self' = mkHey {
             inherit (host) system;
@@ -117,15 +115,19 @@ rec {
             hostDir = path;
           } // dirsOf (toString self);
           host = config { inherit lib; self = self'; };
-        in
-          nixpkgs.lib.nixosSystem {
-            system = host.system;
-            specialArgs.self = self';
-            modules = mkHostModules {
-              inherit host hostName;
-              pkgs = pkgsFor host.system;
-            };
-          }) hosts;
+        in { inherit host hostName self'; }) hosts;
+
+      systems = unique (mapAttrsToList (_: h: h.host.system) hosts');
+
+      nixosConfigurations = mapAttrs (_: { host, hostName, self' }:
+        nixpkgs.lib.nixosSystem {
+          system = host.system;
+          specialArgs.self = self';
+          modules = mkHostModules {
+            inherit host hostName;
+            pkgs = pkgsFor host.system;
+          };
+        }) hosts';
 
       # callPackage first: the platform filter reads meta off the built
       # derivation, not off the package function.
@@ -150,7 +152,7 @@ rec {
       };
     in
       (removeAttrs flake [
-        "apps" "checks" "devShells" "hosts" "modules" "packages" "systems"
+        "apps" "checks" "devShells" "hosts" "modules" "packages"
       ]) // {
           inherit nixosConfigurations;
           nixosModules = modules;
