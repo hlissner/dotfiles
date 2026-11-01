@@ -124,7 +124,7 @@ show_charge_glyph = false
 
 [widget.battery]
 type = "battery"
-device = "auto"
+device = "/org/freedesktop/UPower/devices/battery_BAT0"
 hide_when_full = true
 
 [widget.bluetooth]
