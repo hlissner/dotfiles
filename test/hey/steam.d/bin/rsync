@@ -1,0 +1,3 @@
+#!/usr/bin/env zsh
+# Stand-in for rsync, for test/hey/steam.janet. Says what it was asked.
+print -r -- "rsync $*" >> $HEY_STEAM_TEST_LOG

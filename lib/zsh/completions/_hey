@@ -128,6 +128,13 @@ __hey_edit_target() {
   hey.comp.hosts ':'
 }
 
+# Shortcut names, off the live shortcuts.vdf: a few milliseconds of janet.
+__hey_steam_games() {
+  local expl
+  local -a games=( ${(f)"$(command $_hey_bin .steam ls -n 2>/dev/null)"} )
+  (( $#games )) && _wanted games expl 'game' compadd -a games
+}
+
 __hey_generations() {
   local expl
   local -a gens=( /nix/var/nix/profiles/system-*-link(N:t:s/system-//:s/-link//) )

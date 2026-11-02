@@ -1,0 +1,27 @@
+#!/usr/bin/env zsh
+# Stand-in for ssh, for test/hey/steam.janet. The remote command is a plain
+# shell string, so running it in a fake $HOME is as good as the real thing --
+# except the CEF client, which only ever answers what the suite tells it to.
+# One line per call; the CEF client is a screenful of python.
+print -r -- "ssh $1 ${2%%$'\n'*}" >> $HEY_STEAM_TEST_LOG
+cd $HEY_STEAM_TEST_REMOTE || exit 255
+export HOME=$HEY_STEAM_TEST_REMOTE
+case $2 in
+  (python3*)
+    cat > $HEY_STEAM_TEST_LOG.js
+    # Its one library is the one under $HOME, unless the suite says otherwise.
+    if grep -q GetInstallFolders $HEY_STEAM_TEST_LOG.js; then
+      print -r -- ${HEY_STEAM_TEST_LIBRARIES:-'[{"path": "'$HOME'/.local/share/Steam", "default": true, "mounted": true}]'}
+      exit
+    fi
+    if grep -q RemoveShortcut $HEY_STEAM_TEST_LOG.js; then print -r -- '{}'; exit; fi
+    # The fake Steam knows two games: Pragmata is 4242 (with a prefix), Fuga 777.
+    local appid=4242 dir=PRAGMATA exe=PRAGMATA.exe
+    if grep -q 'const name = "Fuga: Melodies of Steel";' $HEY_STEAM_TEST_LOG.js; then
+      appid=777 dir='Fuga - Melodies of Steel' exe=TANK.exe
+    fi
+    print -r -- ${HEY_STEAM_TEST_REPLY:-'{"appid": '$appid', "created": true, "exe": "'$HEY_STEAM_TEST_REMOTE'/Games/'$dir'/'$exe'"}'}
+    ;;
+  # The Deck's bash hands rm an unmatched glob as is; zsh would refuse.
+  (*) setopt nonomatch; eval "$2" ;;
+esac

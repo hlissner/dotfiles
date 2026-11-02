@@ -33,6 +33,13 @@
   # Commands that take no such thing are left to zsh.
   (test (hey "syncarg" "switch" "") @["DEFAULT"]))
 
+(deftest completion/steam-games
+  # @steam-games asks hey itself, so it's whatever shortcuts.vdf says today;
+  # point it at the steam suite's copy.
+  (test (h/with-envvars ["HOME" (h/path :test "hey/steam.d/home")]
+          (hey "call" "__hey_steam_games" ""))
+        @["WANT[games] -a games"]))
+
 (deftest completion/ssh-target
   # @ssh-target completes both halves of `lab fs [user@]host[:/path]`, ala _ssh
   (test (hey "call" "__hey_ssh_target" "") @["HOSTS -qS:"])
