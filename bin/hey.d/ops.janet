@@ -16,7 +16,6 @@
 (import ./ops.d/push)
 (import ./ops.d/push-keys)
 (import ./ops.d/ssh)
-(import ./ops.d/sync)
 
 (defcmd [ops :rules] [& args]
   (unless (= "workstation" (ignore-errors (flake/info :profiles :role)))
@@ -25,5 +24,4 @@
    :info      info/info
    :push      push/push
    :push-keys push-keys/push-keys
-   :ssh       ssh/ssh
-   :sync      sync/sync])
+   :ssh       ssh/ssh])

@@ -1,6 +1,8 @@
 #!/usr/bin/env zsh
 # Stand-in for ssh, for test/hey/ops-push.janet. Only ever asked for
-# lib/hey/ops.janet's probe, and only needs to pass it.
+# lib/hey/ops.janet's probe, and only needs to pass it -- with a path, or push
+# has nowhere to rsync.
 print -r -- "variant="
 print -r -- "hey=1"
 print -r -- "role=server"
+print -r -- "path=/etc/dotfiles"
