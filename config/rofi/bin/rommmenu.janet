@@ -20,7 +20,6 @@
 (use sh)
 (import hey/rofi)
 (import hey/rbw)
-(import hey/romm)
 (import hey/vars)
 (import spork/sh :as fs)
 
@@ -30,6 +29,8 @@
 (def- *fallback-icon* "input-gaming-symbolic")
 (def- *theme* "appmenu.rasi")
 
+(def- *entry* "romm.home.lissner.net")   # the rbw login; its name is the host
+
 (def- *statuses*
   [["incomplete"    "Incomplete"    "media-playback-start-symbolic"]
    ["finished"      "Finished"      "emblem-ok-symbolic"]
@@ -37,12 +38,53 @@
    ["retired"       "Retired"       "media-playback-stop-symbolic"]
    ["never_playing" "Never Playing" "window-close-symbolic"]])
 
+
+## HTTP
+
+(defn- url-base []
+  (or (os/getenv "ROMM_URL") (string "https://" *entry*)))
+
+(defn- urlencode [s]
+  (string/join
+   (seq [b :in (string/bytes s)]
+     (if (or (<= 48 b 57) (<= 65 b 90) (<= 97 b 122) (index-of b [45 46 95 126]))
+       (string/from-bytes b)
+       (string/format "%%%02X" b)))
+   ""))
+
+(defn- api-url [path &opt query]
+  (string (url-base) path
+          (if (and query (not (empty? query)))
+            (string "?" (string/join (seq [k :in (sorted (keys query)) :let [v (query k)] :when (not (nil? v))]
+                                       (string (urlencode (string k)) "=" (urlencode (string v))))
+                                     "&"))
+            "")))
+
+(def- *auth*
+  # curl -K reads "user = U:P" off stdin, so the password is never on an argv.
+  (delay (let [e (rbw/entry *entry*)]
+           (string/format "user = %q\n" (string (get-in e [:data :username]) ":" (get-in e [:data :password]))))))
+
+(defn- curl [& args]
+  (def out @"")
+  (def err @"")
+  (def auth (*auth*))
+  (if ($? curl -sS -f -K - ,;args < ,auth > ,out > [stderr err])
+    (string out)
+    (abort "curl failed: %s" (string/trim err))))
+
+(defn- api-get [path &opt query]
+  (json/decode (curl (api-url path query)) true))
+
+
+## Library
+
 (defn- val [v]
   (unless (or (nil? v) (= v :null) (= v "")) v))
 
 (defn- asset-url [path]
   # RomM dates its cover paths (?ts=YYYY-MM-DD HH:MM:SS), space and all.
-  (string (romm/url-base) (string/replace-all " " "%20" path)))
+  (string (url-base) (string/replace-all " " "%20" path)))
 
 (defn- cover-file [key cover]
   (path/join *covers* (fmt "%s-%d.png" (string key) (hash cover))))
@@ -57,7 +99,7 @@
   (def limit 10000)
   (def roms @[])
   (forever
-    (def page (romm/api/get "/api/roms" {:limit limit :offset (length roms) :order_by "name"}))
+    (def page (api-get "/api/roms" {:limit limit :offset (length roms) :order_by "name"}))
     (def items (get page :items []))
     (array/concat roms items)
     (when (< (length items) limit) (break)))
@@ -76,7 +118,7 @@
 
 (defn- fetch-collections []
   # Excludes smart and virtual collections
-  (def cols (romm/api/get "/api/collections"))
+  (def cols (api-get "/api/collections"))
   (seq [c :in (if (dictionary? cols) (cols :items) cols)
         :let [cover (or (val (c :path_cover_small))
                         (first (get c :path_covers_small [])))]]
@@ -165,7 +207,7 @@
   (os/spawn ["xdg-open" url] :pd))
 
 (defn- open-rom [rom]
-  (open-url (fmt "%s/rom/%d" (romm/url-base) (rom :id))))
+  (open-url (fmt "%s/rom/%d" (url-base) (rom :id))))
 
 
 ## Screens
@@ -222,7 +264,7 @@
                  :placeholder "Search games..."
                  :theme *theme*]
     (:add r "<b>Reload</b>" :icon "view-refresh-symbolic" :data (fn [] (library true) :restart))
-    (:add r "<b>Open in Browser</b> ->" :icon "web-browser-symbolic" :data (fn [] (open-url (romm/url-base)) :done))
+    (:add r "<b>Open in Browser</b> ->" :icon "web-browser-symbolic" :data (fn [] (open-url (url-base)) :done))
     (:add r "<b>By platform</b> ->" :icon "view-list-symbolic" :data (enter platforms-screen))
     (:add r "<b>By collection</b> ->" :icon "folder-symbolic" :data (enter collections-screen))
     (:add r "<b>By status</b> ->" :icon "emblem-ok-symbolic" :data (enter statuses-screen))
