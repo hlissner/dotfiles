@@ -25,6 +25,11 @@ in {
         package = mkIf config.modules.xdg.enable (pkgs.steam.override {
           # Obey XDG, damn it!
           extraProfile = ''export HOME="''${XDG_FAKE_HOME:-$HOME}"'';
+          # Fix steam remote streaming on Wayland.
+          extraArgs =
+            if any (hasPrefix "gpu/nvidia") config.modules.profiles.hardware
+            then "-pipewire-dmabuf"  # works better on nvidia gpus (YMMV)
+            else "-pipewire";
         });
         remotePlay.openFirewall = true;
         # gamescopeSession.enable = true;
