@@ -4,6 +4,9 @@
 # SYNOPSIS:
 #   gc [-a] [-s] [-d] [-D]
 #
+# DESCRIPTION:
+#   Triggers the on-gc hook once the store has been swept.
+#
 # OPTIONS:
 #   -a
 #     GC both the user and system profiles.
@@ -51,6 +54,11 @@
   (when (or all? (not system?))
     (echo :g "> Running GC on user profiles...")
     (do? $ nix-collect-garbage ,;ncg-args))
+
+  (echo :g "> Triggering on-gc hooks...")
+  (hey! hook -f on-gc
+        ,;(if (or all? system?) ["system"] [])
+        ,;(if (or all? (not system?)) ["user"] []))
 
   (echo :g "> Optimizing the nix store...")
   (do? $ nix-store --optimise)

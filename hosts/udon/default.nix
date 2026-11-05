@@ -60,7 +60,14 @@ with builtins;
       term.foot.enable = true;
 
       ## Extra
-      flatpak.enable = true;
+      flatpak = {
+        enable = true;
+        ensure = [
+          "com.bambulab.BambuStudio"
+          "us.zoom.Zoom"
+          "org.signal.Signal"
+        ];
+      };
       rofi.enable = true;
       libreoffice.enable = true;
       godot.enable = true;
