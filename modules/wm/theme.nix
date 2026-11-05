@@ -104,6 +104,15 @@ in {
         XCURSOR_THEME = cfg.cursor.name;
         XCURSOR_SIZE = toString cfg.cursor.size;
       };
+
+      home.configFile = genAttrs [ "gtk-3.0/settings.ini" "gtk-4.0/settings.ini" ] (_: {
+        text = ''
+          [Settings]
+          gtk-icon-theme-name=${cfg.icons.name}
+          gtk-cursor-theme-name=${cfg.cursor.name}
+          gtk-cursor-theme-size=${toString cfg.cursor.size}
+        '';
+      });
     }
 
     ## So QT apps respect Noctalia's theme

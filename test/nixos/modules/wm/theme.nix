@@ -53,8 +53,21 @@ in {
       expr = {
         table = c.modules.wm.noctalia.settings ? theme;
         qt    = c.home.configFile ? "qt6ct/qt6ct.conf";
+        gtk   = c.home.configFile ? "gtk-3.0/settings.ini";
       };
-      expected = { table = false; qt = false; };
+      expected = { table = false; qt = false; gtk = false; };
+    };
+
+  # Rofi never asks dconf; it reads gtk-icon-theme-name out of GTK's own
+  # settings.ini (or shows no icons at all), so the theme has to land there too,
+  # for both GTK majors.
+  testGtkSettingsNameTheIconTheme =
+    let c = presets.niri;
+    in {
+      expr = map (v: hasInfix "gtk-icon-theme-name=${c.modules.wm.theme.icons.name}\n"
+                              c.home.configFile."gtk-${v}/settings.ini".text)
+                 [ "3.0" "4.0" ];
+      expected = [ true true ];
     };
 
   # Noctalia's qt builtin writes colors/noctalia.conf and stops -- no hook, no
