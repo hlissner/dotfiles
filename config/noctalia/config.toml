@@ -258,7 +258,7 @@ edge_width = 16
 [plugin_settings."hey/ntfy"]
 app_name = ""
 keepalive_interval = 70
-topics = [ "nas0", "nas1", "soulseek", "yamtrack", "bambuddy", "homebox", "qbittorrent" ]
+topics = [ "nas0", "nas1", "soulseek", "yamtrack", "bambuddy", "homebox", "qbittorrent", "romm" ]
 
     [plugin_settings."hey/ntfy".icons]
     nas0 = "https://cdn.jsdelivr.net/gh/selfhst/icons/webp/truenas-core.webp"
