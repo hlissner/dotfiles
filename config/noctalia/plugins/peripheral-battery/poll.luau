@@ -21,6 +21,12 @@ local HID_STARTS = 3
 -- without any it is never forked at all.
 local HID_VENDORS = { ["000028DE"] = true, ["0000260D"] = true }
 
+local RESUME_GRACE_MS = 45000
+
+local function interval()
+  return math.max(5, noctalia.getConfig("poll_seconds") or 30) * 1000
+end
+
 local function battery(fields)
   return {
     id = fields.id or "",   -- what tells it apart; key() derives one if empty
@@ -219,6 +225,8 @@ end
 -- Connect/disconnect is the difference between two settled publishes, not
 -- upower's own added/removed.
 local known = nil
+local lastDiffMs = nil
+local graceUntilMs = 0
 
 local function anyUpower(byKey)
   for _, dev in pairs(byKey) do
@@ -236,8 +244,14 @@ local function diff(devices, outage)
   end
   -- A dead upowerd takes every BlueZ device off the list at once, a dead
   -- watcher every hidraw one. That's one outage, not five disconnects -- nor
-  -- five reconnects after, which leaving `known` alone takes care of.
-  if outage and known ~= nil then
+  -- five reconnects after, which leaving `known` alone takes care of. So is
+  -- waking up from sleep.
+  local ms = noctalia.nowMs()
+  if lastDiffMs ~= nil and ms - lastDiffMs > 2 * interval() then
+    graceUntilMs = ms + RESUME_GRACE_MS
+  end
+  lastDiffMs = ms
+  if (outage or ms < graceUntilMs) and known ~= nil then
     return
   end
   -- The first publish is only a baseline; don't announce the already paired.
@@ -417,10 +431,6 @@ scan = function()
       finish()
     end)
   end)
-end
-
-local function interval()
-  return math.max(5, noctalia.getConfig("poll_seconds") or 30) * 1000
 end
 
 function update()

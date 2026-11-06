@@ -21,7 +21,7 @@
 
 id           = "hey/peripheral-battery"
 name         = "Peripheral Battery"
-version      = "2.2.0"
+version      = "2.3.0"
 plugin_api   = 24  # runAsync's argv form, for on_connect/on_disconnect
 author       = "hlissner"
 license      = "MIT"
