@@ -30,6 +30,12 @@ in {
             if any (hasPrefix "gpu/nvidia") config.modules.profiles.hardware
             then "-pipewire-dmabuf"  # works better on nvidia gpus (YMMV)
             else "-pipewire";
+          # HACK: Without NetworkManager (I use networkd), Steam waits for the
+          #   network an extra 10-20s during login. By disabling the system bus,
+          #   it'll skip that, buying us a *much* faster steam startup time.
+          extraEnv = optionalAttrs (!config.networking.networkmanager.enable) {
+            DBUS_SYSTEM_BUS_ADDRESS = "unix:abstract=steam-no-system-bus";
+          };
         });
         remotePlay.openFirewall = true;
         # gamescopeSession.enable = true;
