@@ -93,25 +93,6 @@ with builtins;
         enable = true;
         wadsDir = "/media/nas/media/games/dos/doom";
       };
-      emulators = let nas = "/media/nas/media/games"; in {
-        enable = true;
-        romsDir = nas;
-        # EmuDeck's bios/ layout, which is what the cores expect of one flat
-        # system dir. The console BIOSes still live in SYS/bios/ on the NAS;
-        # link or copy them in here as a core complains.
-        biosDir = "${nas}/_bios";
-        systems = {
-          nes = {}; snes = {}; genesis = {}; gamegear = {}; gba = {}; nds = {};
-          n64 = {}; saturn = {}; psx = {}; psp = {}; ps2 = {}; ps3 = {}; wii = {};
-          psvita = {}; switch = {};
-          # Romm's slugs, not ES-DE's.
-          mastersystem.path = "${nas}/sms/roms";
-          dreamcast.path    = "${nas}/dc/roms";
-          gc.path           = "${nas}/ngc/roms";
-          n3ds.path         = "${nas}/3ds/roms";
-          pico8.path        = "${nas}/pico/roms";
-        };
-      };
     };
     dev = {
       cc.enable = true;
