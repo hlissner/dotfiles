@@ -26,6 +26,10 @@
 
   "permissions": {
     "disableBypassPermissionsMode": "disable",
+    "additionalDirectories": [
+      "~/projects",
+      "/etc/dotfiles"
+    ],
     "ask": [
       "Bash(ssh *)",
       "Bash(scp *)",
@@ -51,7 +55,11 @@
       "Bash(gh repo delete *)",
       "Bash(gh secret *)",
       "Bash(gh gist *)",
-      "Bash(gh auth token*)"
+      "Bash(gh auth token*)",
+
+      "WebFetch(domain:home.lissner.net)",
+      "WebFetch(domain:*.home.lissner.net)",
+      "WebFetch(domain:*.henrik.io)"
     ],
     "deny": [
       "Read(**/*.age)",
@@ -114,11 +122,7 @@
       "Read(~/projects/org/**)",
       "Edit(~/projects/org/**)",
       "Read(~/projects/ledger/**)",
-      "Edit(~/projects/ledger/**)",
-
-      "WebFetch(domain:home.lissner.net)",
-      "WebFetch(domain:*.home.lissner.net)",
-      "WebFetch(domain:*.henrik.io)"
+      "Edit(~/projects/ledger/**)"
     ]
   },
   "sandbox": {
@@ -206,8 +210,6 @@
         "~/.local/share/janet",
         "~/.cache/nix",
         "~/.cache/npm",
-        "~/projects/config/dotfiles",
-        "~/projects/ai",
         "/tmp",
         "/etc/claude-code/resources",
         "/etc/dotfiles",
