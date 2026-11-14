@@ -54,18 +54,12 @@ in mkIf (username == "hlissner") (mkMerge [
 
       Host deck.lan machine.lan
         User deck
-      # Retroid Pocket 6 uses termux sshd, which ignores login name entirely
-      Host rp6.lan
+      # Retroid Pocket {6,Duo} use termux sshd, which ignores login name entirely
+      Host rp6.lan rpd.lan
         Port 8022
-      Host brick.lan
+      Host brick.lan brickpro.lan
         WarnWeakCrypto no
         User root
-
-      # Reuse connections for LAN boxes for faster first load
-      Host *.lan
-        ControlMaster auto
-        ControlPath /run/user/%i/ssh-%C
-        ControlPersist 10m
     '';
   })
 
