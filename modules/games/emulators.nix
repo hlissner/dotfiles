@@ -256,10 +256,13 @@ in {
       home.configLink = optionalAttrs (cfg.systems ? ps2) {
         "PCSX2/bios" = cfg.systems.ps2.bios;
       };
-      # Per file, not the dir: Dolphin writes SRAM and memcards next to them.
-      home.dataLink = optionalAttrs (cfg.systems ? gc) (listToAttrs (map
-        (f: nameValuePair "dolphin-emu/GC/${f}" "${cfg.systems.gc.bios}/${f}")
-        [ "dsp_rom.bin" "dsp_coef.bin" "USA/IPL.bin" "EUR/IPL.bin" "JAP/IPL.bin" ]));
+      # Per file, not the dir: Dolphin writes SRAM and memcards next to them,
+      # and Azahar wants nand/ and sdmc/ beside sysdata/.
+      home.dataLink =
+        let files = sys: dir: fs: optionalAttrs (cfg.systems ? ${sys}) (listToAttrs (map
+              (f: nameValuePair "${dir}/${f}" "${cfg.systems.${sys}.bios}/${f}") fs));
+        in files "gc" "dolphin-emu/GC" [ "dsp_rom.bin" "dsp_coef.bin" "USA/IPL.bin" "EUR/IPL.bin" "JAP/IPL.bin" ]
+        // files "n3ds" "azahar-emu/sysdata" [ "aes_keys.txt" "seeddb.bin" ];
     }
 
     (mkIf cfg.retroarch.enable {
