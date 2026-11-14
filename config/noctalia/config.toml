@@ -71,12 +71,12 @@ transition_on_startup = true
 
 [idle]
 behavior_order = [ "lock", "screen-off" ]
-pre_action_fade_seconds = 15
+pre_action_fade_seconds = 30
 
     [idle.behavior.lock]
     action = "command"
     command = "hey hook on-idle --on"
-    enabled = true
+    enabled = false
     resume_command = "hey hook on-idle --off"
     timeout = 900.0
 
