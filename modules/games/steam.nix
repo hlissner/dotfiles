@@ -71,6 +71,10 @@ in {
       };
     };
 
+    user.packages = with pkgs; [
+      steam-rom-manager
+    ];
+
     user.extraGroups = [ "gamemode" ];
 
     # Ensure Steam opens in the workspace that it was launched from. Because of
