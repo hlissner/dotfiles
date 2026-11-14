@@ -58,6 +58,7 @@ in {
       unar
       zip
       unzip
+      _7zz
       vim
     ];
 
