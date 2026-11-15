@@ -120,6 +120,13 @@ __hey_ssh_host() {
   _hosts
 }
 
+# Where `hey .steam push/pull` can send saves: an ssh host, or RomM itself.
+__hey_steam_host() {
+  local expl
+  _wanted steam-hosts expl 'save store' compadd romm
+  __hey_ssh_host
+}
+
 # hey ops edit takes SYSTEM:FILE. I know the systems. The files are on a
 # machine I am not about to hang a TAB on an ssh round trip to, so past the
 # colon I have nothing to say and say it.

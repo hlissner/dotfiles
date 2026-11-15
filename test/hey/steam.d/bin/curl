@@ -1,0 +1,37 @@
+#!/usr/bin/env zsh
+# Stand-in for curl, for test/hey/steam.janet: a canned RomM. The -K - config
+# (the auth header) goes to $LOG.curl, so the suite can see the key went on
+# stdin and nowhere else; each URL asked is logged; the answer comes from
+# steam.d/romm/ by URL, or from $HEY_STEAM_TEST_ROMM (the zip the suite packed)
+# for a save's bytes or a ROM's zip. A POST (-F) is an upload, and answers
+# with save 100.
+local fx=${0:A:h}/../romm
+local url=${@[-1]} body out=
+cat >> $HEY_STEAM_TEST_LOG.curl
+print -r -- "curl $url" >> $HEY_STEAM_TEST_LOG
+if [[ -n $HEY_STEAM_TEST_CURL_FAIL ]]; then
+  print -u2 -- "curl: (22) The requested URL returned error: $HEY_STEAM_TEST_CURL_FAIL"
+  exit 22
+fi
+local i
+for ((i = 1; i <= $#; i++)); do
+  [[ $argv[i] == -o ]] && out=$argv[i+1]
+  [[ $argv[i] == -F ]] && print -r -- "upload $argv[i+1]" >> $HEY_STEAM_TEST_LOG.curl
+done
+if (( $argv[(I)-F] )); then
+  body=$fx/save-100.json
+else
+  case $url in
+    (*/api/platforms) body=$fx/platforms.json ;;
+    (*/api/roms\?*) body=$fx/roms.json ;;
+    (*/api/saves\?rom_id=7231) body=${HEY_STEAM_TEST_SAVES:-$fx/saves-7231.json} ;;
+    (*/api/saves\?rom_id=7234) body=$fx/saves-7234.json ;;
+    (*/api/saves\?*) body=$fx/empty.json ;;
+    (*/api/saves/*/content) body=$HEY_STEAM_TEST_ROMM/save.zip ;;
+    # A ROM's archive, as the suite packed it, by id; the URL's extension says which.
+    (*/api/roms/*/content/*) body=$HEY_STEAM_TEST_ROMM/rom-${${url#*/api/roms/}%%/*}.${url:e}
+      [[ -f $body ]] || { print -u2 -- "curl: (22) The requested URL returned error: 404"; exit 22; } ;;
+    (*) print -u2 -- "curl: (22) The requested URL returned error: 404"; exit 22 ;;
+  esac
+fi
+if [[ -n $out ]]; then cp $body $out; else cat $body; fi

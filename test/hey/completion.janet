@@ -40,6 +40,10 @@
           (hey "call" "__hey_steam_games" ""))
         @["WANT[games] -a games"]))
 
+(deftest completion/steam-host
+  # @steam-host is an ssh host or RomM itself.
+  (test (hey "call" "__hey_steam_host" "") @["WANT[steam-hosts] romm" "HOSTS"]))
+
 (deftest completion/ssh-target
   # @ssh-target completes both halves of `lab fs [user@]host[:/path]`, ala _ssh
   (test (hey "call" "__hey_ssh_target" "") @["HOSTS -qS:"])

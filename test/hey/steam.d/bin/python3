@@ -1,0 +1,22 @@
+#!/usr/bin/env zsh
+# Stand-in for python3 running steam.janet's romm-saves helper, for
+# test/hey/steam.janet. (The CEF client never gets here: the ssh stub answers
+# it itself.) Logs the call, keeps each request (one JSON line) in $LOG.romm,
+# and answers by direction: an upload hands back the zip the suite packed, a
+# download says it unpacked (and makes a --mkpath dir, since the caller
+# looks for it). HEY_STEAM_TEST_ROMM_REPLY overrides either.
+print -r -- "python3 $1 $2" >> $HEY_STEAM_TEST_LOG
+local req; req=$(cat)
+print -r -- "$req" >> $HEY_STEAM_TEST_LOG.romm
+[[ -n $HEY_STEAM_TEST_ROMM_REPLY ]] && { print -r -- $HEY_STEAM_TEST_ROMM_REPLY; exit 0; }
+if [[ $req == *'"direction":"upload"'* ]]; then
+  print -r -- '{"action":"upload","reason":null,"files":2,"hash":"h-local","mtime":1762700000.5,"zip":"'$(base64 -w0 $HEY_STEAM_TEST_ROMM/save.zip)'"}'
+else
+  # The real helper would have unpacked into the dir, making it if asked to;
+  # the caller looks for it, so make it.
+  if [[ $req == *'"mkpath":true'* ]]; then
+    local dir=${req#*\"dir\":\"}; dir=${dir%%\"*}
+    mkdir -p -- "$dir"
+  fi
+  print -r -- ${HEY_STEAM_TEST_ROMM_DOWNLOAD:-'{"action":"download","reason":null,"files":2,"hash":"h-remote","mtime":1762600000.0,"server_mtime":1762700000.5}'}
+fi

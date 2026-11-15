@@ -3,10 +3,27 @@
 # shell string, so running it in a fake $HOME is as good as the real thing --
 # except the CEF client, which only ever answers what the suite tells it to.
 # One line per call; the CEF client is a screenful of python.
+#
+# With HEY_STEAM_TEST_ANDROID set the remote is a Retroid: uname says Android,
+# and /storage (the SD card) is mnt/storage under the fake $HOME, so the paths
+# the lib builds from it hit the fake too. Termux's ~/storage/shared link is
+# the fake $HOME's storage/shared, as on the device.
+setopt extendedglob
 print -r -- "ssh $1 ${2%%$'\n'*}" >> $HEY_STEAM_TEST_LOG
 cd $HEY_STEAM_TEST_REMOTE || exit 255
 export HOME=$HEY_STEAM_TEST_REMOTE
-case $2 in
+local cmd=$2
+if [[ -n $HEY_STEAM_TEST_ANDROID ]]; then
+  [[ $cmd == "uname -o" ]] && { print Android; exit 0; }
+  # Only a bare /storage/ (after a space, quote or | -- not one already under
+  # $HOME, where a path character precedes it).
+  cmd=${cmd//(#b)([^[:alnum:]_.\/-])\/storage\//$match[1]$HEY_STEAM_TEST_REMOTE/mnt/storage/}
+  cmd=${cmd/#\/storage\//$HEY_STEAM_TEST_REMOTE/mnt/storage/}
+fi
+case $cmd in
+  # The saves helper is real shell work on the fake remote: run it, and let
+  # the python3 stub answer, so both legs of a sync land in $LOG.romm in order.
+  (python3*hey:romm-saves*) eval "$cmd" ;;
   (python3*)
     cat > $HEY_STEAM_TEST_LOG.js
     # Its one library is the one under $HOME, unless the suite says otherwise.
@@ -23,5 +40,5 @@ case $2 in
     print -r -- ${HEY_STEAM_TEST_REPLY:-'{"appid": '$appid', "created": true, "exe": "'$HEY_STEAM_TEST_REMOTE'/Games/'$dir'/'$exe'"}'}
     ;;
   # The Deck's bash hands rm an unmatched glob as is; zsh would refuse.
-  (*) setopt nonomatch; eval "$2" ;;
+  (*) setopt nonomatch; eval "$cmd" ;;
 esac

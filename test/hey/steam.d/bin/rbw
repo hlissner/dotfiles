@@ -1,0 +1,9 @@
+#!/usr/bin/env zsh
+# Stand-in for rbw, for test/hey/steam.janet: a vault holding the RomM login
+# with its "API Key (hey)" field. Locked while HEY_STEAM_TEST_RBW_LOCKED is set.
+print -r -- "rbw $*" >> $HEY_STEAM_TEST_LOG
+case $1 in
+  (unlocked|unlock) [[ -n $HEY_STEAM_TEST_RBW_LOCKED ]] && exit 1; exit 0 ;;
+  (get) print -r -- '{"id":"x","name":"romm.home.lissner.net","data":{"username":"me","password":"hunter2"},"fields":[{"name":"API Key (hey)","value":"rmm_test"}]}' ;;
+  (*) exit 1 ;;
+esac
