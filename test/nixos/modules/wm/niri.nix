@@ -160,10 +160,11 @@ in {
       expected = { matches = { feature = "procname"; matches = "niri"; }; ratio = 0; };
     };
 
-  # The compass's west/east are exact only with the view-position patch; a bump
-  # that quietly rebuilt niri without it would be a silent regression.
-  testPackageCarriesTheViewPatch = {
-    expr = any (p: hasSuffix "view-pos.patch" (toString p)) presets.niri.programs.niri.package.patches;
-    expected = true;
+  # niri fills tile_pos_in_workspace_view itself since 2026-11 (niri-wm/niri#2381),
+  # so the view-pos.patch that did it here is gone. One creeping back in is a
+  # second IPC dialect for hey/compass to reason about.
+  testPackageIsUnpatchedUpstream = {
+    expr = presets.niri.programs.niri.package.patches or [];
+    expected = [];
   };
 }

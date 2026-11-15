@@ -26,10 +26,22 @@ in {
       variables = pluginPaths (format: [ "$XDG_DATA_HOME/${format}" ]);
     };
 
-    services.pipewire.jack.enable = true;
-
     user.packages = with pkgs; [
-      reaper        # My DAW of choice
+      # pipewire.jack.enable put pipewire's libjack on every process's
+      # LD_LIBRARY_PATH; pw-jack does it for one. Reaper's JACK backend dlopens
+      # libjack, so it's launched through it -- menu entry included, since its
+      # Exec is a bare `reaper`.
+      pipewire.jack   # pw-jack CMD, for the rest
+      (symlinkJoin {
+        name = "reaper-pw-jack";
+        paths = [ reaper ];
+        nativeBuildInputs = [ makeWrapper ];
+        postBuild = ''
+          rm $out/bin/reaper
+          makeWrapper ${getExe' pipewire.jack "pw-jack"} $out/bin/reaper \
+            --add-flags ${reaper}/bin/reaper
+        '';
+      })
 
       # REVIEW: audacity 4 fails to build (gcc 16); see NixOS/nixpkgs#572942
       # audacity      # For one-off audio editing

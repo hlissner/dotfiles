@@ -16,7 +16,7 @@ in {
   config = mkIf cfg.enable (mkMerge [
     {
       environment.systemPackages = with pkgs; [
-        glances
+        bottom    # btm; glances' web server dragged in python-jose
         bandwhich # network utilization monitor
         hwinfo
         iftop

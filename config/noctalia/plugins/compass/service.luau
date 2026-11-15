@@ -46,16 +46,20 @@ end
 
 -- Returns the poll function and a refresh for onOutputsChanged. The event
 -- stream opens with the full state (workspaces, then windows) and follows with
--- deltas, applied here the way niri-ipc's EventStreamState does. Stock niri
--- leaves tile_pos_in_workspace_view null for tiled windows and says nothing on
--- a scroll; the niri built by modules/wm/niri carries a patch that fills it
--- (view-relative, output-logical) and so emits WindowLayoutsChanged per scroll,
--- which makes west/east exact: a tile past either edge. Without the position
--- (another host's niri) they fall back to a lower bound -- lit only when the
--- columns up to and including the active one, or from it on, can't all fit the
--- output. There's no fullscreen flag either way; a fullscreen tile is the size
--- of the output and so is never past an edge. No special workspaces here: a
--- launched-into workspace is one like any other, just named.
+-- deltas, applied here the way niri-ipc's EventStreamState does. Since
+-- 2026-11 niri fills tile_pos_in_workspace_view (view-relative,
+-- output-logical) for the tiles touching the view and emits
+-- WindowLayoutsChanged per scroll -- but nulls it for a tile wholly outside
+-- the view, to spare the IPC. That null is the signal: such a tile still has
+-- its column index, and whichever side of the placed columns it's on is the
+-- side it's past. So west/east are exact: a placed tile past either edge, or
+-- an unplaced one beyond them. A niri older than that leaves every tiled
+-- position null and says nothing on a scroll; then they fall back to a lower
+-- bound -- lit only when the columns up to and including the active one, or
+-- from it on, can't all fit the output. There's no fullscreen flag either way;
+-- a fullscreen tile is the size of the output and so is never past an edge. No
+-- special workspaces here: a launched-into workspace is one like any other,
+-- just named.
 local function niri()
   local ws, win = {}, {}
   local synced = false
@@ -78,9 +82,10 @@ local function niri()
         table.insert(byOutput[w.output], w)
       end
     end
-    -- Per workspace: column widths for the lower bound, and the view-relative
-    -- tile edges when the patched niri supplies them.
-    local edges = {}
+    -- Per workspace: column widths for the lower bound; the view-relative tile
+    -- edges, the span of columns they belong to, and the columns of the tiles
+    -- niri left unplaced, for the exact answer.
+    local edges, placed, unplaced = {}, {}, {}
     for _, w in pairs(win) do
       local id = w.workspace_id
       if id then
@@ -93,6 +98,11 @@ local function niri()
           if view then
             edges[id] = edges[id] or {}
             table.insert(edges[id], { view[1], view[1] + w.layout.tile_size[1] })
+            local span = placed[id] or { pos[1], pos[1] }
+            placed[id] = { math.min(span[1], pos[1]), math.max(span[2], pos[1]) }
+          else
+            unplaced[id] = unplaced[id] or {}
+            table.insert(unplaced[id], pos[1])
           end
         end
       end
@@ -141,6 +151,15 @@ local function niri()
           for _, e in ipairs(edges[active.id]) do
             west = west or e[1] < -0.5
             east = east or e[2] > g.width + 0.5
+          end
+          -- An unplaced tile is wholly off-screen, on whichever side of the
+          -- placed columns its own column falls. A column with one placed tile
+          -- is placed; a stacked tile of it scrolled off vertically says nothing
+          -- about west or east, and falls between.
+          local span = placed[active.id]
+          for _, col in ipairs(unplaced[active.id] or {}) do
+            west = west or col < span[1]
+            east = east or col > span[2]
           end
         else
           -- The lower bound. A floating active window says nothing about where
