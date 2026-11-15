@@ -93,6 +93,15 @@ with builtins;
         enable = true;
         wadsDir = "/media/nas/media/games/dos/doom";
       };
+      sunshine = {
+        enable = true;
+        clients = {
+          machine = {};
+          deck.mode = "1920x1080@60.000";
+          rp6.mode  = "1920x1080@120.000";
+          rpd.mode  = "1920x1080@120.000";
+        };
+      };
     };
     dev = {
       cc.enable = true;
