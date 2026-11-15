@@ -1,0 +1,221 @@
+#!/usr/bin/env cached-nix-shell
+#! nix-shell -i python3 -p "python3.withPackages (p: [ p.pyctr p.pycryptodome ])"
+# Convert cia, cci, or 3ds files into (decrypted) zstd-compressed zcci files.
+#
+# SYNOPSIS:
+#   to-zcci [-f] [-o DIR] [-b BIOSDIR] FILE...
+#
+# DESCRIPTION:
+#   zcci files are the most space-efficient format for 3DS roms, which can be
+#   produced by Azahar and now by this script. Encrypted cia files need 3DS bios
+#   files to descrypt them first.
+#
+#   pyctr knows the 7.x/9.x NCCH keys and the common key Ys itself, but needs
+#   the KeyX of slots 0x2C and 0x3D from a boot9 dump (boot9.bin, or its
+#   protected half, boot9_prot.bin) or a Citra-style aes_keys.txt. Titles from
+#   2015 on use seed crypto and want a seeddb.bin too. All of them are looked up
+#   in one bios directory: Azahar's sysdata, unless -b says otherwise. Whatever
+#   isn't there, pyctr goes looking for in ~/.3ds.
+#
+# OPTIONS:
+#   -f
+#     Overwrite an existing output.
+#   -o DIR
+#     Write to DIR instead of beside each input.
+#   -b BIOSDIR
+#     Where boot9.bin (or boot9_prot.bin), aes_keys.txt and seeddb.bin live. A
+#     boot9 dump wins over aes_keys.txt. Default: Azahar's sysdata directory.
+#
+# ARGUMENTS:
+#   * FILE @files
+
+import argparse
+import hashlib
+import os
+import struct
+import sys
+from compression.zstd import ZstdCompressor
+from pathlib import Path
+
+from pyctr.crypto import CryptoEngine
+from pyctr.type.cci import CCIReader
+from pyctr.type.cia import CIAReader
+from pyctr.type.ncch import NCCHReader, NCCHSection
+
+MU = 0x200
+CARDS = [n << 20 for n in (128, 256, 512, 1024, 2048, 4096, 8192)]
+FRAME = 256 << 10  # Azahar's frame size for cci; it reads back one frame per seek
+SYSDATA = Path(os.environ.get('XDG_DATA_HOME', Path.home() / '.local/share')) / 'azahar-emu/sysdata'
+
+
+def abort(msg):
+    print(msg, file=sys.stderr)
+    sys.exit(1)
+
+
+def engine(bios):
+    # Every NCCHReader wants its own engine (it owns the KeyY slots), and the
+    # title-key one needs a 0x3D KeyX too, so build them all the same way.
+    # pyctr settles its boot9 search path at import, so $BOOT9_PATH is no use
+    # by now; hand it the file.
+    for boot9 in (bios / 'boot9.bin', bios / 'boot9_prot.bin'):
+        if boot9.is_file():
+            return CryptoEngine(boot9=str(boot9))
+    aes_keys = bios / 'aes_keys.txt'
+    if not aes_keys.is_file():
+        return CryptoEngine()
+    kv = dict(l.strip().split('=', 1) for l in open(aes_keys) if '=' in l)
+    e = CryptoEngine(setup_b9_keys=False)
+    for slot in (0x2C, 0x3D):
+        e.set_keyslot('x', slot, bytes.fromhex(kv[f'slot0x{slot:02X}KeyX']))
+    return e
+
+
+def partitions(src, bios):
+    with open(src, 'rb') as f:
+        f.seek(0x100)
+        is_ncsd = f.read(4) == b'NCSD'
+    if is_ncsd:
+        outer = CCIReader(src, load_contents=False)
+        parts = [(int(s), outer.open_raw_section(s)) for s in outer.sections if s >= 0]
+    else:
+        outer = CIAReader(src, crypto=engine(bios), load_contents=False)
+        parts = [(r.cindex, outer.open_raw_section(r.cindex)) for r in outer.content_info]
+    parts = [(i, NCCHReader(fp, crypto=engine(bios))) for i, fp in parts]
+    if not parts or parts[0][0] != 0 or parts[-1][0] > 7:
+        abort(f'not a cartridge-shaped title: partitions {[i for i, _ in parts]}')
+    # The sections are views into the outer reader's file; let it go and they close.
+    return outer, parts
+
+
+def check(f, off, hdr):
+    for name, o, n, h in (('ExeFS', 0x1A0, 0x1A8, 0x1C0), ('RomFS', 0x1B0, 0x1B8, 0x1E0)):
+        units, = struct.unpack_from('<I', hdr, o)
+        hashed, = struct.unpack_from('<I', hdr, n)
+        if not units or not hashed:
+            continue
+        f.seek(off + units * MU)
+        if hashlib.sha256(f.read(hashed * MU)).digest() != hdr[h:h + 32]:
+            abort(f'{name} hash mismatch in partition at {off:#x}; wrong keys?')
+
+
+def convert(src, out, bios):
+    outer, parts = partitions(src, bios)
+    media_id = int(parts[0][1].partition_id, 16)
+    table = []
+    with open(out, 'w+b') as f:
+        f.seek(0x4000)
+        for idx, ncch in parts:
+            off = f.tell()
+            print(f'  {idx}: {ncch.product_code}, {ncch.content_size >> 20} MiB')
+            with ncch.open_raw_section(NCCHSection.FullDecrypted) as dec:
+                hdr = bytearray(dec.read(MU))
+                # makerom renumbers the sibling partitions off the media id; follow it.
+                if idx:
+                    struct.pack_into('<Q', hdr, 0x108, media_id + (idx << 48))
+                f.write(hdr)
+                left = ncch.content_size - MU
+                while left:
+                    buf = dec.read(min(left, 1 << 24))
+                    if not buf:
+                        abort(f'short read in partition {idx}')
+                    f.write(buf)
+                    left -= len(buf)
+            end = f.tell()
+            check(f, off, hdr)
+            f.seek(end)
+            table.append((idx, off, ncch.content_size, hdr))
+        used = f.tell()
+        card = next((c for c in CARDS if c >= used), None) or abort(f'{used} bytes is bigger than any card')
+
+        h = bytearray(0x4000)
+        h[0x100:0x104] = b'NCSD'
+        struct.pack_into('<IQ', h, 0x104, card // MU, media_id)
+        for idx, off, size, _ in table:
+            struct.pack_into('<II', h, 0x120 + idx * 8, off // MU, size // MU)
+            struct.pack_into('<Q', h, 0x190 + idx * 8, media_id + (idx << 48))
+        h[0x188:0x190] = bytes((0, 0, 0, 2, 1, 1, 0, 0))  # no card device, CTR, CARD1, 0x200 units
+        struct.pack_into('<I', h, 0x200, 0xFFFFFFFF)       # CARD1: nothing writable
+        struct.pack_into('<I', h, 0x300, used)
+        struct.pack_into('<Q', h, 0x1000, media_id)
+        h[0x1100:0x1200] = table[0][3][0x100:0x200]
+        f.seek(0)
+        f.write(h)
+    print(f'  {used >> 20} MiB, {len(table)} partition(s), hashes OK')
+    return table[0][3]
+
+
+def compress(src, out, hdr):
+    # Z3DS, as Azahar's Z3DSWriteIOFile lays it out: a 0x20 header, a
+    # 16-aligned metadata block, then a zstd *seekable* stream (plain frames
+    # of FRAME bytes each, and a skippable frame holding the seek table at the
+    # end). The metadata mirrors what Azahar writes; nothing reads it yet.
+    tid, = struct.unpack_from('<Q', hdr, 0x118)
+    units, = struct.unpack_from('<I', hdr, 0x104)
+    version, = struct.unpack_from('<H', hdr, 0x112)
+    meta = bytearray(b'\x01')
+    for name, data in {
+        'compressor': b'to-zcci',
+        'maxframesize': str(FRAME).encode(),
+        'titleinfo': struct.pack('<QQHHI', tid, units * MU, version, 0, 0),
+    }.items():
+        meta += struct.pack('<BBH', 1, len(name), len(data)) + name.encode() + data
+    meta += bytes(4 + -(len(meta) + 4) % 0x10)
+
+    z = ZstdCompressor(level=3)
+    frames = []
+    with open(src, 'rb') as i, open(out, 'wb') as f:
+        f.seek(0x20 + len(meta))
+        while chunk := i.read(FRAME):
+            frames.append((f.write(z.compress(chunk, ZstdCompressor.FLUSH_FRAME)), len(chunk)))
+        seek = b''.join(struct.pack('<II', *fr) for fr in frames)
+        seek += struct.pack('<IBI', len(frames), 0, 0x8F92EAB1)
+        f.write(struct.pack('<II', 0x184D2A5E, len(seek)) + seek)
+        zsize = f.tell() - 0x20 - len(meta)
+        f.seek(0)
+        f.write(struct.pack('<4s4sBBHIQQ', b'Z3DS', b'NCSD', 1, 0, 0x20, len(meta), zsize, i.tell()))
+        f.write(meta)
+    print(f'  zcci: {zsize >> 20} MiB in {len(frames)} frames')
+
+
+def main():
+    ap = argparse.ArgumentParser(add_help=False)
+    ap.add_argument('-f', dest='force', action='store_true')
+    ap.add_argument('-o', dest='outdir', type=Path)
+    ap.add_argument('-b', dest='bios', type=Path, default=SYSDATA)
+    ap.add_argument('files', nargs='+', type=Path)
+    args = ap.parse_args()
+    if args.outdir and not args.outdir.is_dir():
+        abort(f'Not a directory: {args.outdir}')
+    bios = args.bios
+    if bios != SYSDATA and not bios.is_dir():
+        abort(f'Not a directory: {bios}')
+    # pyctr reads the seed database on its own, from this variable among others.
+    if (bios / 'seeddb.bin').is_file():
+        os.environ['SEEDDB_PATH'] = str(bios / 'seeddb.bin')
+
+    for src in args.files:
+        if not src.is_file():
+            abort(f'Not a file: {src}')
+        out = (args.outdir or src.parent) / (src.stem + '.zcci')
+        if out.exists() and not args.force:
+            abort(f'Exists (use -f): {out}')
+        print(f'{src} -> {out}')
+        if os.environ.get('HEYDRYRUN'):
+            continue
+        # The NCSD header is written last, after a lot of seeking, so a zcci
+        # has to be a second pass over a finished cci.
+        tmp = out.with_name(out.name + '.tmp')
+        cci = out.with_name(out.name + '.cci.tmp')
+        try:
+            compress(cci, tmp, convert(src, cci, bios))
+        except BaseException:
+            tmp.unlink(missing_ok=True)
+            raise
+        finally:
+            cci.unlink(missing_ok=True)
+        tmp.replace(out)
+
+
+if __name__ == '__main__':
+    main()
