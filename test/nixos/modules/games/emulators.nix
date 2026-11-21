@@ -11,11 +11,11 @@ with lib;
 let
   systems = {
     nes = {}; psx = {}; ps2 = {}; gc = {}; nds = {};
-    dreamcast.path = "/roms/dc/roms";
-    n3ds.path = "/roms/3ds/roms";
-    pico8.path = "/roms/pico/roms";
+    dreamcast.path = "/nas/roms/dc";
+    n3ds.path = "/nas/roms/3ds";
+    pico8.path = "/nas/roms/pico";
   };
-  on = evalConfig [{ modules.games.emulators = { enable = true; romsDir = "/roms"; inherit systems; }; }];
+  on = evalConfig [{ modules.games.emulators = { enable = true; romsDir = "/nas/roms"; inherit systems; }; }];
   esde = on.modules.games.emulators;
   xml = on.home.file."${esde.dataDir}/custom_systems/es_systems.xml".text;
 
@@ -28,6 +28,13 @@ in {
       notNamed = filter (c: !(hasInfix "%CORE_RETROARCH%/${soOf c} %ROM%" xml)) cores;
     };
     expected = { notBuilt = []; notNamed = []; };
+  };
+
+  # The NAS is {roms,bios}/SYS, and SYS is whatever the roms dir is called
+  # (RomM's slug), not ES-DE's name for the system.
+  testBiosMirrorsTheRomsDir = {
+    expr = { inherit (esde.systems.nes) path bios; dc = esde.systems.dreamcast.bios; };
+    expected = { path = "/nas/roms/nes"; bios = "/nas/bios/nes"; dc = "/nas/bios/dc"; };
   };
 
   # PICO-8 isn't a package but a wrapper over the NAS copy; ES-DE finds it as
@@ -49,7 +56,7 @@ in {
   testUnknownEmulatorFailsAnAssertion = {
     expr =
       let c = evalConfig [{ modules.games.emulators = {
-            enable = true; romsDir = "/roms";
+            enable = true; romsDir = "/nas/roms";
             systems.ps2.command = "%EMULATOR_PCSX3% %ROM%";
           }; }];
           failing = c: length (filter (a: !a.assertion) c.assertions);

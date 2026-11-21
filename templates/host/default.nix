@@ -189,7 +189,7 @@ with builtins;
     #     enable = false;
     #     dataDir = "${config.home.dataDir}/es-de";
     #     romsDir = "";             # or systems.NAME.path, per system
-    #     biosDir = "";             # defaults to bios/ beside each system's roms
+    #     biosDir = "";             # RetroArch's flat system dir; per system, bios/NAME beside roms/
     #     systems = {               # ES-DE's names; {} takes the defaults
     #       snes = {};
     #       psx.path = "/media/roms/psx";

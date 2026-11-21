@@ -548,7 +548,7 @@
   (test (= (first (rsyncs lines)) (string "rsync -rltDP " unpacked "/Hollow Knight/ deck.lan:" runtime "/Games/Hollow Knight/")) true)
   # The NAS share mounted here: the zip is unpacked off it, RomM never asked
   # for the bytes.
-  (def roms (string library "/win/roms"))
+  (def roms (string library "/roms/win"))
   ($ mkdir -p ,roms)
   ($ cp ,(string romm-dir "/rom-7234.zip") ,(string roms "/Hollow Knight.zip"))
   (defer ($? rm -rf ,library)
@@ -668,7 +668,7 @@
   # RomM hasn't got Trails: stop before anything leaves.
   (def [code _ err lines] (hey-steam "push" "deck.lan" "Trails in the Sky: Chapter 1"))
   (test code 127)
-  (test (has? "Add win/roms/Trails in the Sky: Chapter 1.*" err) true)
+  (test (has? "Add roms/win/Trails in the Sky: Chapter 1.*" err) true)
   (test (rsyncs lines) @[])
   (test (filter |(string/find "python3" $0) lines) @[])
   # A locked vault, likewise.
@@ -1012,7 +1012,7 @@
   # as well as the shortcut's; but RomM hasn't got Trails, which ends it.
   (def [code _ err lines] (hey-android "pull" "rp6.lan" "Trails in the Sky - Chapter 1"))
   (test code 127)
-  (test (has? "Add win/roms/Trails in the Sky: Chapter 1.*" err) true)
+  (test (has? "Add roms/win/Trails in the Sky: Chapter 1.*" err) true)
   (test (rsyncs lines) @[])
   # --direct wants the prefix, as before.
   (def [code _ err lines] (hey-android "pull" "rp6.lan" "Trails in the Sky: Chapter 1" "--direct"))

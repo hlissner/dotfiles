@@ -663,7 +663,7 @@ reply("skip", "side-newer", files=n, hash=digest, mtime=newest, server_mtime=smt
   "NAME's ROM on RomM's win platform, or an abort that says where to put it."
   [name &opt pid]
   (or (romm/find-rom [name (retroid/folder-name name)] pid)
-      (abort "No ROM called %q on RomM's %s platform. Add %s/roms/%s.* to its library, rescan, and try again"
+      (abort "No ROM called %q on RomM's %s platform. Add roms/%s/%s.* to its library, rescan, and try again"
              name romm/platform romm/platform name)))
 
 (defn romm-entries

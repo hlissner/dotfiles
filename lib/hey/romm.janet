@@ -74,7 +74,7 @@
   [&opt slug]
   (default slug platform)
   (or (get (find |(= ($0 :slug) slug) (api-get "/api/platforms")) :id)
-      (abort "RomM has no `%s` platform; add %s/roms/ to its library and rescan" slug slug)))
+      (abort "RomM has no `%s` platform; add roms/%s/ to its library and rescan" slug slug)))
 
 (defn- rom-record
   "What of RomM's ROM the callers use: its id, file name sans tags, title and file."
@@ -98,7 +98,7 @@
 (defn library-file
   ``ROM's file on the share RomM's library is.``
   [rom]
-  (def f (path/join (or (os/getenv "ROMM_LIBRARY") library) platform "roms" (rom :file)))
+  (def f (path/join (or (os/getenv "ROMM_LIBRARY") library) "roms" platform (rom :file)))
   (when (path/file? f) f))
 
 (defn fetch-rom

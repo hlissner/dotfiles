@@ -91,7 +91,7 @@ with builtins;
       };
       doom = {
         enable = true;
-        wadsDir = "/media/nas/media/games/dos/doom";
+        wadsDir = "/media/nas/media/games/doom";
       };
       sunshine = {
         enable = true;
@@ -141,7 +141,7 @@ with builtins;
       let games = config.modules.games.emulators;
           media = [ "covers" "backcovers" "screenshots" ];
       in optionalAttrs games.enable (
-           { "eden/keys" = "${games.romsDir}/switch/bios/keys.22.1.0"; }
+           { "eden/keys" = "${games.systems.switch.bios}/keys.22.1.0"; }
            // listToAttrs (concatMap
                 (sys: map (m: nameValuePair "es-de/downloaded_media/${sys}/${m}"
                                             "${games.systems.${sys}.path}/${m}")

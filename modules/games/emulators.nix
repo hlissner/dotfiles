@@ -204,9 +204,11 @@ in {
     systems = mkOpt (attrsOf (submodule ({ name, config, ... }: {
       options = {
         path = mkOpt str (
-          if cfg.romsDir != "" then "${cfg.romsDir}/${name}/roms"
+          if cfg.romsDir != "" then "${cfg.romsDir}/${name}"
           else throw "modules.games.emulators: set romsDir, or systems.${name}.path");
-        bios = mkOpt str "${dirOf config.path}/bios";
+        # roms/SYS -> bios/SYS, so a system whose path is under RomM's slug
+        # (ngc, not gc) finds its BIOS under that slug too.
+        bios = mkOpt str "${dirOf (dirOf config.path)}/bios/${baseNameOf config.path}";
         # A raw ES-DE command or pkgs.libretro attribute
         core = mkOpt (nullOr str) (table.${name}.core or null);
         command = mkOpt (nullOr str) (table.${name}.command or null);
