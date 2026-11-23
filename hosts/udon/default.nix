@@ -127,7 +127,10 @@ with builtins;
     system = {
       utils.enable = true;
     };
-    virt.qemu.enable = true;
+    virt = {
+      qemu.enable = true;
+      wine.enable = true;
+    };
   };
 
   ## local config
