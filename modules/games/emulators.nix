@@ -186,6 +186,11 @@ let cfg = config.modules.games.emulators;
       in pkgs.writeShellScriptBin "vita3k" ''
         v3k=${vita3kPkg}/bin/vita3k
         pref=${config.home.dataDir}/Vita3K/Vita3K
+        # The update check has no flag and no GUI toggle, only this key, in a
+        # file Vita3K rewrites on every launch. Because of course it does.
+        conf=${config.home.configDir}/Vita3K/config.yml
+        [ -e "$conf" ] || { mkdir -p "''${conf%/*}"; echo --- > "$conf"; }
+        sed -i -e '/^check-for-updates-mode:/d' -e '/^---$/a check-for-updates-mode: 0' "$conf"
         case "$1" in *.zip|*.ZIP)
           [ -d "$pref/vs0/vsh" ] || "$v3k" --firmware "${bios}/PSVUPDAT.PUP"
           [ -d "$pref/sa0/data/font" ] || "$v3k" --firmware "${bios}/PSP2UPDAT.PUP"
