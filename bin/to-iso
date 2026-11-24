@@ -5,11 +5,9 @@
 #   to-iso [-f] [-V LABEL] ISO PATH...
 #
 # DESCRIPTION:
-#   Given a directory, its contents are packed into an iso file (at top-level).
-#   Careful with multiple directories -- they're merged into one tree.
-#
-#   To nest something, use the = prefix: `to-iso x.iso roms/=snes/`. '=' can be
-#   escaped if a literal one is needed.
+#   A directory's contents land at the top level of the iso, so several
+#   directories are merged into one tree. To nest one, graft it: `to-iso x.iso
+#   roms/=snes/`.
 #
 # OPTIONS:
 #   -f
@@ -27,9 +25,7 @@ zparseopts -D -F -- f=force V:=label || exit 1
 
 local iso=$1; shift
 [[ $iso == *.iso ]] || iso+=.iso
-if [[ -e $iso && -z $force ]]; then
-  hey.abort "Exists (use -f): $iso"
-fi
-hey.do -! -p xorriso xorriso -as mkisofs -quiet -graft-points \
-  -J -R -iso-level 3 -V "${label[2]:-${${iso:t}:r}}" -o "$iso" "$@"
+[[ ! -e $iso || $force ]] || hey.abort "Exists (use -f): $iso"
+hey.do -! xorriso -as mkisofs -quiet -graft-points \
+  -J -R -iso-level 3 -V "${label[2]:-${iso:t:r}}" -o "$iso" "$@"
 hey.echo "$iso <- $*"

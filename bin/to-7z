@@ -1,0 +1,21 @@
+#!/usr/bin/env zsh
+# Compress SRC into DEST.7z, or (-d) unpack one.
+#
+# SYNOPSIS:
+#   to-7z DEST SRC...
+#   to-7z -d ARCHIVE [DIR]
+#
+# OPTIONS:
+#   -d
+#     Extract ARCHIVE instead, into DIR (or right here).
+#
+# ARGUMENTS:
+#   * FILE @files
+
+zparseopts -D -F -- d=decompress || exit 1
+if [[ $decompress ]]; then
+  exec 7zz x "$1" ${2:+-o$2}
+fi
+# Given no SRC, 7zz helps itself to the whole $PWD
+(( $# >= 2 )) || hey.abort "Usage: to-7z DEST SRC..."
+exec 7zz a -t7z -mx=9 -m0=lzma2 -md=1536m -mfb=273 -ms=on -mmt=on "$@"

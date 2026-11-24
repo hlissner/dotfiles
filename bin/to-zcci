@@ -4,20 +4,27 @@
 #
 # SYNOPSIS:
 #   to-zcci [-f] [-o DIR] [-b BIOSDIR] FILE...
+#   to-zcci -d [-f] [-o DIR] FILE.zcci...
 #
 # DESCRIPTION:
 #   zcci files are the most space-efficient format for 3DS roms, which can be
 #   produced by Azahar and now by this script. Encrypted cia files need 3DS bios
-#   files to descrypt them first.
+#   files to decrypt them first.
 #
-#   pyctr knows the 7.x/9.x NCCH keys and the common key Ys itself, but needs
-#   the KeyX of slots 0x2C and 0x3D from a boot9 dump (boot9.bin, or its
-#   protected half, boot9_prot.bin) or a Citra-style aes_keys.txt. Titles from
-#   2015 on use seed crypto and want a seeddb.bin too. All of them are looked up
-#   in one bios directory: Azahar's sysdata, unless -b says otherwise. Whatever
-#   isn't there, pyctr goes looking for in ~/.3ds.
+#   pyctr recognizes the 7.x/9.x NCCH keys and the common key Ys itself, but
+#   needs the KeyX of slots 0x2C and 0x3D from a boot9 dump (boot9.bin or
+#   boot9_prot.bin) or a Citra-style aes_keys.txt. Titles after 2015 use seed
+#   crypto and want a seeddb.bin too. All of them are looked up in one bios
+#   directory: Azahar's sysdata, unless -b says otherwise. Whatever isn't there,
+#   pyctr goes looking for in ~/.3ds.
+#
+#   A zip is unpacked first (beside the output, and only for as long as it
+#   takes) and every cia, cci or 3ds in it converted. One rom takes the zip's
+#   name; several keep their own.
 #
 # OPTIONS:
+#   -d
+#     Decompress zcci (or zcia, zcxi, z3dsx) files instead.
 #   -f
 #     Overwrite an existing output.
 #   -o DIR
@@ -32,9 +39,13 @@
 import argparse
 import hashlib
 import os
+import shutil
 import struct
 import sys
-from compression.zstd import ZstdCompressor
+import tempfile
+import zipfile
+from compression.zstd import ZstdCompressor, ZstdFile
+from contextlib import contextmanager
 from pathlib import Path
 
 from pyctr.crypto import CryptoEngine
@@ -45,6 +56,8 @@ from pyctr.type.ncch import NCCHReader, NCCHSection
 MU = 0x200
 CARDS = [n << 20 for n in (128, 256, 512, 1024, 2048, 4096, 8192)]
 FRAME = 256 << 10  # Azahar's frame size for cci; it reads back one frame per seek
+Z3DS = {b'NCSD': '.cci', b'CIA\0': '.cia', b'NCCH': '.cxi', b'3DSX': '.3dsx'}
+ROMS = ('.cia', '.cci', '.3ds')
 SYSDATA = Path(os.environ.get('XDG_DATA_HOME', Path.home() / '.local/share')) / 'azahar-emu/sysdata'
 
 
@@ -178,12 +191,64 @@ def compress(src, out, hdr):
     print(f'  zcci: {zsize >> 20} MiB in {len(frames)} frames')
 
 
+def decompress(src, outdir, force):
+    with open(src, 'rb') as f:
+        magic, inner, _, _, hsize, msize, zsize, size = struct.unpack('<4s4sBBHIQQ', f.read(0x20))
+        if magic != b'Z3DS' or inner not in Z3DS:
+            abort(f'Not a Z3DS file: {src}')
+        out = outdir / (src.stem + Z3DS[inner])
+        if out.exists() and not force:
+            abort(f'Exists (use -f): {out}')
+        print(f'{src} -> {out}')
+        if os.environ.get('HEYDRYRUN'):
+            return
+        f.seek(hsize + msize)
+        tmp = out.with_name(out.name + '.tmp')
+        try:
+            # ZstdFile walks frame to frame and steps over the seek table at
+            # the end, it being a skippable one.
+            with ZstdFile(f) as z, open(tmp, 'wb') as o:
+                shutil.copyfileobj(z, o, 1 << 24)
+                if o.tell() != size:
+                    abort(f'Got {o.tell()} bytes, header promised {size}')
+        except BaseException:
+            tmp.unlink(missing_ok=True)
+            raise
+        tmp.replace(out)
+
+
+@contextmanager
+def roms(src, outdir):
+    # Yields (name, fetch) for each rom src holds; fetch() is its path. Lazy,
+    # so that a dry run, or an output that's already there, doesn't cost a few
+    # GB of unzipping first.
+    with open(src, 'rb') as f:
+        zipped = f.read(4) == b'PK\x03\x04'
+    if not zipped:
+        yield [(src.stem, lambda: src)]
+        return
+    # Beside the output, like the other intermediates: /tmp is a tmpfs.
+    with zipfile.ZipFile(src) as z, tempfile.TemporaryDirectory(dir=outdir, prefix='.to-zcci.') as tmp:
+        names = [n for n in z.namelist() if n.lower().endswith(ROMS)]
+        if not names:
+            abort(f'No cia, cci or 3ds in {src}')
+
+        def fetch(name):
+            rom = Path(tmp) / Path(name).name
+            print(f'  unzipping {name}')
+            with z.open(name) as i, open(rom, 'wb') as o:
+                shutil.copyfileobj(i, o, 1 << 24)
+            return rom
+        yield [(src.stem if len(names) == 1 else Path(n).stem, lambda n=n: fetch(n)) for n in names]
+
+
 def main():
     ap = argparse.ArgumentParser(add_help=False)
+    ap.add_argument('-d', dest='decompress', action='store_true')
     ap.add_argument('-f', dest='force', action='store_true')
-    ap.add_argument('-o', dest='outdir', type=Path)
-    ap.add_argument('-b', dest='bios', type=Path, default=SYSDATA)
-    ap.add_argument('files', nargs='+', type=Path)
+    ap.add_argument('-o', dest='outdir', metavar='DIR', type=Path)
+    ap.add_argument('-b', dest='bios', metavar='BIOSDIR', type=Path, default=SYSDATA)
+    ap.add_argument('files', metavar='FILE', nargs='+', type=Path)
     args = ap.parse_args()
     if args.outdir and not args.outdir.is_dir():
         abort(f'Not a directory: {args.outdir}')
@@ -197,24 +262,35 @@ def main():
     for src in args.files:
         if not src.is_file():
             abort(f'Not a file: {src}')
-        out = (args.outdir or src.parent) / (src.stem + '.zcci')
-        if out.exists() and not args.force:
-            abort(f'Exists (use -f): {out}')
-        print(f'{src} -> {out}')
-        if os.environ.get('HEYDRYRUN'):
+        outdir = args.outdir or src.parent
+        if args.decompress:
+            decompress(src, outdir, args.force)
             continue
-        # The NCSD header is written last, after a lot of seeking, so a zcci
-        # has to be a second pass over a finished cci.
-        tmp = out.with_name(out.name + '.tmp')
-        cci = out.with_name(out.name + '.cci.tmp')
-        try:
-            compress(cci, tmp, convert(src, cci, bios))
-        except BaseException:
-            tmp.unlink(missing_ok=True)
-            raise
-        finally:
-            cci.unlink(missing_ok=True)
-        tmp.replace(out)
+        with roms(src, outdir) as found:
+            for name, fetch in found:
+                out = outdir / (name + '.zcci')
+                if out.exists() and not args.force:
+                    abort(f'Exists (use -f): {out}')
+                print(f'{src} -> {out}')
+                if os.environ.get('HEYDRYRUN'):
+                    continue
+                # The NCSD header is written last, after a lot of seeking, so a
+                # zcci has to be a second pass over a finished cci.
+                tmp = out.with_name(out.name + '.tmp')
+                cci = out.with_name(out.name + '.cci.tmp')
+                rom = None
+                try:
+                    rom = fetch()
+                    compress(cci, tmp, convert(rom, cci, bios))
+                except BaseException:
+                    tmp.unlink(missing_ok=True)
+                    raise
+                finally:
+                    cci.unlink(missing_ok=True)
+                    # One at a time, or a zip of several needs room for all of them.
+                    if rom not in (None, src):
+                        rom.unlink(missing_ok=True)
+                tmp.replace(out)
 
 
 if __name__ == '__main__':

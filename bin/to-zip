@@ -1,16 +1,22 @@
 #!/usr/bin/env zsh
-# Convert 7z, rar, or tar.* archives to zip.
+# Convert 7z, rar, or tar.* archives (or PS Vita pkgs) to zip.
 #
 # SYNOPSIS:
 #   to-zip [-f] [-o DIR] ARCHIVE...
 #
 # DESCRIPTION:
-#   Converts a 7z, tar, or rar into a zip (which has broader compatibility with
-#   things like emulators and Romm). bsdtar reads all three and writes zip, so
-#   each archive is rewritten in one pass with no temp dir.
+#   Zips have broader compatibility with things like emulators and Romm.  bsdtar
+#   does the rewrite in one pass, but can't read encrypted rars, or solid ones
+#   that use filters. Those need 7z + p7zip-rar and an extract step. Not worth
+#   it for my needs.
 #
-#   Can't read encrypted or solid rars that use filters. Those need 7z +
-#   p7zip-rar and an extract step. Not worth it for my needs.
+#   A PS Vita pkg (told by its magic, not its extension) goes through pkg2zip
+#   instead, and needs its work.bin beside it. That strips the PKG encryption
+#   and repacks the contents like ux0: (app/TITLEID/...), with the NoNpDrm
+#   licence at sce_sys/package/work.bin. The executables inside stay
+#   NPDRM-encrypted; Vita3K decrypts those itself on install (File > Install
+#   .zip, .vpk). The zip gets pkg2zip's own name, "Title [TITLEID]
+#   [REGION].zip", since a pkg's is rarely worth keeping.
 #
 # OPTIONS:
 #   -f
@@ -26,15 +32,58 @@ zparseopts -D -F -- f=force o:=outdir || exit 1
 (( $# )) || hey.abort "No archives given"
 [[ -z $outdir || -d $outdir[2] ]] || hey.abort "Not a directory: $outdir[2]"
 
-local src dest
-for src in "$@"; do
-  [[ -f $src ]] || hey.abort "Not a file: $src"
-  if [[ $src == *.tar.* ]]; then dest=${src%.tar.*}.zip; else dest=${src:r}.zip; fi
+local pkg2zip="(callPackage <dotfiles/packages/pkg2zip.nix> {})"
+
+writable() {
+  [[ ! -e $1 || $force ]] && return
+  hey.error "Exists, skipping (use -f): $1"
+  return 1
+}
+
+from-archive() {
+  local src=$1 dest=${${1:r}%.tar}.zip
   [[ $outdir ]] && dest=$outdir[2]/${dest:t}
-  if [[ -e $dest && -z $force ]]; then
-    hey.error "Exists, skipping (use -f): $dest"
-    continue
+  # -f would have bsdtar truncate the zip it's about to read.
+  if [[ $src -ef $dest ]]; then
+    hey.error "Already a zip, skipping: $src"
+    return
   fi
+  writable "$dest" || return 0
   hey.do -! -p libarchive bsdtar -a -cf "$dest" @"$src"
   hey.echo "$src -> $dest"
+}
+
+from-pkg() {
+  local src=${1:a} destdir=${${outdir[2]:-${1:h}}:a}
+  local rif=${src:h}/work.bin
+  [[ -f $rif ]] || hey.abort "No work.bin beside the pkg: $rif"
+
+  # pkg2zip names its own output and drops it in the cwd, so give it a scratch
+  # directory. Beside the destination rather than in $TMPDIR: these run to
+  # several GB, /tmp is usually a tmpfs, and it makes the final move a rename.
+  local tmp; tmp=$(mktemp -d -p "$destdir" .to-zip.XXXXXX)
+  # Not an always block: err_exit walks straight past those.
+  trap 'rm -rf -- "$tmp"' EXIT
+  # rif2zrif prints "<content-id> <zRIF>"
+  local zrif; zrif=$(hey.do -! -p "$pkg2zip" rif2zrif "$rif")
+  (cd "$tmp" && hey.do -! -p "$pkg2zip" pkg2zip "$src" "${zrif##* }")
+
+  local -a zips=( "$tmp"/*.zip(N) )
+  (( $#zips == 1 )) || hey.abort "pkg2zip didn't produce a zip"
+  local dest=$destdir/${zips[1]:t}
+  writable "$dest" || return 0
+  mv -f -- "${zips[1]}" "$dest"
+  hey.echo "$1 -> $dest"
+}
+
+local src
+for src in "$@"; do
+  [[ -f $src ]] || hey.abort "Not a file: $src"
+  # By magic, because macOS installers are .pkg too, and those are xars that
+  # bsdtar reads just fine.
+  if [[ $(head -c4 -- "$src") == $'\x7fPKG' ]]; then
+    from-pkg "$src"
+  else
+    from-archive "$src"
+  fi
 done

@@ -1,101 +1,183 @@
 #!/usr/bin/env cached-nix-shell
-#! nix-shell -i zsh -p mame-tools
-# Convert cue, bin, img, cdi, gdi, iso, or cso into a chd file.
+#! nix-shell -i zsh -p mame-tools maxcso ecmtools xdelta
+# Convert a cue, bin, img, cdi, gdi, iso, cso or PSone Classic pkg into a chd.
 #
 # SYNOPSIS:
-#   to-chd [--dvd] TARGET.{cue,bin,img,cdi,gdi,iso,cso}
+#   to-chd [--dvd] TARGET
+#   to-chd -d TARGET.chd
+#   to-chd --patch FILE TARGET.chd...
 #
 # DESCRIPTION:
-#   Takes a cue, bin, img, cdi, or gdi file and packs it (and any needed
-#   adjacent files) into a chd file with the same name, beside it. Use --dvd for
-#   PSP/PS2+ images.
+#   Packs TARGET (and any adjacent files it needs) into a chd with the same
+#   name, beside it. A PSone Classic pkg (the PSP/Vita kind, off PSN) is
+#   unpacked with pkg2zip and its EBOOT.PBP turned back into a bin/cue by
+#   psxtract-2, CD audio tracks included. Those were ATRAC3 on PSN, so they'll
+#   never hash like redump's; the data track does. Doesn't support PS3 pkgs
+#   (with a rap file).
 #
 # OPTIONS:
+#   -d
+#     Unpack a chd, beside itself. Produces either: a cue and one bin for a CD,
+#     a gdi and its tracks for a GD-ROM, or an iso for a DVD.
+#   --patch FILE
+#     Patch chds with FILE: ips, bps, ups, ppf, xdelta, or anything else RomM
+#     would take (aps, rup, bdf). Will unpack each chd, patch the image, then
+#     pack the result into an adjacent "NAME (patched).chd". Uses RomPatcher.js
+#     for most patch formats and xdelta3 for xdelta patches.
 #   --dvd
-#     Use chdman createdvd instead of createcd (for PSP/PS2/etc images like
-#     cso/zso).
+#     Use chdman createdvd instead of createcd, for PSP/PS2+ isos. Implied by a
+#     cso/zso.
 #
 # ARGUMENTS:
-#   1 TARGET @files
+#   * TARGET @files
 
 setopt err_exit pipe_fail
-zparseopts -D -F -- -dvd=dvd || exit 1
-local f="$1"
-[[ -f "$f" ]] || hey.abort "Not a file: $f"
+zparseopts -D -F -- -dvd=dvd d=decompress -patch:=patch || exit 1
+local f=$1
+[[ -f $f ]] || hey.abort "Not a file: $f"
 
-# Write intermediates to $TMPDIR, because the soruce usually lives in a NFS
-# share to a ZFS filesystem, so it can be incredibly slow (and memory-stressful
-# for ZFS).
-local out="${f:r}.chd"
-# TMPDIR is tainted by nix-shell, so unset it
-[[ -d "${TMPDIR:-/tmp}" ]] || unset TMPDIR
-local tmp; tmp="$(mktemp -d)"
-trap 'rm -rf -- "$tmp"' EXIT
-local magic="$(head -c 4 "$f" | od -An -tx1 | tr -d ' ')"
-
-pack() {
-  chdman $1 -i "$f" -o "$out"
-  chdman verify -i "$out"
-  chdman info -i "$out"
-}
-
-# CSO/ZSO: chdman can't read these, and only PSP ever used them. They're usually
-# a 2048-sector iso underneath, but assume nothing.
-if [[ "$magic" == (4349534f|5a49534f) ]]; then
-  local iso="$tmp/${f:t:r}.iso"
-  hey.echo "CSO-compressed; decoding"
-  nix shell nixpkgs#maxcso -c maxcso --quiet --decompress "$f" -o "$iso"
-  f="$iso"
-  dvd=1
+# A chd doesn't say what it is, except by which metadata tags it carries.
+if [[ $decompress ]]; then
+  case $(chdman info -i "$f") in
+    *"Tag='DVD '"*) chdman extractdvd -i "$f" -o "${f:r}.iso" ;;
+    *"Tag='CHGD'"*) chdman extractcd -i "$f" -o "${f:r}.gdi" ;;
+    *)              chdman extractcd -i "$f" -o "${f:r}.cue" ;;
+  esac
+  return
 fi
 
-if [[ -n $dvd ]]; then
+# Intermediates go to $TMPDIR, because the source usually lives on an NFS share
+# to a ZFS filesystem, which is incredibly slow (and memory-stressful for ZFS).
+# nix-shell's own TMPDIR may be long gone, though.
+[[ -d ${TMPDIR:-/tmp} ]] || unset TMPDIR
+local out=${f:r}.chd partial tmp
+tmp=$(mktemp -d)
+# $partial, because chdman doesn't pick up after itself if it dies midway. And
+# err_exit firing inside a function walks straight past this, hence every
+# `|| exit` below.
+trap 'rm -rf -- $tmp $partial' EXIT
+
+hex() { od -An -tx1 -N$1 -- "$2" | tr -d ' \n' }
+
+pack() {  # createcd|createdvd: $f -> $out
+  [[ ! -e $out ]] || hey.abort "Exists: $out"
+  partial=$out
+  chdman $1 -i "$f" -o "$out" && chdman verify -i "$out" || exit
+  partial=
+  chdman info -i "$out" || exit
+}
+
+if [[ $patch ]]; then
+  local chd rom mode work=$tmp/work
+  patch=${patch[2]:a}
+  [[ -f $patch ]] || hey.abort "Not a file: $patch"
+  # RomPatcher.js reads vcdiff too, but not its checksums, and not a file over
+  # 2G. xdelta3 does both.
+  local -a patcher=( hey.do -! -p "(callPackage <dotfiles/packages/rom-patcher.nix> {})" rom-patcher )
+  [[ $(hex 3 "$patch") == d6c3c4 ]] && patcher=( xdelta3 -d -s )
+  for chd in "$@"; do
+    [[ -f $chd ]] || hey.abort "Not a file: $chd"
+    out="${chd:r} (patched).chd"
+    [[ ! -e $out ]] || hey.abort "Exists: $out"
+    mkdir "$work"
+    case $(chdman info -i "$chd") in
+      *"Tag='DVD '"*)
+        f=$work/${chd:t:r}.iso rom=$f mode=createdvd
+        chdman extractdvd -i "$chd" -o "$f" ;;
+      *"Tag='CHGD'"*)
+        hey.abort "Can't patch a GD-ROM (which track?): $chd" ;;
+      *)
+        f=$work/${chd:t:r}.cue mode=createcd
+        chdman extractcd --splitbin -i "$chd" -o "$f"
+        local -a bins=( "$work"/*.bin(N) )
+        rom=$bins[1] ;;
+    esac
+    hey.echo "Patching ${rom:t}"
+    $patcher "$rom" "$patch" "$rom.new" || exit
+    mv -- "$rom.new" "$rom"
+    pack $mode
+    rm -rf -- "$work"
+  done
+  return
+fi
+
+local magic; magic=$(hex 4 "$f")
+
+# PSone Classic: one bin/cue per disc comes out the other end. A single disc
+# keeps the pkg's name; a set can't, so those take redump's, off the cue sheets
+# psxtract-2 ships with.
+if [[ $magic == 7f504b47 ]]; then
+  local pkg=${f:a}
+  hey.echo "PSN pkg; unpacking"
+  (cd "$tmp" && hey.do -! -p "(callPackage <dotfiles/packages/pkg2zip.nix> {})" pkg2zip -x "$pkg")
+  local -a eboot=( "$tmp"/pspemu/PSP/GAME/*/EBOOT.PBP(N) )
+  (( $#eboot == 1 )) || hey.abort "Not a PSone Classic: $f"
+  hey.echo "Decrypting the EBOOT"
+  (cd "${eboot[1]:h}" && hey.do -! -p "(callPackage <dotfiles/packages/psxtract.nix> {})" psxtract -c EBOOT.PBP)
+  local -a cues=( "${eboot[1]:h}"/*.cue(N) )
+  (( $#cues )) || hey.abort "psxtract didn't produce a cue"
+  for f in $cues; do
+    (( $#cues > 1 )) && out=${pkg:h}/${f:t:r}.chd
+    pack createcd
+  done
+  return
+fi
+
+# CSO/ZSO: chdman can't read these, and only PSP ever used them.
+if [[ $magic == (4349534f|5a49534f) ]]; then
+  local iso=$tmp/${f:t:r}.iso
+  hey.echo "CSO-compressed; decoding"
+  maxcso --quiet --decompress "$f" -o "$iso"
+  f=$iso dvd=1
+fi
+
+if [[ $dvd ]]; then
   pack createdvd
   return
 fi
 
-# ECM: the sync header is in there, but 4 bytes in, behind "ECM\0", and with the
-# ECC/EDC stripped from every sector. People might use the .img and .bin
-# extensions for these anyway, so assume nothing.
-if [[ "$magic" == 45434d00 ]]; then
-  local bin="$tmp/${f:t:r}.bin"
+# ECM, by magic: people leave these named .img and .bin.
+if [[ $magic == 45434d00 ]]; then
+  local bin=$tmp/${f:t:r}.bin
   hey.echo "ECM-compressed; decoding"
-  nix shell nixpkgs#ecmtools -c ecm2bin "$f" "$bin"
-  f="$bin"
+  ecm2bin "$f" "$bin"
+  f=$bin
 fi
 
-# CDI: convert to CUE/BIN first (chdman doesn't read .cdi)
-if [[ "$f" == *.cdi ]]; then
+# chdman doesn't read .cdi
+if [[ $f == *.cdi ]]; then
   nix shell nixpkgs#cdirip -c cdirip "$f" "$tmp" -cue
-  f="$tmp/${f:t:r}.cue"
+  f=$tmp/${f:t:r}.cue
 fi
 
 # Bare raw image. chdman dispatches on extension and parses anything it doesn't
 # know as a cdrdao .toc, so a cue-less bin/img "fails" into a 124-byte stub chd.
-# Renaming it .iso doesn't work, so try to guess from the sector size and write
-# the cue ourselves.
-if [[ "$f" == *.(bin|img) ]]; then
-  local cue="${f:r}.cue"
-  if [[ ! -e "$cue" ]]; then
-    local type
-    local -a hdr=( $(head -c 16 "$f" | od -An -tx1) )
-    local size=$(stat -c %s "$f")
-    if [[ "${hdr[1,12]}" == "00 ff ff ff ff ff ff ff ff ff ff 00" ]]; then
-      type="MODE${hdr[16]#0}/2352"
+# Renaming it .iso doesn't work, so guess from the sector size and write the cue
+# myself.
+if [[ $f == *.(bin|img) ]]; then
+  local cue=${f:r}.cue
+  if [[ ! -e $cue ]]; then
+    local type hdr size
+    hdr=$(hex 16 "$f")
+    size=$(stat -Lc %s "$f")
+    # A sync pattern means whole 2352-byte sectors; the mode is the byte after
+    # the address.
+    if [[ $hdr == 00ffffffffffffffffffff00* ]]; then
+      type=MODE$hdr[-1]/2352
     elif (( size % 2048 == 0 )); then
-      type="MODE1/2048"
+      type=MODE1/2048
     elif (( size % 2336 == 0 )); then
-      type="MODE2/2336"
+      type=MODE2/2336
     else
       hey.abort "Not a raw CD image: $f"
     fi
     hey.echo "No cue; treating as a single $type track"
     # The cue must sit beside the image
-    cue="$tmp/${f:t:r}.cue"
-    [[ "$f" == "$tmp"/* ]] || ln -s "${f:a}" "$tmp/${f:t}"
+    cue=$tmp/${f:t:r}.cue
+    [[ $f == $tmp/* ]] || ln -s "${f:a}" "$tmp/${f:t}"
     printf 'FILE "%s" BINARY\n  TRACK 01 %s\n    INDEX 01 00:00:00\n' "${f:t}" "$type" > "$cue"
   fi
-  f="$cue"
+  f=$cue
 fi
 
 pack createcd

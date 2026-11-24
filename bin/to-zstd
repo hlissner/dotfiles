@@ -1,0 +1,21 @@
+#!/usr/bin/env zsh
+# Compress SRC with zstd, or (-d) the other way around.
+#
+# SYNOPSIS:
+#   to-zstd [-d] SRC [DEST]
+#
+# DESCRIPTION:
+#   DEST defaults to SRC with .zst added (or, with -d, removed).
+#
+# OPTIONS:
+#   -d
+#     Decompress SRC instead.
+#
+# ARGUMENTS:
+#   * FILE @files
+
+zparseopts -D -F -- d=decompress || exit 1
+(( $# )) || hey.abort "Usage: to-zstd [-d] SRC [DEST]"
+local -a mode=( -T0 -12 )
+[[ $decompress ]] && mode=( -d )
+exec zstd $mode --long=31 "$1" ${2:+-o} $2

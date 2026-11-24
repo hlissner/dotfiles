@@ -62,9 +62,9 @@ local i
 for (( i = 1; i <= $#files; i++ )); do
   jsons+=( "$tmp/$i.json" )
   ffprobe -v error -of json -show_format -show_streams -show_chapters -i "${files[i]}" > "$jsons[i]"
-  # format.duration for an mp3 is read off its Xing header or estimated from the
-  # bitrate; a headerless VBR file can offset every chapter after it by a second
-  # or two. Don't decode twice.
+  # An mp3's duration is read off its Xing header or guessed from the bitrate,
+  # so a headerless VBR file can push every later chapter off by a second or
+  # two. Not worth a decode pass.
   durs+=( $(jq -r '.format.duration | tonumber * 1000 | round' "$jsons[i]") )
 done
 
@@ -72,14 +72,7 @@ done
 # Windows tool, title everywhere else.
 tag() { jq -r --arg k "$2" '.format.tags // {} | with_entries(.key |= ascii_downcase) | .[$k] // empty' "$1"; }
 # ffmetadata's own grammar, the one thing it's picky about.
-esc() {
-  local s=$1
-  s=${s//\\/\\\\}
-  s=${s//=/\\=}
-  s=${s//;/\\;}
-  s=${s//\#/\\#}
-  print -r -- "${s//$'\n'/\\$'\n'}"
-}
+esc() { print -r -- "${1//(#m)[\\=;#$'\n']/\\$MATCH}" }
 chapter() {  # START END TITLE, in ms
   print -rl -- '[CHAPTER]' 'TIMEBASE=1/1000' "START=$1" "END=$2" "title=$(esc "$3")"
 }
@@ -97,8 +90,8 @@ for (( i = $#files; i >= 1; i-- )); do
 done
 (( $#files )) || hey.abort "Nothing to merge but the output itself"
 
-# One stream signature per input. If they're all the same AAC they'll be
-# concatenatedas they are. Otherwise re-encode everything to a common AAC first.
+# One stream signature per input. If they're all the same AAC they're
+# concatenated as they are. Otherwise everything is re-encoded to a common AAC.
 local -a sigs=( ${(f)"$(jq -r '[.streams[] | select(.codec_type == "audio")][0] | "\(.codec_name)/\(.sample_rate)/\(.channels)"' $jsons)"} )
 local copy=
 [[ -z $encode && ${#${(u)sigs}} == 1 && ${sigs[1]%%/*} == aac ]] && copy=1
@@ -182,7 +175,8 @@ if [[ -z $copy ]]; then
   done
   hey.echo "Encoding $#files file(s) in $#parts piece(s) on $jobs cores at $br"
   print -rN -- $plan | hey.do env br=$br rate=$rate chans=$chans xargs -0 -n 4 -P $jobs zsh -c \
-    'ffmpeg -v error -nostdin -y -ss $2 -t $3 -i "$1" -vn -map 0:a -c:a aac -b:a $br -ar $rate -ac $chans "$4"' _
+    'ffmpeg -v error -nostdin -y -ss $2 -t $3 -i "$1" -vn -map 0:a -c:a aac -b:a $br -ar $rate -ac $chans "$4"' _ \
+    || exit  # or err_exit, inside hey.do, walks past the trap and leaves $tmp
 fi
 
 for f in $parts; do
@@ -196,7 +190,7 @@ if (( $#cover )); then
 fi
 
 [[ $copy ]] && hey.echo "Copying $#files file(s) -> $out"
-hey.do ffmpeg -hide_banner -loglevel error -stats -y "${ins[@]}" "${outs[@]}" -movflags +faststart "$tmp/out.m4b"
+hey.do ffmpeg -hide_banner -loglevel error -stats -y "${ins[@]}" "${outs[@]}" -movflags +faststart "$tmp/out.m4b" || exit
 [[ ${HEYDRYRUN:-} ]] && return
 mv -f -- "$tmp/out.m4b" "$out"
 hey.echo "$(ffprobe -v error -of json -show_chapters -show_format -show_streams -i "$out" | jq -r '
