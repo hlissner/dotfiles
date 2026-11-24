@@ -1,0 +1,47 @@
+#+TITLE: Pi
+#+DATE:  October 16, 2026
+
+* Overview
+A Raspberry Pi 3 B taped to the back of the LaserJet, sharing it with the LAN
+over wifi. Always on; the header of =default.nix= says why it neither sleeps nor
+wakes.
+
+* Specs
+| BOARD   | Raspberry Pi 3 B (BCM2837, 4x Cortex-A53 @ 1.2GHz, 1GB)     |
+| NET     | 2.4GHz wifi (BCM43438); 100Mbit ethernet, unused            |
+| PRINTER | HP LaserJet MFP M28-M31, USB. PCLm, IPP-over-USB, no plugin |
+| SDCARD  | SanDisk Ultra 64GB                                          |
+
+* Install
+The system is built into an SD image elsewhere (e.g. on Udon, which would need
+~boot.binfmt.emulatedSystems = [ "aarch64-linux" ]~):
+
+1. Build and write the image to the SD card:
+   #+begin_src sh
+   nix build .#nixosConfigurations.pi.config.system.build.sdImage
+   dd if=result/sd-image/*.img of=/dev/sdX bs=4M status=progress oflag=sync
+   #+end_src
+
+2. Give iwd the network before first boot:
+Before the first boot, give iwd the network; nothing can reach the Pi to do it
+later. Mount the card's root partition (=NIXOS_SD=) and:
+   #+begin_src sh
+   sudo partprobe /dev/sdX
+   sudo mount /dev/disk/by-label/NIXOS_SD /mnt
+   sudo install -d -m 700 /mnt/var/lib/iwd
+   printf '[Security]\nPassphrase=%s\n' "$PSK" | sudo install -m 600 /dev/stdin
+   "/mnt/var/lib/iwd/$SSID.psk"
+   sudo umount /mnt
+   #+end_src
+
+3. Put the SD card into the Pi and boot it, then:
+   #+begin_src sh
+   hey ops push-keys pi   # gives it its host key
+   hey ops push pi        # every later update: builds here, ships the closure
+   #+end_src
+
+   Use these commands to update in the future.
+
+* Printer
+"LaserJet" is accessible over mDNS (AirPrint, IPP Everywhere) or at
+=ipp://pi:631/printers/LaserJet=.

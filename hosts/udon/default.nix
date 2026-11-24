@@ -154,6 +154,9 @@ with builtins;
 
   ## local config
   config = { pkgs, config, ... }: {
+    # For hosts/pi, which has 1GB and no business compiling anything.
+    boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+
     programs.kdeconnect = {
       enable = true;
       package = pkgs.kdePackages.kdeconnect-kde;
