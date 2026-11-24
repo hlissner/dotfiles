@@ -76,6 +76,7 @@ with builtins;
 
       browsers.default = "librewolf";
       browsers.librewolf.enable = true;
+      browsers.chrome.enable = true;
       media.cad.enable = true;
       media.daw.enable = true;
       media.graphics.enable = true;
@@ -174,7 +175,6 @@ with builtins;
       guitarix
       gxplugins-lv2
       ladspaPlugins
-      google-chrome  # for testing
     ];
   };
 
