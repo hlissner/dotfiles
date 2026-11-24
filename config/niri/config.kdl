@@ -297,19 +297,29 @@ window-rule {
     match app-id=r#"^steam_app_(default|\d+)$"#
     match app-id=r#"^gzdoom$"#
     match app-id=r#"^es-de$"#
-    match app-id=r#"^retroarch$"#
-    match app-id=r#"^com\.libretro\.RetroArch$"#
-    match app-id=r#"^org\.azahar_emu\.Azahar$"#
-    match app-id=r#"^dev\.eden_emu\.eden$"#
-    match app-id=r#"^dolphin-emu$"#
+    // -b never shows the main window ("Dolphin VERSION"), only this
+    match app-id=r#"^dolphin-emu$"# title=r#"^Dolphin$"#
     match app-id=r#"^Vita3K$"# title=r#" \([A-Z]{4}\d{5}\) \| "#
     match app-id=r#"^pico8_dyn$"#
-    // TODO: pcsx2
-    // TODO: rpcs3
+    // nixpkgs' Qt wrapper leaves rpcs3 and pcsx2 with an empty app-id. RPCS3's
+    // game window at least ends in a title ID; PCSX2's is the game's name and
+    // nothing else, so it can't be matched at all and fullscreens itself.
+    match app-id="^$" title=r#" \| .* \[[A-Z]{4}\d{5}\]$"#
     open-focused true
     open-fullscreen true
     open-floating false
     default-column-width { proportion 1.0; }
+    variable-refresh-rate true
+    shadow { off; }
+    background-effect { blur false; }
+}
+// These only admit to running a game by retitling their window afterwards,
+// which is too late for open-*. Fullscreening is their job (-f).
+window-rule {
+    match app-id=r#"^(retroarch|com\.libretro\.RetroArch)$"# title=r#"^RetroArch \S"#
+    match app-id=r#"^org\.azahar_emu\.Azahar$"# title=r#" \| "#
+    match app-id=r#"^dev\.eden_emu\.eden$"# title=r#"-bit\)"#
+    match app-id=r#"^dolphin-emu$"# title=r#"^Dolphin .* \| "#
     variable-refresh-rate true
     shadow { off; }
     background-effect { blur false; }

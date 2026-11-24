@@ -56,7 +56,7 @@ let cfg = config.modules.games.emulators;
       n3ds = {
         fullname = "Nintendo 3DS";
         extensions = ".3ds .3DS .3dsx .3DSX .app .APP .axf .AXF .cci .CCI .cxi .CXI .zcci .ZCCI .zcxi .ZCXI .z3dsx .Z3DSX .elf .ELF";
-        command = "%EMULATOR_AZAHAR% %ROM%";
+        command = "%EMULATOR_AZAHAR% -f %ROM%";
       };
       n64 = {
         fullname = "Nintendo 64";
@@ -86,7 +86,7 @@ let cfg = config.modules.games.emulators;
       ps2 = {
         fullname = "Sony PlayStation 2";
         extensions = ".bin .BIN .chd .CHD .ciso .CISO .cso .CSO .desktop .dump .DUMP .elf .ELF .gz .GZ .m3u .M3U .mdf .MDF .img .IMG .iso .ISO .isz .ISZ .ngr .NRG .zso .ZSO";
-        command = "%EMULATOR_PCSX2% -batch %ROM%";
+        command = "%EMULATOR_PCSX2% -batch -fullscreen %ROM%";
       };
       ps3 = {
         fullname = "Sony PlayStation 3";
@@ -219,7 +219,7 @@ let cfg = config.modules.games.emulators;
     soOf = c: "${replaceStrings ["-"] ["_"] pkgs.libretro.${c}.core}_libretro.so";
     commandOf = s:
       if s.command != null then s.command
-      else "%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/${soOf s.core} %ROM%";
+      else "%EMULATOR_RETROARCH% -f -L %CORE_RETROARCH%/${soOf s.core} %ROM%";
     emulatorsOf = cmd:
       map head (filter isList (split "%EMULATOR_([A-Z0-9-]+)%" cmd));
 
