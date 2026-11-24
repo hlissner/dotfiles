@@ -116,6 +116,9 @@ in {
             # https://support.mozilla.org/en-US/kb/extension-recommendations
             "browser.newtabpage.activity-stream.asrouter.userprefs.cfr.addons" = false;
             "browser.newtabpage.activity-stream.asrouter.userprefs.cfr.features" = false;
+            # A PDF served as "Content-Disposition: attachment" gets downloaded
+            # (to /tmp/mozilla_*, courtesy of LibreWolf) before pdf.js shows it.
+            "browser.download.open_pdf_attachments_inline" = true;
             # Reduce File IO / SSD abuse
             # Otherwise, Firefox bombards the HD with writes. Not so nice for SSDs.
             # This forces it to write every 30 minutes, rather than 15 seconds.
