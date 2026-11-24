@@ -302,7 +302,7 @@ window-rule {
     match app-id=r#"^org\.azahar_emu\.Azahar$"#
     match app-id=r#"^dev\.eden_emu\.eden$"#
     match app-id=r#"^dolphin-emu$"#
-    match app-id=r#"^Vita3K$"#
+    match app-id=r#"^Vita3K$"# title=r#" \([A-Z]{4}\d{5}\) \| "#
     match app-id=r#"^pico8_dyn$"#
     // TODO: pcsx2
     // TODO: rpcs3
