@@ -168,22 +168,23 @@ let cfg = config.modules.games.emulators;
         exec ${pkgs.xemu}/bin/xemu "$@"
       '';
 
+    # nixpkgs' AppImage wrap forgets libgpg-error, so it dies in ld.so.
+    vita3kPkg = pkgs.vita3k.override (o: {
+      appimageTools = o.appimageTools // {
+        wrapType2 = a: o.appimageTools.wrapType2 (a // {
+          extraPkgs = p: a.extraPkgs p ++ [ p.libgpg-error ];
+        });
+      };
+    });
+
     # Vita3K only runs what's installed in its ux0, by title ID, and ES-DE's
     # answer is a .psvita stub per game. My dumps are NoNpDrm zips whose first
     # dir *is* the title ID, so read it from there: run it if it's installed,
     # otherwise hand over the zip, which installs it and then runs it.
     vita3k =
       let bios = cfg.systems.psvita.bios;
-          # nixpkgs' AppImage wrap forgets libgpg-error, so it dies in ld.so.
-          pkg = pkgs.vita3k.override (o: {
-            appimageTools = o.appimageTools // {
-              wrapType2 = a: o.appimageTools.wrapType2 (a // {
-                extraPkgs = p: a.extraPkgs p ++ [ p.libgpg-error ];
-              });
-            };
-          });
       in pkgs.writeShellScriptBin "vita3k" ''
-        v3k=${pkg}/bin/vita3k
+        v3k=${vita3kPkg}/bin/vita3k
         pref=${config.home.dataDir}/Vita3K/Vita3K
         case "$1" in *.zip|*.ZIP)
           [ -d "$pref/vs0/vsh" ] || "$v3k" --firmware "${bios}/PSVUPDAT.PUP"
@@ -306,7 +307,13 @@ in {
           message = "modules.games.emulators: no package for emulator(s): ${toString (filter (e: !(emulators ? ${e})) used)}"; }
       ];
 
-      user.packages = [ esde ] ++ standalones;
+      user.packages = [ esde ] ++ standalones
+        ++ optional (cfg.systems ? psvita) (mkLauncherEntry "Vita3K" {
+          description = "PlayStation Vita emulator";
+          icon = "${vita3kPkg}/share/icons/hicolor/128x128/apps/vita3k.png";
+          exec = "${vita3k}/bin/vita3k";
+          categories = [ "Game" "Emulator" ];
+        });
       services.udev.packages = standalones;
 
       home.file."${cfg.dataDir}/custom_systems/es_systems.xml".text = ''
