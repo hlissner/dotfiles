@@ -102,6 +102,24 @@ with builtins;
           rpd.mode  = "1920x1080@120.000";
         };
       };
+      emulators =
+        let nas = "/media/nas/media/games";
+        in {
+          enable = true;
+          romsDir = "${nas}/roms";
+          biosDir = "${nas}/bios-retroarch";
+          systems = {
+            arcade = {}; dos = {}; nes = {}; snes = {}; genesis = {}; gba = {};
+            nds = {}; n64 = {}; saturn = {}; psx = {}; psp = {}; ps2 = {}; ps3 = {};
+            wii = {}; psvita = {}; switch = {}; xbox = {};
+            # Romm's slugs, not ES-DE's
+            neogeo.path       = "${nas}/roms/neogeomvs";
+            dreamcast.path    = "${nas}/roms/dc";
+            gc.path           = "${nas}/roms/ngc";
+            n3ds.path         = "${nas}/roms/3ds";
+            pico8.path        = "${nas}/roms/pico";
+          };
+        };
     };
     dev = {
       cc.enable = true;
@@ -144,7 +162,8 @@ with builtins;
       let games = config.modules.games.emulators;
           media = [ "covers" "backcovers" "screenshots" ];
       in optionalAttrs games.enable (
-           { "eden/keys" = "${games.systems.switch.bios}/keys.22.1.0"; }
+           genAttrs' [ "prod.keys" "title.keys" ] (f:
+             nameValuePair "eden/keys/${f}" "${games.systems.switch.bios}/${f}")
            // listToAttrs (concatMap
                 (sys: map (m: nameValuePair "es-de/downloaded_media/${sys}/${m}"
                                             "${games.systems.${sys}.path}/${m}")

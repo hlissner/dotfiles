@@ -13,6 +13,21 @@ let cfg = config.modules.games.emulators;
     # down to the command I want first.
     dolphin = "%INJECT%=%BASENAME%.esprefix %EMULATOR_DOLPHIN% -b -e %ROM%";
     table = {
+      arcade = {
+        fullname = "Arcade";
+        extensions = ".acgame .arcadedef .cmd .CMD .desktop .gam .GAM .lindbergh .neo .NEO .sh .7z .7Z .zip .ZIP";
+        core = "fbneo";
+      };
+      neogeo = {
+        fullname = "SNK Neo Geo";
+        extensions = ".neo .NEO .7z .7Z .zip .ZIP";
+        core = "fbneo";
+      };
+      dos = {
+        fullname = "DOS (PC)";
+        extensions = ".bat .BAT .com .COM .conf .CONF .cue .CUE .dosz .DOSZ .exe .EXE .img .IMG .iso .ISO .7z .7Z .zip .ZIP";
+        core = "dosbox-pure";
+      };
       nes = {
         fullname = "Nintendo Entertainment System";
         extensions = ".3dsen .3DSEN .fds .FDS .nes .NES .unf .UNF .unif .UNIF .7z .7Z .zip .ZIP";
@@ -26,16 +41,6 @@ let cfg = config.modules.games.emulators;
       genesis = {
         fullname = "Sega Genesis";
         extensions = ".32x .32X .68k .68K .bin .BIN .bms .BMS .chd .CHD .cue .CUE .gen .GEN .gg .GG .iso .ISO .m3u .M3U .md .MD .mdx .MDX .sg .SG .sgd .SGD .smd .SMD .sms .SMS .7z .7Z .zip .ZIP";
-        core = "genesis-plus-gx";
-      };
-      mastersystem = {
-        fullname = "Sega Master System";
-        extensions = ".68k .68K .bin .BIN .bms .BMS .chd .CHD .col .COL .cue .CUE .gen .GEN .gg .GG .iso .ISO .m3u .M3U .md .MD .mdx .MDX .rom .ROM .sg .SG .sgd .SGD .smd .SMD .sms .SMS .7z .7Z .zip .ZIP";
-        core = "genesis-plus-gx";
-      };
-      gamegear = {
-        fullname = "Sega Game Gear";
-        extensions = ".68k .68K .bin .BIN .bms .BMS .chd .CHD .col .COL .cue .CUE .gen .GEN .gg .GG .iso .ISO .m3u .M3U .md .MD .mdx .MDX .rom .ROM .sg .SG .sgd .SGD .smd .SMD .sms .SMS .7z .7Z .zip .ZIP";
         core = "genesis-plus-gx";
       };
       gba = {
@@ -98,10 +103,15 @@ let cfg = config.modules.games.emulators;
         extensions = ".ciso .CISO .dff .DFF .dol .DOL .elf .ELF .gcm .GCM .gcz .GCZ .iso .ISO .json .JSON .m3u .M3U .rvz .RVZ .tgc .TGC .wad .WAD .wbfs .WBFS .wia .WIA .7z .7Z .zip .ZIP";
         command = dolphin;
       };
+      xbox = {
+        fullname = "Microsoft Xbox";
+        extensions = ".iso .ISO .xiso .XISO";
+        command = "%INJECT%=%BASENAME%.esprefix %EMULATOR_XEMU% -dvd_path %ROM%";
+      };
       psvita = {
         fullname = "Sony PlayStation Vita";
-        extensions = ".psvita";
-        command = "%EMULATOR_VITA3K% -r %INJECT%=%BASENAME%.psvita";
+        extensions = ".zip .ZIP";
+        command = "%EMULATOR_VITA3K% %ROM%";
       };
       switch = {
         fullname = "Nintendo Switch";
@@ -115,17 +125,17 @@ let cfg = config.modules.games.emulators;
       };
     };
 
-    # PICO-8 is paid and not in nixpkgs. Engine lives on my NAS instead, and
-    # needs patching to work in nixos, so I create a local copy to patch on
-    # first invocation.
+    # PICO-8 is paid and not in nixpkgs. Engine lives on my NAS instead (zipped,
+    # because RomM's firmware dirs are flat), and needs patching to work in
+    # nixos, so I unpack a local copy to patch on first invocation.
     pico8 =
       let libs = makeLibraryPath (with pkgs; [ SDL2 libGL ]);
-          bios = "${cfg.systems.pico8.bios}/amd64";
+          zip = "${cfg.systems.pico8.bios}/amd64.zip";
       in pkgs.writeShellScriptBin "pico8" ''
         dir=${config.home.cacheDir}/pico-8
-        if [ ! "$dir/pico8_dyn" -nt "${bios}/pico8_dyn" ] || [ "$(cat "$dir/.libs" 2>/dev/null)" != "${libs}" ]; then
+        if [ ! "$dir/pico8_dyn" -nt "${zip}" ] || [ "$(cat "$dir/.libs" 2>/dev/null)" != "${libs}" ]; then
           mkdir -p "$dir"
-          cp -f "${bios}/pico8_dyn" "${bios}/pico8.dat" "$dir/"
+          ${pkgs.unzip}/bin/unzip -ojq "${zip}" amd64/pico8_dyn amd64/pico8.dat -d "$dir"
           chmod u+w "$dir/pico8_dyn" "$dir/pico8.dat"
           ${pkgs.patchelf}/bin/patchelf \
             --set-interpreter ${pkgs.glibc}/lib/ld-linux-x86-64.so.2 \
@@ -136,15 +146,69 @@ let cfg = config.modules.games.emulators;
         exec "$dir/pico8_dyn" -home ${config.home.dataDir}/lexaloffle "$@"
       '';
 
+    # xemu has no flags for its BIOS, only a config it rewrites on exit, and
+    # saves go *into* the HDD image and EEPROM. So those two get a local copy
+    # and the config is seeded once; after that it's xemu's (and mine) to edit.
+    xemu =
+      let bios = cfg.systems.xbox.bios;
+      in pkgs.writeShellScriptBin "xemu" ''
+        dir=${config.home.dataDir}/xemu/xemu
+        if [ ! -e "$dir/xemu.toml" ]; then
+          mkdir -p "$dir"
+          cp -n "${bios}/xbox_hdd.qcow2" "${bios}/xbox_eeprom.bin" "$dir/"
+          chmod u+w "$dir/xbox_hdd.qcow2" "$dir/xbox_eeprom.bin"
+          cat > "$dir/xemu.toml" <<EOF
+        [sys.files]
+        bootrom_path = '${bios}/mcpx_1.0.bin'
+        flashrom_path = '${bios}/Complex_4627.bin'
+        eeprom_path = '$dir/xbox_eeprom.bin'
+        hdd_path = '$dir/xbox_hdd.qcow2'
+        EOF
+        fi
+        exec ${pkgs.xemu}/bin/xemu "$@"
+      '';
+
+    # Vita3K only runs what's installed in its ux0, by title ID, and ES-DE's
+    # answer is a .psvita stub per game. My dumps are NoNpDrm zips whose first
+    # dir *is* the title ID, so read it from there: run it if it's installed,
+    # otherwise hand over the zip, which installs it and then runs it.
+    vita3k =
+      let bios = cfg.systems.psvita.bios;
+          # nixpkgs' AppImage wrap forgets libgpg-error, so it dies in ld.so.
+          pkg = pkgs.vita3k.override (o: {
+            appimageTools = o.appimageTools // {
+              wrapType2 = a: o.appimageTools.wrapType2 (a // {
+                extraPkgs = p: a.extraPkgs p ++ [ p.libgpg-error ];
+              });
+            };
+          });
+      in pkgs.writeShellScriptBin "vita3k" ''
+        v3k=${pkg}/bin/vita3k
+        pref=${config.home.dataDir}/Vita3K/Vita3K
+        case "$1" in *.zip|*.ZIP)
+          [ -d "$pref/vs0/vsh" ] || "$v3k" --firmware "${bios}/PSVUPDAT.PUP"
+          [ -d "$pref/sa0/data/font" ] || "$v3k" --firmware "${bios}/PSP2UPDAT.PUP"
+          id=$(${pkgs.unzip}/bin/unzip -Z1 "$1" | sed -n 's|^app/\([A-Z0-9]\{9\}\)/.*|\1|p' | head -n1)
+          [ -n "$id" ] && [ -d "$pref/ux0/app/$id" ] && exec "$v3k" -r "$id"
+          # Its CLI splits a path on spaces and takes a leading / for a
+          # Windows-style flag, then drops it. Every path I have is both, so
+          # it gets a relative alias.
+          ln -sf "$1" "$pref/install.zip"
+          cd "$pref" && exec "$v3k" install.zip
+        esac
+        exec "$v3k" "$@"
+      '';
+
     # %EMULATOR_X% -> the package whose binary ES-DE's find rules look for.
     emulators = {
       PCSX2 = pkgs.pcsx2;
       RPCS3 = pkgs.rpcs3;
       DOLPHIN = pkgs.dolphin-emu;
-      VITA3K = pkgs.vita3k;
       EDEN = pkgs.eden;
       AZAHAR = pkgs.azahar;
-    } // optionalAttrs (cfg.systems ? pico8) { "PICO-8" = pico8; };
+    } // optionalAttrs (cfg.systems ? pico8) { "PICO-8" = pico8; }
+      // optionalAttrs (cfg.systems ? xbox) { XEMU = xemu; }
+      // optionalAttrs (cfg.systems ? psvita) { VITA3K = vita3k; };
 
     soOf = c: "${replaceStrings ["-"] ["_"] pkgs.libretro.${c}.core}_libretro.so";
     commandOf = s:
@@ -254,17 +318,21 @@ in {
 
       # Each standalones has its own opinions on where BIOSes live. Only link
       # plain read-only files; otherwise, it needs to be installed through a GUI
-      # (rpcs3, vita3k, eden, wii NAND, etc).
+      # (rpcs3, eden, wii NAND, etc).
       home.configLink = optionalAttrs (cfg.systems ? ps2) {
         "PCSX2/bios" = cfg.systems.ps2.bios;
       };
       # Per file, not the dir: Dolphin writes SRAM and memcards next to them,
       # and Azahar wants nand/ and sdmc/ beside sysdata/.
       home.dataLink =
-        let files = sys: dir: fs: optionalAttrs (cfg.systems ? ${sys}) (listToAttrs (map
-              (f: nameValuePair "${dir}/${f}" "${cfg.systems.${sys}.bios}/${f}") fs));
-        in files "gc" "dolphin-emu/GC" [ "dsp_rom.bin" "dsp_coef.bin" "USA/IPL.bin" "EUR/IPL.bin" "JAP/IPL.bin" ]
-        // files "n3ds" "azahar-emu/sysdata" [ "aes_keys.txt" "seeddb.bin" ];
+        let files = sys: dir: src: fs: optionalAttrs (cfg.systems ? ${sys}) (listToAttrs (map
+              (f: nameValuePair "${dir}/${f}" "${src}/${f}") fs));
+            bios = sys: cfg.systems.${sys}.bios;
+        in files "gc" "dolphin-emu/GC" (bios "gc") [ "dsp_rom.bin" "dsp_coef.bin" ]
+        # bios/ngc only has the IPLs zipped; the per-region dirs Dolphin wants
+        # exist in the EmuDeck tree alone.
+        // files "gc" "dolphin-emu/GC" "${cfg.biosDir}/dolphin-emu/Sys/GC" [ "USA/IPL.bin" "EUR/IPL.bin" "JAP/IPL.bin" ]
+        // files "n3ds" "azahar-emu/sysdata" (bios "n3ds") [ "aes_keys.txt" "seeddb.bin" ];
     }
 
     (mkIf cfg.retroarch.enable {
